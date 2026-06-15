@@ -69,10 +69,10 @@ SECTOR_CONFIG = {
 
     "PHYSICAL_AI_ROBOTICS": {
         "basket": [
-            "ISRG", "SYM", "ROK", "ABB", "TER",
+            "ISRG", "SYM", "ROK", "ABBN", "TER",
             "PATH", "AVAV", "KTOS", "DE", "TXT",
-            "CGNX", "ZBRA", "HSAI", "HLX", "MDT",
-            "IRBT", "SERV", "RR"
+            "CGNX", "ZBRA", "HSAI", "HLX", "MDT", 
+            "SERV", "RR"
         ]
     },
 
