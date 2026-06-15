@@ -26,7 +26,18 @@ def get_sector_data(sector, tickers=None):
     print(tickers)
     
     df = resolve_sector_dataframe(raw_data)
+    
+    import streamlit as st
 
+    if df.empty or "Ticker" not in df.columns:
+        st.error("Sector builder created an invalid dataframe before basket tiering.")
+        st.write("Sector:", sector)
+        st.write("Tickers:", tickers)
+        st.write("Columns:", list(df.columns))
+        st.write("Shape:", df.shape)
+        st.write("Preview:", df.head())
+        st.stop()
+        
     df = add_basket_tiers(df)
 
     return df
