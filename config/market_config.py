@@ -1,0 +1,9 @@
+
+
+MARKET_BENCHMARKS = {
+    "SPY": "SPDR S&P 500 ETF",
+    "QQQ": "INVESCO NASDAQ 100 ETF",
+    "ONEQ": "FIDELITY NASDAQ ETF",
+    "DIA": "SPDR DJIA ETF"
+    
+}
