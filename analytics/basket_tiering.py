@@ -78,14 +78,7 @@ def add_basket_tiers(df):
 
         debug_print(df[existing_debug_cols])
     """
-    compute_df = df[
-        [
-            "Ticker",
-            "Market Cap",
-            "Revenue",
-            "1Y Return"
-        ]
-    ].copy()
+    
     import streamlit as st
 
     required_cols = ["Ticker", "Market Cap", "Revenue", "1Y Return"]
@@ -98,6 +91,16 @@ def add_basket_tiers(df):
         st.write("Shape:", df.shape)
         st.write("Preview:", df.head())
         st.stop()
+        
+    compute_df = df[
+        [
+            "Ticker",
+            "Market Cap",
+            "Revenue",
+            "1Y Return"
+        ]
+    ].copy()
+
         
     compute_df["MC Score"] = market_cap_score
     compute_df["Rev Score"] = revenue_score
