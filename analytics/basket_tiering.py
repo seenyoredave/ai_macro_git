@@ -53,7 +53,7 @@ def add_basket_tiers(df):
     if df.empty or missing_cols:
         import streamlit as st
 
-        st.error("Basket tiering received an invalid input dataframe.")
+        st.error("TOP OF FUNCTION CHECK: invalid input to add_basket_tiers")
         st.write("Missing columns:", missing_cols)
         st.write("Original columns:", list(df.columns))
         st.write("Shape:", df.shape)
