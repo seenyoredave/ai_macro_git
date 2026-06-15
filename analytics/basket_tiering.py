@@ -17,7 +17,6 @@ TIER_WEIGHTS = {
     4: 1.0,
 }
 
-
 def percentile_score(series, higher_is_better=True):
     values = pd.to_numeric(series, errors="coerce")
 
@@ -72,25 +71,13 @@ def add_basket_tiers(df):
     df["Basket Tier"] = assign_tiers(df["Basket Score"])
 
     df["Basket Weight"] = df["Basket Tier"].map(TIER_WEIGHTS)
-    
-    debug_print(
-        df[
-            [
-                "Ticker",
-                "Market Cap",
-                "Revenue",
-                "1Y Return"
-            ]
-        ]
-    )   
-    debug_print(
-        pd.DataFrame({
-            "Ticker": df["Ticker"],
-            "MC Score": market_cap_score,
-            "Rev Score": revenue_score,
-            "Ret Score": return_score,
-        })
-    )
+    """
+    if DEBUG:
+        debug_cols = ["Ticker", "Market Cap", "Revenue", "1Y Return"]
+        existing_debug_cols = [col for col in debug_cols if col in df.columns]
+
+        debug_print(df[existing_debug_cols])
+    """
     compute_df = df[
         [
             "Ticker",
@@ -105,9 +92,9 @@ def add_basket_tiers(df):
     compute_df["Ret Score"] = return_score
     compute_df["Basket Score"] = df["Basket Score"]
 
-    debug_print(compute_df.sort_values(
+    """debug_print(compute_df.sort_values(
         "Basket Score",
         ascending=False
-    ))
+    ))"""
     return df
-
+       
