@@ -9,8 +9,26 @@ from concurrent.futures import ThreadPoolExecutor
 from loaders.edgar_loader import load_edgar 
 from loaders.fred_loader import load_fred
 from loaders.sentiment_loader import load_put_call
+from pathlib import Path
 
 
+#################################################
+# FALLBACK FUNCTION FOR CLOUD CALL FAILS
+#################################################
+
+def load_yf_history_fallback(tickers):
+    project_root = Path(__file__).resolve().parents[1]
+    path = project_root / "archive" / "yf_history.csv"
+
+    if not path.exists():
+        return pd.DataFrame()
+
+    fallback = pd.read_csv(path)
+
+    if "Ticker" in fallback.columns:
+        fallback = fallback[fallback["Ticker"].isin(tickers.keys())]
+
+    return fallback
 
 #################################################
 # YFINANCE LOADER
@@ -170,6 +188,11 @@ def load_yfinance(ticker_tuple):
     rows = [r for r in results if r]
 
     df = pd.DataFrame(rows)
+
+    if df.empty:
+        st.warning("Live Yahoo Finance data unavailable. Using cached yf_history.csv snapshot.")
+        df = load_yf_history_fallback(tickers)
+
     return df 
 
 
