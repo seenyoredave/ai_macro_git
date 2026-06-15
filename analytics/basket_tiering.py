@@ -86,7 +86,19 @@ def add_basket_tiers(df):
             "1Y Return"
         ]
     ].copy()
+    import streamlit as st
 
+    required_cols = ["Ticker", "Market Cap", "Revenue", "1Y Return"]
+    missing_cols = [col for col in required_cols if col not in df.columns]
+
+    if missing_cols:
+        st.error("Basket tiering received an unexpected dataframe.")
+        st.write("Missing columns:", missing_cols)
+        st.write("Actual columns:", list(df.columns))
+        st.write("Shape:", df.shape)
+        st.write("Preview:", df.head())
+        st.stop()
+        
     compute_df["MC Score"] = market_cap_score
     compute_df["Rev Score"] = revenue_score
     compute_df["Ret Score"] = return_score
