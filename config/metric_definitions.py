@@ -1,6 +1,6 @@
 METRIC_DEFINITIONS = {
     "Cycle Score": """
-    Weighted composite score measuring where a sector appears to be in the AI market cycle.
+    MCS = weighted average of all sector scores - approximation of where we are in the AI maturation cycle.
 
     Current inputs:
     - Relative Performance
@@ -12,21 +12,8 @@ METRIC_DEFINITIONS = {
     Higher values suggest a more mature or advanced cycle position.
     """,
 
-    "Speculation Pressure": """
-    Composite score measuring bubble-like or crowded behavior within a sector.
-
-    Current inputs:
-    - Valuation Premium
-    - Relative Performance
-    - Dispersion Pressure
-    - Momentum Breadth
-
-    Scale: 0–100.
-    Higher values suggest greater speculative pressure.
-    """,
-
     "AI Divergence": """
-    AI Divergence = average Cycle Score - average Speculation Pressure.
+    DE = MCS - average speculation pressure.
 
     Scale: approximately -100 to +100.
 
@@ -35,14 +22,14 @@ METRIC_DEFINITIONS = {
     """,
 
     "Reality Gap": """
-    Reality Gap = normalized investor sentiment - normalized consumer sentiment.
+    RG = normalized investor sentiment - normalized consumer sentiment.
 
     Positive values suggest market optimism is running ahead of consumer confidence.
     Negative values suggest consumer confidence is stronger than market enthusiasm.
     """,
 
     "Liquidity Gap": """
-    Liquidity Gap = AI Buildout Score - normalized Fed Funds liquidity score.
+    LG = MCS - normalized Fed Funds liquidity score.
 
     Positive values suggest AI market enthusiasm is running ahead of monetary liquidity conditions.
     Negative values suggest liquidity conditions are supportive relative to AI market enthusiasm.
@@ -55,11 +42,6 @@ METRIC_DEFINITIONS = {
     Negative values suggest real-economy activity is stronger than AI market enthusiasm.
     """,
 
-    "AI Maturation Score": """
-    AI Maturation Score = average Cycle Score across all AI sectors.
-
-    Measures the broad market-implied maturity of the AI buildout.
-    """,
 }
 
 

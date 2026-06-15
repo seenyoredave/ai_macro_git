@@ -69,8 +69,8 @@ FACTOR_CONFIG = {
 
 
 FACTOR_HELP = {
-    "relative_performance": "Sector 1Y return minus benchmark 1Y return.",
-    "valuation_premium": "Sector forward P/E divided by benchmark forward P/E.",
-    "momentum_breadth": "Share of sector stocks with positive 1Y returns.",
-    "dispersion": "Variation in 1Y returns across the sector basket.",
+    "relative_performance": "RP = sector 1Y return - benchmark 1Y return.",
+    "valuation_premium": "VP = sector forward P/E / benchmark forward P/E.",
+    "momentum_breadth": "MB = share of sector stocks with positive 1Y returns.",
+    "dispersion": "D = variation in 1Y returns across the sector basket.",
 }
