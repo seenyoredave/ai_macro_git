@@ -44,6 +44,16 @@ def get_sector_data(sector, tickers=None):
     print(type(tickers))
     print(tickers)
     
+    yf = raw_data.get("yfinance")
+    edgar = raw_data.get("edgar")
+
+    st.write("YFinance shape:", getattr(yf, "shape", None))
+    st.write("YFinance columns:", list(yf.columns) if hasattr(yf, "columns") else None)
+    st.write("YFinance preview:", yf.head() if hasattr(yf, "head") else yf)
+
+    st.write("EDGAR keys sample:", list(edgar.keys())[:10] if isinstance(edgar, dict) else None)
+    st.write("EDGAR item types:", {k: type(v).__name__ for k, v in list(edgar.items())[:5]} if isinstance(edgar, dict) else None)
+        
     df = resolve_sector_dataframe(raw_data)
     
     import streamlit as st
