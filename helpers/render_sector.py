@@ -3,7 +3,10 @@ import numpy as np
 import pandas as pd
 
 from analytics.regime_engine import cycle_strategy
+
 from helpers.visualization import factor_color
+
+from loaders.market_loader import get_latest_archive_path 
 from config.debug_config import debug_print 
 from config.debug_config import DEBUG 
 
@@ -137,6 +140,11 @@ def render_leaders_table(sector, df):
     
     display_sector = sector_display_name(sector) 
     st.header(f"{display_sector} Leaders")
+    
+    latest_yf_archive = get_latest_archive_path()
+
+    if latest_yf_archive:
+        st.caption(f"From market data archive: {latest_yf_archive.name}")
 
     display_cols = [
         "Company",
@@ -277,7 +285,7 @@ def render_sector_dashboard(sector, df, metrics):
     ##################################################
     # LEADERS TABLE
     ##################################################
-
+    
     render_leaders_table(sector, df)
 
     ##################################################
