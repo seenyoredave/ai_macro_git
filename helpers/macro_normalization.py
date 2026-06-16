@@ -140,3 +140,51 @@ def normalize_industrial_production(value):
         100
     )
   
+def normalize_power_stress(z_score):
+    """
+    Converts a power-stress z-score into a 0-100 dashboard score.
+
+    -2 z-score -> 0
+     0 z-score -> 50
+    +2 z-score -> 100
+    """
+
+    if pd.isna(z_score):
+        return np.nan
+
+    low = -2
+    high = 2
+
+    normalized = (
+        (z_score - low)
+        /
+        (high - low)
+    ) * 100
+
+    return np.clip(normalized, 0, 100)
+
+
+def normalize_hhi(hhi):
+    """
+    Normalize raw HHI to 0-100.
+
+    Raw HHI scale:
+    - 0.01 = very diffuse
+    - 0.05 = moderately diffuse
+    - 0.10 = concentrated
+    - 0.25 = highly concentrated
+    """
+
+    if pd.isna(hhi):
+        return np.nan
+
+    low = 0.01
+    high = 0.25
+
+    normalized = (
+        (hhi - low)
+        /
+        (high - low)
+    ) * 100
+
+    return np.clip(normalized, 0, 100)

@@ -29,6 +29,8 @@ from analytics.regime_engine import ai_cdi_index
 from helpers.visualization import (
     build_maturity_gauge,
     build_divergence_gauge,
+    build_power_stress_gauge,
+    build_concentration_gauge,
     build_positioning_map,
     build_rotation_matrix
 )
@@ -82,8 +84,7 @@ def render_trend_strip(trend):
         """,
         unsafe_allow_html=True
     )
-
-        
+    
 def assessment_card(title, row, border_color):
 
     display_sector = sector_display_name(row["Sector"])
@@ -120,7 +121,9 @@ def render_regime_snapshot(
         fred_data=None,
         sentiment_data=None,
         cycle_trend=None,
-        divergence_trend=None
+        divergence_trend=None,
+        power_stress_trend=None,
+        concentration_trend=None
     ):
         
         fred_data = fred_data or {}
@@ -134,10 +137,18 @@ def render_regime_snapshot(
         industrial_prod = (fred_data.get("Industrial Production", {}).get("value", np.nan))      
         
         ### KEY METRICS ###
-       
+        
+        pcr = sentiment_data.get("PutCallRatio",np.nan)
         ai_temp = macro_df["Cycle Score"].mean()
         ai_divergence = ai_cdi_index(macro_df)
-        pcr = sentiment_data.get("PutCallRatio",np.nan)
+        power_stress = (power_stress_trend.get("current", np.nan)
+            if power_stress_trend
+            else np.nan
+        )
+        concentration_hhi = (concentration_trend.get("current", np.nan)
+            if concentration_trend
+            else np.nan
+        )
   
         consumer_norm = normalize_consumer_sentiment(fed_consumer_raw)
         investor_norm = normalize_put_call(pcr)
@@ -146,25 +157,31 @@ def render_regime_snapshot(
         adoption_gap_score = adoption_gap(ai_temp,industrial_prod)
         temp_fig = build_maturity_gauge(ai_temp)
         divergence_fig = build_divergence_gauge(ai_divergence)
+        power_fig = build_power_stress_gauge(power_stress)
+        concentration_fig = build_concentration_gauge(concentration_hhi)
+        
+        print("DEBUG POWER STRESS INDEX:", power_stress)
         
         debug_print("\n=== REGIME SNAPSHOT ===")
-        debug_print("AI Temp:", ai_temp)
-        debug_print("AI Divergence:", ai_divergence)
-        debug_print("Put/Call Ratio:", pcr)
-        debug_print("Consumer Raw:", fed_consumer_raw)
-        debug_print("Consumer Norm:", consumer_norm)
-        debug_print("Investor Norm:", investor_norm)
-        debug_print("Reality Gap:", reality_gap)
-        debug_print("Liquidity Gap:", liquidity_gap_score)
-        debug_print("Adoption Gap:", adoption_gap_score)
+        debug_print("DEBUG AI Temp:", ai_temp)
+        debug_print("DEBUG Divergence Estimate:", ai_divergence)
+        debug_print("DEBUG Put/Call Ratio:", pcr)
+        debug_print("DEBUG Consumer Raw:", fed_consumer_raw)
+        debug_print("DEBUG Consumer Norm:", consumer_norm)
+        debug_print("DEBUG Investor Norm:", investor_norm)
+        debug_print("DEBUG Reality Gap:", reality_gap)
+        debug_print("DEBUG Liquidity Gap:", liquidity_gap_score)
+        debug_print("DEBUG Adoption Gap:", adoption_gap_score)
 
         ### REGIME SNAPSHOT ###
         
         st.subheader(
             "AI Economy Snapshot",
             help=(
-                f"Cycle Maturity: {METRIC_DEFINITIONS['Cycle Score']}\n\n"
-                f"AI Divergence: {METRIC_DEFINITIONS['AI Divergence']}"
+                f"Maturation Cycle: {METRIC_DEFINITIONS['Maturation Cycle']}\n\n"
+                f"Divergence Estimate: {METRIC_DEFINITIONS['Divergence Estimate']}\n\n"
+                f"Power Stress Index: {METRIC_DEFINITIONS['Power Stress Index']}\n\n"
+                f"Concentration HHI: {METRIC_DEFINITIONS['Concentration HHI']}"
             )
         )
         
@@ -199,7 +216,30 @@ def render_regime_snapshot(
             if divergence_trend:
                 render_trend_strip(divergence_trend)
         
-       
+        st.markdown("---")
+        
+        col3, col4 = st.columns(2)
+
+        with col3:
+            st.plotly_chart(
+                power_fig,
+                width="stretch",
+                config={"responsive": True}
+            )
+
+            if power_stress_trend:
+                render_trend_strip(power_stress_trend)
+
+        with col4:
+            st.plotly_chart(
+                concentration_fig,
+                width="stretch",
+                config={"responsive": True}
+            )
+
+            if concentration_trend:
+                render_trend_strip(concentration_trend)
+                
         ###############
         # GAPS
         ###############

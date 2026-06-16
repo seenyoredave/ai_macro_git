@@ -1,26 +1,41 @@
 METRIC_DEFINITIONS = {
-    "Cycle Score": """
-    MCS = weighted average of all sector scores - approximation of where we are in the AI maturation cycle.
+    "Maturation Cycle": """
+    MCS = weighted average of all sector scores
+    
+    Measures overall economic progress towards completion of AI buildout cycle
 
-    Current inputs:
-    - Relative Performance
-    - Valuation Premium
-    - Momentum Breadth
-    - Dispersion
-
-    Scale: 0–100.
-    Higher values suggest a more mature or advanced cycle position.
+    Scale: 0-100.
+    Higher values suggest a more mature or advanced cycle position. 
     """,
 
-    "AI Divergence": """
+    "Divergence Estimate": """
     DE = MCS - average speculation pressure.
 
-    Scale: approximately -100 to +100.
-
+    Measures relative strength of buildout vs speculative pressure. 
+    
+    Scale: -100 <> +100.
     Positive values suggest AI buildout strength exceeds speculative pressure.
     Negative values suggest speculation may be running ahead of buildout.
     """,
+    
+    "Power Stress Index": """
+    PSI = current utility/electric power activity - trailing historical average
+    
+    Measures how far current electricity demand pressure is running above its recent historical baseline.
+    
+    Scale: 0 - 100
+    A rising Power Stress Index suggests that AI infrastructure demand may be creating a larger physical footprint in the economy.
+    """,
 
+    "Concentration HHI": """
+    Herfindahl-Hirschman Index = ∑(market cap)^2 for each company within total AI basket
+    
+    Measures whether AI-related market value is concentrated in a few dominant firms or spread across the broader AI ecosystem.
+    
+    Scale: 0 - 100
+    Higher values mean more concentration; lower values mean broader diffusion.
+    """,
+    
     "Reality Gap": """
     RG = normalized investor sentiment - normalized consumer sentiment.
 

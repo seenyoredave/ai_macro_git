@@ -7,7 +7,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 from helpers.labels import sector_display_name
-#from config.metric_definitions import METRIC_DEFINITIONS 
+from config.metric_definitions import METRIC_DEFINITIONS 
 
 
 ################################
@@ -116,6 +116,62 @@ def build_divergence_gauge(value):
     )
 
     return fig
+
+def build_power_stress_gauge(value):
+
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=safe_gauge_value(value),
+        title={"text": "Power Stress Index"},
+        gauge={
+            "axis": {"range": [0, 100]},
+            "bar": {"color": "#a78bfa"},
+            "steps": gauge_gradient_steps(
+                0,
+                100,
+                GAUGE_COLORS,
+                repeats=5
+            )
+        }
+    ))
+
+    fig.update_layout(
+        height=320,
+        margin=dict(l=20, r=20, t=60, b=20),
+        autosize=True
+    )
+
+    return fig
+
+def build_concentration_gauge(value):
+
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=safe_gauge_value(value),
+        title={"text": "Concentration HHI"},
+        gauge={
+            "axis": {"range": [0, 100]},
+            "bar": {"color": "#a78bfa"},
+            "steps": gauge_gradient_steps(
+                0,
+                100,
+                GAUGE_COLORS,
+                repeats=5
+            )
+        }
+    ))
+
+    fig.update_layout(
+        height=320,
+        margin=dict(l=20, r=20, t=60, b=20),
+        autosize=True
+    )
+
+    return fig
+
+###############################
+# MACRO DASHBOARD GRAPHS
+###############################
 
 def build_positioning_map(macro_df):
     fig_mv = go.Figure()

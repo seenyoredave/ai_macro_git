@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+
 def get_sector_config():
     return deepcopy(SECTOR_CONFIG)
 
@@ -11,7 +12,7 @@ SECTOR_CONFIG = {
             "NVDA", "AMD", "AVGO", "MRVL", "ARM",
             "QCOM", "MU", "TSM", "INTC", "TXN",
             "ADI", "NXPI", "ON", "MCHP", "MPWR",
-            "LSCC", "ALAB"
+            "LSCC", "ALAB", "GFS"
         ]
     },
 
@@ -19,7 +20,8 @@ SECTOR_CONFIG = {
         "basket": [
             "ASML", "AMAT", "LRCX", "KLAC", "TER",
             "ONTO", "ACLS", "COHU", "AEIS", "MKSI",
-            "ICHR", "UCTT", "FORM", "VECO", "CAMT"
+            "ICHR", "UCTT", "FORM", "VECO", "CAMT",
+            "KLIC", "ENTG", "AMKR"
         ]
     },
 
@@ -27,7 +29,8 @@ SECTOR_CONFIG = {
         "basket": [
             "MSFT", "AMZN", "GOOG", "META", "ORCL",
             "IBM", "BABA", "TCEHY", "SAP", "CRM",
-            "SNOW", "DDOG", "NET", "AKAM", "MDB"
+            "SNOW", "DDOG", "NET", "AKAM", "MDB",
+            "DOCN", "FSLY", "TWLO"
         ]
     },
 
@@ -35,8 +38,8 @@ SECTOR_CONFIG = {
         "basket": [
             "VRT", "EQIX", "DLR", "ANET", "CSCO",
             "HPE", "DELL", "NTAP", "WDC", "STX",
-            "SMCI", "PSTG", "CIEN", "JNPR", "APLD",
-            "IREN", "CORZ"
+            "SMCI", "P", "CIEN", "APLD", "IREN",
+            "CORZ", "NTNX", "COHR"
         ]
     },
 
@@ -54,25 +57,25 @@ SECTOR_CONFIG = {
             "CRM", "NOW", "SNOW", "PLTR", "ADBE",
             "SAP", "DDOG", "MDB", "TEAM", "HUBS",
             "DOCU", "ADSK", "WDAY", "INTU", "ORCL",
-            "PATH", "C3AI", "AI", "APP"
+            "PATH", "AI", "APP"
         ]
     },
 
     "AI_SECURITY": {
         "basket": [
             "CRWD", "PANW", "ZS", "FTNT", "OKTA",
-            "NET", "S", "TENB", "RPD",
-            "QLYS", "VRNS", "CHKP", "GEN", "SAIL",
-            "RDWR"
+            "NET", "S", "TENB", "RPD", "QLYS",
+            "VRNS", "CHKP", "GEN", "SAIL", "RDWR",
+            "CYBR", "RBRK", "OSPN"
         ]
     },
 
     "PHYSICAL_AI_ROBOTICS": {
         "basket": [
-            "ISRG", "SYM", "ROK", "ABBN", "TER",
+            "ISRG", "SYM", "ROK", "ABBNY", "TER",
             "PATH", "AVAV", "KTOS", "DE", "TXT",
-            "CGNX", "ZBRA", "HSAI", "HLX", "MDT", 
-            "SERV", "RR"
+            "CGNX", "ZBRA", "HSAI", "MDT", "SERV",
+            "RR", "FANUY", "OMRNY"
         ]
     },
 

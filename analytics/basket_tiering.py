@@ -17,6 +17,7 @@ TIER_WEIGHTS = {
     4: 1.0,
 }
 
+
 def percentile_score(series, higher_is_better=True):
     values = pd.to_numeric(series, errors="coerce")
 
@@ -47,31 +48,18 @@ def assign_tiers(score_series):
 def add_basket_tiers(df):
     df = df.copy()
 
-    required_cols = ["Ticker", "Market Cap", "Revenue", "1Y Return"]
-    missing_cols = [col for col in required_cols if col not in df.columns]
-
-    if df.empty or missing_cols:
-        import streamlit as st
-
-        st.error("TOP OF FUNCTION CHECK: invalid input to add_basket_tiers")
-        st.write("Missing columns:", missing_cols)
-        st.write("Original columns:", list(df.columns))
-        st.write("Shape:", df.shape)
-        st.write("Preview:", df.head())
-        st.stop()
-
     market_cap_score = percentile_score(
-        df["Market Cap"],
+        df.get("Market Cap", pd.Series(index=df.index)),
         higher_is_better=True
     )
 
     revenue_score = percentile_score(
-        df["Revenue"],
+        df.get("Revenue", pd.Series(index=df.index)),
         higher_is_better=True
     )
 
     return_score = percentile_score(
-        df["1Y Return"],
+        df.get("1Y Return", pd.Series(index=df.index)),
         higher_is_better=True
     )
 
@@ -82,22 +70,44 @@ def add_basket_tiers(df):
     )
 
     df["Basket Tier"] = assign_tiers(df["Basket Score"])
+
     df["Basket Weight"] = df["Basket Tier"].map(TIER_WEIGHTS)
+    
+    debug_print(
+        df[
+            [
+                "Ticker",
+                "Market Cap",
+                "Revenue",
+                "1Y Return"
+            ]
+        ]
+    )   
+    debug_print(
+        pd.DataFrame({
+            "Ticker": df["Ticker"],
+            "MC Score": market_cap_score,
+            "Rev Score": revenue_score,
+            "Ret Score": return_score,
+        })
+    )
+    compute_df = df[
+        [
+            "Ticker",
+            "Market Cap",
+            "Revenue",
+            "1Y Return"
+        ]
+    ].copy()
 
-    if DEBUG:
-        compute_df = df[
-            ["Ticker", "Market Cap", "Revenue", "1Y Return"]
-        ].copy()
+    compute_df["MC Score"] = market_cap_score
+    compute_df["Rev Score"] = revenue_score
+    compute_df["Ret Score"] = return_score
+    compute_df["Basket Score"] = df["Basket Score"]
 
-        compute_df["MC Score"] = market_cap_score
-        compute_df["Rev Score"] = revenue_score
-        compute_df["Ret Score"] = return_score
-        compute_df["Basket Score"] = df["Basket Score"]
-
-        debug_print(compute_df.sort_values(
-            "Basket Score",
-            ascending=False
-        ))
-
+    debug_print(compute_df.sort_values(
+        "Basket Score",
+        ascending=False
+    ))
     return df
-       
+

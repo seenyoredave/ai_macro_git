@@ -33,6 +33,28 @@ def render_ai_macro_dashboard(
         st.error("Empty sector_metrics")
         return
 
+
+    print("\n=== SECTOR METRICS DEBUG ===")
+
+    for sector, metrics in sector_metrics.items():
+        print(
+            sector,
+            "Cycle:",
+            metrics.get("Cycle Score"),
+            "Heat:",
+            metrics.get("Sector Heat"),
+        )
+
+    print("\n=== SECTOR DATA DEBUG ===")
+
+    for sector, df in sector_data.items():
+        print("\n", sector)
+
+        if df is None or df.empty:
+            print("EMPTY")
+        else:
+            print(df["Ticker"].tolist())
+        
     macro_df = build_macro_dataframe(sector_metrics)
 
     if macro_df is None or macro_df.empty:
@@ -48,10 +70,28 @@ def render_ai_macro_dashboard(
 
     divergence_trend = calc_metric_trend(
         macro_history,
-        "AI Divergence"
+        "Divergence"
     )
     
-    render_regime_snapshot(macro_df,fred_data,sentiment_data,cycle_trend,divergence_trend)
+    power_stress_trend = calc_metric_trend(
+        macro_history,
+        "Power Stress Index"
+    )
+
+    concentration_trend = calc_metric_trend(
+        macro_history,
+        "AI Concentration HHI"
+    )
+    
+    render_regime_snapshot(
+        macro_df,
+        fred_data,
+        sentiment_data,
+        cycle_trend,
+        divergence_trend,
+        power_stress_trend,
+        concentration_trend
+    )
 
     render_sector_assessment(macro_df)
 

@@ -11,28 +11,56 @@ Lower values = risk-seeking sentiment.
 import numpy as np 
 import yfinance as yf 
 import streamlit as st 
+import pandas as pd 
+from pathlib import Path 
 
+PUT_CALL_ARCHIVE = Path("archive/put_call_history.csv")
+
+def load_latest_put_call_archive():
+
+    if not PUT_CALL_ARCHIVE.exists():
+        return np.nan
+
+    df = pd.read_csv(PUT_CALL_ARCHIVE)
+
+    if df.empty:
+        return np.nan
+
+    series = pd.to_numeric(
+        df["PutCallRatio"],
+        errors="coerce"
+    ).dropna()
+
+    if series.empty:
+        return np.nan
+
+    return float(series.iloc[-1])
 
 @st.cache_data(ttl=3600)
 def load_put_call():
 
     try:
-
         spy = yf.Ticker("SPY")
 
-        expiration = spy.options[0]
+        options = spy.options
+
+        if not options:
+            raise ValueError("No SPY option expirations returned")
+
+        expiration = options[0]
 
         chain = spy.option_chain(expiration)
 
         total_puts = chain.puts["openInterest"].sum()
-
         total_calls = chain.calls["openInterest"].sum()
 
-        pcr = (
-            total_puts / total_calls
-            if total_calls > 0
-            else np.nan
-        )
+        if total_calls <= 0:
+            raise ValueError("SPY calls open interest is zero or unavailable")
+
+        pcr = total_puts / total_calls
+
+        if pd.isna(pcr):
+            raise ValueError("Put/call ratio calculated as NaN")
 
         return {
             "PutCallRatio": float(pcr),
@@ -41,9 +69,16 @@ def load_put_call():
 
     except Exception as e:
 
-        print(f"PCR failed: {e}")
+        import traceback
+
+        print("\n=== PCR FAILURE ===")
+        print(e)
+
+        traceback.print_exc()
+
+        fallback_pcr = load_latest_put_call_archive()
 
         return {
-            "PutCallRatio": np.nan
+            "PutCallRatio": fallback_pcr,
+            "Source": "Put/Call Archive Fallback"
         }
-    

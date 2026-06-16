@@ -101,15 +101,6 @@ def cycle_score(df):
     return score
 
 def ai_cdi_index(macro_df):
-    """
-    AI Cognitive Dissonance Index
-
-    Measures divergence between:
-    - Cycle Maturity (market enthusiasm)
-    - Heat (internal factor stress)
-
-    Higher = more disconnected from fundamentals.
-    """
 
     if macro_df.empty:
         return np.nan
@@ -119,3 +110,6 @@ def ai_cdi_index(macro_df):
 
     return temp - heat
 
+
+
+    

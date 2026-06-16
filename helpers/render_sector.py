@@ -3,12 +3,10 @@ import numpy as np
 import pandas as pd
 
 from analytics.regime_engine import cycle_strategy
-
 from helpers.visualization import factor_color
 
-from loaders.market_loader import get_latest_archive_path 
-from config.debug_config import debug_print 
-from config.debug_config import DEBUG 
+from config.debug_config import debug_print
+from config.debug_config import DEBUG
 
 from helpers.add_remove_ticker import (
     add_ticker,
@@ -17,18 +15,10 @@ from helpers.add_remove_ticker import (
 )
 
 from helpers.labels import sector_display_name
-from config.factor_config import FACTOR_HELP 
+from config.factor_config import FACTOR_HELP
 
-##################################
-# SMOKE TEST FOR BASKET WEIGHTING (just look at TSM...)
-##################################
 
 def render_basket_tier_smoke_test(df):
-    """
-    Developer-only visual smoke test for basket tiering.
-    Shows whether the tier model ranks sector constituents sensibly.
-    """
-
     required_cols = [
         "Ticker",
         "Company",
@@ -79,24 +69,22 @@ def render_basket_tier_smoke_test(df):
             x="Tier",
             y="Count"
         )
-        
+
+
 def render_factor_cards(scored_factors):
-  
     if scored_factors is None or scored_factors.empty:
         st.info("No factor scores available.")
         return
-    
+
     factor_rows = scored_factors.to_dict("records")
 
     for i in range(0, len(factor_rows), 2):
-
         cols = st.columns(2)
 
         for col, factor in zip(cols, factor_rows[i:i + 2]):
-
             name = factor.get("Factor", "Unknown Factor")
             display_name = name.replace("_", " ").title()
-            
+
             factor_score = factor.get("Score", np.nan)
             raw_value = factor.get("Raw Value", np.nan)
 
@@ -113,9 +101,12 @@ def render_factor_cards(scored_factors):
             )
 
             border = factor_color(factor_score)
-            
-            help_text = FACTOR_HELP.get(name,"Factor used in sector scoring.")
-            
+
+            help_text = FACTOR_HELP.get(
+                name,
+                "Factor used in sector scoring."
+            )
+
             with col:
                 st.markdown(
                     f"""
@@ -137,14 +128,8 @@ def render_factor_cards(scored_factors):
 
 
 def render_leaders_table(sector, df):
-    
-    display_sector = sector_display_name(sector) 
+    display_sector = sector_display_name(sector)
     st.header(f"{display_sector} Leaders")
-    
-    latest_yf_archive = get_latest_archive_path()
-
-    if latest_yf_archive:
-        st.caption(f"From market data archive: {latest_yf_archive.name}")
 
     display_cols = [
         "Company",
@@ -152,10 +137,10 @@ def render_leaders_table(sector, df):
         "P/E",
         "Forward P/E",
         "Beta",
-        "1Y Return"
+        "1Y Return",
         "Basket Tier",
         "Basket Weight",
-        "Basket Source"
+        "Basket Source",
     ]
 
     available = [
@@ -175,7 +160,6 @@ def render_leaders_table(sector, df):
 
 def render_ticker_controls(sector):
     with st.expander("➕ Add / Remove Tickers"):
-
         st.subheader("Add Ticker")
 
         ticker_input = st.text_input(
@@ -216,7 +200,6 @@ def render_ticker_controls(sector):
 
 
 def render_sector_dashboard(sector, df, metrics):
-
     debug_print("\n=== RENDER SECTOR ===")
     debug_print("Sector:", sector)
     debug_print("DF shape:", None if df is None else df.shape)
@@ -230,9 +213,10 @@ def render_sector_dashboard(sector, df, metrics):
     score = metrics.get("Cycle Score", np.nan)
     heat_score = metrics.get("Sector Heat", np.nan)
     scored_factors = metrics.get("Scored Factors", pd.DataFrame())
-    display_sector = sector_display_name(sector) 
-    
-    strategy = cycle_strategy(score) 
+    display_sector = sector_display_name(sector)
+
+    strategy = cycle_strategy(score)
+
     debug_print("Cycle Score:", score)
     debug_print("Sector Heat:", heat_score)
     debug_print("Scored Factors type:", type(scored_factors))
@@ -244,12 +228,6 @@ def render_sector_dashboard(sector, df, metrics):
         "Scored Factors columns:",
         None if scored_factors is None else scored_factors.columns.tolist()
     )
-
-   
-
-    ##################################################
-    # SECTOR SNAPSHOT
-    ##################################################
 
     st.header(f"{display_sector} Snapshot")
 
@@ -265,7 +243,7 @@ def render_sector_dashboard(sector, df, metrics):
         else f"{heat_score:.1f}"
     )
 
-    col1, col2, col3 = st.columns([1,1,1.5])
+    col1, col2, col3 = st.columns([1, 1, 1.5])
 
     col1.metric("Cycle Score", score_display)
     col2.metric("Sector Pressure", heat_display)
@@ -273,29 +251,16 @@ def render_sector_dashboard(sector, df, metrics):
 
     st.markdown("---")
 
-    ##################################################
-    # FACTOR DASHBOARD
-    ##################################################
-
     st.header("Factor Dashboard")
     render_factor_cards(scored_factors)
 
     st.markdown("---")
 
-    ##################################################
-    # LEADERS TABLE
-    ##################################################
-    
     render_leaders_table(sector, df)
 
-    ##################################################
-    # ADD / REMOVE TICKERS
-    ##################################################
-
     render_ticker_controls(sector)
-    
-    if DEBUG:
 
+    if DEBUG:
         debug_print(
             df[
                 [

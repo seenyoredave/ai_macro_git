@@ -8,38 +8,76 @@ from datetime import date
 from concurrent.futures import ThreadPoolExecutor
 
 from loaders.edgar_loader import load_edgar
-from loaders.fred_loader import load_fred
-from loaders.sentiment_loader import load_put_call
 
 
 #################################################
-# ARCHIVE SETTINGS
+# YF HISTORY SETTINGS
 #################################################
 
-ARCHIVE_DIR = Path("data/archive/yfinance")
-ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+YF_HISTORY_PATH = Path("archive/yf_history.csv")
 
 
-def get_today_archive_path() -> Path:
-    today = date.today().isoformat()
-    return ARCHIVE_DIR / f"yfinance_{today}.csv"
-
-
-def get_latest_archive_path() -> Path | None:
-    files = sorted(ARCHIVE_DIR.glob("yfinance_*.csv"))
-
-    if not files:
+def read_yf_history_for_date(tickers, sector=None, target_date=None):
+    if not YF_HISTORY_PATH.exists():
         return None
 
-    return files[-1]
+    df = pd.read_csv(YF_HISTORY_PATH)
+
+    if df.empty or "Date" not in df.columns or "Ticker" not in df.columns:
+        return None
+
+    target_date = str(target_date or date.today())
+    ticker_set = set(tickers.keys())
+
+    df["Date"] = df["Date"].astype(str)
+
+    filtered = df[
+        (df["Date"] == target_date)
+        &
+        (df["Ticker"].isin(ticker_set))
+    ].copy()
+
+    if sector is not None and "Sector" in filtered.columns:
+        filtered = filtered[filtered["Sector"] == sector].copy()
+
+    found = set(filtered["Ticker"].dropna())
+
+    if not ticker_set.issubset(found):
+        return None
+
+    return filtered
 
 
-def read_archive(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path)
+def read_latest_yf_history(tickers, sector=None):
+    if not YF_HISTORY_PATH.exists():
+        return None
 
+    df = pd.read_csv(YF_HISTORY_PATH)
 
-def write_archive(df: pd.DataFrame, path: Path) -> None:
-    df.to_csv(path, index=False)
+    if df.empty or "Date" not in df.columns or "Ticker" not in df.columns:
+        return None
+
+    ticker_set = set(tickers.keys())
+
+    df["Date"] = df["Date"].astype(str)
+
+    filtered = df[df["Ticker"].isin(ticker_set)].copy()
+
+    if sector is not None and "Sector" in filtered.columns:
+        filtered = filtered[filtered["Sector"] == sector].copy()
+
+    if filtered.empty:
+        return None
+
+    latest_date = filtered["Date"].max()
+    latest = filtered[filtered["Date"] == latest_date].copy()
+
+    found = set(latest["Ticker"].dropna())
+
+    if not ticker_set.issubset(found):
+        return None
+
+    return latest
 
 
 #################################################
@@ -47,13 +85,10 @@ def write_archive(df: pd.DataFrame, path: Path) -> None:
 #################################################
 
 def pull_yfinance(ticker_tuple):
-
     tickers = dict(ticker_tuple)
 
     def fetch_company(ticker, company):
-
         try:
-
             t = yf.Ticker(ticker)
 
             f_info = getattr(t, "fast_info", {}) or {}
@@ -70,9 +105,7 @@ def pull_yfinance(ticker_tuple):
             hist = hist.dropna(subset=["Close"])
 
             def safe_num(*keys):
-
                 for key in keys:
-
                     val = f_info.get(key)
 
                     if val is None:
@@ -87,70 +120,30 @@ def pull_yfinance(ticker_tuple):
 
             if len(clean_close) < 252:
                 one_year_return = np.nan
-
             else:
                 end_price = clean_close.iloc[-1]
                 start_price = clean_close.iloc[-252]
-
                 one_year_return = (end_price / start_price) - 1
 
             return {
-
                 "Ticker": ticker,
                 "Company": company,
-
-                "Price": safe_num(
-                    "last_price",
-                    "regularMarketPrice"
-                ),
-
-                "Beta": safe_num(
-                    "beta"
-                ),
-
-                "P/E": safe_num(
-                    "trailing_pe",
-                    "trailingPE"
-                ),
-
-                "Forward P/E": safe_num(
-                    "forward_pe",
-                    "forwardPE"
-                ),
-
-                "Market Cap": safe_num(
-                    "market_cap",
-                    "marketCap"
-                ),
-
-                "Revenue": safe_num(
-                    "total_revenue",
-                    "totalRevenue"
-                ),
-
-                "52W High": safe_num(
-                    "year_high",
-                    "fiftyTwoWeekHigh"
-                ),
-
-                "52W Low": safe_num(
-                    "year_low",
-                    "fiftyTwoWeekLow"
-                ),
-
-                "1Y Return": one_year_return
+                "Price": safe_num("last_price", "regularMarketPrice"),
+                "Beta": safe_num("beta"),
+                "P/E": safe_num("trailing_pe", "trailingPE"),
+                "Forward P/E": safe_num("forward_pe", "forwardPE"),
+                "Market Cap": safe_num("market_cap", "marketCap"),
+                "Revenue": safe_num("total_revenue", "totalRevenue"),
+                "52W High": safe_num("year_high", "fiftyTwoWeekHigh"),
+                "52W Low": safe_num("year_low", "fiftyTwoWeekLow"),
+                "1Y Return": one_year_return,
             }
 
         except Exception as e:
             print(f"{ticker} failed -> {e}")
             return None
 
-    #################################################
-    # GENTLER PARALLEL DOWNLOAD
-    #################################################
-
     with ThreadPoolExecutor(max_workers=3) as executor:
-
         results = list(
             executor.map(
                 lambda x: fetch_company(*x),
@@ -164,56 +157,46 @@ def pull_yfinance(ticker_tuple):
 
 
 #################################################
-# YFINANCE LOADER WITH ARCHIVE REDIRECT
+# YFINANCE LOADER
 #################################################
 
 @st.cache_data(ttl=3600)
-def load_yfinance(ticker_tuple):
+def load_yfinance(ticker_tuple, sector=None):
+    tickers = dict(ticker_tuple)
 
-    today_path = get_today_archive_path()
+    archived_today = read_yf_history_for_date(
+        tickers,
+        sector=sector
+    )
 
-    #################################################
-    # 1. USE TODAY'S ARCHIVE IF IT EXISTS
-    #################################################
-
-    if today_path.exists():
-        print(f"Loading today's yfinance archive: {today_path}")
-        return read_archive(today_path)
-
-    #################################################
-    # 2. OTHERWISE TRY YFINANCE
-    #################################################
+    if archived_today is not None:
+        print(f"Loading today's yfinance rows from yf_history.csv: {sector}")
+        return archived_today
 
     try:
-        print("No yfinance archive found for today. Pulling from yfinance...")
+        print(f"No yf_history rows found for today. Pulling yfinance: {sector}")
 
         df = pull_yfinance(ticker_tuple)
 
         if df.empty:
             raise ValueError("yfinance returned an empty DataFrame")
 
-        write_archive(df, today_path)
-
-        print(f"Saved today's yfinance archive: {today_path}")
-
         return df
 
-    #################################################
-    # 3. IF YFINANCE FAILS, FALL BACK TO LATEST ARCHIVE
-    #################################################
-
     except Exception as e:
-
         print(f"yfinance pull failed -> {e}")
 
-        latest_path = get_latest_archive_path()
+        fallback = read_latest_yf_history(
+            tickers,
+            sector=sector
+        )
 
-        if latest_path is not None:
-            print(f"Using latest available yfinance archive: {latest_path}")
-            return read_archive(latest_path)
+        if fallback is not None:
+            print(f"Using latest yf_history.csv fallback: {sector}")
+            return fallback
 
         raise RuntimeError(
-            "yfinance failed and no prior archive exists."
+            "yfinance failed and no usable yf_history fallback exists."
         ) from e
 
 
@@ -222,9 +205,12 @@ def load_yfinance(ticker_tuple):
 #################################################
 
 @st.cache_data(ttl=3600)
-def load_sector_data(tickers):
+def load_sector_data(tickers, sector=None):
+    raw_yf = load_yfinance(
+        tuple(sorted(tickers.items())),
+        sector=sector
+    )
 
-    raw_yf = load_yfinance(tuple(sorted(tickers.items())))
     raw_edgar = load_edgar(tickers)
 
     return {
