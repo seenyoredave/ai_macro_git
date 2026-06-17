@@ -55,8 +55,6 @@ def fmt_multiple(value):
 def fmt_decimal(value):
     return "No Data" if pd.isna(value) else f"{value:.2f}"
 
-def fmt_score(value):
-    return "No Data" if pd.isna(value) else f"{value:.0f}"
 
 ########################
 # D/DX AND D2/DX2 TABS 
@@ -175,15 +173,33 @@ def render_regime_snapshot(
 
         ### REGIME SNAPSHOT ###
         
-        st.subheader(
-            "AI Economy Snapshot",
-            help=(
-                f"Maturation Cycle: {METRIC_DEFINITIONS['Maturation Cycle']}\n\n"
-                f"Divergence Estimate: {METRIC_DEFINITIONS['Divergence Estimate']}\n\n"
-                f"Power Stress Index: {METRIC_DEFINITIONS['Power Stress Index']}\n\n"
-                f"Concentration HHI: {METRIC_DEFINITIONS['Concentration HHI']}"
+        header_col, metric_col = st.columns([2, 1])
+        
+        with header_col: 
+            st.subheader(
+                "AI Economy Snapshot",
+                help=(
+                    f"Maturation Cycle: {METRIC_DEFINITIONS['Maturation Cycle']}\n\n"
+                    f"Divergence Estimate: {METRIC_DEFINITIONS['Divergence Estimate']}\n\n"
+                    f"Power Stress Index: {METRIC_DEFINITIONS['Power Stress Index']}\n\n"
+                    f"Concentration HHI: {METRIC_DEFINITIONS['Concentration HHI']}"
+                )
             )
-        )
+        
+        ai_temp = macro_df["Cycle Score"].mean()
+
+        with metric_col:
+            st.metric(
+                "Current Regime",
+                short_regime_label(ai_temp),
+                help=(
+                    "Early phase: < 30\n\n"
+                    "Expansion phase: 30-59\n\n"
+                    "Late expansion phase: 60-79\n\n"
+                    "Mature buildout phase: 80+"
+                )
+            )
+        
         
         st.markdown("---")
         
@@ -246,14 +262,14 @@ def render_regime_snapshot(
         
         st.markdown("---")    
          
-        col1,col2,col3,col4 = st.columns(4)
+        col1,col2,col3 = st.columns(3)
             
         with col1:
 
             if pd.notna(reality_gap):
         
-                st.metric("AI Reality Gap",fmt_score(reality_gap),help=METRIC_DEFINITIONS["Reality Gap"])
-                st.caption(reality_gap_label(reality_gap))
+                st.metric("AI Reality Gap",fmt_score(reality_gap),help=METRIC_DEFINITIONS["Reality Gap"], width='stretch')
+                st.caption(reality_gap_label(reality_gap),width='stretch')
 
             else:
 
@@ -269,67 +285,47 @@ def render_regime_snapshot(
             st.metric("AI Adoption Gap",fmt_score(adoption_gap_score),help=METRIC_DEFINITIONS["Adoption Gap"])
             st.caption(adoption_label(adoption_gap_score))
         
-        with col4:
-            st.metric(
-                "Current Regime",
-                short_regime_label(ai_temp),
-                help=(
-                    "Cycle definitions:\n\n"
-                    "Early Buildout: Cycle Score < 30\n\n"
-                    "Expansion: 30–59\n\n"
-                    "Late Expansion: 60–79\n\n"
-                    "Mature Buildout: 80+"
-                )
-            )
             
         st.markdown("---")
     
+            
 def render_sector_assessment(macro_df):
-    
-        st.subheader("Current Sector Assessment")
-        st.markdown("---")
-        
-        assessment_df = macro_df.copy()
-        assessment_df["Opportunity"] = (assessment_df["Heat"] - assessment_df["Cycle Score"])
-        assessment_df["Risk"] = (assessment_df["Cycle Score"] - assessment_df["Heat"])
 
-        if assessment_df["Cycle Score"].notna().sum() == 0:
+    st.subheader("Current Sector Assessment")
+    st.markdown("---")
 
-            st.warning(
-                "Cycle Scores unavailable. Check factor calculations."
-            )
+    assessment_df = macro_df.copy()
 
-            return
-        
-        crowded = assessment_df.loc[assessment_df["Cycle Score"].idxmax()]
-        opportunity = assessment_df.loc[assessment_df["Opportunity"].idxmax()]
-        risk = assessment_df.loc[assessment_df["Risk"].idxmax()]
-        
-   
-        col1, col2, col3 = st.columns(3)
+    required_cols = ["Cycle Score", "Heat"]
 
-        with col1:
-            assessment_card(
-                "Most Crowded",
-                crowded,
-                "#7c3aed"
-            )
+    if assessment_df[required_cols].notna().sum().min() == 0:
+        st.warning("Sector assessment unavailable. Check Cycle Score and Heat calculations.")
+        return
 
-        with col2:
-            assessment_card(
-                "Biggest Opportunity",
-                opportunity,
-                "#60a5fa"
-            )
+    assessment_df["Opportunity"] = (
+        assessment_df["Heat"] - assessment_df["Cycle Score"]
+    )
 
-        with col3:
-            assessment_card(
-                "Biggest Risk",
-                risk,
-                "#94a3b8"
-            )
+    assessment_df["Risk"] = (
+        assessment_df["Cycle Score"] - assessment_df["Heat"]
+    )
 
-        st.markdown("---")
+    crowded = assessment_df.loc[assessment_df["Cycle Score"].idxmax()]
+    opportunity = assessment_df.loc[assessment_df["Opportunity"].idxmax()]
+    risk = assessment_df.loc[assessment_df["Risk"].idxmax()]
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        assessment_card("Most Crowded", crowded, "#7c3aed")
+
+    with col2:
+        assessment_card("Biggest Opportunity", opportunity, "#60a5fa")
+
+    with col3:
+        assessment_card("Biggest Risk", risk, "#94a3b8")
+
+    st.markdown("---")
                
 def render_positioning_charts(macro_df):
 
@@ -353,88 +349,103 @@ def render_positioning_charts(macro_df):
 
 def render_sector_cards(macro_df):
 
-        st.subheader("Key Sector Metrics")
-        st.markdown("___")
-         
-        rows = macro_df.to_dict("records")
+    st.subheader("Key Sector Metrics")
+    st.markdown("___")
+
+    required = [
+        "Sector",
+        "Cycle Score",
+        "Heat",
+        "Avg Return",
+        "Forward P/E",
+        "Beta"
+    ]
+
+    missing = [c for c in required if c not in macro_df.columns]
+
+    if missing:
+        st.error(f"Missing columns: {missing}")
+        return
+
+    rows = macro_df.to_dict("records")
         
-        for i in range(0, len(rows), 3):
+    for i in range(0, len(rows), 3):
 
-            cols = st.columns(3)
+        cols = st.columns(3)
+        
             
-             
-            for col, row in zip(cols, rows[i:i+3]):
+        for col, row in zip(cols, rows[i:i+3]):
 
-                display_sector = sector_display_name(row["Sector"])
-                
-                card = f"""
-                <div style="
-                    border:1px solid #374151;
-                    border-radius:12px;
-                    padding:20px;
-                    background:#111827;
-                    min-height:260px;
-                ">
+            display_sector = sector_display_name(row["Sector"])
+            
+            card = f"""
+            <div style="
+                border:1px solid #374151;
+                border-radius:12px;
+                padding:20px;
+                background:#111827;
+                min-height:260px;
+            ">
 
-                <h3 style="margin-bottom:4px;">
-                    {display_sector}
-                </h3>
+            <h3 style="margin-bottom:4px;">
+                {display_sector}
+            </h3>
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:8px;
-                ">
-                    <span>Cycle Maturity</span>
-                    <b>{fmt_score(row['Cycle Score'])}</b>
-                </div>
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                margin-bottom:8px;
+            ">
+                <span>Cycle Maturity</span>
+                <b>{fmt_score(row['Cycle Score'])}</b>
+            </div>
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:16px;
-                ">
-                    <span>Pressure</span>
-                    <b>{fmt_score(row['Heat'])}</b>
-                </div>
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                margin-bottom:16px;
+            ">
+                <span>Pressure</span>
+                <b>{fmt_score(row['Heat'])}</b>
+            </div>
 
-                <hr style="border-color:#374151;">
+            <hr style="border-color:#374151;">
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-top:12px;
-                ">
-                    <span>1Y Return</span>
-                    <span>{fmt_percent(row['Avg Return'])}</span>
-                </div>
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                margin-top:12px;
+            ">
+                <span>1Y Return</span>
+                <span>{fmt_percent(row['Avg Return'])}</span>
+            </div>
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                ">
-                    <span>Forward P/E</span>
-                    <span>{fmt_multiple(row['Forward P/E'])}</span>
-                </div>
+            <div style="
+                display:flex;
+                justify-content:space-between;
+            ">
+                <span>Forward P/E</span>
+                <span>{fmt_multiple(row['Forward P/E'])}</span>
+            </div>
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                ">
-                    <span>Beta</span>
-                    <span>{fmt_decimal(row['Beta'])}</span>
-                </div>
+            <div style="
+                display:flex;
+                justify-content:space-between;
+            ">
+                <span>Beta</span>
+                <span>{fmt_decimal(row['Beta'])}</span>
+            </div>
 
-                </div>
-                """
+            </div>
+            """
 
-                with col:
-                    st.markdown(
-                        card,
-                        unsafe_allow_html=True
-                    )
-    
-            st.markdown("---")       
+            with col:
+                st.markdown(
+                    card,
+                    unsafe_allow_html=True
+                )
+
+        st.markdown("---")       
     
 def render_macro_data(fred_data):
 

@@ -8,6 +8,8 @@ from archive.archive_reader import load_macro_history
 from analytics.trend_engine import calc_metric_trend
 from analytics.macro_dataframe import build_macro_dataframe 
 
+from config.metric_definitions import METRIC_DEFINITIONS
+
 from helpers.macro_dashboard import (
     render_regime_snapshot,
     render_sector_assessment,
@@ -27,8 +29,14 @@ def render_ai_macro_dashboard(
 
     st.title("AI Regime Dashboard")
     st.caption("AI market structure • positioning • regime analysis")
+    
     st.markdown("---")
-
+    
+    st.subheader("Purpose Statement")
+    st.write(METRIC_DEFINITIONS['Purpose Statement'])
+    
+    st.markdown("---")
+        
     if not sector_metrics:
         st.error("Empty sector_metrics")
         return
