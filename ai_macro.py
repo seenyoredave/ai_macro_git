@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 
 from config.sector_config import SECTOR_CONFIG
-from config.debug_config import DEBUG 
-from config.debug_config import debug_print 
 
 from sectors.sector_builder import get_sector_data
 
