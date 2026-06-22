@@ -103,7 +103,7 @@ def append_macro_history(
     ai_concentration_hhi = normalize_hhi(raw_hhi)
 
     avg_maturation_index = np.nanmean(sector_score)
-
+    
     avg_pressure = np.nanmean(pressure_scores)
 
     row = {
