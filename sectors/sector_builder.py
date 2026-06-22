@@ -13,7 +13,7 @@ from analytics.sector_dataframe import resolve_sector_dataframe
 from analytics.basket_tiering import add_basket_tiers
 
 
-def get_sector_data(sector, tickers=None):
+def get_sector_data(sector, tickers=None, raw_universe_data=None):
     sector_config = SECTOR_CONFIG.get(sector)
 
     if sector_config is None:
@@ -24,15 +24,29 @@ def get_sector_data(sector, tickers=None):
 
     assert_no_benchmarks(tickers)
 
-    raw_data = load_sector_data(
-        {t: t for t in tickers},
-        sector=sector
-    )
+    if raw_universe_data is None:
+        raw_data = load_sector_data(
+            {t: t for t in tickers},
+            sector=sector
+        )
+    else:
+        ticker_set = set(tickers)
+
+        raw_yf = raw_universe_data["yfinance"]
+        raw_yf = raw_yf[raw_yf["Ticker"].isin(ticker_set)].copy()
+
+        raw_edgar = {
+            ticker: raw_universe_data["edgar"].get(ticker, {})
+            for ticker in ticker_set
+        }
+
+        raw_data = {
+            "yfinance": raw_yf,
+            "edgar": raw_edgar,
+        }
 
     df = resolve_sector_dataframe(raw_data)
 
-    # Critical: fresh yfinance pulls do not automatically carry sector identity.
-    # Downstream factor code expects this column.
     df["Sector"] = sector
 
     ai_exposure_score = sector_config.get("ai_exposure_score", {})
@@ -42,7 +56,6 @@ def get_sector_data(sector, tickers=None):
         ai_exposure_score=ai_exposure_score
     )
 
-    # Keep Sector after tiering, just in case add_basket_tiers copies/filters.
     df["Sector"] = sector
 
     return df

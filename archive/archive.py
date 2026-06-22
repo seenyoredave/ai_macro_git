@@ -186,6 +186,8 @@ def append_yf_history(sector_data):
         "Market Cap",
         "Revenue",
         "Revenue Growth",
+        "CapEx",
+        "CapEx Growth",
         "Beta",
         "52W High",
         "52W Low",

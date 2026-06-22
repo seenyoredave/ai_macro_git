@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 from config.factor_config import FACTOR_CONFIG
-from benchmarks.benchmark_service import get_benchmark_metrics
 from config.debug_config import debug_print, DEBUG
 
 
@@ -63,7 +62,7 @@ FACTOR_FUNCTIONS = {
 # MAIN ENGINE
 #################################################
 
-def calc_sector_factors(sector, yf_df, benchmark="QQQ"):
+def calc_sector_factors(sector, yf_df, benchmark_metrics=None):
 
     # Always return a predictable schema
     empty_out = pd.DataFrame(
@@ -79,8 +78,7 @@ def calc_sector_factors(sector, yf_df, benchmark="QQQ"):
             debug_print(f"FACTOR ENGINE WARNING: empty yf_df for sector={sector}")
         return empty_out
 
-    # Pull clean benchmark metrics only
-    bm = get_benchmark_metrics(benchmark)
+    bm = benchmark_metrics or {}
 
     benchmark_return = bm.get("avg_return", np.nan)
     benchmark_pe = bm.get("forward_pe", np.nan)

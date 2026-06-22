@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
+from datetime import date
+from archive.archive_reader import load_edgar_history
 
 #################################################
 # SEC / EDGAR SETTINGS
@@ -40,6 +42,41 @@ def sec_ticker_headers():
         "Accept-Encoding": "gzip, deflate",
     }
 
+#################################################
+# EDGAR ARCHIVE CALL
+#################################################
+
+def read_edgar_archive_for_today(tickers):
+    try:
+        df = load_edgar_history()
+    except Exception:
+        return None
+
+    if df is None or df.empty:
+        return None
+
+    if "Date" not in df.columns or "Ticker" not in df.columns:
+        return None
+
+    today = str(date.today())
+    ticker_set = {str(t).upper().strip() for t in tickers.keys()}
+
+    df = df.copy()
+    df["Date"] = df["Date"].astype(str)
+    df["Ticker"] = df["Ticker"].astype(str).str.upper().str.strip()
+
+    today_df = df[
+        (df["Date"] == today)
+        &
+        (df["Ticker"].isin(ticker_set))
+    ].copy()
+
+    found = set(today_df["Ticker"].dropna())
+
+    if not ticker_set.issubset(found):
+        return None
+
+    return today_df
 
 #################################################
 # SEC API HELPERS
@@ -286,25 +323,23 @@ def extract_company_metrics(company_facts):
 #################################################
 
 def load_edgar(tickers):
-    """
-    Loads SEC Company Facts data for the provided ticker dictionary.
 
-    Input:
-        tickers = {"MSFT": "Microsoft", "GOOGL": "Alphabet", ...}
+    archived_today = read_edgar_archive_for_today(tickers)
 
-    Returns:
-        dict keyed by ticker, matching your existing architecture:
-        {
-            "MSFT": {
-                "Revenue": ...,
-                "Revenue Growth": ...,
-                "CapEx": ...,
-                "CapEx Growth": ...,
-                "Market Cap": np.nan,
-                ...
+    if archived_today is not None:
+        print("Loading today's EDGAR rows from edgar_history.csv")
+
+        return {
+            row["Ticker"]: {
+                "Revenue": row.get("Revenue", np.nan),
+                "Revenue Growth": row.get("Revenue Growth", np.nan),
+                "Market Cap": row.get("Market Cap", np.nan),
+                "CapEx": row.get("CapEx", np.nan),
+                "CapEx Growth": row.get("CapEx Growth", np.nan),
+                "EDGAR Status": "Archive",
             }
+            for _, row in archived_today.iterrows()
         }
-    """
 
     edgar_data = {}
 

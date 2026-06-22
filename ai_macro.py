@@ -13,6 +13,7 @@ from benchmarks.benchmark_service import get_benchmark_metrics
 
 from loaders.fred_loader import load_fred
 from loaders.sentiment_loader import load_put_call
+from loaders.market_loader import load_market_universe 
 
 from helpers.render_all import render_all_dashboards
 from helpers.labels import sector_display_name
@@ -116,27 +117,40 @@ def build_dashboard_data():
     sector_data = {}
     sector_metrics = {}
 
+    all_tickers = sorted({
+        ticker
+        for cfg in st.session_state.sectors.values()
+        for ticker in cfg["basket"]
+    })
+
+    ticker_map = {ticker: ticker for ticker in all_tickers}
+
+    raw_universe_data = load_market_universe(ticker_map)
+
+    benchmark_metrics = get_benchmark_metrics("QQQ")
+
     for sector, cfg in st.session_state.sectors.items():
 
         tickers = cfg["basket"]
 
-        # 1. raw sector universe
-        df = get_sector_data(sector, tickers)
-    
-        # 2. benchmark-aware factor generation
+        df = get_sector_data(
+            sector,
+            tickers,
+            raw_universe_data=raw_universe_data
+        )
+
         factor_df = calc_sector_factors(
             sector=sector,
             yf_df=df,
-            benchmark="QQQ"
+            benchmark_metrics=benchmark_metrics 
         )
-        
-        #3 sector aggregation 
+
         metrics = build_sector_metrics(factor_df, df)
 
         sector_data[sector] = df
         sector_metrics[sector] = metrics
 
-    return sector_data, sector_metrics  
+    return sector_data, sector_metrics
 
 #################################################
 # SESSION STATE INIT

@@ -40,7 +40,6 @@ def get_cashflow_row(cashflow_df, possible_names):
 
     return None
 
-
 def calc_capex_metrics(ticker_obj):
     """
     Returns:
@@ -105,12 +104,46 @@ def calc_capex_metrics(ticker_obj):
 
     return np.nan, np.nan
 
-
 EVG_REQUIRED_COLUMNS = [
     "Revenue Growth",
     "CapEx",
     "CapEx Growth",
 ]
+
+def ensure_yf_schema(df):
+    """
+    Ensures archived yfinance data has all currently expected columns.
+    Missing newer columns are added as NaN so old archives remain usable.
+    """
+    required_columns = [
+        "Date",
+        "Sector",
+        "Ticker",
+        "Company",
+        "Price",
+        "P/E",
+        "Forward P/E",
+        "Market Cap",
+        "Revenue",
+        "Revenue Growth",
+        "CapEx",
+        "CapEx Growth",
+        "Beta",
+        "52W High",
+        "52W Low",
+        "1Y Return",
+        "Basket Score",
+        "Basket Tier",
+        "Basket Weight",
+    ]
+
+    df = df.copy()
+
+    for col in required_columns:
+        if col not in df.columns:
+            df[col] = np.nan
+
+    return df
 
 def calc_revenue_growth(ticker_obj, info):
     """
@@ -148,7 +181,6 @@ def calc_revenue_growth(ticker_obj, info):
 
     return np.nan
 
-
 def has_usable_evg_fields(df, min_valid_rows=1):
     """
     Returns True only if archived/live YFinance data contains usable EVG fields.
@@ -169,15 +201,13 @@ def has_usable_evg_fields(df, min_valid_rows=1):
         for col in EVG_REQUIRED_COLUMNS
     }
 
-    return all(count >= min_valid_rows for count in valid_counts.values())
-
+    return valid_counts.get("Revenue Growth", 0) >= min_valid_rows
 
 #################################################
 # YF HISTORY SETTINGS
 #################################################
 
 YF_HISTORY_PATH = Path("archive/yf_history.csv")
-
 
 def read_yf_history_for_date(tickers, sector=None, target_date=None):
     if not YF_HISTORY_PATH.exists():
@@ -207,8 +237,7 @@ def read_yf_history_for_date(tickers, sector=None, target_date=None):
     if not ticker_set.issubset(found):
         return None
 
-    return filtered
-
+    return ensure_yf_schema(filtered)
 
 def read_latest_yf_history(tickers, sector=None):
     if not YF_HISTORY_PATH.exists():
@@ -239,7 +268,7 @@ def read_latest_yf_history(tickers, sector=None):
     if not ticker_set.issubset(found):
         return None
 
-    return latest
+    return ensure_yf_schema(latest)
 
 
 #################################################
@@ -324,7 +353,6 @@ def pull_yfinance(ticker_tuple):
 
     return pd.DataFrame(rows)
 
-
 #################################################
 # YFINANCE LOADER
 #################################################
@@ -338,12 +366,47 @@ def load_yfinance(ticker_tuple, sector=None):
         sector=sector
     )
 
-    if archived_today is not None and has_usable_evg_fields(archived_today):
-        print(f"Loading today's yfinance rows from yf_history.csv: {sector}")
-        return archived_today
-
     if archived_today is not None:
-        print(f"yf_history rows found but missing usable EVG fields. Pulling fresh yfinance: {sector}")
+        archived_today = archived_today.copy()
+
+        # Ensure EVG columns exist.
+        for col in EVG_REQUIRED_COLUMNS:
+            if col not in archived_today.columns:
+                archived_today[col] = np.nan
+
+        evg_missing_or_empty = [
+            col for col in EVG_REQUIRED_COLUMNS
+            if pd.to_numeric(archived_today[col], errors="coerce").dropna().empty
+        ]
+
+        if not evg_missing_or_empty:
+            print(f"Loading today's yfinance rows from yf_history.csv: {sector}")
+            return archived_today
+
+        print(
+            f"Today's yf_history found, but EVG columns are missing/empty "
+            f"{evg_missing_or_empty}. Pulling yfinance to backfill: {sector}"
+        )
+
+        fresh = pull_yfinance(ticker_tuple)
+
+        if fresh is None or fresh.empty:
+            print("Fresh yfinance backfill returned empty. Using archive as-is.")
+            return archived_today
+
+        fresh = fresh.copy()
+        fresh["Ticker"] = fresh["Ticker"].astype(str).str.upper().str.strip()
+        archived_today["Ticker"] = archived_today["Ticker"].astype(str).str.upper().str.strip()
+
+        fresh_lookup = fresh.set_index("Ticker")
+
+        for col in evg_missing_or_empty:
+            if col in fresh_lookup.columns:
+                archived_today[col] = archived_today["Ticker"].map(fresh_lookup[col])
+            else:
+                archived_today[col] = np.nan
+
+        return archived_today
 
     try:
         print(f"No yf_history rows found for today. Pulling yfinance: {sector}")
@@ -371,7 +434,6 @@ def load_yfinance(ticker_tuple, sector=None):
             "yfinance failed and no usable yf_history fallback exists."
         ) from e
 
-
 #################################################
 # MASTER DATA LOADER
 #################################################
@@ -397,6 +459,27 @@ def load_sector_data(tickers, sector=None):
                 ]
             ]
         )
+
+    return {
+        "yfinance": raw_yf,
+        "edgar": raw_edgar,
+    }
+    
+@st.cache_data(ttl=3600)
+def load_market_universe(tickers):
+    """
+    Load YFinance and EDGAR once for the full ticker universe.
+
+    tickers:
+        dict like {"MSFT": "MSFT", "NVDA": "NVDA"}
+    """
+
+    raw_yf = load_yfinance(
+        tuple(sorted(tickers.items())),
+        sector=None
+    )
+
+    raw_edgar = load_edgar(tickers)
 
     return {
         "yfinance": raw_yf,
