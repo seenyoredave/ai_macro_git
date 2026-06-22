@@ -34,20 +34,18 @@ FIELD_PRIORITY = {
 
 # Map fields to groups
 FIELD_GROUPS = {
-
     "P/E": "fundamentals",
     "Forward P/E": "fundamentals",
-
     "Market Cap": "fundamentals",
     "Revenue": "fundamentals",
     "Revenue Growth": "fundamentals",
-
+    "CapEx": "fundamentals",
+    "CapEx Growth": "fundamentals",
     "1Y Return": "market_prices",
     "Beta": "market_prices",
     "Price": "market_prices",
     "52W High": "market_prices",
     "52W Low": "market_prices",
-
     "PMI": "macro_indicators",
-    "Yield": "macro_indicators"
+    "Yield": "macro_indicators",
 }

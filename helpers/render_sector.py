@@ -28,6 +28,8 @@ def render_basket_tier_smoke_test(df):
         "Basket Score",
         "Basket Tier",
         "Basket Weight",
+        "AI Weight",
+        "Effective Basket Weight",
     ]
 
     available = [
@@ -140,7 +142,7 @@ def render_leaders_table(sector, df):
         "1Y Return",
         "Basket Tier",
         "Basket Weight",
-        "Basket Source",
+        "AI Weight",
     ]
 
     available = [
@@ -200,34 +202,37 @@ def render_ticker_controls(sector):
 
 
 def render_sector_dashboard(sector, df, metrics):
-    debug_print("\n=== RENDER SECTOR ===")
-    debug_print("Sector:", sector)
-    debug_print("DF shape:", None if df is None else df.shape)
-    debug_print("DF columns:", None if df is None else df.columns.tolist())
-    debug_print("Metric keys:", None if metrics is None else metrics.keys())
+    
+    if DEBUG: 
+        debug_print("\n=== RENDER SECTOR ===")
+        debug_print("Sector:", sector)
+        debug_print("DF shape:", None if df is None else df.shape)
+        debug_print("DF columns:", None if df is None else df.columns.tolist())
+        debug_print("Metric keys:", None if metrics is None else metrics.keys())
 
     if df is None or df.empty:
         st.warning("No data available for this sector.")
         return
 
-    score = metrics.get("Cycle Score", np.nan)
-    heat_score = metrics.get("Sector Heat", np.nan)
+    score = metrics.get("Sector Score", np.nan)
+    pressure_score = metrics.get("Sector Pressure", np.nan)
     scored_factors = metrics.get("Scored Factors", pd.DataFrame())
     display_sector = sector_display_name(sector)
 
     strategy = cycle_strategy(score)
-
-    debug_print("Cycle Score:", score)
-    debug_print("Sector Heat:", heat_score)
-    debug_print("Scored Factors type:", type(scored_factors))
-    debug_print(
-        "Scored Factors shape:",
-        None if scored_factors is None else scored_factors.shape
-    )
-    debug_print(
-        "Scored Factors columns:",
-        None if scored_factors is None else scored_factors.columns.tolist()
-    )
+    
+    if DEBUG: 
+        debug_print("Sector Score:", score)
+        debug_print("Sector Pressure:", pressure_score)
+        debug_print("Scored Factors type:", type(scored_factors))
+        debug_print(
+            "Scored Factors shape:",
+            None if scored_factors is None else scored_factors.shape
+        )
+        debug_print(
+            "Scored Factors columns:",
+            None if scored_factors is None else scored_factors.columns.tolist()
+        )
 
     st.header(f"{display_sector} Snapshot")
 
@@ -237,16 +242,16 @@ def render_sector_dashboard(sector, df, metrics):
         else f"{score:.1f}"
     )
 
-    heat_display = (
+    pressure_display = (
         "N/A"
-        if pd.isna(heat_score)
-        else f"{heat_score:.1f}"
+        if pd.isna(pressure_score)
+        else f"{pressure_score:.1f}"
     )
 
     col1, col2, col3 = st.columns([1, 1, 1.5])
 
-    col1.metric("Cycle Score", score_display)
-    col2.metric("Sector Pressure", heat_display)
+    col1.metric("Sector Score", score_display)
+    col2.metric("Sector Pressure", pressure_display)
     col3.metric("Regime", strategy["regime"])
 
     st.markdown("---")

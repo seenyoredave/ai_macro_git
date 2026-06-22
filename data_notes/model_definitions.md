@@ -24,14 +24,14 @@ Data sources include: YFinance, FRED, EDGAR, and put/call.
 
 Metric definitions:
 
-Maturation cycle: How developed is the AI ecosystem?
-MCS = weighted average of all sector scores
+AI Maturation Index: How developed is the AI ecosystem?
+AMI = weighted average of all sector scores
 
 Measures overall economic progress towards completion of AI buildout cycle
 Scale: 0-100.
 
 Divergence estimation : Is value creation broadening or concentrating?
-DE = MCS - average speculation pressure.
+DE = AMI - average speculation pressure.
 Measures relative strength of buildout vs speculative pressure.
 Scale: -100 <> +100.
 
@@ -49,11 +49,11 @@ RG = normalized investor sentiment (put/call) – normalized consumer sentiment 
 Scale: +/- -->  + = speculation, - = retraction
 
 Liquidity Gap: Is AI strength being supported by monetary conditions?
-LG = MCS – normalized fed funds liquidity score
+LG = AMI – normalized fed funds liquidity score
 Scale: +/- --> + = liquidity crunch, - = investors nervous
 
 Adoption Gap: Is deployment keeping pace with enthusiasm?
-AG = MCS – normalized industrial production score
+AG = AMI– normalized industrial production score
 Scale: +/- --> + = AI buildout getting ahead of economy at large, - = economic buildout happening without AI sector
 
 Current regime = phase of AI buildout based upon MCS

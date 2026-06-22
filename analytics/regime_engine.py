@@ -1,4 +1,4 @@
-### These functions build the AI cycle strategy, cycle score, and CDI index functions. 
+### These functions build the AI cycle strategy, AMI score, and CDI index functions. 
 
 
 import pandas as pd
@@ -6,6 +6,7 @@ import numpy as np
 
 from helpers.macro_normalization import normalize_series
 from config.debug_config import debug_print  
+from config.debug_config import DEBUG 
 
 
 def cycle_strategy(score):
@@ -46,9 +47,9 @@ def cycle_strategy(score):
             "positioning": "Underweight / defensive tilt"
         }
 
-def cycle_score(df):
+def ami_score(df):
     """
-    Compute a composite cycle score using normalized PE, return, beta, and price position.
+    Compute a composite AMI score using normalized PE, return, beta, and price position.
     Returns 0-100 score.
     """
     pe = normalize_series(
@@ -92,11 +93,11 @@ def cycle_score(df):
     
     score = (0.25 * pe + 0.2 * ret + 0.2 * beta + 0.35 * price_pos_mean) * 100
     
-     
-    debug_print("PE:", pe)
-    debug_print("RET:", ret)
-    debug_print("BETA:", beta)
-    debug_print("PRICE_POS:", price_pos_mean)
+    if DEBUG:  
+        debug_print("PE:", pe)
+        debug_print("RET:", ret)
+        debug_print("BETA:", beta)
+        debug_print("PRICE_POS:", price_pos_mean)
     
     return score
 
@@ -105,10 +106,10 @@ def ai_cdi_index(macro_df):
     if macro_df.empty:
         return np.nan
 
-    temp = macro_df["Cycle Score"].mean()
-    heat = macro_df["Heat"].mean()
+    temp = macro_df["Sector Score"].mean()
+    pressure = macro_df["Pressure"].mean()
 
-    return temp - heat
+    return temp - pressure
 
 
 

@@ -3,42 +3,37 @@
 import pandas as pd
 
 
-def reality_gap_label(score):
-
+def validation_label(score):
     if pd.isna(score):
         return "No Data"
 
-    if score <= -25:
-        return "Economic Confidence > Market Optimism"
-
+    if score < -25:
+        return "Validation Ahead of Capex"
+    elif score < -10:
+        return "Validation Supportive"
     elif score < 10:
-        return "Consumers Neutral"
-
-    elif score < 30:
-        return "Moderate Enthusiasm"
-
+        return "Balanced"
+    elif score < 25:
+        return "Capex Running Ahead"
     else:
-        return "AI Euphoria" 
-   
+        return "Overbuild Pressure"
+    
 def liquidity_label(score):
-
     if pd.isna(score):
         return "No Data"
 
-    if score < -20:
-        return "Liquidity Supports Risk"
-
-    elif score < 20:
-        return "Markets Aligned With Liquidity"
-
-    elif score < 40:
-        return "Risk Appetite Exceeding Liquidity"
-
+    if score < -25:
+        return "Liquidity Strongly Supportive"
+    elif score < -10:
+        return "Liquidity Supportive"
+    elif score < 10:
+        return "Liquidity Aligned"
+    elif score < 25:
+        return "Risk Appetite Ahead of Liquidity"
     else:
-        return "Speculative Liquidity Disconnect"
+        return "Liquidity Disconnect"
 
 def adoption_label(score):
-
     if pd.isna(score):
         return "No Data"
 
@@ -55,7 +50,6 @@ def adoption_label(score):
         return "Narrative Running Ahead of Adoption"
     
 def short_regime_label(score):
-
     if pd.isna(score):
         return "No Data"
 
@@ -77,12 +71,15 @@ def sector_display_name(sector, style="title"):
         "COMPUTE": "Compute",
         "SEMICAP_EQUIPMENT": "Semicap",
         "CLOUD_HYPERSCALERS": "Cloud",
+        "DATA_AI_INFRASTRUCTURE": "Data Stack",
         "DATA_CENTER_INFRASTRUCTURE": "Data Centers",
-        "POWER_GRID": "Power & Grid",
+        "POWER_GRID": "Power",
         "ENTERPRISE_AI_SOFTWARE": "Enterprise",
-        "AI_SECURITY": "Security",
-        "PHYSICAL_AI_ROBOTICS": "Physical AI",
+        "CYBERSECURITY_AI_TRUST": "Security",
+        "INDUSTRIAL_AUTOMATION": "Automation",
+        "ROBOTICS": "Robotics",
         "DEFENSE_NATIONAL_SECURITY": "Defense",
+        "CONSUMER_AI": "Consumer AI"
     }
 
     label = label_map.get(

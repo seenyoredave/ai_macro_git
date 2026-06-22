@@ -72,15 +72,15 @@ def append_macro_history(
     sector_metrics,
     fred_data,
     market_sentiment,
-    sector_data=None
+    sector_data=None,
 ):
-    cycle_scores = [
-        metrics.get("Cycle Score", np.nan)
+    sector_score = [
+        metrics.get("Sector Score", np.nan)
         for metrics in sector_metrics.values()
     ]
 
     pressure_scores = [
-        metrics.get("Sector Heat", np.nan)
+        metrics.get("Sector Pressure", np.nan)
         for metrics in sector_metrics.values()
     ]
 
@@ -105,24 +105,20 @@ def append_macro_history(
     row = {
         "Date": datetime.now().date(),
 
-        "Avg Cycle Score": np.nanmean(cycle_scores),
+        "Avg AMI Score": np.nanmean(sector_score),
+        "Divergence": (np.nanmean(sector_score) - np.nanmean(pressure_scores)),
+        "Power Stress Index": power_stress,
+        "Raw Power Stress Z": raw_power_stress,
+        "AI Concentration HHI": ai_concentration_hhi,
+        "Raw AI HHI": raw_hhi,
+        
         "Avg Pressure": np.nanmean(pressure_scores),
-
-        "Divergence": (
-            np.nanmean(cycle_scores)
-            - np.nanmean(pressure_scores)
-        ),
-
         "Put/Call Ratio": market_sentiment.get("PutCallRatio", np.nan),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),
         "Fed Funds Rate": fred_data.get("Fed Funds Rate", {}).get("value", np.nan),
         "Industrial Production": fred_data.get("Industrial Production", {}).get("value", np.nan),
 
-        "Power Stress Index": power_stress,
-        "Raw Power Stress Z": raw_power_stress,
 
-        "AI Concentration HHI": ai_concentration_hhi,
-        "Raw AI HHI": raw_hhi,
     }
 
     snapshot = pd.DataFrame([row])
@@ -139,8 +135,8 @@ def append_sector_history(sector_metrics):
         rows.append({
             "Date": datetime.now().date(),
             "Sector": sector,
-            "Cycle Score": metrics.get("Cycle Score"),
-            "Pressure": metrics.get("Sector Heat"),
+            "Sector Score": metrics.get("Sector Score"),
+            "Pressure": metrics.get("Sector Pressure"),
             "Forward P/E": metrics.get("Forward P/E"),
             "Avg Return": metrics.get("Avg Return"),
         })
@@ -279,18 +275,6 @@ def append_fred_history(fred_data):
     )
 
 def append_put_call_history(market_sentiment):
-    row = {
-        "Date": datetime.now().date(),
-        "PutCallRatio": market_sentiment.get("PutCallRatio", np.nan),
-    }
-
-    snapshot = pd.DataFrame([row])
-
-    write_archive_snapshot(
-        snapshot,
-        "archive/put_call_history.csv"
-    )
-
     row = {
         "Date": datetime.now().date(),
         "PutCallRatio": market_sentiment.get("PutCallRatio", np.nan),

@@ -3,7 +3,7 @@ import pandas as pd
 
 from config.factor_config import FACTOR_CONFIG
 from benchmarks.benchmark_service import get_benchmark_metrics
-from config.debug_config import debug_print 
+from config.debug_config import debug_print, DEBUG
 
 
 
@@ -65,16 +65,36 @@ FACTOR_FUNCTIONS = {
 
 def calc_sector_factors(sector, yf_df, benchmark="QQQ"):
 
-    if yf_df is None or yf_df.empty:
-        return pd.DataFrame()
+    # Always return a predictable schema
+    empty_out = pd.DataFrame(
+        columns=[
+            "Sector",
+            "Factor",
+            "Value"
+        ]
+    )
 
-    # pull clean benchmark metrics ONLY
+    if yf_df is None or yf_df.empty:
+        if DEBUG:
+            debug_print(f"FACTOR ENGINE WARNING: empty yf_df for sector={sector}")
+        return empty_out
+
+    # Pull clean benchmark metrics only
     bm = get_benchmark_metrics(benchmark)
 
     benchmark_return = bm.get("avg_return", np.nan)
     benchmark_pe = bm.get("forward_pe", np.nan)
 
-    factors = FACTOR_CONFIG.get(sector, [])
+    factors = FACTOR_CONFIG.get(sector)
+
+    if not factors:
+        if DEBUG:
+            debug_print(f"FACTOR ENGINE WARNING: no FACTOR_CONFIG entry for sector={sector}")
+            debug_print("Available FACTOR_CONFIG sectors:", list(FACTOR_CONFIG.keys()))
+            debug_print("yf_df columns:", yf_df.columns.tolist())
+            debug_print("yf_df shape:", yf_df.shape)
+
+        return empty_out
 
     rows = []
 
@@ -89,7 +109,12 @@ def calc_sector_factors(sector, yf_df, benchmark="QQQ"):
             benchmark_pe
         )
 
-        debug_print("RUNNING FACTOR:", factor_name)
+        if DEBUG:
+            debug_print("RUNNING FACTOR:", factor_name)
+            debug_print("SECTOR:", sector)
+            debug_print("FACTORS:", factors)
+            debug_print("YF DF SHAPE:", yf_df.shape)
+            debug_print("YF COLS:", yf_df.columns.tolist())
 
         rows.append({
             "Sector": sector,
@@ -97,24 +122,17 @@ def calc_sector_factors(sector, yf_df, benchmark="QQQ"):
             "Value": value
         })
 
-        debug_print("SECTOR:", sector)
-        debug_print("FACTORS:", FACTOR_CONFIG.get(sector))
-        debug_print("YF DF SHAPE:", yf_df.shape)
-        debug_print("YF COLS:", yf_df.columns.tolist())
-
-
-    out = pd.DataFrame(rows)
+    out = pd.DataFrame(
+        rows,
+        columns=[
+            "Sector",
+            "Factor",
+            "Value"
+        ]
+    )
 
     out["Sector"] = out["Sector"].astype(str)
     out["Factor"] = out["Factor"].astype(str)
     out["Value"] = pd.to_numeric(out["Value"], errors="coerce")
-
-    if sector in [
-        "COMPUTE",
-        "SEMICAP_EQUIPMENT",
-        "DATA_CENTER_INFRASTRUCTURE",
-    ]:
-        debug_print(f"\n=== RAW FACTORS: {sector} ===")
-        debug_print(out)
 
     return out

@@ -14,8 +14,13 @@ from analytics.basket_tiering import add_basket_tiers
 
 
 def get_sector_data(sector, tickers=None):
+    sector_config = SECTOR_CONFIG.get(sector)
+
+    if sector_config is None:
+        raise KeyError(f"Sector not found in SECTOR_CONFIG: {sector}")
+
     if tickers is None:
-        tickers = SECTOR_CONFIG[sector]["basket"]
+        tickers = sector_config["basket"]
 
     assert_no_benchmarks(tickers)
 
@@ -25,6 +30,19 @@ def get_sector_data(sector, tickers=None):
     )
 
     df = resolve_sector_dataframe(raw_data)
-    df = add_basket_tiers(df)
+
+    # Critical: fresh yfinance pulls do not automatically carry sector identity.
+    # Downstream factor code expects this column.
+    df["Sector"] = sector
+
+    ai_exposure_score = sector_config.get("ai_exposure_score", {})
+
+    df = add_basket_tiers(
+        df,
+        ai_exposure_score=ai_exposure_score
+    )
+
+    # Keep Sector after tiering, just in case add_basket_tiers copies/filters.
+    df["Sector"] = sector
 
     return df

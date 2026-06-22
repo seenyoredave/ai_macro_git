@@ -92,46 +92,6 @@ def normalize_factor(
     return NORMALIZERS[factor_name](value)
 
 
-#################################################
-# OPTION B
-# HISTORICAL Z-SCORE
-#
-# FUTURE VERSION
-#################################################
-
-# def rolling_zscore(
-#     value,
-#     history
-# ):
-#
-#     mean = np.mean(history)
-#     std = np.std(history)
-#
-#     if std == 0:
-#         return 0
-#
-#     z = (value - mean) / std
-#
-#     z = np.clip(
-#         z,
-#         -3,
-#         3
-#     )
-#
-#     return z / 3
-#
-#
-# def normalize_factor(
-#     factor_name,
-#     value,
-#     history
-# ):
-#
-#     return rolling_zscore(
-#         value,
-#         history
-#     )
-
 
 """ 
 current map: 

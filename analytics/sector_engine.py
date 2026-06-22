@@ -4,14 +4,7 @@ import pandas as pd
 from factors.factor_weights import FACTOR_WEIGHTS
 from factors.factor_normalization import normalize_factor
 from config.debug_config import debug_print 
-
-
-"""
-Sector Heat is currently a placeholder equal to Cycle Score.
-Do not interpret Opportunity/Risk cards yet.
-"""
-        
-
+from config.debug_config import DEBUG 
 
 #################################################
 # SPECULATION PRESSURE 
@@ -99,20 +92,20 @@ def calc_sector_scores(normalized_df):
             score += row["Score"] * weight
             total_weight += weight
     
-             
-    debug_print("\n--- SECTOR SCORING ---")
+    if DEBUG:          
+        debug_print("\n--- SECTOR SCORING ---")
 
-    for _, row in normalized_df.iterrows():
-        
-        debug_print(
-            row["Factor"],
-            "Score:",
-            row["Score"],
-            "Weight:",
-            FACTOR_WEIGHTS.get(row["Factor"], 0)
-        )
-        
-    debug_print("Final Score:", score / total_weight)
+        for _, row in normalized_df.iterrows():
+            
+            debug_print(
+                row["Factor"],
+                "Score:",
+                row["Score"],
+                "Weight:",
+                FACTOR_WEIGHTS.get(row["Factor"], 0)
+            )
+            
+        debug_print("Final Score:", score / total_weight)
 
     return score / total_weight if total_weight > 0 else np.nan
 
@@ -125,8 +118,8 @@ def build_sector_metrics(factor_df, yf_df):
 
     if factor_df is None or factor_df.empty:
         return {
-            "Cycle Score": np.nan,
-            "Sector Heat": np.nan,
+            "Sector Score": np.nan,
+            "Sector Pressure": np.nan,
             "Avg Return": np.nan,
             "Forward P/E": np.nan,
             "Beta": np.nan,
@@ -134,12 +127,12 @@ def build_sector_metrics(factor_df, yf_df):
         }
 
     normalized_df = normalize_factor_table(factor_df)
-    cycle_score = calc_sector_scores(normalized_df)
+    sector_score = calc_sector_scores(normalized_df)
     speculation_pressure = calc_speculation_pressure(normalized_df)
     
     return {
-        "Cycle Score": cycle_score,
-        "Sector Heat": speculation_pressure,
+        "Sector Score": sector_score,
+        "Sector Pressure": speculation_pressure,
 
         "Avg Return": yf_df["1Y Return"].mean() if "1Y Return" in yf_df else np.nan,
         "Forward P/E": yf_df["Forward P/E"].mean() if "Forward P/E" in yf_df else np.nan,

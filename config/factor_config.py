@@ -1,72 +1,28 @@
 #################################################
 # FACTOR CONFIG
 #################################################
+
+DEFAULT_FACTORS = [
+    "relative_performance",
+    "valuation_premium",
+    "momentum_breadth",
+    "dispersion",
+]
+
 FACTOR_CONFIG = {
-
-    "COMPUTE": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "SEMICAP_EQUIPMENT": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "CLOUD_HYPERSCALERS": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "DATA_CENTER_INFRASTRUCTURE": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "POWER_GRID": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "ENTERPRISE_AI_SOFTWARE": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "AI_SECURITY": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "PHYSICAL_AI_ROBOTICS": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
-
-    "DEFENSE_NATIONAL_SECURITY": [
-        "relative_performance",
-        "valuation_premium",
-        "momentum_breadth",
-        "dispersion",
-    ],
+    "COMPUTE": DEFAULT_FACTORS,
+    "SEMICAP_EQUIPMENT": DEFAULT_FACTORS,
+    "CLOUD_HYPERSCALERS": DEFAULT_FACTORS,
+    "DATA_AI_INFRASTRUCTURE": DEFAULT_FACTORS,
+    "DATA_CENTER_INFRASTRUCTURE": DEFAULT_FACTORS,
+    "POWER_GRID": DEFAULT_FACTORS,
+    "ENTERPRISE_AI_SOFTWARE": DEFAULT_FACTORS,
+    "CYBERSECURITY_AI_TRUST": DEFAULT_FACTORS,
+    "INDUSTRIAL_AUTOMATION": DEFAULT_FACTORS,
+    "ROBOTICS": DEFAULT_FACTORS,
+    "DEFENSE_NATIONAL_SECURITY": DEFAULT_FACTORS,
+    "CONSUMER_AI": DEFAULT_FACTORS,
 }
-
 
 FACTOR_HELP = {
     "relative_performance": "RP = sector 1Y return - benchmark 1Y return.",

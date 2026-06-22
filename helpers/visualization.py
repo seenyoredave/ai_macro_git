@@ -11,11 +11,92 @@ from config.metric_definitions import METRIC_DEFINITIONS
 
 
 ################################
-# NaN SAFE GAUGE HELPER 
+# NaN SAFE GAUGE HELPERS 
 ################################
 
 def safe_gauge_value(value, default=0):
     return default if pd.isna(value) else value
+
+def empty_chart(message="No valid chart data available."):
+    fig = go.Figure()
+
+    fig.add_annotation(
+        text=message,
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+        font=dict(size=14)
+    )
+
+    fig.update_layout(
+        template="plotly_white",
+        height=500,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False)
+    )
+
+    return fig
+
+def safe_numeric_series(df, column, default=np.nan):
+    """
+    Returns a numeric series aligned to df.index.
+    Missing columns become a default-filled series.
+    """
+    if df is None or df.empty:
+        return pd.Series(dtype=float)
+
+    if column not in df.columns:
+        return pd.Series(default, index=df.index)
+
+    return (
+        pd.to_numeric(df[column], errors="coerce")
+        .replace([np.inf, -np.inf], np.nan)
+    )
+
+def safe_marker_size(values, default=18, min_size=8, max_size=30):
+    """
+    Plotly marker.size cannot contain NaN, inf, or negative values.
+    This scales a numeric series into a clean positive marker-size list.
+    """
+
+    s = pd.to_numeric(values, errors="coerce").replace([np.inf, -np.inf], np.nan)
+
+    if s.notna().sum() == 0:
+        return pd.Series(default, index=s.index).tolist()
+
+    s = s.fillna(s.median()).abs()
+
+    if s.max() == s.min():
+        return pd.Series(default, index=s.index).tolist()
+
+    scaled = (
+        min_size
+        + ((s - s.min()) / (s.max() - s.min()))
+        * (max_size - min_size)
+    )
+
+    return (
+        scaled
+        .replace([np.inf, -np.inf], default)
+        .fillna(default)
+        .clip(lower=min_size, upper=max_size)
+        .tolist()
+    )
+
+def safe_color_values(values, default=50):
+    """
+    Plotly color values can be more forgiving than marker sizes,
+    but filling them keeps the visual layer stable.
+    """
+
+    s = pd.to_numeric(values, errors="coerce").replace([np.inf, -np.inf], np.nan)
+
+    if s.notna().sum() == 0:
+        return pd.Series(default, index=s.index).tolist()
+
+    return s.fillna(s.median()).tolist()
 
 ###############################
 # GAUGE GRADIENT
@@ -66,7 +147,7 @@ def build_maturity_gauge(value):
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=safe_gauge_value(value),      
-        title={"text": "Maturation Cycle"},
+        title={"text": "Maturation Index"},
         gauge={
             "axis": {"range": [0, 100]},
             "bar": {
@@ -176,6 +257,16 @@ def build_concentration_gauge(value):
 def build_positioning_map(macro_df):
     fig_mv = go.Figure()
 
+    pressure_size = pd.to_numeric(
+        macro_df["Pressure"],
+        errors="coerce"
+    ).replace([np.inf, -np.inf], np.nan)
+
+    if pressure_size.notna().sum() == 0:
+        pressure_size = pd.Series(50, index=macro_df.index)
+    else:
+        pressure_size = pressure_size.fillna(pressure_size.median())
+
     fig_mv.add_trace(
 
         go.Scatter(
@@ -198,12 +289,12 @@ def build_positioning_map(macro_df):
             marker=dict(
 
                 size=np.clip(
-                    macro_df["Heat"]/4,
+                    pressure_size / 4,
                     8,
                     22
                 ),
 
-                color=macro_df["Cycle Score"],
+                color=macro_df["Sector Score"],
 
                 colorscale="Viridis",
 
@@ -224,9 +315,9 @@ def build_positioning_map(macro_df):
 
         yaxis_title="1Y Return (%)",
 
-    template="plotly_white",
+        template="plotly_white",
 
-    height=500
+        height=500
     )
 
     x_series = pd.to_numeric(macro_df["Forward P/E"], errors="coerce")
@@ -244,49 +335,61 @@ def build_positioning_map(macro_df):
     pe_mid = (x_min + x_max) / 2
     ret_mid = (y_min + y_max) / 2
     
-    fig_mv.add_vline(x=pe_mid,line_dash="dot")
-    fig_mv.add_hline(y=ret_mid,line_dash="dot")
+    fig_mv.add_vline(x=pe_mid, line_dash="dot")
+    fig_mv.add_hline(y=ret_mid, line_dash="dot")
 
     fig_mv.add_annotation(
-    x=pe_mid * 0.5,
-    y=ret_mid * 2.3,
-    text="Momentum",
-    showarrow=False
+        x=pe_mid * 0.0,
+        y=ret_mid * 3.0,
+        text="Momentum",
+        showarrow=False
     )
 
     fig_mv.add_annotation(
-        x=pe_mid * 1.6,
-        y=ret_mid * 2.3,
+        x=pe_mid * 2.2,
+        y=ret_mid * 3.0,
         text="Leaders",
         showarrow=False
     )
 
     fig_mv.add_annotation(
-        x=pe_mid * 0.5,
-        y=ret_mid * -0.2,
+        x=pe_mid * 0.0,
+        y=ret_mid * -0.6,
         text="Value",
         showarrow=False
     )
 
     fig_mv.add_annotation(
-        x=pe_mid * 1.6,
-        y=ret_mid * -0.2,
+        x=pe_mid * 2.2,
+        y=ret_mid * -0.6,
         text="Lagging",
         showarrow=False
     )
 
     return fig_mv
-    
+
 def build_rotation_matrix(macro_df):
     fig_rotation = go.Figure()
+
+    return_size = pd.to_numeric(
+        macro_df["Avg Return"],
+        errors="coerce"
+    ).replace([np.inf, -np.inf], np.nan)
+
+    size_base = abs(return_size * 100) / 2
+
+    if size_base.notna().sum() == 0:
+        size_base = pd.Series(18, index=macro_df.index)
+    else:
+        size_base = size_base.fillna(size_base.median())
 
     fig_rotation.add_trace(
 
         go.Scatter(
 
-            x=macro_df["Cycle Score"],
+            x=macro_df["Sector Score"],
 
-            y=macro_df["Heat"],
+            y=macro_df["Pressure"],
 
             mode="markers",
 
@@ -296,13 +399,13 @@ def build_rotation_matrix(macro_df):
 
             hovertemplate=
             "<b>%{text}</b><br>" +
-            "Cycle Maturity: %{x:.0f}<br>" +
-            "Heat: %{y:.0f}<extra></extra>",
+            "AMI: %{x:.0f}<br>" +
+            "Pressure: %{y:.0f}<extra></extra>",
 
             marker=dict(
 
                 size=np.clip(
-                    abs(macro_df["Avg Return"] * 100) / 2,
+                    size_base,
                     10,
                     30
                 ),
@@ -324,7 +427,7 @@ def build_rotation_matrix(macro_df):
 
     fig_rotation.update_layout(
 
-        xaxis_title="Cycle Maturity",
+        xaxis_title="AMI",
 
         yaxis_title="Pressure",
 
@@ -333,10 +436,10 @@ def build_rotation_matrix(macro_df):
         height=500
     )
     
-    temp_mid = pd.to_numeric(macro_df["Cycle Score"], errors="coerce").median()
-    heat_mid = pd.to_numeric(macro_df["Heat"], errors="coerce").median()
+    temp_mid = pd.to_numeric(macro_df["Sector Score"], errors="coerce").median()
+    pressure_mid = pd.to_numeric(macro_df["Pressure"], errors="coerce").median()
 
-    if pd.isna(temp_mid) or pd.isna(heat_mid):
+    if pd.isna(temp_mid) or pd.isna(pressure_mid):
         return fig_rotation
 
     fig_rotation.add_vline(
@@ -345,34 +448,34 @@ def build_rotation_matrix(macro_df):
     )
 
     fig_rotation.add_hline(
-        y=heat_mid,
+        y=pressure_mid,
         line_dash="dot"
     )
 
     fig_rotation.add_annotation(
-        x=temp_mid * 0.5,
-        y=heat_mid * 2.3,
+        x=temp_mid * 0.0,
+        y=pressure_mid * 2.4,
         text="Opportunity",
         showarrow=False
     )
 
     fig_rotation.add_annotation(
         x=temp_mid * 1.6,
-        y=heat_mid * 2.3,
+        y=pressure_mid * 2.4,
         text="Crowded",
         showarrow=False
     )
 
     fig_rotation.add_annotation(
-        x=temp_mid * 0.5,
-        y=heat_mid * -0.2,
+        x=temp_mid * 0.0,
+        y=pressure_mid * -0.5,
         text="Dead Money",
         showarrow=False
     )
 
     fig_rotation.add_annotation(
         x=temp_mid * 1.6,
-        y=heat_mid * -0.2,
+        y=pressure_mid * -0.5,
         text="Narrative Risk",
         showarrow=False
     )

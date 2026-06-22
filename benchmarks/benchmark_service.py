@@ -5,6 +5,7 @@ import pandas as pd
 from loaders.benchmark_loader import load_all_benchmarks
 from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
 from config.debug_config import debug_print  
+from config.debug_config import DEBUG 
 
 
 #################################################
@@ -28,18 +29,18 @@ def get_benchmark_package():
 
     for name, df in raw.items():
 
-    
-        debug_print("=== BENCHMARK DF DEBUG (PRE-NORMALIZATION) ===")
-        debug_print(df.columns)
-        debug_print(df.head())
+        if DEBUG: 
+            debug_print("=== BENCHMARK DF DEBUG (PRE-NORMALIZATION) ===")
+            debug_print(df.columns)
+            debug_print(df.head())
 
-        debug_print("Forward P/E null count:", df.get("Forward P/E", pd.Series()).isna().sum())
-        debug_print("Beta null count:", df.get("Beta", pd.Series()).isna().sum())
-        debug_print("1Y Return null count:", df.get("1Y Return", pd.Series()).isna().sum())
+            debug_print("Forward P/E null count:", df.get("Forward P/E", pd.Series()).isna().sum())
+            debug_print("Beta null count:", df.get("Beta", pd.Series()).isna().sum())
+            debug_print("1Y Return null count:", df.get("1Y Return", pd.Series()).isna().sum())
 
-        debug_print("Forward P/E sample:", df.get("Forward P/E", pd.Series()).head(10))
-        debug_print("Beta sample:", df.get("Beta", pd.Series()).head(10))
-        debug_print("1Y Return sample:", df.get("1Y Return", pd.Series()).head(10))
+            debug_print("Forward P/E sample:", df.get("Forward P/E", pd.Series()).head(10))
+            debug_print("Beta sample:", df.get("Beta", pd.Series()).head(10))
+            debug_print("1Y Return sample:", df.get("1Y Return", pd.Series()).head(10))
 
         norm = normalize_benchmark_dataframe(df)
 

@@ -9,6 +9,7 @@ from analytics.trend_engine import calc_metric_trend
 from analytics.macro_dataframe import build_macro_dataframe 
 
 from config.metric_definitions import METRIC_DEFINITIONS
+from config.debug_config import DEBUG 
 
 from helpers.macro_dashboard import (
     render_regime_snapshot,
@@ -36,32 +37,33 @@ def render_ai_macro_dashboard(
     st.write(METRIC_DEFINITIONS['Purpose Statement'])
     
     st.markdown("---")
-        
-    if not sector_metrics:
-        st.error("Empty sector_metrics")
-        return
+    
+    if DEBUG:     
+        if not sector_metrics:
+            st.error("Empty sector_metrics")
+            return
 
 
-    print("\n=== SECTOR METRICS DEBUG ===")
+        print("\n=== SECTOR METRICS DEBUG ===")
 
-    for sector, metrics in sector_metrics.items():
-        print(
-            sector,
-            "Cycle:",
-            metrics.get("Cycle Score"),
-            "Heat:",
-            metrics.get("Sector Heat"),
-        )
+        for sector, metrics in sector_metrics.items():
+            print(
+                sector,
+                "Cycle:",
+                metrics.get("Sector Score"),
+                "Pressure:",
+                metrics.get("Sector Pressure"),
+            )
 
-    print("\n=== SECTOR DATA DEBUG ===")
+        print("\n=== SECTOR DATA DEBUG ===")
 
-    for sector, df in sector_data.items():
-        print("\n", sector)
+        for sector, df in sector_data.items():
+            print("\n", sector)
 
-        if df is None or df.empty:
-            print("EMPTY")
-        else:
-            print(df["Ticker"].tolist())
+            if df is None or df.empty:
+                print("EMPTY")
+            else:
+                print(df["Ticker"].tolist())
         
     macro_df = build_macro_dataframe(sector_metrics)
 
@@ -73,7 +75,7 @@ def render_ai_macro_dashboard(
 
     cycle_trend = calc_metric_trend(
         macro_history,
-        "Avg Cycle Score"
+        "Avg Sector Score"
     )
 
     divergence_trend = calc_metric_trend(
@@ -92,13 +94,14 @@ def render_ai_macro_dashboard(
     )
     
     render_regime_snapshot(
-        macro_df,
-        fred_data,
-        sentiment_data,
-        cycle_trend,
-        divergence_trend,
-        power_stress_trend,
-        concentration_trend
+        macro_df=macro_df,
+        fred_data=fred_data,
+        sentiment_data=sentiment_data,
+        cycle_trend=cycle_trend,
+        divergence_trend=divergence_trend,
+        power_stress_trend=power_stress_trend,
+        concentration_trend=concentration_trend,
+        sector_data=sector_data,
     )
 
     render_sector_assessment(macro_df)

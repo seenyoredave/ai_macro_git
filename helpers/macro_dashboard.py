@@ -1,23 +1,17 @@
 ### These functions build the AI macro dashboard tools
 
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 
-from helpers.macro_normalization import(
-    normalize_consumer_sentiment,
-    normalize_put_call   
-)
-
 from helpers.gaps import (
-    gap_score,
+    validation_gap,
     liquidity_gap,
     adoption_gap
 )
 
 from helpers.labels import (
-    reality_gap_label,
+    validation_label,
     liquidity_label,
     adoption_label,
     short_regime_label,
@@ -35,29 +29,73 @@ from helpers.visualization import (
     build_rotation_matrix
 )
 
-from config.debug_config import debug_print 
-from config.metric_definitions import METRIC_DEFINITIONS 
+from config.debug_config import debug_print
+from config.debug_config import DEBUG
+from config.metric_definitions import METRIC_DEFINITIONS
 
-  
+
 def chart_box(fig):
     with st.container(border=True):
         st.plotly_chart(fig, width="stretch", height=350)
 
+
 def fmt_score(value):
     return "No Data" if pd.isna(value) else f"{value:.0f}"
+
 
 def fmt_percent(value):
     return "No Data" if pd.isna(value) else f"{value * 100:.1f}%"
 
+
 def fmt_multiple(value):
     return "No Data" if pd.isna(value) else f"{value:.1f}x"
+
 
 def fmt_decimal(value):
     return "No Data" if pd.isna(value) else f"{value:.2f}"
 
 
+def metric_help(key, fallback="Definition unavailable."):
+    """
+    Safe wrapper for metric definitions.
+
+    This prevents dashboard crashes during refactors when a metric title
+    has changed but config/metric_definitions.py has not yet been updated.
+    """
+    return METRIC_DEFINITIONS.get(key, fallback)
+
+
+def get_ai_maturation_value(macro_df):
+    """
+    Returns the average AI maturation value from the macro dataframe.
+
+    Supports old and new column names during refactor:
+    - Maturation Index
+    - AMI
+    - Cycle Score
+    - Sector Score
+    """
+
+    if macro_df is None or macro_df.empty:
+        return np.nan
+
+    candidate_columns = [
+        "Maturation Index",
+        "AMI",
+        "Cycle Score",
+        "Sector Score",
+    ]
+
+    for col in candidate_columns:
+        if col in macro_df.columns:
+            values = pd.to_numeric(macro_df[col], errors="coerce")
+            return values.mean()
+
+    return np.nan
+
+
 ########################
-# D/DX AND D2/DX2 TABS 
+# D/DX AND D2/DX2 TABS
 ########################
 
 def render_trend_strip(trend):
@@ -82,13 +120,14 @@ def render_trend_strip(trend):
         """,
         unsafe_allow_html=True
     )
-    
+
+
 def assessment_card(title, row, border_color):
 
     display_sector = sector_display_name(row["Sector"])
 
-    cycle = row["Cycle Score"]
-    pressure = row["Heat"]
+    cycle = row["Sector Score"]
+    pressure = row["Pressure"]
 
     card = f"""
     <div style="border:1px solid {border_color}; border-left:6px solid {border_color}; border-radius:12px; padding:18px; background:#111827; min-height:150px;">
@@ -113,182 +152,218 @@ def assessment_card(title, row, border_color):
     """
 
     st.html(card)
-        
+
+
 def render_regime_snapshot(
-        macro_df,
-        fred_data=None,
-        sentiment_data=None,
-        cycle_trend=None,
-        divergence_trend=None,
-        power_stress_trend=None,
-        concentration_trend=None
-    ):
-        
-        fred_data = fred_data or {}
-        sentiment_data = sentiment_data or {}
-        
-        ### FRED PULLS ###
-        
-        consumer_data = fred_data.get("Consumer Sentiment", {})
-        fed_consumer_raw = consumer_data.get("value", np.nan)
-        fed_funds = (fred_data.get("Fed Funds Rate", {}).get("value", np.nan))
-        industrial_prod = (fred_data.get("Industrial Production", {}).get("value", np.nan))      
-        
-        ### KEY METRICS ###
-        
-        pcr = sentiment_data.get("PutCallRatio",np.nan)
-        ai_temp = macro_df["Cycle Score"].mean()
-        ai_divergence = ai_cdi_index(macro_df)
-        power_stress = (power_stress_trend.get("current", np.nan)
-            if power_stress_trend
-            else np.nan
-        )
-        concentration_hhi = (concentration_trend.get("current", np.nan)
-            if concentration_trend
-            else np.nan
-        )
-  
-        consumer_norm = normalize_consumer_sentiment(fed_consumer_raw)
-        investor_norm = normalize_put_call(pcr)
-        reality_gap = gap_score(investor_norm,consumer_norm)
-        liquidity_gap_score = liquidity_gap(ai_temp,fed_funds)
-        adoption_gap_score = adoption_gap(ai_temp,industrial_prod)
-        temp_fig = build_maturity_gauge(ai_temp)
-        divergence_fig = build_divergence_gauge(ai_divergence)
-        power_fig = build_power_stress_gauge(power_stress)
-        concentration_fig = build_concentration_gauge(concentration_hhi)
-        
+    macro_df,
+    fred_data=None,
+    sentiment_data=None,
+    cycle_trend=None,
+    divergence_trend=None,
+    power_stress_trend=None,
+    concentration_trend=None,
+    sector_data=None,
+):
+
+    ### SAFE DEFAULTS ###
+
+    fred_data = fred_data or {}
+    sentiment_data = sentiment_data or {}
+    sector_data = sector_data or {}
+
+    ### FRED PULLS ###
+
+    industrial_prod = (
+        fred_data.get("Industrial Production", {}).get("value", np.nan)
+    )
+
+    ### CORE VALUES ###
+
+    ai_temp = get_ai_maturation_value(macro_df)
+    ai_divergence = ai_cdi_index(macro_df)
+
+    power_stress = (
+        power_stress_trend.get("current", np.nan)
+        if power_stress_trend
+        else np.nan
+    )
+
+    concentration_hhi = (
+        concentration_trend.get("current", np.nan)
+        if concentration_trend
+        else np.nan
+    )
+
+    ### GAUGES ###
+
+    temp_fig = build_maturity_gauge(ai_temp)
+    divergence_fig = build_divergence_gauge(ai_divergence)
+    power_fig = build_power_stress_gauge(power_stress)
+    concentration_fig = build_concentration_gauge(concentration_hhi)
+
+    ### GAP SCORES ###
+
+    validation_gap_score = validation_gap(
+        sector_data=sector_data,
+        fred_data=fred_data,
+        sector="ENTERPRISE_AI_SOFTWARE",
+    )
+
+    liquidity_gap_score = liquidity_gap(
+        macro_df=macro_df,
+        fred_data=fred_data,
+    )
+
+    adoption_gap_score = adoption_gap(
+        ai_temp,
+        industrial_prod
+    )
+
+    if DEBUG:
         print("DEBUG POWER STRESS INDEX:", power_stress)
-        
+
         debug_print("\n=== REGIME SNAPSHOT ===")
+        debug_print("DEBUG sector_data keys:", list(sector_data.keys()) if sector_data else [])
         debug_print("DEBUG AI Temp:", ai_temp)
         debug_print("DEBUG Divergence Estimate:", ai_divergence)
-        debug_print("DEBUG Put/Call Ratio:", pcr)
-        debug_print("DEBUG Consumer Raw:", fed_consumer_raw)
-        debug_print("DEBUG Consumer Norm:", consumer_norm)
-        debug_print("DEBUG Investor Norm:", investor_norm)
-        debug_print("DEBUG Reality Gap:", reality_gap)
-        debug_print("DEBUG Liquidity Gap:", liquidity_gap_score)
+        debug_print("DEBUG Economic Validation Gap:", validation_gap_score)
+        debug_print("DEBUG Liquidity Support Gap:", liquidity_gap_score)
         debug_print("DEBUG Adoption Gap:", adoption_gap_score)
 
-        ### REGIME SNAPSHOT ###
-        
-        header_col, metric_col = st.columns([2, 1])
-        
-        with header_col: 
-            st.subheader(
-                "AI Economy Snapshot",
-                help=(
-                    f"Maturation Cycle: {METRIC_DEFINITIONS['Maturation Cycle']}\n\n"
-                    f"Divergence Estimate: {METRIC_DEFINITIONS['Divergence Estimate']}\n\n"
-                    f"Power Stress Index: {METRIC_DEFINITIONS['Power Stress Index']}\n\n"
-                    f"Concentration HHI: {METRIC_DEFINITIONS['Concentration HHI']}"
-                )
-            )
-        
-        ai_temp = macro_df["Cycle Score"].mean()
+    ### REGIME SNAPSHOT ###
 
-        with metric_col:
+    header_col, metric_col = st.columns([2, 1])
+
+    with header_col:
+        st.subheader(
+            "AI Economy Snapshot",
+            help=(
+                f"Maturation Index: {metric_help('Maturation Index')}\n\n"
+                f"Divergence Estimate: {metric_help('Divergence Estimate')}\n\n"
+                f"Power Stress Index: {metric_help('Power Stress Index')}\n\n"
+                f"Concentration HHI: {metric_help('Concentration HHI')}"
+            )
+        )
+
+    with metric_col:
+        st.metric(
+            "Current Regime",
+            short_regime_label(ai_temp),
+            help=(
+                "Early phase: < 30\n\n"
+                "Expansion phase: 30-59\n\n"
+                "Late expansion phase: 60-79\n\n"
+                "Mature buildout phase: 80+"
+            )
+        )
+
+    st.markdown("---")
+
+    ###############
+    # GAUGES
+    ###############
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.plotly_chart(
+            temp_fig,
+            width="stretch",
+            config={"responsive": True}
+        )
+
+        if cycle_trend:
+            render_trend_strip(cycle_trend)
+
+    with col2:
+        st.plotly_chart(
+            divergence_fig,
+            width="stretch",
+            config={"responsive": True}
+        )
+
+        if divergence_trend:
+            render_trend_strip(divergence_trend)
+
+    st.markdown("---")
+
+    col3, col4 = st.columns(2)
+
+    with col3:
+        st.plotly_chart(
+            power_fig,
+            width="stretch",
+            config={"responsive": True}
+        )
+
+        if power_stress_trend:
+            render_trend_strip(power_stress_trend)
+
+    with col4:
+        st.plotly_chart(
+            concentration_fig,
+            width="stretch",
+            config={"responsive": True}
+        )
+
+        if concentration_trend:
+            render_trend_strip(concentration_trend)
+
+    ###############
+    # GAPS
+    ###############
+
+    st.markdown("---")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if pd.notna(validation_gap_score):
             st.metric(
-                "Current Regime",
-                short_regime_label(ai_temp),
-                help=(
-                    "Early phase: < 30\n\n"
-                    "Expansion phase: 30-59\n\n"
-                    "Late expansion phase: 60-79\n\n"
-                    "Mature buildout phase: 80+"
-                )
-            )
-        
-        
-        st.markdown("---")
-        
-        ###############
-        # GAUGES
-        ###############
-        
-        
-        col1,col2 = st.columns(2)    
-
-        with col1:
-            st.plotly_chart(
-                temp_fig,
+                "Economic Validation Gap",
+                fmt_score(validation_gap_score),
+                help=metric_help("Economic Validation Gap"),
                 width="stretch",
-                config={"responsive": True}
             )
-
-            if cycle_trend:
-                render_trend_strip(cycle_trend)
-
-     
-
-        with col2:
-            st.plotly_chart(
-                divergence_fig,
+            st.caption(
+                validation_label(validation_gap_score),
                 width="stretch",
-                config={"responsive": True}
             )
-
-            if divergence_trend:
-                render_trend_strip(divergence_trend)
-        
-        st.markdown("---")
-        
-        col3, col4 = st.columns(2)
-
-        with col3:
-            st.plotly_chart(
-                power_fig,
+        else:
+            st.metric(
+                "Economic Validation Gap",
+                "No Data",
+                help=metric_help("Economic Validation Gap"),
                 width="stretch",
-                config={"responsive": True}
             )
 
-            if power_stress_trend:
-                render_trend_strip(power_stress_trend)
+    with col2:
+        st.metric(
+            "Liquidity Support Gap",
+            fmt_score(liquidity_gap_score),
+            help=metric_help("Liquidity Support Gap"),
+            width="stretch",
+        )
+        st.caption(
+            liquidity_label(liquidity_gap_score),
+            width="stretch",
+        )
 
-        with col4:
-            st.plotly_chart(
-                concentration_fig,
-                width="stretch",
-                config={"responsive": True}
-            )
+    with col3:
+        st.metric(
+            "AI Adoption Gap",
+            fmt_score(adoption_gap_score),
+            help=metric_help("Adoption Gap"),
+            width="stretch",
+        )
+        st.caption(
+            adoption_label(adoption_gap_score),
+            width="stretch",
+        )
 
-            if concentration_trend:
-                render_trend_strip(concentration_trend)
-                
-        ###############
-        # GAPS
-        ###############
-        
-        st.markdown("---")    
-         
-        col1,col2,col3 = st.columns(3)
-            
-        with col1:
+    st.markdown("---")
 
-            if pd.notna(reality_gap):
-        
-                st.metric("AI Reality Gap",fmt_score(reality_gap),help=METRIC_DEFINITIONS["Reality Gap"], width='stretch')
-                st.caption(reality_gap_label(reality_gap),width='stretch')
 
-            else:
-
-                st.metric("AI Reality Gap","No Data")
-                
-        with col2:
-            
-            st.metric("AI Liquidity Gap",fmt_score(liquidity_gap_score),help=METRIC_DEFINITIONS["Liquidity Gap"])
-            st.caption(liquidity_label(liquidity_gap_score))
-        
-        with col3:
-            
-            st.metric("AI Adoption Gap",fmt_score(adoption_gap_score),help=METRIC_DEFINITIONS["Adoption Gap"])
-            st.caption(adoption_label(adoption_gap_score))
-        
-            
-        st.markdown("---")
-    
-            
 def render_sector_assessment(macro_df):
 
     st.subheader("Current Sector Assessment")
@@ -296,21 +371,21 @@ def render_sector_assessment(macro_df):
 
     assessment_df = macro_df.copy()
 
-    required_cols = ["Cycle Score", "Heat"]
+    required_cols = ["Sector Score", "Pressure"]
 
     if assessment_df[required_cols].notna().sum().min() == 0:
-        st.warning("Sector assessment unavailable. Check Cycle Score and Heat calculations.")
+        st.warning("Sector assessment unavailable. Check Sector Score and Pressure calculations.")
         return
 
     assessment_df["Opportunity"] = (
-        assessment_df["Heat"] - assessment_df["Cycle Score"]
+        assessment_df["Pressure"] - assessment_df["Sector Score"]
     )
 
     assessment_df["Risk"] = (
-        assessment_df["Cycle Score"] - assessment_df["Heat"]
+        assessment_df["Sector Score"] - assessment_df["Pressure"]
     )
 
-    crowded = assessment_df.loc[assessment_df["Cycle Score"].idxmax()]
+    crowded = assessment_df.loc[assessment_df["Sector Score"].idxmax()]
     opportunity = assessment_df.loc[assessment_df["Opportunity"].idxmax()]
     risk = assessment_df.loc[assessment_df["Risk"].idxmax()]
 
@@ -326,26 +401,28 @@ def render_sector_assessment(macro_df):
         assessment_card("Biggest Risk", risk, "#94a3b8")
 
     st.markdown("---")
-               
+
+
 def render_positioning_charts(macro_df):
 
-        st.subheader("Sector Positioning and Rotation")
-        st.markdown("---")
-        
-        fig_mv = build_positioning_map(macro_df)
-        fig_rotation = build_rotation_matrix(macro_df)
-        
-        col1, col2 = st.columns(2)
+    st.subheader("Sector Positioning and Rotation")
+    st.markdown("---")
 
-        with col1:
-            st.markdown("### AI Sector Positioning Map") 
-            chart_box(fig_mv)
+    fig_mv = build_positioning_map(macro_df)
+    fig_rotation = build_rotation_matrix(macro_df)
 
-        with col2:
-            st.markdown("### AI Sector Rotation Matrix")
-            chart_box(fig_rotation)
-        
-        st.markdown("---")    
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### AI Sector Positioning Map")
+        chart_box(fig_mv)
+
+    with col2:
+        st.markdown("### AI Sector Rotation Matrix")
+        chart_box(fig_rotation)
+
+    st.markdown("---")
+
 
 def render_sector_cards(macro_df):
 
@@ -354,8 +431,8 @@ def render_sector_cards(macro_df):
 
     required = [
         "Sector",
-        "Cycle Score",
-        "Heat",
+        "Sector Score",
+        "Pressure",
         "Avg Return",
         "Forward P/E",
         "Beta"
@@ -368,16 +445,15 @@ def render_sector_cards(macro_df):
         return
 
     rows = macro_df.to_dict("records")
-        
+
     for i in range(0, len(rows), 3):
 
         cols = st.columns(3)
-        
-            
-        for col, row in zip(cols, rows[i:i+3]):
+
+        for col, row in zip(cols, rows[i:i + 3]):
 
             display_sector = sector_display_name(row["Sector"])
-            
+
             card = f"""
             <div style="
                 border:1px solid #374151;
@@ -396,8 +472,8 @@ def render_sector_cards(macro_df):
                 justify-content:space-between;
                 margin-bottom:8px;
             ">
-                <span>Cycle Maturity</span>
-                <b>{fmt_score(row['Cycle Score'])}</b>
+                <span>Sector Score</span>
+                <b>{fmt_score(row['Sector Score'])}</b>
             </div>
 
             <div style="
@@ -406,7 +482,7 @@ def render_sector_cards(macro_df):
                 margin-bottom:16px;
             ">
                 <span>Pressure</span>
-                <b>{fmt_score(row['Heat'])}</b>
+                <b>{fmt_score(row['Pressure'])}</b>
             </div>
 
             <hr style="border-color:#374151;">
@@ -445,8 +521,9 @@ def render_sector_cards(macro_df):
                     unsafe_allow_html=True
                 )
 
-        st.markdown("---")       
-    
+        st.markdown("---")
+
+
 def render_macro_data(fred_data):
 
     if not fred_data:
@@ -457,7 +534,6 @@ def render_macro_data(fred_data):
 
     for indicator, payload in fred_data.items():
 
-        # SAFE EXTRACTION (prevents dict leakage into UI)
         if isinstance(payload, dict):
             value = payload.get("value", None)
             date = payload.get("date", None)
@@ -481,7 +557,8 @@ def render_macro_data(fred_data):
         )
 
         st.caption("Market data cache: 1 hour | FRED cache: 24 hours")
-        
+
+
 def render_edgar_data(sector_data):
 
     if not sector_data:
@@ -500,7 +577,9 @@ def render_edgar_data(sector_data):
             "Company",
             "Market Cap",
             "Revenue",
-            "Revenue Growth"
+            "Revenue Growth",
+            "CapEx",
+            "CapEx Growth",
         ]
 
         available = [
@@ -521,4 +600,3 @@ def render_edgar_data(sector_data):
 
     with st.expander("EDGAR Data", expanded=False):
         st.dataframe(edgar_df, width="stretch")
-    

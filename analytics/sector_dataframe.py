@@ -46,67 +46,20 @@ def resolve_sector_dataframe(raw_data):
         }
 
         rows.append({
-
             "Ticker": ticker,
             "Company": row["Company"],
-
-            "Price":
-                resolve_field(
-                    "Price",
-                    source_data
-                ),
-
-            "P/E":
-                resolve_field(
-                    "P/E",
-                    source_data
-                ),
-
-            "Forward P/E":
-                resolve_field(
-                    "Forward P/E",
-                    source_data
-                ),
-
-            "Market Cap":
-                resolve_field(
-                    "Market Cap",
-                    source_data
-                ),
-
-            "Revenue":
-                resolve_field(
-                    "Revenue",
-                    source_data
-                ),
-            "Revenue Growth":
-                resolve_field(
-                    "Revenue Growth",
-                    source_data
-                ),
-            "Beta":
-                resolve_field(
-                    "Beta",
-                    source_data
-                ),
-
-            "52W High":
-                resolve_field(
-                    "52W High",
-                    source_data
-                ),
-
-            "52W Low":
-                resolve_field(
-                    "52W Low",
-                    source_data
-                ),
-
-            "1Y Return":
-                resolve_field(
-                    "1Y Return",
-                    source_data
-                )
+            "Price": resolve_field("Price", source_data),
+            "P/E": resolve_field("P/E", source_data),
+            "Forward P/E": resolve_field("Forward P/E", source_data),
+            "Market Cap": resolve_field("Market Cap", source_data),
+            "Revenue": resolve_field("Revenue", source_data),
+            "Revenue Growth": resolve_field("Revenue Growth", source_data),
+            "CapEx": resolve_field("CapEx", source_data),
+            "CapEx Growth": resolve_field("CapEx Growth", source_data),
+            "Beta": resolve_field("Beta", source_data),
+            "52W High": resolve_field("52W High", source_data),
+            "52W Low": resolve_field("52W Low", source_data),
+            "1Y Return": resolve_field("1Y Return", source_data),
         })
    
     return pd.DataFrame(rows)

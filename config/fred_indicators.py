@@ -1,5 +1,3 @@
-
-
 FRED_INDICATORS = {
     "Fed Funds Rate": "FEDFUNDS",
     "10Y Treasury Yield": "GS10",
@@ -9,6 +7,8 @@ FRED_INDICATORS = {
     "PPI": "PPIACO",
     "Industrial Production": "INDPRO",
     "Consumer Sentiment": "UMCSENT",
-    #"Chicago PMI": "C-PMI",
-    #"ISM MANUFACTURING PMI": "I-PMI"
+
+    # New AI macro validation inputs
+    "Financial Conditions NFCI": "NFCI",
+    "Info Processing Investment Growth": "A679RL1Q225SBEA",
 }
