@@ -75,7 +75,7 @@ def render_ai_macro_dashboard(
 
     cycle_trend = calc_metric_trend(
         macro_history,
-        "Avg Sector Score"
+        "Maturation Index"
     )
 
     divergence_trend = calc_metric_trend(
@@ -90,7 +90,7 @@ def render_ai_macro_dashboard(
 
     concentration_trend = calc_metric_trend(
         macro_history,
-        "AI Concentration HHI"
+        "Concentration HHI"
     )
     
     render_regime_snapshot(

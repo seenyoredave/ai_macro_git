@@ -102,23 +102,27 @@ def append_macro_history(
 
     ai_concentration_hhi = normalize_hhi(raw_hhi)
 
+    avg_maturation_index = np.nanmean(sector_score)
+
+    avg_pressure = np.nanmean(pressure_scores)
+
     row = {
         "Date": datetime.now().date(),
 
-        "Avg AMI Score": np.nanmean(sector_score),
-        "Divergence": (np.nanmean(sector_score) - np.nanmean(pressure_scores)),
+        "Maturation Index": avg_maturation_index,
+        "Divergence": avg_maturation_index - avg_pressure,
+
         "Power Stress Index": power_stress,
         "Raw Power Stress Z": raw_power_stress,
-        "AI Concentration HHI": ai_concentration_hhi,
+
+        "Concentration HHI": ai_concentration_hhi,
         "Raw AI HHI": raw_hhi,
-        
-        "Avg Pressure": np.nanmean(pressure_scores),
+
+        "Avg Pressure": avg_pressure,
         "Put/Call Ratio": market_sentiment.get("PutCallRatio", np.nan),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),
         "Fed Funds Rate": fred_data.get("Fed Funds Rate", {}).get("value", np.nan),
         "Industrial Production": fred_data.get("Industrial Production", {}).get("value", np.nan),
-
-
     }
 
     snapshot = pd.DataFrame([row])

@@ -175,7 +175,8 @@ if st.session_state.force_rebuild:
         append_macro_history(
             sector_metrics,
             fred_data,
-            market_sentiment
+            market_sentiment,
+            sector_data=sector_data
         )
 
         append_sector_history(sector_metrics)
