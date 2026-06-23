@@ -7,15 +7,6 @@ from datetime import datetime
 from benchmarks.benchmark_service import get_benchmark_metrics
 from config.benchmark_config import BENCHMARK_UNIVERSES
 
-from analytics.hhi_engine import calc_hhi_from_sector_data
-from analytics.power_engine import calculate_power_stress_zscore
-from archive.archive_reader import load_fred_history
-
-from helpers.macro_normalization import (
-    normalize_power_stress,
-    normalize_hhi
-)
-
 
 def write_archive_snapshot(
     snapshot,
@@ -69,56 +60,24 @@ def append_dataframe_history(df, archive_path):
     )
 
 def append_macro_history(
-    sector_metrics,
+    regime_metrics,
     fred_data,
     market_sentiment,
-    sector_data=None,
 ):
-    sector_score = [
-        metrics.get("Sector Score", np.nan)
-        for metrics in sector_metrics.values()
-    ]
-
-    pressure_scores = [
-        metrics.get("Sector Pressure", np.nan)
-        for metrics in sector_metrics.values()
-    ]
-
-    fred_history = load_fred_history()
-
-    raw_power_stress = calculate_power_stress_zscore(
-        fred_history,
-        column="Industrial Production",
-        lookback=24
-    )
-
-    power_stress = normalize_power_stress(raw_power_stress)
-
-    raw_hhi = (
-        calc_hhi_from_sector_data(sector_data)
-        if sector_data is not None
-        else np.nan
-    )
-
-    ai_concentration_hhi = normalize_hhi(raw_hhi)
-
-    avg_maturation_index = np.nanmean(sector_score)
-    
-    avg_pressure = np.nanmean(pressure_scores)
-
     row = {
         "Date": datetime.now().date(),
 
-        "Maturation Index": avg_maturation_index,
-        "Divergence": avg_maturation_index - avg_pressure,
+        "Maturation Index": regime_metrics.get("Maturation Index", np.nan),
+        "Divergence": regime_metrics.get("Divergence", np.nan),
 
-        "Power Stress Index": power_stress,
-        "Raw Power Stress Z": raw_power_stress,
+        "Power Stress Index": regime_metrics.get("Power Stress Index", np.nan),
+        "Raw Power Stress Z": regime_metrics.get("Raw Power Stress Z", np.nan),
 
-        "Concentration HHI": ai_concentration_hhi,
-        "Raw AI HHI": raw_hhi,
+        "Concentration HHI": regime_metrics.get("Concentration HHI", np.nan),
+        "Raw AI HHI": regime_metrics.get("Raw AI HHI", np.nan),
 
-        "Avg Pressure": avg_pressure,
+        "Avg Sector Pressure": regime_metrics.get("Avg Sector Pressure", np.nan),
+
         "Put/Call Ratio": market_sentiment.get("PutCallRatio", np.nan),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),
         "Fed Funds Rate": fred_data.get("Fed Funds Rate", {}).get("value", np.nan),

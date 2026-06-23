@@ -1,13 +1,77 @@
-### These functions build the AI cycle strategy, AMI score, and CDI index functions. 
+### These functions build the regime-level calculations: AMI, divergence, and cycle_strategy
 
 
 import pandas as pd
 import numpy as np
 
-from helpers.macro_normalization import normalize_series
 from config.debug_config import debug_print  
 from config.debug_config import DEBUG 
 
+from analytics.hhi_engine import calc_hhi_from_sector_data
+from analytics.power_engine import calculate_power_stress_zscore
+from helpers.macro_normalization import (
+    normalize_power_stress, 
+    normalize_hhi,
+    normalize_series
+)
+
+def calc_ami(sector_metrics):
+    """
+    Calculate the AI Maturation Index.
+
+    AMI = mean Sector Score across sectors.
+    """
+
+    if not sector_metrics:
+        return np.nan
+
+    sector_scores = [
+        metrics.get("Sector Score", np.nan)
+        for metrics in sector_metrics.values()
+    ]
+
+    sector_scores = pd.to_numeric(
+        pd.Series(sector_scores),
+        errors="coerce"
+    ).dropna()
+
+    if sector_scores.empty:
+        return np.nan
+
+    return sector_scores.mean()
+
+def calc_avg_sector_pressure(sector_metrics):
+    """
+    Calculate average sector pressure across sectors.
+    """
+
+    if not sector_metrics:
+        return np.nan
+
+    pressures = [
+        metrics.get("Sector Pressure", np.nan)
+        for metrics in sector_metrics.values()
+    ]
+
+    pressures = pd.to_numeric(
+        pd.Series(pressures),
+        errors="coerce"
+    ).dropna()
+
+    if pressures.empty:
+        return np.nan
+
+    return pressures.mean()
+
+def calc_divergence(ami, avg_pressure):
+    """
+    Divergence = AMI - average Sector Pressure.
+    """
+
+    if pd.isna(ami) or pd.isna(avg_pressure):
+        return np.nan
+
+    return ami - avg_pressure
 
 def cycle_strategy(score):
     
@@ -47,70 +111,44 @@ def cycle_strategy(score):
             "positioning": "Underweight / defensive tilt"
         }
 
-def ami_score(df):
-    """
-    Compute a composite AMI score using normalized PE, return, beta, and price position.
-    Returns 0-100 score.
-    """
-    pe = normalize_series(
-        df.get(
-            "P/E",
-            pd.Series(dtype=float)
+def build_regime_metrics(
+    sector_metrics,
+    sector_data=None,
+    fred_history=None,
+):
+    ami = calc_ami(sector_metrics)
+    avg_pressure = calc_avg_sector_pressure(sector_metrics)
+    divergence = calc_divergence(ami, avg_pressure)
+
+    raw_power_stress = (
+        calculate_power_stress_zscore(
+            fred_history,
+            column="Industrial Production",
+            lookback=24
         )
-    ).mean()
-
-    ret = normalize_series(
-        df.get(
-            "1Y Return",
-            pd.Series(dtype=float)
-        )
-    ).mean()
-
-    beta = normalize_series(
-        df.get(
-            "Beta",
-            pd.Series(dtype=float)
-        )
-    ).mean()
-
-    pe = 0.5 if pd.isna(pe) else pe
-    ret = 0.5 if pd.isna(ret) else ret
-    beta = 0.5 if pd.isna(beta) else beta
-
-    price_pos = df.apply(
-        lambda row: (row["Price"] - row["52W Low"]) / (row["52W High"] - row["52W Low"])
-        if pd.notna(row.get("Price")) and pd.notna(row.get("52W Low")) and pd.notna(row.get("52W High")) and row["52W High"] != row["52W Low"]
-        else np.nan,
-        axis=1
+        if fred_history is not None
+        else np.nan
     )
 
-    clean_price_pos = price_pos.dropna()
-    price_pos_mean = (
-        clean_price_pos.mean()
-        if not clean_price_pos.empty
-        else 0.5
+    power_stress = normalize_power_stress(raw_power_stress)
+
+    raw_hhi = (
+        calc_hhi_from_sector_data(sector_data)
+        if sector_data is not None
+        else np.nan
     )
-    
-    score = (0.25 * pe + 0.2 * ret + 0.2 * beta + 0.35 * price_pos_mean) * 100
-    
-    if DEBUG:  
-        debug_print("PE:", pe)
-        debug_print("RET:", ret)
-        debug_print("BETA:", beta)
-        debug_print("PRICE_POS:", price_pos_mean)
-    
-    return score
 
-def ai_cdi_index(macro_df):
+    ai_concentration_hhi = normalize_hhi(raw_hhi)
 
-    if macro_df.empty:
-        return np.nan
+    return {
+        "Maturation Index": ami,
+        "Divergence": divergence,
 
-    temp = macro_df["Sector Score"].mean()
-    pressure = macro_df["Pressure"].mean()
+        "Power Stress Index": power_stress,
+        "Raw Power Stress Z": raw_power_stress,
 
-    return temp - pressure
+        "Concentration HHI": ai_concentration_hhi,
+        "Raw AI HHI": raw_hhi,
 
-
-
-    
+        "Avg Sector Pressure": avg_pressure,
+    }

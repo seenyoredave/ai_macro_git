@@ -28,7 +28,6 @@ def as_decimal_rate(value):
 
     return value
 
-
 def mean_numeric(df, column, min_count=2):
     """
     Returns the mean of a numeric dataframe column.
@@ -46,7 +45,6 @@ def mean_numeric(df, column, min_count=2):
 
     return float(values.mean())
 
-
 def extract_payload_value(payload):
     """
     Handles FRED payloads that may be either:
@@ -57,18 +55,6 @@ def extract_payload_value(payload):
         return payload.get("value", np.nan)
 
     return payload
-
-
-def fred_value(fred_data, key):
-    """
-    Exact-key FRED lookup.
-    """
-    if not fred_data:
-        return np.nan
-
-    payload = fred_data.get(key, {})
-    return extract_payload_value(payload)
-
 
 def fred_value_any(fred_data, possible_keys):
     """
@@ -102,7 +88,6 @@ def fred_value_any(fred_data, possible_keys):
 
     return np.nan
 
-
 def find_sector_df(sector_data, requested_sector):
     """
     Finds the requested sector dataframe.
@@ -123,7 +108,6 @@ def find_sector_df(sector_data, requested_sector):
             return sector_data.get(key), key
 
     return None, None
-
 
 def validation_gap(
     sector_data,
@@ -188,7 +172,6 @@ def validation_gap(
     # Dashboard score, in percentage points
     return float(np.clip(raw_gap * 100, -100, 100))
 
-
 def normalize_nfci_liquidity(nfci):
     """
     Converts NFCI into a 0-100 liquidity-support score.
@@ -215,7 +198,6 @@ def normalize_nfci_liquidity(nfci):
     liquidity_support = 50 - (nfci * 50)
 
     return float(np.clip(liquidity_support, 0, 100))
-
 
 def liquidity_gap(macro_df, fred_data):
     """
@@ -269,14 +251,13 @@ def liquidity_gap(macro_df, fred_data):
 
     return float(np.clip(ai_risk_appetite - liquidity_support, -100, 100))
 
-
-def adoption_gap(ai_temp, industrial_production):
+def adoption_gap(ami, industrial_production):
     """
     Keep the existing adoption gap for now.
     We can redesign this later.
     """
 
-    if pd.isna(ai_temp):
+    if pd.isna(ami):
         return np.nan
 
     if pd.isna(industrial_production):
@@ -284,4 +265,4 @@ def adoption_gap(ai_temp, industrial_production):
 
     economy_score = normalize_industrial_production(industrial_production)
 
-    return ai_temp - economy_score
+    return ami - economy_score

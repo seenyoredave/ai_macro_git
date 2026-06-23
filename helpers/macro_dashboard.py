@@ -18,8 +18,6 @@ from helpers.labels import (
     sector_display_name
 )
 
-from analytics.regime_engine import ai_cdi_index
-
 from helpers.visualization import (
     build_maturity_gauge,
     build_divergence_gauge,
@@ -38,22 +36,17 @@ def chart_box(fig):
     with st.container(border=True):
         st.plotly_chart(fig, width="stretch", height=350)
 
-
 def fmt_score(value):
     return "No Data" if pd.isna(value) else f"{value:.0f}"
-
 
 def fmt_percent(value):
     return "No Data" if pd.isna(value) else f"{value * 100:.1f}%"
 
-
 def fmt_multiple(value):
     return "No Data" if pd.isna(value) else f"{value:.1f}x"
 
-
 def fmt_decimal(value):
     return "No Data" if pd.isna(value) else f"{value:.2f}"
-
 
 def metric_help(key, fallback="Definition unavailable."):
     """
@@ -63,7 +56,6 @@ def metric_help(key, fallback="Definition unavailable."):
     has changed but config/metric_definitions.py has not yet been updated.
     """
     return METRIC_DEFINITIONS.get(key, fallback)
-
 
 def get_ai_maturation_value(macro_df):
     """
@@ -121,7 +113,6 @@ def render_trend_strip(trend):
         unsafe_allow_html=True
     )
 
-
 def assessment_card(title, row, border_color):
 
     display_sector = sector_display_name(row["Sector"])
@@ -153,7 +144,6 @@ def assessment_card(title, row, border_color):
 
     st.html(card)
 
-
 def render_regime_snapshot(
     macro_df,
     fred_data=None,
@@ -163,6 +153,7 @@ def render_regime_snapshot(
     power_stress_trend=None,
     concentration_trend=None,
     sector_data=None,
+    regime_metrics=None,
 ):
 
     ### SAFE DEFAULTS ###
@@ -170,6 +161,7 @@ def render_regime_snapshot(
     fred_data = fred_data or {}
     sentiment_data = sentiment_data or {}
     sector_data = sector_data or {}
+    regime_metrics = regime_metrics or {}
 
     ### FRED PULLS ###
 
@@ -179,9 +171,15 @@ def render_regime_snapshot(
 
     ### CORE VALUES ###
 
-    ai_temp = get_ai_maturation_value(macro_df)
-    ai_divergence = ai_cdi_index(macro_df)
+    ami = get_ai_maturation_value(macro_df)
+    
+    avg_pressure = pd.to_numeric(
+        macro_df["Pressure"],
+        errors="coerce"
+    ).mean()
 
+    ai_divergence = regime_metrics.get("Divergence", np.nan)
+    
     power_stress = (
         power_stress_trend.get("current", np.nan)
         if power_stress_trend
@@ -196,7 +194,7 @@ def render_regime_snapshot(
 
     ### GAUGES ###
 
-    temp_fig = build_maturity_gauge(ai_temp)
+    ami_fig = build_maturity_gauge(ami)
     divergence_fig = build_divergence_gauge(ai_divergence)
     power_fig = build_power_stress_gauge(power_stress)
     concentration_fig = build_concentration_gauge(concentration_hhi)
@@ -215,7 +213,7 @@ def render_regime_snapshot(
     )
 
     adoption_gap_score = adoption_gap(
-        ai_temp,
+        ami,
         industrial_prod
     )
 
@@ -224,7 +222,7 @@ def render_regime_snapshot(
 
         debug_print("\n=== REGIME SNAPSHOT ===")
         debug_print("DEBUG sector_data keys:", list(sector_data.keys()) if sector_data else [])
-        debug_print("DEBUG AI Temp:", ai_temp)
+        debug_print("DEBUG AI Temp:", ami)
         debug_print("DEBUG Divergence Estimate:", ai_divergence)
         debug_print("DEBUG Economic Validation Gap:", validation_gap_score)
         debug_print("DEBUG Liquidity Support Gap:", liquidity_gap_score)
@@ -248,7 +246,7 @@ def render_regime_snapshot(
     with metric_col:
         st.metric(
             "Current Regime",
-            short_regime_label(ai_temp),
+            short_regime_label(ami),
             help=(
                 "Early phase: < 30\n\n"
                 "Expansion phase: 30-59\n\n"
@@ -267,7 +265,7 @@ def render_regime_snapshot(
 
     with col1:
         st.plotly_chart(
-            temp_fig,
+            ami_fig,
             width="stretch",
             config={"responsive": True}
         )

@@ -1,9 +1,6 @@
 import streamlit as st
 
-from archive.archive_reader import load_macro_history
-
-from analytics.trend_engine import calc_metric_trend
-from analytics.macro_dataframe import build_macro_dataframe 
+from analytics.macro_dataframe import build_macro_dashboard_data
 
 from config.metric_definitions import METRIC_DEFINITIONS
 
@@ -34,43 +31,30 @@ def render_ai_macro_dashboard(
     
     st.markdown("---")
         
-    macro_df = build_macro_dataframe(sector_metrics)
+    macro_dashboard_data = build_macro_dashboard_data(
+        sector_metrics=sector_metrics,
+        sector_data=sector_data,
+    )
+
+    regime_metrics = macro_dashboard_data["regime_metrics"]
+    
+    macro_df = macro_dashboard_data["macro_df"]
+    trends = macro_dashboard_data["trends"]
 
     if macro_df is None or macro_df.empty:
         st.error("macro_df build failed")
         return
-
-    macro_history = load_macro_history()
-
-    cycle_trend = calc_metric_trend(
-        macro_history,
-        "Maturation Index"
-    )
-
-    divergence_trend = calc_metric_trend(
-        macro_history,
-        "Divergence"
-    )
-    
-    power_stress_trend = calc_metric_trend(
-        macro_history,
-        "Power Stress Index"
-    )
-
-    concentration_trend = calc_metric_trend(
-        macro_history,
-        "Concentration HHI"
-    )
     
     render_regime_snapshot(
         macro_df=macro_df,
         fred_data=fred_data,
         sentiment_data=sentiment_data,
-        cycle_trend=cycle_trend,
-        divergence_trend=divergence_trend,
-        power_stress_trend=power_stress_trend,
-        concentration_trend=concentration_trend,
+        cycle_trend=trends["cycle_trend"],
+        divergence_trend=trends["divergence_trend"],
+        power_stress_trend=trends["power_stress_trend"],
+        concentration_trend=trends["concentration_trend"],
         sector_data=sector_data,
+        regime_metrics=regime_metrics,
     )
 
     render_sector_assessment(macro_df)

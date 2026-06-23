@@ -6,6 +6,7 @@ from sectors.sector_builder import get_sector_data
 
 from analytics.factor_engine import calc_sector_factors
 from analytics.sector_engine import build_sector_metrics
+from analytics.regime_engine import build_regime_metrics
 
 from benchmarks.benchmark_service import get_benchmark_metrics
 
@@ -16,6 +17,7 @@ from loaders.market_loader import load_market_universe
 from helpers.render_all import render_all_dashboards
 from helpers.labels import sector_display_name
 
+from archive.archive_reader import load_fred_history
 from archive.archive import (
     append_macro_history,
     append_sector_history,
@@ -182,11 +184,15 @@ if st.session_state.force_rebuild:
     
     if not st.session_state.archive_suspended:
 
+        regime_metrics = build_regime_metrics(
+            sector_metrics=sector_metrics,
+            sector_data=sector_data,
+        )
+        
         append_macro_history(
-            sector_metrics,
+            regime_metrics,
             fred_data,
             market_sentiment,
-            sector_data=sector_data
         )
 
         append_sector_history(sector_metrics)

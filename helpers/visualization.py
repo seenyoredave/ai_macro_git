@@ -435,14 +435,14 @@ def build_rotation_matrix(macro_df):
         height=500
     )
     
-    temp_mid = pd.to_numeric(macro_df["Sector Score"], errors="coerce").median()
+    ami_mid = pd.to_numeric(macro_df["Sector Score"], errors="coerce").median()
     pressure_mid = pd.to_numeric(macro_df["Pressure"], errors="coerce").median()
 
-    if pd.isna(temp_mid) or pd.isna(pressure_mid):
+    if pd.isna(ami_mid) or pd.isna(pressure_mid):
         return fig_rotation
 
     fig_rotation.add_vline(
-        x=temp_mid,
+        x=ami_mid,
         line_dash="dot"
     )
 
@@ -452,28 +452,28 @@ def build_rotation_matrix(macro_df):
     )
 
     fig_rotation.add_annotation(
-        x=temp_mid * 0.0,
+        x=ami_mid * 0.0,
         y=pressure_mid * 2.4,
         text="Opportunity",
         showarrow=False
     )
 
     fig_rotation.add_annotation(
-        x=temp_mid * 1.6,
+        x=ami_mid * 1.6,
         y=pressure_mid * 2.4,
         text="Crowded",
         showarrow=False
     )
 
     fig_rotation.add_annotation(
-        x=temp_mid * 0.0,
+        x=ami_mid * 0.0,
         y=pressure_mid * -0.5,
         text="Dead Money",
         showarrow=False
     )
 
     fig_rotation.add_annotation(
-        x=temp_mid * 1.6,
+        x=ami_mid * 1.6,
         y=pressure_mid * -0.5,
         text="Narrative Risk",
         showarrow=False
