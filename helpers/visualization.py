@@ -10,92 +10,12 @@ from helpers.labels import sector_display_name
 
 
 ################################
-# NaN SAFE GAUGE HELPERS 
+# NaN SAFE GAUGE HELPER
 ################################
 
 def safe_gauge_value(value, default=0):
     return default if pd.isna(value) else value
 
-def empty_chart(message="No valid chart data available."):
-    fig = go.Figure()
-
-    fig.add_annotation(
-        text=message,
-        xref="paper",
-        yref="paper",
-        x=0.5,
-        y=0.5,
-        showarrow=False,
-        font=dict(size=14)
-    )
-
-    fig.update_layout(
-        template="plotly_white",
-        height=500,
-        xaxis=dict(visible=False),
-        yaxis=dict(visible=False)
-    )
-
-    return fig
-
-def safe_numeric_series(df, column, default=np.nan):
-    """
-    Returns a numeric series aligned to df.index.
-    Missing columns become a default-filled series.
-    """
-    if df is None or df.empty:
-        return pd.Series(dtype=float)
-
-    if column not in df.columns:
-        return pd.Series(default, index=df.index)
-
-    return (
-        pd.to_numeric(df[column], errors="coerce")
-        .replace([np.inf, -np.inf], np.nan)
-    )
-
-def safe_marker_size(values, default=18, min_size=8, max_size=30):
-    """
-    Plotly marker.size cannot contain NaN, inf, or negative values.
-    This scales a numeric series into a clean positive marker-size list.
-    """
-
-    s = pd.to_numeric(values, errors="coerce").replace([np.inf, -np.inf], np.nan)
-
-    if s.notna().sum() == 0:
-        return pd.Series(default, index=s.index).tolist()
-
-    s = s.fillna(s.median()).abs()
-
-    if s.max() == s.min():
-        return pd.Series(default, index=s.index).tolist()
-
-    scaled = (
-        min_size
-        + ((s - s.min()) / (s.max() - s.min()))
-        * (max_size - min_size)
-    )
-
-    return (
-        scaled
-        .replace([np.inf, -np.inf], default)
-        .fillna(default)
-        .clip(lower=min_size, upper=max_size)
-        .tolist()
-    )
-
-def safe_color_values(values, default=50):
-    """
-    Plotly color values can be more forgiving than marker sizes,
-    but filling them keeps the visual layer stable.
-    """
-
-    s = pd.to_numeric(values, errors="coerce").replace([np.inf, -np.inf], np.nan)
-
-    if s.notna().sum() == 0:
-        return pd.Series(default, index=s.index).tolist()
-
-    return s.fillna(s.median()).tolist()
 
 ###############################
 # GAUGE GRADIENT

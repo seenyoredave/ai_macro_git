@@ -4,18 +4,6 @@
 import pandas as pd
 import numpy as np
 
-
-
-def normalize_series(series):
-    """
-    Scales a pandas series between 0-1 robustly.
-    Returns 0.5 for constant or empty series.
-    """
-    clean = series.dropna()
-    if clean.empty or clean.max() == clean.min():
-        return pd.Series([0.5] * len(series), index=series.index)
-    return (series - clean.min()) / (clean.max() - clean.min() + 1e-6)
-
 def normalize_put_call(pcr):
 
     # P/C ratio works backwards - low = bullish/ high = bearish
@@ -162,7 +150,6 @@ def normalize_power_stress(z_score):
     ) * 100
 
     return np.clip(normalized, 0, 100)
-
 
 def normalize_hhi(hhi):
     """

@@ -17,7 +17,6 @@ from loaders.market_loader import load_market_universe
 from helpers.render_all import render_all_dashboards
 from helpers.labels import sector_display_name
 
-from archive.archive_reader import load_fred_history
 from archive.archive import (
     append_macro_history,
     append_sector_history,

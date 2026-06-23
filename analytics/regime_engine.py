@@ -4,15 +4,11 @@
 import pandas as pd
 import numpy as np
 
-from config.debug_config import debug_print  
-from config.debug_config import DEBUG 
-
 from analytics.hhi_engine import calc_hhi_from_sector_data
 from analytics.power_engine import calculate_power_stress_zscore
 from helpers.macro_normalization import (
     normalize_power_stress, 
     normalize_hhi,
-    normalize_series
 )
 
 def calc_ami(sector_metrics):

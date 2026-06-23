@@ -218,12 +218,12 @@ def render_regime_snapshot(
     )
 
     if DEBUG:
-        print("DEBUG POWER STRESS INDEX:", power_stress)
+        debug_print("DEBUG POWER STRESS INDEX:", power_stress)
 
         debug_print("\n=== REGIME SNAPSHOT ===")
         debug_print("DEBUG sector_data keys:", list(sector_data.keys()) if sector_data else [])
-        debug_print("DEBUG AI Temp:", ami)
-        debug_print("DEBUG Divergence Estimate:", ai_divergence)
+        debug_print("DEBUG AMI:", ami)
+        debug_print("DEBUG Divergence:", ai_divergence)
         debug_print("DEBUG Economic Validation Gap:", validation_gap_score)
         debug_print("DEBUG Liquidity Support Gap:", liquidity_gap_score)
         debug_print("DEBUG Adoption Gap:", adoption_gap_score)
@@ -585,10 +585,10 @@ def render_edgar_data(sector_data):
             if col in df.columns
         ]
 
-        temp = df[available].copy()
-        temp.insert(0, "Sector", sector)
+        sector_snapshot = df[available].copy()
+        sector_snapshot.insert(0, "Sector", sector)
 
-        rows.append(temp)
+        rows.append(sector_snapshot)
 
     if not rows:
         st.warning("No EDGAR rows available")

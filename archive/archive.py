@@ -165,10 +165,10 @@ def append_yf_history(sector_data):
             if col in df.columns
         ]
 
-        temp = df[available].copy()
-        temp.insert(0, "Sector", sector)
+        sector_snapshot = df[available].copy()
+        sector_snapshot.insert(0, "Sector", sector)
 
-        rows.append(temp)
+        rows.append(sector_snapshot)
 
     if not rows:
         return
