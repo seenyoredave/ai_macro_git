@@ -112,7 +112,7 @@ def build_tabs():
     return tabs, sectors
 
 
-def build_dashboard_data():
+def build_sector_dashboard_data():
 
     sector_data = {}
     sector_metrics = {}
@@ -173,7 +173,7 @@ if "force_rebuild" not in st.session_state:
 
 if st.session_state.force_rebuild:
 
-    sector_data, sector_metrics = build_dashboard_data()
+    sector_data, sector_metrics = build_sector_dashboard_data()
 
     fred_data = load_fred()
     market_sentiment = load_put_call()
@@ -229,6 +229,7 @@ render_all_dashboards(
     sector_data,
     sector_metrics,
     fred_data,
-    market_sentiment
+    market_sentiment,
+    regime_metrics
 )
         

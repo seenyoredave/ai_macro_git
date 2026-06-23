@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
-from analytics.regime_engine import cycle_strategy
 from helpers.visualization import factor_color
 
 from config.debug_config import debug_print
@@ -217,7 +216,13 @@ def render_sector_dashboard(sector, df, metrics):
     scored_factors = metrics.get("Scored Factors", pd.DataFrame())
     display_sector = sector_display_name(sector)
 
-    strategy = cycle_strategy(score)
+    strategy = metrics.get("Cycle Strategy", {})
+    strategy = strategy or {
+        "regime": "No Data",
+        "action": "Insufficient data",
+        "risk": "Unable to assess",
+        "positioning": "No signal",
+    }
     
     if DEBUG: 
         debug_print("Sector Score:", score)

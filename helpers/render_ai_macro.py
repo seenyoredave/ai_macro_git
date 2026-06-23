@@ -14,11 +14,12 @@ from helpers.macro_dashboard import (
 )
 
 
-def render_ai_macro_dashboard(
+def render_ai_macro_dashboard (
     sector_metrics,
     sector_data=None,
     fred_data=None,
-    sentiment_data=None
+    sentiment_data=None,
+    regime_metrics=None,
 ):
 
     st.title("AI Regime Dashboard")
@@ -33,7 +34,7 @@ def render_ai_macro_dashboard(
         
     macro_dashboard_data = build_macro_dashboard_data(
         sector_metrics=sector_metrics,
-        sector_data=sector_data,
+        regime_metrics=regime_metrics,
     )
 
     regime_metrics = macro_dashboard_data["regime_metrics"]

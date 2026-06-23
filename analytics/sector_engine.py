@@ -3,6 +3,9 @@ import pandas as pd
 
 from factors.factor_weights import FACTOR_WEIGHTS
 from factors.factor_normalization import normalize_factor
+
+from analytics.regime_engine import cycle_strategy
+
 from config.debug_config import debug_print 
 from config.debug_config import DEBUG 
 
@@ -133,7 +136,7 @@ def build_sector_metrics(factor_df, yf_df):
     return {
         "Sector Score": sector_score,
         "Sector Pressure": speculation_pressure,
-
+        "Cycle Strategy": cycle_strategy(sector_score),
         "Avg Return": yf_df["1Y Return"].mean() if "1Y Return" in yf_df else np.nan,
         "Forward P/E": yf_df["Forward P/E"].mean() if "Forward P/E" in yf_df else np.nan,
         "Beta": yf_df["Beta"].mean() if "Beta" in yf_df else np.nan,

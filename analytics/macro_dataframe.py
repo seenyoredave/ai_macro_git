@@ -1,12 +1,10 @@
 
-
 import numpy as np 
 import pandas as pd 
 
 from archive.archive_reader import load_macro_history
 
 from analytics.trend_engine import calc_metric_trend
-from analytics.regime_engine import build_regime_metrics
 
 from config.debug_config import debug_print
 from config.debug_config import DEBUG
@@ -41,7 +39,11 @@ def build_macro_dataframe(sector_metrics):
 
         return macro_df
     
-def build_macro_dashboard_data(sector_metrics, sector_data=None):
+def build_macro_dashboard_data(
+    sector_metrics,
+    regime_metrics=None,
+    ):
+    
     """
     Build macro dashboard data products.
 
@@ -53,10 +55,7 @@ def build_macro_dashboard_data(sector_metrics, sector_data=None):
 
     macro_history = load_macro_history()
 
-    regime_metrics = build_regime_metrics(
-        sector_metrics=sector_metrics,
-        sector_data=sector_data,
-    )
+    regime_metrics = regime_metrics or {}
     
     trends = {
         "cycle_trend": calc_metric_trend(
