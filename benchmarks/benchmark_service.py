@@ -116,7 +116,7 @@ def get_archived_benchmark_metrics(benchmark: str):
     }
 
 #################################################
-# PUBLIC API (THIS is what everything imports)
+# PUBLIC API (This is what everything imports)
 #################################################
 
 @st.cache_data(ttl=3600)
