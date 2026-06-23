@@ -1,4 +1,4 @@
-from loaders.benchmark_loader import load_benchmark
+
 from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
 from loaders.benchmark_loader import get_constituents
 from benchmarks.benchmark_package import BenchmarkPackage

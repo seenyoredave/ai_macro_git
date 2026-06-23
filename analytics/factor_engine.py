@@ -107,13 +107,6 @@ def calc_sector_factors(sector, yf_df, benchmark_metrics=None):
             benchmark_pe
         )
 
-        if DEBUG:
-            debug_print("RUNNING FACTOR:", factor_name)
-            debug_print("SECTOR:", sector)
-            debug_print("FACTORS:", factors)
-            debug_print("YF DF SHAPE:", yf_df.shape)
-            debug_print("YF COLS:", yf_df.columns.tolist())
-
         rows.append({
             "Sector": sector,
             "Factor": factor_name,

@@ -204,10 +204,8 @@ def render_ticker_controls(sector):
 def render_sector_dashboard(sector, df, metrics):
     
     if DEBUG: 
-        debug_print("\n=== RENDER SECTOR ===")
         debug_print("Sector:", sector)
         debug_print("DF shape:", None if df is None else df.shape)
-        debug_print("DF columns:", None if df is None else df.columns.tolist())
         debug_print("Metric keys:", None if metrics is None else metrics.keys())
 
     if df is None or df.empty:

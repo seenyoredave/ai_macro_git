@@ -12,7 +12,9 @@ import numpy as np
 import yfinance as yf 
 import streamlit as st 
 import pandas as pd 
+
 from pathlib import Path 
+from config.debug_config import debug_print 
 
 PUT_CALL_ARCHIVE = Path("archive/put_call_history.csv")
 
@@ -71,8 +73,7 @@ def load_put_call():
 
         import traceback
 
-        print("\n=== PCR FAILURE ===")
-        print(e)
+        debug_print("\n=== PCR FAILURE ===:", e)
 
         traceback.print_exc()
 

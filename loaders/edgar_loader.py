@@ -6,6 +6,7 @@ import streamlit as st
 
 from datetime import date
 from archive.archive_reader import load_edgar_history
+from config.debug_config import debug_print
 
 #################################################
 # SEC / EDGAR SETTINGS
@@ -327,7 +328,7 @@ def load_edgar(tickers):
     archived_today = read_edgar_archive_for_today(tickers)
 
     if archived_today is not None:
-        print("Loading today's EDGAR rows from edgar_history.csv")
+        debug_print("Loading today's EDGAR rows from edgar_history.csv")
 
         return {
             row["Ticker"]: {
@@ -346,7 +347,7 @@ def load_edgar(tickers):
     try:
         ticker_cik_map = load_ticker_cik_map()
     except Exception as e:
-        print(f"EDGAR ticker-CIK map failed -> {e}")
+        debug_print(f"EDGAR ticker-CIK map failed -> {e}")
 
         for ticker in tickers.keys():
             edgar_data[ticker] = {
@@ -396,7 +397,7 @@ def load_edgar(tickers):
             time.sleep(0.12)
 
         except Exception as e:
-            print(f"EDGAR failed: {ticker_upper} -> {e}")
+            debug_print(f"EDGAR failed: {ticker_upper} -> {e}")
 
             edgar_data[ticker_upper] = {
                 "Revenue": np.nan,

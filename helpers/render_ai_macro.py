@@ -1,7 +1,4 @@
 import streamlit as st
-import yfinance as yf
-import pandas as pd
-import numpy as np
 
 from archive.archive_reader import load_macro_history
 
@@ -9,7 +6,6 @@ from analytics.trend_engine import calc_metric_trend
 from analytics.macro_dataframe import build_macro_dataframe 
 
 from config.metric_definitions import METRIC_DEFINITIONS
-from config.debug_config import DEBUG 
 
 from helpers.macro_dashboard import (
     render_regime_snapshot,
@@ -37,33 +33,6 @@ def render_ai_macro_dashboard(
     st.write(METRIC_DEFINITIONS['Purpose Statement'])
     
     st.markdown("---")
-    
-    if DEBUG:     
-        if not sector_metrics:
-            st.error("Empty sector_metrics")
-            return
-
-
-        print("\n=== SECTOR METRICS DEBUG ===")
-
-        for sector, metrics in sector_metrics.items():
-            print(
-                sector,
-                "Cycle:",
-                metrics.get("Sector Score"),
-                "Pressure:",
-                metrics.get("Sector Pressure"),
-            )
-
-        print("\n=== SECTOR DATA DEBUG ===")
-
-        for sector, df in sector_data.items():
-            print("\n", sector)
-
-            if df is None or df.empty:
-                print("EMPTY")
-            else:
-                print(df["Ticker"].tolist())
         
     macro_df = build_macro_dataframe(sector_metrics)
 

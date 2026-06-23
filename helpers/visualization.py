@@ -7,7 +7,6 @@ import numpy as np
 import plotly.graph_objects as go
 
 from helpers.labels import sector_display_name
-from config.metric_definitions import METRIC_DEFINITIONS 
 
 
 ################################

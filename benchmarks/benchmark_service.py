@@ -6,8 +6,7 @@ from datetime import date
 from archive.archive_reader import load_benchmark_history 
 from loaders.benchmark_loader import load_all_benchmarks
 from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
-from config.debug_config import debug_print  
-from config.debug_config import DEBUG 
+from config.debug_config import debug_print 
 
 
 #################################################
@@ -33,7 +32,7 @@ def get_benchmark_package():
         archived = get_archived_benchmark_metrics(name)
 
         if archived is not None:
-            print(f"Loading today's benchmark package from benchmark_history.csv: {name}")
+            debug_print(f"Loading today's benchmark package from benchmark_history.csv: {name}")
 
             package[name] = {
                 "raw": pd.DataFrame(),
@@ -126,7 +125,7 @@ def get_benchmark_metrics(benchmark: str):
     archived = get_archived_benchmark_metrics(benchmark)
 
     if archived is not None:
-        print(f"Loading today's benchmark metrics from benchmark_history.csv: {benchmark}")
+        debug_print(f"Loading today's benchmark metrics from benchmark_history.csv: {benchmark}")
         return archived
 
     package = get_benchmark_package()

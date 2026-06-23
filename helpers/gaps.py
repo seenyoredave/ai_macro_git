@@ -178,10 +178,7 @@ def validation_gap(
         debug_print("EVG capex_growth:", capex_growth)
         debug_print("EVG revenue_growth:", revenue_growth)
         debug_print("EVG macro_growth:", macro_growth)
-        debug_print(
-            "EVG available FRED keys:",
-            list(fred_data.keys()) if fred_data else []
-        )
+
 
     if any(pd.isna(x) for x in [capex_growth, revenue_growth, macro_growth]):
         return np.nan

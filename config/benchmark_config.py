@@ -1,4 +1,4 @@
-import pandas as pd
+
 
 #################################################
 # STATIC INDEX CONSTITUENTS (STABLE SNAPSHOT)

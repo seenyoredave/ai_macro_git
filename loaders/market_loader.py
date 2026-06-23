@@ -9,6 +9,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 from loaders.edgar_loader import load_edgar
 
+from config.debug_config import debug_print 
+
 
 #################################################
 # CAPEX HELPERS
@@ -180,28 +182,6 @@ def calc_revenue_growth(ticker_obj, info):
                 return (float(latest_ttm) / float(prior_ttm)) - 1
 
     return np.nan
-
-def has_usable_evg_fields(df, min_valid_rows=1):
-    """
-    Returns True only if archived/live YFinance data contains usable EVG fields.
-
-    This prevents old yf_history.csv rows from silently blocking newly added
-    capex/revenue-growth logic.
-    """
-    if df is None or df.empty:
-        return False
-
-    missing = [col for col in EVG_REQUIRED_COLUMNS if col not in df.columns]
-
-    if missing:
-        return False
-
-    valid_counts = {
-        col: pd.to_numeric(df[col], errors="coerce").dropna().shape[0]
-        for col in EVG_REQUIRED_COLUMNS
-    }
-
-    return valid_counts.get("Revenue Growth", 0) >= min_valid_rows
 
 #################################################
 # YF HISTORY SETTINGS
@@ -380,10 +360,10 @@ def load_yfinance(ticker_tuple, sector=None):
         ]
 
         if not evg_missing_or_empty:
-            print(f"Loading today's yfinance rows from yf_history.csv: {sector}")
+            debug_print(f"Loading today's yfinance rows from yf_history.csv: {sector}")
             return archived_today
 
-        print(
+        debug_print(
             f"Today's yf_history found, but EVG columns are missing/empty "
             f"{evg_missing_or_empty}. Pulling yfinance to backfill: {sector}"
         )
@@ -391,7 +371,7 @@ def load_yfinance(ticker_tuple, sector=None):
         fresh = pull_yfinance(ticker_tuple)
 
         if fresh is None or fresh.empty:
-            print("Fresh yfinance backfill returned empty. Using archive as-is.")
+            debug_print("Fresh yfinance backfill returned empty. Using archive as-is.")
             return archived_today
 
         fresh = fresh.copy()
@@ -409,7 +389,7 @@ def load_yfinance(ticker_tuple, sector=None):
         return archived_today
 
     try:
-        print(f"No yf_history rows found for today. Pulling yfinance: {sector}")
+        debug_print(f"No yf_history rows found for today. Pulling yfinance: {sector}")
 
         df = pull_yfinance(ticker_tuple)
 
@@ -419,7 +399,7 @@ def load_yfinance(ticker_tuple, sector=None):
         return df
 
     except Exception as e:
-        print(f"yfinance pull failed -> {e}")
+        debug_print(f"yfinance pull failed -> {e}")
 
         fallback = read_latest_yf_history(
             tickers,
@@ -427,7 +407,7 @@ def load_yfinance(ticker_tuple, sector=None):
         )
 
         if fallback is not None:
-            print(f"Using latest yf_history.csv fallback: {sector}")
+            debug_print(f"Using latest yf_history.csv fallback: {sector}")
             return fallback
 
         raise RuntimeError(
@@ -446,19 +426,6 @@ def load_sector_data(tickers, sector=None):
     )
 
     raw_edgar = load_edgar(tickers)
-
-    if "Revenue Growth" in raw_yf.columns or "CapEx Growth" in raw_yf.columns:
-        print("\n=== RAW YFINANCE EVG CHECK ===")
-        print(
-            raw_yf[
-                [
-                    "Ticker",
-                    "Revenue Growth",
-                    "CapEx",
-                    "CapEx Growth"
-                ]
-            ]
-        )
 
     return {
         "yfinance": raw_yf,
