@@ -71,13 +71,12 @@ def load_put_call():
 
     except Exception as e:
 
-        import traceback
-
-        debug_print("\n=== PCR FAILURE ===:", e)
-
-        traceback.print_exc()
+        debug_print("PCR live load failed:", e)
 
         fallback_pcr = load_latest_put_call_archive()
+
+        if pd.isna(fallback_pcr):
+            debug_print("PCR archive fallback unavailable")
 
         return {
             "PutCallRatio": fallback_pcr,

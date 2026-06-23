@@ -1,12 +1,10 @@
 
 import pandas as pd
-import streamlit as st
 
 from config.debug_config import debug_print
 from config.debug_config import DEBUG
 
-if DEBUG:
-    st.caption("Using cached market data")
+debug_print("Using cached market data")
 
 TIER_WEIGHTS = {
     1: 4.0,
