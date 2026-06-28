@@ -75,6 +75,9 @@ METRIC_DEFINITIONS = {
     This project seeks to quantify and distinguish genuine AI-driven economic transformation 
     from AI-driven capital speculation through use of novel and industry-standard measures 
     drawing from publicly available market and Federal Reserve economic data. 
+    
+    This project further seeks to understand the flow of liquidity in the AI economy and detect proximity to future market corrections. 
+    
     """
 }
 
