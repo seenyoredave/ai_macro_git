@@ -376,11 +376,11 @@ def render_sector_assessment(macro_df):
         return
 
     assessment_df["Opportunity"] = (
-        assessment_df["Pressure"] - assessment_df["Sector Score"]
+        assessment_df["Sector Score"] - assessment_df["Pressure"]
     )
 
     assessment_df["Risk"] = (
-        assessment_df["Sector Score"] - assessment_df["Pressure"]
+        assessment_df["Pressure"] - assessment_df["Sector Score"]
     )
 
     crowded = assessment_df.loc[assessment_df["Sector Score"].idxmax()]
