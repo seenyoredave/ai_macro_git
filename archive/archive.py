@@ -100,6 +100,92 @@ def _read_existing_for_write(archive_file, key_cols):
     return existing
 
 
+def _quarantine_malformed_edgar_archive(archive_file, reason):
+    """Move an unusable EDGAR archive aside before a clean reset write.
+
+    EDGAR is the only archive with an explicitly approved clean-reset path. A
+    malformed legacy file is preserved under a timestamped backup name rather
+    than blocking creation of the new contract-compliant archive.
+    """
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup = archive_file.with_name(
+        f"{archive_file.stem}.malformed_{timestamp}{archive_file.suffix}"
+    )
+
+    counter = 1
+    while backup.exists():
+        backup = archive_file.with_name(
+            f"{archive_file.stem}.malformed_{timestamp}_{counter}{archive_file.suffix}"
+        )
+        counter += 1
+
+    archive_file.replace(backup)
+    print(
+        f"EDGAR archive reset: moved malformed file to {backup}. "
+        f"Reason: {reason}"
+    )
+    return backup
+
+
+def _read_existing_edgar_for_write(archive_file, key_cols):
+    """Read EDGAR history, quarantining unrecoverable legacy/reset debris.
+
+    A missing or empty EDGAR archive is a normal clean-start state. If a
+    non-empty file lacks the identity contract or contains invalid identity
+    values, preserve it as a timestamped malformed backup and continue with an
+    empty EDGAR archive. Other archives retain the strict fail-loud behavior in
+    ``_read_existing_for_write``.
+    """
+    empty = pd.DataFrame(columns=EDGAR_REQUIRED_COLUMNS)
+
+    if not archive_file.exists() or archive_file.stat().st_size == 0:
+        return empty
+
+    try:
+        existing = pd.read_csv(archive_file)
+    except pd.errors.EmptyDataError:
+        return empty
+
+    if existing.empty:
+        return empty
+
+    existing = existing.dropna(how="all").copy()
+
+    if existing.empty:
+        return empty
+
+    missing = [col for col in key_cols if col not in existing.columns]
+    if missing:
+        _quarantine_malformed_edgar_archive(
+            archive_file,
+            f"missing required key columns {missing}",
+        )
+        return empty
+
+    existing = normalize_key_columns(existing)
+
+    try:
+        _validate_archive_keys(
+            existing,
+            key_cols,
+            archive_file,
+            require_values=True,
+        )
+
+        existing = normalize_date_column(existing, "Date")
+        _validate_archive_keys(
+            existing,
+            key_cols,
+            archive_file,
+            require_values=True,
+        )
+    except ValueError as exc:
+        _quarantine_malformed_edgar_archive(archive_file, str(exc))
+        return empty
+
+    return existing
+
+
 def _ordered_archive_columns(existing, snapshot, key_cols):
     ordered = []
 
@@ -128,6 +214,194 @@ def _drop_rows_replaced_by_snapshot(existing, snapshot, replace_today, key_cols)
     # writes replace the current dashboard date only. Historical dates are not
     # deduped or reshaped during normal app execution.
     return existing[existing["Date"].astype(str) != today].copy()
+
+
+
+def _edgar_value_present(value) -> bool:
+    try:
+        if pd.isna(value):
+            return False
+    except Exception:
+        pass
+
+    return str(value).strip() != ""
+
+
+def _edgar_quality_score(row) -> int:
+    """Rank EDGAR rows by coherent SEC content, not simple field count."""
+    status = str(
+        row.get("EDGAR Status", "") if hasattr(row, "get") else ""
+    ).upper().strip()
+
+    has_cik = _edgar_value_present(row.get("CIK") if hasattr(row, "get") else None)
+    has_revenue = _edgar_value_present(row.get("Revenue") if hasattr(row, "get") else None)
+    has_revenue_fy = _edgar_value_present(row.get("Revenue FY") if hasattr(row, "get") else None)
+    has_capex = _edgar_value_present(row.get("CapEx") if hasattr(row, "get") else None)
+    has_capex_fy = _edgar_value_present(row.get("CapEx FY") if hasattr(row, "get") else None)
+    has_revenue_growth = _edgar_value_present(
+        row.get("Revenue Growth") if hasattr(row, "get") else None
+    )
+    has_capex_growth = _edgar_value_present(
+        row.get("CapEx Growth") if hasattr(row, "get") else None
+    )
+
+    score = 0
+
+    if has_cik:
+        score += 10
+    if has_revenue and has_revenue_fy:
+        score += 40
+    if has_capex and has_capex_fy:
+        score += 40
+    if has_revenue_growth:
+        score += 4
+    if has_capex_growth:
+        score += 4
+
+    if status.startswith("OK"):
+        score += 20
+    elif status.startswith("PARTIAL"):
+        score += 10
+    elif status.startswith(("UNSUPPORTED", "UNAVAILABLE", "STALE")):
+        score += 5
+    elif status.startswith("FAILED") or status.startswith("LIVE FAILED"):
+        score -= 20
+
+    return score
+
+
+def _prepare_edgar_rows_for_quality_merge(df, origin):
+    if df is None or df.empty:
+        return pd.DataFrame(columns=EDGAR_REQUIRED_COLUMNS + ["_parsed_date", "_quality", "_origin"])
+
+    out = ensure_columns(df.copy(), EDGAR_REQUIRED_COLUMNS)
+    out = out.reindex(columns=EDGAR_REQUIRED_COLUMNS)
+    out = normalize_key_columns(out)
+    out["_parsed_date"] = pd.to_datetime(out["Date"], errors="coerce").dt.date
+    out["_quality"] = out.apply(_edgar_quality_score, axis=1)
+    out["_origin"] = int(origin)
+    return out
+
+
+def _merge_edgar_archive_rows(existing, snapshot, replacement_window_days=7):
+    """Merge EDGAR snapshots while suppressing inferior rows in one refresh window.
+
+    Ticker is the economic identity because sector labels can change. Historical
+    observations outside the seven-day EDGAR freshness window are preserved.
+    Within one freshness window, a higher-quality live result replaces lower-
+    quality partial rows; a lower-quality refresh cannot displace better data.
+    """
+    existing_prepared = _prepare_edgar_rows_for_quality_merge(existing, origin=0)
+    snapshot_prepared = _prepare_edgar_rows_for_quality_merge(snapshot, origin=1)
+
+    if snapshot_prepared.empty:
+        return existing_prepared.drop(
+            columns=["_parsed_date", "_quality", "_origin"],
+            errors="ignore",
+        )
+
+    # One best incoming row per Date + Ticker. The newest snapshot wins ties.
+    snapshot_prepared = snapshot_prepared.sort_values(
+        ["Date", "Ticker", "_quality", "_origin"],
+        kind="stable",
+    ).groupby(["Date", "Ticker"], dropna=False, sort=False).tail(1)
+
+    kept_existing = existing_prepared.copy()
+    accepted_snapshot_rows = []
+
+    for _, incoming in snapshot_prepared.iterrows():
+        ticker = str(incoming.get("Ticker", "")).upper().strip()
+        incoming_date = incoming.get("_parsed_date")
+        incoming_quality = int(incoming.get("_quality", 0))
+
+        if not ticker or incoming_date is None or pd.isna(incoming_date):
+            continue
+
+        same_ticker = kept_existing["Ticker"].astype(str).str.upper().str.strip() == ticker
+        age_days = kept_existing["_parsed_date"].map(
+            lambda value: (incoming_date - value).days
+            if value is not None and not pd.isna(value)
+            else np.nan
+        )
+        in_window = same_ticker & age_days.between(
+            0,
+            max(int(replacement_window_days) - 1, 0),
+            inclusive="both",
+        )
+        window_rows = kept_existing[in_window]
+
+        if not window_rows.empty:
+            best_existing_quality = int(window_rows["_quality"].max())
+
+            # A degraded refresh must never become the latest archived row.
+            if incoming_quality < best_existing_quality:
+                continue
+
+            # Same-day rows are one logical observation. Replace them on equal
+            # or better quality regardless of a sector-label change.
+            remove_mask = in_window & (kept_existing["_parsed_date"] == incoming_date)
+
+            # When the incoming row is materially better, remove inferior rows
+            # from the same seven-day refresh window so partial duplicates do
+            # not accumulate. Equal-quality historical rows remain intact.
+            if incoming_quality > best_existing_quality:
+                remove_mask = remove_mask | (
+                    in_window & (kept_existing["_quality"] < incoming_quality)
+                )
+
+            kept_existing = kept_existing[~remove_mask].copy()
+
+        accepted_snapshot_rows.append(incoming)
+
+    if accepted_snapshot_rows:
+        accepted = pd.DataFrame(accepted_snapshot_rows)
+
+        if kept_existing.empty:
+            combined = accepted.copy()
+        else:
+            combined = pd.concat([kept_existing, accepted], ignore_index=True)
+    else:
+        combined = kept_existing
+
+    combined = combined.sort_values(
+        ["_parsed_date", "Ticker", "_quality", "_origin"],
+        kind="stable",
+    )
+    combined = combined.groupby(
+        ["Date", "Ticker"],
+        dropna=False,
+        sort=False,
+    ).tail(1)
+
+    return combined.drop(
+        columns=["_parsed_date", "_quality", "_origin"],
+        errors="ignore",
+    ).reindex(columns=EDGAR_REQUIRED_COLUMNS)
+
+
+def write_edgar_archive_snapshot(snapshot):
+    archive_file = resolve_archive_path("archive/edgar_history.csv")
+    archive_file.parent.mkdir(parents=True, exist_ok=True)
+
+    key_cols = ARCHIVE_KEYS["edgar"]
+
+    snapshot = snapshot.copy()
+    snapshot.insert(0, "Date", today_iso())
+    snapshot = snapshot.drop(columns=["Company", "Market Cap"], errors="ignore")
+    snapshot = ensure_columns(snapshot, [c for c in EDGAR_REQUIRED_COLUMNS if c != "Date"])
+    snapshot = snapshot.reindex(columns=EDGAR_REQUIRED_COLUMNS)
+    snapshot = _normalize_snapshot_for_write(snapshot, archive_file, key_cols)
+
+    existing = _read_existing_edgar_for_write(archive_file, key_cols)
+    existing = existing.drop(columns=["Company", "Market Cap"], errors="ignore")
+
+    combined = _merge_edgar_archive_rows(existing, snapshot)
+    combined = normalize_key_columns(combined)
+    combined = normalize_date_column(combined, "Date")
+    combined = combined.reindex(columns=EDGAR_REQUIRED_COLUMNS)
+
+    _atomic_archive_write(combined, archive_file, key_cols)
+
 
 
 def _atomic_archive_write(df, archive_file, key_cols):
@@ -365,25 +639,27 @@ def append_edgar_history(sector_data, raw_edgar_data=None):
 
                 edgar_row = raw_edgar_data.get(ticker, {}) or {}
 
+                # Only archive true SEC refreshes. Fallback/archive-reused rows
+                # should not create new dated duplicates. They remain available
+                # for rendering, but they are not new EDGAR observations.
+                if str(edgar_row.get("EDGAR Source", "")) != "SEC Live":
+                    continue
+
                 rows.append({
                     "Sector": sector,
                     "Ticker": ticker,
-                    "Company": row.get("Company", np.nan),
                     "Revenue": edgar_row.get("Revenue", np.nan),
                     "Revenue Growth": edgar_row.get("Revenue Growth", np.nan),
                     "CapEx": edgar_row.get("CapEx", np.nan),
                     "CapEx Growth": edgar_row.get("CapEx Growth", np.nan),
                     "Revenue FY": edgar_row.get("Revenue FY", np.nan),
                     "CapEx FY": edgar_row.get("CapEx FY", np.nan),
-                    "Market Cap": edgar_row.get("Market Cap", np.nan),
                     "CIK": edgar_row.get("CIK", np.nan),
                     "EDGAR Status": edgar_row.get("EDGAR Status", np.nan),
                 })
     else:
         edgar_cols = [
             "Ticker",
-            "Company",
-            "Market Cap",
             "Revenue",
             "Revenue Growth",
             "CapEx",
@@ -411,14 +687,16 @@ def append_edgar_history(sector_data, raw_edgar_data=None):
     if not rows:
         return
 
-    snapshot = pd.DataFrame(rows)
-    snapshot = ensure_columns(snapshot, [c for c in EDGAR_REQUIRED_COLUMNS if c != "Date"])
+    if raw_edgar_data is None:
+        snapshot = pd.concat(rows, ignore_index=True)
+    else:
+        snapshot = pd.DataFrame(rows)
 
-    append_dataframe_history(
-        snapshot,
-        "archive/edgar_history.csv",
-        key_cols=ARCHIVE_KEYS["edgar"],
-    )
+    snapshot = snapshot.drop(columns=["Company", "Market Cap"], errors="ignore")
+    snapshot = ensure_columns(snapshot, [c for c in EDGAR_REQUIRED_COLUMNS if c != "Date"])
+    snapshot = snapshot.reindex(columns=[c for c in EDGAR_REQUIRED_COLUMNS if c != "Date"])
+
+    write_edgar_archive_snapshot(snapshot)
 
 
 def append_fred_history(fred_data):
