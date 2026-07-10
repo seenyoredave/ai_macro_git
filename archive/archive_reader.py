@@ -214,8 +214,21 @@ def rows_for_date(
     df: pd.DataFrame,
     target_date: date | str | None = None,
 ) -> pd.DataFrame:
-    if df is None or df.empty or "Date" not in df.columns:
+    """
+    Return archive rows matching target_date while preserving the input schema.
+
+    A date rollover normally produces an empty current-day slice before the
+    first archive write. That empty slice is a valid state and downstream
+    status checks still need columns such as Date/Sector/Ticker to exist.
+    """
+    if df is None:
         return pd.DataFrame()
+
+    if "Date" not in df.columns:
+        return df.iloc[0:0].copy()
+
+    if df.empty:
+        return df.iloc[0:0].copy()
 
     target = target_date or date.today()
     target = pd.to_datetime(target).date().isoformat()
@@ -231,8 +244,15 @@ def current_sunday_saturday_window(reference_date: date | None = None):
 
 
 def rows_for_current_week(df: pd.DataFrame) -> pd.DataFrame:
-    if df is None or df.empty or "Date" not in df.columns:
+    """Return current-week archive rows while preserving the input schema."""
+    if df is None:
         return pd.DataFrame()
+
+    if "Date" not in df.columns:
+        return df.iloc[0:0].copy()
+
+    if df.empty:
+        return df.iloc[0:0].copy()
 
     start, end = current_sunday_saturday_window()
     parsed = parse_archive_dates(df["Date"])
@@ -268,8 +288,15 @@ def filter_expected_tickers(
     tickers: Mapping | Iterable,
     sector: str | None = None,
 ) -> pd.DataFrame:
-    if df is None or df.empty or "Ticker" not in df.columns:
+    """Filter to expected tickers while preserving schema on empty results."""
+    if df is None:
         return pd.DataFrame()
+
+    if "Ticker" not in df.columns:
+        return df.iloc[0:0].copy()
+
+    if df.empty:
+        return df.iloc[0:0].copy()
 
     if isinstance(tickers, Mapping):
         ticker_set = {str(t).upper().strip() for t in tickers.keys()}

@@ -437,9 +437,13 @@ def describe_yf_archive_status(tickers, sector=None):
 
     today_rows = rows_for_date(df)
     today_filtered = filter_expected_tickers(today_rows, expected, sector=sector)
-    found = set(today_filtered["Ticker"].dropna().astype(str).str.upper().str.strip())
 
-    out["today_archive_rows"] = int(len(today_filtered))
+    if today_filtered is None or today_filtered.empty or "Ticker" not in today_filtered.columns:
+        found = set()
+    else:
+        found = set(today_filtered["Ticker"].dropna().astype(str).str.upper().str.strip())
+
+    out["today_archive_rows"] = int(0 if today_filtered is None else len(today_filtered))
     out["today_archive_tickers"] = int(len(found))
     out["today_missing_tickers"] = sorted(expected - found)
     out["today_complete"] = expected.issubset(found)
