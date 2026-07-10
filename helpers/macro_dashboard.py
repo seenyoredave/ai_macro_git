@@ -30,6 +30,7 @@ from helpers.visualization import (
 from config.debug_config import debug_print
 from config.debug_config import DEBUG
 from config.metric_definitions import METRIC_DEFINITIONS
+from analytics.sector_assessment import select_current_sector_assessment
 
 
 def chart_box(fig):
@@ -115,6 +116,25 @@ def render_trend_strip(trend):
 
 def assessment_card(title, row, border_color):
 
+    if row is None:
+        card = f"""
+        <div style="border:1px solid {border_color}; border-left:6px solid {border_color}; border-radius:12px; padding:18px; background:#111827; min-height:150px;">
+            <div style="font-size:0.9rem; letter-spacing:1px; color:#9ca3af; text-transform:uppercase; font-weight:700; margin-bottom:8px;">
+                {title}
+            </div>
+
+            <div style="font-size:1.5rem; font-weight:700; margin-bottom:12px;">
+                No Data
+            </div>
+
+            <div style="font-size:0.85rem; color:#9ca3af;">
+                Insufficient eligible history or fundamentals.
+            </div>
+        </div>
+        """
+        st.html(card)
+        return
+
     display_sector = sector_display_name(row["Sector"])
 
     cycle = row["Sector Score"]
@@ -131,12 +151,12 @@ def assessment_card(title, row, border_color):
         </div>
 
         <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
-            <span>Cycle</span>
+            <span>Cycle Score</span>
             <b>{cycle:.0f}</b>
         </div>
 
         <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
-            <span>Pressure</span>
+            <span>Pressure Score</span>
             <b>{pressure:.0f}</b>
         </div>
     </div>
@@ -361,45 +381,62 @@ def render_regime_snapshot(
 
     st.markdown("---")
 
+def render_sector_assessment(macro_df, sector_data=None):
 
-def render_sector_assessment(macro_df):
-
-    st.subheader("Current Sector Assessment")
+    st.subheader(
+        "Current Sector Assessment",
+        help=metric_help("Current Sector Assessment")
+    )
     st.markdown("---")
+
+    if macro_df is None or macro_df.empty:
+        st.warning("Sector assessment unavailable. Check sector metric calculations.")
+        return
+
+    required_cols = ["Sector", "Sector Score", "Pressure"]
+    missing = [col for col in required_cols if col not in macro_df.columns]
+
+    if missing:
+        st.warning(f"Sector assessment unavailable. Missing columns: {missing}")
+        return
 
     assessment_df = macro_df.copy()
 
-    required_cols = ["Sector Score", "Pressure"]
-
-    if assessment_df[required_cols].notna().sum().min() == 0:
+    if assessment_df[["Sector Score", "Pressure"]].notna().sum().min() == 0:
         st.warning("Sector assessment unavailable. Check Sector Score and Pressure calculations.")
         return
 
-    assessment_df["Opportunity"] = (
-        assessment_df["Sector Score"] - assessment_df["Pressure"]
+    selections = select_current_sector_assessment(
+        assessment_df,
+        sector_data=sector_data,
     )
 
-    assessment_df["Risk"] = (
-        assessment_df["Pressure"] - assessment_df["Sector Score"]
-    )
-
-    crowded = assessment_df.loc[assessment_df["Sector Score"].idxmax()]
-    opportunity = assessment_df.loc[assessment_df["Opportunity"].idxmax()]
-    risk = assessment_df.loc[assessment_df["Risk"].idxmax()]
+    selected_rows = selections.get("rows", {})
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        assessment_card("Most Crowded", crowded, "#7c3aed")
+        assessment_card(
+            "Most Crowded",
+            selected_rows.get("Most Crowded"),
+            "#7c3aed",
+        )
 
     with col2:
-        assessment_card("Biggest Opportunity", opportunity, "#60a5fa")
+        assessment_card(
+            "Fastest Mover",
+            selected_rows.get("Fastest Mover"),
+            "#60a5fa",
+        )
 
     with col3:
-        assessment_card("Biggest Risk", risk, "#94a3b8")
+        assessment_card(
+            "Biggest Risk",
+            selected_rows.get("Biggest Risk"),
+            "#94a3b8",
+        )
 
     st.markdown("---")
-
 
 def render_positioning_charts(macro_df):
 
@@ -420,7 +457,6 @@ def render_positioning_charts(macro_df):
         chart_box(fig_rotation)
 
     st.markdown("---")
-
 
 def render_sector_cards(macro_df):
 
@@ -521,7 +557,6 @@ def render_sector_cards(macro_df):
 
         st.markdown("---")
 
-
 def render_macro_data(fred_data):
 
     if not fred_data:
@@ -555,7 +590,6 @@ def render_macro_data(fred_data):
         )
 
         st.caption("Market data cache: 1 hour | FRED cache: 24 hours")
-
 
 def render_edgar_data(sector_data):
 

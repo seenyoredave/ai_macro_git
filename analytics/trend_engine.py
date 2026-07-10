@@ -34,6 +34,32 @@ def resolve_metric_col(df, metric_col):
     return None
 
 
+def sort_history_for_trend(df, date_col="Date", group_cols=None):
+    if df is None or df.empty:
+        return df
+
+    working = df.copy()
+
+    if date_col in working.columns:
+        working["_trend_date"] = pd.to_datetime(
+            working[date_col],
+            errors="coerce",
+            format="mixed",
+        )
+
+        working = working.loc[working["_trend_date"].notna()].copy()
+
+        sort_cols = []
+        if group_cols:
+            sort_cols.extend([col for col in group_cols if col in working.columns])
+        sort_cols.append("_trend_date")
+
+        working = working.sort_values(sort_cols, kind="stable")
+        working = working.drop(columns=["_trend_date"], errors="ignore")
+
+    return working
+
+
 def calc_velocity(series):
     clean = pd.to_numeric(
         series,
@@ -71,7 +97,20 @@ def calc_acceleration(series):
     )
 
 
-def calc_metric_trend(df, metric_col):
+def calc_metric_trend(df, metric_col, date_col="Date", group_cols=None):
+    if df is None or df.empty:
+        return {
+            "current": np.nan,
+            "velocity": np.nan,
+            "acceleration": np.nan,
+        }
+
+    df = sort_history_for_trend(
+        df,
+        date_col=date_col,
+        group_cols=group_cols,
+    )
+
     if df is None or df.empty:
         return {
             "current": np.nan,

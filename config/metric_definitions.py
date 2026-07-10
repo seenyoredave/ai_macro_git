@@ -78,6 +78,18 @@ METRIC_DEFINITIONS = {
     
     This project further seeks to understand the flow of liquidity in the AI economy and detect proximity to future market corrections. 
     
+    """,
+
+    "Current Sector Assessment": """
+    Current Sector Assessment v2.1 summarizes three sector-level states using a common display language: Sector Cycle Score and Sector Pressure Score.
+
+    Most Crowded selects the sector with the highest current Sector Pressure Score.
+
+    Fastest Mover selects the sector with the largest absolute Sector Movement over a fixed 10-observation sector-history window. Sector Movement = change in Sector Cycle Score + change in Sector Pressure Score.
+
+    Biggest Risk selects the eligible sector with the highest internal risk selection score. Risk Selection Score = Financial Strain × Pressure Amplifier. Financial Strain is the mean of cross-sector percentile strain ranks for three sector-level ratio-of-sums: FCF Margin = Free Cash Flow / Revenue, Debt Burden = Net Debt / EBITDA, and Reinvestment Burden = CapEx / Operating Cash Flow. Lower FCF Margin, higher Debt Burden, and higher Reinvestment Burden increase Financial Strain. Pressure Amplifier = 1 + (Sector Pressure Score / 100). A sector must have valid data across at least 50% of Effective Basket Weight for at least two of the three strain pillars to be eligible.
+
+    The displayed card values remain Sector Cycle Score and Sector Pressure Score only. Hidden selection helpers are used for ranking, not as additional public dashboard metrics.
     """
 }
 

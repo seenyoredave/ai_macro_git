@@ -346,9 +346,9 @@ def build_rotation_matrix(macro_df):
 
     fig_rotation.update_layout(
 
-        xaxis_title="AMI",
+        xaxis_title="Sector Score",
 
-        yaxis_title="Pressure",
+        yaxis_title="Sector Pressure",
 
         template="plotly_white",
 

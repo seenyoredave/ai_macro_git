@@ -1,13 +1,25 @@
+import time
+
 import pandas as pd
 import numpy as np
 import streamlit as st
 import yfinance as yf
 
 from pathlib import Path
-from datetime import date
 from concurrent.futures import ThreadPoolExecutor
 
-from loaders.edgar_loader import load_edgar
+from loaders.edgar_loader import (
+    describe_edgar_freshness_status,
+    load_edgar,
+    load_edgar_with_report,
+)
+from archive.archive_reader import (
+    filter_expected_tickers,
+    has_expected_tickers,
+    latest_complete_ticker_rows,
+    load_yf_history,
+    rows_for_date,
+)
 
 from config.debug_config import debug_print 
 
@@ -112,6 +124,18 @@ EVG_REQUIRED_COLUMNS = [
     "CapEx Growth",
 ]
 
+FINANCIAL_STRAIN_COLUMNS = [
+    "Operating Cash Flow",
+    "Free Cash Flow",
+    "Net Income",
+    "EBITDA",
+    "Total Debt",
+    "Cash",
+    "Net Debt",
+]
+
+YF_REFRESH_REQUIRED_COLUMNS = EVG_REQUIRED_COLUMNS + FINANCIAL_STRAIN_COLUMNS
+
 def ensure_yf_schema(df):
     """
     Ensures archived yfinance data has all currently expected columns.
@@ -130,6 +154,13 @@ def ensure_yf_schema(df):
         "Revenue Growth",
         "CapEx",
         "CapEx Growth",
+        "Operating Cash Flow",
+        "Free Cash Flow",
+        "Net Income",
+        "EBITDA",
+        "Total Debt",
+        "Cash",
+        "Net Debt",
         "Beta",
         "52W High",
         "52W Low",
@@ -183,6 +214,160 @@ def calc_revenue_growth(ticker_obj, info):
 
     return np.nan
 
+
+def _safe_info_number(info, *keys):
+    for key in keys:
+        value = safe_float(info.get(key))
+
+        if not pd.isna(value):
+            return value
+
+    return np.nan
+
+
+def _latest_statement_value(ticker_obj, statement_attrs, row_names, *, ttm=False):
+    """Return a latest statement value from yfinance financial statements.
+
+    For flow variables where quarterly data exists, ttm=True sums the latest
+    four quarters. Otherwise this returns the latest annual value found.
+    """
+    for attr in statement_attrs:
+        try:
+            statement = getattr(ticker_obj, attr)
+        except Exception:
+            statement = pd.DataFrame()
+
+        row = get_cashflow_row(statement, row_names)
+
+        if row is None:
+            continue
+
+        values = pd.to_numeric(row, errors="coerce").dropna()
+
+        if values.empty:
+            continue
+
+        if ttm and str(attr).startswith("quarterly") and len(values) >= 4:
+            return float(values.iloc[:4].sum())
+
+        return float(values.iloc[0])
+
+    return np.nan
+
+
+def calc_financial_strain_fields(ticker_obj, info, capex_value=np.nan):
+    """Collect cash-flow and debt fields used by hidden risk selection.
+
+    These are raw company-level financial fields. Ratios are calculated later
+    at the sector-assessment layer so the public dashboard does not gain new
+    visible score columns.
+    """
+    operating_cash_flow = _safe_info_number(
+        info,
+        "operatingCashflow",
+        "operating_cashflow",
+    )
+
+    if pd.isna(operating_cash_flow):
+        operating_cash_flow = _latest_statement_value(
+            ticker_obj,
+            ["quarterly_cashflow", "cashflow"],
+            [
+                "Operating Cash Flow",
+                "Total Cash From Operating Activities",
+                "Net Cash Provided By Operating Activities",
+                "Cash Flow From Continuing Operating Activities",
+            ],
+            ttm=True,
+        )
+
+    free_cash_flow = _safe_info_number(
+        info,
+        "freeCashflow",
+        "free_cashflow",
+    )
+
+    if pd.isna(free_cash_flow):
+        free_cash_flow = _latest_statement_value(
+            ticker_obj,
+            ["quarterly_cashflow", "cashflow"],
+            ["Free Cash Flow", "FreeCashFlow"],
+            ttm=True,
+        )
+
+    # If yfinance does not expose FCF directly, derive it from OCF - CapEx.
+    # capex_value is stored as an absolute positive investment outflow.
+    if pd.isna(free_cash_flow) and not pd.isna(operating_cash_flow) and not pd.isna(capex_value):
+        free_cash_flow = operating_cash_flow - abs(float(capex_value))
+
+    net_income = _safe_info_number(
+        info,
+        "netIncomeToCommon",
+        "netIncome",
+    )
+
+    if pd.isna(net_income):
+        net_income = _latest_statement_value(
+            ticker_obj,
+            ["quarterly_income_stmt", "income_stmt"],
+            ["Net Income", "Net Income Common Stockholders"],
+            ttm=True,
+        )
+
+    ebitda = _safe_info_number(info, "ebitda")
+
+    if pd.isna(ebitda):
+        ebitda = _latest_statement_value(
+            ticker_obj,
+            ["quarterly_income_stmt", "income_stmt"],
+            ["EBITDA", "Normalized EBITDA"],
+            ttm=True,
+        )
+
+    total_debt = _safe_info_number(info, "totalDebt")
+
+    if pd.isna(total_debt):
+        total_debt = _latest_statement_value(
+            ticker_obj,
+            ["balance_sheet", "quarterly_balance_sheet"],
+            [
+                "Total Debt",
+                "TotalDebt",
+                "Long Term Debt And Capital Lease Obligation",
+                "Long Term Debt",
+            ],
+            ttm=False,
+        )
+
+    cash = _safe_info_number(info, "totalCash")
+
+    if pd.isna(cash):
+        cash = _latest_statement_value(
+            ticker_obj,
+            ["balance_sheet", "quarterly_balance_sheet"],
+            [
+                "Cash And Cash Equivalents",
+                "Cash Cash Equivalents And Short Term Investments",
+                "Cash Equivalents",
+            ],
+            ttm=False,
+        )
+
+    net_debt = np.nan
+
+    if not pd.isna(total_debt) and not pd.isna(cash):
+        net_debt = total_debt - cash
+
+    return {
+        "Operating Cash Flow": operating_cash_flow,
+        "Free Cash Flow": free_cash_flow,
+        "Net Income": net_income,
+        "EBITDA": ebitda,
+        "Total Debt": total_debt,
+        "Cash": cash,
+        "Net Debt": net_debt,
+    }
+
 #################################################
 # YF HISTORY SETTINGS
 #################################################
@@ -190,65 +375,101 @@ def calc_revenue_growth(ticker_obj, info):
 YF_HISTORY_PATH = Path("archive/yf_history.csv")
 
 def read_yf_history_for_date(tickers, sector=None, target_date=None):
-    if not YF_HISTORY_PATH.exists():
+    df = load_yf_history()
+
+    if df is None or df.empty or "Date" not in df.columns or "Ticker" not in df.columns:
         return None
 
-    df = pd.read_csv(YF_HISTORY_PATH)
+    dated = rows_for_date(df, target_date=target_date)
 
-    if df.empty or "Date" not in df.columns or "Ticker" not in df.columns:
+    if dated.empty:
         return None
 
-    target_date = str(target_date or date.today())
-    ticker_set = set(tickers.keys())
+    filtered = filter_expected_tickers(dated, tickers, sector=sector)
 
-    df["Date"] = df["Date"].astype(str)
-
-    filtered = df[
-        (df["Date"] == target_date)
-        &
-        (df["Ticker"].isin(ticker_set))
-    ].copy()
-
-    if sector is not None and "Sector" in filtered.columns:
-        filtered = filtered[filtered["Sector"] == sector].copy()
-
-    found = set(filtered["Ticker"].dropna())
-
-    if not ticker_set.issubset(found):
+    if not has_expected_tickers(filtered, tickers):
         return None
 
     return ensure_yf_schema(filtered)
 
 def read_latest_yf_history(tickers, sector=None):
-    if not YF_HISTORY_PATH.exists():
+    df = load_yf_history()
+
+    if df is None or df.empty or "Date" not in df.columns or "Ticker" not in df.columns:
         return None
 
-    df = pd.read_csv(YF_HISTORY_PATH)
+    latest = latest_complete_ticker_rows(
+        df,
+        tickers,
+        sector=sector,
+    )
 
-    if df.empty or "Date" not in df.columns or "Ticker" not in df.columns:
-        return None
-
-    ticker_set = set(tickers.keys())
-
-    df["Date"] = df["Date"].astype(str)
-
-    filtered = df[df["Ticker"].isin(ticker_set)].copy()
-
-    if sector is not None and "Sector" in filtered.columns:
-        filtered = filtered[filtered["Sector"] == sector].copy()
-
-    if filtered.empty:
-        return None
-
-    latest_date = filtered["Date"].max()
-    latest = filtered[filtered["Date"] == latest_date].copy()
-
-    found = set(latest["Ticker"].dropna())
-
-    if not ticker_set.issubset(found):
+    if latest is None or latest.empty:
         return None
 
     return ensure_yf_schema(latest)
+
+
+def _expected_ticker_set(tickers):
+    if isinstance(tickers, dict):
+        raw = tickers.keys()
+    else:
+        raw = tickers
+
+    return {str(t).upper().strip() for t in raw}
+
+
+def describe_yf_archive_status(tickers, sector=None):
+    expected = _expected_ticker_set(tickers)
+    df = load_yf_history()
+
+    out = {
+        "expected_tickers": len(expected),
+        "today_archive_rows": 0,
+        "today_archive_tickers": 0,
+        "today_missing_tickers": sorted(expected),
+        "today_complete": False,
+        "latest_complete_date": None,
+    }
+
+    if df is None or df.empty or "Date" not in df.columns or "Ticker" not in df.columns:
+        return out
+
+    today_rows = rows_for_date(df)
+    today_filtered = filter_expected_tickers(today_rows, expected, sector=sector)
+    found = set(today_filtered["Ticker"].dropna().astype(str).str.upper().str.strip())
+
+    out["today_archive_rows"] = int(len(today_filtered))
+    out["today_archive_tickers"] = int(len(found))
+    out["today_missing_tickers"] = sorted(expected - found)
+    out["today_complete"] = expected.issubset(found)
+
+    latest = latest_complete_ticker_rows(df, expected, sector=sector)
+
+    if latest is not None and not latest.empty and "Date" in latest.columns:
+        dates = pd.to_datetime(latest["Date"], errors="coerce", format="mixed").dropna()
+
+        if not dates.empty:
+            out["latest_complete_date"] = dates.max().date().isoformat()
+
+    return out
+
+
+def describe_edgar_archive_status(tickers):
+    return describe_edgar_freshness_status(tickers)
+
+
+def _count_returned_tickers(payload):
+    if isinstance(payload, pd.DataFrame):
+        if payload.empty or "Ticker" not in payload.columns:
+            return 0
+
+        return int(payload["Ticker"].dropna().astype(str).str.upper().str.strip().nunique())
+
+    if isinstance(payload, dict):
+        return int(len([k for k, v in payload.items() if v is not None]))
+
+    return 0
 
 
 #################################################
@@ -268,6 +489,11 @@ def pull_yfinance(ticker_tuple):
             info = getattr(t, "info", {}) or {}
             
             revenue_growth = calc_revenue_growth(t, info)
+            financial_strain_fields = calc_financial_strain_fields(
+                t,
+                info,
+                capex_value=capex,
+            )
 
             hist = t.history(
                 period="2y",
@@ -312,6 +538,7 @@ def pull_yfinance(ticker_tuple):
                 "Revenue Growth": revenue_growth,
                 "CapEx": capex,
                 "CapEx Growth": capex_growth,
+                **financial_strain_fields,
                 "52W High": safe_num("year_high", "fiftyTwoWeekHigh"),
                 "52W Low": safe_num("year_low", "fiftyTwoWeekLow"),
                 "1Y Return": one_year_return,
@@ -349,23 +576,25 @@ def load_yfinance(ticker_tuple, sector=None):
     if archived_today is not None:
         archived_today = archived_today.copy()
 
-        # Ensure EVG columns exist.
-        for col in EVG_REQUIRED_COLUMNS:
+        # Ensure columns required by current downstream calculations exist.
+        # Older archives remain readable, but if these fields are entirely
+        # absent/empty for today's snapshot we refresh YF once to backfill.
+        for col in YF_REFRESH_REQUIRED_COLUMNS:
             if col not in archived_today.columns:
                 archived_today[col] = np.nan
 
-        evg_missing_or_empty = [
-            col for col in EVG_REQUIRED_COLUMNS
+        missing_or_empty = [
+            col for col in YF_REFRESH_REQUIRED_COLUMNS
             if pd.to_numeric(archived_today[col], errors="coerce").dropna().empty
         ]
 
-        if not evg_missing_or_empty:
+        if not missing_or_empty:
             debug_print(f"Loading today's yfinance rows from yf_history.csv: {sector}")
             return archived_today
 
         debug_print(
-            f"Today's yf_history found, but EVG columns are missing/empty "
-            f"{evg_missing_or_empty}. Pulling yfinance to backfill: {sector}"
+            f"Today's yf_history found, but required current-model columns are missing/empty "
+            f"{missing_or_empty}. Pulling yfinance to backfill: {sector}"
         )
 
         fresh = pull_yfinance(ticker_tuple)
@@ -380,7 +609,7 @@ def load_yfinance(ticker_tuple, sector=None):
 
         fresh_lookup = fresh.set_index("Ticker")
 
-        for col in evg_missing_or_empty:
+        for col in missing_or_empty:
             if col in fresh_lookup.columns:
                 archived_today[col] = archived_today["Ticker"].map(fresh_lookup[col])
             else:
@@ -441,14 +670,49 @@ def load_market_universe(tickers):
         dict like {"MSFT": "MSFT", "NVDA": "NVDA"}
     """
 
+    load_started = time.perf_counter()
+    expected_count = len(tickers)
+
+    yf_archive_status = describe_yf_archive_status(tickers, sector=None)
+    edgar_archive_status = describe_edgar_archive_status(tickers)
+
+    yf_started = time.perf_counter()
     raw_yf = load_yfinance(
         tuple(sorted(tickers.items())),
         sector=None
     )
+    yf_elapsed = time.perf_counter() - yf_started
 
-    raw_edgar = load_edgar(tickers)
+    edgar_started = time.perf_counter()
+    raw_edgar, edgar_runtime_report = load_edgar_with_report(tickers)
+    edgar_elapsed = time.perf_counter() - edgar_started
+
+    total_elapsed = time.perf_counter() - load_started
+
+    load_report = {
+        "loader": "load_market_universe",
+        "expected_tickers": expected_count,
+        "total_elapsed_sec": total_elapsed,
+        "yfinance": {
+            **yf_archive_status,
+            "elapsed_sec": yf_elapsed,
+            "returned_tickers": _count_returned_tickers(raw_yf),
+            "source_mode": (
+                "archive_today"
+                if yf_archive_status.get("today_complete")
+                else "live_or_fallback"
+            ),
+        },
+        "edgar": {
+            **edgar_archive_status,
+            **edgar_runtime_report,
+            "elapsed_sec": edgar_elapsed,
+            "returned_tickers": _count_returned_tickers(raw_edgar),
+        },
+    }
 
     return {
         "yfinance": raw_yf,
         "edgar": raw_edgar,
+        "_load_report": load_report,
     }

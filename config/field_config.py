@@ -27,8 +27,9 @@ macro_indicators:
 """
 
 FIELD_PRIORITY = {
-    "fundamentals": ["YFinance"],
+    "fundamentals": ["EDGAR", "YFinance"],
     "market_prices": ["YFinance"],
+    "financial_strain": ["YFinance"],
     "macro_indicators": ["FRED"]
 }
 
@@ -41,6 +42,13 @@ FIELD_GROUPS = {
     "Revenue Growth": "fundamentals",
     "CapEx": "fundamentals",
     "CapEx Growth": "fundamentals",
+    "Operating Cash Flow": "financial_strain",
+    "Free Cash Flow": "financial_strain",
+    "Net Income": "financial_strain",
+    "EBITDA": "financial_strain",
+    "Total Debt": "financial_strain",
+    "Cash": "financial_strain",
+    "Net Debt": "financial_strain",
     "1Y Return": "market_prices",
     "Beta": "market_prices",
     "Price": "market_prices",

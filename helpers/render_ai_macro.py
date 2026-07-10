@@ -58,7 +58,7 @@ def render_ai_macro_dashboard (
         regime_metrics=regime_metrics,
     )
 
-    render_sector_assessment(macro_df)
+    render_sector_assessment(macro_df, sector_data=sector_data)
 
     render_positioning_charts(macro_df)
 

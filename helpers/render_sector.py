@@ -17,7 +17,7 @@ from helpers.labels import sector_display_name
 from config.factor_config import FACTOR_HELP
 
 
-def render_basket_tier_smoke_test(df):
+def render_basket_tier_smoke_test(df, use_expander=True, expanded=False):
     required_cols = [
         "Ticker",
         "Company",
@@ -46,7 +46,7 @@ def render_basket_tier_smoke_test(df):
         .sort_values("Basket Score", ascending=False)
     )
 
-    with st.expander("🧙 One Tier Test to Rule Them All", expanded=False):
+    def render_contents():
         st.caption(
             "Smoke test for basket tiering. Tier 1 should generally contain the obvious economic leaders; Tier 4 should generally contain smaller or less representative names."
         )
@@ -70,6 +70,41 @@ def render_basket_tier_smoke_test(df):
             x="Tier",
             y="Count"
         )
+
+    if use_expander:
+        with st.expander("🧙 One Tier Test to Rule Them All", expanded=expanded):
+            render_contents()
+    else:
+        render_contents()
+
+
+def render_basket_tier_developer_tool(sector_data):
+    st.subheader("Tier Test Module")
+
+    if not sector_data:
+        st.info("No sector data available for basket tier review.")
+        return
+
+    sectors = list(sector_data.keys())
+
+    selected_sector = st.selectbox(
+        "Select sector",
+        sectors,
+        format_func=lambda sector: sector_display_name(sector),
+        key="basket_tier_module_sector",
+    )
+
+    df = sector_data.get(selected_sector)
+
+    if df is None or df.empty:
+        st.warning("No data available for selected sector.")
+        return
+
+    st.markdown(f"### Basket Tier Smoke Test — {sector_display_name(selected_sector)}")
+    render_basket_tier_smoke_test(
+        df,
+        use_expander=False,
+    )
 
 
 def render_factor_cards(scored_factors):
@@ -284,4 +319,5 @@ def render_sector_dashboard(sector, df, metrics):
             )
         )
 
-    render_basket_tier_smoke_test(df)
+    # Basket tier diagnostics live in Developer Tools.
+    # They are intentionally not rendered on every sector page.

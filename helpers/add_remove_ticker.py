@@ -8,7 +8,6 @@ def normalize_ticker(ticker):
 
     return str(ticker).strip().upper()
 
-
 def add_ticker(sector, ticker):
 
     ticker = normalize_ticker(ticker)
@@ -21,7 +20,6 @@ def add_ticker(sector, ticker):
     if ticker not in basket:
         basket.append(ticker)
 
-
 def remove_ticker(sector, ticker):
 
     ticker = normalize_ticker(ticker)
@@ -30,7 +28,6 @@ def remove_ticker(sector, ticker):
 
     if ticker in basket:
         basket.remove(ticker)
-
 
 def mutate_and_rerun(fn, sector, ticker):
 

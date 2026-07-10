@@ -61,7 +61,7 @@ def add_basket_tiers(df, ai_exposure_score=None):
         the assigned sector's AI thesis.
 
     Effective Basket Weight:
-        Basket Weight adjusted by AI Exposure Multiplier.
+        Basket Weight adjusted by AI Weight.
     """
 
     df = df.copy()
@@ -122,7 +122,7 @@ def add_basket_tiers(df, ai_exposure_score=None):
                 [
                     "Ticker",
                     "AI Exposure Score",
-                    "AI Exposure Multiplier",
+                    "AI Weight",
                     "Market Cap",
                     "Revenue",
                     "1Y Return",
@@ -138,7 +138,7 @@ def add_basket_tiers(df, ai_exposure_score=None):
             [
                 "Ticker",
                 "AI Exposure Score",
-                "AI Exposure Multiplier",
+                "AI Weight",
                 "Market Cap",
                 "Revenue",
                 "1Y Return",

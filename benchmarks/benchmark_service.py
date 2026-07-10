@@ -2,8 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
-from datetime import date
-from archive.archive_reader import load_benchmark_history 
+from archive.archive_reader import load_benchmark_history, rows_for_date 
 from loaders.benchmark_loader import load_all_benchmarks
 from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
 from config.debug_config import debug_print 
@@ -91,16 +90,16 @@ def get_archived_benchmark_metrics(benchmark: str):
     if any(col not in df.columns for col in required):
         return None
 
-    today = str(date.today())
+    df = rows_for_date(df)
+
+    if df.empty:
+        return None
 
     df = df.copy()
-    df["Date"] = df["Date"].astype(str)
     df["Benchmark"] = df["Benchmark"].astype(str).str.upper().str.strip()
 
     row = df[
-        (df["Date"] == today)
-        &
-        (df["Benchmark"] == benchmark.upper().strip())
+        df["Benchmark"] == benchmark.upper().strip()
     ]
 
     if row.empty:
