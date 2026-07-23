@@ -1,78 +1,80 @@
+"""Macro dashboard data products."""
 
-import numpy as np 
-import pandas as pd 
+from __future__ import annotations
 
-from archive.archive_reader import load_macro_history
+import numpy as np
+import pandas as pd
 
+from analytics.capital_stress_engine import normalize_capital_stress_history
+from analytics.power_engine import normalize_power_stress_history
+from analytics.regime_engine import (
+    ADI_VERSION,
+    CAPITAL_STRESS_VERSION,
+    POWER_STRESS_VERSION,
+)
 from analytics.trend_engine import calc_metric_trend
-
-from config.debug_config import debug_print
-from config.debug_config import DEBUG
+from archive.archive_reader import load_macro_history
+from config.debug_config import DEBUG, debug_print
 
 
 def build_macro_dataframe(sector_metrics):
+    rows = []
 
-        rows = []
+    for sector, metrics in sector_metrics.items():
+        rows.append({
+            "Sector": sector,
+            "Sector Score": metrics.get("Sector Score", np.nan),
+            "AEI Score": metrics.get("Sector Score", np.nan),
+            "Pressure": metrics.get("Sector Pressure", np.nan),
+            "Avg Return": metrics.get("Avg Return", np.nan),
+            "Forward P/E": metrics.get("Forward P/E", np.nan),
+            "Beta": metrics.get("Beta", np.nan),
+        })
 
-        for sector, metrics in sector_metrics.items():
+    macro_df = pd.DataFrame(rows)
 
-            rows.append({
+    if DEBUG:
+        debug_print("\n=== MACRO DATAFRAME ===")
+        debug_print(macro_df)
 
-                "Sector": sector,
+    return macro_df
 
-                "Sector Score": metrics.get("Sector Score", np.nan),
 
-                "Pressure": metrics.get("Sector Pressure", np.nan),
-
-                "Avg Return": metrics.get("Avg Return", np.nan),
-
-                "Forward P/E": metrics.get("Forward P/E", np.nan),
-
-                "Beta": metrics.get("Beta", np.nan)
-            })
-            
-        macro_df = pd.DataFrame(rows)
-
-        if DEBUG: 
-            debug_print("\n=== MACRO DATAFRAME ===")
-            debug_print(macro_df)
-
-        return macro_df
-    
-def build_macro_dashboard_data(
-    sector_metrics,
-    regime_metrics=None,
-    ):
-    
-    """
-    Build macro dashboard data products.
-
-    This function prepares macro-level data for rendering.
-    It does not render anything.
-    """
-
+def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
+    """Prepare macro-level data products without rendering."""
     macro_df = build_macro_dataframe(sector_metrics)
-
     macro_history = load_macro_history()
-
     regime_metrics = regime_metrics or {}
-    
+    signed_power_history = normalize_power_stress_history(macro_history)
+    signed_capital_history = normalize_capital_stress_history(macro_history)
+
     trends = {
-        "cycle_trend": calc_metric_trend(
+        "aei_trend": calc_metric_trend(macro_history, "AI Equity Index"),
+        "adi_trend": calc_metric_trend(
             macro_history,
-            "Maturation Index"
-        ),
-        "divergence_trend": calc_metric_trend(
-            macro_history,
-            "Divergence"
+            "AI Development Intensity",
+            version_column="ADI Version",
+            required_version=ADI_VERSION,
         ),
         "power_stress_trend": calc_metric_trend(
-            macro_history,
-            "Power Stress Index"
+            signed_power_history,
+            "Power Stress Index",
+            version_column="Power Stress Version",
+            required_version=POWER_STRESS_VERSION,
         ),
         "concentration_trend": calc_metric_trend(
             macro_history,
-            "Concentration HHI"
+            "Concentration HHI",
+        ),
+        "capital_stress_trend": calc_metric_trend(
+            signed_capital_history,
+            "Capital Stress",
+            version_column="Capital Stress Version",
+            required_version=CAPITAL_STRESS_VERSION,
+        ),
+        "speculation_gap_trend": calc_metric_trend(
+            macro_history,
+            "Speculation Gap",
         ),
     }
 
@@ -82,6 +84,3 @@ def build_macro_dashboard_data(
         "trends": trends,
         "regime_metrics": regime_metrics,
     }
-
-    
-

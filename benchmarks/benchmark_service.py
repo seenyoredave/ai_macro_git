@@ -1,140 +1,106 @@
-import streamlit as st
 import numpy as np
 import pandas as pd
+import streamlit as st
 
-from archive.archive_reader import load_benchmark_history, rows_for_date 
-from loaders.benchmark_loader import load_all_benchmarks
+from archive.archive_reader import load_benchmark_history, rows_for_date
 from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
-from config.debug_config import debug_print 
+from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
+from config.debug_config import debug_print
+from loaders.benchmark_loader import load_all_benchmarks
 
-
-#################################################
-# LOAD RAW BENCHMARKS (cached at service level)
-#################################################
 
 @st.cache_data(ttl=3600)
 def _load_raw_benchmarks():
     return load_all_benchmarks()
 
 
-#################################################
-# BUILD NORMALIZED BENCHMARK PACKAGE
-#################################################
-
-@st.cache_data(ttl=3600)
-def get_benchmark_package():
-
-    package = {}
-
-    for name in ["QQQ", "SPY", "DIA"]:
-
-        archived = get_archived_benchmark_metrics(name)
-
-        if archived is not None:
-            debug_print(f"Loading today's benchmark package from benchmark_history.csv: {name}")
-
-            package[name] = {
-                "raw": pd.DataFrame(),
-                "normalized": {
-                    "forward_pe": archived["forward_pe"],
-                    "avg_return": archived["avg_return"],
-                    "beta": archived["beta"],
-                    "member_count": archived["member_count"],
-                },
-                "metrics": archived,
-            }
-
-        else:
-            raw = _load_raw_benchmarks()
-
-            for raw_name, df in raw.items():
-                norm = normalize_benchmark_dataframe(df)
-
-                package[raw_name] = {
-                    "raw": df,
-                    "normalized": norm,
-                    "metrics": {
-                        "forward_pe": norm["forward_pe"],
-                        "avg_return": norm["avg_return"],
-                        "beta": norm["beta"],
-                        "member_count": norm["member_count"],
-                    },
-                }
-
-            break
-
-    return package
-
-#################################################
-# CHECK BENCHMARK ARCHIVE
-#################################################
-
 def get_archived_benchmark_metrics(benchmark: str):
     try:
-        df = load_benchmark_history()
+        history = load_benchmark_history()
     except Exception:
         return None
 
-    if df is None or df.empty:
-        return None
-
-    required = [
+    required = {
         "Date",
         "Benchmark",
         "Forward P/E",
         "Avg Return",
         "Beta",
         "Member Count",
-    ]
-
-    if any(col not in df.columns for col in required):
+        "Benchmark Version",
+    }
+    if history is None or history.empty or not required.issubset(history.columns):
         return None
 
-    df = rows_for_date(df)
-
-    if df.empty:
+    current = rows_for_date(history)
+    if current.empty:
         return None
 
-    df = df.copy()
-    df["Benchmark"] = df["Benchmark"].astype(str).str.upper().str.strip()
-
-    row = df[
-        df["Benchmark"] == benchmark.upper().strip()
+    current = current.copy()
+    current["Benchmark"] = current["Benchmark"].astype(str).str.upper().str.strip()
+    current["Benchmark Version"] = current["Benchmark Version"].astype(str).str.strip()
+    row = current[
+        (current["Benchmark"] == benchmark.upper().strip())
+        & (current["Benchmark Version"] == BENCHMARK_VERSION)
     ]
-
     if row.empty:
         return None
 
     row = row.iloc[-1]
-
     return {
         "forward_pe": row.get("Forward P/E", np.nan),
         "avg_return": row.get("Avg Return", np.nan),
         "beta": row.get("Beta", np.nan),
         "member_count": row.get("Member Count", 0),
+        "version": BENCHMARK_VERSION,
     }
 
-#################################################
-# PUBLIC API (This is what everything imports)
-#################################################
+
+@st.cache_data(ttl=3600)
+def get_benchmark_package():
+    package = {}
+    raw_package = None
+
+    for name in ACTIVE_BENCHMARKS:
+        archived = get_archived_benchmark_metrics(name)
+        if archived is not None:
+            debug_print(f"Loading today's weighted benchmark from archive: {name}")
+            package[name] = {"raw": pd.DataFrame(), "normalized": archived, "metrics": archived}
+            continue
+
+        if raw_package is None:
+            raw_package = _load_raw_benchmarks()
+        frame = raw_package.get(name, pd.DataFrame())
+        normalized = normalize_benchmark_dataframe(frame)
+        normalized["version"] = BENCHMARK_VERSION
+        package[name] = {"raw": frame, "normalized": normalized, "metrics": normalized}
+
+    return package
+
 
 @st.cache_data(ttl=3600)
 def get_benchmark_metrics(benchmark: str):
+    if benchmark not in ACTIVE_BENCHMARKS:
+        raise ValueError(f"Benchmark {benchmark} is configured but not active")
 
     archived = get_archived_benchmark_metrics(benchmark)
-
     if archived is not None:
-        debug_print(f"Loading today's benchmark metrics from benchmark_history.csv: {benchmark}")
         return archived
 
     package = get_benchmark_package()
-
-    if benchmark not in package:
-        return {
+    return package.get(
+        benchmark,
+        {
             "forward_pe": np.nan,
             "avg_return": np.nan,
             "beta": np.nan,
-            "member_count": 0
-        }
-
-    return package[benchmark]["metrics"]
+            "member_count": 0,
+            "version": BENCHMARK_VERSION,
+        },
+    )["metrics"] if benchmark in package else {
+        "forward_pe": np.nan,
+        "avg_return": np.nan,
+        "beta": np.nan,
+        "member_count": 0,
+        "version": BENCHMARK_VERSION,
+    }

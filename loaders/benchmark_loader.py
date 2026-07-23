@@ -1,51 +1,27 @@
+from config.benchmark_config import (
+    ACTIVE_BENCHMARKS,
+    BENCHMARK_UNIVERSES,
+    BENCHMARK_WEIGHTS,
+)
 from loaders.market_loader import load_yfinance
-from config.benchmark_config import QQQ_MEMBERS, SPY_MEMBERS, DIA_MEMBERS
 
-
-#################################################
-# BENCHMARK UNIVERSES (SOURCE OF TRUTH)
-#################################################
-
-BENCHMARK_UNIVERSES = {
-    "QQQ": QQQ_MEMBERS,
-    "SPY": SPY_MEMBERS,
-    "DIA": DIA_MEMBERS
-}
-
-
-#################################################
-# LOAD SINGLE BENCHMARK RAW DATA
-#################################################
 
 def load_benchmark(name: str):
-    """
-    Returns raw yfinance dataframe for benchmark constituents.
-    """
-
     if name not in BENCHMARK_UNIVERSES:
         raise ValueError(f"Unknown benchmark: {name}")
 
-    basket = BENCHMARK_UNIVERSES[name]
-
-    if not basket:
+    members = BENCHMARK_UNIVERSES[name]
+    if not members:
         return None
 
-    return load_yfinance(tuple(sorted(basket.items())))
+    frame = load_yfinance(tuple(sorted(members.items()))).copy()
+    weights = BENCHMARK_WEIGHTS.get(name)
+    if not weights:
+        raise ValueError(f"Active benchmark {name} has no configured weights")
 
+    frame["Benchmark Weight"] = frame["Ticker"].map(weights)
+    return frame
 
-#################################################
-# LOAD ALL BENCHMARKS (RAW ONLY)
-#################################################
 
 def load_all_benchmarks():
-    """
-    IMPORTANT:
-    - raw only
-    - no normalization
-    - no metrics
-    """
-
-    return {
-        name: load_benchmark(name)
-        for name in BENCHMARK_UNIVERSES.keys()
-    }
+    return {name: load_benchmark(name) for name in ACTIVE_BENCHMARKS}

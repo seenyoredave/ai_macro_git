@@ -1,102 +1,131 @@
-**Project statement:**
+# AI Regime Dashboard
 
-This project seeks to quantify and distinguish genuine AI-driven economic transformation from AI-driven capital speculation through use of novel and industry-standard measures drawing from publicly available market and Federal Reserve economic data.
+## Project statement
 
-**Questions I seek to answer include:** 
+This project uses reproducible public data to distinguish observable AI-driven economic buildout from AI-driven capital speculation. It is a personal analytical dashboard—not a trading platform—and does not prescribe investment actions.
 
-* Can we adequately define the stages of the AI maturation cycle by sector and use sector development to track the progression of AI build-out in the economy at large?
-* Can we use power consumption and grid expansion as an adequate proxies of AI build-out phase and rate?
+The model deliberately balances accuracy, precision, availability, and reliability. It uses static, explicit weights and defined minimum-data rules rather than dynamic weighting or subjective estimates.
 
-* Can we determine if AI adaptation is occurring in a wide swath of society or is concentrated in specific industries?
-* Can we determine if AI adaptation is economically benefitting a wide swath of society or is concentrated largely in the hands of the investor class?
+## Core questions
 
-* Does the progression of AI build-out follow a predictable and linear path that may enable non-institutional investors to capitalize on the economic upheaval caused by market-driven AI implementation?
+- How strong and extended is the public-equity regime across the selected AI basket?
+- Is observable physical and capital development keeping pace with equity enthusiasm?
+- Is electricity demand beginning to pressure generation and grid capacity?
+- Is the buildout creating material cash-flow, leverage, commitment, or contingent-obligation stress?
+- Which sectors are strong, crowded, accelerating, or financially strained?
 
+## Objective data sources
 
-**Data sources include:** YFinance, FRED, EDGAR, and put/call.
+- **YFinance:** market prices, valuation, market capitalization, company fundamentals, price history, and volume history.
+- **SEC filings / EDGAR:** standardized financial facts and a curated commitment ledger backed by filing disclosures.
+- **FRED:** macroeconomic, financial-conditions, industrial-production, and electric-power series.
+- **U.S. Census Bureau:** monthly private data-center construction spending.
 
+Press releases and announcement-based project estimates are intentionally excluded from the scoring engines.
 
-**Economic metric definitions:** 
+## Headline metrics
 
-Maturation cycle: How developed is the AI ecosystem?
+### AI Equity Index (AEI)
 
-* MCS = weighted average of all sector scores
-* Measures overall economic progress towards completion of AI buildout cycle
-* Scale: 0-100.
+AEI is the equal-weighted mean of valid sector equity scores. At least 75% of configured sectors must have a valid score.
 
-Divergence estimation : Is value creation broadening or concentrating?
+Each sector score uses four equal-weighted factors and requires at least three:
 
-* DE = MCS - average speculation pressure.
-* Measures relative strength of buildout vs speculative pressure.
-* Scale: -100 <> +100.
+1. Relative performance versus the benchmark proxy
+2. Earnings-yield discount versus the benchmark proxy
+3. Momentum breadth
+4. Return dispersion
 
-Power stress index:
+Scale: **0–100**
 
-* PSI = current utility/electric power activity - trailing historical average
-* Measures how far current electricity demand pressure is running above its recent historical baseline.
-* Scale: 0 - 100
+- Weak: below 30
+- Neutral: 30–59
+- Strong: 60–79
+- Extended: 80+
 
-Concentration HHI:
+AEI describes the equity-market regime. It does not claim to measure physical economic development.
 
-* Herfindahl-Herschman Index = ∑(market cap)^2 for each company within total AI basket
-* Measures whether AI-related market value is concentrated in a few dominant firms or spread across the broader AI ecosystem.
-* Scale: 0 – 100 –-> higher = more diffusion
+### AI Development Intensity (ADI)
 
-Reality Gap: Do consumers and investors agree?
+ADI measures observable physical and capital buildout. It uses four equal-weighted pillars and requires at least three:
 
-* RG = normalized investor sentiment (put/call) – normalized consumer sentiment (CPI)
-* Scale: +/- --> (+) = speculation, (-) = recession
+1. Capital Deployment
+2. Data Center Construction
+3. Compute Supply Realization
+4. Power Footprint
 
-Liquidity Gap: Is AI strength being supported by monetary conditions?
+Valid weights are renormalized when the 3-of-4 rule is met. Missing values are never treated as zero.
 
-* LG = MCS – normalized fed funds liquidity score
-* Scale: +/- --> (+) = liquidity crunch, (-) = investors nervous
+Scale: **0–100**
 
-Adoption Gap: Is deployment keeping pace with enthusiasm?
+### Speculation Gap
 
-* AG = MCS – normalized industrial production score
-* Scale: +/- --> (+) = AI buildout getting ahead of economy at large, (-) = economic buildout happening without AI sector
+`Speculation Gap = AEI - ADI`
 
-Current regime = phase of AI buildout based upon MCS
+- Positive: equity enthusiasm is running ahead of observable development.
+- Negative: observable development is running ahead of the equity regime.
 
-* Early phase: <30
-* Expansion phase: 30-59
-* Late expansion phase: 60-79
-* Mature buildout phase: 80+
+Scale: **-100 to +100**
 
+### Power Stress Index
 
-**Factor Metric Definitions:**
+Power Stress combines:
 
-Relative Performance = average sector 1Y return - benchmark 1Y return
+- Commercial electricity-sales growth minus residential growth: 40%
+- Electric-power capacity utilization: 35%
+- Electric-power output growth minus capacity growth: 25%
 
-Answers the question: “how well is this sector performing vs benchmark over the past year?”
+At least two of three components must be valid. It is a national proxy for nonresidential load pressure and grid headroom; it does not perfectly isolate data-center demand. Because the official source series are monthly, its history is expected to move in steps rather than drift every day.
 
-Valuation Premium = average sector Forward P/E / benchmark Forward P/E
+Scale: **-100 to +100**, centered at **0**
 
-Answers the question: “how much valuation confidence do investors have in this sector vs benchmark?”
+- Negative: below-reference system stress
+- Zero: reference conditions
+- Positive: above-reference system stress
 
-Momentum Breadth = number of sector stocks with positive 1Y return /total valid stocks
+### Capital Stress
 
-Answers the question: “how well is the sector performing in aggregate?”
+Capital Stress combines:
 
-Dispersion = standard deviation of sector 1Y returns
+- Cash Flow Strain: 30%
+- Book Leverage: 25%
+- Committed Burden: 30%
+- Contingent Exposure: 15%
 
-Answers the question: “are there clear winners and losers within each sector over the past year?”
+At least three of four components must be valid. Standardized fundamentals are combined with a filing-backed commitment ledger covering qualifying companies in the existing AI universe. Missing disclosure remains unknown rather than becoming zero. The four components are filing- and fundamental-driven, so Capital Stress is expected to remain flat between source updates and then change in steps. Daily motion is intentionally not manufactured from equity prices.
 
+The current filing-screened cohort is **MSFT, AMZN, GOOG, META, ORCL, NVDA, AMD, IREN, SMCI, and ANET**. Inclusion requires disclosed unrecognized, contractual, or contingent obligations above 50% of reported debt; ordinary recognized lease liabilities are excluded from the commitment ledger to reduce double counting.
 
-**Grapics:** 
+Scale: **-100 to +100**, centered at **0**
 
-AI sector position map: this uses two widely used market metrics (1YR and FP/E) to approximate where each sector is in terms of revenue vs valuation. General interpretation should use quadrant labels.
+- Negative: below-reference capital stress
+- Zero: reference conditions
+- Positive: above-reference capital stress
 
-AI sector rotation matrix: this uses my proprietary metrics (MCS and speculation pressure (MCS – weighted*MCS) to approximate how bubble-like the behavior of each sector is as it trends through the phases of market maturation. General interpretation should use quadrant labels.
+### Concentration HHI
 
+HHI is calculated from total company market capitalization within the selected AI universe. It measures concentration among selected companies and does not attempt to isolate AI-attributable enterprise value.
 
-**Factor metrics:**
+Higher values mean greater concentration.
 
-Relative performance: RP = sector 1YR – benchmark 1YR
+## History-chart scaling
 
-Valuation premium: VP = sector forward P/E / benchmark forward P/E
+Headline gauges retain their full theoretical scales. Historical plots use a bounded adaptive vertical window with a minimum 20-point span so genuine movement in a short archive is visible without implying that a small change occupies the entire scale. Power Stress and Capital Stress are drawn as step series because their underlying official or filing data update discretely.
 
-Momentum breadth: MB = share of sector stocks with (+) 1YR
+## Sector Trading Pressure
 
-Dispersion: D = variation in 1YR across the sector baskets
+Pressure is intentionally separate from AEI. It measures trading extension and instability using:
+
+- Valuation Stretch: 25%
+- Price Extension above the 200-day average: 25%
+- Momentum Acceleration: 20%
+- Realized-Volatility Expansion: 15%
+- Abnormal Volume Activity: 15%
+
+At least three of five components must be valid. Ticker-level market inputs are aggregated by sector median.
+
+## Benchmark
+
+The active benchmark is a static ten-member QQQ top-holdings proxy. The selected holdings represented 45.95% of QQQ in the retained 2026-07-21 snapshot. Their actual QQQ weight ratios are normalized to 100% inside the proxy rather than equal-weighted.
+
+Weighted benchmark return and beta use the normalized holdings weights. Benchmark valuation is calculated through weighted earnings yield and converted back to an equivalent forward P/E for the existing factor contract. QQQ is the only active runtime benchmark; SPY and DIA remain configured for possible future use but are not downloaded or archived by the current page.

@@ -1,72 +1,71 @@
-### These functions create the labels for the macroeconomic indicator badges 
-
 import pandas as pd
 
 
 def validation_label(score):
     if pd.isna(score):
         return "No Data"
-
     if score < -25:
         return "Validation Ahead of Capex"
-    elif score < -10:
+    if score < -10:
         return "Validation Supportive"
-    elif score < 10:
+    if score < 10:
         return "Balanced"
-    elif score < 25:
+    if score < 25:
         return "Capex Running Ahead"
-    else:
-        return "Overbuild Pressure"
-    
+    return "Overbuild Pressure"
+
+
 def liquidity_label(score):
     if pd.isna(score):
         return "No Data"
-
     if score < -25:
         return "Liquidity Strongly Supportive"
-    elif score < -10:
+    if score < -10:
         return "Liquidity Supportive"
-    elif score < 10:
+    if score < 10:
         return "Liquidity Aligned"
-    elif score < 25:
+    if score < 25:
         return "Risk Appetite Ahead of Liquidity"
-    else:
-        return "Liquidity Disconnect"
+    return "Liquidity Disconnect"
+
 
 def adoption_label(score):
     if pd.isna(score):
         return "No Data"
-
     if score < -20:
-        return "Economic Adoption Exceeding Market Expectations"
+        return "Industrial Growth Leading"
+    if score < 20:
+        return "Development and Industry Aligned"
+    if score < 40:
+        return "AI Development Leading"
+    return "AI Development Far Ahead"
 
-    elif score < 20:
-        return "Market and Economy Aligned"
 
-    elif score < 40:
-        return "Market Leading Economic Adoption"
+def speculation_label(score):
+    if pd.isna(score):
+        return "No Data"
+    if score < -20:
+        return "Development Ahead of Equities"
+    if score < 20:
+        return "Equities and Development Aligned"
+    if score < 40:
+        return "Equities Running Ahead"
+    return "Large Speculation Gap"
 
-    else:
-        return "Narrative Running Ahead of Adoption"
-    
+
 def short_regime_label(score):
     if pd.isna(score):
         return "No Data"
-
     if score < 30:
-        return "Early Buildout"
+        return "Weak"
+    if score < 60:
+        return "Neutral"
+    if score < 80:
+        return "Strong"
+    return "Extended"
 
-    elif score < 60:
-        return "Expansion"
-
-    elif score < 80:
-        return "Late Expansion"
-
-    else:
-        return "Mature Buildout"
 
 def sector_display_name(sector, style="title"):
-
     label_map = {
         "COMPUTE": "Compute",
         "SEMICAP_EQUIPMENT": "Semicap",
@@ -79,16 +78,10 @@ def sector_display_name(sector, style="title"):
         "INDUSTRIAL_AUTOMATION": "Automation",
         "ROBOTICS": "Robotics",
         "DEFENSE_NATIONAL_SECURITY": "Defense",
-        "CONSUMER_AI": "Consumer AI"
+        "CONSUMER_AI": "Consumer AI",
     }
-
     label = label_map.get(
         str(sector).upper(),
-        str(sector).replace("_", " ").title()
+        str(sector).replace("_", " ").title(),
     )
-
-    
-    if style == "upper":
-        return label.upper()
-
-    return label
+    return label.upper() if style == "upper" else label

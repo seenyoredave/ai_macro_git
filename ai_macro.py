@@ -11,8 +11,9 @@ from analytics.regime_engine import build_regime_metrics
 from benchmarks.benchmark_service import get_benchmark_metrics
 
 from loaders.fred_loader import load_fred
-from loaders.sentiment_loader import load_put_call
-from loaders.market_loader import load_market_universe 
+from loaders.construction_loader import load_data_center_construction
+from loaders.market_loader import load_market_universe
+from loaders.edgar_loader import build_edgar_archive_snapshot
 
 from helpers.render_all import render_all_dashboards
 from helpers.labels import sector_display_name
@@ -23,10 +24,9 @@ from archive.archive import (
     append_benchmark_history,
     append_yf_history,
     append_edgar_history,
-    append_put_call_history,
     append_fred_history
 )
-from archive.archive_reader import load_fred_history
+from archive.archive_reader import load_fred_history, load_macro_history
 from helpers.render_sector import render_basket_tier_developer_tool
 
 
@@ -274,13 +274,17 @@ if st.session_state.force_rebuild:
     sector_data, sector_metrics, raw_universe_data = build_sector_dashboard_data()
 
     fred_data = load_fred()
-    market_sentiment = load_put_call()
+    construction_data = load_data_center_construction()
     fred_history = load_fred_history()
+    macro_history = load_macro_history()
 
     regime_metrics = build_regime_metrics(
         sector_metrics=sector_metrics,
         sector_data=sector_data,
         fred_history=fred_history,
+        fred_data=fred_data,
+        construction_data=construction_data,
+        macro_history=macro_history,
     )
     
     ###################################
@@ -288,26 +292,22 @@ if st.session_state.force_rebuild:
     ###################################
     
     if not st.session_state.archive_suspended:
-        append_macro_history(
-            regime_metrics,
-            fred_data,
-            market_sentiment,
-        )
+        append_macro_history(regime_metrics, fred_data)
 
         append_sector_history(sector_metrics)
         append_benchmark_history()
         append_yf_history(sector_data)
-        append_edgar_history(
+        edgar_archive_snapshot = build_edgar_archive_snapshot(
             sector_data,
-            raw_edgar_data=raw_universe_data.get("edgar", {})
+            raw_universe_data.get("edgar", {}),
         )
-        append_put_call_history(market_sentiment)
+        append_edgar_history(edgar_archive_snapshot)
         append_fred_history(fred_data)
 
     st.session_state.sector_data = sector_data
     st.session_state.sector_metrics = sector_metrics
     st.session_state.fred_data = fred_data
-    st.session_state.market_sentiment = market_sentiment
+    st.session_state.construction_data = construction_data
     st.session_state.regime_metrics = regime_metrics
 
     st.session_state.force_rebuild = False
@@ -316,7 +316,6 @@ if st.session_state.force_rebuild:
 sector_data = st.session_state.sector_data
 sector_metrics = st.session_state.sector_metrics
 fred_data = st.session_state.fred_data
-market_sentiment = st.session_state.market_sentiment
 regime_metrics = st.session_state.regime_metrics
 
 
@@ -339,10 +338,8 @@ else:
 
     render_all_dashboards(
         tabs,
-        sectors,
         sector_data,
         sector_metrics,
         fred_data,
-        market_sentiment,
         regime_metrics
     )

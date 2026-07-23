@@ -204,6 +204,19 @@ def _is_usable_edgar_row(payload) -> bool:
     return True
 
 
+def is_archive_eligible_edgar_payload(payload) -> bool:
+    """Return True only for live, conclusive SEC payloads.
+
+    Archive policy deliberately lives here with the EDGAR quality contract.
+    The archive layer only persists payloads approved by this function.
+    """
+    return (
+        isinstance(payload, dict)
+        and str(payload.get("EDGAR Source", "")).strip() == "SEC Live"
+        and _is_usable_edgar_row(payload)
+    )
+
+
 def _latest_edgar_rows(tickers, *, max_age_days=None):
     df = load_edgar_history()
 
@@ -425,11 +438,6 @@ def fetch_company_facts(cik):
 
 def get_taxonomy_facts(company_facts, taxonomy):
     return company_facts.get("facts", {}).get(taxonomy, {})
-
-
-def get_us_gaap_facts(company_facts):
-    # Public helper retained for compatibility.
-    return get_taxonomy_facts(company_facts, "us-gaap")
 
 
 def get_usd_unit_facts(taxonomy_facts, concept):
@@ -718,10 +726,6 @@ IFRS_CAPEX_CONCEPTS = [
     "CapitalExpenditures",
 ]
 
-# Backward-compatible aliases used by earlier diagnostics.
-REVENUE_CONCEPTS = US_GAAP_REVENUE_CONCEPTS
-CAPEX_CONCEPTS = US_GAAP_CAPEX_CONCEPTS
-
 
 def discover_capex_concepts(taxonomy_facts):
     """Conservatively discover standardized PPE/capital-expenditure concepts."""
@@ -976,20 +980,19 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
     attempted = []
     succeeded = []
     failed = []
+    rejected_quality = []
 
     for ticker_upper in sorted(tickers_to_fetch):
         attempted.append(ticker_upper)
 
         try:
             cik = ticker_cik_map.get(ticker_upper)
-
             if not cik:
                 raise ValueError(f"No CIK found for ticker {ticker_upper}")
 
             company_facts = fetch_company_facts(cik)
             metrics = extract_company_metrics(company_facts)
-
-            edgar_data[ticker_upper] = {
+            live_payload = {
                 "Revenue": metrics["Revenue"],
                 "Revenue Growth": metrics["Revenue Growth"],
                 "CapEx": metrics["CapEx"],
@@ -1005,15 +1008,25 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
                 "CapEx Period End": metrics.get("CapEx Period End"),
                 "CapEx Concept": metrics.get("CapEx Concept"),
             }
-            succeeded.append(ticker_upper)
 
-            # Be polite to SEC servers.
+            fallback = archive_fallback_data.get(ticker_upper)
+            if fallback and _edgar_quality_score(live_payload) < _edgar_quality_score(fallback):
+                retained = fallback.copy()
+                retained["EDGAR Source"] = "Archive Fallback"
+                retained["EDGAR Status"] = (
+                    f"Live lower quality; retained archive: {live_payload.get('EDGAR Status', '')}"
+                )
+                edgar_data[ticker_upper] = retained
+                rejected_quality.append(ticker_upper)
+            else:
+                edgar_data[ticker_upper] = live_payload
+                succeeded.append(ticker_upper)
+
             time.sleep(0.12)
 
         except Exception as exc:
             debug_print(f"EDGAR failed: {ticker_upper} -> {exc}")
             failed.append(ticker_upper)
-
             fallback = archive_fallback_data.get(ticker_upper)
 
             if fallback:
@@ -1031,6 +1044,7 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
         "live_attempted_tickers": attempted,
         "live_succeeded_tickers": succeeded,
         "live_failed_tickers": failed,
+        "live_rejected_quality_tickers": rejected_quality,
     }
 
 
@@ -1072,6 +1086,7 @@ def load_edgar_with_report(tickers):
         "live_attempted_tickers": [],
         "live_succeeded_tickers": [],
         "live_failed_tickers": [],
+        "live_rejected_quality_tickers": [],
     })
 
     if not tickers_to_fetch:
@@ -1129,3 +1144,41 @@ def load_edgar_with_report(tickers):
 def load_edgar(tickers):
     edgar_data, _ = load_edgar_with_report(tickers)
     return edgar_data
+
+
+def build_edgar_archive_snapshot(sector_data, raw_edgar_data):
+    """Return only live SEC rows approved by the EDGAR quality contract.
+
+    The archive layer receives a persistence-ready DataFrame and does not own
+    or repeat any EDGAR quality policy.
+    """
+    columns = [
+        "Sector", "Ticker", "Revenue", "Revenue Growth", "CapEx",
+        "CapEx Growth", "Revenue FY", "CapEx FY", "CIK", "EDGAR Status",
+    ]
+    if not raw_edgar_data:
+        return pd.DataFrame(columns=columns)
+
+    rows = []
+    for sector, frame in (sector_data or {}).items():
+        if frame is None or frame.empty or "Ticker" not in frame.columns:
+            continue
+
+        for ticker in frame["Ticker"].dropna().astype(str).str.upper().str.strip():
+            payload = raw_edgar_data.get(ticker, {}) or {}
+            if not is_archive_eligible_edgar_payload(payload):
+                continue
+            rows.append({
+                "Sector": sector,
+                "Ticker": ticker,
+                "Revenue": payload.get("Revenue", np.nan),
+                "Revenue Growth": payload.get("Revenue Growth", np.nan),
+                "CapEx": payload.get("CapEx", np.nan),
+                "CapEx Growth": payload.get("CapEx Growth", np.nan),
+                "Revenue FY": payload.get("Revenue FY", np.nan),
+                "CapEx FY": payload.get("CapEx FY", np.nan),
+                "CIK": payload.get("CIK", np.nan),
+                "EDGAR Status": payload.get("EDGAR Status", np.nan),
+            })
+
+    return pd.DataFrame(rows, columns=columns)

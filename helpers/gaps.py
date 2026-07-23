@@ -4,7 +4,7 @@
 import pandas as pd
 import numpy as np
 
-from helpers.macro_normalization import normalize_industrial_production
+from analytics.scoring import tanh_score
 from config.debug_config import DEBUG, debug_print
 
 
@@ -251,18 +251,24 @@ def liquidity_gap(macro_df, fred_data):
 
     return float(np.clip(ai_risk_appetite - liquidity_support, -100, 100))
 
-def adoption_gap(ami, industrial_production):
-    """
-    Keep the existing adoption gap for now.
-    We can redesign this later.
-    """
+def industrial_growth_gap(adi, industrial_production_growth):
+    """AI-Industrial Growth Gap.
 
-    if pd.isna(ami):
+    ADI already summarizes normalized buildout growth/intensity. Industrial
+    production YoY growth is independently mapped to the same 0-100 state
+    scale before subtraction.
+    """
+    if pd.isna(adi) or pd.isna(industrial_production_growth):
         return np.nan
 
-    if pd.isna(industrial_production):
+    industrial_score = tanh_score(
+        industrial_production_growth,
+        center=0.02,
+        scale=0.05,
+    )
+
+    if pd.isna(industrial_score):
         return np.nan
 
-    economy_score = normalize_industrial_production(industrial_production)
+    return float(np.clip(float(adi) - industrial_score, -100, 100))
 
-    return ami - economy_score

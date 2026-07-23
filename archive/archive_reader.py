@@ -29,7 +29,6 @@ ARCHIVE_PATHS = {
     "edgar": ARCHIVE_DIR / "edgar_history.csv",
     "fred": ARCHIVE_DIR / "fred_history.csv",
     "macro": ARCHIVE_DIR / "macro_history.csv",
-    "put_call": ARCHIVE_DIR / "put_call_history.csv",
     "sector": ARCHIVE_DIR / "sector_history.csv",
     "yf": ARCHIVE_DIR / "yf_history.csv",
 }
@@ -39,7 +38,6 @@ ARCHIVE_KEYS = {
     "edgar": ["Date", "Sector", "Ticker"],
     "fred": ["Date"],
     "macro": ["Date"],
-    "put_call": ["Date"],
     "sector": ["Date", "Sector"],
     "yf": ["Date", "Sector", "Ticker"],
 }
@@ -56,13 +54,6 @@ EDGAR_REQUIRED_COLUMNS = [
     "CapEx FY",
     "CIK",
     "EDGAR Status",
-]
-
-PUT_CALL_COLUMNS = [
-    "Date",
-    "PutCallRatio",
-    "Normalized PutCall",
-    "Source",
 ]
 
 
@@ -188,12 +179,6 @@ def load_fred_history():
 def load_macro_history():
     return read_archive(ARCHIVE_PATHS["macro"])
 
-
-def load_put_call_history():
-    return read_archive(
-        ARCHIVE_PATHS["put_call"],
-        required_columns=PUT_CALL_COLUMNS,
-    )
 
 
 def load_sector_history():

@@ -62,10 +62,19 @@ def resolve_sector_dataframe(raw_data):
             "Total Debt": resolve_field("Total Debt", source_data),
             "Cash": resolve_field("Cash", source_data),
             "Net Debt": resolve_field("Net Debt", source_data),
+            "FCF Margin YoY Change": resolve_field("FCF Margin YoY Change", source_data),
+            "Net Debt / EBITDA YoY Change": resolve_field(
+                "Net Debt / EBITDA YoY Change", source_data
+            ),
+            "CapEx / OCF YoY Change": resolve_field("CapEx / OCF YoY Change", source_data),
             "Beta": resolve_field("Beta", source_data),
             "52W High": resolve_field("52W High", source_data),
             "52W Low": resolve_field("52W Low", source_data),
             "1Y Return": resolve_field("1Y Return", source_data),
+            "Price Extension 200D": resolve_field("Price Extension 200D", source_data),
+            "Momentum Acceleration": resolve_field("Momentum Acceleration", source_data),
+            "Volatility Expansion": resolve_field("Volatility Expansion", source_data),
+            "Volume Activity": resolve_field("Volume Activity", source_data),
         })
    
     return pd.DataFrame(rows)

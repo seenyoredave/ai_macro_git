@@ -1,10 +1,10 @@
 #################################################
-# FACTOR CONFIG
+# AI EQUITY INDEX FACTOR CONFIG
 #################################################
 
 DEFAULT_FACTORS = [
     "relative_performance",
-    "valuation_premium",
+    "earnings_yield_discount",
     "momentum_breadth",
     "dispersion",
 ]
@@ -25,8 +25,8 @@ FACTOR_CONFIG = {
 }
 
 FACTOR_HELP = {
-    "relative_performance": "RP = sector 1Y return - benchmark 1Y return.",
-    "valuation_premium": "VP = sector forward P/E / benchmark forward P/E.",
-    "momentum_breadth": "MB = share of sector stocks with positive 1Y returns.",
-    "dispersion": "D = variation in 1Y returns across the sector basket.",
+    "relative_performance": "Sector mean 1Y return minus the QQQ top-10 proxy mean 1Y return.",
+    "earnings_yield_discount": "Benchmark earnings yield minus sector mean positive earnings yield. Positive values indicate a richer sector valuation.",
+    "momentum_breadth": "Share of sector stocks with positive 1Y returns.",
+    "dispersion": "Variation in 1Y returns across the sector basket; lower dispersion contributes a higher AEI factor score.",
 }

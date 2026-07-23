@@ -10,7 +10,7 @@ SECTOR_CONFIG = {
     "COMPUTE": {
         "basket": [
             "NVDA", "AMD", "AVGO", "MRVL", "ARM",
-            "QCOM", "MU", "TSM", "INTC", "TXN",
+            "QCOM", "MU", "TSM", "INTC", "CRDO",
             "ADI", "NXPI", "ON", "MCHP", "MPWR",
             "LSCC", "ALAB", "GFS"
         ],
@@ -24,7 +24,7 @@ SECTOR_CONFIG = {
             "MU": 4,
             "TSM": 4,
             "INTC": 3,
-            "TXN": 2,
+            "CRDO": 5,
             "ADI": 2,
             "NXPI": 2,
             "ON": 2,
@@ -68,7 +68,7 @@ SECTOR_CONFIG = {
     "CLOUD_HYPERSCALERS": {
         "basket": [
             "MSFT", "AMZN", "GOOG", "META", "ORCL",
-            "IBM", "BABA", "TCEHY"
+            "IBM", "BABA", "TCEHY", "CRWV", "NBIS"
         ],
         "ai_exposure_score": {
             "MSFT": 5,
@@ -79,13 +79,15 @@ SECTOR_CONFIG = {
             "IBM": 3,
             "BABA": 3,
             "TCEHY": 3,
+            "CRWV": 5,
+            "NBIS": 5,
         }
     },
 
     "DATA_AI_INFRASTRUCTURE": {
         "basket": [
             "SNOW", "DDOG", "MDB", "NET", "AKAM",
-            "DOCN", "FSLY", "TWLO", "NTNX"
+            "DOCN", "ESTC", "TWLO", "NTNX"
         ],
         "ai_exposure_score": {
             "SNOW": 5,
@@ -94,7 +96,7 @@ SECTOR_CONFIG = {
             "NET": 4,
             "AKAM": 3,
             "DOCN": 3,
-            "FSLY": 2,
+            "ESTC": 5,
             "TWLO": 3,
             "NTNX": 4,
         }
@@ -133,7 +135,7 @@ SECTOR_CONFIG = {
             "CEG", "VST", "TLN", "NEE", "DUK",
             "SO", "AEP", "ETR", "PWR", "ETN",
             "GEV", "NRG", "GNRC", "EME", "HUBB",
-            "AYI", "BEPC", "FLNC"
+            "POWL", "BEPC", "FLNC"
         ],
         "ai_exposure_score": {
             "CEG": 5,
@@ -151,7 +153,7 @@ SECTOR_CONFIG = {
             "GNRC": 3,
             "EME": 4,
             "HUBB": 4,
-            "AYI": 3,
+            "POWL": 5,
             "BEPC": 3,
             "FLNC": 4,
         }
@@ -207,7 +209,8 @@ SECTOR_CONFIG = {
     "INDUSTRIAL_AUTOMATION": {
         "basket": [
             "ROK", "ABBNY", "FANUY", "OMRNY", "CGNX",
-            "ZBRA", "SYM"
+            "ZBRA", "SYM", "HON", "EMR", "PH",
+            "ATS", "RRX"
         ],
         "ai_exposure_score": {
             "ROK": 5,
@@ -217,6 +220,11 @@ SECTOR_CONFIG = {
             "CGNX": 4,
             "ZBRA": 3,
             "SYM": 5,
+            "HON": 4,
+            "EMR": 5,
+            "PH": 4,
+            "ATS": 4,
+            "RRX": 3,
         }
     },
 
@@ -272,7 +280,10 @@ SECTOR_CONFIG = {
             "SNAP",
             "PINS",
             "RDDT",
-            "MTCH",
+            "UBER",
+            "RBLX",
+            "NFLX",
+            "ROKU",
             "APP",
             "SOUN",
             "SHOP",
@@ -286,7 +297,10 @@ SECTOR_CONFIG = {
             "SNAP": 4,
             "PINS": 4,
             "RDDT": 4,
-            "MTCH": 3,
+            "UBER": 5,
+            "RBLX": 5,
+            "NFLX": 4,
+            "ROKU": 4,
             "APP": 4,
             "SOUN": 5,
             "SHOP": 4,

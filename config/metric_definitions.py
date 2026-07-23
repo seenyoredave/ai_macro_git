@@ -2,74 +2,92 @@ def metric_help(key, fallback="Definition unavailable."):
     return METRIC_DEFINITIONS.get(key, fallback)
 
 
+ADI_HELP = """
+Measures the current intensity of observable AI capital deployment, physical construction, compute-supply realization, and power demand.
+
+ADI = 0.25(Capital Deployment) + 0.25(Data-Center Construction) + 0.25(Compute Supply) + 0.25(Power Footprint)
+
+At least 3 of 4 pillars must be valid; available static weights are renormalized. Scale: 0 to 100. Higher values indicate more intense development activity, not percentage completion.
+"""
+
+
 METRIC_DEFINITIONS = {
-    "Maturation Index": """
-    AMI = weighted average of all sector scores
-    
-    Measures overall economic progress towards completion of AI buildout cycle
+    "AI Economy Snapshot": (
+        "**AI Equity Index:** Current strength and breadth of the selected AI equity universe.  \n"
+        "**AI Development Intensity:** Current intensity of observable physical and capital AI development.  \n"
+        "**Power Stress Index:** Electricity-demand pressure relative to available grid capacity and historical conditions.  \n"
+        "**Concentration HHI:** Concentration of market value among the selected AI-related companies.  \n"
+        "**Capital Stress:** Financing strain from cash flow, leverage, commitments, and contingent exposure."
+    ),
 
-    Scale: 0-100.
-    Higher values suggest a more mature or advanced cycle position. 
-    """,
+    "AI Equity Index": """
+Measures the current strength, breadth, valuation, and return dispersion of the selected AI equity universe.
 
-    "Divergence Estimate": """
-    DE = AMI - average speculation pressure.
+AEI = mean(valid Sector AEI scores)
 
-    Measures relative strength of buildout vs speculative pressure. 
-    
-    Scale: -100 <> +100.
-    Positive values suggest AI buildout strength exceeds speculative pressure.
-    Negative values suggest speculation may be running ahead of buildout.
-    """,
-    
+Sector AEI = 0.25(Relative Performance) + 0.25(Earnings-Yield Valuation) + 0.25(Momentum Breadth) + 0.25(Return Dispersion)
+
+At least 3 of 4 sector factors and 75% of sector scores must be valid. Scale: 0 to 100; higher values indicate a stronger or more extended equity regime.
+""",
+
+    "AI Development Intensity": ADI_HELP,
+
+    "Speculation Gap": """
+Compares equity enthusiasm with observable AI development activity.
+
+Speculation Gap = AEI - AI Development Intensity
+
+Positive values indicate equities are running ahead of observable development; negative values indicate development is running ahead of equities. Scale: -100 to +100.
+""",
+
     "Power Stress Index": """
-    PSI = current utility/electric power activity - trailing historical average
-    
-    Measures how far current electricity demand pressure is running above its recent historical baseline.
-    
-    Scale: 0 - 100
-    A rising Power Stress Index suggests that AI infrastructure demand may be creating a larger physical footprint in the economy.
-    """,
+Measures nonresidential electricity-demand pressure and grid headroom relative to reference conditions.
+
+Power Stress = 2 × [0.40(Nonresidential Load) + 0.35(Grid Utilization) + 0.25(Capacity Response) - 50]
+
+At least 2 of 3 components must be valid; available static weights are renormalized. Scale: -100 to +100; zero represents reference stress. Monthly source data produces a step series.
+""",
+
+    "Capital Stress": """
+Measures filing-based financing strain from cash flow, book leverage, disclosed commitments, and contingent exposure.
+
+Capital Stress = 2 × [0.30(Cash-Flow Strain) + 0.25(Book Leverage) + 0.30(Committed Burden) + 0.15(Contingent Exposure) - 50]
+
+At least 3 of 4 components must be valid; available static weights are renormalized. Scale: -100 to +100; zero represents reference stress. Filing-driven inputs produce a quarterly step series.
+""",
 
     "Concentration HHI": """
-    Herfindahl-Hirschman Index = ∑(market cap)^2 for each company within total AI basket
-    
-    Measures whether AI-related market value is concentrated in a few dominant firms or spread across the broader AI ecosystem.
-    
-    Scale: 0 - 100
-    Higher values mean more concentration; lower values mean broader diffusion.
-    """,
-    
+Measures how concentrated total market value is among the selected AI-related companies.
+
+HHI = Σ(company market cap ÷ total market cap)²
+HHI Score = clip[100 × (HHI - 0.01) ÷ (0.25 - 0.01), 0, 100]
+
+Higher values indicate greater concentration.
+""",
+
     "Economic Validation Gap": """
-    EVG = Enterprise AI CapEx Growth - Enterprise AI Revenue Growth - Macro Information-Processing Investment Growth
+Compares capital-spending growth with company revenue growth and broader information-investment growth.
 
-    EVG compares enterprise AI software-company capital spending pressure against company-level monetization and broader macro information-processing investment momentum.
+Economic Validation Gap = 100 × (CapEx growth - Revenue growth - Information-processing investment growth)
 
-    Positive values suggest AI capex is running ahead of company revenue growth and macro investment validation.
-    Negative values suggest revenue growth and broader information-processing investment are keeping pace with, or exceeding, AI capex growth.
-
-    This metric is intended as a capital-validation signal, not a precise accounting identity.
-    """,
+Positive values indicate capital spending is growing faster than the two validation measures combined. Scale: -100 to +100 after clipping.
+""",
 
     "Liquidity Support Gap": """
-    LSG = AI Risk Appetite - Macro Liquidity Support.
+Compares current sector trading pressure with support from broad financial conditions.
 
-    AI Risk Appetite is proxied by average sector speculation pressure.
-    Macro Liquidity Support is proxied by the inverted Chicago Fed NFCI.
+Liquidity Support Gap = mean(Sector Pressure) - clip[50 - 50(NFCI), 0, 100]
 
-    Positive values suggest AI risk appetite is running ahead of liquidity support.
-    Negative values suggest liquidity conditions are supportive relative to AI risk appetite.
-    """,
-    
-    "Adoption Gap": """
-    AG = AMI - normalized industrial production score
-    
-    Compares the AI Maturation Index against broad industrial production.
+Positive values indicate trading pressure exceeds liquidity support; negative values indicate financial conditions are comparatively supportive. Scale: -100 to +100.
+""",
 
-    Positive values suggest the AI economy is advancing faster than the broader industrial economy.
-    Negative values suggest broader industrial activity is keeping pace with, or exceeding, AI-cycle development.
-        
-    """,
+    "AI-Industrial Growth Gap": """
+Compares observable AI development activity with broad industrial growth.
+
+AI-Industrial Growth Gap = AI Development Intensity - [50 + 50 × tanh((INDPRO YoY - 0.02) ÷ 0.05)]
+
+Positive values indicate AI development is outpacing broad industrial growth; negative values indicate the reverse. Scale: -100 to +100.
+""",
 
     "Purpose Statement": """
     This project seeks to quantify and distinguish genuine AI-driven economic transformation 
@@ -81,16 +99,12 @@ METRIC_DEFINITIONS = {
     """,
 
     "Current Sector Assessment": """
-    Current Sector Assessment v2.1 summarizes three sector-level states using a common display language: Sector Cycle Score and Sector Pressure Score.
+Summarizes sector crowding, movement, and the breadth of year-over-year financial deterioration.
 
-    Most Crowded selects the sector with the highest current Sector Pressure Score.
+Most Crowded = sector with max(current Pressure)
+Fastest Mover = sector with max|ΔSector AEI + ΔPressure| over the fixed observation lookback
+Biggest Risk = sector with max(100 × adverse financial signals ÷ valid financial signals)
 
-    Fastest Mover selects the sector with the largest absolute Sector Movement over a fixed 10-observation sector-history window. Sector Movement = change in Sector Cycle Score + change in Sector Pressure Score.
-
-    Biggest Risk selects the eligible sector with the highest internal risk selection score. Risk Selection Score = Financial Strain × Pressure Amplifier. Financial Strain is the mean of cross-sector percentile strain ranks for three sector-level ratio-of-sums: FCF Margin = Free Cash Flow / Revenue, Debt Burden = Net Debt / EBITDA, and Reinvestment Burden = CapEx / Operating Cash Flow. Lower FCF Margin, higher Debt Burden, and higher Reinvestment Burden increase Financial Strain. Pressure Amplifier = 1 + (Sector Pressure Score / 100). A sector must have valid data across at least 50% of Effective Basket Weight for at least two of the three strain pillars to be eligible.
-
-    The displayed card values remain Sector Cycle Score and Sector Pressure Score only. Hidden selection helpers are used for ranking, not as additional public dashboard metrics.
-    """
+A financial signal is adverse when FCF margin falls, net debt/EBITDA rises, or CapEx/OCF rises versus the prior comparable fiscal year. At least 50% of possible signals must be valid.
+""",
 }
-
-
