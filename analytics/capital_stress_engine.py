@@ -25,7 +25,7 @@ CAPITAL_STRESS_TICKERS = {
 
 CAPITAL_STRESS_WEIGHTS = {
     "Cash Flow Strain": 0.30,
-    "Book Leverage": 0.25,
+    "Debt Capacity Stress": 0.25,
     "Committed Burden": 0.30,
     "Contingent Exposure": 0.15,
 }
@@ -73,13 +73,10 @@ REQUIRED_LEDGER_COLUMNS = [
 ]
 
 
-def load_commitment_ledger(path=None, *, as_of_date=None) -> pd.DataFrame:
-    ledger_path = Path(path) if path is not None else DEFAULT_COMMITMENTS_PATH
-
-    if not ledger_path.exists() or ledger_path.stat().st_size == 0:
+def _normalize_commitment_ledger(df, *, as_of_date=None) -> pd.DataFrame:
+    if df is None or df.empty:
         return pd.DataFrame(columns=REQUIRED_LEDGER_COLUMNS)
 
-    df = pd.read_csv(ledger_path)
     missing = [col for col in REQUIRED_LEDGER_COLUMNS if col not in df.columns]
     if missing:
         raise ValueError(f"Capital commitment ledger missing columns: {missing}")
@@ -107,6 +104,18 @@ def load_commitment_ledger(path=None, *, as_of_date=None) -> pd.DataFrame:
         df.groupby("Ticker", as_index=False, dropna=False)
         .tail(1)
         .reset_index(drop=True)
+    )
+
+
+def load_commitment_ledger(path=None, *, as_of_date=None) -> pd.DataFrame:
+    ledger_path = Path(path) if path is not None else DEFAULT_COMMITMENTS_PATH
+
+    if not ledger_path.exists() or ledger_path.stat().st_size == 0:
+        return pd.DataFrame(columns=REQUIRED_LEDGER_COLUMNS)
+
+    return _normalize_commitment_ledger(
+        pd.read_csv(ledger_path),
+        as_of_date=as_of_date,
     )
 
 
@@ -188,16 +197,145 @@ def _ledger_burden(ledger, cohort, columns, *, min_companies=2):
     return burden, valid_count, obligation_total, sorted(merged.loc[valid, "Ticker"].tolist())
 
 
+def _debt_capacity_stress(cohort, *, min_companies=2):
+    """Score debt capacity without discarding negative-EBITDA companies.
+
+    Branches:
+      * positive EBITDA: aggregate net debt / aggregate EBITDA;
+      * non-positive EBITDA with positive net debt: aggregate net debt / revenue
+        with a high-stress floor;
+      * non-positive EBITDA with net cash: low leverage stress, because the
+        operating weakness is captured separately by Cash Flow Strain.
+
+    Branch scores are combined by represented revenue; company counts are the
+    fallback when revenue weights are unavailable.
+    """
+    if cohort is None or cohort.empty:
+        return {
+            "score": np.nan,
+            "observations": 0,
+            "positive_ebitda_ratio": np.nan,
+            "fallback_ratio": np.nan,
+            "positive_ebitda_companies": 0,
+            "impaired_companies": 0,
+            "net_cash_companies": 0,
+        }
+
+    frame = cohort.copy()
+    for column in ("Net Debt", "EBITDA", "Revenue"):
+        frame[column] = pd.to_numeric(frame.get(column), errors="coerce")
+
+    usable = frame[
+        frame["Net Debt"].notna()
+        & frame["EBITDA"].notna()
+        & np.isfinite(frame["Net Debt"])
+        & np.isfinite(frame["EBITDA"])
+    ].copy()
+    if len(usable) < min_companies:
+        return {
+            "score": np.nan,
+            "observations": int(len(usable)),
+            "positive_ebitda_ratio": np.nan,
+            "fallback_ratio": np.nan,
+            "positive_ebitda_companies": 0,
+            "impaired_companies": 0,
+            "net_cash_companies": 0,
+        }
+
+    positive = usable[usable["EBITDA"] > 0].copy()
+    impaired = usable[
+        (usable["EBITDA"] <= 0)
+        & (usable["Net Debt"] > 0)
+        & usable["Revenue"].notna()
+        & np.isfinite(usable["Revenue"])
+        & (usable["Revenue"] > 0)
+    ].copy()
+    net_cash = usable[(usable["EBITDA"] <= 0) & (usable["Net Debt"] <= 0)].copy()
+
+    branch_scores = {}
+    branch_exposure = {}
+
+    positive_ratio = np.nan
+    if not positive.empty and float(positive["EBITDA"].sum()) > 0:
+        positive_ratio = float(positive["Net Debt"].sum()) / float(positive["EBITDA"].sum())
+        branch_scores["Positive EBITDA"] = tanh_score(
+            positive_ratio, center=1.0, scale=1.5
+        )
+        branch_exposure["Positive EBITDA"] = float(
+            positive.loc[positive["Revenue"].gt(0), "Revenue"].sum()
+        )
+
+    fallback_ratio = np.nan
+    if not impaired.empty and float(impaired["Revenue"].sum()) > 0:
+        fallback_ratio = float(impaired["Net Debt"].sum()) / float(impaired["Revenue"].sum())
+        branch_scores["Negative EBITDA / Net Debt"] = max(
+            70.0,
+            tanh_score(fallback_ratio, center=0.25, scale=0.40),
+        )
+        branch_exposure["Negative EBITDA / Net Debt"] = float(impaired["Revenue"].sum())
+
+    if not net_cash.empty:
+        branch_scores["Negative EBITDA / Net Cash"] = 25.0
+        branch_exposure["Negative EBITDA / Net Cash"] = float(
+            net_cash.loc[net_cash["Revenue"].gt(0), "Revenue"].sum()
+        )
+
+    if not branch_scores:
+        score = np.nan
+    else:
+        weights = {
+            name: exposure
+            for name, exposure in branch_exposure.items()
+            if pd.notna(exposure) and exposure > 0
+        }
+        if len(weights) != len(branch_scores) or sum(weights.values()) <= 0:
+            weights = {
+                "Positive EBITDA": len(positive),
+                "Negative EBITDA / Net Debt": len(impaired),
+                "Negative EBITDA / Net Cash": len(net_cash),
+            }
+            weights = {
+                name: float(weights.get(name, 0))
+                for name in branch_scores
+                if weights.get(name, 0) > 0
+            }
+
+        total_weight = sum(weights.values())
+        score = (
+            sum(branch_scores[name] * weights[name] for name in weights) / total_weight
+            if total_weight > 0
+            else np.nan
+        )
+
+    return {
+        "score": float(np.clip(score, 0, 100)) if pd.notna(score) else np.nan,
+        "observations": int(len(usable)),
+        "positive_ebitda_ratio": positive_ratio,
+        "fallback_ratio": fallback_ratio,
+        "positive_ebitda_companies": int(len(positive)),
+        "impaired_companies": int(len(impaired)),
+        "net_cash_companies": int(len(net_cash)),
+        "branch_scores": branch_scores,
+    }
+
+
 def calculate_capital_stress(
     sector_data,
     commitments_path=None,
     *,
     as_of_date=None,
+    commitments_df=None,
 ) -> dict:
-    """Calculate Capital Stress with a fixed 3-of-4 component rule."""
-    ledger = load_commitment_ledger(
-        commitments_path,
-        as_of_date=as_of_date,
+    """Calculate Capital Stress with a fixed 3-of-4 component rule.
+
+    ``commitments_df`` is used by the audited historical backfill.  Runtime
+    callers continue to use the retained current ledger at
+    ``commitments_path``.
+    """
+    ledger = (
+        _normalize_commitment_ledger(commitments_df, as_of_date=as_of_date)
+        if commitments_df is not None
+        else load_commitment_ledger(commitments_path, as_of_date=as_of_date)
     )
     cohort = _universe_company_frame(sector_data)
 
@@ -207,7 +345,7 @@ def calculate_capital_stress(
         "CapEx",
         "Operating Cash Flow",
     )
-    book_leverage, leverage_count = _ratio_of_sums(cohort, "Net Debt", "EBITDA")
+    debt_capacity = _debt_capacity_stress(cohort)
 
     cash_flow_subscores = {
         "FCF Margin Strain": (
@@ -242,7 +380,7 @@ def calculate_capital_stress(
 
     base_scores = {
         "Cash Flow Strain": cash_flow_result["score"],
-        "Book Leverage": tanh_score(book_leverage, center=1.0, scale=1.5),
+        "Debt Capacity Stress": debt_capacity["score"],
         "Committed Burden": tanh_score(committed_burden, center=1.5, scale=2.0),
         "Contingent Exposure": tanh_score(contingent_burden, center=0.10, scale=0.20),
     }
@@ -282,12 +420,17 @@ def calculate_capital_stress(
                 },
             },
         },
-        "Book Leverage": {
-            "raw": book_leverage,
-            "score": signed_scores["Book Leverage"],
-            "base_score": base_scores["Book Leverage"],
-            "weight": CAPITAL_STRESS_WEIGHTS["Book Leverage"],
-            "observations": leverage_count,
+        "Debt Capacity Stress": {
+            "raw": debt_capacity["positive_ebitda_ratio"],
+            "secondary_raw": debt_capacity["fallback_ratio"],
+            "score": signed_scores["Debt Capacity Stress"],
+            "base_score": base_scores["Debt Capacity Stress"],
+            "weight": CAPITAL_STRESS_WEIGHTS["Debt Capacity Stress"],
+            "observations": debt_capacity["observations"],
+            "positive_ebitda_companies": debt_capacity["positive_ebitda_companies"],
+            "impaired_companies": debt_capacity["impaired_companies"],
+            "net_cash_companies": debt_capacity["net_cash_companies"],
+            "branch_scores": debt_capacity.get("branch_scores", {}),
         },
         "Committed Burden": {
             "raw": committed_burden,

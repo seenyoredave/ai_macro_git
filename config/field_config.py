@@ -36,9 +36,14 @@ FIELD_PRIORITY = {
 # Map fields to groups
 FIELD_GROUPS = {
     "P/E": "fundamentals",
-    "Forward P/E": "fundamentals",
+    "Forward EV/EBIT": "financial_strain",
     "Market Cap": "fundamentals",
+    "Enterprise Value": "financial_strain",
     "Revenue": "fundamentals",
+    "Forward Revenue": "financial_strain",
+    "Operating Income": "financial_strain",
+    "Operating Margin": "financial_strain",
+    "Forward EBIT": "financial_strain",
     "Revenue Growth": "fundamentals",
     "CapEx": "fundamentals",
     "CapEx Growth": "fundamentals",

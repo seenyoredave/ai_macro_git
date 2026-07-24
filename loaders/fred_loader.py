@@ -21,8 +21,14 @@ from config.debug_config import debug_print
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INDPRO_HISTORY_PATH = PROJECT_ROOT / "data" / "industrial_production_history.csv"
+INFO_INVESTMENT_HISTORY_PATH = (
+    PROJECT_ROOT / "data" / "info_processing_investment_history.csv"
+)
 INDPRO_PUBLIC_CSV_URL = (
     "https://fred.stlouisfed.org/graph/fredgraph.csv?id=INDPRO"
+)
+INFO_INVESTMENT_PUBLIC_CSV_URL = (
+    "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A679RX1Q020SBEA"
 )
 
 def _optional_streamlit_secret(name, default=None):
@@ -343,6 +349,152 @@ def _hydrate_industrial_growth(payload, fred=None):
     return out
 
 
+def _normalize_info_investment_frame(frame):
+    if frame is None or frame.empty:
+        return None
+
+    date_column = next(
+        (column for column in ["Observation Date", "DATE", "Date", "date"] if column in frame.columns),
+        None,
+    )
+    value_column = next(
+        (
+            column
+            for column in [
+                "Info Processing Investment Level",
+                "A679RX1Q020SBEA",
+                "VALUE",
+                "Value",
+            ]
+            if column in frame.columns
+        ),
+        None,
+    )
+    if date_column is None or value_column is None:
+        return None
+
+    out = frame[[date_column, value_column]].copy()
+    out.columns = ["Observation Date", "Info Processing Investment Level"]
+    out["Observation Date"] = pd.to_datetime(out["Observation Date"], errors="coerce")
+    out["Info Processing Investment Level"] = pd.to_numeric(
+        out["Info Processing Investment Level"], errors="coerce"
+    )
+    out = out.dropna().sort_values("Observation Date")
+    out = out.drop_duplicates(subset=["Observation Date"], keep="last")
+    return out if not out.empty else None
+
+
+def _series_from_info_investment_frame(frame):
+    normalized = _normalize_info_investment_frame(frame)
+    if normalized is None:
+        return None
+    return pd.Series(
+        normalized["Info Processing Investment Level"].to_numpy(dtype=float),
+        index=pd.DatetimeIndex(normalized["Observation Date"]),
+        name="A679RX1Q020SBEA",
+    )
+
+
+def _persist_info_investment_history(frame):
+    normalized = _normalize_info_investment_frame(frame)
+    if normalized is None:
+        return
+    out = normalized.copy()
+    out["Observation Date"] = out["Observation Date"].dt.date.astype(str)
+    INFO_INVESTMENT_HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    temporary = INFO_INVESTMENT_HISTORY_PATH.with_suffix(".csv.tmp")
+    out.to_csv(temporary, index=False)
+    temporary.replace(INFO_INVESTMENT_HISTORY_PATH)
+
+
+def _load_local_info_investment_series():
+    if (
+        not INFO_INVESTMENT_HISTORY_PATH.exists()
+        or INFO_INVESTMENT_HISTORY_PATH.stat().st_size == 0
+    ):
+        return None
+    try:
+        return _series_from_info_investment_frame(
+            pd.read_csv(INFO_INVESTMENT_HISTORY_PATH)
+        )
+    except Exception as exc:
+        debug_print(f"Local information-investment history load failed -> {exc}")
+        return None
+
+
+def _fetch_public_info_investment_series():
+    try:
+        response = requests.get(INFO_INVESTMENT_PUBLIC_CSV_URL, timeout=20)
+        response.raise_for_status()
+        frame = pd.read_csv(StringIO(response.text))
+        series = _series_from_info_investment_frame(frame)
+        if series is not None:
+            _persist_info_investment_history(frame)
+        return series
+    except Exception as exc:
+        debug_print(f"Public information-investment history load failed -> {exc}")
+        return None
+
+
+def _load_info_investment_series(fred=None):
+    if fred is not None:
+        try:
+            series_id = fred_indicators.FRED_INDICATORS[
+                "Info Processing Investment Level"
+            ]
+            series = fred.get_series(series_id)
+            clean = pd.to_numeric(series, errors="coerce").dropna().sort_index()
+            if not clean.empty:
+                _persist_info_investment_history(
+                    pd.DataFrame(
+                        {
+                            "Observation Date": pd.DatetimeIndex(clean.index),
+                            "Info Processing Investment Level": clean.to_numpy(dtype=float),
+                        }
+                    )
+                )
+                return clean, "FRED Live"
+        except Exception as exc:
+            debug_print(f"FRED failed: information-investment history -> {exc}")
+
+    public_series = _fetch_public_info_investment_series()
+    if public_series is not None and not public_series.empty:
+        return public_series, "FRED Public CSV"
+
+    local_series = _load_local_info_investment_series()
+    if local_series is not None and not local_series.empty:
+        return local_series, "FRED Local History"
+
+    return None, "FRED Unavailable"
+
+
+def _hydrate_information_investment(payload, fred=None):
+    if _payload_value_is_finite(payload, "Info Processing Investment YoY"):
+        return payload
+
+    series, source = _load_info_investment_series(fred)
+    if series is None or series.empty:
+        return payload
+
+    growth, latest_date = _year_over_year_growth(series)
+    if pd.isna(growth) or not np.isfinite(growth):
+        return payload
+
+    out = dict(payload or {})
+    observation_date = pd.Timestamp(series.index[-1])
+    out["Info Processing Investment Level"] = {
+        "value": float(series.iloc[-1]),
+        "date": observation_date.isoformat(),
+        "source": source,
+    }
+    out["Info Processing Investment YoY"] = {
+        "value": float(growth),
+        "date": latest_date.isoformat() if latest_date is not None else None,
+        "source": f"{source} Derived",
+    }
+    return out
+
+
 def _fill_failed_from_archive(data, fallback):
     if not fallback:
         return data
@@ -382,13 +534,16 @@ def load_fred():
 
     if archived is not None:
         debug_print("Loading current-week FRED snapshot from fred_history.csv")
-        return _hydrate_industrial_growth(archived, get_fred_client())
+        fred = get_fred_client()
+        archived = _hydrate_industrial_growth(archived, fred)
+        return _hydrate_information_investment(archived, fred)
 
     fred = get_fred_client()
     fallback = _latest_fred_archive_fallback()
 
     if fred is None:
-        return _hydrate_industrial_growth(fallback or {}, fred=None)
+        payload = _hydrate_industrial_growth(fallback or {}, fred=None)
+        return _hydrate_information_investment(payload, fred=None)
 
     data = {}
     series_cache = {}
@@ -419,6 +574,7 @@ def load_fred():
 
     derived_map = {
         "Industrial Production YoY": "Industrial Production",
+        "Info Processing Investment YoY": "Info Processing Investment Level",
         "Commercial Electricity Sales YoY": "Commercial Electricity Sales",
         "Residential Electricity Sales YoY": "Residential Electricity Sales",
         "Electric Power Output YoY": "Electric Power Output",
@@ -434,6 +590,7 @@ def load_fred():
 
     data = _fill_failed_from_archive(data, fallback)
     data = _hydrate_industrial_growth(data, fred)
+    data = _hydrate_information_investment(data, fred)
 
     has_any_value = any(
         isinstance(payload, dict)

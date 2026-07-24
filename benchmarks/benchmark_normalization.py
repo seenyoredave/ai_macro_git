@@ -3,6 +3,8 @@
 import numpy as np
 import pandas as pd
 
+from analytics.valuation import aggregate_forward_ebit_yield
+
 
 def _weighted_mean(df, value_col, weight_col="Benchmark Weight"):
     if value_col not in df.columns or weight_col not in df.columns:
@@ -16,26 +18,27 @@ def _weighted_mean(df, value_col, weight_col="Benchmark Weight"):
     return float(np.average(values[valid], weights=weights[valid]))
 
 
-def _weighted_forward_pe(df):
-    """Return the reciprocal of weighted earnings yield.
-
-    This preserves the existing ``forward_pe`` public field while ensuring the
-    valuation comparison uses weighted earnings yield rather than arithmetic P/E.
-    """
-    pe = pd.to_numeric(df.get("Forward P/E"), errors="coerce")
-    weights = pd.to_numeric(df.get("Benchmark Weight"), errors="coerce")
-    valid = pe.notna() & weights.notna() & (pe > 0) & (weights > 0)
-    if not valid.any():
-        return np.nan
-
-    earnings_yield = np.average(1.0 / pe[valid], weights=weights[valid])
-    return float(1.0 / earnings_yield) if earnings_yield > 0 else np.nan
+def _aggregate_forward_ebit_yield(df):
+    """Return ratio-of-sums forward EBIT yield for the benchmark proxy."""
+    return aggregate_forward_ebit_yield(
+        df,
+        min_count=2,
+        min_coverage=0.60,
+        coverage_weight_column="Benchmark Weight",
+    )
 
 
 def normalize_benchmark_dataframe(df: pd.DataFrame) -> dict:
     frame = df.copy()
+    valuation = _aggregate_forward_ebit_yield(frame)
+    forward_ebit_yield = valuation["yield"]
     return {
-        "forward_pe": _weighted_forward_pe(frame),
+        "forward_ebit_yield": forward_ebit_yield,
+        "forward_ev_ebit": (
+            1.0 / forward_ebit_yield
+            if pd.notna(forward_ebit_yield) and forward_ebit_yield > 0
+            else np.nan
+        ),
         "avg_return": _weighted_mean(frame, "1Y Return"),
         "beta": _weighted_mean(frame, "Beta"),
         "member_count": int(frame["Ticker"].nunique(dropna=True)) if "Ticker" in frame else 0,

@@ -31,11 +31,21 @@ DEFAULT_BDC_PATH = PROJECT_ROOT / "data" / "private_credit_bdc_history.csv"
 DEFAULT_PE_PATH = PROJECT_ROOT / "data" / "private_equity_stress_history.csv"
 
 INTERMEDIATION_WEIGHTS = {
-    "Bank Credit Tightening": 0.30,
+    "Bank Credit Tightening": 0.25,
     "Bank Capital Strain": 0.25,
     "Private Credit Impairment": 0.25,
-    "PE Portfolio Financing Strain": 0.20,
+    "PE Portfolio Financing Strain": 0.25,
 }
+
+BANK_CHANNEL_COMPONENTS = (
+    "Bank Credit Tightening",
+    "Bank Capital Strain",
+)
+NONBANK_CHANNEL_COMPONENTS = (
+    "Private Credit Impairment",
+    "PE Portfolio Financing Strain",
+)
+MIN_PERCENTILE_OBSERVATIONS = 8
 
 PE_SUBWEIGHTS = {
     "High-Leverage Portfolio Share": 0.60,
@@ -282,7 +292,64 @@ def _asof_row(frame, observation_date):
     return None if eligible.empty else eligible.iloc[-1]
 
 
-def _score_snapshot(bank_row=None, bank_capital_row=None, bdc_row=None, pe_row=None):
+def _historical_or_anchored_score(
+    value,
+    history,
+    *,
+    higher_is_stress=True,
+    center,
+    scale,
+):
+    value = pd.to_numeric(value, errors="coerce")
+    if pd.isna(value) or not np.isfinite(value):
+        return np.nan, "Unavailable", 0
+
+    history = (
+        pd.to_numeric(pd.Series(history, dtype=float), errors="coerce")
+        .replace([np.inf, -np.inf], np.nan)
+        .dropna()
+    )
+    distinct = np.sort(history.round(8).unique())
+    if len(distinct) >= MIN_PERCENTILE_OBSERVATIONS:
+        below = float(np.sum(distinct < float(value)))
+        equal = float(np.sum(distinct == round(float(value), 8)))
+        percentile = 100.0 * (below + 0.5 * equal) / len(distinct)
+        score = percentile if higher_is_stress else 100.0 - percentile
+        return float(np.clip(score, 0, 100)), "Historical Percentile", len(distinct)
+
+    anchored = tanh_score(value, center=center, scale=scale)
+    if not higher_is_stress and pd.notna(anchored):
+        anchored = 100.0 - anchored
+    return anchored, "Anchored Tanh", len(distinct)
+
+
+def _channel_score(base_scores, component_names):
+    valid = {
+        name: float(base_scores[name])
+        for name in component_names
+        if pd.notna(base_scores.get(name)) and np.isfinite(base_scores.get(name))
+    }
+    if not valid:
+        return np.nan, {}
+    weight = 1.0 / len(valid)
+    return (
+        float(sum(valid.values()) / len(valid)),
+        {name: weight for name in valid},
+    )
+
+
+def _score_snapshot(
+    bank_row=None,
+    bank_capital_row=None,
+    bdc_row=None,
+    pe_row=None,
+    *,
+    bank_history=None,
+    bank_capital_history=None,
+    bdc_history=None,
+    pe_history=None,
+    observation_date=None,
+):
     bank_raw = (
         pd.to_numeric(bank_row.get("Tightening Percent"), errors="coerce")
         if bank_row is not None
@@ -315,23 +382,64 @@ def _score_snapshot(bank_row=None, bank_capital_row=None, bdc_row=None, pe_row=N
         else np.nan
     )
 
-    bank_capital_strain = (
-        100.0 - tanh_score(bank_capital_raw, center=12.5, scale=4.0)
-        if pd.notna(bank_capital_raw)
-        else np.nan
+    cutoff = pd.to_datetime(observation_date, errors="coerce")
+
+    def history_values(frame, column):
+        if frame is None or frame.empty or column not in frame.columns:
+            return pd.Series(dtype=float)
+        eligible = frame
+        if pd.notna(cutoff) and "Date" in frame.columns:
+            eligible = frame.loc[frame["Date"] <= cutoff]
+        return eligible[column]
+
+    bank_score, bank_method, bank_history_count = _historical_or_anchored_score(
+        bank_raw,
+        history_values(bank_history, "Tightening Percent"),
+        higher_is_stress=True,
+        center=0.0,
+        scale=35.0,
+    )
+    bank_capital_score, bank_capital_method, bank_capital_history_count = (
+        _historical_or_anchored_score(
+            bank_capital_raw,
+            history_values(bank_capital_history, "Tier 1 Capital Ratio (%)"),
+            higher_is_stress=False,
+            center=12.5,
+            scale=4.0,
+        )
+    )
+    bdc_score, bdc_method, bdc_history_count = _historical_or_anchored_score(
+        bdc_raw,
+        history_values(bdc_history, "Weighted Nonaccrual at Cost (%)"),
+        higher_is_stress=True,
+        center=2.0,
+        scale=2.5,
+    )
+
+    pe_high_score, pe_high_method, pe_high_history_count = _historical_or_anchored_score(
+        pe_high_leverage,
+        history_values(pe_history, "High-Leverage Portfolio Share (%)"),
+        higher_is_stress=True,
+        center=30.0,
+        scale=12.0,
+    )
+    pe_pik_score, pe_pik_method, pe_pik_history_count = _historical_or_anchored_score(
+        pe_pik,
+        history_values(pe_history, "PIK Mean (%)"),
+        higher_is_stress=True,
+        center=18.0,
+        scale=10.0,
     )
 
     base_scores = {
-        "Bank Credit Tightening": tanh_score(bank_raw, center=0.0, scale=35.0),
-        "Bank Capital Strain": bank_capital_strain,
-        "Private Credit Impairment": tanh_score(bdc_raw, center=2.0, scale=2.5),
+        "Bank Credit Tightening": bank_score,
+        "Bank Capital Strain": bank_capital_score,
+        "Private Credit Impairment": bdc_score,
     }
 
     pe_subscores = {
-        "High-Leverage Portfolio Share": tanh_score(
-            pe_high_leverage, center=30.0, scale=12.0
-        ),
-        "PIK Burden": tanh_score(pe_pik, center=18.0, scale=10.0),
+        "High-Leverage Portfolio Share": pe_high_score,
+        "PIK Burden": pe_pik_score,
     }
     pe_combined = weighted_available_score(
         pe_subscores,
@@ -340,25 +448,66 @@ def _score_snapshot(bank_row=None, bank_capital_row=None, bdc_row=None, pe_row=N
     )
     base_scores["PE Portfolio Financing Strain"] = pe_combined["score"]
 
-    combined = weighted_available_score(
-        base_scores,
-        INTERMEDIATION_WEIGHTS,
-        min_components=3,
+    bank_channel, bank_channel_weights = _channel_score(
+        base_scores, BANK_CHANNEL_COMPONENTS
     )
+    nonbank_channel, nonbank_channel_weights = _channel_score(
+        base_scores, NONBANK_CHANNEL_COMPONENTS
+    )
+    valid_components = int(
+        sum(pd.notna(score) and np.isfinite(score) for score in base_scores.values())
+    )
+    channel_complete = pd.notna(bank_channel) and pd.notna(nonbank_channel)
+    combined_score = (
+        0.5 * bank_channel + 0.5 * nonbank_channel
+        if valid_components >= 3 and channel_complete
+        else np.nan
+    )
+    normalized_weights = {
+        **{name: 0.5 * weight for name, weight in bank_channel_weights.items()},
+        **{name: 0.5 * weight for name, weight in nonbank_channel_weights.items()},
+    }
     signed_scores = {
         name: intermediation_stress_to_signed(score)
         for name, score in base_scores.items()
     }
 
     return {
-        "score": intermediation_stress_to_signed(combined["score"]),
-        "base_score": combined["score"],
-        "valid_components": combined["valid_components"],
-        "coverage": combined["coverage"],
+        "score": intermediation_stress_to_signed(combined_score),
+        "base_score": combined_score,
+        "valid_components": valid_components,
+        "coverage": valid_components / 4.0,
         "signed_scores": signed_scores,
         "base_scores": base_scores,
-        "normalized_weights": combined["normalized_weights"],
+        "normalized_weights": normalized_weights,
+        "bank_channel_score": bank_channel,
+        "nonbank_channel_score": nonbank_channel,
+        "elevated_pillars": int(
+            sum(pd.notna(score) and score > 50 for score in base_scores.values())
+        ),
         "pe_subscores": pe_subscores,
+        "normalization": {
+            "Bank Credit Tightening": {
+                "method": bank_method,
+                "history_observations": bank_history_count,
+            },
+            "Bank Capital Strain": {
+                "method": bank_capital_method,
+                "history_observations": bank_capital_history_count,
+            },
+            "Private Credit Impairment": {
+                "method": bdc_method,
+                "history_observations": bdc_history_count,
+            },
+            "High-Leverage Portfolio Share": {
+                "method": pe_high_method,
+                "history_observations": pe_high_history_count,
+            },
+            "PIK Burden": {
+                "method": pe_pik_method,
+                "history_observations": pe_pik_history_count,
+            },
+        },
         "raw": {
             "bank": bank_raw,
             "bank_capital": bank_capital_raw,
@@ -392,7 +541,17 @@ def build_intermediation_stress_history(
         bank_capital_row = _asof_row(bank_capital_history, observation_date)
         bdc_row = _asof_row(bdc_history, observation_date)
         pe_row = _asof_row(pe_history, observation_date)
-        snapshot = _score_snapshot(bank_row, bank_capital_row, bdc_row, pe_row)
+        snapshot = _score_snapshot(
+            bank_row,
+            bank_capital_row,
+            bdc_row,
+            pe_row,
+            bank_history=bank_history,
+            bank_capital_history=bank_capital_history,
+            bdc_history=bdc_history,
+            pe_history=pe_history,
+            observation_date=observation_date,
+        )
 
         if pd.isna(snapshot["score"]):
             continue
@@ -486,7 +645,17 @@ def calculate_intermediation_stress(
     )
     bdc_row = _asof_row(bdc_history, latest_date) if pd.notna(latest_date) else None
     pe_row = _asof_row(pe_history, latest_date) if pd.notna(latest_date) else None
-    snapshot = _score_snapshot(bank_row, bank_capital_row, bdc_row, pe_row)
+    snapshot = _score_snapshot(
+        bank_row,
+        bank_capital_row,
+        bdc_row,
+        pe_row,
+        bank_history=bank_history,
+        bank_capital_history=bank_capital_history,
+        bdc_history=bdc_history,
+        pe_history=pe_history,
+        observation_date=latest_date,
+    )
 
     bank_source = "Federal Reserve SLOOS / FRED"
     if bank_row is not None and str(bank_row.get("Source", "")).strip():
@@ -516,6 +685,12 @@ def calculate_intermediation_stress(
                 "Bank Credit Tightening", np.nan
             ),
             "weight": INTERMEDIATION_WEIGHTS["Bank Credit Tightening"],
+            "active_weight": snapshot["normalized_weights"].get(
+                "Bank Credit Tightening", np.nan
+            ),
+            "normalization": snapshot["normalization"].get(
+                "Bank Credit Tightening", {}
+            ),
             "observations": 1 if bank_row is not None else 0,
             "as_of": _row_date(bank_row),
             "source": bank_source,
@@ -535,6 +710,12 @@ def calculate_intermediation_stress(
                 "Bank Capital Strain", np.nan
             ),
             "weight": INTERMEDIATION_WEIGHTS["Bank Capital Strain"],
+            "active_weight": snapshot["normalized_weights"].get(
+                "Bank Capital Strain", np.nan
+            ),
+            "normalization": snapshot["normalization"].get(
+                "Bank Capital Strain", {}
+            ),
             "observations": 1 if bank_capital_row is not None else 0,
             "as_of": _row_date(bank_capital_row),
             "source": bank_capital_source,
@@ -556,6 +737,12 @@ def calculate_intermediation_stress(
                 "Private Credit Impairment", np.nan
             ),
             "weight": INTERMEDIATION_WEIGHTS["Private Credit Impairment"],
+            "active_weight": snapshot["normalized_weights"].get(
+                "Private Credit Impairment", np.nan
+            ),
+            "normalization": snapshot["normalization"].get(
+                "Private Credit Impairment", {}
+            ),
             "observations": (
                 int(bdc_row.get("Observations", 0)) if bdc_row is not None else 0
             ),
@@ -587,6 +774,15 @@ def calculate_intermediation_stress(
             "weight": INTERMEDIATION_WEIGHTS[
                 "PE Portfolio Financing Strain"
             ],
+            "active_weight": snapshot["normalized_weights"].get(
+                "PE Portfolio Financing Strain", np.nan
+            ),
+            "normalization": {
+                "High-Leverage Portfolio Share": snapshot["normalization"].get(
+                    "High-Leverage Portfolio Share", {}
+                ),
+                "PIK Burden": snapshot["normalization"].get("PIK Burden", {}),
+            },
             "observations": 1 if pe_row is not None else 0,
             "as_of": _row_date(pe_row),
             "source": pe_source,
@@ -604,6 +800,9 @@ def calculate_intermediation_stress(
         "base_score": snapshot["base_score"],
         "valid_components": snapshot["valid_components"],
         "coverage": snapshot["coverage"],
+        "bank_channel_score": snapshot.get("bank_channel_score", np.nan),
+        "nonbank_channel_score": snapshot.get("nonbank_channel_score", np.nan),
+        "elevated_pillars": snapshot.get("elevated_pillars", 0),
         "components": components,
         "history": history,
     }

@@ -260,6 +260,8 @@ def build_metric_history(
     min_span=20.0,
     step=False,
     flat_annotation=None,
+    revision_date=None,
+    revision_label=None,
 ):
     history = (trend or {}).get("history")
     fig = go.Figure()
@@ -318,6 +320,30 @@ def build_metric_history(
 
     if y_range is not None and float(y_range[0]) < 0 < float(y_range[1]):
         fig.add_hline(y=0, line_dash="dot", line_color="#6b7280", opacity=0.8)
+
+    revision_ts = pd.to_datetime(revision_date, errors="coerce")
+    if pd.notna(revision_ts) and not clean_history.empty:
+        if clean_history["Date"].min() <= revision_ts <= clean_history["Date"].max():
+            fig.add_shape(
+                type="line",
+                x0=revision_ts,
+                x1=revision_ts,
+                y0=0,
+                y1=1,
+                xref="x",
+                yref="paper",
+                line={"color": "#9ca3af", "width": 1.5, "dash": "dot"},
+            )
+            fig.add_annotation(
+                x=revision_ts,
+                y=1.02,
+                xref="x",
+                yref="paper",
+                text=revision_label or "Model revision",
+                showarrow=False,
+                font={"color": "#d1d5db", "size": 10},
+                xanchor="left",
+            )
 
     if clean_history.empty:
         fig.add_annotation(
@@ -407,11 +433,11 @@ def build_positioning_map(macro_df):
     )
 
     fig.add_trace(go.Scatter(
-        x=macro_df["Forward P/E"],
+        x=macro_df["Forward EV/EBIT"],
         y=macro_df["Avg Return"] * 100,
         mode="markers",
         hovertemplate=(
-            "<b>%{text}</b><br>Forward P/E: %{x:.1f}<br>"
+            "<b>%{text}</b><br>Forward EV/EBIT: %{x:.1f}x<br>"
             "1Y Return: %{y:.1f}%<extra></extra>"
         ),
         text=macro_df["Sector"].apply(sector_display_name),
@@ -426,13 +452,13 @@ def build_positioning_map(macro_df):
     ))
 
     fig.update_layout(
-        xaxis_title="Forward P/E",
+        xaxis_title="Forward EV/EBIT",
         yaxis_title="1Y Return (%)",
         template="plotly_dark",
         height=500,
     )
 
-    x_series = pd.to_numeric(macro_df["Forward P/E"], errors="coerce")
+    x_series = pd.to_numeric(macro_df["Forward EV/EBIT"], errors="coerce")
     y_series = pd.to_numeric(macro_df["Avg Return"], errors="coerce") * 100
     if x_series.notna().any() and y_series.notna().any():
         fig.add_vline(x=x_series.median(), line_dash="dot")
@@ -465,11 +491,11 @@ def build_rotation_matrix(macro_df):
         ),
         marker=dict(
             size=np.clip(size_base, 10, 30),
-            color=macro_df["Forward P/E"],
+            color=macro_df["Forward EV/EBIT"],
             colorscale="Viridis",
             opacity=0.78,
             showscale=True,
-            colorbar=dict(title="F P/E"),
+            colorbar=dict(title="Fwd EV/EBIT"),
         ),
     ))
 

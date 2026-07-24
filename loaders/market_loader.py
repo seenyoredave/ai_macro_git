@@ -33,6 +33,14 @@ from loaders.market_prices import PRESSURE_COLUMNS, calc_trading_pressure_fields
 
 
 EVG_REQUIRED_COLUMNS = ["Revenue Growth", "CapEx", "CapEx Growth"]
+FORWARD_VALUATION_COLUMNS = [
+    "Forward Revenue",
+    "Operating Income",
+    "Operating Margin",
+    "Forward EBIT",
+    "Enterprise Value",
+    "Forward EV/EBIT",
+]
 FINANCIAL_STRAIN_COLUMNS = [
     "Operating Cash Flow",
     "Free Cash Flow",
@@ -45,7 +53,12 @@ FINANCIAL_STRAIN_COLUMNS = [
     "Net Debt / EBITDA YoY Change",
     "CapEx / OCF YoY Change",
 ]
-YF_REFRESH_REQUIRED_COLUMNS = EVG_REQUIRED_COLUMNS + FINANCIAL_STRAIN_COLUMNS + PRESSURE_COLUMNS
+YF_REFRESH_REQUIRED_COLUMNS = (
+    EVG_REQUIRED_COLUMNS
+    + FORWARD_VALUATION_COLUMNS
+    + FINANCIAL_STRAIN_COLUMNS
+    + PRESSURE_COLUMNS
+)
 
 YF_REQUIRED_COLUMNS = [
     "Date",
@@ -54,9 +67,14 @@ YF_REQUIRED_COLUMNS = [
     "Company",
     "Price",
     "P/E",
-    "Forward P/E",
+    "Forward EV/EBIT",
     "Market Cap",
+    "Enterprise Value",
     "Revenue",
+    "Forward Revenue",
+    "Operating Income",
+    "Operating Margin",
+    "Forward EBIT",
     *EVG_REQUIRED_COLUMNS,
     *FINANCIAL_STRAIN_COLUMNS,
     "Beta",
@@ -96,6 +114,9 @@ def read_yf_history_for_date(tickers, sector=None, target_date=None):
     if not has_expected_tickers(filtered, tickers):
         return None
 
+    if sector is None and "Ticker" in filtered.columns:
+        filtered = filtered.drop_duplicates(subset=["Ticker"], keep="last")
+
     return ensure_yf_schema(filtered)
 
 
@@ -107,6 +128,8 @@ def read_latest_yf_history(tickers, sector=None):
     latest = latest_complete_ticker_rows(history, tickers, sector=sector)
     if latest is None or latest.empty:
         return None
+    if sector is None and "Ticker" in latest.columns:
+        latest = latest.drop_duplicates(subset=["Ticker"], keep="last")
     return ensure_yf_schema(latest)
 
 
@@ -179,6 +202,24 @@ def _fetch_company(ticker, company):
         fast_info = getattr(ticker_obj, "fast_info", {}) or {}
         info = getattr(ticker_obj, "info", {}) or {}
         fundamentals = extract_fundamental_fields(ticker_obj, info)
+        market_cap = _safe_market_number(fast_info, info, "market_cap", "marketCap")
+        net_debt = pd.to_numeric(fundamentals.get("Net Debt", np.nan), errors="coerce")
+        forward_ebit = pd.to_numeric(
+            fundamentals.get("Forward EBIT", np.nan), errors="coerce"
+        )
+        enterprise_value = (
+            float(market_cap) + float(net_debt)
+            if pd.notna(market_cap) and pd.notna(net_debt)
+            else _safe_market_number(fast_info, info, "enterprise_value", "enterpriseValue")
+        )
+        forward_ev_ebit = (
+            float(enterprise_value) / float(forward_ebit)
+            if pd.notna(enterprise_value)
+            and pd.notna(forward_ebit)
+            and enterprise_value > 0
+            and forward_ebit > 0
+            else np.nan
+        )
 
         history = ticker_obj.history(period="2y", auto_adjust=True)
         if history is None or history.empty:
@@ -193,8 +234,9 @@ def _fetch_company(ticker, company):
             "Price": _safe_market_number(fast_info, info, "last_price", "regularMarketPrice"),
             "Beta": _safe_market_number(fast_info, info, "beta"),
             "P/E": _safe_market_number(fast_info, info, "trailing_pe", "trailingPE"),
-            "Forward P/E": _safe_market_number(fast_info, info, "forward_pe", "forwardPE"),
-            "Market Cap": _safe_market_number(fast_info, info, "market_cap", "marketCap"),
+            "Forward EV/EBIT": forward_ev_ebit,
+            "Market Cap": market_cap,
+            "Enterprise Value": enterprise_value,
             "Revenue": _safe_market_number(fast_info, info, "total_revenue", "totalRevenue"),
             **fundamentals,
             "52W High": _safe_market_number(fast_info, info, "year_high", "fiftyTwoWeekHigh"),

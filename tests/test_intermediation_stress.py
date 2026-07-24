@@ -76,6 +76,51 @@ class CreditIntermediationStressTests(unittest.TestCase):
             self.assertEqual(result["valid_components"], 3)
             self.assertEqual(result["coverage"], 0.75)
 
+    def test_metric_requires_both_bank_and_nonbank_channels(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            empty_bdc = Path(temp_dir) / "empty_bdc.csv"
+            empty_pe = Path(temp_dir) / "empty_pe.csv"
+            pd.DataFrame(
+                columns=[
+                    "Date",
+                    "Ticker",
+                    "Portfolio Cost ($mm)",
+                    "Nonaccrual at Cost (%)",
+                ]
+            ).to_csv(empty_bdc, index=False)
+            pd.DataFrame(
+                columns=[
+                    "Date",
+                    "PIK Mean (%)",
+                    "D/E Less Than Zero ($bn)",
+                    "D/E 0-1 ($bn)",
+                    "D/E 1-2 ($bn)",
+                    "D/E 2-5 ($bn)",
+                    "D/E 5+ ($bn)",
+                ]
+            ).to_csv(empty_pe, index=False)
+            result = calculate_intermediation_stress(
+                {}, bdc_path=empty_bdc, pe_path=empty_pe
+            )
+            self.assertTrue(pd.isna(result["score"]))
+
+    def test_channel_weights_are_balanced(self):
+        result = calculate_intermediation_stress({})
+        components = result["components"]
+        bank_weight = sum(
+            components[name]["active_weight"]
+            for name in ("Bank Credit Tightening", "Bank Capital Strain")
+        )
+        nonbank_weight = sum(
+            components[name]["active_weight"]
+            for name in (
+                "Private Credit Impairment",
+                "PE Portfolio Financing Strain",
+            )
+        )
+        self.assertAlmostEqual(bank_weight, 0.5)
+        self.assertAlmostEqual(nonbank_weight, 0.5)
+
     def test_history_uses_step_observation_dates(self):
         result = calculate_intermediation_stress({})
         history = result["history"]

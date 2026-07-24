@@ -15,7 +15,7 @@ from analytics.financial_conditions import (
 from analytics.sector_assessment import select_current_sector_assessment
 from config.debug_config import DEBUG, debug_print
 from config.metric_definitions import METRIC_DEFINITIONS
-from helpers.gaps import industrial_growth_gap, validation_gap
+from helpers.gaps import industrial_growth_gap
 from helpers.labels import (
     adoption_label,
     sector_display_name,
@@ -179,10 +179,14 @@ def _render_metric_panel(
                         if title == "Capital Stress"
                         else None
                     ),
+                    revision_date=trend.get("revision_date"),
+                    revision_label=trend.get("revision_label"),
                 ),
                 width="stretch",
                 config={"responsive": True},
             )
+            if trend.get("history_note"):
+                st.caption(trend["history_note"])
 
 
 def _component_table(component_group):
@@ -231,11 +235,26 @@ def _intermediation_component_table(intermediation_result):
                 f"reported assets {fmt_dollars(reported_assets * 1e9)}"
             )
 
+        normalization = payload.get("normalization", {}) or {}
+        if name == "PE Portfolio Financing Strain":
+            methods = sorted(
+                {
+                    str(item.get("method"))
+                    for item in normalization.values()
+                    if isinstance(item, dict) and item.get("method")
+                }
+            )
+            normalization_text = " / ".join(methods)
+        else:
+            normalization_text = str(normalization.get("method", ""))
+
         rows.append({
             "Component": name,
             "Score": _fmt_signed(payload.get("score", np.nan), decimals=1),
-            "Weight": fmt_percent(payload.get("weight", np.nan)),
+            "Intended Weight": fmt_percent(payload.get("weight", np.nan)),
+            "Active Weight": fmt_percent(payload.get("active_weight", np.nan)),
             "Current Measure": measure,
+            "Normalization": normalization_text,
             "As Of": payload.get("as_of", ""),
             "Source": payload.get("source", ""),
         })
@@ -257,8 +276,15 @@ def _capital_component_table(capital_result):
                 f"sum(FCF)/sum(Revenue) = {fmt_percent(raw)}; "
                 f"sum(CapEx)/sum(OCF) = {fmt_multiple(secondary)}"
             )
-        elif name == "Book Leverage":
-            measure = f"sum(Net Debt)/sum(EBITDA) = {fmt_multiple(raw)}"
+        elif name == "Debt Capacity Stress":
+            positive_count = payload.get("positive_ebitda_companies", 0)
+            impaired_count = payload.get("impaired_companies", 0)
+            net_cash_count = payload.get("net_cash_companies", 0)
+            measure = (
+                f"Positive-EBITDA net leverage = {fmt_multiple(raw)}; "
+                f"negative-EBITDA net debt/revenue = {fmt_multiple(secondary)}; "
+                f"branches {positive_count}/{impaired_count}/{net_cash_count}"
+            )
         elif name == "Committed Burden":
             measure = (
                 f"sum(Commitments)/sum(OCF) = {fmt_multiple(raw)}; "
@@ -281,62 +307,88 @@ def _capital_component_table(capital_result):
     return pd.DataFrame(rows)
 
 
-def assessment_card(title, row, border_color):
-    if row is None:
-        st.html(f"""
-        <div style="border:1px solid {border_color};border-left:6px solid {border_color};
-                    border-radius:12px;padding:18px;background:#111827;min-height:150px;">
-            <div style="font-size:0.9rem;letter-spacing:1px;color:#9ca3af;
-                        text-transform:uppercase;font-weight:700;margin-bottom:8px;">{title}</div>
-            <div style="font-size:1.5rem;font-weight:700;margin-bottom:12px;">No Data</div>
-            <div style="font-size:0.85rem;color:#9ca3af;">Insufficient eligible history or fundamentals.</div>
-        </div>
-        """)
-        return
+def _styled_card_container(key, border_color, *, min_height=150):
+    """Return a keyed Streamlit container with the dashboard card treatment."""
+    st.html(
+        f"""
+        <style>
+        .st-key-{key} {{
+            border: 1px solid {border_color} !important;
+            border-left: 6px solid {border_color} !important;
+            border-radius: 12px !important;
+            padding: 18px !important;
+            background: #111827 !important;
+            min-height: {min_height}px;
+        }}
+        .st-key-{key} [data-testid="stMetricLabel"] p {{
+            font-size: 1.02rem !important;
+            letter-spacing: 0.8px !important;
+            color: #d1d5db !important;
+            text-transform: uppercase !important;
+            font-weight: 700 !important;
+        }}
+        .st-key-{key} [data-testid="stMetricValue"] {{
+            font-size: 1.70rem !important;
+            font-weight: 700 !important;
+        }}
+        .st-key-{key} [data-testid="stCaptionContainer"] p {{
+            color: #cbd5e1 !important;
+            line-height: 1.35 !important;
+        }}
+        </style>
+        """
+    )
+    return st.container(key=key, border=True)
 
-    display_sector = sector_display_name(row["Sector"])
-    aei = pd.to_numeric(row["Sector Score"], errors="coerce")
-    pressure = pd.to_numeric(row["Pressure"], errors="coerce")
 
-    if title == "Biggest Risk":
-        breadth = pd.to_numeric(row.get("Risk Breadth Score", np.nan), errors="coerce")
-        adverse = pd.to_numeric(row.get("Adverse Signals", np.nan), errors="coerce")
-        valid = pd.to_numeric(row.get("Valid Signals", np.nan), errors="coerce")
-        signal_text = (
-            f"{int(adverse)} / {int(valid)}"
-            if pd.notna(adverse) and pd.notna(valid)
-            else "No Data"
-        )
-        st.html(f"""
-        <div style="border:1px solid {border_color};border-left:6px solid {border_color};
-                    border-radius:12px;padding:18px;background:#111827;min-height:150px;">
-            <div style="font-size:0.9rem;letter-spacing:1px;color:#9ca3af;
-                        text-transform:uppercase;font-weight:700;margin-bottom:8px;">{title}</div>
-            <div style="font-size:1.5rem;font-weight:700;margin-bottom:12px;">{display_sector}</div>
-            <div style="display:flex;justify-content:space-between;font-size:0.9rem;">
-                <span>Deterioration Breadth</span><b>{fmt_percent(breadth / 100) if pd.notna(breadth) else "No Data"}</b>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:0.9rem;">
-                <span>Adverse / Valid Signals</span><b>{signal_text}</b>
-            </div>
+def _assessment_detail_row(label, value):
+    st.markdown(
+        f"""
+        <div style="display:flex;justify-content:space-between;font-size:0.9rem;
+                    color:#cbd5e1;line-height:1.55;">
+            <span>{label}</span><b style="color:#f3f4f6;">{value}</b>
         </div>
-        """)
-        return
+        """,
+        unsafe_allow_html=True,
+    )
 
-    st.html(f"""
-    <div style="border:1px solid {border_color};border-left:6px solid {border_color};
-                border-radius:12px;padding:18px;background:#111827;min-height:150px;">
-        <div style="font-size:0.9rem;letter-spacing:1px;color:#9ca3af;
-                    text-transform:uppercase;font-weight:700;margin-bottom:8px;">{title}</div>
-        <div style="font-size:1.5rem;font-weight:700;margin-bottom:12px;">{display_sector}</div>
-        <div style="display:flex;justify-content:space-between;font-size:0.9rem;">
-            <span>AEI Score</span><b>{fmt_score(aei)}</b>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:0.9rem;">
-            <span>Pressure Score</span><b>{fmt_score(pressure)}</b>
-        </div>
-    </div>
-    """)
+
+def assessment_card(title, row, border_color, help_key):
+    key = {
+        "Most Crowded": "assessment-most-crowded",
+        "Fastest Mover": "assessment-fastest-mover",
+        "Biggest Risk": "assessment-biggest-risk",
+    }.get(title, f"assessment-{title.lower().replace(' ', '-')}")
+
+    with _styled_card_container(key, border_color):
+        if row is None:
+            st.metric(title, "No Data", help=metric_help(help_key))
+            st.caption("Insufficient eligible history or fundamentals.")
+            return
+
+        display_sector = sector_display_name(row["Sector"])
+        aei = pd.to_numeric(row["Sector Score"], errors="coerce")
+        pressure = pd.to_numeric(row["Pressure"], errors="coerce")
+        st.metric(title, display_sector, help=metric_help(help_key))
+
+        if title == "Biggest Risk":
+            breadth = pd.to_numeric(row.get("Risk Breadth Score", np.nan), errors="coerce")
+            adverse = pd.to_numeric(row.get("Adverse Signals", np.nan), errors="coerce")
+            valid = pd.to_numeric(row.get("Valid Signals", np.nan), errors="coerce")
+            signal_text = (
+                f"{int(adverse)} / {int(valid)}"
+                if pd.notna(adverse) and pd.notna(valid)
+                else "No Data"
+            )
+            _assessment_detail_row(
+                "Deterioration Breadth",
+                fmt_percent(breadth / 100) if pd.notna(breadth) else "No Data",
+            )
+            _assessment_detail_row("Adverse / Valid Signals", signal_text)
+            return
+
+        _assessment_detail_row("AEI Score", fmt_score(aei))
+        _assessment_detail_row("Pressure Score", fmt_score(pressure))
 
 
 def _snapshot_values(macro_df, fred_data, sector_data, regime_metrics):
@@ -359,17 +411,13 @@ def _snapshot_values(macro_df, fred_data, sector_data, regime_metrics):
             "Credit Intermediation Stress", np.nan
         ),
         "speculation_gap": regime_metrics.get("Speculation Gap", np.nan),
-        "validation_gap": validation_gap(
-            sector_data=sector_data,
-            fred_data=fred_data,
-            sector="ENTERPRISE_AI_SOFTWARE",
-        ),
+        "validation_gap": regime_metrics.get("Economic Validation Gap", np.nan),
         "industrial_gap": industrial_growth_gap(adi, industrial_growth),
     }
 
 
 def _render_snapshot_heading():
-    st.subheader("AI Economy Snapshot", help=metric_help("AI Economy Snapshot"))
+    st.subheader("AI Economy Snapshot")
 
 
 def _render_equity_and_development(values, trends, regime_metrics):
@@ -552,6 +600,18 @@ def _render_intermediation_stress(values, trend, regime_metrics):
             )
 
     with st.expander("Credit Intermediation Stress Detail", expanded=False):
+        bank_channel = pd.to_numeric(
+            intermediation_result.get("bank_channel_score", np.nan), errors="coerce"
+        )
+        nonbank_channel = pd.to_numeric(
+            intermediation_result.get("nonbank_channel_score", np.nan), errors="coerce"
+        )
+        elevated = int(intermediation_result.get("elevated_pillars", 0) or 0)
+        st.caption(
+            f"Bank channel: {fmt_decimal(bank_channel)} | "
+            f"Nonbank channel: {fmt_decimal(nonbank_channel)} | "
+            f"Stress breadth: {elevated} of 4 pillars above neutral"
+        )
         st.dataframe(
             _intermediation_component_table(intermediation_result),
             width="stretch",
@@ -619,51 +679,54 @@ def _render_financial_conditions_confirmation(fred_data, nfci_history):
         )
 
 
-def _render_gap_score_card(title, value, interpretation, accent_color):
-    """Render a gap score in the same visual language as sector assessment cards."""
-    display_value = fmt_score(value)
-    st.html(f"""
-    <div style="border:1px solid {accent_color};border-left:6px solid {accent_color};
-                border-radius:12px;padding:18px;background:#111827;min-height:150px;">
-        <div style="font-size:1.08rem;letter-spacing:0.8px;color:#d1d5db;
-                    text-transform:uppercase;font-weight:700;margin-bottom:10px;">{title}</div>
-        <div style="font-size:1.85rem;font-weight:700;margin-bottom:12px;">{display_value}</div>
-        <div style="font-size:0.9rem;color:#cbd5e1;line-height:1.35;">{interpretation}</div>
-    </div>
-    """)
+def _render_gap_score_card(
+    title, value, interpretation, accent_color, help_key, card_key
+):
+    """Render a gap card with its original per-metric helper restored."""
+    with _styled_card_container(card_key, accent_color):
+        st.metric(title, fmt_score(value), help=metric_help(help_key))
+        st.caption(interpretation)
 
 
 def _render_gap_metrics(values):
-    st.subheader("Gap Scores", help=metric_help("Gap Scores"))
+    st.subheader("Gap Scores")
     gap_specs = [
         (
             "Speculation Gap",
             values["speculation_gap"],
             speculation_label,
             "#7c3aed",
+            "Speculation Gap",
+            "gap-speculation",
         ),
         (
             "Economic Validation Gap",
             values["validation_gap"],
             validation_label,
             "#60a5fa",
+            "Economic Validation Gap",
+            "gap-economic-validation",
         ),
         (
             "AI–Industrial Growth Gap",
             values["industrial_gap"],
             adoption_label,
             "#94a3b8",
+            "AI-Industrial Growth Gap",
+            "gap-industrial-growth",
         ),
     ]
-    for column, (title, value, label_fn, accent_color) in zip(
-        st.columns(3), gap_specs
-    ):
+    for column, (
+        title, value, label_fn, accent_color, help_key, card_key
+    ) in zip(st.columns(3), gap_specs):
         with column:
             _render_gap_score_card(
                 title,
                 value,
                 label_fn(value),
                 accent_color,
+                help_key,
+                card_key,
             )
     st.markdown("---")
 
@@ -714,7 +777,7 @@ def render_regime_snapshot(
     _render_gap_metrics(values)
 
 def render_sector_assessment(macro_df, sector_data=None):
-    st.subheader("Current Sector Assessment", help=metric_help("Current Sector Assessment"))
+    st.subheader("Current Sector Assessment")
 
     if macro_df is None or macro_df.empty:
         st.warning("Sector assessment unavailable. Check sector metric calculations.")
@@ -736,11 +799,11 @@ def render_sector_assessment(macro_df, sector_data=None):
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        assessment_card("Most Crowded", selected_rows.get("Most Crowded"), "#7c3aed")
+        assessment_card("Most Crowded", selected_rows.get("Most Crowded"), "#7c3aed", "Most Crowded")
     with col2:
-        assessment_card("Fastest Mover", selected_rows.get("Fastest Mover"), "#60a5fa")
+        assessment_card("Fastest Mover", selected_rows.get("Fastest Mover"), "#60a5fa", "Fastest Mover")
     with col3:
-        assessment_card("Biggest Risk", selected_rows.get("Biggest Risk"), "#94a3b8")
+        assessment_card("Biggest Risk", selected_rows.get("Biggest Risk"), "#94a3b8", "Biggest Risk")
 
     st.markdown("---")
 
@@ -750,17 +813,24 @@ def render_positioning_charts(macro_df):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("### AI Sector Positioning Map")
+        st.subheader("AI Sector Positioning Map", help=metric_help("AI Sector Positioning Map"))
         chart_box(build_positioning_map(macro_df))
     with col2:
-        st.markdown("### AI Sector Rotation Matrix")
+        st.subheader("AI Sector Rotation Matrix", help=metric_help("AI Sector Rotation Matrix"))
         chart_box(build_rotation_matrix(macro_df))
 
     st.markdown("---")
 
 
 def render_sector_table(macro_df):
-    required = ["Sector", "Sector Score", "Pressure", "Avg Return", "Forward P/E", "Beta"]
+    required = [
+        "Sector",
+        "Sector Score",
+        "Pressure",
+        "Avg Return",
+        "Forward EV/EBIT",
+        "Beta",
+    ]
     missing = [col for col in required if col not in macro_df.columns]
     if missing:
         st.error(f"Sector Data unavailable. Missing columns: {missing}")
@@ -775,7 +845,7 @@ def render_sector_table(macro_df):
     table["AEI Score"] = table["AEI Score"].map(fmt_score)
     table["Pressure"] = table["Pressure"].map(fmt_score)
     table["1Y Return"] = table["1Y Return"].map(fmt_percent)
-    table["Forward P/E"] = table["Forward P/E"].map(fmt_multiple)
+    table["Forward EV/EBIT"] = table["Forward EV/EBIT"].map(fmt_multiple)
     table["Beta"] = table["Beta"].map(fmt_decimal)
 
     with st.expander("Sector Data", expanded=False):

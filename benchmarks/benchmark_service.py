@@ -23,7 +23,8 @@ def get_archived_benchmark_metrics(benchmark: str):
     required = {
         "Date",
         "Benchmark",
-        "Forward P/E",
+        "Forward EV/EBIT",
+        "Forward EBIT Yield",
         "Avg Return",
         "Beta",
         "Member Count",
@@ -48,7 +49,8 @@ def get_archived_benchmark_metrics(benchmark: str):
 
     row = row.iloc[-1]
     return {
-        "forward_pe": row.get("Forward P/E", np.nan),
+        "forward_ev_ebit": row.get("Forward EV/EBIT", np.nan),
+        "forward_ebit_yield": row.get("Forward EBIT Yield", np.nan),
         "avg_return": row.get("Avg Return", np.nan),
         "beta": row.get("Beta", np.nan),
         "member_count": row.get("Member Count", 0),
@@ -91,14 +93,16 @@ def get_benchmark_metrics(benchmark: str):
     return package.get(
         benchmark,
         {
-            "forward_pe": np.nan,
+            "forward_ev_ebit": np.nan,
+            "forward_ebit_yield": np.nan,
             "avg_return": np.nan,
             "beta": np.nan,
             "member_count": 0,
             "version": BENCHMARK_VERSION,
         },
     )["metrics"] if benchmark in package else {
-        "forward_pe": np.nan,
+        "forward_ev_ebit": np.nan,
+        "forward_ebit_yield": np.nan,
         "avg_return": np.nan,
         "beta": np.nan,
         "member_count": 0,

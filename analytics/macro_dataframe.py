@@ -6,17 +6,86 @@ import numpy as np
 import pandas as pd
 
 from analytics.capital_stress_engine import normalize_capital_stress_history
+from analytics.capital_stress_history import combine_capital_stress_history
 from analytics.intermediation_stress_engine import normalize_intermediation_stress_history
 from analytics.power_engine import normalize_power_stress_history
 from analytics.regime_engine import (
+    AEI_VERSION,
     ADI_VERSION,
     CAPITAL_STRESS_VERSION,
     INTERMEDIATION_STRESS_VERSION,
     POWER_STRESS_VERSION,
 )
-from analytics.trend_engine import calc_metric_trend
+from analytics.trend_engine import (
+    calc_acceleration,
+    calc_metric_trend,
+    calc_velocity,
+    metric_series,
+)
 from archive.archive_reader import load_macro_history
 from config.debug_config import DEBUG, debug_print
+
+
+AEI_HISTORY_START = pd.Timestamp("2026-06-14")
+
+
+def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
+    """Return native AEI-v3 trend statistics with the full archived chart history.
+
+    Values before the first AEI-v3 observation remain explicitly legacy data.
+    They are shown for continuity but are not used to calculate current-model
+    velocity or acceleration.
+    """
+    trend = calc_metric_trend(
+        macro_history,
+        "AI Equity Index",
+        version_column="AEI Version",
+        required_version=AEI_VERSION,
+    )
+
+    history = metric_series(macro_history, "AI Equity Index")
+    if not history.empty:
+        history = history.loc[history["Date"] >= AEI_HISTORY_START].copy()
+
+    current_value = pd.to_numeric(current_value, errors="coerce")
+    current_date = pd.Timestamp.today().normalize()
+    if pd.notna(current_value) and np.isfinite(current_value):
+        current_row = pd.DataFrame(
+            {"Date": [current_date], "Value": [float(current_value)]}
+        )
+        history = pd.concat([history, current_row], ignore_index=True)
+        history = (
+            history.sort_values("Date", kind="stable")
+            .drop_duplicates("Date", keep="last")
+            .reset_index(drop=True)
+        )
+
+        native_values = metric_series(
+            macro_history.loc[
+                macro_history.get("AEI Version", pd.Series(index=macro_history.index, dtype=object))
+                .astype(str)
+                .eq(str(AEI_VERSION))
+            ].copy()
+            if macro_history is not None and not macro_history.empty
+            else pd.DataFrame(),
+            "AI Equity Index",
+        )
+        native_values = (
+            current_row.copy()
+            if native_values.empty
+            else pd.concat([native_values, current_row], ignore_index=True)
+        )
+        native_values = (
+            native_values.sort_values("Date", kind="stable")
+            .drop_duplicates("Date", keep="last")
+        )
+        trend["current"] = float(current_value)
+        trend["velocity"] = calc_velocity(native_values["Value"])
+        trend["acceleration"] = calc_acceleration(native_values["Value"])
+
+    trend["history"] = history.reset_index(drop=True)
+
+    return trend
 
 
 def build_macro_dataframe(sector_metrics):
@@ -29,7 +98,7 @@ def build_macro_dataframe(sector_metrics):
             "AEI Score": metrics.get("Sector Score", np.nan),
             "Pressure": metrics.get("Sector Pressure", np.nan),
             "Avg Return": metrics.get("Avg Return", np.nan),
-            "Forward P/E": metrics.get("Forward P/E", np.nan),
+            "Forward EV/EBIT": metrics.get("Forward EV/EBIT", np.nan),
             "Beta": metrics.get("Beta", np.nan),
         })
 
@@ -48,7 +117,9 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
     macro_history = load_macro_history()
     regime_metrics = regime_metrics or {}
     signed_power_history = normalize_power_stress_history(macro_history)
-    signed_capital_history = normalize_capital_stress_history(macro_history)
+    signed_capital_history = normalize_capital_stress_history(
+        combine_capital_stress_history(macro_history)
+    )
     signed_intermediation_history = normalize_intermediation_stress_history(macro_history)
 
     native_intermediation_history = (
@@ -59,7 +130,10 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
         native_intermediation_history = signed_intermediation_history
 
     trends = {
-        "aei_trend": calc_metric_trend(macro_history, "AI Equity Index"),
+        "aei_trend": _build_version_aware_aei_trend(
+            macro_history,
+            regime_metrics.get("AI Equity Index", np.nan),
+        ),
         "adi_trend": calc_metric_trend(
             macro_history,
             "AI Development Intensity",
@@ -99,6 +173,8 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
         "speculation_gap_trend": calc_metric_trend(
             macro_history,
             "Speculation Gap",
+            version_column="AEI Version",
+            required_version=AEI_VERSION,
         ),
     }
 

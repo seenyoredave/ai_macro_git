@@ -14,7 +14,7 @@ from helpers.add_remove_ticker import (
 )
 
 from helpers.labels import sector_display_name
-from config.factor_config import FACTOR_HELP
+from config.factor_config import FACTOR_DISPLAY_NAMES, FACTOR_HELP
 
 
 def render_basket_tier_smoke_test(df, use_expander=True, expanded=False):
@@ -119,7 +119,9 @@ def render_factor_cards(scored_factors):
 
         for col, factor in zip(cols, factor_rows[i:i + 2]):
             name = factor.get("Factor", "Unknown Factor")
-            display_name = name.replace("_", " ").title()
+            display_name = FACTOR_DISPLAY_NAMES.get(
+                name, name.replace("_", " ").title()
+            )
 
             factor_score = factor.get("Score", np.nan)
             raw_value = factor.get("Raw Value", np.nan)
@@ -171,7 +173,7 @@ def render_leaders_table(sector, df):
         "Company",
         "Price",
         "P/E",
-        "Forward P/E",
+        "Forward EV/EBIT",
         "Beta",
         "1Y Return",
         "Basket Tier",

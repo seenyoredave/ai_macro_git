@@ -20,6 +20,18 @@ CAPEX_ROW_NAMES = [
     "Purchase of Property Plant and Equipment",
 ]
 
+REVENUE_ROW_NAMES = [
+    "Total Revenue",
+    "Operating Revenue",
+    "Revenue",
+]
+
+OPERATING_INCOME_ROW_NAMES = [
+    "Operating Income",
+    "OperatingIncome",
+    "EBIT",
+]
+
 
 def safe_float(value):
     try:
@@ -84,7 +96,7 @@ def calc_revenue_growth(ticker_obj, info):
 
     row = get_statement_row(
         _statement(ticker_obj, "quarterly_income_stmt"),
-        ["Total Revenue", "Operating Revenue", "Revenue"],
+        REVENUE_ROW_NAMES,
     )
     if row is None:
         return np.nan
@@ -96,6 +108,107 @@ def calc_revenue_growth(ticker_obj, info):
     current = float(values.iloc[:4].sum())
     prior = float(values.iloc[4:8].sum())
     return (current / prior) - 1 if prior != 0 else np.nan
+
+
+def _normalized_label(value):
+    return "".join(ch for ch in str(value).lower().strip() if ch.isalnum() or ch == "+")
+
+
+def calc_forward_revenue(ticker_obj, info, latest_revenue=np.nan):
+    """Return next-fiscal-year revenue consensus when Yahoo exposes it.
+
+    ``yfinance`` has changed the orientation and labels of its analyst-estimate
+    tables over time.  The parser therefore supports both the usual
+    ``+1y``-by-``avg`` layout and its transpose.  When direct consensus is not
+    available, the explicit fallback is latest revenue multiplied by Yahoo's
+    latest reported revenue-growth rate.  That fallback is deliberately less
+    authoritative than analyst consensus and exists only to preserve coverage.
+    """
+    try:
+        estimate = getattr(ticker_obj, "revenue_estimate")
+    except Exception:
+        estimate = None
+
+    if isinstance(estimate, pd.DataFrame) and not estimate.empty:
+        frame = estimate.copy()
+        row_lookup = {_normalized_label(index): index for index in frame.index}
+        column_lookup = {_normalized_label(column): column for column in frame.columns}
+
+        period_candidates = (
+            "+1y",
+            "1y",
+            "nextyear",
+            "nextfiscalyear",
+            "nextyearestimate",
+        )
+        value_candidates = (
+            "avg",
+            "average",
+            "avgestimate",
+            "mean",
+            "estimate",
+        )
+
+        for period in period_candidates:
+            normalized_period = _normalized_label(period)
+            if normalized_period not in row_lookup:
+                continue
+            row_name = row_lookup[normalized_period]
+            for value_name in value_candidates:
+                normalized_value = _normalized_label(value_name)
+                if normalized_value in column_lookup:
+                    value = safe_float(frame.loc[row_name, column_lookup[normalized_value]])
+                    if pd.notna(value) and value > 0:
+                        return value
+
+        # Some yfinance versions return the analyst fields as rows.
+        for value_name in value_candidates:
+            normalized_value = _normalized_label(value_name)
+            if normalized_value not in row_lookup:
+                continue
+            row_name = row_lookup[normalized_value]
+            for period in period_candidates:
+                normalized_period = _normalized_label(period)
+                if normalized_period in column_lookup:
+                    value = safe_float(frame.loc[row_name, column_lookup[normalized_period]])
+                    if pd.notna(value) and value > 0:
+                        return value
+
+        # If Yahoo exposes only the analyst growth estimate, apply it to the
+        # latest revenue base before falling back to the reported-growth field.
+        growth_candidates = ("growth", "revenuegrowth", "growthestimate")
+        latest_revenue_value = safe_float(latest_revenue)
+        if pd.notna(latest_revenue_value) and latest_revenue_value > 0:
+            for period in period_candidates:
+                normalized_period = _normalized_label(period)
+                if normalized_period not in row_lookup:
+                    continue
+                row_name = row_lookup[normalized_period]
+                for growth_name in growth_candidates:
+                    normalized_growth = _normalized_label(growth_name)
+                    if normalized_growth in column_lookup:
+                        growth_value = safe_float(frame.loc[row_name, column_lookup[normalized_growth]])
+                        if pd.notna(growth_value) and growth_value > -0.95:
+                            return latest_revenue_value * (1.0 + growth_value)
+
+            for growth_name in growth_candidates:
+                normalized_growth = _normalized_label(growth_name)
+                if normalized_growth not in row_lookup:
+                    continue
+                row_name = row_lookup[normalized_growth]
+                for period in period_candidates:
+                    normalized_period = _normalized_label(period)
+                    if normalized_period in column_lookup:
+                        growth_value = safe_float(frame.loc[row_name, column_lookup[normalized_period]])
+                        if pd.notna(growth_value) and growth_value > -0.95:
+                            return latest_revenue_value * (1.0 + growth_value)
+
+    growth = _safe_info_number(info, "revenueGrowth", "revenue_growth")
+    latest_revenue = safe_float(latest_revenue)
+    if pd.notna(growth) and pd.notna(latest_revenue) and latest_revenue > 0 and growth > -0.95:
+        return latest_revenue * (1.0 + growth)
+
+    return np.nan
 
 
 def _safe_info_number(info, *keys):
@@ -117,8 +230,13 @@ def _latest_statement_value(ticker_obj, statement_attrs, row_names, *, ttm=False
         if values.empty:
             continue
 
-        if ttm and attr.startswith("quarterly") and len(values) >= 4:
-            return float(values.iloc[:4].sum())
+        if ttm and attr.startswith("quarterly"):
+            if len(values) >= 4:
+                return float(values.iloc[:4].sum())
+            # A single quarter is not comparable with an annual/TTM revenue
+            # base.  Continue to the annual statement rather than silently
+            # constructing a quarterly operating margin.
+            continue
         return float(values.iloc[0])
 
     return np.nan
@@ -353,9 +471,46 @@ def calc_financial_strain_fields(ticker_obj, info, capex_value=np.nan):
 def extract_fundamental_fields(ticker_obj, info):
     """Return the complete fundamental payload consumed by market_loader."""
     capex, capex_growth = calc_capex_metrics(ticker_obj)
+    latest_revenue = _safe_info_number(info, "totalRevenue", "total_revenue")
+    if pd.isna(latest_revenue):
+        latest_revenue = _latest_statement_value(
+            ticker_obj,
+            ["quarterly_income_stmt", "income_stmt"],
+            REVENUE_ROW_NAMES,
+            ttm=True,
+        )
+
+    operating_income = _latest_statement_value(
+        ticker_obj,
+        ["quarterly_income_stmt", "income_stmt"],
+        OPERATING_INCOME_ROW_NAMES,
+        ttm=True,
+    )
+    operating_margin = (
+        operating_income / latest_revenue
+        if pd.notna(operating_income)
+        and pd.notna(latest_revenue)
+        and latest_revenue > 0
+        else np.nan
+    )
+    forward_revenue = calc_forward_revenue(
+        ticker_obj,
+        info,
+        latest_revenue=latest_revenue,
+    )
+    forward_ebit = (
+        forward_revenue * operating_margin
+        if pd.notna(forward_revenue) and pd.notna(operating_margin)
+        else np.nan
+    )
+
     return {
         "Revenue Growth": calc_revenue_growth(ticker_obj, info),
         "CapEx": capex,
         "CapEx Growth": capex_growth,
+        "Forward Revenue": forward_revenue,
+        "Operating Income": operating_income,
+        "Operating Margin": operating_margin,
+        "Forward EBIT": forward_ebit,
         **calc_financial_strain_fields(ticker_obj, info, capex_value=capex),
     }

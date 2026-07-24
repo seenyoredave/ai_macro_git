@@ -8,7 +8,7 @@ FRED_INDICATORS = {
     "Industrial Production": "INDPRO",
     "Consumer Sentiment": "UMCSENT",
     "Financial Conditions NFCI": "NFCI",
-    "Info Processing Investment Growth": "A679RL1Q225SBEA",
+    "Info Processing Investment Level": "A679RX1Q020SBEA",
     "Business Loan Tightening": "SUBLPDMBSXWBNQ",
     "Bank Tier 1 Capital Ratio": "BOGZ1FL010000016Q",
 
@@ -24,6 +24,7 @@ FRED_INDICATORS = {
 # retained in the dashboard payload/archive.
 DERIVED_FRED_INDICATORS = [
     "Industrial Production YoY",
+    "Info Processing Investment YoY",
     "Commercial Electricity Sales YoY",
     "Residential Electricity Sales YoY",
     "Electric Power Output YoY",

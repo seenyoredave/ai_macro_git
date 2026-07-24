@@ -16,8 +16,8 @@ import pandas as pd
 from archive.archive_reader import load_sector_history
 
 
-ASSESSMENT_VERSION = "CSA_v3.0"
-PRESSURE_VERSION = "2.0"
+ASSESSMENT_VERSION = "CSA_v4.0"
+PRESSURE_VERSION = "3.0"
 SECTOR_MOVEMENT_LOOKBACK = 10
 RISK_COVERAGE_THRESHOLD = 0.50
 
@@ -105,7 +105,7 @@ def _prepare_sector_history(frames: list[pd.DataFrame]) -> pd.DataFrame:
 
 
 def _sector_history_with_current(macro_df: pd.DataFrame) -> pd.DataFrame:
-    """Return Pressure-v2 history plus the current in-memory snapshot."""
+    """Return Pressure-v3 history plus the current in-memory snapshot."""
     history = load_sector_history()
     current = _current_sector_snapshot(macro_df)
 
@@ -124,7 +124,7 @@ def _sector_history_with_current(macro_df: pd.DataFrame) -> pd.DataFrame:
 def _legacy_sector_history() -> pd.DataFrame:
     """Return the most recent internally consistent legacy movement history.
 
-    Legacy pressure values are never mixed with Pressure v2. This fallback keeps
+    Legacy pressure values are never mixed with Pressure v3. This fallback keeps
     Fastest Mover useful while the new formulation accumulates enough archived
     observations to calculate movement on its own terms.
     """
@@ -177,12 +177,12 @@ def _movement_from_history(
 
         delta_score = latest["Sector Score"] - prior["Sector Score"]
         delta_pressure = latest["Pressure"] - prior["Pressure"]
-        sector_movement = delta_score + delta_pressure
+        sector_movement = float(np.hypot(delta_score, delta_pressure))
 
         rows.append({
             "Sector": sector,
             "Sector Movement": sector_movement,
-            "Abs Sector Movement": abs(sector_movement),
+            "Abs Sector Movement": sector_movement,
             "Delta Sector Score": delta_score,
             "Delta Pressure": delta_pressure,
             "Movement Observations Used": observations_used,

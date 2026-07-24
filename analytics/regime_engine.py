@@ -11,7 +11,9 @@ from analytics.capital_stress_engine import (
     calculate_capital_stress,
     normalize_capital_stress_history,
 )
+from analytics.capital_stress_history import combine_capital_stress_history
 from analytics.development_engine import calculate_ai_development_intensity
+from analytics.economic_validation import calculate_economic_validation_gap
 from analytics.hhi_engine import calc_hhi_from_sector_data, normalize_hhi
 from analytics.intermediation_stress_engine import (
     calculate_intermediation_stress,
@@ -23,12 +25,13 @@ from analytics.power_engine import (
 )
 
 
-AEI_VERSION = "2.0"
+AEI_VERSION = "3.0"
 ADI_VERSION = "1.0"
+EVG_VERSION = "2.0"
 POWER_STRESS_VERSION = "3.0"
-CAPITAL_STRESS_VERSION = "2.0"
-INTERMEDIATION_STRESS_VERSION = "2.0"
-PRESSURE_VERSION = "2.0"
+CAPITAL_STRESS_VERSION = "3.0"
+INTERMEDIATION_STRESS_VERSION = "3.0"
+PRESSURE_VERSION = "3.0"
 
 
 def calc_aei(sector_metrics):
@@ -202,10 +205,15 @@ def build_regime_metrics(
         construction_data=construction_data,
         power_result=power_result,
     )
+    validation_result = calculate_economic_validation_gap(
+        sector_data or {},
+        fred_data or {},
+    )
     capital_result = calculate_capital_stress(sector_data or {})
     intermediation_result = calculate_intermediation_stress(fred_data or {})
 
     current_adi = development_result.get("score", np.nan)
+    current_validation_gap = validation_result.get("score", np.nan)
     current_power = power_result.get("score", np.nan)
     current_capital = capital_result.get("score", np.nan)
     current_intermediation = intermediation_result.get("score", np.nan)
@@ -214,6 +222,8 @@ def build_regime_metrics(
         current_aei,
         macro_history,
         "AI Equity Index",
+        version_column="AEI Version",
+        required_version=AEI_VERSION,
     )
     adi, adi_source, adi_date = _resolve_with_archive(
         current_adi,
@@ -221,6 +231,13 @@ def build_regime_metrics(
         "AI Development Intensity",
         version_column="ADI Version",
         required_version=ADI_VERSION,
+    )
+    validation_gap, validation_gap_source, validation_gap_date = _resolve_with_archive(
+        current_validation_gap,
+        macro_history,
+        "Economic Validation Gap",
+        version_column="EVG Version",
+        required_version=EVG_VERSION,
     )
     power_history = normalize_power_stress_history(macro_history)
     power_stress, power_source, power_date = _resolve_with_archive(
@@ -230,7 +247,9 @@ def build_regime_metrics(
         version_column="Power Stress Version",
         required_version=POWER_STRESS_VERSION,
     )
-    capital_history = normalize_capital_stress_history(macro_history)
+    capital_history = normalize_capital_stress_history(
+        combine_capital_stress_history(macro_history)
+    )
     capital_stress, capital_source, capital_date = _resolve_with_archive(
         current_capital,
         capital_history,
@@ -277,6 +296,10 @@ def build_regime_metrics(
         "ADI Fallback Date": adi_date,
         "Speculation Gap": speculation_gap,
         "Speculation Gap Source": speculation_source,
+        "Economic Validation Gap": validation_gap,
+        "Economic Validation Gap Current": current_validation_gap,
+        "Economic Validation Gap Source": validation_gap_source,
+        "Economic Validation Gap Fallback Date": validation_gap_date,
         "Power Stress Index": power_stress,
         "Power Stress Index Current": current_power,
         "Power Stress Source": power_source,
@@ -293,11 +316,13 @@ def build_regime_metrics(
         "Raw AI HHI": raw_hhi,
         "Avg Sector Pressure": avg_pressure,
         "ADI Components": development_result,
+        "Economic Validation Gap Components": validation_result,
         "Power Stress Components": power_result,
         "Capital Stress Components": capital_result,
         "Credit Intermediation Stress Components": intermediation_result,
         "AEI Version": AEI_VERSION,
         "ADI Version": ADI_VERSION,
+        "EVG Version": EVG_VERSION,
         "Power Stress Version": POWER_STRESS_VERSION,
         "Capital Stress Version": CAPITAL_STRESS_VERSION,
         "Credit Intermediation Stress Version": INTERMEDIATION_STRESS_VERSION,

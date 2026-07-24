@@ -11,35 +11,25 @@ def soft_clip(value, scale):
 
 
 def normalize_relative_performance(value):
-    return soft_clip(value, 2.50)
+    # A 30-percentage-point one-year relative return is a large regime signal.
+    return soft_clip(value, 0.30)
 
 
-def normalize_earnings_yield_discount(value):
-    # A three-percentage-point earnings-yield discount/premium is already a
-    # material valuation difference, so this factor uses a tighter scale than
-    # return dispersion.
-    return soft_clip(value, 0.03)
+def normalize_forward_ebit_yield_discount(value):
+    # A four-percentage-point operating-earnings-yield discount is substantial.
+    return soft_clip(value, 0.04)
 
 
-def normalize_momentum_breadth(value):
+def normalize_market_breadth(value):
     if pd.isna(value):
         return np.nan
     return np.clip((float(value) - 0.50) / 0.50, -1, 1)
 
 
-def normalize_dispersion(value):
-    if pd.isna(value):
-        return np.nan
-    return -soft_clip(value, 2.50)
-
-
-
-
 NORMALIZERS = {
     "relative_performance": normalize_relative_performance,
-    "earnings_yield_discount": normalize_earnings_yield_discount,
-    "momentum_breadth": normalize_momentum_breadth,
-    "dispersion": normalize_dispersion,
+    "forward_ebit_yield_discount": normalize_forward_ebit_yield_discount,
+    "market_breadth": normalize_market_breadth,
 }
 
 

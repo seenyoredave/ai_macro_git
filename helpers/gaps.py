@@ -114,63 +114,14 @@ def validation_gap(
     fred_data,
     sector="ENTERPRISE_AI_SOFTWARE",
 ):
-    """
-    Economic Validation Gap.
+    """Compatibility wrapper for the current Economic Validation Gap engine."""
+    from analytics.economic_validation import calculate_economic_validation_gap
 
-    Measures whether AI software/product capex growth is outrunning:
-      1. software-company revenue growth
-      2. broader macro software/information investment growth
-
-    Positive = capex is running ahead of validation.
-    Negative = monetization/macro validation is keeping up.
-    """
-
-    df, sector_used = find_sector_df(sector_data, sector)
-
-    if df is None or df.empty:
-        if DEBUG:
-            debug_print("EVG ERROR: no usable sector dataframe.")
-            debug_print("EVG requested sector:", sector)
-            debug_print(
-                "EVG available sectors:",
-                list(sector_data.keys()) if sector_data else []
-            )
-        return np.nan
-
-    capex_growth = mean_numeric(df, "CapEx Growth", min_count=2)
-    revenue_growth = mean_numeric(df, "Revenue Growth", min_count=2)
-
-    macro_growth = fred_value_any(
+    return calculate_economic_validation_gap(
+        sector_data,
         fred_data,
-        [
-            "Info Processing Investment Growth",
-            "Information Processing Investment Growth",
-            "Software Investment Growth",
-            "Real Private Fixed Investment: Information Processing Equipment and Software",
-            "A679RL1Q225SBEA",
-        ],
-    )
-
-    capex_growth = as_decimal_rate(capex_growth)
-    revenue_growth = as_decimal_rate(revenue_growth)
-    macro_growth = as_decimal_rate(macro_growth)
-
-    if DEBUG:
-        debug_print("EVG requested sector:", sector)
-        debug_print("EVG sector used:", sector_used)
-        debug_print("EVG df columns:", list(df.columns))
-        debug_print("EVG capex_growth:", capex_growth)
-        debug_print("EVG revenue_growth:", revenue_growth)
-        debug_print("EVG macro_growth:", macro_growth)
-
-
-    if any(pd.isna(x) for x in [capex_growth, revenue_growth, macro_growth]):
-        return np.nan
-
-    raw_gap = capex_growth - revenue_growth - macro_growth
-
-    # Dashboard score, in percentage points
-    return float(np.clip(raw_gap * 100, -100, 100))
+        sector=sector,
+    ).get("score", np.nan)
 
 def normalize_nfci_liquidity(nfci):
     """

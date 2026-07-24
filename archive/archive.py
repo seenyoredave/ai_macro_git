@@ -25,8 +25,10 @@ from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
 
 
 YF_ARCHIVE_COLUMNS = [
-    "Ticker", "Company", "Price", "P/E", "Forward P/E", "Market Cap",
-    "Revenue", "Revenue Growth", "CapEx", "CapEx Growth",
+    "Ticker", "Company", "Price", "P/E", "Forward EV/EBIT",
+    "Market Cap", "Enterprise Value", "Revenue", "Forward Revenue",
+    "Operating Income", "Operating Margin", "Forward EBIT",
+    "Revenue Growth", "CapEx", "CapEx Growth",
     "Operating Cash Flow", "Free Cash Flow", "Net Income", "EBITDA",
     "Total Debt", "Cash", "Net Debt", "FCF Margin YoY Change",
     "Net Debt / EBITDA YoY Change", "CapEx / OCF YoY Change", "Beta",
@@ -199,6 +201,11 @@ def append_macro_history(regime_metrics, fred_data):
             if regime_metrics.get("Speculation Gap Source") == "Current"
             else np.nan
         ),
+        "Economic Validation Gap": _current_metric_value(
+            regime_metrics,
+            "Economic Validation Gap",
+            "Economic Validation Gap Source",
+        ),
         "Power Stress Index": _current_metric_value(regime_metrics, "Power Stress Index", "Power Stress Source"),
         "Capital Stress": _current_metric_value(regime_metrics, "Capital Stress", "Capital Stress Source"),
         "Credit Intermediation Stress": _current_metric_value(
@@ -217,7 +224,11 @@ def append_macro_history(regime_metrics, fred_data):
         "Power Grid Utilization": _component_value(regime_metrics, "Power Stress Components", "Grid Utilization Pressure"),
         "Power Capacity Response": _component_value(regime_metrics, "Power Stress Components", "Capacity Response Gap"),
         "Capital Cash Flow Strain": _component_value(regime_metrics, "Capital Stress Components", "Cash Flow Strain"),
-        "Capital Book Leverage": _component_value(regime_metrics, "Capital Stress Components", "Book Leverage"),
+        "Capital Debt Capacity Stress": _component_value(
+            regime_metrics,
+            "Capital Stress Components",
+            "Debt Capacity Stress",
+        ),
         "Capital Committed Burden": _component_value(regime_metrics, "Capital Stress Components", "Committed Burden"),
         "Capital Contingent Exposure": _component_value(regime_metrics, "Capital Stress Components", "Contingent Exposure"),
         "Intermediation Bank Credit Tightening": _component_value(
@@ -242,6 +253,7 @@ def append_macro_history(regime_metrics, fred_data):
         ),
         "AEI Version": regime_metrics.get("AEI Version", np.nan),
         "ADI Version": regime_metrics.get("ADI Version", np.nan),
+        "EVG Version": regime_metrics.get("EVG Version", np.nan),
         "Power Stress Version": regime_metrics.get("Power Stress Version", np.nan),
         "Capital Stress Version": regime_metrics.get("Capital Stress Version", np.nan),
         "Credit Intermediation Stress Version": regime_metrics.get(
@@ -263,10 +275,11 @@ def append_sector_history(sector_metrics):
             "Sector": sector,
             "Sector Score": metrics.get("Sector Score"),
             "Pressure": metrics.get("Sector Pressure"),
-            "Forward P/E": metrics.get("Forward P/E"),
+            "Forward EV/EBIT": metrics.get("Forward EV/EBIT"),
+            "Forward EBIT Yield": metrics.get("Forward EBIT Yield"),
             "Avg Return": metrics.get("Avg Return"),
-            "AEI Version": "2.0",
-            "Pressure Version": "2.0",
+            "AEI Version": "3.0",
+            "Pressure Version": "3.0",
         }
         for sector, metrics in sector_metrics.items()
     ]
@@ -281,7 +294,8 @@ def append_benchmark_history():
         rows.append({
             "Date": today_iso(),
             "Benchmark": benchmark,
-            "Forward P/E": metrics.get("forward_pe"),
+            "Forward EV/EBIT": metrics.get("forward_ev_ebit"),
+            "Forward EBIT Yield": metrics.get("forward_ebit_yield"),
             "Avg Return": metrics.get("avg_return"),
             "Beta": metrics.get("beta"),
             "Member Count": metrics.get("member_count"),

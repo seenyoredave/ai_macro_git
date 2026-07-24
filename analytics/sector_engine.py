@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from analytics.regime_engine import cycle_strategy
+from analytics.valuation import aggregate_forward_ebit_yield
 from analytics.scoring import tanh_score, weighted_available_score
 from config.debug_config import DEBUG, debug_print
 from factors.factor_normalization import normalize_factor
@@ -39,7 +40,7 @@ def normalize_factor_table(factor_df):
 
 
 def calc_sector_scores(normalized_df):
-    """Combine AEI factors using the fixed 3-of-4 data contract."""
+    """Combine the three AEI factors; all three are required."""
     if normalized_df is None or normalized_df.empty:
         return np.nan
 
@@ -94,7 +95,9 @@ def calc_trading_pressure(yf_df, factor_df=None):
     renormalized over valid components; missing values are never zero-filled.
     """
     raw = {
-        "Valuation Stretch": _factor_raw(factor_df, "earnings_yield_discount"),
+        "Valuation Stretch": _factor_raw(
+            factor_df, "forward_ebit_yield_discount"
+        ),
         "Price Extension": _median_numeric(yf_df, "Price Extension 200D"),
         "Momentum Acceleration": _median_numeric(yf_df, "Momentum Acceleration"),
         "Volatility Expansion": _median_numeric(yf_df, "Volatility Expansion"),
@@ -102,7 +105,7 @@ def calc_trading_pressure(yf_df, factor_df=None):
     }
 
     scores = {
-        "Valuation Stretch": tanh_score(raw["Valuation Stretch"], center=0.0, scale=0.03),
+        "Valuation Stretch": tanh_score(raw["Valuation Stretch"], center=0.0, scale=0.04),
         "Price Extension": tanh_score(raw["Price Extension"], center=0.0, scale=0.20),
         "Momentum Acceleration": tanh_score(raw["Momentum Acceleration"], center=0.0, scale=0.15),
         "Volatility Expansion": tanh_score(raw["Volatility Expansion"], center=0.0, scale=0.60),
@@ -144,7 +147,8 @@ def build_sector_metrics(factor_df, yf_df):
             "Sector Pressure": np.nan,
             "Cycle Strategy": cycle_strategy(np.nan),
             "Avg Return": np.nan,
-            "Forward P/E": np.nan,
+            "Forward EV/EBIT": np.nan,
+            "Forward EBIT Yield": np.nan,
             "Beta": np.nan,
             "Scored Factors": pd.DataFrame(),
             "Pressure Components": pd.DataFrame(),
@@ -153,13 +157,28 @@ def build_sector_metrics(factor_df, yf_df):
     normalized_df = normalize_factor_table(factor_df)
     sector_score = calc_sector_scores(normalized_df)
     pressure_score, pressure_components = calc_trading_pressure(yf_df, factor_df)
+    valuation_discount = _factor_raw(factor_df, "forward_ebit_yield_discount")
+
+    valuation = aggregate_forward_ebit_yield(
+        yf_df,
+        min_count=5,
+        min_coverage=0.60,
+    )
+    sector_forward_ebit_yield = valuation["yield"]
 
     return {
         "Sector Score": sector_score,
         "Sector Pressure": pressure_score,
         "Cycle Strategy": cycle_strategy(sector_score),
         "Avg Return": _mean_column(yf_df, "1Y Return"),
-        "Forward P/E": _mean_column(yf_df, "Forward P/E"),
+        "Forward EV/EBIT": (
+            1.0 / sector_forward_ebit_yield
+            if pd.notna(sector_forward_ebit_yield)
+            and sector_forward_ebit_yield > 0
+            else np.nan
+        ),
+        "Forward EBIT Yield": sector_forward_ebit_yield,
+        "Valuation Discount": valuation_discount,
         "Beta": _mean_column(yf_df, "Beta"),
         "Scored Factors": normalized_df,
         "Pressure Components": pressure_components,

@@ -10,9 +10,9 @@ modifies the raw YFinance, EDGAR, or benchmark observations. It rebuilds:
 - Capital Stress where archived financial fields and filing disclosures exist;
 - Speculation Gap = AEI - ADI.
 
-Pressure v2 is rebuilt only when its four price/volume inputs were actually
-archived. Older pressure values are retained in an explicit Legacy Pressure
-column rather than being mislabeled as Pressure v2.
+Pressure v3 is rebuilt only when its price/volume and forward operating-
+earnings valuation inputs were actually archived. Older pressure values are
+retained in an explicit Legacy Pressure column rather than being relabeled.
 """
 
 from __future__ import annotations
@@ -30,15 +30,15 @@ if str(PROJECT_ROOT) not in sys.path:
 from analytics.capital_stress_engine import calculate_capital_stress
 from analytics.development_engine import calculate_ai_development_intensity
 from analytics.factor_engine import (
-    calc_dispersion,
-    calc_earnings_yield_discount,
-    calc_momentum_breadth,
+    calc_forward_ebit_yield_discount,
+    calc_market_breadth,
     calc_relative_performance,
 )
 from analytics.hhi_engine import calc_hhi_from_sector_data, normalize_hhi
 from analytics.power_engine import calculate_power_stress
 from analytics.regime_engine import calc_aei, calc_avg_sector_pressure
 from analytics.sector_engine import (
+    build_sector_metrics,
     calc_sector_scores,
     calc_trading_pressure,
     normalize_factor_table,
@@ -47,11 +47,11 @@ from analytics.sector_engine import (
 ARCHIVE_DIR = PROJECT_ROOT / "archive"
 DATA_DIR = PROJECT_ROOT / "data"
 
-AEI_VERSION = "2.0"
+AEI_VERSION = "3.0"
 ADI_VERSION = "1.0"
 POWER_STRESS_VERSION = "3.0"
-CAPITAL_STRESS_VERSION = "2.0"
-PRESSURE_VERSION = "2.0"
+CAPITAL_STRESS_VERSION = "3.0"
+PRESSURE_VERSION = "3.0"
 
 RAW_FINANCIAL_COLUMNS = [
     "Revenue",
@@ -188,19 +188,21 @@ def _sector_data_as_of(
 
 def _benchmark_as_of(benchmark_history: pd.DataFrame, target_date) -> dict:
     if benchmark_history.empty:
-        return {"avg_return": np.nan, "forward_pe": np.nan}
+        return {"avg_return": np.nan, "forward_ebit_yield": np.nan}
 
     rows = benchmark_history[
         benchmark_history["Benchmark"].astype(str).str.upper() == "QQQ"
     ].copy()
     date_value = _latest_available_date(rows["Date"], target_date)
     if date_value is None:
-        return {"avg_return": np.nan, "forward_pe": np.nan}
+        return {"avg_return": np.nan, "forward_ebit_yield": np.nan}
 
     row = rows.loc[rows["Date"].astype(str) == date_value].iloc[-1]
     return {
         "avg_return": pd.to_numeric(row.get("Avg Return"), errors="coerce"),
-        "forward_pe": pd.to_numeric(row.get("Forward P/E"), errors="coerce"),
+        "forward_ebit_yield": pd.to_numeric(
+            row.get("Forward EBIT Yield"), errors="coerce"
+        ),
     }
 
 
@@ -214,18 +216,15 @@ def _factor_frame(sector: str, df: pd.DataFrame, benchmark: dict) -> pd.DataFram
             },
             {
                 "Sector": sector,
-                "Factor": "earnings_yield_discount",
-                "Value": calc_earnings_yield_discount(df, benchmark.get("forward_pe")),
+                "Factor": "forward_ebit_yield_discount",
+                "Value": calc_forward_ebit_yield_discount(
+                    df, benchmark.get("forward_ebit_yield")
+                ),
             },
             {
                 "Sector": sector,
-                "Factor": "momentum_breadth",
-                "Value": calc_momentum_breadth(df),
-            },
-            {
-                "Sector": sector,
-                "Factor": "dispersion",
-                "Value": calc_dispersion(df),
+                "Factor": "market_breadth",
+                "Value": calc_market_breadth(df),
             },
         ]
     )
@@ -258,15 +257,7 @@ def _sector_metrics_for_date(
     for sector in original_sectors:
         df = sector_data.get(sector, pd.DataFrame())
         factor_df = _factor_frame(sector, df, benchmark)
-        normalized = normalize_factor_table(factor_df)
-        score = calc_sector_scores(normalized)
-        pressure, _ = calc_trading_pressure(df, factor_df)
-        metrics[sector] = {
-            "Sector Score": score,
-            "Sector Pressure": pressure,
-            "Forward P/E": _mean_numeric(df, "Forward P/E"),
-            "Avg Return": _mean_numeric(df, "1Y Return"),
-        }
+        metrics[sector] = build_sector_metrics(factor_df, df)
 
     return metrics, sector_data, market_date
 
@@ -529,7 +520,8 @@ def rebuild_sector_history(
                     "Sector": sector,
                     "Sector Score": values.get("Sector Score", np.nan),
                     "Pressure": pressure,
-                    "Forward P/E": values.get("Forward P/E", np.nan),
+                    "Forward EV/EBIT": values.get("Forward EV/EBIT", np.nan),
+                    "Forward EBIT Yield": values.get("Forward EBIT Yield", np.nan),
                     "Avg Return": values.get("Avg Return", np.nan),
                     "AEI Version": AEI_VERSION,
                     "Pressure Version": PRESSURE_VERSION if pd.notna(pressure) else pd.NA,
@@ -625,7 +617,9 @@ def rebuild_macro_history(
             "Power Grid Utilization": _component_value(power_result, "Grid Utilization Pressure"),
             "Power Capacity Response": _component_value(power_result, "Capacity Response Gap"),
             "Capital Cash Flow Strain": _component_value(capital, "Cash Flow Strain"),
-            "Capital Book Leverage": _component_value(capital, "Book Leverage"),
+            "Capital Debt Capacity Stress": _component_value(
+                capital, "Debt Capacity Stress"
+            ),
             "Capital Committed Burden": _component_value(capital, "Committed Burden"),
             "Capital Contingent Exposure": _component_value(capital, "Contingent Exposure"),
             "AEI Version": AEI_VERSION if pd.notna(aei) else pd.NA,
