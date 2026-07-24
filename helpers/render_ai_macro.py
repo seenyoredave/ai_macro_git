@@ -24,9 +24,7 @@ def render_ai_macro_dashboard(
 
     st.markdown("---")
 
-    st.subheader("Purpose Statement")
-    # Zero-width label leaves only the native disclosure chevron below the title.
-    with st.expander("\u200b", expanded=False):
+    with st.expander("Purpose Statement", expanded=False):
         st.write(METRIC_DEFINITIONS["Purpose Statement"])
 
     st.markdown("---")
