@@ -36,6 +36,9 @@ from helpers.render_sector import render_basket_tier_developer_tool
 # PAGE CONFIG
 #################################################
 
+APP_STATE_SCHEMA_VERSION = "12.5"
+
+
 st.set_page_config(
     page_title="AI Regime Dashboard",
     layout="wide"
@@ -261,6 +264,10 @@ if "sectors" not in st.session_state:
         sector: SECTOR_CONFIG[sector].copy()
         for sector in SECTOR_CONFIG
     }
+
+if st.session_state.get("app_state_schema_version") != APP_STATE_SCHEMA_VERSION:
+    st.session_state.force_rebuild = True
+    st.session_state.app_state_schema_version = APP_STATE_SCHEMA_VERSION
 
 if "force_rebuild" not in st.session_state:
     st.session_state.force_rebuild = True

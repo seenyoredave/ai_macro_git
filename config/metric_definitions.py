@@ -77,6 +77,30 @@ At least 3 of 4 components must be valid; available static weights are renormali
 **How to read it:** Positive values indicate greater financing strain and less balance-sheet flexibility. Negative values indicate stronger cash-flow support, lower leverage, or lighter obligation burdens. Zero represents the model's reference condition. Scale: -100 to +100.
 """,
 
+    "Internal Funding Coverage": """
+**IFC = OCF / CapEx**
+
+Above 1.0x means current operations cover current CapEx; below 1.0x means reserves or outside financing are required.
+""",
+
+    "Cash Reserve Coverage": """
+**CRC = Cash / TTM CapEx**
+
+Shows how many years of current capital spending could be covered from existing liquid reserves alone.
+""",
+
+    "Debt Financing Pulse": """
+**DFP = Δ₁₂ₘ Total Debt / TTM CapEx**
+
+Positive values indicate debt expanded relative to the current buildout rate; negative values indicate debt repayment.
+""",
+
+    "Forward Commitment Load": """
+**FCL = Forward Commitments / TTM CapEx**
+
+Higher values mean more future spending is contractually locked in relative to the current annual buildout rate.
+""",
+
     "Credit Intermediation Stress": """
 Measures whether the U.S. financing channel is tightening or losing loss-absorbing capacity across bank and nonbank channels.
 

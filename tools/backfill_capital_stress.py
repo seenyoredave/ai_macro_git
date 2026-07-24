@@ -655,20 +655,64 @@ def main():
     )
 
     if args.reuse_raw:
-        fundamentals = pd.read_csv(DEFAULT_FUNDAMENTALS_PATH)
+        fundamentals = (
+            pd.read_csv(DEFAULT_FUNDAMENTALS_PATH)
+            if DEFAULT_FUNDAMENTALS_PATH.exists()
+            and DEFAULT_FUNDAMENTALS_PATH.stat().st_size > 0
+            else pd.DataFrame(columns=FUNDAMENTAL_COLUMNS)
+        )
+        if fundamentals.empty:
+            print("[restore] Fundamentals file is missing or empty; rebuilding from SEC cache")
+            cached_client = SecClient(sec_user_agent(), CACHE_DIR, offline=True)
+            fundamentals = build_fundamentals(cached_client, observations)
+            if fundamentals.empty:
+                raise RuntimeError(
+                    "Capital Stress fundamentals could not be restored from the local SEC cache. "
+                    "Run the backfill once without --reuse-raw to repopulate the cache."
+                )
+            _atomic_csv(fundamentals, DEFAULT_FUNDAMENTALS_PATH, FUNDAMENTAL_COLUMNS)
+
         review = (
             pd.read_csv(DEFAULT_REVIEW_PATH)
             if DEFAULT_REVIEW_PATH.exists()
+            and DEFAULT_REVIEW_PATH.stat().st_size > 0
             else pd.DataFrame(columns=REVIEW_COLUMNS)
         )
-        ledger = accepted_ledger(review)
+        if not review.empty:
+            ledger = accepted_ledger(review)
+        elif (
+            DEFAULT_COMMITMENTS_HISTORY_PATH.exists()
+            and DEFAULT_COMMITMENTS_HISTORY_PATH.stat().st_size > 0
+        ):
+            ledger = pd.read_csv(DEFAULT_COMMITMENTS_HISTORY_PATH)
+        else:
+            raise RuntimeError(
+                "No adjudicated commitment review or retained commitment history is available."
+            )
         _atomic_csv(ledger, DEFAULT_COMMITMENTS_HISTORY_PATH, LEDGER_COLUMNS)
     else:
         client = SecClient(sec_user_agent(), CACHE_DIR, offline=args.offline)
         fundamentals = build_fundamentals(client, observations)
-        review, ledger = build_commitments(client, observations)
+
+        retained_review = (
+            pd.read_csv(DEFAULT_REVIEW_PATH)
+            if DEFAULT_REVIEW_PATH.exists()
+            and DEFAULT_REVIEW_PATH.stat().st_size > 0
+            else pd.DataFrame(columns=REVIEW_COLUMNS)
+        )
+        adjudicated = (
+            not retained_review.empty
+            and {"Review Status", "Review Reason"}.issubset(retained_review.columns)
+        )
+        if adjudicated:
+            print("[review] Reusing retained adjudicated commitment decisions")
+            review = retained_review
+            ledger = accepted_ledger(review)
+        else:
+            review, ledger = build_commitments(client, observations)
+
         _atomic_csv(fundamentals, DEFAULT_FUNDAMENTALS_PATH, FUNDAMENTAL_COLUMNS)
-        _atomic_csv(review, DEFAULT_REVIEW_PATH, REVIEW_COLUMNS)
+        _atomic_csv(review, DEFAULT_REVIEW_PATH, list(review.columns))
         _atomic_csv(ledger, DEFAULT_COMMITMENTS_HISTORY_PATH, LEDGER_COLUMNS)
 
     history = build_history(fundamentals, ledger, observations)

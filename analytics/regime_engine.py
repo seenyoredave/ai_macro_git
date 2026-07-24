@@ -12,6 +12,7 @@ from analytics.capital_stress_engine import (
     normalize_capital_stress_history,
 )
 from analytics.capital_stress_history import combine_capital_stress_history
+from analytics.deployment_funding_mix import calculate_deployment_funding_mix
 from analytics.development_engine import calculate_ai_development_intensity
 from analytics.economic_validation import calculate_economic_validation_gap
 from analytics.hhi_engine import calc_hhi_from_sector_data, normalize_hhi
@@ -210,6 +211,7 @@ def build_regime_metrics(
         fred_data or {},
     )
     capital_result = calculate_capital_stress(sector_data or {})
+    funding_mix_result = calculate_deployment_funding_mix(sector_data or {})
     intermediation_result = calculate_intermediation_stress(fred_data or {})
 
     current_adi = development_result.get("score", np.nan)
@@ -319,6 +321,7 @@ def build_regime_metrics(
         "Economic Validation Gap Components": validation_result,
         "Power Stress Components": power_result,
         "Capital Stress Components": capital_result,
+        "Deployment Funding Mix": funding_mix_result,
         "Credit Intermediation Stress Components": intermediation_result,
         "AEI Version": AEI_VERSION,
         "ADI Version": ADI_VERSION,

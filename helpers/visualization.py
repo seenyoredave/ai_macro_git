@@ -526,3 +526,61 @@ def factor_color(score):
     if score < 75:
         return "#bfdbfe"
     return "#ffffff"
+
+
+def build_mini_line_history(history, *, reference=None, color="#a78bfa", fill=False):
+    """Compact line chart with a minimal axis for dashboard mini-cards."""
+    clean = _clean_history_frame(history)
+    fig = go.Figure()
+
+    if not clean.empty:
+        fig.add_trace(go.Scatter(
+            x=clean["Date"],
+            y=clean["Value"],
+            mode="lines",
+            line={"width": 2.4, "color": color},
+            fill="tozeroy" if fill else None,
+            fillcolor=("rgba(167,139,250,0.14)" if fill else None),
+            hovertemplate="%{x|%Y-%m-%d}<br>%{y:.2f}<extra></extra>",
+        ))
+    if reference is not None and pd.notna(reference):
+        fig.add_hline(y=float(reference), line_dash="dot", line_color="#64748b", opacity=0.8)
+
+    fig.update_layout(
+        height=92,
+        margin=dict(l=8, r=8, t=6, b=8),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        showlegend=False,
+        font={"color": "#e5e7eb", "size": 10},
+        xaxis={"visible": False, "type": "date"},
+        yaxis={"visible": True, "fixedrange": True, "gridcolor": "rgba(100,116,139,0.18)", "zeroline": False},
+    )
+    return fig
+
+
+def build_mini_bar_history(history, *, reference=0, color="#8b5cf6"):
+    """Compact signed bar chart for dashboard mini-cards."""
+    clean = _clean_history_frame(history)
+    fig = go.Figure()
+    if not clean.empty:
+        fig.add_trace(go.Bar(
+            x=clean["Date"],
+            y=clean["Value"],
+            marker_color=color,
+            hovertemplate="%{x|%Y-%m-%d}<br>%{y:+.2f}<extra></extra>",
+        ))
+    if reference is not None and pd.notna(reference):
+        fig.add_hline(y=float(reference), line_dash="dot", line_color="#64748b", opacity=0.8)
+    fig.update_layout(
+        height=92,
+        margin=dict(l=8, r=8, t=6, b=8),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        showlegend=False,
+        font={"color": "#e5e7eb", "size": 10},
+        xaxis={"visible": False, "type": "date"},
+        yaxis={"visible": True, "fixedrange": True, "gridcolor": "rgba(100,116,139,0.18)", "zeroline": False},
+        bargap=0.35,
+    )
+    return fig

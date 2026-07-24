@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from analytics.deployment_funding_mix import calculate_deployment_funding_mix
 from analytics.financial_conditions import (
     nfci_condition,
     nfci_direction,
@@ -32,6 +33,7 @@ from helpers.visualization import (
     build_nfci_history,
     build_nfci_sparkline,
     build_metric_history,
+    build_mini_line_history,
     build_positioning_map,
     build_power_stress_gauge,
     build_rotation_matrix,
@@ -418,6 +420,7 @@ def _snapshot_values(macro_df, fred_data, sector_data, regime_metrics):
 
 def _render_snapshot_heading():
     st.subheader("AI Economy Snapshot")
+    st.markdown("---")
 
 
 def _render_equity_and_development(values, trends, regime_metrics):
@@ -477,10 +480,136 @@ def _render_power_and_concentration(values, trends, regime_metrics):
         )
 
 
+def _fmt_years(value):
+    value = pd.to_numeric(value, errors="coerce")
+    if pd.isna(value):
+        return "No Data"
+    return f"{value:.1f} yrs"
+
+
+def _fmt_signed_decimal(value):
+    value = pd.to_numeric(value, errors="coerce")
+    if pd.isna(value):
+        return "No Data"
+    return f"{value:+.2f}"
+
+
+def _recent_metric_series(history, *, years=5):
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty:
+        return pd.DataFrame(columns=["Date", "Value"])
+    if "Date" not in history.columns or "Value" not in history.columns:
+        return pd.DataFrame(columns=["Date", "Value"])
+
+    out = history[["Date", "Value"]].copy()
+    out["Date"] = pd.to_datetime(out["Date"], errors="coerce", format="mixed")
+    out["Value"] = pd.to_numeric(out["Value"], errors="coerce")
+    out = out.dropna(subset=["Date", "Value"]).sort_values("Date", kind="stable")
+    if out.empty:
+        return out
+
+    cutoff = out["Date"].max() - pd.DateOffset(years=years)
+    return out[out["Date"] >= cutoff].reset_index(drop=True)
+
+
+def _funding_mix_card(
+    title,
+    value_text,
+    fig,
+    border_color,
+    card_key,
+    help_key,
+):
+    with _styled_card_container(card_key, border_color, min_height=175):
+        st.metric(title, value_text, help=metric_help(help_key))
+        st.plotly_chart(fig, width="stretch", config={"responsive": True})
+
+
+def _render_deployment_funding_mix(regime_metrics, sector_data=None):
+    funding_mix = regime_metrics.get("Deployment Funding Mix", {}) or {}
+    if not funding_mix:
+        funding_mix = calculate_deployment_funding_mix(sector_data or {})
+    current = funding_mix.get("current", {}) or {}
+    series = funding_mix.get("series", {}) or {}
+
+    with st.container(border=True):
+        coverage_series = _recent_metric_series(
+            series.get("internal_funding_coverage"),
+            years=5,
+        )
+        reserve_series = _recent_metric_series(
+            series.get("cash_reserve_coverage_years"),
+            years=5,
+        )
+        debt_series = _recent_metric_series(
+            series.get("debt_financing_pulse"),
+            years=5,
+        )
+        commitment_series = _recent_metric_series(
+            series.get("forward_commitment_load"),
+            years=5,
+        )
+
+        specs = [
+            (
+                "Internal Funding Coverage",
+                fmt_multiple(current.get("internal_funding_coverage", np.nan)),
+                build_mini_line_history(
+                    coverage_series,
+                    reference=1.0,
+                    color="#a78bfa",
+                ),
+                "#7c3aed",
+                "funding-mix-coverage",
+                "Internal Funding Coverage",
+            ),
+            (
+                "Cash Reserve Coverage",
+                _fmt_years(current.get("cash_reserve_coverage_years", np.nan)),
+                build_mini_line_history(
+                    reserve_series,
+                    reference=1.0,
+                    color="#60a5fa",
+                ),
+                "#60a5fa",
+                "funding-mix-reserves",
+                "Cash Reserve Coverage",
+            ),
+            (
+                "Debt Financing Pulse",
+                _fmt_signed_decimal(current.get("debt_financing_pulse", np.nan)),
+                build_mini_line_history(
+                    debt_series,
+                    reference=0.0,
+                    color="#8b5cf6",
+                ),
+                "#8b5cf6",
+                "funding-mix-debt-pulse",
+                "Debt Financing Pulse",
+            ),
+            (
+                "Forward Commitment Load",
+                fmt_multiple(current.get("forward_commitment_load", np.nan)),
+                build_mini_line_history(
+                    commitment_series,
+                    reference=1.0,
+                    color="#c4b5fd",
+                    fill=True,
+                ),
+                "#94a3b8",
+                "funding-mix-commitments",
+                "Forward Commitment Load",
+            ),
+        ]
+
+        for column, spec in zip(st.columns(4), specs):
+            with column:
+                _funding_mix_card(*spec)
+
+
 def _render_capital_stress(values, trend, regime_metrics):
     capital_result = regime_metrics.get("Capital Stress Components", {}) or {}
     with st.container(border=True):
-        st.header("Capital Stress", help=metric_help("Capital Stress"))
+        st.subheader("Capital Stress", help=metric_help("Capital Stress"))
         gauge_col, history_col, component_col = st.columns([1, 1.15, 1.35])
 
         with gauge_col:
@@ -544,7 +673,7 @@ def _render_intermediation_stress(values, trend, regime_metrics):
         regime_metrics.get("Credit Intermediation Stress Components", {}) or {}
     )
     with st.container(border=True):
-        st.header(
+        st.subheader(
             "Credit Intermediation Stress",
             help=metric_help("Credit Intermediation Stress"),
         )
@@ -769,11 +898,16 @@ def render_regime_snapshot(
     _render_snapshot_heading()
     _render_equity_and_development(values, trends, regime_metrics)
     _render_power_and_concentration(values, trends, regime_metrics)
+    st.markdown("---")
+    st.subheader("AI Buildout Financing")
+    st.markdown("---")
+    _render_deployment_funding_mix(regime_metrics, sector_data)
     _render_capital_stress(values, capital_stress_trend or {}, regime_metrics)
     _render_intermediation_stress(
         values, intermediation_stress_trend or {}, regime_metrics
     )
     _render_financial_conditions_confirmation(fred_data, nfci_history)
+    st.markdown("---")
     _render_gap_metrics(values)
 
 def render_sector_assessment(macro_df, sector_data=None):
@@ -810,6 +944,7 @@ def render_sector_assessment(macro_df, sector_data=None):
 
 def render_positioning_charts(macro_df):
     st.subheader("Sector Positioning and Rotation")
+    st.markdown("---")
 
     col1, col2 = st.columns(2)
     with col1:
