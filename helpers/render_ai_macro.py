@@ -24,7 +24,7 @@ def render_ai_macro_dashboard(
 
     st.markdown("---")
 
-    with st.expander("Purpose Statement", expanded=False):
+    with st.expander("PURPOSE STATEMENT", expanded=False):
         st.write(METRIC_DEFINITIONS["Purpose Statement"])
 
     st.markdown("---")
