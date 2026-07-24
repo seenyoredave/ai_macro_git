@@ -10,7 +10,7 @@ from analytics.regime_engine import build_regime_metrics
 
 from benchmarks.benchmark_service import get_benchmark_metrics
 
-from loaders.fred_loader import load_fred
+from loaders.fred_loader import load_fred, load_nfci_history
 from loaders.construction_loader import load_data_center_construction
 from loaders.market_loader import load_market_universe
 from loaders.edgar_loader import build_edgar_archive_snapshot
@@ -274,6 +274,7 @@ if st.session_state.force_rebuild:
     sector_data, sector_metrics, raw_universe_data = build_sector_dashboard_data()
 
     fred_data = load_fred()
+    nfci_history = load_nfci_history()
     construction_data = load_data_center_construction()
     fred_history = load_fred_history()
     macro_history = load_macro_history()
@@ -307,6 +308,7 @@ if st.session_state.force_rebuild:
     st.session_state.sector_data = sector_data
     st.session_state.sector_metrics = sector_metrics
     st.session_state.fred_data = fred_data
+    st.session_state.nfci_history = nfci_history
     st.session_state.construction_data = construction_data
     st.session_state.regime_metrics = regime_metrics
 
@@ -316,6 +318,7 @@ if st.session_state.force_rebuild:
 sector_data = st.session_state.sector_data
 sector_metrics = st.session_state.sector_metrics
 fred_data = st.session_state.fred_data
+nfci_history = st.session_state.get("nfci_history")
 regime_metrics = st.session_state.regime_metrics
 
 
@@ -341,5 +344,6 @@ else:
         sector_data,
         sector_metrics,
         fred_data,
-        regime_metrics
+        regime_metrics,
+        nfci_history=nfci_history,
     )

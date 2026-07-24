@@ -17,6 +17,7 @@ def render_ai_macro_dashboard(
     sector_data=None,
     fred_data=None,
     regime_metrics=None,
+    nfci_history=None,
 ):
     st.title("AI Regime Dashboard")
     st.caption("AI equity conditions • physical buildout • capital stress • sector rotation")
@@ -24,7 +25,9 @@ def render_ai_macro_dashboard(
     st.markdown("---")
 
     st.subheader("Purpose Statement")
-    st.write(METRIC_DEFINITIONS["Purpose Statement"])
+    # Zero-width label leaves only the native disclosure chevron below the title.
+    with st.expander("\u200b", expanded=False):
+        st.write(METRIC_DEFINITIONS["Purpose Statement"])
 
     st.markdown("---")
 
@@ -49,8 +52,10 @@ def render_ai_macro_dashboard(
         power_stress_trend=trends["power_stress_trend"],
         concentration_trend=trends["concentration_trend"],
         capital_stress_trend=trends["capital_stress_trend"],
+        intermediation_stress_trend=trends["intermediation_stress_trend"],
         sector_data=sector_data,
         regime_metrics=regime_metrics,
+        nfci_history=nfci_history,
     )
 
     render_sector_assessment(macro_df, sector_data=sector_data)

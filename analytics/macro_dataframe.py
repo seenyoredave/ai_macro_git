@@ -6,10 +6,12 @@ import numpy as np
 import pandas as pd
 
 from analytics.capital_stress_engine import normalize_capital_stress_history
+from analytics.intermediation_stress_engine import normalize_intermediation_stress_history
 from analytics.power_engine import normalize_power_stress_history
 from analytics.regime_engine import (
     ADI_VERSION,
     CAPITAL_STRESS_VERSION,
+    INTERMEDIATION_STRESS_VERSION,
     POWER_STRESS_VERSION,
 )
 from analytics.trend_engine import calc_metric_trend
@@ -47,6 +49,14 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
     regime_metrics = regime_metrics or {}
     signed_power_history = normalize_power_stress_history(macro_history)
     signed_capital_history = normalize_capital_stress_history(macro_history)
+    signed_intermediation_history = normalize_intermediation_stress_history(macro_history)
+
+    native_intermediation_history = (
+        (regime_metrics.get("Credit Intermediation Stress Components", {}) or {})
+        .get("history")
+    )
+    if not isinstance(native_intermediation_history, pd.DataFrame) or native_intermediation_history.empty:
+        native_intermediation_history = signed_intermediation_history
 
     trends = {
         "aei_trend": calc_metric_trend(macro_history, "AI Equity Index"),
@@ -71,6 +81,20 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             "Capital Stress",
             version_column="Capital Stress Version",
             required_version=CAPITAL_STRESS_VERSION,
+        ),
+        "intermediation_stress_trend": calc_metric_trend(
+            native_intermediation_history,
+            "Credit Intermediation Stress",
+            version_column=(
+                "Credit Intermediation Stress Version"
+                if "Credit Intermediation Stress Version" in native_intermediation_history.columns
+                else None
+            ),
+            required_version=(
+                INTERMEDIATION_STRESS_VERSION
+                if "Credit Intermediation Stress Version" in native_intermediation_history.columns
+                else None
+            ),
         ),
         "speculation_gap_trend": calc_metric_trend(
             macro_history,

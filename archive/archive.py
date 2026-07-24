@@ -201,6 +201,11 @@ def append_macro_history(regime_metrics, fred_data):
         ),
         "Power Stress Index": _current_metric_value(regime_metrics, "Power Stress Index", "Power Stress Source"),
         "Capital Stress": _current_metric_value(regime_metrics, "Capital Stress", "Capital Stress Source"),
+        "Credit Intermediation Stress": _current_metric_value(
+            regime_metrics,
+            "Credit Intermediation Stress",
+            "Credit Intermediation Stress Source",
+        ),
         "Concentration HHI": regime_metrics.get("Concentration HHI", np.nan),
         "Raw AI HHI": regime_metrics.get("Raw AI HHI", np.nan),
         "Avg Sector Pressure": regime_metrics.get("Avg Sector Pressure", np.nan),
@@ -215,10 +220,33 @@ def append_macro_history(regime_metrics, fred_data):
         "Capital Book Leverage": _component_value(regime_metrics, "Capital Stress Components", "Book Leverage"),
         "Capital Committed Burden": _component_value(regime_metrics, "Capital Stress Components", "Committed Burden"),
         "Capital Contingent Exposure": _component_value(regime_metrics, "Capital Stress Components", "Contingent Exposure"),
+        "Intermediation Bank Credit Tightening": _component_value(
+            regime_metrics,
+            "Credit Intermediation Stress Components",
+            "Bank Credit Tightening",
+        ),
+        "Intermediation Bank Capital Strain": _component_value(
+            regime_metrics,
+            "Credit Intermediation Stress Components",
+            "Bank Capital Strain",
+        ),
+        "Intermediation Private Credit Impairment": _component_value(
+            regime_metrics,
+            "Credit Intermediation Stress Components",
+            "Private Credit Impairment",
+        ),
+        "Intermediation PE Portfolio Financing Strain": _component_value(
+            regime_metrics,
+            "Credit Intermediation Stress Components",
+            "PE Portfolio Financing Strain",
+        ),
         "AEI Version": regime_metrics.get("AEI Version", np.nan),
         "ADI Version": regime_metrics.get("ADI Version", np.nan),
         "Power Stress Version": regime_metrics.get("Power Stress Version", np.nan),
         "Capital Stress Version": regime_metrics.get("Capital Stress Version", np.nan),
+        "Credit Intermediation Stress Version": regime_metrics.get(
+            "Credit Intermediation Stress Version", np.nan
+        ),
         "Pressure Version": regime_metrics.get("Pressure Version", np.nan),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),
         "Fed Funds Rate": fred_data.get("Fed Funds Rate", {}).get("value", np.nan),

@@ -132,21 +132,55 @@ Curated guarantees, backstops, and other quantified contingent obligations divid
 
 The commitment ledger is intentionally filing-backed and limited to companies in the existing AI universe whose disclosed unrecognized, contractual, or contingent obligations exceed 50% of reported debt. Missing categories are unknown, not zero.
 
+## Credit Intermediation Stress
+
+**Question:** Is the financing system becoming less willing or less able to support operating businesses?
+
+- Bank Credit Tightening: 30%
+- Bank Capital Strain: 25%
+- Private Credit Impairment: 25%
+- PE Portfolio Financing Strain: 20%
+
+`Intermediation base = 0.30(BT) + 0.25(BC) + 0.25(PC) + 0.20(PE)`
+
+`Credit Intermediation Stress = 2 × (Intermediation base - 50)`
+
+At least three of four components must be valid. The internal base scale is 0–100; the displayed scale is -100 to +100.
+
+### Bank Credit Tightening
+
+Federal Reserve SLOOS net percentage of domestic banks tightening business-loan standards, weighted by banks' outstanding loan balances.
+
+### Bank Capital Strain
+
+Federal Reserve Z.1 aggregate regulatory Tier 1 capital as a percentage of risk-weighted assets. The score is inverted so lower capital ratios indicate greater strain.
+
+### Private Credit Impairment
+
+Asset-weighted non-accrual investments at amortized cost for the fixed public BDC cohort ARCC, OBDC, FSK, GBDC, and CION.
+
+### PE Portfolio Financing Strain
+
+- High-Leverage Portfolio Share: 60%
+- Payment-in-Kind Borrowing Burden: 40%
+
+High leverage is the share of reported portfolio-company gross assets with debt-to-equity of 2 or more or negative equity. Both inputs come from lagged annual SEC Form PF aggregates.
+
 ## Concentration HHI
 
 Raw HHI is the sum of squared company market-cap shares across the selected AI universe. The dashboard converts raw HHI to a 0–100 display scale.
 
 Higher values mean greater concentration. The calculation uses total company market capitalization and does not allocate enterprise value to AI activities.
 
+## Financial Conditions Confirmation
+
+The Chicago Fed National Financial Conditions Index is displayed directly as an independent weekly confirmation signal. Negative readings indicate conditions looser than the long-run average; positive readings indicate tighter conditions. The dashboard also reports the three-month change to distinguish the current level from its direction. NFCI is not blended into Capital Stress or Credit Intermediation Stress.
+
 ## Gap metrics
 
 ### Economic Validation Gap
 
 Enterprise AI software CapEx growth minus company revenue growth minus broader information-processing investment growth. This remains a directional proxy rather than an accounting identity.
-
-### Liquidity Support Gap
-
-Average sector Trading Pressure minus liquidity support derived from the inverted NFCI.
 
 ### AI–Industrial Growth Gap
 

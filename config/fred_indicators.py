@@ -9,6 +9,8 @@ FRED_INDICATORS = {
     "Consumer Sentiment": "UMCSENT",
     "Financial Conditions NFCI": "NFCI",
     "Info Processing Investment Growth": "A679RL1Q225SBEA",
+    "Business Loan Tightening": "SUBLPDMBSXWBNQ",
+    "Bank Tier 1 Capital Ratio": "BOGZ1FL010000016Q",
 
     # Power Stress Index inputs. All five are monthly, seasonally adjusted.
     "Commercial Electricity Sales": "IPN22112CS",

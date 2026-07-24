@@ -6,15 +6,19 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from analytics.financial_conditions import (
+    nfci_condition,
+    nfci_direction,
+    nfci_snapshot,
+    nfci_summary,
+)
 from analytics.sector_assessment import select_current_sector_assessment
 from config.debug_config import DEBUG, debug_print
 from config.metric_definitions import METRIC_DEFINITIONS
-from helpers.gaps import industrial_growth_gap, liquidity_gap, validation_gap
+from helpers.gaps import industrial_growth_gap, validation_gap
 from helpers.labels import (
     adoption_label,
-    liquidity_label,
     sector_display_name,
-    short_regime_label,
     speculation_label,
     validation_label,
 )
@@ -24,6 +28,9 @@ from helpers.visualization import (
     build_concentration_gauge,
     build_development_gauge,
     build_equity_gauge,
+    build_intermediation_stress_gauge,
+    build_nfci_history,
+    build_nfci_sparkline,
     build_metric_history,
     build_positioning_map,
     build_power_stress_gauge,
@@ -193,6 +200,49 @@ def _component_table(component_group):
     return pd.DataFrame(rows)
 
 
+def _intermediation_component_table(intermediation_result):
+    components = (intermediation_result or {}).get("components", {}) or {}
+    rows = []
+
+    for name, payload in components.items():
+        raw = payload.get("raw", np.nan)
+        secondary = payload.get("secondary_raw", np.nan)
+
+        if name == "Bank Credit Tightening":
+            measure = f"SLOOS net tightening: {fmt_decimal(raw)}%"
+        elif name == "Bank Capital Strain":
+            measure = f"Regulatory Tier 1 capital / risk-weighted assets: {fmt_decimal(raw)}%"
+        elif name == "Private Credit Impairment":
+            portfolio_cost = pd.to_numeric(
+                payload.get("portfolio_cost_mm", np.nan), errors="coerce"
+            )
+            observations = payload.get("observations", "")
+            measure = (
+                f"BDC non-accruals at cost: {fmt_decimal(raw)}%; "
+                f"{observations} lenders; portfolio cost {fmt_dollars(portfolio_cost * 1e6)}"
+            )
+        else:
+            reported_assets = pd.to_numeric(
+                payload.get("reported_assets_bn", np.nan), errors="coerce"
+            )
+            measure = (
+                f"High-leverage portfolio share: {fmt_decimal(raw)}%; "
+                f"PIK / borrowings: {fmt_decimal(secondary)}%; "
+                f"reported assets {fmt_dollars(reported_assets * 1e9)}"
+            )
+
+        rows.append({
+            "Component": name,
+            "Score": _fmt_signed(payload.get("score", np.nan), decimals=1),
+            "Weight": fmt_percent(payload.get("weight", np.nan)),
+            "Current Measure": measure,
+            "As Of": payload.get("as_of", ""),
+            "Source": payload.get("source", ""),
+        })
+
+    return pd.DataFrame(rows)
+
+
 def _capital_component_table(capital_result):
     components = (capital_result or {}).get("components", {}) or {}
     rows = []
@@ -224,7 +274,7 @@ def _capital_component_table(capital_result):
             "Component": name,
             "Score": _fmt_signed(payload.get("score", np.nan), decimals=1),
             "Weight": fmt_percent(payload.get("weight", np.nan)),
-            "Equation / Current Inputs": measure,
+            "Current Measure": measure,
             "Companies": payload.get("observations", 0),
         })
 
@@ -305,31 +355,21 @@ def _snapshot_values(macro_df, fred_data, sector_data, regime_metrics):
         "power_stress": regime_metrics.get("Power Stress Index", np.nan),
         "concentration_hhi": regime_metrics.get("Concentration HHI", np.nan),
         "capital_stress": regime_metrics.get("Capital Stress", np.nan),
+        "intermediation_stress": regime_metrics.get(
+            "Credit Intermediation Stress", np.nan
+        ),
         "speculation_gap": regime_metrics.get("Speculation Gap", np.nan),
         "validation_gap": validation_gap(
             sector_data=sector_data,
             fred_data=fred_data,
             sector="ENTERPRISE_AI_SOFTWARE",
         ),
-        "liquidity_gap": liquidity_gap(macro_df=macro_df, fred_data=fred_data),
         "industrial_gap": industrial_growth_gap(adi, industrial_growth),
     }
 
 
-def _render_snapshot_heading(aei):
-    header_col, metric_col = st.columns([2, 1])
-    with header_col:
-        st.subheader("AI Economy Snapshot", help=metric_help("AI Economy Snapshot"))
-    with metric_col:
-        st.metric(
-            "Current Equity Regime",
-            short_regime_label(aei),
-            help=(
-                "Classifies the current AI Equity Index reading.\n\n"
-                "Weak: <30 | Neutral: 30–59 | Strong: 60–79 | Extended: 80+"
-            ),
-        )
-    st.markdown("---")
+def _render_snapshot_heading():
+    st.subheader("AI Economy Snapshot", help=metric_help("AI Economy Snapshot"))
 
 
 def _render_equity_and_development(values, trends, regime_metrics):
@@ -364,7 +404,6 @@ def _render_equity_and_development(values, trends, regime_metrics):
                 "The headline ADI is carried forward; component detail reflects "
                 "the current run's available inputs."
             )
-    st.markdown("---")
 
 
 def _render_power_and_concentration(values, trends, regime_metrics):
@@ -388,7 +427,6 @@ def _render_power_and_concentration(values, trends, regime_metrics):
             trends.get("concentration"),
             help_text=metric_help("Concentration HHI"),
         )
-    st.markdown("---")
 
 
 def _render_capital_stress(values, trend, regime_metrics):
@@ -451,21 +489,182 @@ def _render_capital_stress(values, trend, regime_metrics):
                 "The headline Capital Stress value is carried forward; component "
                 "detail reflects the current run's available inputs."
             )
-    st.markdown("---")
+
+
+def _render_intermediation_stress(values, trend, regime_metrics):
+    intermediation_result = (
+        regime_metrics.get("Credit Intermediation Stress Components", {}) or {}
+    )
+    with st.container(border=True):
+        st.header(
+            "Credit Intermediation Stress",
+            help=metric_help("Credit Intermediation Stress"),
+        )
+        gauge_col, history_col, component_col = st.columns([1, 1.15, 1.35])
+
+        with gauge_col:
+            if pd.notna(
+                pd.to_numeric(values["intermediation_stress"], errors="coerce")
+            ):
+                st.plotly_chart(
+                    build_intermediation_stress_gauge(
+                        values["intermediation_stress"]
+                    ),
+                    width="stretch",
+                    config={"responsive": True},
+                )
+            else:
+                render_no_data_panel("Credit Intermediation Stress")
+            render_trend_strip(trend)
+            _render_source_caption(
+                regime_metrics.get(
+                    "Credit Intermediation Stress Source", "Current"
+                ),
+                regime_metrics.get("Credit Intermediation Stress Fallback Date"),
+            )
+
+        with history_col:
+            st.plotly_chart(
+                build_metric_history(
+                    trend,
+                    "Credit Intermediation Stress",
+                    y_range=(-100, 100),
+                    adaptive_range=True,
+                    min_span=20,
+                    step=True,
+                    flat_annotation=(
+                        "No change in quarterly/annual credit inputs during this archive window."
+                    ),
+                ),
+                width="stretch",
+                config={"responsive": True},
+            )
+
+        with component_col:
+            st.plotly_chart(
+                build_component_score_chart(
+                    intermediation_result.get("components", {}),
+                    "Credit Intermediation Stress Components",
+                    x_range=(-100, 100),
+                ),
+                width="stretch",
+                config={"responsive": True},
+            )
+
+    with st.expander("Credit Intermediation Stress Detail", expanded=False):
+        st.dataframe(
+            _intermediation_component_table(intermediation_result),
+            width="stretch",
+            hide_index=True,
+        )
+
+
+def _render_financial_conditions_confirmation(fred_data, nfci_history):
+    snapshot = nfci_snapshot(fred_data or {}, nfci_history)
+    value = snapshot["value"]
+    change = snapshot["three_month_change"]
+
+    with st.container(border=True):
+        st.subheader(
+            "Financial Conditions Confirmation",
+            help=metric_help("Financial Conditions Confirmation"),
+        )
+        condition_col, value_col, direction_col, spark_col = st.columns(
+            [1.35, 0.8, 1.05, 2.2]
+        )
+        with condition_col:
+            st.caption("CURRENT CONDITION")
+            st.markdown(f"### {nfci_condition(value)}")
+        with value_col:
+            st.caption("NFCI")
+            st.markdown(f"### {_fmt_signed(value, decimals=3)}")
+        with direction_col:
+            st.caption("3-MONTH DIRECTION")
+            st.markdown(f"### {nfci_direction(change)}")
+            if pd.notna(pd.to_numeric(change, errors="coerce")):
+                st.caption(f"Change: {_fmt_signed(change, decimals=3)}")
+        with spark_col:
+            st.plotly_chart(
+                build_nfci_sparkline(snapshot["history"], months=12),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+            )
+        st.caption(nfci_summary(value, change))
+
+    with st.expander("Financial Conditions Detail", expanded=False):
+        st.markdown(
+            "The Chicago Fed National Financial Conditions Index summarizes "
+            "weekly U.S. financial conditions across money markets, debt and "
+            "equity markets, banking, leverage, funding risk, and shadow banking."
+        )
+        st.markdown(
+            "**How to read it:** Negative values indicate conditions are looser "
+            "than the long-run average; positive values indicate tighter "
+            "conditions; zero represents the long-run average. The three-month "
+            "direction shows whether support is strengthening or weakening."
+        )
+        meta_left, meta_middle, meta_right = st.columns(3)
+        meta_left.metric("Latest NFCI", _fmt_signed(value, decimals=3))
+        meta_middle.metric("3-Month Change", _fmt_signed(change, decimals=3))
+        meta_right.metric("Observation Date", snapshot.get("as_of") or "No Data")
+        st.plotly_chart(
+            build_nfci_history(snapshot["history"]),
+            width="stretch",
+            config={"responsive": True},
+        )
+        st.caption(
+            f"Source: Chicago Fed NFCI via {snapshot.get('source', 'FRED')}. "
+            "Frequency: weekly. This is an independent confirmation signal, "
+            "not a component of Credit Intermediation Stress."
+        )
+
+
+def _render_gap_score_card(title, value, interpretation, accent_color):
+    """Render a gap score in the same visual language as sector assessment cards."""
+    display_value = fmt_score(value)
+    st.html(f"""
+    <div style="border:1px solid {accent_color};border-left:6px solid {accent_color};
+                border-radius:12px;padding:18px;background:#111827;min-height:150px;">
+        <div style="font-size:1.08rem;letter-spacing:0.8px;color:#d1d5db;
+                    text-transform:uppercase;font-weight:700;margin-bottom:10px;">{title}</div>
+        <div style="font-size:1.85rem;font-weight:700;margin-bottom:12px;">{display_value}</div>
+        <div style="font-size:0.9rem;color:#cbd5e1;line-height:1.35;">{interpretation}</div>
+    </div>
+    """)
 
 
 def _render_gap_metrics(values):
+    st.subheader("Gap Scores", help=metric_help("Gap Scores"))
     gap_specs = [
-        ("Speculation Gap", values["speculation_gap"], speculation_label),
-        ("Economic Validation Gap", values["validation_gap"], validation_label),
-        ("Liquidity Support Gap", values["liquidity_gap"], liquidity_label),
-        ("AI–Industrial Growth Gap", values["industrial_gap"], adoption_label),
+        (
+            "Speculation Gap",
+            values["speculation_gap"],
+            speculation_label,
+            "#7c3aed",
+        ),
+        (
+            "Economic Validation Gap",
+            values["validation_gap"],
+            validation_label,
+            "#60a5fa",
+        ),
+        (
+            "AI–Industrial Growth Gap",
+            values["industrial_gap"],
+            adoption_label,
+            "#94a3b8",
+        ),
     ]
-    for column, (title, value, label_fn) in zip(st.columns(4), gap_specs):
+    for column, (title, value, label_fn, accent_color) in zip(
+        st.columns(3), gap_specs
+    ):
         with column:
-            help_key = "AI-Industrial Growth Gap" if title.startswith("AI–") else title
-            st.metric(title, fmt_score(value), help=metric_help(help_key))
-            st.caption(label_fn(value))
+            _render_gap_score_card(
+                title,
+                value,
+                label_fn(value),
+                accent_color,
+            )
     st.markdown("---")
 
 
@@ -480,6 +679,8 @@ def render_regime_snapshot(
     aei_trend=None,
     adi_trend=None,
     capital_stress_trend=None,
+    intermediation_stress_trend=None,
+    nfci_history=None,
 ):
     """Render the macro snapshot from a small set of coherent sections."""
     fred_data = fred_data or {}
@@ -500,11 +701,16 @@ def render_regime_snapshot(
         debug_print("Speculation Gap:", values["speculation_gap"])
         debug_print("Power Stress:", values["power_stress"])
         debug_print("Capital Stress:", values["capital_stress"])
+        debug_print("Credit Intermediation Stress:", values["intermediation_stress"])
 
-    _render_snapshot_heading(values["aei"])
+    _render_snapshot_heading()
     _render_equity_and_development(values, trends, regime_metrics)
     _render_power_and_concentration(values, trends, regime_metrics)
     _render_capital_stress(values, capital_stress_trend or {}, regime_metrics)
+    _render_intermediation_stress(
+        values, intermediation_stress_trend or {}, regime_metrics
+    )
+    _render_financial_conditions_confirmation(fred_data, nfci_history)
     _render_gap_metrics(values)
 
 def render_sector_assessment(macro_df, sector_data=None):

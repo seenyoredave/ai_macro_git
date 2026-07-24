@@ -12,12 +12,13 @@ The model deliberately balances accuracy, precision, availability, and reliabili
 - Is observable physical and capital development keeping pace with equity enthusiasm?
 - Is electricity demand beginning to pressure generation and grid capacity?
 - Is the buildout creating material cash-flow, leverage, commitment, or contingent-obligation stress?
+- Are banks and private-market lenders tightening or absorbing worsening credit?
 - Which sectors are strong, crowded, accelerating, or financially strained?
 
 ## Objective data sources
 
 - **YFinance:** market prices, valuation, market capitalization, company fundamentals, price history, and volume history.
-- **SEC filings / EDGAR:** standardized financial facts and a curated commitment ledger backed by filing disclosures.
+- **SEC filings / EDGAR:** standardized financial facts, a curated commitment ledger, public BDC credit-quality disclosures, and SEC Form PF private-fund aggregates.
 - **FRED:** macroeconomic, financial-conditions, industrial-production, and electric-power series.
 - **U.S. Census Bureau:** monthly private data-center construction spending.
 
@@ -102,15 +103,28 @@ Scale: **-100 to +100**, centered at **0**
 - Zero: reference conditions
 - Positive: above-reference capital stress
 
+### Credit Intermediation Stress
+
+Credit Intermediation Stress measures the condition of the financing channel rather than the condition of the borrowers already measured by Capital Stress. It combines:
+
+- Federal Reserve business-loan tightening: 30%
+- Aggregate regulatory Tier 1 capital strain: 25%
+- Asset-weighted public BDC non-accruals at amortized cost: 25%
+- Private-equity portfolio financing strain: 20%
+
+The bank-capital component uses the Federal Reserve Z.1 aggregate Tier 1 capital ratio and inverts the mapping so lower loss-absorbing capacity means greater stress. The private-equity component combines the share of reported portfolio-company gross assets with debt-to-equity of 2 or more or negative equity (60%) and mean payment-in-kind borrowing burden (40%). At least three of four top-level pillars must be valid. The public BDC proxy uses the fixed cohort **ARCC, OBDC, FSK, GBDC, and CION**. Form PF data is annual and lagged; the dashboard displays each component's as-of date in the detail dropdown.
+
+Scale: **-100 to +100**, centered at **0**
+
+- Negative: easier or healthier-than-reference intermediation
+- Zero: reference conditions
+- Positive: tighter or more impaired intermediation
+
 ### Concentration HHI
 
 HHI is calculated from total company market capitalization within the selected AI universe. It measures concentration among selected companies and does not attempt to isolate AI-attributable enterprise value.
 
 Higher values mean greater concentration.
-
-## History-chart scaling
-
-Headline gauges retain their full theoretical scales. Historical plots use a bounded adaptive vertical window with a minimum 20-point span so genuine movement in a short archive is visible without implying that a small change occupies the entire scale. Power Stress and Capital Stress are drawn as step series because their underlying official or filing data update discretely.
 
 ## Sector Trading Pressure
 
@@ -124,7 +138,7 @@ Pressure is intentionally separate from AEI. It measures trading extension and i
 
 At least three of five components must be valid. Ticker-level market inputs are aggregated by sector median.
 
-## Benchmark
+Benchmark
 
 The active benchmark is a static ten-member QQQ top-holdings proxy. The selected holdings represented 45.95% of QQQ in the retained 2026-07-21 snapshot. Their actual QQQ weight ratios are normalized to 100% inside the proxy rather than equal-weighted.
 

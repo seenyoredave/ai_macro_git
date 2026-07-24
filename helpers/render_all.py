@@ -9,6 +9,7 @@ def render_all_dashboards(
     sector_metrics,
     fred_data,
     regime_metrics,
+    nfci_history=None,
 ):
     with tabs[0]:
         render_ai_macro_dashboard(
@@ -16,6 +17,7 @@ def render_all_dashboards(
             sector_data=sector_data,
             fred_data=fred_data,
             regime_metrics=regime_metrics,
+            nfci_history=nfci_history,
         )
 
     for index, sector in enumerate(sector_data.keys()):

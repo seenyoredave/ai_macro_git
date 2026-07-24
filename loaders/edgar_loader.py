@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import date, timedelta
 
@@ -24,30 +25,40 @@ SEC_TICKER_URL = "https://www.sec.gov/files/company_tickers.json"
 SEC_COMPANY_FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
 # SEC asks for a descriptive User-Agent.
-# Better: add SEC_USER_AGENT to .streamlit/secrets.toml
+# Better: add SEC_USER_AGENT to .streamlit/secrets.toml or the environment.
 # Example:
 # SEC_USER_AGENT = "AI Macro Dashboard your_email@example.com"
-def sec_headers():
-    user_agent = st.secrets.get(
-        "SEC_USER_AGENT",
-        "AI Macro Dashboard contact@example.com",
+DEFAULT_SEC_USER_AGENT = "AI Macro Dashboard contact@example.com"
+
+
+def _optional_streamlit_secret(name, default=None):
+    """Read an optional secret without requiring a secrets.toml file."""
+    try:
+        return st.secrets.get(name, default)
+    except Exception as exc:
+        debug_print(f"Optional Streamlit secret unavailable: {name} -> {exc}")
+        return default
+
+
+def _sec_user_agent():
+    return (
+        os.getenv("SEC_USER_AGENT")
+        or _optional_streamlit_secret("SEC_USER_AGENT")
+        or DEFAULT_SEC_USER_AGENT
     )
 
+
+def sec_headers():
     return {
-        "User-Agent": user_agent,
+        "User-Agent": _sec_user_agent(),
         "Accept-Encoding": "gzip, deflate",
         "Host": "data.sec.gov",
     }
 
 
 def sec_ticker_headers():
-    user_agent = st.secrets.get(
-        "SEC_USER_AGENT",
-        "AI Macro Dashboard contact@example.com",
-    )
-
     return {
-        "User-Agent": user_agent,
+        "User-Agent": _sec_user_agent(),
         "Accept-Encoding": "gzip, deflate",
     }
 

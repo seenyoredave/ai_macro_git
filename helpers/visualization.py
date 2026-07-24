@@ -110,6 +110,115 @@ def build_capital_stress_gauge(value):
     return _build_gauge(value, "Capital Stress", axis_range=(-100, 100))
 
 
+def build_intermediation_stress_gauge(value):
+    return _build_gauge(
+        value,
+        "Credit Intermediation Stress",
+        axis_range=(-100, 100),
+    )
+
+
+def _clean_history_frame(history):
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty:
+        return pd.DataFrame(columns=["Date", "Value"])
+
+    out = history.copy()
+    if "Date" not in out.columns or "Value" not in out.columns:
+        return pd.DataFrame(columns=["Date", "Value"])
+
+    out["Date"] = pd.to_datetime(out["Date"], errors="coerce", format="mixed")
+    out["Value"] = pd.to_numeric(out["Value"], errors="coerce").replace(
+        [np.inf, -np.inf], np.nan
+    )
+    return (
+        out.dropna(subset=["Date", "Value"])
+        .sort_values("Date", kind="stable")
+        .drop_duplicates(subset=["Date"], keep="last")
+        .reset_index(drop=True)
+    )
+
+
+def build_nfci_sparkline(history, months=12):
+    """Compact NFCI line for the confirmation strip."""
+    clean = _clean_history_frame(history)
+    if not clean.empty:
+        cutoff = clean["Date"].max() - pd.DateOffset(months=months)
+        recent = clean.loc[clean["Date"] >= cutoff].copy()
+        if not recent.empty:
+            clean = recent
+
+    fig = go.Figure()
+    if not clean.empty:
+        fig.add_trace(go.Scatter(
+            x=clean["Date"],
+            y=clean["Value"],
+            mode="lines",
+            line={"width": 3, "color": "#60a5fa"},
+            hovertemplate="%{x|%Y-%m-%d}<br>NFCI %{y:+.3f}<extra></extra>",
+        ))
+
+    fig.add_hline(y=0, line_dash="dot", line_color="#64748b", opacity=0.8)
+    fig.update_layout(
+        height=118,
+        margin=dict(l=8, r=8, t=8, b=8),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        showlegend=False,
+        font={"color": "#e5e7eb"},
+        xaxis={"visible": False, "type": "date"},
+        yaxis={"visible": False, "fixedrange": True},
+    )
+    return fig
+
+
+def build_nfci_history(history):
+    """Full NFCI history with the long-run average reference at zero."""
+    clean = _clean_history_frame(history)
+    fig = go.Figure()
+    if not clean.empty:
+        fig.add_trace(go.Scatter(
+            x=clean["Date"],
+            y=clean["Value"],
+            mode="lines",
+            name="NFCI",
+            line={"width": 2.5, "color": "#60a5fa"},
+            fill="tozeroy",
+            fillcolor="rgba(96,165,250,0.12)",
+            hovertemplate="%{x|%Y-%m-%d}<br>NFCI %{y:+.3f}<extra></extra>",
+        ))
+    else:
+        fig.add_annotation(
+            text="NFCI history is unavailable",
+            x=0.5,
+            y=0.5,
+            xref="paper",
+            yref="paper",
+            showarrow=False,
+            font={"color": "#9ca3af"},
+        )
+
+    fig.add_hline(
+        y=0,
+        line_dash="dot",
+        line_color="#94a3b8",
+        opacity=0.9,
+        annotation_text="Long-run average",
+        annotation_position="top left",
+    )
+    fig.update_layout(
+        title={"text": "National Financial Conditions Index History", "font": {"size": 16}},
+        height=330,
+        margin=dict(l=45, r=15, t=50, b=35),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(17,24,39,0.45)",
+        font={"color": "#e5e7eb"},
+        showlegend=False,
+        xaxis={"title": None, "gridcolor": "#374151", "type": "date"},
+        yaxis={"title": "NFCI", "gridcolor": "#374151", "tickformat": "+.2f"},
+    )
+    return fig
+
+
 def _adaptive_history_range(values, bounds, min_span=20.0, padding_fraction=0.12):
     """Return a readable local range while respecting the metric's full bounds."""
     clean = pd.to_numeric(values, errors="coerce").replace([np.inf, -np.inf], np.nan).dropna()

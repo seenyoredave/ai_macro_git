@@ -201,9 +201,11 @@ def normalize_nfci_liquidity(nfci):
 
 def liquidity_gap(macro_df, fred_data):
     """
-    Liquidity Support Gap.
+    Legacy Liquidity Support Gap diagnostic.
 
-    Measures whether AI risk appetite is outrunning broad financial liquidity.
+    Retained for model comparison, but no longer rendered in the headline Gap
+    Scores section. Measures whether AI risk appetite is outrunning broad
+    financial liquidity.
 
     Positive = AI risk appetite exceeds liquidity support.
     Negative = liquidity is supportive relative to AI market appetite.

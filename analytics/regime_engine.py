@@ -13,6 +13,10 @@ from analytics.capital_stress_engine import (
 )
 from analytics.development_engine import calculate_ai_development_intensity
 from analytics.hhi_engine import calc_hhi_from_sector_data, normalize_hhi
+from analytics.intermediation_stress_engine import (
+    calculate_intermediation_stress,
+    normalize_intermediation_stress_history,
+)
 from analytics.power_engine import (
     calculate_power_stress,
     normalize_power_stress_history,
@@ -23,6 +27,7 @@ AEI_VERSION = "2.0"
 ADI_VERSION = "1.0"
 POWER_STRESS_VERSION = "3.0"
 CAPITAL_STRESS_VERSION = "2.0"
+INTERMEDIATION_STRESS_VERSION = "2.0"
 PRESSURE_VERSION = "2.0"
 
 
@@ -198,10 +203,12 @@ def build_regime_metrics(
         power_result=power_result,
     )
     capital_result = calculate_capital_stress(sector_data or {})
+    intermediation_result = calculate_intermediation_stress(fred_data or {})
 
     current_adi = development_result.get("score", np.nan)
     current_power = power_result.get("score", np.nan)
     current_capital = capital_result.get("score", np.nan)
+    current_intermediation = intermediation_result.get("score", np.nan)
 
     aei, aei_source, aei_date = _resolve_with_archive(
         current_aei,
@@ -230,6 +237,14 @@ def build_regime_metrics(
         "Capital Stress",
         version_column="Capital Stress Version",
         required_version=CAPITAL_STRESS_VERSION,
+    )
+    intermediation_history = normalize_intermediation_stress_history(macro_history)
+    intermediation_stress, intermediation_source, intermediation_date = _resolve_with_archive(
+        current_intermediation,
+        intermediation_history,
+        "Credit Intermediation Stress",
+        version_column="Credit Intermediation Stress Version",
+        required_version=INTERMEDIATION_STRESS_VERSION,
     )
 
     speculation_gap = (
@@ -270,15 +285,21 @@ def build_regime_metrics(
         "Capital Stress Current": current_capital,
         "Capital Stress Source": capital_source,
         "Capital Stress Fallback Date": capital_date,
+        "Credit Intermediation Stress": intermediation_stress,
+        "Credit Intermediation Stress Current": current_intermediation,
+        "Credit Intermediation Stress Source": intermediation_source,
+        "Credit Intermediation Stress Fallback Date": intermediation_date,
         "Concentration HHI": normalize_hhi(raw_hhi),
         "Raw AI HHI": raw_hhi,
         "Avg Sector Pressure": avg_pressure,
         "ADI Components": development_result,
         "Power Stress Components": power_result,
         "Capital Stress Components": capital_result,
+        "Credit Intermediation Stress Components": intermediation_result,
         "AEI Version": AEI_VERSION,
         "ADI Version": ADI_VERSION,
         "Power Stress Version": POWER_STRESS_VERSION,
         "Capital Stress Version": CAPITAL_STRESS_VERSION,
+        "Credit Intermediation Stress Version": INTERMEDIATION_STRESS_VERSION,
         "Pressure Version": PRESSURE_VERSION,
     }
