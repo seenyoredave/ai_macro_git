@@ -24,10 +24,6 @@ INDPRO_HISTORY_PATH = PROJECT_ROOT / "data" / "industrial_production_history.csv
 INDPRO_PUBLIC_CSV_URL = (
     "https://fred.stlouisfed.org/graph/fredgraph.csv?id=INDPRO"
 )
-NFCI_PUBLIC_CSV_URL = (
-    "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI"
-)
-
 
 def _optional_streamlit_secret(name, default=None):
     """Read an optional Streamlit secret without requiring secrets.toml.
@@ -47,82 +43,6 @@ def _optional_streamlit_secret(name, default=None):
 def get_fred_client():
     key = os.getenv("FRED_API_KEY") or _optional_streamlit_secret("FRED_API_KEY")
     return Fred(api_key=key) if key else None
-
-
-def _normalize_nfci_history(frame):
-    """Return a clean Date/Value NFCI history frame."""
-    if frame is None or frame.empty:
-        return pd.DataFrame(columns=["Date", "Value"])
-
-    date_column = next(
-        (column for column in ["Date", "DATE", "Observation Date", "date"] if column in frame.columns),
-        None,
-    )
-    value_column = next(
-        (column for column in ["Value", "NFCI", "Financial Conditions NFCI", "VALUE"] if column in frame.columns),
-        None,
-    )
-    if date_column is None or value_column is None:
-        return pd.DataFrame(columns=["Date", "Value"])
-
-    out = frame[[date_column, value_column]].copy()
-    out.columns = ["Date", "Value"]
-    out["Date"] = pd.to_datetime(out["Date"], errors="coerce", format="mixed")
-    out["Value"] = pd.to_numeric(out["Value"], errors="coerce").replace(
-        [np.inf, -np.inf], np.nan
-    )
-    out = out.dropna(subset=["Date", "Value"]).sort_values("Date", kind="stable")
-    return out.drop_duplicates(subset=["Date"], keep="last").reset_index(drop=True)
-
-
-def _archived_nfci_history():
-    archive = load_fred_history()
-    if archive is None or archive.empty or "Financial Conditions NFCI" not in archive.columns:
-        return pd.DataFrame(columns=["Date", "Value"])
-
-    date_column = (
-        "Financial Conditions NFCI Date"
-        if "Financial Conditions NFCI Date" in archive.columns
-        else "Date"
-    )
-    frame = archive[[date_column, "Financial Conditions NFCI"]].copy()
-    frame.columns = ["Date", "Value"]
-    return _normalize_nfci_history(frame)
-
-
-@st.cache_data(ttl=86400)
-def load_nfci_history():
-    """Load the weekly NFCI history for confirmation-strip charts.
-
-    Resolution order is authenticated FRED, the public FRED CSV endpoint,
-    and finally the locally retained FRED archive. The return contract is a
-    simple Date/Value dataframe so rendering code remains source-agnostic.
-    """
-    fred = get_fred_client()
-    if fred is not None:
-        try:
-            series = fred.get_series(fred_indicators.FRED_INDICATORS["Financial Conditions NFCI"])
-            frame = pd.DataFrame({"Date": series.index, "Value": series.to_numpy()})
-            normalized = _normalize_nfci_history(frame)
-            if not normalized.empty:
-                normalized.attrs["source"] = "FRED Live"
-                return normalized
-        except Exception as exc:
-            debug_print(f"FRED failed: NFCI history -> {exc}")
-
-    try:
-        response = requests.get(NFCI_PUBLIC_CSV_URL, timeout=20)
-        response.raise_for_status()
-        normalized = _normalize_nfci_history(pd.read_csv(StringIO(response.text)))
-        if not normalized.empty:
-            normalized.attrs["source"] = "FRED Public CSV"
-            return normalized
-    except Exception as exc:
-        debug_print(f"Public NFCI history load failed -> {exc}")
-
-    archived = _archived_nfci_history()
-    archived.attrs["source"] = "FRED Archive" if not archived.empty else "Unavailable"
-    return archived
 
 
 def _row_to_fred_payload(row, source):

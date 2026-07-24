@@ -10,7 +10,8 @@ from analytics.regime_engine import build_regime_metrics
 
 from benchmarks.benchmark_service import get_benchmark_metrics
 
-from loaders.fred_loader import load_fred, load_nfci_history
+from loaders.fred_loader import load_fred
+from loaders.nfci_loader import load_nfci_history
 from loaders.construction_loader import load_data_center_construction
 from loaders.market_loader import load_market_universe
 from loaders.edgar_loader import build_edgar_archive_snapshot
