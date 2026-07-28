@@ -37,6 +37,6 @@ FACTOR_HELP = {
 
 FACTOR_DISPLAY_NAMES = {
     "forward_ebit_yield_discount": "Forward EBIT-Yield Valuation",
-    "relative_performance": "Relative Performance",
+    "relative_performance": "1Y Relative Return",
     "market_breadth": "Market Breadth",
 }

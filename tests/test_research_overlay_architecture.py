@@ -1,0 +1,221 @@
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_research_overlay_keeps_four_primary_tabs():
+    source = (ROOT / "ai_macro.py").read_text()
+    assert '["AI MACRO", "FINANCE", "SECTORS", "EVIDENCE"]' in source
+
+
+def test_ai_macro_is_the_only_streamlit_entrypoint():
+    assert (ROOT / "ai_macro.py").is_file()
+    assert not (ROOT / "ai_macro_research_overlay.py").exists()
+    source = (ROOT / "ai_macro.py").read_text()
+    assert "Primary Streamlit entry point" in source
+    assert "Alternative presentation layer" not in source
+
+
+def test_research_overlay_retains_existing_products():
+    source = (ROOT / "research_overlay" / "renderers.py").read_text()
+    required_products = [
+        "AI Equity Index",
+        "AI Development Intensity",
+        "Power Stress Index",
+        "Power Capacity Gap",
+        "Concentration HHI",
+        "Speculation Gap",
+        "Economic Validation Gap",
+        "AI–Industrial Growth Gap",
+        "Internal Funding Coverage",
+        "Cash Reserve Coverage",
+        "Debt Financing Pulse",
+        "Forward Commitment Load",
+        "Capital Stress",
+        "Credit Intermediation Stress",
+        "Financial Conditions Confirmation",
+        "Most Crowded",
+        "Fastest Mover",
+        "Biggest Risk",
+        "Loss-Making EV Share",
+    ]
+    for product in required_products:
+        assert product in source
+
+
+def test_statline_uses_native_streamlit_components():
+    source = (ROOT / "research_overlay" / "components.py").read_text()
+    statline = source.split("def render_statline", 1)[1].split("def render_panel_heading", 1)[0]
+    assert "st.columns" in statline
+    assert "st.container(key=key)" in statline
+    assert "key_prefix: str" in statline
+    assert "inspect.currentframe" not in statline
+    assert "caller.f_code.co_filename" not in statline
+    assert "hashlib.sha1" not in statline
+    assert 'key = f"statline-{namespace}-{index}"' in statline
+    assert "rm-statline" not in statline
+
+
+def test_plotly_overlay_does_not_serialize_empty_titles():
+    source = (ROOT / "research_overlay" / "visuals.py").read_text()
+    assert "fig.update_layout(title=None)" not in source
+    assert 'fig.layout.pop("title", None)' in source
+
+
+def test_sector_tab_revision_is_structurally_present():
+    source = (ROOT / "research_overlay" / "renderers.py").read_text()
+    assert "AEI leader" in source
+    assert '"Earnings Support"' in source
+    assert '"Speculative Load"' in source
+    assert 'with st.expander("Sector matrix", expanded=False)' in source
+    assert 'Sector equity conditions, trading pressure, factor structure, and constituent fundamentals.' in source
+    assert source.index('render_ticker_controls(selected)') < source.index('with st.expander("Factor and pressure data", expanded=False)')
+
+
+def test_company_table_places_fundamentals_before_beta_and_weights():
+    company_block = (ROOT / "research_overlay" / "tables.py").read_text()
+    expected_order = [
+        '"1Y Return"',
+        '"Market Cap"',
+        '"Revenue"',
+        '"Revenue Growth"',
+        '"CapEx"',
+        '"CapEx Growth"',
+        '"Beta"',
+        '"Basket Tier"',
+        '"Basket Weight"',
+        '"AI Weight"',
+    ]
+    positions = [company_block.index(item) for item in expected_order]
+    assert positions == sorted(positions)
+
+
+def test_sector_valuation_separates_profitable_multiple_from_loss_making_ev_share():
+    valuation_source = (ROOT / "analytics" / "valuation.py").read_text()
+    engine_source = (ROOT / "analytics" / "sector_engine.py").read_text()
+    assert "aggregate_profitable_forward_ev_ebit" in valuation_source
+    assert "profitable_ev / profitable_ebit" in valuation_source
+    assert "loss_making_ev / valid_ev" in valuation_source
+    assert "aggregate_profitable_forward_ev_ebit" in engine_source
+    assert '"Loss-Making EV Share"' in engine_source
+
+
+def test_sector_evidence_includes_new_analytical_products():
+    source = (ROOT / "config" / "metric_definitions.py").read_text()
+    assert '"Earnings Support"' in source
+    assert '"Speculative Load"' in source
+    assert '"Forward EV/EBIT"' in source
+    assert '"Loss-Making EV Share"' in source
+
+
+def test_all_statline_calls_use_explicit_namespaces():
+    source = (ROOT / "research_overlay" / "renderers.py").read_text()
+    assert 'key_prefix="macro-current-divergence-primary"' in source
+    assert 'key_prefix="macro-current-divergence-context"' in source
+    assert 'key_prefix="finance-funding-cohort-totals"' in source
+    assert 'key_prefix=f"finance-stress-' in source
+    assert "title.lower().replace(' ', '-')" in source
+    assert 'key_prefix="finance-nfci-confirmation"' in source
+    assert 'key_prefix="sector-dossier-summary"' in source
+    assert 'key_prefix="sector-cross-state"' in source
+
+
+def test_finance_tab_cleanup_contract_is_present():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+    theme = (ROOT / "research_overlay" / "theme.py").read_text()
+    assert '"Financial market liquidity, exposure, and credit availability."' in renderer
+    assert 'render_section("System confirmation"' not in renderer
+    assert '("Source", "Chicago Fed NFCI", "updated every Wednesday at 8:30am ET")' in renderer
+    assert 'funding_history(history, years=10)' in renderer
+    assert 'years=10' in renderer
+    assert '.modebar {' not in theme
+    assert 'stElementToolbar' not in theme
+    assert 'Plot controls are intentionally suppressed' not in theme
+
+
+def test_finance_plot_boxes_keep_plotly_controls_but_drop_redundant_header_meta():
+    source = (ROOT / "research_overlay" / "renderers.py").read_text()
+    finance_block = source.split("def _render_funding_section", 1)[1].split("def _assessment_stats", 1)[0]
+    assert 'config={"displayModeBar": True, "responsive": True}' in finance_block
+    assert 'render_panel_heading("Funding diagnostics history")' in finance_block
+    assert 'render_panel_heading(title)' in finance_block
+    assert 'render_panel_heading("Financial Conditions Confirmation")' in finance_block
+    assert "velocity {" not in finance_block
+    assert "Chicago Fed NFCI · independent confirmation" not in finance_block
+
+
+def test_nfci_and_anfci_share_one_plot_without_promoting_anfci_to_a_card():
+    source = (ROOT / "research_overlay" / "renderers.py").read_text()
+    visuals = (ROOT / "research_overlay" / "visuals.py").read_text()
+    assert 'financial_conditions_history(snapshot.get("history"), height=275)' in source
+    assert '("ANFCI",' not in source
+    assert '("NFCI/ANFCI", paired_value' in source
+    assert 'name="NFCI"' in visuals
+    assert 'name="ANFCI"' in visuals
+    assert '"dash": "dash"' in visuals
+
+
+def test_ai_macro_cleanup_contract_is_present():
+    source = (ROOT / "research_overlay" / "renderers.py").read_text()
+    assert '"Equity trends, observable deployment, power utilization, and validation gaps."' in source
+    assert 'render_section("Gap Measures", "Approximations of divergence from broader economic trends.")' in source
+    assert '"Expectations and development"' not in source
+    assert 'dual_history(' not in source
+    assert 'render_section("Component evidence", "Structural decomposition of top-level AI economy metrics.")' in source
+    assert 'chart_col, measures_col = st.columns([1.05, 1.25])' in source
+
+
+def test_hhi_component_evidence_is_rendered_as_an_additive_breakdown():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+    visuals = (ROOT / "research_overlay" / "visuals.py").read_text()
+    hhi_engine = (ROOT / "analytics" / "hhi_engine.py").read_text()
+    assert 'render_panel_heading("Concentration contributors"' in renderer
+    assert 'hhi_component_chart(hhi_breakdown)' in renderer
+    assert 'def hhi_component_breakdown' in hhi_engine
+    assert 'def hhi_component_chart' in visuals
+
+
+def test_platform_title_replaces_station_title():
+    app = (ROOT / "ai_macro.py").read_text()
+    assert 'AI Economic Research Platform' in app
+    assert 'AI Economic Research Station' not in app
+
+
+def test_power_capacity_gap_is_the_fourth_macro_gap_without_replacing_power_stress():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+    engine = (ROOT / "analytics" / "power_capacity_gap.py").read_text()
+    definitions = (ROOT / "config" / "metric_definitions.py").read_text()
+    assert '"Power Capacity Gap": _value(regime_metrics, "Power Capacity Gap")' in renderer
+    assert '("Power Capacity", fmt_number(gaps["Power Capacity Gap"]' in renderer
+    assert '"Power Stress Index"' in renderer
+    assert 'DEPLOYMENT_PRESSURE_WEIGHTS' in engine
+    assert 'POWER_RESPONSE_WEIGHTS' in engine
+    assert 'national response proxy' in definitions
+
+
+def test_power_capacity_gap_inputs_have_persisted_fallbacks():
+    construction = (ROOT / "loaders" / "construction_loader.py").read_text()
+    fred = (ROOT / "loaders" / "fred_loader.py").read_text()
+    assert "Census Local History" in construction
+    assert "_load_local_construction_history" in construction
+    assert "_rows_to_fred_payload" in fred
+    assert '_rows_to_fred_payload(current_week, "FRED Archive")' in fred
+
+
+def test_gap_scale_note_is_attached_to_chart_column():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+    assert 'render_panel_heading("Current divergence")' in renderer
+    assert 'render_panel_heading("", "Centered -100 to +100")' in renderer
+
+
+def test_developer_tools_header_includes_right_aligned_version_and_divider():
+    app = (ROOT / "ai_macro.py").read_text()
+    theme = (ROOT / "research_overlay" / "theme.py").read_text()
+    assert 'APP_VERSION = "v3.14"' in app
+    assert 'class="rm-developer-tools-header"' in app
+    assert 'class="rm-developer-tools-version"' in app
+    assert 'class="rm-developer-tools-divider"' in app
+    assert 'justify-content: space-between' in theme
+    assert '.rm-developer-tools-divider' in theme
+    assert 'border-top: 1px solid var(--rm-border)' in theme

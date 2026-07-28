@@ -99,6 +99,45 @@ def _persist_construction_history(df: pd.DataFrame) -> None:
     temp.replace(CONSTRUCTION_HISTORY_PATH)
 
 
+def _load_local_construction_history() -> pd.DataFrame | None:
+    """Return the persisted Census series when the live workbook is unavailable."""
+    if (
+        not CONSTRUCTION_HISTORY_PATH.exists()
+        or CONSTRUCTION_HISTORY_PATH.stat().st_size == 0
+    ):
+        return None
+
+    try:
+        frame = pd.read_csv(CONSTRUCTION_HISTORY_PATH)
+    except Exception as exc:
+        debug_print(f"Local data-center construction history load failed -> {exc}")
+        return None
+
+    required = {
+        "Observation Date",
+        "Data Center Construction",
+        "Private Nonresidential Construction",
+    }
+    if not required.issubset(frame.columns):
+        return None
+
+    frame = frame[list(required)].copy()
+    frame["Observation Date"] = pd.to_datetime(
+        frame["Observation Date"], errors="coerce"
+    )
+    frame["Data Center Construction"] = pd.to_numeric(
+        frame["Data Center Construction"], errors="coerce"
+    )
+    frame["Private Nonresidential Construction"] = pd.to_numeric(
+        frame["Private Nonresidential Construction"], errors="coerce"
+    )
+    frame = frame.dropna(
+        subset=["Observation Date", "Data Center Construction"]
+    ).sort_values("Observation Date")
+    frame = frame.drop_duplicates(subset=["Observation Date"], keep="last")
+    return frame if not frame.empty else None
+
+
 def _record_construction_availability(latest_observation_date) -> None:
     """Record when a Census observation first became available to this app."""
     observation = pd.to_datetime(latest_observation_date, errors="coerce")
@@ -175,8 +214,9 @@ def summarize_data_center_construction(df: pd.DataFrame) -> dict:
 def load_data_center_construction() -> dict:
     """Return latest data-center construction value and YoY growth.
 
-    Failure is represented as missing data. ADI's 3-of-4 coverage rule decides
-    whether the wider index can still be constituted.
+    The persisted Census series is used when the live workbook is temporarily
+    unavailable. Missing data is returned only when neither source can satisfy
+    the construction contract.
     """
     try:
         response = requests.get(CENSUS_PRIVATE_SA_URL, timeout=30)
@@ -188,10 +228,15 @@ def load_data_center_construction() -> dict:
         return summarize_data_center_construction(parsed)
     except Exception as exc:
         debug_print(f"Census data-center construction load failed -> {exc}")
+        local = _load_local_construction_history()
+        if local is not None and not local.empty:
+            result = summarize_data_center_construction(local)
+            result["source"] = "Census Local History"
+            return result
         return {
             "value": np.nan,
             "date": None,
             "yoy_growth": np.nan,
             "share_private_nonresidential": np.nan,
-            "source": "Census Live Failed",
+            "source": "Census Unavailable",
         }

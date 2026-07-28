@@ -70,6 +70,45 @@ def _row_to_fred_payload(row, source):
     return data
 
 
+def _rows_to_fred_payload(rows, source):
+    """Build a field-wise latest payload from a sparse FRED archive slice."""
+    if rows is None or rows.empty:
+        return {}
+
+    working = rows.copy()
+    if "Date" in working.columns:
+        working["_archive_date"] = pd.to_datetime(
+            working["Date"], errors="coerce", format="mixed"
+        )
+        working = working.sort_values("_archive_date", kind="stable")
+
+    data = {}
+    for name in fred_indicators.all_indicator_names():
+        if name not in working.columns:
+            data[name] = {"value": np.nan, "date": None, "source": source}
+            continue
+
+        numeric = pd.to_numeric(working[name], errors="coerce")
+        valid = numeric.notna() & np.isfinite(numeric)
+        if not valid.any():
+            data[name] = {"value": np.nan, "date": None, "source": source}
+            continue
+
+        latest_index = working.loc[valid].index[-1]
+        row = working.loc[latest_index]
+        obs_date = row.get(f"{name} Date", None)
+        if obs_date is None or str(obs_date).strip() == "" or str(obs_date).lower() == "nan":
+            obs_date = row.get("Date", None)
+
+        data[name] = {
+            "value": float(numeric.loc[latest_index]),
+            "date": obs_date,
+            "source": source,
+        }
+
+    return data
+
+
 def _payload_has_required_values(payload, required):
     if not payload:
         return False
@@ -103,7 +142,7 @@ def _latest_weekly_fred_archive():
     if row is None:
         return None
 
-    payload = _row_to_fred_payload(row, "FRED Archive")
+    payload = _rows_to_fred_payload(current_week, "FRED Archive")
 
     # A pre-Power Stress archive cannot satisfy the current engine contract.
     if not _payload_has_required_values(
@@ -126,7 +165,7 @@ def _latest_fred_archive_fallback():
     if row is None:
         return None
 
-    return _row_to_fred_payload(row, "FRED Archive Fallback")
+    return _rows_to_fred_payload(df, "FRED Archive Fallback")
 
 
 def _year_over_year_growth(series):

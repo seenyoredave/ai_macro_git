@@ -11,7 +11,7 @@ def test_aei_history_starts_on_requested_date_without_revision_marker():
         {
             "Date": ["2026-06-01", "2026-06-14", "2026-06-20", "2026-07-01"],
             "AI Equity Index": [40.0, 42.0, 44.0, 50.0],
-            "AEI Version": ["2.0", "2.0", "2.0", "3.0"],
+            "AEI Version": ["2.0", "2.0", "2.0", "3.1"],
         }
     )
 
@@ -22,7 +22,7 @@ def test_aei_history_starts_on_requested_date_without_revision_marker():
     assert trend["revision_label"] is None
     assert trend["current"] == 52.0
     assert "AEI 2.0" in trend["history_note"]
-    assert "AEI 3.0" in trend["history_note"]
+    assert "AEI 3.1" in trend["history_note"]
 
 
 def test_metric_card_and_chart_helpers_are_individually_defined():
@@ -30,11 +30,12 @@ def test_metric_card_and_chart_helpers_are_individually_defined():
         "Speculation Gap",
         "Economic Validation Gap",
         "AI-Industrial Growth Gap",
+        "Power Capacity Gap",
         "Most Crowded",
         "Fastest Mover",
         "Biggest Risk",
-        "AI Sector Positioning Map",
-        "AI Sector Rotation Matrix",
+        "Earnings Support",
+        "Speculative Load",
     ]
 
     for key in helper_keys:
@@ -53,12 +54,12 @@ def test_section_titles_have_no_helpers_and_chart_subtitles_do():
     assert 'st.subheader("Current Sector Assessment", help=' not in dashboard_source
 
     assert (
-        'st.subheader("AI Sector Positioning Map", '
-        'help=metric_help("AI Sector Positioning Map"))'
+        'st.subheader("Earnings Support", '
+        'help=metric_help("Earnings Support"))'
         in dashboard_source
     )
     assert (
-        'st.subheader("AI Sector Rotation Matrix", '
-        'help=metric_help("AI Sector Rotation Matrix"))'
+        'st.subheader("Speculative Load", '
+        'help=metric_help("Speculative Load"))'
         in dashboard_source
     )

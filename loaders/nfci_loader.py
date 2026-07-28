@@ -14,10 +14,13 @@ from config.debug_config import debug_print
 
 
 NFCI_SERIES_ID = "NFCI"
+ANFCI_SERIES_ID = "ANFCI"
 NFCI_ARCHIVE_COLUMN = "Financial Conditions NFCI"
 NFCI_ARCHIVE_DATE_COLUMN = "Financial Conditions NFCI Date"
+ANFCI_ARCHIVE_COLUMN = "Adjusted Financial Conditions ANFCI"
+ANFCI_ARCHIVE_DATE_COLUMN = "Adjusted Financial Conditions ANFCI Date"
 NFCI_PUBLIC_CSV_URL = (
-    "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI"
+    "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI,ANFCI"
 )
 
 
@@ -37,19 +40,25 @@ def _get_fred_client():
 
 
 def _normalize_nfci_history(frame: pd.DataFrame | None) -> pd.DataFrame:
-    """Return a clean Date/Value NFCI history frame."""
+    """Return a clean Date/Value/ANFCI financial-conditions history frame.
+
+    ``Value`` remains the NFCI column for backward compatibility with the
+    existing snapshot and chart helpers. ANFCI is retained as an optional
+    comparator and never replaces the headline NFCI reading.
+    """
+    columns = ["Date", "Value", "ANFCI"]
     if frame is None or frame.empty:
-        return pd.DataFrame(columns=["Date", "Value"])
+        return pd.DataFrame(columns=columns)
 
     date_column = next(
         (
             column
-            for column in ["Date", "DATE", "Observation Date", "date"]
+            for column in ["Date", "DATE", "observation_date", "Observation Date", "date"]
             if column in frame.columns
         ),
         None,
     )
-    value_column = next(
+    nfci_column = next(
         (
             column
             for column in ["Value", "NFCI", NFCI_ARCHIVE_COLUMN, "VALUE"]
@@ -57,24 +66,42 @@ def _normalize_nfci_history(frame: pd.DataFrame | None) -> pd.DataFrame:
         ),
         None,
     )
-    if date_column is None or value_column is None:
-        return pd.DataFrame(columns=["Date", "Value"])
-
-    out = frame[[date_column, value_column]].copy()
-    out.columns = ["Date", "Value"]
-    out["Date"] = pd.to_datetime(out["Date"], errors="coerce", format="mixed")
-    out["Value"] = pd.to_numeric(out["Value"], errors="coerce").replace(
-        [np.inf, -np.inf], np.nan
+    anfci_column = next(
+        (
+            column
+            for column in ["ANFCI", ANFCI_ARCHIVE_COLUMN]
+            if column in frame.columns
+        ),
+        None,
     )
+    if date_column is None or nfci_column is None:
+        return pd.DataFrame(columns=columns)
+
+    selected = [date_column, nfci_column]
+    if anfci_column is not None and anfci_column not in selected:
+        selected.append(anfci_column)
+    out = frame[selected].copy()
+    rename = {date_column: "Date", nfci_column: "Value"}
+    if anfci_column is not None:
+        rename[anfci_column] = "ANFCI"
+    out = out.rename(columns=rename)
+    if "ANFCI" not in out.columns:
+        out["ANFCI"] = np.nan
+
+    out["Date"] = pd.to_datetime(out["Date"], errors="coerce", format="mixed")
+    for column in ["Value", "ANFCI"]:
+        out[column] = pd.to_numeric(out[column], errors="coerce").replace(
+            [np.inf, -np.inf], np.nan
+        )
     out = out.dropna(subset=["Date", "Value"]).sort_values("Date", kind="stable")
-    return out.drop_duplicates(subset=["Date"], keep="last").reset_index(drop=True)
+    return out.drop_duplicates(subset=["Date"], keep="last")[columns].reset_index(drop=True)
 
 
 def _load_archived_nfci_history() -> pd.DataFrame:
-    """Read NFCI history from the retained FRED archive."""
+    """Read NFCI and optional ANFCI history from the retained FRED archive."""
     archive = load_fred_history()
     if archive is None or archive.empty or NFCI_ARCHIVE_COLUMN not in archive.columns:
-        return pd.DataFrame(columns=["Date", "Value"])
+        return pd.DataFrame(columns=["Date", "Value", "ANFCI"])
 
     date_column = (
         NFCI_ARCHIVE_DATE_COLUMN
@@ -82,31 +109,42 @@ def _load_archived_nfci_history() -> pd.DataFrame:
         else "Date"
     )
     if date_column not in archive.columns:
-        return pd.DataFrame(columns=["Date", "Value"])
+        return pd.DataFrame(columns=["Date", "Value", "ANFCI"])
 
-    frame = archive[[date_column, NFCI_ARCHIVE_COLUMN]].copy()
-    frame.columns = ["Date", "Value"]
+    columns = [date_column, NFCI_ARCHIVE_COLUMN]
+    if ANFCI_ARCHIVE_COLUMN in archive.columns:
+        columns.append(ANFCI_ARCHIVE_COLUMN)
+    frame = archive[columns].copy()
+    frame = frame.rename(
+        columns={
+            date_column: "Date",
+            NFCI_ARCHIVE_COLUMN: "Value",
+            ANFCI_ARCHIVE_COLUMN: "ANFCI",
+        }
+    )
     return _normalize_nfci_history(frame)
 
 
 @st.cache_data(ttl=86400)
 def load_nfci_history() -> pd.DataFrame:
-    """Load weekly NFCI history from live, public, or archived sources.
+    """Load weekly NFCI and ANFCI history from live, public, or archived sources.
 
-    NFCI is isolated from the broader FRED loader so its chart history cannot
+    The financial-conditions pair is isolated from the broader FRED loader so its chart history cannot
     interfere with the dashboard's primary macro-data load path.
     """
     fred = _get_fred_client()
     if fred is not None:
         try:
-            series = fred.get_series(NFCI_SERIES_ID)
-            frame = pd.DataFrame({"Date": series.index, "Value": series.to_numpy()})
+            nfci = fred.get_series(NFCI_SERIES_ID).rename("Value")
+            anfci = fred.get_series(ANFCI_SERIES_ID).rename("ANFCI")
+            frame = pd.concat([nfci, anfci], axis=1).reset_index()
+            frame = frame.rename(columns={frame.columns[0]: "Date"})
             normalized = _normalize_nfci_history(frame)
             if not normalized.empty:
                 normalized.attrs["source"] = "FRED Live"
                 return normalized
         except Exception as exc:
-            debug_print(f"FRED failed: NFCI history -> {exc}")
+            debug_print(f"FRED failed: NFCI/ANFCI history -> {exc}")
 
     try:
         response = requests.get(NFCI_PUBLIC_CSV_URL, timeout=20)

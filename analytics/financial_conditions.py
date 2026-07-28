@@ -19,23 +19,28 @@ NFCI_KEYS = [
 
 
 def clean_nfci_history(history):
+    columns = ["Date", "Value", "ANFCI"]
     if history is None or not isinstance(history, pd.DataFrame) or history.empty:
-        return pd.DataFrame(columns=["Date", "Value"])
+        return pd.DataFrame(columns=columns)
     if "Date" not in history.columns or "Value" not in history.columns:
-        return pd.DataFrame(columns=["Date", "Value"])
+        return pd.DataFrame(columns=columns)
 
-    clean = history[["Date", "Value"]].copy()
+    selected = ["Date", "Value"] + (["ANFCI"] if "ANFCI" in history.columns else [])
+    clean = history[selected].copy()
+    if "ANFCI" not in clean.columns:
+        clean["ANFCI"] = np.nan
     clean["Date"] = pd.to_datetime(
         clean["Date"], errors="coerce", format="mixed"
     )
-    clean["Value"] = pd.to_numeric(
-        clean["Value"], errors="coerce"
-    ).replace([np.inf, -np.inf], np.nan)
+    for column in ["Value", "ANFCI"]:
+        clean[column] = pd.to_numeric(
+            clean[column], errors="coerce"
+        ).replace([np.inf, -np.inf], np.nan)
     return (
         clean.dropna(subset=["Date", "Value"])
         .sort_values("Date", kind="stable")
         .drop_duplicates(subset=["Date"], keep="last")
-        .reset_index(drop=True)
+        .reset_index(drop=True)[columns]
     )
 
 
@@ -66,8 +71,17 @@ def nfci_snapshot(fred_data, history):
         if pd.isna(current_date):
             current_date = clean["Date"].max() if not clean.empty else pd.NaT
         if pd.notna(current_date):
+            existing_anfci = np.nan
+            if not clean.empty:
+                same_date = clean.loc[clean["Date"] == current_date, "ANFCI"]
+                if not same_date.empty:
+                    existing_anfci = same_date.iloc[-1]
             current_row = pd.DataFrame(
-                {"Date": [current_date], "Value": [float(current)]}
+                {
+                    "Date": [current_date],
+                    "Value": [float(current)],
+                    "ANFCI": [existing_anfci],
+                }
             )
             clean = clean_nfci_history(
                 pd.concat([clean, current_row], ignore_index=True)
@@ -76,6 +90,12 @@ def nfci_snapshot(fred_data, history):
 
     if not source:
         source = getattr(history, "attrs", {}).get("source", "FRED")
+
+    anfci_value = np.nan
+    if not clean.empty:
+        latest_anfci = clean.dropna(subset=["ANFCI"])
+        if not latest_anfci.empty:
+            anfci_value = float(latest_anfci["ANFCI"].iloc[-1])
 
     delta = np.nan
     if len(clean) >= 2:
@@ -89,6 +109,7 @@ def nfci_snapshot(fred_data, history):
 
     return {
         "value": current,
+        "anfci_value": anfci_value,
         "as_of": as_of,
         "source": source or "FRED",
         "three_month_change": delta,

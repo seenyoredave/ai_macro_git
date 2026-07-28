@@ -330,9 +330,17 @@ def select_current_sector_assessment(
 
     if movement_df is not None and not movement_df.empty:
         movement_lookup = movement_df.set_index("Sector")["Abs Sector Movement"]
+        delta_score_lookup = movement_df.set_index("Sector")["Delta Sector Score"]
+        delta_pressure_lookup = movement_df.set_index("Sector")["Delta Pressure"]
         movement_usable = usable.copy()
         movement_usable["_Abs Sector Movement"] = (
             movement_usable["Sector"].map(movement_lookup)
+        )
+        movement_usable["_Delta Sector Score"] = (
+            movement_usable["Sector"].map(delta_score_lookup)
+        )
+        movement_usable["_Delta Pressure"] = (
+            movement_usable["Sector"].map(delta_pressure_lookup)
         )
         movement_usable = movement_usable.dropna(subset=["_Abs Sector Movement"])
 

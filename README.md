@@ -1,4 +1,4 @@
-# AI Macro Dashboard
+# AI Economic Research Platform
 
 ## Purpose
 
@@ -7,6 +7,17 @@ Measure whether AI-related market enthusiasm is supported by observable economic
 Identify divergences, constraints, and financial stresses that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
 
 The dashboard is a personal analytical system, not a trading platform. It describes observable conditions and does not claim to predict the date or proximity of a market correction.
+
+## Dashboard structure
+
+The research interface is organized into four primary tabs:
+
+- **AI Macro:** equity conditions, development intensity, power stress, concentration, and gap metrics
+- **Finance:** deployment funding, Capital Stress, Credit Intermediation Stress, and NFCI confirmation with ANFCI context
+- **Sectors:** sector assessment, positioning, rotation, the consolidated sector table, and dropdown-selected sector detail
+- **Evidence:** purpose, metric definitions, FRED observations, and EDGAR company data
+
+The tab reorganization does not change metric definitions, calculations, gauges, histories, component charts, or the dashboard color system.
 
 ## Design principles
 
@@ -39,9 +50,9 @@ Each sector requires all three factors:
 
 The valuation factor uses aggregate forward EBIT yield:
 
-`sum(positive forward EBIT) / sum(enterprise value)`
+`sum(forward EBIT) / sum(enterprise value)`
 
-A sector requires at least five companies and 60% enterprise-value coverage for that factor.
+A sector requires at least five companies and 60% enterprise-value coverage for that factor. Negative forward EBIT remains valid in the full-sector yield used by AEI. The displayed Forward EV/EBIT product is calculated separately for the profitable cohort as `sum(EV) / sum(forward EBIT)`, while Loss-Making EV Share reports the portion of valid enterprise value with non-positive forward EBIT.
 
 Scale: **0–100**
 
@@ -91,6 +102,25 @@ Company growth uses ratio-of-sums aggregation. Each leg is normalized independen
 - Negative: revenue and broader investment are validating or outpacing deployment.
 
 Scale: **approximately -100 to +100**
+
+
+### Power Capacity Gap
+
+Power Capacity Gap asks whether observable AI deployment pressure is advancing faster than the measured national response of the electric-power system.
+
+`Deployment Pressure = 0.60(Data Center Construction) + 0.40(Capital Deployment)`
+
+`Power-System Response = 0.60(Delivered Power Growth) + 0.40(Installed Capacity Growth)`
+
+`Power Capacity Gap = Deployment Pressure - Power-System Response`
+
+- Positive: deployment pressure is outrunning measured power delivery and capacity growth.
+- Negative: the national power response is advancing faster than deployment pressure.
+- Near zero: deployment and the measured response are broadly aligned.
+
+Both response components are required, so nameplate capacity is not used alone. The result remains a national proxy and does not directly measure regional transmission constraints, interconnection queues, local congestion, or firm-capacity adequacy.
+
+Scale: **-100 to +100**
 
 ### Power Stress Index
 
@@ -151,7 +181,7 @@ The Chicago Fed National Financial Conditions Index is shown directly as an inde
 - Positive NFCI: conditions tighter than the long-run average
 - Three-month change: current direction of travel
 
-NFCI is not blended into Capital Stress or CIS.
+NFCI is not blended into Capital Stress or CIS. ANFCI is shown only as a dashed comparator in the same financial-conditions plot and is not promoted to a separate dashboard product.
 
 ### Concentration HHI
 
@@ -195,6 +225,7 @@ The revised definitions use new version boundaries:
 
 - AEI: 3.0
 - Economic Validation Gap: 2.0
+- Power Capacity Gap: 1.0
 - Capital Stress: 3.0
 - Credit Intermediation Stress: 3.0
 - Trading Pressure: 3.0
@@ -244,6 +275,11 @@ PYTHONPATH=. python -m unittest discover -s tests -v
 
 ## Architecture
 
+- `ai_macro.py`: sole Streamlit execution entry point and application data pipeline
+- `research_overlay/renderers.py`: four-tab research interface orchestration
+- `research_overlay/components.py`: reusable research UI components
+- `research_overlay/visuals.py`: Plotly research figures
+- `research_overlay/theme.py`: platform visual system
 - `loaders/market_prices.py`: price-history calculations
 - `loaders/company_fundamentals.py`: statement parsing and company financial calculations
 - `loaders/market_loader.py`: archive-first market orchestration and source fallback
@@ -255,7 +291,11 @@ PYTHONPATH=. python -m unittest discover -s tests -v
 - `analytics/capital_stress_engine.py`: borrower-side financial stress
 - `analytics/intermediation_stress_engine.py`: bank/nonbank financing stress
 - `archive/archive.py`: atomic archive persistence
-- `helpers/macro_dashboard.py`: main dashboard rendering
+- `helpers/macro_dashboard.py`: shared macro, finance, sector, and evidence render components
+- `helpers/render_ai_macro.py`: AI Macro tab orchestration
+- `helpers/render_finance.py`: Finance tab orchestration
+- `helpers/render_sectors.py`: consolidated sector overview and dropdown-selected detail
+- `helpers/render_evidence.py`: purpose, definitions, and raw-source evidence
 
 ## Capital Stress historical backfill
 

@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 from helpers.visualization import factor_color
+from helpers.dataframe_display import arrow_safe_dataframe
 
 from config.debug_config import debug_print
 from config.debug_config import DEBUG
@@ -52,7 +53,7 @@ def render_basket_tier_smoke_test(df, use_expander=True, expanded=False):
         )
 
         st.dataframe(
-            tier_view,
+            arrow_safe_dataframe(tier_view),
             width="stretch",
             height=350
         )
@@ -191,7 +192,7 @@ def render_leaders_table(sector, df):
         return
 
     st.dataframe(
-        df[available],
+        arrow_safe_dataframe(df[available]),
         width="stretch"
     )
 

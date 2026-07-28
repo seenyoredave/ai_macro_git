@@ -17,6 +17,7 @@ from analytics.sector_assessment import select_current_sector_assessment
 from config.debug_config import DEBUG, debug_print
 from config.metric_definitions import METRIC_DEFINITIONS
 from helpers.gaps import industrial_growth_gap
+from helpers.dataframe_display import arrow_safe_dataframe
 from helpers.labels import (
     adoption_label,
     sector_display_name,
@@ -448,7 +449,7 @@ def _render_equity_and_development(values, trends, regime_metrics):
 
     with st.expander("ADI Component Detail", expanded=False):
         adi_components = (regime_metrics.get("ADI Components", {}) or {}).get("components", {})
-        st.dataframe(_component_table(adi_components), width="stretch", hide_index=True)
+        st.dataframe(arrow_safe_dataframe(_component_table(adi_components)), width="stretch", hide_index=True)
         st.caption("ADI is constituted when at least three of four top-level pillars are valid.")
         if regime_metrics.get("ADI Source") == "Archive Fallback":
             st.caption(
@@ -657,7 +658,7 @@ def _render_capital_stress(values, trend, regime_metrics):
 
     with st.expander("Capital Stress Detail", expanded=False):
         st.dataframe(
-            _capital_component_table(capital_result),
+            arrow_safe_dataframe(_capital_component_table(capital_result)),
             width="stretch",
             hide_index=True,
         )
@@ -742,7 +743,7 @@ def _render_intermediation_stress(values, trend, regime_metrics):
             f"Stress breadth: {elevated} of 4 pillars above neutral"
         )
         st.dataframe(
-            _intermediation_component_table(intermediation_result),
+            arrow_safe_dataframe(_intermediation_component_table(intermediation_result)),
             width="stretch",
             hide_index=True,
         )
@@ -860,6 +861,101 @@ def _render_gap_metrics(values):
     st.markdown("---")
 
 
+def _snapshot_render_inputs(
+    macro_df,
+    fred_data=None,
+    power_stress_trend=None,
+    concentration_trend=None,
+    sector_data=None,
+    regime_metrics=None,
+    *,
+    aei_trend=None,
+    adi_trend=None,
+):
+    """Normalize the shared inputs used by the macro and finance tabs."""
+    fred_data = fred_data or {}
+    sector_data = sector_data or {}
+    regime_metrics = regime_metrics or {}
+    trends = {
+        "aei": aei_trend or {},
+        "adi": adi_trend or {},
+        "power_stress": power_stress_trend or {},
+        "concentration": concentration_trend or {},
+    }
+    values = _snapshot_values(macro_df, fred_data, sector_data, regime_metrics)
+    return fred_data, sector_data, regime_metrics, trends, values
+
+
+def render_ai_macro_snapshot(
+    macro_df,
+    fred_data=None,
+    power_stress_trend=None,
+    concentration_trend=None,
+    sector_data=None,
+    regime_metrics=None,
+    *,
+    aei_trend=None,
+    adi_trend=None,
+):
+    """Render the market, development, constraint, and gap metrics."""
+    fred_data, sector_data, regime_metrics, trends, values = _snapshot_render_inputs(
+        macro_df,
+        fred_data=fred_data,
+        power_stress_trend=power_stress_trend,
+        concentration_trend=concentration_trend,
+        sector_data=sector_data,
+        regime_metrics=regime_metrics,
+        aei_trend=aei_trend,
+        adi_trend=adi_trend,
+    )
+
+    if DEBUG:
+        debug_print("\n=== AI MACRO SNAPSHOT ===")
+        debug_print("AEI:", values["aei"])
+        debug_print("ADI:", values["adi"])
+        debug_print("Speculation Gap:", values["speculation_gap"])
+        debug_print("Power Stress:", values["power_stress"])
+
+    _render_snapshot_heading()
+    _render_equity_and_development(values, trends, regime_metrics)
+    _render_power_and_concentration(values, trends, regime_metrics)
+    st.markdown("---")
+    _render_gap_metrics(values)
+
+
+def render_finance_snapshot(
+    macro_df,
+    fred_data=None,
+    sector_data=None,
+    regime_metrics=None,
+    *,
+    capital_stress_trend=None,
+    intermediation_stress_trend=None,
+    nfci_history=None,
+):
+    """Render funding, borrower stress, lender stress, and financial conditions."""
+    fred_data, sector_data, regime_metrics, _trends, values = _snapshot_render_inputs(
+        macro_df,
+        fred_data=fred_data,
+        sector_data=sector_data,
+        regime_metrics=regime_metrics,
+    )
+
+    if DEBUG:
+        debug_print("\n=== FINANCE SNAPSHOT ===")
+        debug_print("Capital Stress:", values["capital_stress"])
+        debug_print("Credit Intermediation Stress:", values["intermediation_stress"])
+
+    st.subheader("AI Buildout Financing")
+    st.markdown("---")
+    _render_deployment_funding_mix(regime_metrics, sector_data)
+    _render_capital_stress(values, capital_stress_trend or {}, regime_metrics)
+    _render_intermediation_stress(
+        values, intermediation_stress_trend or {}, regime_metrics
+    )
+    _render_financial_conditions_confirmation(fred_data, nfci_history)
+
+
 def render_regime_snapshot(
     macro_df,
     fred_data=None,
@@ -874,41 +970,27 @@ def render_regime_snapshot(
     intermediation_stress_trend=None,
     nfci_history=None,
 ):
-    """Render the macro snapshot from a small set of coherent sections."""
-    fred_data = fred_data or {}
-    sector_data = sector_data or {}
-    regime_metrics = regime_metrics or {}
-    trends = {
-        "aei": aei_trend or {},
-        "adi": adi_trend or {},
-        "power_stress": power_stress_trend or {},
-        "concentration": concentration_trend or {},
-    }
-    values = _snapshot_values(macro_df, fred_data, sector_data, regime_metrics)
-
-    if DEBUG:
-        debug_print("\n=== REGIME SNAPSHOT ===")
-        debug_print("AEI:", values["aei"])
-        debug_print("ADI:", values["adi"])
-        debug_print("Speculation Gap:", values["speculation_gap"])
-        debug_print("Power Stress:", values["power_stress"])
-        debug_print("Capital Stress:", values["capital_stress"])
-        debug_print("Credit Intermediation Stress:", values["intermediation_stress"])
-
-    _render_snapshot_heading()
-    _render_equity_and_development(values, trends, regime_metrics)
-    _render_power_and_concentration(values, trends, regime_metrics)
-    st.markdown("---")
-    st.subheader("AI Buildout Financing")
-    st.markdown("---")
-    _render_deployment_funding_mix(regime_metrics, sector_data)
-    _render_capital_stress(values, capital_stress_trend or {}, regime_metrics)
-    _render_intermediation_stress(
-        values, intermediation_stress_trend or {}, regime_metrics
+    """Backward-compatible full snapshot renderer."""
+    render_ai_macro_snapshot(
+        macro_df=macro_df,
+        fred_data=fred_data,
+        power_stress_trend=power_stress_trend,
+        concentration_trend=concentration_trend,
+        sector_data=sector_data,
+        regime_metrics=regime_metrics,
+        aei_trend=aei_trend,
+        adi_trend=adi_trend,
     )
-    _render_financial_conditions_confirmation(fred_data, nfci_history)
     st.markdown("---")
-    _render_gap_metrics(values)
+    render_finance_snapshot(
+        macro_df=macro_df,
+        fred_data=fred_data,
+        sector_data=sector_data,
+        regime_metrics=regime_metrics,
+        capital_stress_trend=capital_stress_trend,
+        intermediation_stress_trend=intermediation_stress_trend,
+        nfci_history=nfci_history,
+    )
 
 def render_sector_assessment(macro_df, sector_data=None):
     st.subheader("Current Sector Assessment")
@@ -948,22 +1030,23 @@ def render_positioning_charts(macro_df):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("AI Sector Positioning Map", help=metric_help("AI Sector Positioning Map"))
+        st.subheader("Earnings Support", help=metric_help("Earnings Support"))
         chart_box(build_positioning_map(macro_df))
     with col2:
-        st.subheader("AI Sector Rotation Matrix", help=metric_help("AI Sector Rotation Matrix"))
+        st.subheader("Speculative Load", help=metric_help("Speculative Load"))
         chart_box(build_rotation_matrix(macro_df))
 
     st.markdown("---")
 
 
-def render_sector_table(macro_df):
+def render_sector_table(macro_df, *, use_expander=True, expanded=False):
     required = [
         "Sector",
         "Sector Score",
         "Pressure",
         "Avg Return",
         "Forward EV/EBIT",
+        "Loss-Making EV Share",
         "Beta",
     ]
     missing = [col for col in required if col not in macro_df.columns]
@@ -981,11 +1064,18 @@ def render_sector_table(macro_df):
     table["Pressure"] = table["Pressure"].map(fmt_score)
     table["1Y Return"] = table["1Y Return"].map(fmt_percent)
     table["Forward EV/EBIT"] = table["Forward EV/EBIT"].map(fmt_multiple)
+    if "Loss-Making EV Share" in table.columns:
+        table["Loss-Making EV Share"] = table["Loss-Making EV Share"].map(fmt_percent)
     table["Beta"] = table["Beta"].map(fmt_decimal)
 
-    with st.expander("Sector Data", expanded=False):
-        st.dataframe(table, width="stretch", hide_index=True)
+    def render_table():
+        st.dataframe(arrow_safe_dataframe(table), width="stretch", hide_index=True)
 
+    if use_expander:
+        with st.expander("Sector Data", expanded=expanded):
+            render_table()
+    else:
+        render_table()
 
 def render_macro_data(fred_data):
     if not fred_data:
@@ -1003,7 +1093,7 @@ def render_macro_data(fred_data):
         rows.append({"Indicator": indicator, "Value": value, "Date": date})
 
     with st.expander("FRED Data", expanded=False):
-        st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+        st.dataframe(arrow_safe_dataframe(pd.DataFrame(rows)), width="stretch", hide_index=True)
         st.caption("Market data cache: 1 hour | FRED cache: 24 hours")
 
 
@@ -1036,4 +1126,4 @@ def render_edgar_data(sector_data):
         return
 
     with st.expander("EDGAR Data", expanded=False):
-        st.dataframe(pd.concat(rows, ignore_index=True), width="stretch", hide_index=True)
+        st.dataframe(arrow_safe_dataframe(pd.concat(rows, ignore_index=True)), width="stretch", hide_index=True)

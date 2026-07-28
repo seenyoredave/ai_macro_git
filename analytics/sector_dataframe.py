@@ -82,4 +82,19 @@ def resolve_sector_dataframe(raw_data):
             "Volume Activity": resolve_field("Volume Activity", source_data),
         })
    
-    return pd.DataFrame(rows)
+    out = pd.DataFrame(rows)
+    if not out.empty and {"Enterprise Value", "Forward EBIT"}.issubset(out.columns):
+        enterprise_value = pd.to_numeric(out["Enterprise Value"], errors="coerce")
+        forward_ebit = pd.to_numeric(out["Forward EBIT"], errors="coerce")
+        valid = (
+            enterprise_value.notna()
+            & np.isfinite(enterprise_value)
+            & enterprise_value.gt(0)
+            & forward_ebit.notna()
+            & np.isfinite(forward_ebit)
+            & forward_ebit.abs().gt(1e-9)
+        )
+        signed_multiple = (enterprise_value / forward_ebit).where(valid)
+        existing = pd.to_numeric(out.get("Forward EV/EBIT"), errors="coerce")
+        out["Forward EV/EBIT"] = signed_multiple.combine_first(existing)
+    return out

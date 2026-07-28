@@ -6,7 +6,11 @@ import numpy as np
 import pandas as pd
 
 from analytics.regime_engine import cycle_strategy
-from analytics.valuation import aggregate_forward_ebit_yield
+from analytics.valuation import (
+    SECTOR_VALUATION_VERSION,
+    aggregate_forward_ebit_yield,
+    aggregate_profitable_forward_ev_ebit,
+)
 from analytics.scoring import tanh_score, weighted_available_score
 from config.debug_config import DEBUG, debug_print
 from factors.factor_normalization import normalize_factor
@@ -148,7 +152,16 @@ def build_sector_metrics(factor_df, yf_df):
             "Cycle Strategy": cycle_strategy(np.nan),
             "Avg Return": np.nan,
             "Forward EV/EBIT": np.nan,
+            "Forward EV/EBIT Status": "Unavailable",
+            "Sector Valuation Version": SECTOR_VALUATION_VERSION,
             "Forward EBIT Yield": np.nan,
+            "Forward EBIT Company Count": 0,
+            "Forward EBIT Coverage": 0.0,
+            "Forward EV/EBIT Company Count": 0,
+            "Forward EV/EBIT Coverage": 0.0,
+            "Forward EV/EBIT Data Coverage": 0.0,
+            "Loss-Making EV Share": np.nan,
+            "Loss-Making Company Count": 0,
             "Beta": np.nan,
             "Scored Factors": pd.DataFrame(),
             "Pressure Components": pd.DataFrame(),
@@ -166,18 +179,51 @@ def build_sector_metrics(factor_df, yf_df):
     )
     sector_forward_ebit_yield = valuation["yield"]
 
+    cohort_valuation = aggregate_profitable_forward_ev_ebit(
+        yf_df,
+        min_valid_count=5,
+        min_profitable_count=3,
+        min_coverage=0.60,
+    )
+    forward_multiple = cohort_valuation.get("multiple", np.nan)
+    profitable_count = int(cohort_valuation.get("profitable_company_count", 0) or 0)
+    valid_count = int(cohort_valuation.get("valid_company_count", 0) or 0)
+    profitable_ev_share = pd.to_numeric(
+        cohort_valuation.get("profitable_ev_share", np.nan), errors="coerce"
+    )
+    data_coverage = pd.to_numeric(
+        cohort_valuation.get("data_coverage", 0.0), errors="coerce"
+    )
+    loss_making_ev_share = pd.to_numeric(
+        cohort_valuation.get("loss_making_ev_share", np.nan), errors="coerce"
+    )
+    if pd.notna(forward_multiple):
+        valuation_status = (
+            f"Available — profitable-cohort ratio of sums; {profitable_count} profitable "
+            f"companies, {profitable_ev_share * 100:.0f}% of valid EV; "
+            f"{data_coverage * 100:.0f}% forward-EBIT data coverage"
+        )
+    elif valid_count < 5 or data_coverage < 0.60:
+        valuation_status = "Unavailable — insufficient forward-EBIT data coverage"
+    else:
+        valuation_status = "Unavailable — fewer than three profitable companies"
+
     return {
         "Sector Score": sector_score,
         "Sector Pressure": pressure_score,
         "Cycle Strategy": cycle_strategy(sector_score),
         "Avg Return": _mean_column(yf_df, "1Y Return"),
-        "Forward EV/EBIT": (
-            1.0 / sector_forward_ebit_yield
-            if pd.notna(sector_forward_ebit_yield)
-            and sector_forward_ebit_yield > 0
-            else np.nan
-        ),
+        "Forward EV/EBIT": forward_multiple,
+        "Forward EV/EBIT Status": valuation_status,
+        "Sector Valuation Version": SECTOR_VALUATION_VERSION,
         "Forward EBIT Yield": sector_forward_ebit_yield,
+        "Forward EBIT Company Count": valuation.get("company_count", 0),
+        "Forward EBIT Coverage": valuation.get("coverage", 0.0),
+        "Forward EV/EBIT Company Count": cohort_valuation.get("profitable_company_count", 0),
+        "Forward EV/EBIT Coverage": cohort_valuation.get("profitable_ev_share", np.nan),
+        "Forward EV/EBIT Data Coverage": cohort_valuation.get("data_coverage", 0.0),
+        "Loss-Making EV Share": cohort_valuation.get("loss_making_ev_share", np.nan),
+        "Loss-Making Company Count": cohort_valuation.get("loss_making_company_count", 0),
         "Valuation Discount": valuation_discount,
         "Beta": _mean_column(yf_df, "Beta"),
         "Scored Factors": normalized_df,

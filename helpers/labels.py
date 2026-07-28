@@ -53,6 +53,18 @@ def speculation_label(score):
     return "Large Speculation Gap"
 
 
+def power_capacity_gap_label(score):
+    if pd.isna(score):
+        return "No Data"
+    if score < -20:
+        return "Power Response Leading"
+    if score < 20:
+        return "Deployment and Power Aligned"
+    if score < 40:
+        return "Deployment Outpacing Power"
+    return "Large Capacity Gap"
+
+
 def short_regime_label(score):
     if pd.isna(score):
         return "No Data"

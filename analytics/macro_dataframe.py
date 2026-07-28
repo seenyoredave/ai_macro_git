@@ -30,9 +30,9 @@ AEI_HISTORY_START = pd.Timestamp("2026-06-14")
 
 
 def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
-    """Return native AEI-v3 trend statistics with the full archived chart history.
+    """Return native AEI-v3.1 trend statistics with the full archived chart history.
 
-    Values before the first AEI-v3 observation remain explicitly legacy data.
+    Values before the first AEI-v3.1 observation remain explicitly legacy data.
     They are shown for continuity but are not used to calculate current-model
     velocity or acceleration.
     """
@@ -84,6 +84,14 @@ def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
         trend["acceleration"] = calc_acceleration(native_values["Value"])
 
     trend["history"] = history.reset_index(drop=True)
+    # AEI v3.1 starts a clean native calculation series without a chart revision marker.
+    trend.setdefault("revision_date", None)
+    trend.setdefault("revision_label", None)
+    trend.setdefault(
+        "history_note",
+        "Chart history includes AEI 2.0 observations for continuity; "
+        "current velocity and acceleration use AEI 3.1 observations only.",
+    )
 
     return trend
 
@@ -99,6 +107,14 @@ def build_macro_dataframe(sector_metrics):
             "Pressure": metrics.get("Sector Pressure", np.nan),
             "Avg Return": metrics.get("Avg Return", np.nan),
             "Forward EV/EBIT": metrics.get("Forward EV/EBIT", np.nan),
+            "Forward EV/EBIT Status": metrics.get("Forward EV/EBIT Status", ""),
+            "Sector Valuation Version": metrics.get("Sector Valuation Version", ""),
+            "Forward EBIT Yield": metrics.get("Forward EBIT Yield", np.nan),
+            "Forward EBIT Coverage": metrics.get("Forward EBIT Coverage", np.nan),
+            "Forward EV/EBIT Coverage": metrics.get("Forward EV/EBIT Coverage", np.nan),
+            "Forward EV/EBIT Data Coverage": metrics.get("Forward EV/EBIT Data Coverage", np.nan),
+            "Loss-Making EV Share": metrics.get("Loss-Making EV Share", np.nan),
+            "Loss-Making Company Count": metrics.get("Loss-Making Company Count", 0),
             "Beta": metrics.get("Beta", np.nan),
         })
 

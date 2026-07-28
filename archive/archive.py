@@ -207,6 +207,11 @@ def append_macro_history(regime_metrics, fred_data):
             "Economic Validation Gap Source",
         ),
         "Power Stress Index": _current_metric_value(regime_metrics, "Power Stress Index", "Power Stress Source"),
+        "Power Capacity Gap": _current_metric_value(
+            regime_metrics,
+            "Power Capacity Gap",
+            "Power Capacity Gap Source",
+        ),
         "Capital Stress": _current_metric_value(regime_metrics, "Capital Stress", "Capital Stress Source"),
         "Credit Intermediation Stress": _current_metric_value(
             regime_metrics,
@@ -223,6 +228,12 @@ def append_macro_history(regime_metrics, fred_data):
         "Power Nonresidential Load": _component_value(regime_metrics, "Power Stress Components", "Nonresidential Load Pressure"),
         "Power Grid Utilization": _component_value(regime_metrics, "Power Stress Components", "Grid Utilization Pressure"),
         "Power Capacity Response": _component_value(regime_metrics, "Power Stress Components", "Capacity Response Gap"),
+        "PCG Deployment Pressure": (regime_metrics.get("Power Capacity Gap Components", {}) or {}).get("deployment_pressure_score", np.nan),
+        "PCG Power Response": (regime_metrics.get("Power Capacity Gap Components", {}) or {}).get("power_response_score", np.nan),
+        "PCG Data Center Construction": _component_value(regime_metrics, "Power Capacity Gap Components", "Data Center Construction"),
+        "PCG Capital Deployment": _component_value(regime_metrics, "Power Capacity Gap Components", "Capital Deployment"),
+        "PCG Delivered Power Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Delivered Power Growth"),
+        "PCG Installed Capacity Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Installed Capacity Growth"),
         "Capital Cash Flow Strain": _component_value(regime_metrics, "Capital Stress Components", "Cash Flow Strain"),
         "Capital Debt Capacity Stress": _component_value(
             regime_metrics,
@@ -255,6 +266,7 @@ def append_macro_history(regime_metrics, fred_data):
         "ADI Version": regime_metrics.get("ADI Version", np.nan),
         "EVG Version": regime_metrics.get("EVG Version", np.nan),
         "Power Stress Version": regime_metrics.get("Power Stress Version", np.nan),
+        "Power Capacity Gap Version": regime_metrics.get("Power Capacity Gap Version", np.nan),
         "Capital Stress Version": regime_metrics.get("Capital Stress Version", np.nan),
         "Credit Intermediation Stress Version": regime_metrics.get(
             "Credit Intermediation Stress Version", np.nan
@@ -276,9 +288,13 @@ def append_sector_history(sector_metrics):
             "Sector Score": metrics.get("Sector Score"),
             "Pressure": metrics.get("Sector Pressure"),
             "Forward EV/EBIT": metrics.get("Forward EV/EBIT"),
+            "Sector Valuation Version": metrics.get("Sector Valuation Version"),
+            "Forward EV/EBIT Coverage": metrics.get("Forward EV/EBIT Coverage"),
+            "Forward EV/EBIT Data Coverage": metrics.get("Forward EV/EBIT Data Coverage"),
+            "Loss-Making EV Share": metrics.get("Loss-Making EV Share"),
             "Forward EBIT Yield": metrics.get("Forward EBIT Yield"),
             "Avg Return": metrics.get("Avg Return"),
-            "AEI Version": "3.0",
+            "AEI Version": "3.1",
             "Pressure Version": "3.0",
         }
         for sector, metrics in sector_metrics.items()

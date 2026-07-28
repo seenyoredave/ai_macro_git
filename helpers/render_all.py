@@ -1,6 +1,8 @@
-from helpers.render_sector import render_sector_dashboard
+from analytics.macro_dataframe import build_macro_dashboard_data
 from helpers.render_ai_macro import render_ai_macro_dashboard
-from config.debug_config import debug_print
+from helpers.render_evidence import render_evidence_dashboard
+from helpers.render_finance import render_finance_dashboard
+from helpers.render_sectors import render_sectors_dashboard
 
 
 def render_all_dashboards(
@@ -11,23 +13,41 @@ def render_all_dashboards(
     regime_metrics,
     nfci_history=None,
 ):
+    """Render the four phase-one research tabs from one shared data context."""
+    dashboard_data = build_macro_dashboard_data(
+        sector_metrics=sector_metrics,
+        regime_metrics=regime_metrics,
+    )
+
     with tabs[0]:
         render_ai_macro_dashboard(
             sector_metrics=sector_metrics,
             sector_data=sector_data,
             fred_data=fred_data,
             regime_metrics=regime_metrics,
-            nfci_history=nfci_history,
+            dashboard_data=dashboard_data,
         )
 
-    for index, sector in enumerate(sector_data.keys()):
-        if sector not in sector_data or sector not in sector_metrics:
-            debug_print("SKIPPING MISSING SECTOR:", sector)
-            continue
+    with tabs[1]:
+        render_finance_dashboard(
+            sector_metrics=sector_metrics,
+            sector_data=sector_data,
+            fred_data=fred_data,
+            regime_metrics=regime_metrics,
+            nfci_history=nfci_history,
+            dashboard_data=dashboard_data,
+        )
 
-        with tabs[index + 1]:
-            render_sector_dashboard(
-                sector,
-                sector_data[sector],
-                sector_metrics[sector],
-            )
+    with tabs[2]:
+        render_sectors_dashboard(
+            sector_data=sector_data,
+            sector_metrics=sector_metrics,
+            regime_metrics=regime_metrics,
+            dashboard_data=dashboard_data,
+        )
+
+    with tabs[3]:
+        render_evidence_dashboard(
+            fred_data=fred_data,
+            sector_data=sector_data,
+        )

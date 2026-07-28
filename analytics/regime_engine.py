@@ -24,9 +24,13 @@ from analytics.power_engine import (
     calculate_power_stress,
     normalize_power_stress_history,
 )
+from analytics.power_capacity_gap import (
+    POWER_CAPACITY_GAP_VERSION,
+    calculate_power_capacity_gap,
+)
 
 
-AEI_VERSION = "3.0"
+AEI_VERSION = "3.1"
 ADI_VERSION = "1.0"
 EVG_VERSION = "2.0"
 POWER_STRESS_VERSION = "3.0"
@@ -210,6 +214,10 @@ def build_regime_metrics(
         sector_data or {},
         fred_data or {},
     )
+    power_capacity_gap_result = calculate_power_capacity_gap(
+        development_result,
+        fred_data or {},
+    )
     capital_result = calculate_capital_stress(sector_data or {})
     funding_mix_result = calculate_deployment_funding_mix(sector_data or {})
     intermediation_result = calculate_intermediation_stress(fred_data or {})
@@ -217,6 +225,7 @@ def build_regime_metrics(
     current_adi = development_result.get("score", np.nan)
     current_validation_gap = validation_result.get("score", np.nan)
     current_power = power_result.get("score", np.nan)
+    current_power_capacity_gap = power_capacity_gap_result.get("score", np.nan)
     current_capital = capital_result.get("score", np.nan)
     current_intermediation = intermediation_result.get("score", np.nan)
 
@@ -248,6 +257,13 @@ def build_regime_metrics(
         "Power Stress Index",
         version_column="Power Stress Version",
         required_version=POWER_STRESS_VERSION,
+    )
+    power_capacity_gap, power_capacity_gap_source, power_capacity_gap_date = _resolve_with_archive(
+        current_power_capacity_gap,
+        macro_history,
+        "Power Capacity Gap",
+        version_column="Power Capacity Gap Version",
+        required_version=POWER_CAPACITY_GAP_VERSION,
     )
     capital_history = normalize_capital_stress_history(
         combine_capital_stress_history(macro_history)
@@ -306,6 +322,10 @@ def build_regime_metrics(
         "Power Stress Index Current": current_power,
         "Power Stress Source": power_source,
         "Power Stress Fallback Date": power_date,
+        "Power Capacity Gap": power_capacity_gap,
+        "Power Capacity Gap Current": current_power_capacity_gap,
+        "Power Capacity Gap Source": power_capacity_gap_source,
+        "Power Capacity Gap Fallback Date": power_capacity_gap_date,
         "Capital Stress": capital_stress,
         "Capital Stress Current": current_capital,
         "Capital Stress Source": capital_source,
@@ -320,6 +340,7 @@ def build_regime_metrics(
         "ADI Components": development_result,
         "Economic Validation Gap Components": validation_result,
         "Power Stress Components": power_result,
+        "Power Capacity Gap Components": power_capacity_gap_result,
         "Capital Stress Components": capital_result,
         "Deployment Funding Mix": funding_mix_result,
         "Credit Intermediation Stress Components": intermediation_result,
@@ -327,6 +348,7 @@ def build_regime_metrics(
         "ADI Version": ADI_VERSION,
         "EVG Version": EVG_VERSION,
         "Power Stress Version": POWER_STRESS_VERSION,
+        "Power Capacity Gap Version": POWER_CAPACITY_GAP_VERSION,
         "Capital Stress Version": CAPITAL_STRESS_VERSION,
         "Credit Intermediation Stress Version": INTERMEDIATION_STRESS_VERSION,
         "Pressure Version": PRESSURE_VERSION,

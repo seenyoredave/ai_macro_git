@@ -47,7 +47,7 @@ from analytics.sector_engine import (
 ARCHIVE_DIR = PROJECT_ROOT / "archive"
 DATA_DIR = PROJECT_ROOT / "data"
 
-AEI_VERSION = "3.0"
+AEI_VERSION = "3.1"
 ADI_VERSION = "1.0"
 POWER_STRESS_VERSION = "3.0"
 CAPITAL_STRESS_VERSION = "3.0"

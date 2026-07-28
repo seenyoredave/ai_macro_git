@@ -217,7 +217,7 @@ def _fetch_company(ticker, company):
             if pd.notna(enterprise_value)
             and pd.notna(forward_ebit)
             and enterprise_value > 0
-            and forward_ebit > 0
+            and abs(float(forward_ebit)) > 1e-9
             else np.nan
         )
 
