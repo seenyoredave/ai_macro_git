@@ -294,47 +294,63 @@ def pull_yfinance(ticker_tuple, attempts=2):
 
 @st.cache_data(ttl=900)
 def load_yfinance(ticker_tuple, sector=None):
-    """Attempt a current market pull before consulting the archive.
-
-    A same-day archive is deliberately a fallback, not a freshness gate.  This
-    prevents the first intraday snapshot from freezing AEI and HHI for the rest
-    of the day while still preserving a complete universe when YFinance returns
-    partial data in a hosted environment.
-    """
     tickers = dict(ticker_tuple)
     archived_today = read_yf_history_for_date(tickers, sector=sector)
-    fallback = (
-        archived_today
-        if archived_today is not None
-        else read_latest_yf_history(tickers, sector=sector)
-    )
 
-    debug_print(f"Pulling current yfinance universe: {sector}")
     try:
+        debug_print(f"Pulling current yfinance data: {sector}")
+
         fresh = pull_yfinance(ticker_tuple)
-    except Exception as exc:
-        debug_print(f"yfinance pull raised -> {exc}")
-        fresh = pd.DataFrame()
+        if fresh is None or fresh.empty:
+            raise ValueError("yfinance returned an empty DataFrame")
 
-    merged = merge_live_yfinance_with_archive(fresh, fallback, tickers)
-    report = merged.attrs.get("load_report", {})
-    missing = report.get("missing_tickers", [])
-    if missing:
-        raise RuntimeError(
-            "YFinance and the archive could not produce a complete market universe. "
-            f"Missing tickers: {', '.join(missing)}"
+        fresh = ensure_yf_schema(fresh)
+        fresh["Ticker"] = (
+            fresh["Ticker"]
+            .astype(str)
+            .str.upper()
+            .str.strip()
         )
+        fresh = fresh.drop_duplicates("Ticker", keep="last")
 
-    debug_print(
-        "YFinance mode "
-        f"{report.get('source_mode')} · live {report.get('live_tickers', 0)} · "
-        f"archive rows {report.get('archive_fallback_tickers', 0)} · "
-        f"field backfills {report.get('archive_field_backfills', 0)}"
-    )
-    return merged
+        # Fresh data wins. Today's archive only fills fields or tickers
+        # that the current Yahoo request failed to return.
+        if archived_today is not None and not archived_today.empty:
+            archive = ensure_yf_schema(archived_today)
+            archive["Ticker"] = (
+                archive["Ticker"]
+                .astype(str)
+                .str.upper()
+                .str.strip()
+            )
+            archive = archive.drop_duplicates("Ticker", keep="last")
+
+            fresh = (
+                fresh.set_index("Ticker")
+                .combine_first(archive.set_index("Ticker"))
+                .reset_index()
+            )
+
+        return ensure_yf_schema(fresh)
+
+    except Exception as exc:
+        debug_print(f"Current yfinance pull failed -> {exc}")
+
+        if archived_today is not None and not archived_today.empty:
+            debug_print(f"Using today's archive fallback: {sector}")
+            return ensure_yf_schema(archived_today)
+
+        fallback = read_latest_yf_history(tickers, sector=sector)
+        if fallback is not None and not fallback.empty:
+            debug_print(f"Using latest historical fallback: {sector}")
+            return ensure_yf_schema(fallback)
+
+        raise RuntimeError(
+            "yfinance failed and no usable yf_history fallback exists."
+        ) from exc
 
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=900)
 def load_sector_data(tickers, sector=None):
     return {
         "yfinance": load_yfinance(tuple(sorted(tickers.items())), sector=sector),
