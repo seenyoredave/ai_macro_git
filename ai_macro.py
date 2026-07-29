@@ -164,7 +164,8 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    if st.button("Rebuild dashboard", use_container_width=True):
+    if st.button("Refresh live dashboard", use_container_width=True):
+        st.cache_data.clear()
         st.session_state.force_rebuild = True
         st.rerun()
 
