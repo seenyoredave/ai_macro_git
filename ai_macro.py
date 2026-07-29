@@ -32,8 +32,8 @@ from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v3.14"
-APP_STATE_SCHEMA_VERSION = "16.3-sidebar-divider"
+APP_VERSION = "v3.15"
+APP_STATE_SCHEMA_VERSION = "16.4-market-freshness-capital-dynamics"
 
 
 st.set_page_config(
@@ -115,17 +115,36 @@ def render_developer_load_report(report):
 
     def render_source(label, block):
         block = block or {}
-        missing = block.get("today_missing_tickers") or block.get("recent_missing_tickers") or []
+        missing = (
+            block.get("missing_tickers")
+            or block.get("today_missing_tickers")
+            or block.get("recent_missing_tickers")
+            or []
+        )
+        fallback_symbols = block.get("archive_fallback_symbols") or []
         st.markdown(f"**{label}**")
         st.write(f"Mode: `{block.get('source_mode', 'unknown')}`")
         st.write(f"Elapsed: `{fmt_seconds(block.get('elapsed_sec'))}`")
         st.write(f"Returned: `{block.get('returned_tickers', 0)}` tickers")
+        if "live_tickers" in block:
+            st.write(f"Live rows: `{block.get('live_tickers', 0)}` tickers")
+            st.write(
+                "Archive fallback: "
+                f"`{block.get('archive_fallback_tickers', 0)}` ticker rows / "
+                f"`{block.get('archive_field_backfills', 0)}` fields"
+            )
+        if block.get("requested_at_utc"):
+            st.write(f"Requested: `{block.get('requested_at_utc')}`")
         if block.get("latest_complete_date"):
             st.write(f"Latest complete archive: `{block.get('latest_complete_date')}`")
+        if fallback_symbols:
+            shown = ", ".join(fallback_symbols[:30])
+            suffix = "" if len(fallback_symbols) <= 30 else f" … +{len(fallback_symbols) - 30}"
+            st.caption(f"Archive row fallback ({len(fallback_symbols)}): {shown}{suffix}")
         if missing:
             shown = ", ".join(missing[:30])
             suffix = "" if len(missing) <= 30 else f" … +{len(missing) - 30}"
-            st.caption(f"Missing/fetched ({len(missing)}): {shown}{suffix}")
+            st.caption(f"Missing ({len(missing)}): {shown}{suffix}")
 
     st.caption(f"Total load: {fmt_seconds(report.get('total_elapsed_sec'))}")
     render_source("YFinance", report.get("yfinance"))

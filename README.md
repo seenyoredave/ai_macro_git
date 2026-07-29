@@ -31,7 +31,7 @@ The tab reorganization does not change metric definitions, calculations, gauges,
 
 ## Primary data sources
 
-- **YFinance:** prices, market capitalization, enterprise-value inputs, analyst revenue estimates, company statements, and price/volume history
+- **YFinance:** prices, market capitalization, enterprise-value inputs, analyst revenue estimates, company statements, and price/volume history. Current pulls take precedence; archive rows fill only failed tickers or missing fields.
 - **SEC / EDGAR:** standardized financial facts, filing-backed commitment disclosures, public BDC credit quality, and Form PF aggregates
 - **FRED:** macroeconomic, bank, industrial-production, financial-conditions, information-investment, and power series
 - **U.S. Census Bureau:** private data-center construction spending
@@ -153,6 +153,8 @@ Debt Capacity Stress distinguishes:
 
 Negative EBITDA is therefore not silently excluded from the leverage assessment.
 
+Capital Stress is filing-driven rather than truly daily. Its chart retains every dated snapshot, while displayed velocity and acceleration use only distinct score observations so repeated same-value app runs do not create false zero movement.
+
 Scale: **-100 to +100**, centered at 0
 
 ### Credit Intermediation Stress
@@ -216,6 +218,8 @@ Opposing changes cannot cancel, and movement remains on a nonnegative scale.
 - Composite scores use explicit minimum-data rules.
 - Static weights are renormalized only after the minimum-data rule is met.
 - Current headlines may use the latest valid archive value from the same metric version.
+- Market-sensitive YFinance products attempt a live pull every 15-minute cache cycle; a same-day archive never blocks that pull.
+- A partial hosted-market pull is retried once, then reconciled ticker-by-ticker with the latest complete archive rather than silently shrinking the universe.
 - Carried-forward display values are not archived as new observations.
 - The renderer shows a bordered **No Data** state when neither current nor compatible archive data exists.
 
@@ -282,7 +286,8 @@ PYTHONPATH=. python -m unittest discover -s tests -v
 - `research_overlay/theme.py`: platform visual system
 - `loaders/market_prices.py`: price-history calculations
 - `loaders/company_fundamentals.py`: statement parsing and company financial calculations
-- `loaders/market_loader.py`: archive-first market orchestration and source fallback
+- `loaders/market_loader.py`: live-first market orchestration, retry logic, and complete-universe archive fallback
+- `loaders/market_freshness.py`: pure live/archive reconciliation and runtime source diagnostics
 - `loaders/fred_loader.py`: macro and power data
 - `loaders/nfci_loader.py`: isolated NFCI history and fallback chain
 - `loaders/edgar_loader.py`: EDGAR data quality and archive eligibility

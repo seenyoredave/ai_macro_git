@@ -29,6 +29,38 @@ from config.debug_config import DEBUG, debug_print
 AEI_HISTORY_START = pd.Timestamp("2026-06-14")
 
 
+def _append_current_metric_observation(
+    history,
+    metric_col,
+    current_value,
+    *,
+    version_column=None,
+    version=None,
+):
+    """Append today's genuinely current reading to a trend input."""
+    numeric = pd.to_numeric(current_value, errors="coerce")
+    if pd.isna(numeric) or not np.isfinite(numeric):
+        return history
+
+    working = history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
+    row = {"Date": pd.Timestamp.today().normalize(), metric_col: float(numeric)}
+    if version_column and version is not None:
+        row[version_column] = str(version)
+
+    working = pd.concat([working, pd.DataFrame([row])], ignore_index=True, sort=False)
+    working["_current_date"] = pd.to_datetime(
+        working.get("Date"), errors="coerce", format="mixed"
+    )
+    working = (
+        working.loc[working["_current_date"].notna()]
+        .sort_values("_current_date", kind="stable")
+        .drop_duplicates(subset=["_current_date"], keep="last")
+        .drop(columns="_current_date")
+        .reset_index(drop=True)
+    )
+    return working
+
+
 def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
     """Return native AEI-v3.1 trend statistics with the full archived chart history.
 
@@ -138,6 +170,15 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
     )
     signed_intermediation_history = normalize_intermediation_stress_history(macro_history)
 
+    if regime_metrics.get("Capital Stress Source") == "Current":
+        signed_capital_history = _append_current_metric_observation(
+            signed_capital_history,
+            "Capital Stress",
+            regime_metrics.get("Capital Stress", np.nan),
+            version_column="Capital Stress Version",
+            version=CAPITAL_STRESS_VERSION,
+        )
+
     native_intermediation_history = (
         (regime_metrics.get("Credit Intermediation Stress Components", {}) or {})
         .get("history")
@@ -171,6 +212,8 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             "Capital Stress",
             version_column="Capital Stress Version",
             required_version=CAPITAL_STRESS_VERSION,
+            distinct_observations=True,
+            repeat_tolerance=1e-8,
         ),
         "intermediation_stress_trend": calc_metric_trend(
             native_intermediation_history,
@@ -193,6 +236,12 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             required_version=AEI_VERSION,
         ),
     }
+
+    trends["capital_stress_trend"]["dynamics_note"] = "distinct observations"
+    trends["capital_stress_trend"]["history_note"] = (
+        "Chart history retains every dated snapshot; velocity and acceleration "
+        "use only distinct Capital Stress observations."
+    )
 
     return {
         "macro_df": macro_df,

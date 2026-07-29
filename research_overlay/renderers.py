@@ -461,12 +461,13 @@ def _render_stress_product(
 ):
     with st.container(border=True):
         render_panel_heading(title)
+        dynamics_note = (trend or {}).get("dynamics_note", "native-version history")
         render_statline(
             [
                 ("Current", fmt_number(value, 1, signed=True), "reference = 0"),
                 ("Source", source, f"fallback {fmt_date(fallback_date)}" if fallback_date else "current run"),
-                ("Velocity", fmt_number((trend or {}).get("velocity"), 2, signed=True), "native-version history"),
-                ("Acceleration", fmt_number((trend or {}).get("acceleration"), 2, signed=True), "native-version history"),
+                ("Velocity", fmt_number((trend or {}).get("velocity"), 2, signed=True), dynamics_note),
+                ("Acceleration", fmt_number((trend or {}).get("acceleration"), 2, signed=True), dynamics_note),
             ],
             key_prefix=f"finance-stress-{title.lower().replace(' ', '-')}",
         )

@@ -84,6 +84,27 @@ def sort_history_for_trend(df, date_col="Date", group_cols=None):
     return working
 
 
+def distinct_metric_observations(series_df, *, tolerance=1e-9):
+    """Collapse consecutive repeated values without altering chart history.
+
+    Filing-driven metrics can be archived on every app run even when the
+    underlying observation has not changed.  Those repeated snapshots are not
+    new information and must not force velocity or acceleration to zero.
+    """
+    if series_df is None or series_df.empty:
+        return pd.DataFrame(columns=["Date", "Value"])
+
+    working = series_df.copy().reset_index(drop=True)
+    values = pd.to_numeric(working["Value"], errors="coerce")
+    previous = values.shift(1)
+    repeated = pd.Series(
+        np.isclose(values, previous, rtol=0.0, atol=float(tolerance), equal_nan=False),
+        index=working.index,
+    )
+    keep = previous.isna() | ~repeated
+    return working.loc[keep].reset_index(drop=True)
+
+
 def calc_velocity(series):
     clean = pd.to_numeric(series, errors="coerce").dropna()
     return clean.iloc[-1] - clean.iloc[-2] if len(clean) >= 2 else np.nan
@@ -104,6 +125,8 @@ def calc_metric_trend(
     *,
     version_column=None,
     required_version=None,
+    distinct_observations=False,
+    repeat_tolerance=1e-9,
 ):
     del group_cols  # retained for public-signature compatibility
     series_df = metric_series(
@@ -120,12 +143,19 @@ def calc_metric_trend(
             "velocity": np.nan,
             "acceleration": np.nan,
             "history": series_df,
+            "dynamics_observations": 0,
         }
 
-    series = series_df["Value"]
+    dynamics_df = (
+        distinct_metric_observations(series_df, tolerance=repeat_tolerance)
+        if distinct_observations
+        else series_df
+    )
+    series = dynamics_df["Value"]
     return {
-        "current": float(series.iloc[-1]),
+        "current": float(series_df["Value"].iloc[-1]),
         "velocity": calc_velocity(series),
         "acceleration": calc_acceleration(series),
         "history": series_df,
+        "dynamics_observations": int(len(dynamics_df)),
     }

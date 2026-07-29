@@ -1,6 +1,6 @@
 """Market-data orchestration.
 
-This module owns archive-first loading and coordinates YFinance plus EDGAR.
+This module owns live-first loading with archive fallback and coordinates YFinance plus EDGAR.
 Statement parsing lives in ``company_fundamentals``; price-history calculations
 live in ``market_prices``.
 """
@@ -29,6 +29,7 @@ from loaders.edgar_loader import (
     load_edgar,
     load_edgar_with_report,
 )
+from loaders.market_freshness import merge_live_with_archive
 from loaders.market_prices import PRESSURE_COLUMNS, calc_trading_pressure_fields, one_year_return
 
 
@@ -53,13 +54,6 @@ FINANCIAL_STRAIN_COLUMNS = [
     "Net Debt / EBITDA YoY Change",
     "CapEx / OCF YoY Change",
 ]
-YF_REFRESH_REQUIRED_COLUMNS = (
-    EVG_REQUIRED_COLUMNS
-    + FORWARD_VALUATION_COLUMNS
-    + FINANCIAL_STRAIN_COLUMNS
-    + PRESSURE_COLUMNS
-)
-
 YF_REQUIRED_COLUMNS = [
     "Date",
     "Sector",
@@ -185,6 +179,24 @@ def _count_returned_tickers(payload):
     return 0
 
 
+def merge_live_yfinance_with_archive(fresh, fallback, tickers):
+    return merge_live_with_archive(
+        fresh,
+        fallback,
+        tickers,
+        required_columns=YF_REQUIRED_COLUMNS,
+        metadata_columns=(
+            "Date",
+            "Sector",
+            "Ticker",
+            "Company",
+            "Basket Score",
+            "Basket Tier",
+            "Basket Weight",
+        ),
+    )
+
+
 def _safe_market_number(fast_info, info, *keys):
     for key in keys:
         value = (fast_info or {}).get(key)
@@ -249,64 +261,77 @@ def _fetch_company(ticker, company):
         return None
 
 
-def pull_yfinance(ticker_tuple):
+def pull_yfinance(ticker_tuple, attempts=2):
+    """Pull the requested universe and retry only failed tickers once."""
     tickers = dict(ticker_tuple)
-    with ThreadPoolExecutor(max_workers=3) as executor:
-        results = list(executor.map(lambda item: _fetch_company(*item), tickers.items()))
-    return pd.DataFrame([result for result in results if result])
+    pending = dict(tickers)
+    collected = {}
+
+    for attempt in range(max(1, int(attempts))):
+        if not pending:
+            break
+        workers = 3 if attempt == 0 else 1
+        items = list(pending.items())
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            results = list(executor.map(lambda item: _fetch_company(*item), items))
+
+        for result in results:
+            if result and result.get("Ticker"):
+                ticker = str(result["Ticker"]).upper().strip()
+                collected[ticker] = result
+                pending.pop(ticker, None)
+
+        if pending and attempt + 1 < max(1, int(attempts)):
+            time.sleep(1.0)
+
+    ordered = [
+        collected[ticker]
+        for ticker in (str(value).upper().strip() for value in tickers)
+        if ticker in collected
+    ]
+    return pd.DataFrame(ordered)
 
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=900)
 def load_yfinance(ticker_tuple, sector=None):
+    """Attempt a current market pull before consulting the archive.
+
+    A same-day archive is deliberately a fallback, not a freshness gate.  This
+    prevents the first intraday snapshot from freezing AEI and HHI for the rest
+    of the day while still preserving a complete universe when YFinance returns
+    partial data in a hosted environment.
+    """
     tickers = dict(ticker_tuple)
     archived_today = read_yf_history_for_date(tickers, sector=sector)
+    fallback = (
+        archived_today
+        if archived_today is not None
+        else read_latest_yf_history(tickers, sector=sector)
+    )
 
-    if archived_today is not None:
-        archived_today = ensure_yf_schema(archived_today)
-        missing = [
-            column
-            for column in YF_REFRESH_REQUIRED_COLUMNS
-            if pd.to_numeric(archived_today[column], errors="coerce").dropna().empty
-        ]
-        if not missing:
-            debug_print(f"Loading today's yfinance rows from yf_history.csv: {sector}")
-            return archived_today
-
-        debug_print(
-            "Today's yf_history is missing current-model fields "
-            f"{missing}. Pulling yfinance once to backfill: {sector}"
-        )
-        fresh = pull_yfinance(ticker_tuple)
-        if fresh is None or fresh.empty:
-            return archived_today
-
-        archived_today = archived_today.copy()
-        archived_today["Ticker"] = archived_today["Ticker"].astype(str).str.upper().str.strip()
-        fresh = fresh.copy()
-        fresh["Ticker"] = fresh["Ticker"].astype(str).str.upper().str.strip()
-        lookup = fresh.set_index("Ticker")
-
-        for column in missing:
-            archived_today[column] = (
-                archived_today["Ticker"].map(lookup[column])
-                if column in lookup.columns
-                else np.nan
-            )
-        return archived_today
-
+    debug_print(f"Pulling current yfinance universe: {sector}")
     try:
-        debug_print(f"No yf_history rows found for today. Pulling yfinance: {sector}")
         fresh = pull_yfinance(ticker_tuple)
-        if fresh is None or fresh.empty:
-            raise ValueError("yfinance returned an empty DataFrame")
-        return fresh
     except Exception as exc:
-        debug_print(f"yfinance pull failed -> {exc}")
-        fallback = read_latest_yf_history(tickers, sector=sector)
-        if fallback is not None:
-            debug_print(f"Using latest yf_history.csv fallback: {sector}")
-            return fallback
-        raise RuntimeError("yfinance failed and no usable yf_history fallback exists.") from exc
+        debug_print(f"yfinance pull raised -> {exc}")
+        fresh = pd.DataFrame()
+
+    merged = merge_live_yfinance_with_archive(fresh, fallback, tickers)
+    report = merged.attrs.get("load_report", {})
+    missing = report.get("missing_tickers", [])
+    if missing:
+        raise RuntimeError(
+            "YFinance and the archive could not produce a complete market universe. "
+            f"Missing tickers: {', '.join(missing)}"
+        )
+
+    debug_print(
+        "YFinance mode "
+        f"{report.get('source_mode')} · live {report.get('live_tickers', 0)} · "
+        f"archive rows {report.get('archive_fallback_tickers', 0)} · "
+        f"field backfills {report.get('archive_field_backfills', 0)}"
+    )
+    return merged
 
 
 @st.cache_data(ttl=3600)
@@ -317,7 +342,7 @@ def load_sector_data(tickers, sector=None):
     }
 
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=900)
 def load_market_universe(tickers):
     load_started = time.perf_counter()
     expected_count = len(tickers)
@@ -332,6 +357,8 @@ def load_market_universe(tickers):
     raw_edgar, edgar_runtime_report = load_edgar_with_report(tickers)
     edgar_elapsed = time.perf_counter() - edgar_started
 
+    yf_runtime_report = dict(getattr(raw_yf, "attrs", {}).get("load_report", {}))
+
     return {
         "yfinance": raw_yf,
         "edgar": raw_edgar,
@@ -341,13 +368,9 @@ def load_market_universe(tickers):
             "total_elapsed_sec": time.perf_counter() - load_started,
             "yfinance": {
                 **yf_archive_status,
+                **yf_runtime_report,
                 "elapsed_sec": yf_elapsed,
                 "returned_tickers": _count_returned_tickers(raw_yf),
-                "source_mode": (
-                    "archive_today"
-                    if yf_archive_status.get("today_complete")
-                    else "live_or_fallback"
-                ),
             },
             "edgar": {
                 **edgar_archive_status,
