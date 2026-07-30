@@ -93,6 +93,19 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
             "analytics.factor_engine",
             calc_sector_factors=lambda **kwargs: pd.DataFrame(),
         ),
+        "analytics.macro_interpretation": _module(
+            "analytics.macro_interpretation",
+            build_macro_interpretation=lambda **kwargs: {
+                "headline": "Resilient",
+                "summary": "Deterministic startup state.",
+                "pressure_factors": [],
+                "resilience_factors": [],
+                "changes": [],
+                "domains": {},
+                "confidence": "high",
+                "version": "1.0",
+            },
+        ),
         "analytics.regime_engine": _module(
             "analytics.regime_engine",
             build_regime_metrics=lambda **kwargs: {},
@@ -203,7 +216,7 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
 
     namespace = runpy.run_path(str(ROOT / "ai_macro.py"), run_name="__main__")
 
-    assert namespace["APP_VERSION"] == "v4.05"
+    assert namespace["APP_VERSION"] == "v4.07"
     assert namespace["benchmark_metrics"]["source_mode"] == "archive_market_closed"
     assert st.session_state.force_rebuild is False
     assert "sector_data" in st.session_state

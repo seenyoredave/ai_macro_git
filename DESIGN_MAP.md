@@ -2,10 +2,10 @@
 
 ## AI Macro
 
-1. Regime board: AEI, ADI, Power Stress, Concentration
-2. Direct AEI–ADI history comparison
-3. Zero-centered gap comparison: speculation, validation, industrial
-4. Parallel ADI, validation, and power component panels
+1. Current state: deterministic headline, concise synthesis, pressure, resilience, and material changes
+2. Regime board: AEI, ADI, Power Stress, Concentration
+3. Zero-centered gap comparison: speculation, validation, industrial, and power capacity
+4. Parallel ADI, validation, power, and concentration component panels
 5. Component observations and normalization detail
 
 ## Finance

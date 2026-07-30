@@ -161,13 +161,16 @@ def test_nfci_and_anfci_share_one_plot_without_promoting_anfci_to_a_card():
 
 def test_ai_macro_cleanup_contract_is_present():
     source = (ROOT / "research_overlay" / "renderers.py").read_text()
-    assert '"Equity trends, observable deployment, power utilization, and validation gaps."' in source
+    assert '"Current state of the AI economy across markets, capital deployment, financing, energy, and economic validation."' in source
     assert 'render_section("Gap Measures", "Approximations of divergence from broader economic trends.")' in source
     assert '"Expectations and development"' not in source
     macro_block = source.split("def render_macro_tab", 1)[1].split("def _funding_specs", 1)[0]
     assert 'dual_history(' not in macro_block
     assert 'render_section("Component evidence", "Structural decomposition of top-level AI economy metrics.")' in source
     assert 'chart_col, measures_col = st.columns([1.05, 1.25])' in source
+    assert 'state_head_html = (' in source
+    assert 'st.markdown(state_head_html, unsafe_allow_html=True)' in source
+    assert 'f"""\n            <div class="rm-state-head">' not in source
 
 
 def test_hhi_component_evidence_is_rendered_as_an_additive_breakdown():
@@ -216,7 +219,7 @@ def test_gap_scale_note_is_attached_to_chart_column():
 def test_developer_tools_header_includes_right_aligned_version_and_divider():
     app = (ROOT / "ai_macro.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert 'APP_VERSION = "v4.05"' in app
+    assert 'APP_VERSION = "v4.07"' in app
     assert 'class="rm-developer-tools-header"' in app
     assert 'class="rm-developer-tools-version"' in app
     assert 'class="rm-developer-tools-divider"' in app

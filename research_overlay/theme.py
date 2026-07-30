@@ -213,6 +213,62 @@ def inject_research_theme() -> None:
             max-width: 980px;
         }
 
+        .rm-state-head {
+            padding: 0.2rem 0.15rem 0.9rem 0.15rem;
+            border-bottom: 1px solid var(--rm-border);
+            margin-bottom: 0.85rem;
+        }
+
+        .rm-state-kicker {
+            color: var(--rm-violet);
+            font-size: 0.67rem;
+            font-weight: 800;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .rm-state-title {
+            color: #f8fafc;
+            font-size: 1.45rem;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            font-weight: 780;
+        }
+
+        .rm-state-summary {
+            color: #c7d0dd;
+            font-size: 0.91rem;
+            line-height: 1.5;
+            margin-top: 0.42rem;
+            max-width: 1160px;
+        }
+
+        .rm-state-column {
+            padding: 0.05rem 0.2rem 0.1rem 0.2rem;
+        }
+
+        .rm-state-column-title {
+            color: #dce4ef;
+            font-size: 0.69rem;
+            font-weight: 800;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            margin-bottom: 0.38rem;
+        }
+
+        .rm-state-column ul {
+            margin: 0;
+            padding-left: 1.05rem;
+        }
+
+        .rm-state-column li {
+            color: #aeb8c8;
+            font-size: 0.82rem;
+            line-height: 1.42;
+            margin-bottom: 0.38rem;
+        }
+
         .rm-card {
             border: 1px solid var(--rm-border);
             border-radius: 14px;

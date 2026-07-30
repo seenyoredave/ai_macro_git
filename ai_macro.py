@@ -5,6 +5,7 @@ from __future__ import annotations
 import streamlit as st
 
 from analytics.factor_engine import calc_sector_factors
+from analytics.macro_interpretation import build_macro_interpretation
 from analytics.regime_engine import build_regime_metrics
 from analytics.sector_engine import build_sector_metrics
 from archive.archive import (
@@ -34,8 +35,8 @@ from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v4.05"
-APP_STATE_SCHEMA_VERSION = "26.3-finance-debt-markets"
+APP_VERSION = "v4.07"
+APP_STATE_SCHEMA_VERSION = "26.4-macro-interpretation"
 
 
 st.set_page_config(
@@ -300,6 +301,14 @@ if st.session_state.force_rebuild:
     debt_markets_data = load_debt_markets_data(
         force_refresh=st.session_state.force_debt_markets_refresh,
         refresh_token=st.session_state.debt_markets_refresh_token,
+    )
+    regime_metrics["Macro Interpretation"] = build_macro_interpretation(
+        regime_metrics=regime_metrics,
+        macro_history=macro_history,
+        debt_markets_data=debt_markets_data,
+        energy_data=energy_data,
+        fred_data=fred_data,
+        nfci_history=nfci_history,
     )
     market_report = dict(st.session_state.get("market_universe_load_report", {}) or {})
     market_report["energy"] = energy_data.get("load_report", {})

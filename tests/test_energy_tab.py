@@ -333,7 +333,7 @@ def test_energy_renderer_executes_all_sections_without_runtime_error():
         }
 
         renderer.render_energy_tab({}, regime_metrics, energy_data, dashboard_data)
-        assert len(plotly_keys) == 8
+        assert len(plotly_keys) == 7
     finally:
         if old_streamlit is None:
             sys.modules.pop("streamlit", None)

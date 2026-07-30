@@ -12,7 +12,7 @@ The dashboard is a personal analytical system, not a trading platform. It descri
 
 The research interface is organized into five primary tabs:
 
-- **AI Macro:** equity conditions, development intensity, power stress, concentration, and gap metrics
+- **AI Macro:** deterministic current-state interpretation, equity conditions, development intensity, power stress, concentration, and gap metrics
 - **Finance:** deployment funding, public corporate-bond market functioning, Borrower Strain, Lender Strain, and NFCI/ANFCI confirmation
 - **Energy:** fuel supply, power production, grid capacity, and AI-linked electricity demand
 - **Sectors:** sector assessment, positioning, rotation, the consolidated sector table, and dropdown-selected sector detail
@@ -39,6 +39,19 @@ The tab reorganization does not change metric definitions, calculations, gauges,
 - **U.S. Census Bureau:** private data-center construction spending
 
 ## Headline framework
+
+### Macro current-state interpretation
+
+The Macro tab translates the measured system into a compact current-state view without using a language model or requiring a weekly editorial narrative. The interpretation layer produces:
+
+- one categorical state headline;
+- up to three active pressure factors;
+- up to three resilience factors; and
+- up to three material changes from prior completed observations.
+
+The language is assembled deterministically from approved clauses using measured level, direction, persistence, breadth, and offsetting resilience. Small movements are suppressed. The output and domain states are archived with each new macro observation under a versioned interpretation contract, so later wording or threshold changes do not silently rewrite prior states.
+
+The interpretation does not collapse the platform into a single numerical master score. The underlying metrics remain visible immediately below it.
 
 ### AI Equity Index
 

@@ -133,11 +133,52 @@ def main() -> int:
     }
     dashboard_data = {
         "trends": {
+            "aei_trend": {"history": pd.DataFrame()},
+            "adi_trend": {"history": pd.DataFrame()},
+            "power_stress_trend": {"history": pd.DataFrame()},
+            "concentration_trend": {"history": pd.DataFrame()},
             "borrower_strain_trend": {"history": pd.DataFrame()},
             "lender_strain_trend": {"history": pd.DataFrame()},
+            "power_capacity_gap_trend": {"history": pd.DataFrame()},
         }
     }
+    macro_regime = {
+        "AI Equity Index": 45.0,
+        "AI Development Intensity": 80.0,
+        "Power Stress Index": -4.0,
+        "Power Capacity Gap": 12.0,
+        "Concentration HHI": 21.0,
+        "Speculation Gap": -35.0,
+        "Economic Validation Gap": -53.0,
+        "Macro Interpretation": {
+            "headline": "Resilient, with broader pressure",
+            "summary": "The buildout remains financeable while selected pressures are increasing.",
+            "pressure_factors": ["Forward commitments remain elevated."],
+            "resilience_factors": ["Internal funding remains adequate."],
+            "changes": ["Borrower strain increased."],
+            "confidence": "high",
+        },
+        "ADI Components": {"components": {}},
+        "Economic Validation Gap Components": {"components": {}},
+        "Power Stress Components": {"components": {}},
+        "Power Capacity Gap Components": {"components": {}},
+    }
+    macro_sector_data = {
+        "Compute": pd.DataFrame(
+            {
+                "Ticker": ["AAA", "BBB"],
+                "Market Cap": [100.0, 50.0],
+            }
+        )
+    }
 
+    renderers.render_macro_tab(
+        {},
+        macro_sector_data,
+        {"Industrial Production YoY": {"value": 1.0}},
+        macro_regime,
+        dashboard_data,
+    )
     renderers.render_finance_tab(
         {},
         {},
@@ -159,7 +200,7 @@ def main() -> int:
     if missing:
         raise AssertionError(f"Finance render did not reach required charts: {missing}")
 
-    print(f"Finance/Evidence render smoke passed ({len(st.plotly_keys)} Plotly elements).")
+    print(f"Macro/Finance/Evidence render smoke passed ({len(st.plotly_keys)} Plotly elements).")
     return 0
 
 

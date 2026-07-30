@@ -19,6 +19,7 @@ def main() -> int:
     run([sys.executable, "-m", "compileall", "-q", "."])
     run([sys.executable, "-m", "pytest", "-q"])
     run([sys.executable, "tools/render_smoke.py"])
+    run([sys.executable, "tools/full_startup_smoke.py"])
     return 0
 
 

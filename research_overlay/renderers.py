@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -231,6 +232,66 @@ def _financial_condition_source_stat(*, source, fallback_date, trend, components
     return "Source", "Live data", f"{live_sources} · {date_text}"
 
 
+def _render_interpretation_list(title, items, *, empty_text):
+    clean = [str(item).strip() for item in (items or []) if str(item).strip()]
+    if not clean:
+        clean = [empty_text]
+    list_html = "".join(
+        f'<li>{html.escape(item)}</li>'
+        for item in clean[:3]
+    )
+    st.markdown(
+        f"""
+        <div class="rm-state-column">
+            <div class="rm-state-column-title">{html.escape(title)}</div>
+            <ul>{list_html}</ul>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _render_macro_interpretation(regime_metrics):
+    interpretation = (regime_metrics or {}).get("Macro Interpretation", {}) or {}
+    headline = str(interpretation.get("headline") or "Current state unavailable")
+    summary = str(interpretation.get("summary") or "The current interpretation could not be assembled from the available readings.")
+    confidence = str(interpretation.get("confidence") or "unknown")
+    coverage_note = (
+        '<div class="rm-state-kicker">Partial source coverage</div>'
+        if confidence != "high"
+        else ""
+    )
+
+    with st.container(border=True):
+        state_head_html = (
+            '<div class="rm-state-head">'
+            f'{coverage_note}'
+            f'<div class="rm-state-title">{html.escape(headline)}</div>'
+            f'<div class="rm-state-summary">{html.escape(summary)}</div>'
+            '</div>'
+        )
+        st.markdown(state_head_html, unsafe_allow_html=True)
+        pressure_col, resilience_col, change_col = st.columns(3)
+        with pressure_col:
+            _render_interpretation_list(
+                "Pressure",
+                interpretation.get("pressure_factors"),
+                empty_text="No material pressure signal is currently active.",
+            )
+        with resilience_col:
+            _render_interpretation_list(
+                "Resilience",
+                interpretation.get("resilience_factors"),
+                empty_text="No material resilience signal is currently available.",
+            )
+        with change_col:
+            _render_interpretation_list(
+                "What changed",
+                interpretation.get("changes"),
+                empty_text="No material change was detected.",
+            )
+
+
 def _render_primary_macro_cards(regime_metrics, trends):
     specs = [
         (
@@ -418,11 +479,13 @@ def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, das
     del sector_metrics
     render_tab_header(
         "AI Macro",
-        "Equity trends, observable deployment, power utilization, and validation gaps.",
+        "Current state of the AI economy across markets, capital deployment, financing, energy, and economic validation.",
         "market / buildout / validation",
     )
     render_line_break()
     _render_tab_metric_registry("macro")
+    render_section("Current state")
+    _render_macro_interpretation(regime_metrics)
     render_section("Regime board", "Current readings with retained histories and source state.")
     _render_primary_macro_cards(regime_metrics, dashboard_data["trends"])
     render_section("Gap Measures", "Approximations of divergence from broader economic trends.")
@@ -904,42 +967,32 @@ def _render_grid_capacity(regime_metrics, dashboard_data, energy_data):
         errors="coerce",
     )
 
-    left, right = st.columns([0.8, 1.2])
-    with left:
-        metric_card(
-            key="energy-capacity-gap",
-            label="Power Capacity Gap",
-            value=value,
-            value_text=fmt_number(value, 1, signed=True),
-            context=power_capacity_gap_label(value),
-            history=dashboard_data["trends"].get("power_capacity_gap_trend", {}).get("history"),
-            scale=(-100, 100),
-            source=_source(regime_metrics, "Power Capacity Gap"),
-            fallback_date=_fallback(regime_metrics, "Power Capacity Gap"),
-            accent="violet",
-            reference=0,
-        )
-    with right:
-        render_statline(
-            [
-                (
-                    "Output growth",
-                    fmt_number(output_growth, 1, signed=True, suffix="%"),
-                    "12-month",
-                ),
-                (
-                    "Capacity growth",
-                    fmt_number(capacity_growth, 1, signed=True, suffix="%"),
-                    "12-month",
-                ),
-                (
-                    "Capacity utilization",
-                    fmt_number(utilization, 1, suffix="%"),
-                    "current",
-                ),
-            ],
-            key_prefix="energy-grid-capacity",
-        )
+    del dashboard_data
+    render_statline(
+        [
+            (
+                "Power Capacity Gap",
+                fmt_number(value, 1, signed=True),
+                power_capacity_gap_label(value),
+            ),
+            (
+                "Output growth",
+                fmt_number(output_growth, 1, signed=True, suffix="%"),
+                "12-month",
+            ),
+            (
+                "Capacity growth",
+                fmt_number(capacity_growth, 1, signed=True, suffix="%"),
+                "12-month",
+            ),
+            (
+                "Capacity utilization",
+                fmt_number(utilization, 1, suffix="%"),
+                "current",
+            ),
+        ],
+        key_prefix="energy-grid-capacity",
+    )
 
     output_history = _year_over_year_history(
         _energy_item(energy_data, "Electric Power Output")

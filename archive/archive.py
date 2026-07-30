@@ -6,6 +6,7 @@ validation, same-key replacement, column ordering, and atomic writes.
 
 from __future__ import annotations
 
+import json
 import numpy as np
 import pandas as pd
 
@@ -266,6 +267,24 @@ def append_macro_history(regime_metrics, fred_data):
             "Lender Strain Version", np.nan
         ),
         "Pressure Version": regime_metrics.get("Pressure Version", np.nan),
+        "Macro State": (regime_metrics.get("Macro Interpretation", {}) or {}).get("headline", ""),
+        "Macro State Summary": (regime_metrics.get("Macro Interpretation", {}) or {}).get("summary", ""),
+        "Macro Pressure Factors": " || ".join(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("pressure_factors", [])
+        ),
+        "Macro Resilience Factors": " || ".join(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("resilience_factors", [])
+        ),
+        "Macro Change Factors": " || ".join(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("changes", [])
+        ),
+        "Macro Interpretation Confidence": (regime_metrics.get("Macro Interpretation", {}) or {}).get("confidence", ""),
+        "Macro Interpretation Version": (regime_metrics.get("Macro Interpretation", {}) or {}).get("version", ""),
+        "Macro Domain States": json.dumps(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("domains", {}),
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),
         "Fed Funds Rate": fred_data.get("Fed Funds Rate", {}).get("value", np.nan),
         "Industrial Production": fred_data.get("Industrial Production", {}).get("value", np.nan),
