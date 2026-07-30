@@ -41,9 +41,9 @@ from helpers.visualization import (
 )
 
 
-def chart_box(fig):
+def chart_box(fig, *, key):
     with st.container(border=True):
-        st.plotly_chart(fig, width="stretch", height=350)
+        st.plotly_chart(fig, width="stretch", height=350, key=key)
 
 
 def fmt_score(value):
@@ -155,6 +155,7 @@ def _render_metric_panel(
     source="Current",
     fallback_date=None,
     history_range=(0, 100),
+    key_prefix,
 ):
     with st.container(border=True):
         st.subheader(title, help=help_text)
@@ -162,7 +163,12 @@ def _render_metric_panel(
 
         with gauge_col:
             if pd.notna(pd.to_numeric(value, errors="coerce")):
-                st.plotly_chart(gauge_builder(value), width="stretch", config={"responsive": True})
+                st.plotly_chart(
+                    gauge_builder(value),
+                    width="stretch",
+                    config={"responsive": True},
+                    key=f"{key_prefix}-gauge",
+                )
             else:
                 render_no_data_panel(title)
             render_trend_strip(trend)
@@ -187,6 +193,7 @@ def _render_metric_panel(
                 ),
                 width="stretch",
                 config={"responsive": True},
+                key=f"{key_prefix}-history",
             )
             if trend.get("history_note"):
                 st.caption(trend["history_note"])
@@ -435,6 +442,7 @@ def _render_equity_and_development(values, trends, regime_metrics):
             help_text=metric_help("AI Equity Index"),
             source=regime_metrics.get("AEI Source", "Current"),
             fallback_date=regime_metrics.get("AEI Fallback Date"),
+            key_prefix="macro-aei",
         )
     with right:
         _render_metric_panel(
@@ -445,6 +453,7 @@ def _render_equity_and_development(values, trends, regime_metrics):
             help_text=metric_help("AI Development Intensity"),
             source=regime_metrics.get("ADI Source", "Current"),
             fallback_date=regime_metrics.get("ADI Fallback Date"),
+            key_prefix="macro-adi",
         )
 
     with st.expander("ADI Component Detail", expanded=False):
@@ -469,6 +478,7 @@ def _render_power_and_concentration(values, trends, regime_metrics):
             source=regime_metrics.get("Power Stress Source", "Current"),
             fallback_date=regime_metrics.get("Power Stress Fallback Date"),
             history_range=(-100, 100),
+            key_prefix="macro-power-stress",
         )
     with right:
         _render_metric_panel(
@@ -477,6 +487,7 @@ def _render_power_and_concentration(values, trends, regime_metrics):
             build_concentration_gauge,
             trends.get("concentration"),
             help_text=metric_help("Concentration HHI"),
+            key_prefix="macro-concentration-hhi",
         )
 
 
@@ -521,7 +532,12 @@ def _funding_mix_card(
 ):
     with _styled_card_container(card_key, border_color, min_height=175):
         st.metric(title, value_text, help=metric_help(help_key))
-        st.plotly_chart(fig, width="stretch", config={"responsive": True})
+        st.plotly_chart(
+            fig,
+            width="stretch",
+            config={"responsive": True},
+            key=f"{card_key}-chart",
+        )
 
 
 def _render_deployment_funding_mix(regime_metrics, sector_data=None):
@@ -563,7 +579,7 @@ def _render_deployment_funding_mix(regime_metrics, sector_data=None):
                 "Internal Funding Coverage",
             ),
             (
-                "Cash Reserve Coverage",
+                "Cash Reserve Runway",
                 _fmt_years(current.get("cash_reserve_coverage_years", np.nan)),
                 build_mini_line_history(
                     reserve_series,
@@ -572,7 +588,7 @@ def _render_deployment_funding_mix(regime_metrics, sector_data=None):
                 ),
                 "#60a5fa",
                 "funding-mix-reserves",
-                "Cash Reserve Coverage",
+                "Cash Reserve Runway",
             ),
             (
                 "Debt Financing Pulse",
@@ -618,6 +634,7 @@ def _render_borrower_strain(values, trend, regime_metrics):
                     build_borrower_strain_gauge(values["borrower_strain"]),
                     width="stretch",
                     config={"responsive": True},
+                    key="borrower-strain-gauge",
                 )
             else:
                 render_no_data_panel("Borrower Strain")
@@ -642,6 +659,7 @@ def _render_borrower_strain(values, trend, regime_metrics):
                 ),
                 width="stretch",
                 config={"responsive": True},
+                key="borrower-strain-history",
             )
 
         with component_col:
@@ -653,6 +671,7 @@ def _render_borrower_strain(values, trend, regime_metrics):
                 ),
                 width="stretch",
                 config={"responsive": True},
+                key="borrower-strain-components",
             )
 
     with st.expander("Borrower Strain Detail", expanded=False):
@@ -685,6 +704,7 @@ def _render_lender_strain(values, trend, regime_metrics):
                     ),
                     width="stretch",
                     config={"responsive": True},
+                    key="lender-strain-gauge",
                 )
             else:
                 render_no_data_panel("Lender Strain")
@@ -711,6 +731,7 @@ def _render_lender_strain(values, trend, regime_metrics):
                 ),
                 width="stretch",
                 config={"responsive": True},
+                key="lender-strain-history",
             )
 
         with component_col:
@@ -722,6 +743,7 @@ def _render_lender_strain(values, trend, regime_metrics):
                 ),
                 width="stretch",
                 config={"responsive": True},
+                key="lender-strain-components",
             )
 
     with st.expander("Lender Strain Detail", expanded=False):
@@ -752,7 +774,7 @@ def _render_financial_conditions_confirmation(fred_data, nfci_history):
     with st.container(border=True):
         st.subheader(
             "Financial Conditions Confirmation",
-            help=metric_help("Financial Conditions Confirmation"),
+            help=metric_help("NFCI"),
         )
         condition_col, value_col, direction_col, spark_col = st.columns(
             [1.35, 0.8, 1.05, 2.2]
@@ -773,6 +795,7 @@ def _render_financial_conditions_confirmation(fred_data, nfci_history):
                 build_nfci_sparkline(snapshot["history"], months=12),
                 width="stretch",
                 config={"displayModeBar": False, "responsive": True},
+                key="finance-nfci-sparkline",
             )
         st.caption(nfci_summary(value, change))
 
@@ -796,6 +819,7 @@ def _render_financial_conditions_confirmation(fred_data, nfci_history):
             build_nfci_history(snapshot["history"]),
             width="stretch",
             config={"responsive": True},
+            key="finance-nfci-detail-history",
         )
         st.caption(
             f"Source: Chicago Fed NFCI via {snapshot.get('source', 'FRED')}. "
@@ -1012,11 +1036,11 @@ def render_sector_assessment(macro_df, sector_data=None):
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        assessment_card("Most Crowded", selected_rows.get("Most Crowded"), "#7c3aed", "Most Crowded")
+        assessment_card("Most Crowded", selected_rows.get("Most Crowded"), "#7c3aed", "Trading Pressure")
     with col2:
-        assessment_card("Fastest Mover", selected_rows.get("Fastest Mover"), "#60a5fa", "Fastest Mover")
+        assessment_card("Fastest Mover", selected_rows.get("Fastest Mover"), "#60a5fa", "Sector Movement")
     with col3:
-        assessment_card("Biggest Risk", selected_rows.get("Biggest Risk"), "#94a3b8", "Biggest Risk")
+        assessment_card("Biggest Risk", selected_rows.get("Biggest Risk"), "#94a3b8", "Risk Breadth")
 
     st.markdown("---")
 
@@ -1028,10 +1052,10 @@ def render_positioning_charts(macro_df):
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Earnings Support", help=metric_help("Earnings Support"))
-        chart_box(build_positioning_map(macro_df))
+        chart_box(build_positioning_map(macro_df), key="legacy-earnings-support")
     with col2:
         st.subheader("Speculative Load", help=metric_help("Speculative Load"))
-        chart_box(build_rotation_matrix(macro_df))
+        chart_box(build_rotation_matrix(macro_df), key="legacy-speculative-load")
 
     st.markdown("---")
 

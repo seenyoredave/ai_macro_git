@@ -10,6 +10,7 @@ from analytics.sector_engine import build_sector_metrics
 from archive.archive import (
     append_benchmark_history,
     append_edgar_history,
+    append_energy_history,
     append_fred_history,
     append_macro_history,
     append_sector_history,
@@ -21,7 +22,9 @@ from config.market_clock import market_date
 from config.sector_config import SECTOR_CONFIG
 from helpers.render_sector import render_basket_tier_developer_tool
 from loaders.construction_loader import load_data_center_construction
+from loaders.debt_markets_loader import load_debt_markets_data
 from loaders.edgar_loader import build_edgar_archive_snapshot
+from loaders.energy_loader import load_energy_data
 from loaders.fred_loader import load_fred
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
@@ -31,8 +34,8 @@ from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v3.25"
-APP_STATE_SCHEMA_VERSION = "25.0-registry-section-divider"
+APP_VERSION = "v4.05"
+APP_STATE_SCHEMA_VERSION = "26.3-finance-debt-markets"
 
 
 st.set_page_config(
@@ -76,9 +79,21 @@ if "yfinance_refresh_token" not in st.session_state:
 if "edgar_refresh_token" not in st.session_state:
     st.session_state.edgar_refresh_token = 0
 
+if "force_energy_refresh" not in st.session_state:
+    st.session_state.force_energy_refresh = False
+
+if "energy_refresh_token" not in st.session_state:
+    st.session_state.energy_refresh_token = 0
+
+if "force_debt_markets_refresh" not in st.session_state:
+    st.session_state.force_debt_markets_refresh = False
+
+if "debt_markets_refresh_token" not in st.session_state:
+    st.session_state.debt_markets_refresh_token = 0
+
 
 def build_tabs():
-    return st.tabs(["AI MACRO", "FINANCE", "SECTORS", "EVIDENCE"])
+    return st.tabs(["AI MACRO", "FINANCE", "ENERGY", "SECTORS", "EVIDENCE"])
 
 
 def build_sector_dashboard_data():
@@ -146,7 +161,9 @@ def render_developer_load_report(report):
         st.markdown(f"**{label}**")
         st.write(f"Mode: `{block.get('source_mode', 'unknown')}`")
         st.write(f"Elapsed: `{fmt_seconds(block.get('elapsed_sec'))}`")
-        st.write(f"Returned: `{block.get('returned_tickers', 0)}` tickers")
+        returned = block.get("returned_series", block.get("returned_tickers", 0))
+        unit = "series" if "returned_series" in block else "tickers"
+        st.write(f"Returned: `{returned}` {unit}")
         if block.get("decision"):
             st.write(f"Decision: `{block.get('decision')}`")
         if block.get("refresh_trigger"):
@@ -164,6 +181,8 @@ def render_developer_load_report(report):
             st.write(f"Requested: `{block.get('requested_at_utc')}`")
         if block.get("latest_complete_date"):
             st.write(f"Latest complete archive: `{block.get('latest_complete_date')}`")
+        if block.get("error"):
+            st.error(str(block.get("error")))
         if fallback_symbols:
             shown = ", ".join(fallback_symbols[:30])
             suffix = "" if len(fallback_symbols) <= 30 else f" … +{len(fallback_symbols) - 30}"
@@ -177,6 +196,10 @@ def render_developer_load_report(report):
     render_source("YFinance", report.get("yfinance"))
     st.markdown("---")
     render_source("EDGAR", report.get("edgar"))
+    st.markdown("---")
+    render_source("Energy", report.get("energy"))
+    st.markdown("---")
+    render_source("Debt Markets", report.get("debt_markets"))
 
 
 with st.sidebar:
@@ -204,6 +227,18 @@ with st.sidebar:
     if st.button("Refresh EDGAR", use_container_width=True):
         st.session_state.edgar_refresh_token += 1
         st.session_state.force_edgar_refresh = True
+        st.session_state.force_rebuild = True
+        st.rerun()
+
+    if st.button("Refresh Energy", use_container_width=True):
+        st.session_state.energy_refresh_token += 1
+        st.session_state.force_energy_refresh = True
+        st.session_state.force_rebuild = True
+        st.rerun()
+
+    if st.button("Refresh Debt Markets", use_container_width=True):
+        st.session_state.debt_markets_refresh_token += 1
+        st.session_state.force_debt_markets_refresh = True
         st.session_state.force_rebuild = True
         st.rerun()
 
@@ -257,6 +292,26 @@ if st.session_state.force_rebuild:
         macro_history=macro_history,
     )
 
+    energy_data = load_energy_data(
+        fred_data=fred_data,
+        force_refresh=st.session_state.force_energy_refresh,
+        refresh_token=st.session_state.energy_refresh_token,
+    )
+    debt_markets_data = load_debt_markets_data(
+        force_refresh=st.session_state.force_debt_markets_refresh,
+        refresh_token=st.session_state.debt_markets_refresh_token,
+    )
+    market_report = dict(st.session_state.get("market_universe_load_report", {}) or {})
+    market_report["energy"] = energy_data.get("load_report", {})
+    market_report["debt_markets"] = debt_markets_data.get("load_report", {})
+    market_report["total_elapsed_sec"] = float(
+        market_report.get("total_elapsed_sec", 0.0) or 0.0
+    ) + float((energy_data.get("load_report", {}) or {}).get("elapsed_sec", 0.0) or 0.0)
+    market_report["total_elapsed_sec"] += float(
+        (debt_markets_data.get("load_report", {}) or {}).get("elapsed_sec", 0.0) or 0.0
+    )
+    st.session_state.market_universe_load_report = market_report
+
     if not st.session_state.archive_suspended:
         append_macro_history(regime_metrics, fred_data)
         append_sector_history(sector_metrics)
@@ -278,6 +333,7 @@ if st.session_state.force_rebuild:
         )
         append_edgar_history(edgar_snapshot)
         append_fred_history(fred_data)
+        append_energy_history(energy_data)
 
     st.session_state.sector_data = sector_data
     st.session_state.sector_metrics = sector_metrics
@@ -285,8 +341,12 @@ if st.session_state.force_rebuild:
     st.session_state.nfci_history = nfci_history
     st.session_state.construction_data = construction_data
     st.session_state.regime_metrics = regime_metrics
+    st.session_state.energy_data = energy_data
+    st.session_state.debt_markets_data = debt_markets_data
     st.session_state.force_yfinance_refresh = False
     st.session_state.force_edgar_refresh = False
+    st.session_state.force_energy_refresh = False
+    st.session_state.force_debt_markets_refresh = False
     st.session_state.force_rebuild = False
 
 
@@ -295,6 +355,8 @@ sector_metrics = st.session_state.sector_metrics
 fred_data = st.session_state.fred_data
 nfci_history = st.session_state.get("nfci_history")
 regime_metrics = st.session_state.regime_metrics
+energy_data = st.session_state.get("energy_data", {})
+debt_markets_data = st.session_state.get("debt_markets_data", {})
 
 
 ticker_count = len({
@@ -343,4 +405,6 @@ else:
         fred_data,
         regime_metrics,
         nfci_history=nfci_history,
+        energy_data=energy_data,
+        debt_markets_data=debt_markets_data,
     )

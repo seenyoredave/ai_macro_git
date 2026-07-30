@@ -31,9 +31,9 @@ def test_metric_card_and_chart_helpers_are_individually_defined():
         "Economic Validation Gap",
         "AI-Industrial Growth Gap",
         "Power Capacity Gap",
-        "Most Crowded",
-        "Fastest Mover",
-        "Biggest Risk",
+        "Trading Pressure",
+        "Sector Movement",
+        "Risk Breadth",
         "Earnings Support",
         "Speculative Load",
     ]
@@ -73,7 +73,6 @@ def test_metric_registry_excludes_broad_section_titles():
     for title in (
         "AI Economy Snapshot",
         "Gap Scores",
-        "Borrower Strain",
         "Current Sector Assessment",
     ):
         assert f'    "{title}":' not in definitions
@@ -82,11 +81,11 @@ def test_metric_registry_excludes_broad_section_titles():
     for title in (
         "AI Economy Snapshot",
         "Gap Scores",
-        "Borrower Strain",
         "Current Sector Assessment",
     ):
         assert f'        "{title}",' not in registry_block
 
+    assert '        "Borrower Strain",' in registry_block
     assert '        "Lender Strain",' in registry_block
     assert 'render_section("Credit Conditions")' in renderer
     assert 'title="Borrower Strain"' in renderer

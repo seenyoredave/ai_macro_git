@@ -16,6 +16,8 @@ from analytics.macro_dataframe import build_macro_dashboard_data
 from analytics.regime_engine import AEI_VERSION, PRESSURE_VERSION
 from analytics.valuation import SECTOR_VALUATION_VERSION
 from analytics.sector_assessment import select_current_sector_assessment
+from config.debt_markets_config import DEBT_MARKET_SERIES
+from config.energy_config import ENERGY_SERIES
 from config.factor_config import FACTOR_DISPLAY_NAMES
 from config.metric_definitions import METRIC_DEFINITIONS
 from helpers.gaps import industrial_growth_gap
@@ -54,7 +56,9 @@ from research_overlay.visuals import (
     COLORS,
     component_bars,
     current_gap_bars,
+    dual_history,
     earnings_support_map,
+    debt_market_history,
     financial_conditions_history,
     funding_history,
     history_from_frame,
@@ -148,20 +152,37 @@ TAB_METRIC_REGISTRIES = {
     ],
     "finance": [
         "Internal Funding Coverage",
-        "Cash Reserve Coverage",
+        "Cash Reserve Runway",
         "Debt Financing Pulse",
         "Forward Commitment Load",
+        "Corporate Bond Market Distress",
+        "Investment-Grade Bond Distress",
+        "High-Yield Bond Distress",
+        "Borrower Strain",
         "Lender Strain",
-        "Financial Conditions Confirmation",
+        "NFCI",
+        "ANFCI",
+    ],
+    "energy": [
+        "Henry Hub Natural Gas",
+        "WTI Crude Oil",
+        "Coal Production",
+        "Renewable Power Output",
+        "Electric Power Output",
+        "Electric Power Capacity",
+        "Electric Power Capacity Utilization",
+        "Power Stress Index",
+        "Power Capacity Gap",
     ],
     "sectors": [
+        "Sector AI Equity Index",
+        "Trading Pressure",
         "Forward EV/EBIT",
         "Loss-Making EV Share",
         "Earnings Support",
         "Speculative Load",
-        "Most Crowded",
-        "Fastest Mover",
-        "Biggest Risk",
+        "Sector Movement",
+        "Risk Breadth",
     ],
 }
 
@@ -199,11 +220,15 @@ def _financial_condition_source_stat(*, source, fallback_date, trend, components
         if not parsed.empty:
             history_date = parsed.max()
     observation_date = fallback_date or _latest_component_date(components) or history_date
-    date_text = fmt_date(observation_date)
+    parsed_date = pd.to_datetime(observation_date, errors="coerce", format="mixed")
+    date_text = (
+        "n/a"
+        if pd.isna(parsed_date)
+        else f"{parsed_date.month}.{parsed_date.day}.{parsed_date.year}"
+    )
     if is_archive:
         return "Source", "Archive", date_text
-    note = f"{live_sources}  \n{date_text}"
-    return "Source", "Live data", note
+    return "Source", "Live data", f"{live_sources} · {date_text}"
 
 
 def _render_primary_macro_cards(regime_metrics, trends):
@@ -292,6 +317,7 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
                 current_gap_bars(gaps),
                 width="stretch",
                 config={"displayModeBar": False, "responsive": True},
+                key="macro-current-divergence-chart",
             )
         with measures_col:
             render_statline(
@@ -317,14 +343,14 @@ def _render_macro_components(regime_metrics, sector_data):
 
     hhi_breakdown = hhi_component_breakdown(sector_data, top_n=5)
     groups = [
-        ("ADI pillars", adi_result.get("components", {}), False, COLORS["violet"]),
-        ("Validation legs", validation_result.get("components", {}), False, COLORS["blue"]),
-        ("Power-stress components", power_result.get("components", {}), True, COLORS["violet"]),
+        ("macro-adi-components", "ADI pillars", adi_result.get("components", {}), False, COLORS["violet"]),
+        ("macro-validation-components", "Validation legs", validation_result.get("components", {}), False, COLORS["blue"]),
+        ("macro-power-stress-components", "Power-stress components", power_result.get("components", {}), True, COLORS["violet"]),
     ]
     first_row = st.columns(2)
     second_row = st.columns(2)
     component_columns = first_row + second_row
-    for col, (title, components, signed, color) in zip(component_columns[:3], groups):
+    for col, (chart_key, title, components, signed, color) in zip(component_columns[:3], groups):
         with col:
             with st.container(border=True):
                 render_panel_heading(title)
@@ -337,6 +363,7 @@ def _render_macro_components(regime_metrics, sector_data):
                     ),
                     width="stretch",
                     config={"displayModeBar": False, "responsive": True},
+                    key=chart_key,
                 )
     with component_columns[3]:
         with st.container(border=True):
@@ -345,6 +372,7 @@ def _render_macro_components(regime_metrics, sector_data):
                 hhi_component_chart(hhi_breakdown),
                 width="stretch",
                 config={"displayModeBar": False, "responsive": True},
+                key="macro-concentration-contributors",
             )
 
     with st.expander("Component observations and normalization", expanded=False):
@@ -421,7 +449,7 @@ def _funding_specs(funding_mix):
         ),
         (
             "finance-crc",
-            "Cash Reserve Coverage",
+            "Cash Reserve Runway",
             current.get("cash_reserve_coverage_years"),
             fmt_number(current.get("cash_reserve_coverage_years"), 2, suffix="y"),
             "Cash / TTM CapEx",
@@ -484,6 +512,7 @@ def _render_funding_section(regime_metrics):
             funding_history(history, years=10),
             width="stretch",
             config={"displayModeBar": True, "responsive": True},
+            key="finance-funding-diagnostics-history",
         )
 
     current = funding_mix.get("current", {}) or {}
@@ -558,17 +587,86 @@ def _render_financial_condition_product(
                 ),
                 width="stretch",
                 config={"displayModeBar": True, "responsive": True},
+                key=f"finance-{title.lower().replace(' ', '-')}-history",
             )
         with components_col:
             st.plotly_chart(
                 component_bars(components, signed=True, height=300),
                 width="stretch",
                 config={"displayModeBar": True, "responsive": True},
+                key=f"finance-{title.lower().replace(' ', '-')}-components",
             )
         st.caption(note)
 
     with st.expander(f"{title} component detail", expanded=False):
         st.dataframe(arrow_safe_dataframe(detail_table), width="stretch", hide_index=True)
+
+
+def _debt_market_item(debt_markets_data, name):
+    return (((debt_markets_data or {}).get("series", {}) or {}).get(name, {}) or {})
+
+
+def _render_debt_markets(debt_markets_data):
+    cards = [
+        (
+            "finance-debt-market",
+            "Corporate Bond Market Distress",
+            "Primary and secondary markets",
+            "violet",
+        ),
+        (
+            "finance-debt-ig",
+            "Investment-Grade Bond Distress",
+            "Investment-grade segment",
+            "blue",
+        ),
+        (
+            "finance-debt-hy",
+            "High-Yield Bond Distress",
+            "High-yield segment",
+            "slate",
+        ),
+    ]
+    for column, (key, name, context, accent) in zip(st.columns(3), cards):
+        item = _debt_market_item(debt_markets_data, name)
+        with column:
+            metric_card(
+                key=key,
+                label=name,
+                value=item.get("value"),
+                value_text=fmt_number(item.get("value"), 2),
+                context=context,
+                history=item.get("history"),
+                scale=(0, 0.85),
+                source=item.get("source", "New York Fed archive"),
+                fallback_date=item.get("date"),
+                accent=accent,
+                years=10,
+            )
+
+    with st.container(border=True):
+        render_panel_heading("Corporate bond market history")
+        st.plotly_chart(
+            debt_market_history((debt_markets_data or {}).get("history"), years=10),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="finance-debt-market-history",
+        )
+
+
+def _debt_market_source_rows(debt_markets_data):
+    rows = []
+    for name, spec in DEBT_MARKET_SERIES.items():
+        item = _debt_market_item(debt_markets_data, name)
+        rows.append(
+            {
+                "Series": spec.get("display_name", name),
+                "Reading": fmt_number(item.get("value"), 2),
+                "Observation Date": fmt_date(item.get("date")),
+                "Source": str(item.get("source") or "New York Fed"),
+            }
+        )
+    return pd.DataFrame(rows)
 
 
 def _render_nfci(fred_data, nfci_history):
@@ -584,7 +682,7 @@ def _render_nfci(fred_data, nfci_history):
                 ("NFCI/ANFCI", paired_value, "headline / macro-adjusted"),
                 ("3-month change", fmt_number(change, 3, signed=True), nfci_direction(change)),
                 ("Observation", fmt_date(snapshot.get("as_of")), snapshot.get("source", "FRED")),
-                ("Source", "Chicago Fed NFCI", "updated every Wednesday at 8:30am ET"),
+                ("Source", "Chicago Fed NFCI", "updated Wednesday at 8:30am ET"),
             ],
             key_prefix="finance-nfci-confirmation",
         )
@@ -592,10 +690,11 @@ def _render_nfci(fred_data, nfci_history):
             financial_conditions_history(snapshot.get("history"), height=275),
             width="stretch",
             config={"displayModeBar": True, "responsive": True},
+            key="finance-nfci-history",
         )
 
 
-def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, nfci_history, dashboard_data):
+def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, nfci_history, debt_markets_data, dashboard_data):
     del sector_metrics, sector_data
     render_tab_header(
         "Finance",
@@ -606,6 +705,9 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
     _render_tab_metric_registry("finance")
     render_section("Funding profile", "Current funding ratios and retained cohort history.")
     _render_funding_section(regime_metrics)
+
+    render_section("Debt Markets")
+    _render_debt_markets(debt_markets_data)
 
     render_section("Credit Conditions")
     render_line_break()
@@ -641,6 +743,285 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
 
     _render_nfci(fred_data, nfci_history)
 
+
+
+def _energy_item(energy_data, name):
+    return (((energy_data or {}).get("series", {}) or {}).get(name, {}) or {})
+
+
+def _energy_source_label(energy_data):
+    mode = str((energy_data or {}).get("source_mode", ""))
+    if mode.startswith("live"):
+        return "Live data"
+    if mode == "unavailable":
+        return "Unavailable"
+    return "Archive"
+
+
+def _energy_source_rows(energy_data):
+    """Return the Energy source observations shown in the Evidence tab."""
+    rows = []
+    for name, spec in ENERGY_SERIES.items():
+        item = _energy_item(energy_data, name)
+        value = pd.to_numeric(item.get("value"), errors="coerce")
+        change = pd.to_numeric(item.get("change_pct"), errors="coerce")
+        unit = str(item.get("unit") or spec.get("unit") or "")
+
+        if unit.startswith("$"):
+            reading = f"${fmt_number(value, 2)}"
+        elif unit == "%":
+            reading = fmt_number(value, 1, suffix="%")
+        else:
+            reading = fmt_number(value, 1)
+
+        if spec.get("change_days"):
+            change_period = "4-week"
+        elif int(spec.get("change_months") or 0) == 3:
+            change_period = "3-month"
+        else:
+            change_period = "12-month"
+
+        rows.append(
+            {
+                "Series": spec.get("display_name", name),
+                "Reading": reading,
+                "Change": f"{change_period} {fmt_number(change, 1, signed=True, suffix='%')}",
+                "Observation Date": fmt_date(item.get("date")),
+                "Source": str(item.get("source") or _energy_source_label(energy_data)),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _energy_change_text(item, period):
+    change = pd.to_numeric((item or {}).get("change_pct"), errors="coerce")
+    return f"{period} {fmt_number(change, 1, signed=True, suffix='%')}"
+
+
+def _year_over_year_history(item):
+    """Convert a monthly level history to exact 12-month percentage changes."""
+    history = (item or {}).get("history")
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty:
+        return pd.DataFrame(columns=["Date", "Value"])
+    if not {"Date", "Value"}.issubset(history.columns):
+        return pd.DataFrame(columns=["Date", "Value"])
+
+    clean = history[["Date", "Value"]].copy()
+    clean["Date"] = pd.to_datetime(clean["Date"], errors="coerce", format="mixed")
+    clean["Value"] = pd.to_numeric(clean["Value"], errors="coerce")
+    clean = (
+        clean.dropna(subset=["Date", "Value"])
+        .sort_values("Date", kind="stable")
+        .drop_duplicates("Date", keep="last")
+    )
+    if clean.empty:
+        return pd.DataFrame(columns=["Date", "Value"])
+
+    monthly = clean.set_index(clean["Date"].dt.to_period("M"))["Value"]
+    growth = monthly.pct_change(periods=12, fill_method=None) * 100.0
+    output = pd.DataFrame(
+        {
+            "Date": growth.index.to_timestamp(),
+            "Value": growth.to_numpy(dtype=float),
+        }
+    )
+    return output.replace([np.inf, -np.inf], np.nan).dropna(subset=["Value"])
+
+
+def _render_energy_supply(energy_data):
+    specs = [
+        ("energy-gas", "Natural Gas Price", "Henry Hub Natural Gas", (0, 15), "violet", "4-week change"),
+        ("energy-oil", "WTI Crude Oil", "WTI Crude Oil", (20, 160), "blue", "4-week change"),
+        ("energy-coal", "Coal Production", "Coal Production", (40, 140), "slate", "3-month change"),
+        ("energy-renewables", "Renewable Power Output", "Renewable Power Output", (50, 300), "green", "3-month change"),
+    ]
+    source = _energy_source_label(energy_data)
+    for column, (key, series_name, label, scale, accent, period) in zip(st.columns(4), specs):
+        item = _energy_item(energy_data, series_name)
+        value = pd.to_numeric(item.get("value"), errors="coerce")
+        if series_name in {"Natural Gas Price", "WTI Crude Oil"}:
+            value_text = f"${fmt_number(value, 2)}"
+        else:
+            value_text = fmt_number(value, 1)
+        with column:
+            metric_card(
+                key=key,
+                label=label,
+                value=value,
+                value_text=value_text,
+                context=_energy_change_text(item, period),
+                history=item.get("history"),
+                scale=scale,
+                source=source,
+                fallback_date=item.get("date"),
+                accent=accent,
+                years=6,
+            )
+
+
+def _render_power_production(energy_data, regime_metrics):
+    output = _energy_item(energy_data, "Electric Power Output")
+    capacity = _energy_item(energy_data, "Electric Power Capacity")
+    utilization = _energy_item(energy_data, "Electric Power Utilization")
+    with st.container(border=True):
+        render_statline(
+            [
+                ("Output index", fmt_number(output.get("value"), 1), _energy_change_text(output, "12-month change")),
+                ("Capacity index", fmt_number(capacity.get("value"), 1), _energy_change_text(capacity, "12-month change")),
+                ("Utilization", fmt_number(utilization.get("value"), 1, suffix="%"), _energy_change_text(utilization, "12-month change")),
+                ("Power Stress", fmt_number(_value(regime_metrics, "Power Stress Index"), 1, signed=True), _metric_context("Power Stress Index", _value(regime_metrics, "Power Stress Index"))),
+            ],
+            key_prefix="energy-power-production",
+        )
+        st.plotly_chart(
+            dual_history(
+                output.get("history"),
+                capacity.get("history"),
+                first_name="Electric power output",
+                second_name="Electric power capacity",
+                first_color=COLORS["violet"],
+                second_color=COLORS["blue"],
+                years=8,
+                height=330,
+            ),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="energy-power-production-history",
+        )
+
+
+def _render_grid_capacity(regime_metrics, dashboard_data, energy_data):
+    value = _value(regime_metrics, "Power Capacity Gap")
+    result = (regime_metrics or {}).get("Power Capacity Gap Components", {}) or {}
+    components = result.get("components", {}) or {}
+
+    output_component = components.get("Delivered Power Growth", {}) or {}
+    capacity_component = components.get("Installed Capacity Growth", {}) or {}
+    output_growth = pd.to_numeric(output_component.get("raw"), errors="coerce") * 100.0
+    capacity_growth = pd.to_numeric(capacity_component.get("raw"), errors="coerce") * 100.0
+    utilization = pd.to_numeric(
+        _energy_item(energy_data, "Electric Power Utilization").get("value"),
+        errors="coerce",
+    )
+
+    left, right = st.columns([0.8, 1.2])
+    with left:
+        metric_card(
+            key="energy-capacity-gap",
+            label="Power Capacity Gap",
+            value=value,
+            value_text=fmt_number(value, 1, signed=True),
+            context=power_capacity_gap_label(value),
+            history=dashboard_data["trends"].get("power_capacity_gap_trend", {}).get("history"),
+            scale=(-100, 100),
+            source=_source(regime_metrics, "Power Capacity Gap"),
+            fallback_date=_fallback(regime_metrics, "Power Capacity Gap"),
+            accent="violet",
+            reference=0,
+        )
+    with right:
+        render_statline(
+            [
+                (
+                    "Output growth",
+                    fmt_number(output_growth, 1, signed=True, suffix="%"),
+                    "12-month",
+                ),
+                (
+                    "Capacity growth",
+                    fmt_number(capacity_growth, 1, signed=True, suffix="%"),
+                    "12-month",
+                ),
+                (
+                    "Capacity utilization",
+                    fmt_number(utilization, 1, suffix="%"),
+                    "current",
+                ),
+            ],
+            key_prefix="energy-grid-capacity",
+        )
+
+    output_history = _year_over_year_history(
+        _energy_item(energy_data, "Electric Power Output")
+    )
+    capacity_history = _year_over_year_history(
+        _energy_item(energy_data, "Electric Power Capacity")
+    )
+    with st.container(border=True):
+        render_panel_heading("Power-system response", "12-month change")
+        st.plotly_chart(
+            dual_history(
+                output_history,
+                capacity_history,
+                first_name="Electric power output",
+                second_name="Installed power capacity",
+                first_color=COLORS["violet"],
+                second_color=COLORS["blue"],
+                reference=0,
+                years=8,
+                height=310,
+                value_suffix="%",
+            ),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="energy-grid-capacity-growth",
+        )
+
+
+def _render_ai_energy_demand(regime_metrics):
+    capacity_result = (regime_metrics or {}).get("Power Capacity Gap Components", {}) or {}
+    capacity_components = capacity_result.get("components", {}) or {}
+    power_result = (regime_metrics or {}).get("Power Stress Components", {}) or {}
+    footprint_components = power_result.get("footprint_components", {}) or {}
+    demand_components = {
+        name: payload
+        for name, payload in capacity_components.items()
+        if (payload or {}).get("channel") == "Deployment Pressure"
+    }
+    demand_components.update(footprint_components)
+
+    construction = demand_components.get("Data Center Construction", {}) or {}
+    deployment = demand_components.get("Capital Deployment", {}) or {}
+    commercial = demand_components.get("Commercial Load Growth", {}) or {}
+    footprint = pd.to_numeric(power_result.get("footprint_score"), errors="coerce")
+    render_statline(
+        [
+            ("Data-center construction", fmt_number(construction.get("score"), 1), "normalized activity"),
+            ("Capital deployment", fmt_number(deployment.get("score"), 1), "normalized CapEx growth"),
+            ("Commercial load growth", fmt_number(pd.to_numeric(commercial.get("raw"), errors="coerce") * 100, 1, signed=True, suffix="%"), "year over year"),
+            ("Power footprint", fmt_number(footprint, 1), "ADI demand pillar"),
+        ],
+        key_prefix="energy-ai-demand",
+    )
+    with st.container(border=True):
+        render_panel_heading("Demand indicators", "Normalized 0–100")
+        st.plotly_chart(
+            component_bars(demand_components, signed=False, height=300, color=COLORS["violet"]),
+            width="stretch",
+            config={"displayModeBar": False, "responsive": True},
+            key="energy-ai-demand-indicators",
+        )
+
+def render_energy_tab(fred_data, regime_metrics, energy_data, dashboard_data):
+    del fred_data
+    render_tab_header(
+        "Energy",
+        "Fuel supply, power production, grid capacity, and AI-linked electricity demand.",
+        "weekly / fuel / power / grid",
+    )
+    render_line_break()
+    _render_tab_metric_registry("energy")
+    render_section("Energy supply", "Current fuel prices and production momentum.")
+    _render_energy_supply(energy_data)
+
+    render_section("Power production", "Electric-power output, capacity, utilization, and system pressure.")
+    _render_power_production(energy_data, regime_metrics)
+
+    render_section("Grid capacity", "Delivered power and installed capacity relative to deployment pressure.")
+    _render_grid_capacity(regime_metrics, dashboard_data, energy_data)
+
+    render_section("AI energy demand", "Construction, capital deployment, and commercial-load evidence.")
+    _render_ai_energy_demand(regime_metrics)
 
 def _assessment_stats(macro_df, sector_data):
     selections = select_current_sector_assessment(macro_df, sector_data=sector_data)
@@ -814,6 +1195,7 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
                 sector_factor_chart(factor_frame),
                 width="stretch",
                 config={"displayModeBar": False, "responsive": True},
+                key="sector-detail-aei-factor-structure",
             )
     with pressure_col:
         with st.container(border=True):
@@ -822,6 +1204,7 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
                 pressure_component_chart(metrics.get("Pressure Components", pd.DataFrame())),
                 width="stretch",
                 config={"displayModeBar": False, "responsive": True},
+                key="sector-detail-trading-pressure-structure",
             )
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -862,6 +1245,7 @@ def render_sectors_tab(sector_metrics, sector_data, regime_metrics, dashboard_da
                 earnings_support_map(macro_df),
                 width="stretch",
                 config={"responsive": True},
+                key="sectors-earnings-support",
             )
     with right:
         with st.container(border=True):
@@ -873,6 +1257,7 @@ def render_sectors_tab(sector_metrics, sector_data, regime_metrics, dashboard_da
                 speculative_load_matrix(macro_df),
                 width="stretch",
                 config={"responsive": True},
+                key="sectors-speculative-load",
             )
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -952,7 +1337,7 @@ def _coverage_rows(regime_metrics):
     rows.extend(
         [
             {"Product": "Internal Funding Coverage", "Valid Components": _display_text(current.get("internal_funding_companies", "")), "Required Universe": "company cohort", "Coverage": "cohort coverage"},
-            {"Product": "Cash Reserve Coverage", "Valid Components": _display_text(current.get("cash_reserve_companies", "")), "Required Universe": "company cohort", "Coverage": "cohort coverage"},
+            {"Product": "Cash Reserve Runway", "Valid Components": _display_text(current.get("cash_reserve_companies", "")), "Required Universe": "company cohort", "Coverage": "cohort coverage"},
             {"Product": "Forward Commitment Load", "Valid Components": _display_text(current.get("commitment_companies", "")), "Required Universe": "commitment ledger", "Coverage": "ledger coverage"},
         ]
     )
@@ -1022,7 +1407,7 @@ def _sector_methodology_rows():
     )
 
 
-def render_evidence_tab(fred_data, sector_data, regime_metrics):
+def render_evidence_tab(fred_data, sector_data, regime_metrics, energy_data, debt_markets_data):
     render_tab_header(
         "Evidence",
         "Model contract, current source state, component coverage, definitions, and source data.",
@@ -1036,6 +1421,10 @@ def render_evidence_tab(fred_data, sector_data, regime_metrics):
     render_section("Source Data")
     render_macro_data(fred_data)
     render_edgar_data(sector_data)
+    with st.expander("Energy Data", expanded=False):
+        render_static_table(_energy_source_rows(energy_data))
+    with st.expander("Debt Markets Data", expanded=False):
+        render_static_table(_debt_market_source_rows(debt_markets_data))
 
     render_section("Product status", "Current readings, source state, fallback dates, and calculation versions.")
     render_static_table(_status_rows(regime_metrics))
@@ -1054,6 +1443,8 @@ def render_research_dashboard(
     fred_data,
     regime_metrics,
     nfci_history=None,
+    energy_data=None,
+    debt_markets_data=None,
 ):
     dashboard_data = build_macro_dashboard_data(
         sector_metrics=sector_metrics,
@@ -1075,14 +1466,28 @@ def render_research_dashboard(
             fred_data,
             regime_metrics,
             nfci_history,
+            debt_markets_data or {},
             dashboard_data,
         )
     with tabs[2]:
+        render_energy_tab(
+            fred_data,
+            regime_metrics,
+            energy_data or {},
+            dashboard_data,
+        )
+    with tabs[3]:
         render_sectors_tab(
             sector_metrics,
             sector_data,
             regime_metrics,
             dashboard_data,
         )
-    with tabs[3]:
-        render_evidence_tab(fred_data, sector_data, regime_metrics)
+    with tabs[4]:
+        render_evidence_tab(
+            fred_data,
+            sector_data,
+            regime_metrics,
+            energy_data or {},
+            debt_markets_data or {},
+        )

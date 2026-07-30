@@ -4,9 +4,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_research_overlay_keeps_four_primary_tabs():
+def test_research_overlay_keeps_five_primary_tabs():
     source = (ROOT / "ai_macro.py").read_text()
-    assert '["AI MACRO", "FINANCE", "SECTORS", "EVIDENCE"]' in source
+    assert '["AI MACRO", "FINANCE", "ENERGY", "SECTORS", "EVIDENCE"]' in source
 
 
 def test_ai_macro_is_the_only_streamlit_entrypoint():
@@ -29,15 +29,18 @@ def test_research_overlay_retains_existing_products():
         "Economic Validation Gap",
         "AI–Industrial Growth Gap",
         "Internal Funding Coverage",
-        "Cash Reserve Coverage",
+        "Cash Reserve Runway",
         "Debt Financing Pulse",
         "Forward Commitment Load",
         "Borrower Strain",
         "Lender Strain",
+        "Corporate Bond Market Distress",
+        "Investment-Grade Bond Distress",
+        "High-Yield Bond Distress",
         "Financial Conditions Confirmation",
-        "Most Crowded",
-        "Fastest Mover",
-        "Biggest Risk",
+        "Trading Pressure",
+        "Sector Movement",
+        "Risk Breadth",
         "Loss-Making EV Share",
     ]
     for product in required_products:
@@ -126,7 +129,7 @@ def test_finance_tab_cleanup_contract_is_present():
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
     assert 'render_section("Credit Conditions")' in renderer
     assert 'render_section("System confirmation"' not in renderer
-    assert '("Source", "Chicago Fed NFCI", "updated every Wednesday at 8:30am ET")' in renderer
+    assert '("Source", "Chicago Fed NFCI", "updated Wednesday at 8:30am ET")' in renderer
     assert 'funding_history(history, years=10)' in renderer
     assert 'years=10' in renderer
     assert '.modebar {' not in theme
@@ -161,7 +164,8 @@ def test_ai_macro_cleanup_contract_is_present():
     assert '"Equity trends, observable deployment, power utilization, and validation gaps."' in source
     assert 'render_section("Gap Measures", "Approximations of divergence from broader economic trends.")' in source
     assert '"Expectations and development"' not in source
-    assert 'dual_history(' not in source
+    macro_block = source.split("def render_macro_tab", 1)[1].split("def _funding_specs", 1)[0]
+    assert 'dual_history(' not in macro_block
     assert 'render_section("Component evidence", "Structural decomposition of top-level AI economy metrics.")' in source
     assert 'chart_col, measures_col = st.columns([1.05, 1.25])' in source
 
@@ -212,7 +216,7 @@ def test_gap_scale_note_is_attached_to_chart_column():
 def test_developer_tools_header_includes_right_aligned_version_and_divider():
     app = (ROOT / "ai_macro.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert 'APP_VERSION = "v3.25"' in app
+    assert 'APP_VERSION = "v4.05"' in app
     assert 'class="rm-developer-tools-header"' in app
     assert 'class="rm-developer-tools-version"' in app
     assert 'class="rm-developer-tools-divider"' in app
@@ -238,7 +242,7 @@ def test_research_ui_cleanup_is_structurally_present():
     assert '("Acceleration", fmt_number((trend or {}).get("acceleration"), 2, signed=True), None)' in renderer
     assert 'source_stat,' in renderer
 
-    for tab in ("macro", "finance", "sectors"):
+    for tab in ("macro", "finance", "energy", "sectors"):
         assert f'_render_tab_metric_registry("{tab}")' in renderer
     assert '_render_tab_metric_registry("evidence")' not in renderer
 
@@ -260,7 +264,7 @@ def test_deliberate_line_breaks_separate_dashboard_layers():
     assert 'def render_line_break()' in components
     assert 'st.markdown("<br>", unsafe_allow_html=True)' in components
 
-    for tab in ("macro", "finance", "sectors"):
+    for tab in ("macro", "finance", "energy", "sectors"):
         expected = (
             'render_line_break()\n'
             f'    _render_tab_metric_registry("{tab}")'
@@ -286,6 +290,7 @@ def test_first_content_section_after_each_metric_registry_uses_standard_divider(
     expected = (
         ('_render_tab_metric_registry("macro")', 'render_section("Regime board", "Current readings with retained histories and source state.")'),
         ('_render_tab_metric_registry("finance")', 'render_section("Funding profile", "Current funding ratios and retained cohort history.")'),
+        ('_render_tab_metric_registry("energy")', 'render_section("Energy supply", "Current fuel prices and production momentum.")'),
         ('_render_tab_metric_registry("sectors")', 'render_section("Cross-sector state", "Current leaders in market behavior.")'),
     )
     for registry_call, section_call in expected:

@@ -18,6 +18,7 @@ def run(command: list[str]) -> None:
 def main() -> int:
     run([sys.executable, "-m", "compileall", "-q", "."])
     run([sys.executable, "-m", "pytest", "-q"])
+    run([sys.executable, "tools/render_smoke.py"])
     return 0
 
 

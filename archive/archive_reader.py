@@ -29,6 +29,7 @@ def resolve_archive_path(archive_path: str | Path) -> Path:
 ARCHIVE_PATHS = {
     "benchmark": ARCHIVE_DIR / "benchmark_history.csv",
     "edgar": ARCHIVE_DIR / "edgar_history.csv",
+    "energy": ARCHIVE_DIR / "energy_history.csv",
     "fred": ARCHIVE_DIR / "fred_history.csv",
     "macro": ARCHIVE_DIR / "macro_history.csv",
     "sector": ARCHIVE_DIR / "sector_history.csv",
@@ -38,6 +39,7 @@ ARCHIVE_PATHS = {
 ARCHIVE_KEYS = {
     "benchmark": ["Date", "Benchmark"],
     "edgar": ["Date", "Sector", "Ticker"],
+    "energy": ["Date"],
     "fred": ["Date"],
     "macro": ["Date"],
     "sector": ["Date", "Sector"],
@@ -172,6 +174,10 @@ def load_edgar_history():
         ARCHIVE_PATHS["edgar"],
         required_columns=EDGAR_REQUIRED_COLUMNS,
     )
+
+
+def load_energy_history():
+    return read_archive(ARCHIVE_PATHS["energy"])
 
 
 def load_fred_history():

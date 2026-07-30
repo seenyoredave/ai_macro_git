@@ -150,6 +150,7 @@ def dual_history(
     reference=None,
     height=330,
     years=6,
+    value_suffix="",
 ):
     frames = [clean_history(first), clean_history(second)]
     latest = [frame["Date"].max() for frame in frames if not frame.empty]
@@ -171,13 +172,17 @@ def dual_history(
                 mode="lines",
                 name=name,
                 line={"color": color, "width": 2.6},
-                hovertemplate=f"%{{x|%Y-%m-%d}}<br>{name}: %{{y:.1f}}<extra></extra>",
+                hovertemplate=(
+                    f"%{{x|%Y-%m-%d}}<br>{name}: %{{y:.1f}}{value_suffix}<extra></extra>"
+                ),
             )
         )
     if reference is not None:
         fig.add_hline(y=reference, line_dash="dot", line_color="#64748b", opacity=0.75)
     if y_range:
         fig.update_yaxes(range=list(y_range))
+    if value_suffix:
+        fig.update_yaxes(ticksuffix=value_suffix)
     return _base_layout(fig, height=height, legend=True, margin=dict(l=42, r=18, t=26, b=36))
 
 
@@ -215,6 +220,58 @@ def single_history(
     if y_range:
         fig.update_yaxes(range=list(y_range))
     return _base_layout(fig, height=height, margin=dict(l=42, r=18, t=18, b=34))
+
+
+def debt_market_history(history, *, height=315, years=10):
+    """Plot the New York Fed market, investment-grade, and high-yield CMDI."""
+    columns = [
+        ("Corporate Bond Market Distress", "Market CMDI", COLORS["violet"]),
+        ("Investment-Grade Bond Distress", "IG CMDI", COLORS["blue"]),
+        ("High-Yield Bond Distress", "HY CMDI", COLORS["slate"]),
+    ]
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty:
+        frame = pd.DataFrame(columns=["Date", *[column for column, _, _ in columns]])
+    else:
+        selected = ["Date", *[column for column, _, _ in columns if column in history.columns]]
+        frame = history[selected].copy() if "Date" in history.columns else pd.DataFrame()
+        if not frame.empty:
+            frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce", format="mixed")
+            for column, _, _ in columns:
+                if column not in frame.columns:
+                    frame[column] = np.nan
+                frame[column] = pd.to_numeric(frame[column], errors="coerce").replace(
+                    [np.inf, -np.inf], np.nan
+                )
+            frame = frame.dropna(subset=["Date"]).sort_values("Date", kind="stable")
+            frame = frame.drop_duplicates("Date", keep="last")
+            if not frame.empty and years:
+                cutoff = frame["Date"].max() - pd.DateOffset(years=years)
+                frame = frame.loc[frame["Date"] >= cutoff].copy()
+
+    fig = go.Figure()
+    for column, label, color in columns:
+        if frame.empty or column not in frame.columns:
+            continue
+        clean = frame.dropna(subset=[column])
+        if clean.empty:
+            continue
+        fig.add_trace(
+            go.Scatter(
+                x=clean["Date"],
+                y=clean[column],
+                mode="lines",
+                name=label,
+                line={"color": color, "width": 2.4},
+                hovertemplate=f"%{{x|%Y-%m-%d}}<br>{label}: %{{y:.2f}}<extra></extra>",
+            )
+        )
+    fig.update_yaxes(range=[0, 0.9])
+    return _base_layout(
+        fig,
+        height=height,
+        legend=True,
+        margin=dict(l=42, r=18, t=28, b=36),
+    )
 
 
 def financial_conditions_history(history, *, height=275):
@@ -340,10 +397,10 @@ def funding_history(history: pd.DataFrame, *, years=10):
         return _base_layout(go.Figure(), height=330)
 
     specs = [
-        ("Internal Funding Coverage", COLORS["violet"]),
-        ("Cash Reserve Coverage", COLORS["blue"]),
-        ("Debt Financing Pulse", "#8b5cf6"),
-        ("Forward Commitment Load", COLORS["slate"]),
+        ("Internal Funding Coverage", "Internal Funding Coverage", COLORS["violet"]),
+        ("Cash Reserve Coverage", "Cash Reserve Runway", COLORS["blue"]),
+        ("Debt Financing Pulse", "Debt Financing Pulse", "#8b5cf6"),
+        ("Forward Commitment Load", "Forward Commitment Load", COLORS["slate"]),
     ]
     frame = history.copy()
     frame["Date"] = pd.to_datetime(frame.get("Date"), errors="coerce", format="mixed")
@@ -352,7 +409,7 @@ def funding_history(history: pd.DataFrame, *, years=10):
         cutoff = frame["Date"].max() - pd.DateOffset(years=years)
         frame = frame.loc[frame["Date"] >= cutoff].copy()
     fig = go.Figure()
-    for column, color in specs:
+    for column, label, color in specs:
         if column not in frame.columns:
             continue
         values = pd.to_numeric(frame[column], errors="coerce")
@@ -364,9 +421,9 @@ def funding_history(history: pd.DataFrame, *, years=10):
                 x=frame.loc[mask, "Date"],
                 y=values.loc[mask],
                 mode="lines",
-                name=column,
+                name=label,
                 line={"color": color, "width": 2.2},
-                hovertemplate=f"%{{x|%Y-%m-%d}}<br>{column}: %{{y:.2f}}<extra></extra>",
+                hovertemplate=f"%{{x|%Y-%m-%d}}<br>{label}: %{{y:.2f}}<extra></extra>",
             )
         )
     fig.add_hline(y=0, line_dash="dot", line_color="#64748b", opacity=0.6)

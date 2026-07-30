@@ -179,6 +179,7 @@ def metric_card(
             ),
             width="stretch",
             config={"displayModeBar": False, "responsive": True},
+            key=f"{key}-sparkline",
         )
 
 

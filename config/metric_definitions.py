@@ -1,128 +1,42 @@
+"""Plain-language definitions for the dashboard's actual analytical products."""
+
+
 def metric_help(key, fallback="Definition unavailable."):
     return METRIC_DEFINITIONS.get(key, fallback)
 
 
 ADI_HELP = """
-Measures the current intensity of observable AI capital deployment, physical construction, compute-supply realization, and power demand.
+Measures observable AI capital deployment, physical construction, compute-supply realization, and power demand.
 
-ADI = 0.25(Capital Deployment) + 0.25(Data-Center Construction) + 0.25(Compute Supply) + 0.25(Power Footprint)
+AI Development Intensity = 0.25(Capital Deployment) + 0.25(Data-Center Construction) + 0.25(Compute Supply) + 0.25(Power Footprint)
 
-At least 3 of 4 pillars must be valid; available static weights are renormalized. Scale: 0 to 100.
+At least three of the four pillars must be valid. Available weights are renormalized. Scale: 0 to 100.
 
-**How to read it:** Higher scores indicate more intense observable development activity; lower scores indicate slower or less broadly confirmed development. The score measures activity intensity, not percentage completion or investment quality.
+**How to read it:** Higher values indicate more intense observable development activity. The score measures activity, not project completion or investment quality.
 """
 
 
 METRIC_DEFINITIONS = {
-
     "AI Equity Index": """
-Measures the current valuation, relative performance, and market breadth of the selected AI equity universe.
+Measures valuation, relative performance, and market breadth across the selected AI equity universe.
 
-AEI = mean(valid Sector AEI scores)
+AI Equity Index = mean(valid Sector AI Equity Index scores)
 
-Sector AEI = 0.40(Forward EBIT-Yield Valuation) + 0.35(1Y Relative Return) + 0.25(Market Breadth)
+Sector AI Equity Index = 0.40(Forward EBIT-Yield Valuation) + 0.35(1Y Relative Return) + 0.25(Market Breadth)
 
-All 3 sector factors and at least 75% of sector scores must be valid. The forward EBIT-yield factor retains negative aggregate forward EBIT as economically informative. Scale: 0 to 100.
+All three sector factors and at least 75% of sector scores must be valid. Scale: 0 to 100.
 
-**How to read it:** Higher scores indicate stronger or more extended equity conditions; lower scores indicate weaker conditions. AEI describes the current equity regime—it is not a valuation target or a forecast of future returns.
+**How to read it:** Higher values indicate stronger or more extended equity conditions. Lower values indicate weaker conditions. This is a regime reading, not a price target or return forecast.
 """,
 
     "AI Development Intensity": ADI_HELP,
 
-
     "Speculation Gap": """
 Compares equity enthusiasm with observable AI development activity.
 
-Speculation Gap = AEI - AI Development Intensity
+Speculation Gap = AI Equity Index - AI Development Intensity
 
-**How to read it:** Positive values indicate equities are running ahead of observable development. Negative values indicate development is running ahead of equities. Zero indicates relative alignment. Scale: -100 to +100.
-""",
-
-    "Power Stress Index": """
-Measures nonresidential electricity-demand pressure and grid headroom relative to reference conditions.
-
-Power Stress = 2 × [0.40(Nonresidential Load) + 0.35(Grid Utilization) + 0.25(Capacity Response) - 50]
-
-At least 2 of 3 components must be valid; available static weights are renormalized. Monthly source data produces a step series.
-
-**How to read it:** Positive values indicate above-reference power-system stress; negative values indicate greater headroom or below-reference stress. Zero represents the model's reference condition. Scale: -100 to +100.
-""",
-
-
-    "Power Capacity Gap": """
-Compares observable AI deployment pressure with the measured national response of the electric-power system.
-
-Deployment Pressure = 0.60(Data-Center Construction) + 0.40(Capital Deployment)
-
-Power-System Response = 0.60(Delivered Electric-Power Growth) + 0.40(Installed Electric-Power Capacity Growth)
-
-Power Capacity Gap = Deployment Pressure - Power-System Response
-
-The deployment leg reuses the two ADI pillars most directly associated with physical power demand. The response leg requires both actual electric-power output growth and installed-capacity growth, reducing reliance on nameplate additions alone. All four inputs are normalized independently to 0–100 before comparison.
-
-**How to read it:** Positive values indicate AI deployment pressure is advancing faster than the measured national power-system response. Negative values indicate power delivery and capacity growth are advancing faster than deployment pressure. Zero indicates relative alignment. Scale: -100 to +100.
-
-**Scope limitation:** This is a national response proxy, not a regional resource-adequacy model. It does not directly capture transmission constraints, interconnection queues, local congestion, generation firmness, or the differing reliability characteristics of capacity types.
-""",
-
-
-    "Internal Funding Coverage": """
-**IFC = OCF / CapEx**
-
-Above 1.0x means current operations cover current CapEx; below 1.0x means reserves or outside financing are required.
-""",
-
-    "Cash Reserve Coverage": """
-**CRC = Cash / TTM CapEx**
-
-Shows how many years of current capital spending could be covered from existing liquid reserves alone.
-""",
-
-    "Debt Financing Pulse": """
-**DFP = Δ₁₂ₘ Total Debt / TTM CapEx**
-
-Positive values indicate debt expanded relative to the current buildout rate; negative values indicate debt repayment.
-""",
-
-    "Forward Commitment Load": """
-**FCL = Forward Commitments / TTM CapEx**
-
-Higher values mean more future spending is contractually locked in relative to the current annual buildout rate.
-""",
-
-    "Lender Strain": """
-Measures deterioration in the U.S. financing channel's behavior, asset quality, and loss-absorbing capacity across bank and nonbank channels.
-
-Bank Channel = 0.50(Bank Credit Tightening) + 0.50(Bank Capital Strain)
-
-Nonbank Channel = 0.50(Private Credit Impairment) + 0.50(PE Portfolio Financing Strain)
-
-Lender Strain = 2 × [0.50(Bank Channel) + 0.50(Nonbank Channel) - 50]
-
-Sources: Federal Reserve SLOOS for business-loan standards; Federal Reserve Z.1 for the aggregate regulatory Tier 1 capital ratio; public BDC filings for asset-weighted non-accruals; and SEC Form PF statistics for private-equity portfolio leverage and payment-in-kind borrowing.
-
-Each pillar is normalized against its own available history when sufficient observations exist; otherwise an explicit anchored scale is used. At least 3 of 4 pillars and at least one pillar from each channel must be valid. Missing weight is renormalized only within its channel. Quarterly and annual inputs produce a step series.
-
-**How to read it:** Positive values indicate greater lender strain: tighter lending behavior, weaker capital capacity, or more impaired private credit. Negative values indicate stronger lending capacity and easier credit availability. Zero represents the model's reference condition. Scale: -100 to +100.
-""",
-
-    "Financial Conditions Confirmation": """
-Provides an independent, fast-moving check on whether broad U.S. financial conditions confirm or contradict borrower and lender strain.
-
-The strip reports the Chicago Fed National Financial Conditions Index, its current relationship to the long-run average, and its three-month direction. It is not blended into Borrower Strain or Lender Strain.
-
-Source: Chicago Fed NFCI and ANFCI via FRED. Frequency: weekly. NFCI remains the headline reading; ANFCI is contextual only.
-
-**How to read it:** Negative NFCI values indicate financial conditions are looser than the long-run average; positive values indicate tighter conditions; zero is the long-run average. A rising three-month change means conditions are tightening, while a falling change means they are easing.
-""",
-
-    "Concentration HHI": """
-Measures how concentrated total market value is among the selected AI-related companies.
-
-HHI = Σ(company market cap ÷ total market cap)²
-HHI Score = clip[100 × (HHI - 0.01) ÷ (0.25 - 0.01), 0, 100]
-
-**How to read it:** Higher scores indicate that a smaller number of companies account for more of the universe's market value. Lower scores indicate broader distribution. Scale: 0 to 100.
+**How to read it:** Positive values indicate equities are running ahead of observable development. Negative values indicate development is running ahead of equities. Scale: -100 to +100.
 """,
 
     "Economic Validation Gap": """
@@ -134,46 +48,223 @@ Validation Score = 0.50(normalized aggregate revenue growth) + 0.50(normalized r
 
 Economic Validation Gap = Deployment Score - Validation Score
 
-Company growth uses ratio-of-sums aggregation. All three legs use year-over-year periods and are normalized independently. Empirical percentiles are used only when enough distinct history exists; otherwise transparent anchored scales are used.
+Company growth uses ratio-of-sums aggregation. All legs use year-over-year periods and are normalized independently.
 
-**How to read it:** Positive values indicate capital deployment is running ahead of realized revenue and broader investment validation. Negative values indicate validation is keeping pace with or exceeding deployment. Zero indicates relative alignment. Scale: -100 to +100.
+**How to read it:** Positive values indicate deployment is running ahead of realized economic validation. Negative values indicate validation is keeping pace with or exceeding deployment. Scale: -100 to +100.
 """,
-
 
     "AI-Industrial Growth Gap": """
 Compares observable AI development activity with broad industrial growth.
 
-AI-Industrial Growth Gap = AI Development Intensity - [50 + 50 × tanh((INDPRO YoY - 0.02) ÷ 0.05)]
+AI-Industrial Growth Gap = AI Development Intensity - normalized Industrial Production growth
 
 Source: AI Development Intensity and Federal Reserve industrial-production data.
 
-**How to read it:** Positive values indicate AI development is outpacing broad industrial growth. Negative values indicate industrial growth is running ahead of AI development. Zero indicates relative alignment. Scale: -100 to +100.
+**How to read it:** Positive values indicate AI development is outpacing broad industrial growth. Negative values indicate industrial growth is running ahead of AI development. Scale: -100 to +100.
 """,
 
-    "Purpose Statement": """
-Measure whether AI-related market enthusiasm is supported by observable economic development, corporate financial performance, and resilient financing conditions.
+    "Power Stress Index": """
+Measures pressure acting on the power system through nonresidential load, grid utilization, and capacity response.
 
-Identify divergences, constraints, and financial pressures that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
-    """,
+Power Stress = 2 × [0.40(Nonresidential Load) + 0.35(Grid Utilization) + 0.25(Capacity Response) - 50]
+
+At least two of the three components must be valid. Available weights are renormalized. Scale: -100 to +100.
+
+**How to read it:** Positive values indicate above-reference power-system stress. Negative values indicate greater headroom or below-reference stress.
+""",
+
+    "Power Capacity Gap": """
+Compares observable AI deployment pressure with the measured national response of the electric-power system.
+
+Deployment Pressure = 0.60(Data-Center Construction) + 0.40(Capital Deployment)
+
+Power-System Response = 0.60(Delivered Electric-Power Growth) + 0.40(Installed Electric-Power Capacity Growth)
+
+Power Capacity Gap = Deployment Pressure - Power-System Response
+
+**How to read it:** Positive values indicate deployment pressure is advancing faster than measured power-system response. Negative values indicate output and capacity are advancing faster than deployment pressure. Scale: -100 to +100.
+
+**Scope:** This is a national response proxy. It does not directly measure regional transmission constraints, interconnection queues, local congestion, or firm deliverable capacity.
+""",
+
+    "Concentration HHI": """
+Measures market-value concentration within the selected AI-related company universe.
+
+HHI = Σ(company market-cap share)²
+
+HHI Score = clip[100 × (HHI - 0.01) ÷ (0.25 - 0.01), 0, 100]
+
+**How to read it:** Higher values indicate that a smaller number of companies account for more of the universe's market value. Scale: 0 to 100.
+""",
+
+    "Henry Hub Natural Gas": """
+Weekly Henry Hub natural-gas spot price from the U.S. Energy Information Administration through FRED.
+
+The card reports the latest price and four-week percentage change.
+
+**How to read it:** Rising prices indicate a more expensive fuel environment for gas-fired generation. The reading does not measure regional pipeline constraints or utility hedging.
+""",
+
+    "WTI Crude Oil": """
+Weekly West Texas Intermediate crude-oil spot price from the U.S. Energy Information Administration through FRED.
+
+The card reports the latest price and four-week percentage change.
+
+**How to read it:** Oil has a limited direct role in U.S. utility-scale generation, but it affects backup generation, construction, transportation, and the broader energy-cost environment.
+""",
+
+    "Coal Production": """
+Monthly Federal Reserve industrial-production index for U.S. coal mining.
+
+The card reports the latest index and three-month percentage change.
+
+**How to read it:** The reading tracks coal-supply momentum. It does not measure inventories, plant economics, or regional availability.
+""",
+
+    "Renewable Power Output": """
+Monthly Federal Reserve industrial-production index for renewable and other electric-power generation.
+
+The card reports the latest index and three-month percentage change.
+
+**How to read it:** The reading tracks renewable-output momentum. It does not distinguish generation technology, location, storage support, or firmness.
+""",
+
+    "Electric Power Output": """
+Federal Reserve monthly industrial-production index for electric-power generation, transmission, and distribution. Index base: 2017 = 100.
+
+**How to read it:** Higher values indicate more delivered electric-power activity relative to the 2017 base. The chart is a national production measure, not a regional adequacy reading.
+""",
+
+    "Electric Power Capacity": """
+Federal Reserve monthly capacity index for electric-power generation, transmission, and distribution. Index base: 2017 = 100.
+
+**How to read it:** Higher values indicate a larger measured national power-system capacity base. The index does not distinguish firm from intermittent capacity.
+""",
+
+    "Electric Power Capacity Utilization": """
+Federal Reserve monthly capacity-utilization rate for electric-power generation, transmission, and distribution.
+
+Capacity Utilization = Electric Power Output ÷ Electric Power Capacity
+
+**How to read it:** Higher utilization means more of the measured capacity base is in use. It is not the same as a regional reserve margin.
+""",
+
+    "Internal Funding Coverage": """
+Internal Funding Coverage = Operating Cash Flow ÷ Trailing-Twelve-Month CapEx
+
+**How to read it:** Above 1.0x means current operations cover current capital spending. Below 1.0x means reserves or outside financing are required.
+""",
+
+    "Cash Reserve Runway": """
+Cash Reserve Runway = Cash and Equivalents ÷ Trailing-Twelve-Month CapEx
+
+**How to read it:** The result is expressed in years. It estimates how long current liquid reserves could fund the present capital-spending rate if no additional cash were generated.
+""",
+
+    "Debt Financing Pulse": """
+Debt Financing Pulse = Twelve-Month Change in Total Debt ÷ Trailing-Twelve-Month CapEx
+
+**How to read it:** Positive values indicate debt expanded relative to the current buildout rate. Negative values indicate net debt repayment.
+""",
+
+    "Forward Commitment Load": """
+Forward Commitment Load = Disclosed Forward Commitments ÷ Trailing-Twelve-Month CapEx
+
+**How to read it:** Higher values indicate that more future spending is contractually committed relative to the current annual buildout rate.
+""",
+
+    "Corporate Bond Market Distress": """
+The New York Fed Corporate Bond Market Distress Index combines indicators of primary-market issuance and pricing, secondary-market pricing and liquidity, and the relationship between traded and nontraded bonds.
+
+The market index covers investment-grade and high-yield corporate bonds.
+
+**How to read it:** Higher values indicate more impaired corporate-bond market functioning and more difficult access to public debt capital. The index measures market functioning, not expected bond returns or issuer default probability.
+""",
+
+    "Investment-Grade Bond Distress": """
+The investment-grade segment of the New York Fed Corporate Bond Market Distress Index.
+
+**How to read it:** Higher values indicate greater impairment in issuance, pricing, trading, or liquidity for investment-grade corporate bonds. This is the public-debt channel most relevant to large established issuers.
+""",
+
+    "High-Yield Bond Distress": """
+The high-yield segment of the New York Fed Corporate Bond Market Distress Index.
+
+**How to read it:** Higher values indicate greater impairment in issuance, pricing, trading, or liquidity for below-investment-grade corporate bonds. This segment is more relevant to weaker and more financing-dependent issuers.
+""",
+
+    "Borrower Strain": """
+Measures deterioration in the selected borrower cohort's cash generation, debt capacity, and ability to absorb disclosed obligations.
+
+Borrower Strain = 0.30(Cash Flow Strain) + 0.25(Debt Capacity Strain) + 0.30(Committed Burden) + 0.15(Contingent Exposure)
+
+At least three of the four components must be valid. The internal 0–100 adverse-condition score is centered to a -100 to +100 display scale.
+
+**How to read it:** Positive values indicate greater deterioration in financial condition or capacity. Negative values indicate stronger cash flow, debt capacity, and obligation coverage.
+""",
+
+    "Lender Strain": """
+Measures deterioration in the U.S. financing channel's behavior, asset quality, and loss-absorbing capacity across bank and nonbank lenders.
+
+Bank Channel = 0.50(Bank Credit Tightening) + 0.50(Bank Capital Strain)
+
+Nonbank Channel = 0.50(Private Credit Impairment) + 0.50(PE Portfolio Financing Strain)
+
+Lender Strain = 2 × [0.50(Bank Channel) + 0.50(Nonbank Channel) - 50]
+
+At least three of four pillars and at least one pillar from each channel must be valid. Scale: -100 to +100.
+
+**How to read it:** Positive values indicate tighter lending behavior, weaker lender capacity, or greater impairment. Negative values indicate stronger lending capacity and easier credit availability.
+""",
+
+    "NFCI": """
+The Chicago Fed National Financial Conditions Index summarizes U.S. money-market, debt-market, equity-market, and banking conditions.
+
+**How to read it:** Positive values indicate conditions tighter than the long-run average. Negative values indicate looser conditions. The three-month change shows whether conditions are tightening or easing.
+""",
+
+    "ANFCI": """
+The Chicago Fed Adjusted National Financial Conditions Index removes the component of financial conditions associated with current economic conditions.
+
+**How to read it:** Positive values indicate tighter-than-average financial conditions after the adjustment; negative values indicate looser conditions. ANFCI is contextual and is not blended into Borrower Strain or Lender Strain.
+""",
+
+    "Sector AI Equity Index": """
+Measures valuation, one-year relative performance, and market breadth within one sector.
+
+Sector AI Equity Index = 0.40(Forward EBIT-Yield Valuation) + 0.35(1Y Relative Return) + 0.25(Market Breadth)
+
+All three factors are required. Scale: 0 to 100.
+
+**How to read it:** Higher values indicate stronger or more extended sector equity conditions. Lower values indicate weaker conditions.
+""",
+
+    "Trading Pressure": """
+Measures abnormal valuation and trading pressure within a sector.
+
+Trading Pressure = 0.25(Valuation Stretch) + 0.25(Price Extension) + 0.20(Momentum Acceleration) + 0.15(Volatility Expansion) + 0.15(Volume Activity)
+
+At least three of the five components must be valid. Available weights are renormalized. Scale: 0 to 100.
+
+**How to read it:** Higher values indicate more valuation stretch, price extension, momentum acceleration, volatility expansion, or abnormal volume. It is not a forecast that the sector must decline.
+""",
 
     "Forward EV/EBIT": """
-Sector Forward EV/EBIT is calculated for the profitable operating cohort as a ratio of sums:
+Measures the valuation of the sector's profitable operating cohort as a ratio of sums.
 
-Profitable-Cohort Forward EV/EBIT = Σ Enterprise Valueᵢ ÷ Σ Forward EBITᵢ, for Forward EBITᵢ > 0
+Forward EV/EBIT = Σ Enterprise Value ÷ Σ Forward EBIT, for companies with positive Forward EBIT
 
-The product requires at least five companies with valid forward-EBIT data, at least three profitable companies, and at least 60% enterprise-value data coverage. It is not an average of company multiples and does not approach an asymptote when an individual company's EBIT is close to zero.
+The calculation requires at least five companies with valid forward-EBIT data, at least three profitable companies, and at least 60% enterprise-value data coverage.
 
-Loss-making companies are not discarded from the analytical system. Their enterprise-value footprint is reported separately through Loss-Making EV Share, while the full-sector Forward EBIT Yield used inside AEI continues to include both positive and negative forward EBIT.
-
-**How to read it:** This multiple measures what the market is paying for the sector's profitable operating base. It should be interpreted together with Loss-Making EV Share and the full-sector AEI valuation factor.
+**How to read it:** Higher values indicate a richer valuation of the profitable operating base. Interpret it together with Loss-Making EV Share.
 """,
 
     "Loss-Making EV Share": """
 Measures the share of valid sector enterprise value represented by companies with non-positive forward EBIT.
 
-Loss-Making EV Share = Σ Enterprise Value₍Forward EBIT ≤ 0₎ ÷ Σ Enterprise Value₍valid Forward EBIT₎
+Loss-Making EV Share = Σ EV for companies with Forward EBIT ≤ 0 ÷ Σ EV for companies with valid Forward EBIT
 
-**How to read it:** A higher share means more of the sector's market value is currently unsupported by positive forward operating earnings. The measure preserves the economic significance of loss-making companies without forcing their near-zero EBIT denominators into an unstable signed EV/EBIT multiple.
+**How to read it:** Higher values indicate that more sector enterprise value is unsupported by positive forward operating earnings.
 """,
 
     "Earnings Support": """
@@ -181,57 +272,38 @@ Compares trailing sector repricing with the valuation of the sector's profitable
 
 Earnings Support = 1Y Return ÷ Profitable-Cohort Forward EV/EBIT
 
-X-axis: profitable-cohort Forward EV/EBIT on a bounded positive-log display scale; raw multiples remain available in hover.  
-Y-axis: trailing one-year return.  
-Marker color: sector AI Equity Index.  
-Marker size: Loss-Making EV Share.
-
-**How to read it:** The relationship asks whether realized repricing is accompanied by prospective operating-earnings support. Strong returns attached to lower profitable-cohort multiples imply greater earnings support; large markers identify sectors where a greater share of enterprise value remains loss-making.
+**How to read it:** Strong returns attached to lower profitable-cohort multiples imply greater earnings support. The chart also shows Sector AI Equity Index and Loss-Making EV Share.
 """,
 
     "Speculative Load": """
-Measures abnormal trading pressure relative to the sector's earnings-supported, broad-based equity strength.
+Compares abnormal trading pressure with the sector's equity foundation.
 
 Speculative Load = Trading Pressure ÷ Sector AI Equity Index
 
-Sector AEI = 0.40(Forward EBIT-Yield Valuation) + 0.35(1Y Relative Return) + 0.25(Market Breadth)
-
-X-axis: sector AI Equity Index.  
-Y-axis: Trading Pressure.  
-Marker color: profitable-cohort Forward EV/EBIT on the same bounded positive-log display scale used by Earnings Support; raw values remain available in hover.  
-Marker size: Loss-Making EV Share.  
-The diagonal is the Pressure = AEI reference line.
-
-**How to read it:** Values below 1.0 indicate that sector equity support exceeds abnormal trading pressure. Values above 1.0 indicate that pressure exceeds the sector's market foundation. Larger markers identify sectors where more enterprise value lacks positive forward operating earnings.
+**How to read it:** Values below 1.0 indicate that sector equity support exceeds abnormal trading pressure. Values above 1.0 indicate that pressure exceeds the sector's current market foundation.
 """,
 
+    "Sector Movement": """
+Measures the combined change in Sector AI Equity Index and Trading Pressure over the available fixed lookback.
 
+Sector Movement = √[(ΔSector AI Equity Index)² + (ΔTrading Pressure)²]
 
-    "Most Crowded": """
-Identifies the sector with the highest current Trading Pressure score.
-
-Trading Pressure combines forward operating-earnings valuation stretch, price extension, momentum acceleration, volatility expansion, and abnormal volume.
-
-**How to read it:** A sector can be the most crowded because investors are paying a rich valuation, prices are extended, trading activity is unusually intense, or several of those conditions occur together. This is a relative ranking within the selected universe, not proof that the sector must decline.
+**How to read it:** Larger values indicate faster change in the sector's market regime. The measure is nonnegative; inspect the underlying changes to determine direction.
 """,
 
-    "Fastest Mover": """
-Identifies the sector with the largest combined change in AEI and Trading Pressure over the available fixed lookback.
+    "Risk Breadth": """
+Measures how broadly company fundamentals are deteriorating within a sector.
 
-Sector Movement = √[(ΔSector AEI)² + (ΔPressure)²]
+Risk Breadth = 100 × Adverse Financial Signals ÷ Valid Financial Signals
 
-The root-sum-of-squares calculation prevents opposing changes from cancelling and keeps movement on a nonnegative scale.
+Signals are adverse when free-cash-flow margin falls, net debt/EBITDA rises, or CapEx/operating cash flow rises versus the prior comparable fiscal year. At least 50% of possible signals must be valid.
 
-**How to read it:** A larger value means the sector's market regime is changing more rapidly than its peers, regardless of whether that change is favorable or unfavorable. Review the sector's AEI and Pressure direction to understand what moved.
+**How to read it:** Higher values indicate that deterioration is affecting more of the sector's available financial signals. It does not estimate failure probability.
 """,
 
-    "Biggest Risk": """
-Identifies the sector with the broadest year-over-year deterioration across company fundamentals.
+    "Purpose Statement": """
+Measure whether AI-related market enthusiasm is supported by observable economic development, corporate financial performance, and resilient financing conditions.
 
-Risk Breadth = 100 × adverse financial signals ÷ valid financial signals
-
-Signals are adverse when FCF margin falls, net debt/EBITDA rises, or CapEx/OCF rises versus the prior comparable fiscal year. At least 50% of possible signals must be valid.
-
-**How to read it:** A higher breadth score means deterioration is affecting more of the sector's available financial signals. It measures the spread of weakening fundamentals, not the absolute probability of failure or the magnitude of any single company's risk.
+Identify divergences, constraints, and financial pressures that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
 """,
 }

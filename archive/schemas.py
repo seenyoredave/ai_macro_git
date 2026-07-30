@@ -16,6 +16,7 @@ class ArchiveSpec:
 ARCHIVE_SPECS = {
     "benchmark": ArchiveSpec("benchmark", "archive/benchmark_history.csv", ("Date", "Benchmark")),
     "edgar": ArchiveSpec("edgar", "archive/edgar_history.csv", ("Date", "Sector", "Ticker"), True),
+    "energy": ArchiveSpec("energy", "archive/energy_history.csv", ("Date",)),
     "fred": ArchiveSpec("fred", "archive/fred_history.csv", ("Date",)),
     "macro": ArchiveSpec("macro", "archive/macro_history.csv", ("Date",)),
     "sector": ArchiveSpec("sector", "archive/sector_history.csv", ("Date", "Sector")),

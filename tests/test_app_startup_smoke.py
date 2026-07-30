@@ -105,6 +105,7 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
             "archive.archive",
             append_benchmark_history=lambda *args, **kwargs: None,
             append_edgar_history=lambda *args, **kwargs: None,
+            append_energy_history=lambda *args, **kwargs: None,
             append_fred_history=lambda *args, **kwargs: None,
             append_macro_history=lambda *args, **kwargs: None,
             append_sector_history=lambda *args, **kwargs: None,
@@ -135,9 +136,37 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
             "loaders.construction_loader",
             load_data_center_construction=lambda: pd.DataFrame(),
         ),
+        "loaders.debt_markets_loader": _module(
+            "loaders.debt_markets_loader",
+            load_debt_markets_data=lambda *args, **kwargs: {
+                "source_mode": "archive_current_release",
+                "snapshot_date": "2026-07-24",
+                "series": {},
+                "history": pd.DataFrame(),
+                "load_report": {
+                    "source_mode": "archive_current_release",
+                    "elapsed_sec": 0.0,
+                    "returned_series": 0,
+                },
+            },
+        ),
         "loaders.edgar_loader": _module(
             "loaders.edgar_loader",
             build_edgar_archive_snapshot=lambda *args, **kwargs: {},
+        ),
+        "loaders.energy_loader": _module(
+            "loaders.energy_loader",
+            load_energy_data=lambda *args, **kwargs: {
+                "source_mode": "archive_current_week",
+                "snapshot_date": "2026-07-25",
+                "series": {},
+                "load_report": {
+                    "source_mode": "archive_current_week",
+                    "decision": "archive_current_week",
+                    "elapsed_sec": 0.0,
+                    "returned_series": 0,
+                },
+            },
         ),
         "loaders.fred_loader": _module(
             "loaders.fred_loader",
@@ -174,8 +203,10 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
 
     namespace = runpy.run_path(str(ROOT / "ai_macro.py"), run_name="__main__")
 
-    assert namespace["APP_VERSION"] == "v3.25"
+    assert namespace["APP_VERSION"] == "v4.05"
     assert namespace["benchmark_metrics"]["source_mode"] == "archive_market_closed"
     assert st.session_state.force_rebuild is False
     assert "sector_data" in st.session_state
     assert "regime_metrics" in st.session_state
+    assert "energy_data" in st.session_state
+    assert "debt_markets_data" in st.session_state

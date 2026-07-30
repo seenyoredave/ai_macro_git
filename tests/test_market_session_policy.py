@@ -59,6 +59,7 @@ def test_developer_source_refresh_controls_are_independent():
     assert 'st.button("Refresh Dashboard"' in app
     assert 'st.button("Refresh YFinance"' in app
     assert 'st.button("Refresh EDGAR"' in app
+    assert 'st.button("Refresh Energy"' in app
     assert 'st.button("Refresh live dashboard"' not in app
 
     dashboard_block = app.split('if st.button("Refresh Dashboard"', 1)[1].split(
@@ -75,7 +76,15 @@ def test_developer_source_refresh_controls_are_independent():
     assert "force_edgar_refresh = True" not in yf_block
 
     edgar_block = app.split('if st.button("Refresh EDGAR"', 1)[1].split(
-        'if st.button("Clear cache"', 1
+        'if st.button("Refresh Energy"', 1
     )[0]
     assert "force_edgar_refresh = True" in edgar_block
     assert "force_yfinance_refresh = True" not in edgar_block
+    assert "force_energy_refresh = True" not in edgar_block
+
+    energy_block = app.split('if st.button("Refresh Energy"', 1)[1].split(
+        'if st.button("Clear cache"', 1
+    )[0]
+    assert "force_energy_refresh = True" in energy_block
+    assert "force_yfinance_refresh = True" not in energy_block
+    assert "force_edgar_refresh = True" not in energy_block

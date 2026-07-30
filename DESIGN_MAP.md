@@ -10,11 +10,18 @@
 
 ## Finance
 
-1. Four comparable funding cards with retained histories
-2. Combined funding-history chart
+1. Funding Profile: four comparable funding cards and retained history
+2. Debt Markets: overall, investment-grade, and high-yield CMDI readings with ten-year history
 3. Borrower Strain: reading, source state, trend statistics, history, components
 4. Lender Strain: same structure, kept economically distinct
-5. NFCI confirmation panel
+5. NFCI/ANFCI confirmation panel
+
+## Energy
+
+1. Energy supply: Henry Hub, WTI, coal production, and renewable-power output
+2. Power production: output, capacity, utilization, and Power Stress
+3. Grid capacity: Power Capacity Gap, output growth, capacity growth, utilization, and eight-year response history
+4. AI energy demand: construction, capital deployment, and commercial-load evidence
 
 ## Sectors
 
@@ -31,4 +38,4 @@
 2. Product readings, source/fallback state, and versions
 3. Component and cohort coverage
 4. Complete metric registry
-5. Raw FRED and EDGAR observations
+5. Raw FRED, Energy, Debt Markets, and EDGAR observations

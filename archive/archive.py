@@ -20,6 +20,7 @@ from archive.archive_reader import (
 from archive.schemas import ARCHIVE_SPECS, ArchiveSpec, spec_for_path
 from benchmarks.benchmark_service import get_benchmark_metrics
 from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
+from config.energy_config import ENERGY_DATA_VERSION, ENERGY_SERIES
 from config.market_clock import eastern_now
 
 
@@ -367,3 +368,21 @@ def append_fred_history(fred_data):
             row[indicator] = payload
             row[f"{indicator} Date"] = None
     write_archive_snapshot(pd.DataFrame([row]), ARCHIVE_SPECS["fred"])
+
+def append_energy_history(energy_data):
+    """Persist one completed-week Energy snapshot after a successful live load."""
+    if not energy_data or str(energy_data.get("source_mode", "")) not in {"live_weekly", "live_manual"}:
+        return
+
+    row = {
+        "Date": str(energy_data.get("snapshot_date", "")),
+        "Version": ENERGY_DATA_VERSION,
+    }
+    for name in ENERGY_SERIES:
+        payload = ((energy_data.get("series", {}) or {}).get(name, {}) or {})
+        row[name] = payload.get("value", np.nan)
+        row[f"{name} Date"] = payload.get("date")
+        row[f"{name} Change"] = payload.get("change_pct", np.nan)
+
+    write_archive_snapshot(pd.DataFrame([row]), ARCHIVE_SPECS["energy"])
+

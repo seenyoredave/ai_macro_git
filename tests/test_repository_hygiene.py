@@ -1,4 +1,5 @@
 from pathlib import Path
+import ast
 
 import pandas as pd
 
@@ -19,6 +20,7 @@ RETIRED_TERMS = (
     "capital " + "stress",
     "capital_" + "stress",
     "debt capacity " + "stress",
+    "trip" + "wire",
 )
 
 
@@ -44,7 +46,7 @@ def test_retired_product_names_are_absent():
 
 def test_current_build_label_is_exact():
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    assert 'APP_VERSION = "v3.25"' in app
+    assert 'APP_VERSION = "v4.05"' in app
     assert app.count("APP_VERSION =") == 1
 
 
@@ -69,3 +71,22 @@ def test_latest_archive_sector_names_match_current_configuration():
         dates = pd.to_datetime(frame["Date"], errors="coerce", format="mixed")
         latest = frame.loc[dates.eq(dates.max())]
         assert set(latest["Sector"].dropna().astype(str)).issubset(allowed)
+
+
+def test_every_plotly_chart_has_an_explicit_key():
+    violations = []
+    for path in ROOT.rglob("*.py"):
+        if any(part in {".git", "__pycache__", ".cache", ".venv"} for part in path.parts):
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if not (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "plotly_chart"
+            ):
+                continue
+            if not any(keyword.arg == "key" for keyword in node.keywords):
+                violations.append(f"{path.relative_to(ROOT)}:{node.lineno}")
+
+    assert not violations, "Plotly charts without explicit keys:\n" + "\n".join(violations)

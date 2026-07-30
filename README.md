@@ -10,10 +10,11 @@ The dashboard is a personal analytical system, not a trading platform. It descri
 
 ## Dashboard structure
 
-The research interface is organized into four primary tabs:
+The research interface is organized into five primary tabs:
 
 - **AI Macro:** equity conditions, development intensity, power stress, concentration, and gap metrics
-- **Finance:** deployment funding, Borrower Strain, Lender Strain, and NFCI confirmation with ANFCI context
+- **Finance:** deployment funding, public corporate-bond market functioning, Borrower Strain, Lender Strain, and NFCI/ANFCI confirmation
+- **Energy:** fuel supply, power production, grid capacity, and AI-linked electricity demand
 - **Sectors:** sector assessment, positioning, rotation, the consolidated sector table, and dropdown-selected sector detail
 - **Evidence:** purpose, metric definitions, FRED observations, and EDGAR company data
 
@@ -33,7 +34,8 @@ The tab reorganization does not change metric definitions, calculations, gauges,
 
 - **YFinance:** prices, market capitalization, enterprise-value inputs, analyst revenue estimates, company statements, and price/volume history. During regular U.S. market hours, the first complete load of each Eastern trading date is live; later loads use that day's complete archive. Closed-session loads use the latest complete archive. Manual YFinance refreshes remain available in Developer Tools.
 - **SEC / EDGAR:** standardized financial facts, filing-backed commitment disclosures, public BDC credit quality, and Form PF aggregates
-- **FRED:** macroeconomic, bank, industrial-production, financial-conditions, information-investment, and power series
+- **FRED:** macroeconomic, bank, industrial-production, financial-conditions, information-investment, power, and weekly energy-market series
+- **Federal Reserve Bank of New York:** Corporate Bond Market Distress Index history for the overall, investment-grade, and high-yield markets
 - **U.S. Census Bureau:** private data-center construction spending
 
 ## Headline framework
@@ -159,7 +161,7 @@ Scale: **-100 to +100**, centered at 0
 
 ### Lender Strain
 
-CIS measures deterioration in financing-system behavior and capacity through two equally weighted channels.
+Lender Strain measures deterioration in financing-system behavior and capacity through two equally weighted channels.
 
 **Bank Channel: 50%**
 
@@ -175,7 +177,15 @@ The headline requires at least three of four pillars and at least one valid pill
 
 Scale: **-100 to +100**, centered at 0
 
-### Financial Conditions Confirmation
+### Debt Markets
+
+The Finance tab adds the New York Fed Corporate Bond Market Distress Index as a direct reading of public debt-market functioning. The section shows the overall market, investment-grade, and high-yield indexes plus ten years of weekly observation history.
+
+CMDI combines primary-market issuance and pricing, secondary-market pricing and liquidity, and the relationship between traded and nontraded bonds. Higher readings indicate more impaired market functioning and more difficult access to public debt capital. The readings remain separate from Borrower Strain and Lender Strain.
+
+The workbook contains weekly observations and is published monthly. The loader uses bundled history and requests an update only after the scheduled last-Wednesday release or when **Refresh Debt Markets** is selected.
+
+### NFCI and ANFCI
 
 The Chicago Fed National Financial Conditions Index is shown directly as an independent weekly confirmation signal.
 
@@ -183,11 +193,26 @@ The Chicago Fed National Financial Conditions Index is shown directly as an inde
 - Positive NFCI: conditions tighter than the long-run average
 - Three-month change: current direction of travel
 
-NFCI is not blended into Borrower Strain or Lender Strain. ANFCI is shown only as a dashed comparator in the same financial-conditions plot and is not promoted to a separate dashboard product.
+NFCI is not blended into Borrower Strain or Lender Strain. ANFCI is shown as a contextual comparator in the same financial-conditions plot.
 
 ### Concentration HHI
 
 HHI measures market-cap concentration within the selected AI universe. Higher readings mean a greater share of market value is concentrated in fewer companies.
+
+## Energy tab
+
+The Energy tab follows the chain from fuel supply to power delivery and AI-linked demand. It is a weekly data product, not a real-time trading screen.
+
+Four Energy-only series are retrieved in one public FRED CSV request and archived by completed week:
+
+- Henry Hub natural-gas spot price: four-week change
+- WTI crude-oil spot price: four-week change
+- Coal-production index: three-month change
+- Renewable-power-output index: three-month change
+
+Electric-power output, capacity, and utilization are reused from the application's existing FRED pipeline and retained power-series history. The bundled monthly G.17 history begins in 2015, supporting an eight-year production and capacity-response view without another live request. They are not downloaded a second time by the Energy loader.
+
+The weekly refresh date advances after Friday at 4:00 p.m. Eastern. A complete current-week Energy archive suppresses another automatic request. **Refresh Energy** bypasses the weekly gate without refreshing YFinance or EDGAR. Source failures are recorded in the Developer Tools load report, and the bundled local history prevents a blank first render.
 
 ## Sector analytics
 
@@ -219,6 +244,8 @@ Opposing changes cannot cancel, and movement remains on a nonnegative scale.
 - Static weights are renormalized only after the minimum-data rule is met.
 - Current headlines may use the latest valid archive value from the same metric version.
 - YFinance performs one automatic live universe pull per Eastern trading date during regular market hours. A complete same-day archive blocks repeated automatic pulls; after 4:00 p.m. Eastern and on weekends, the latest complete archive is used.
+- Energy performs one automatic public-source pull per completed week. A completed-week archive blocks repeated requests; manual Energy refreshes remain independent.
+- Debt Markets uses the bundled CMDI history until a new scheduled monthly release is due. Manual Debt Markets refreshes bypass the release gate.
 - A partial hosted-market pull is retried once, then reconciled ticker-by-ticker with the latest complete archive rather than silently shrinking the universe.
 - Carried-forward display values are not archived as new observations.
 - The renderer shows a bordered **No Data** state when neither current nor compatible archive data exists.
@@ -279,15 +306,15 @@ python -m pip install -r requirements-dev.txt
 python tools/release_check.py
 ```
 
-The release gate compiles the repository and runs the complete pytest suite,
-including a first-render smoke test that executes `ai_macro.py` from top to
-bottom with deterministic source stubs. Packaging should not proceed unless the
-gate exits successfully.
+The release gate compiles the repository, runs the complete pytest suite,
+executes `ai_macro.py` from top to bottom with deterministic source stubs, and
+runs the actual Finance and Evidence render paths against a narrow Streamlit
+stand-in. Packaging should not proceed unless the gate exits successfully.
 
 ## Architecture
 
 - `ai_macro.py`: sole Streamlit execution entry point and application data pipeline
-- `research_overlay/renderers.py`: four-tab research interface orchestration
+- `research_overlay/renderers.py`: five-tab research interface orchestration
 - `research_overlay/components.py`: reusable research UI components
 - `research_overlay/visuals.py`: Plotly research figures
 - `research_overlay/theme.py`: platform visual system
@@ -297,6 +324,7 @@ gate exits successfully.
 - `loaders/market_freshness.py`: pure live/archive reconciliation and runtime source diagnostics
 - `loaders/fred_loader.py`: macro and power data
 - `loaders/nfci_loader.py`: isolated NFCI history and fallback chain
+- `loaders/debt_markets_loader.py`: monthly publication gate and bundled New York Fed CMDI history
 - `loaders/edgar_loader.py`: EDGAR data quality and archive eligibility
 - `analytics/factor_engine.py`: three-factor AEI inputs
 - `analytics/economic_validation.py`: aligned EVG construction
