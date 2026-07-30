@@ -35,8 +35,8 @@ from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v4.07"
-APP_STATE_SCHEMA_VERSION = "26.4-macro-interpretation"
+APP_VERSION = "v4.09"
+APP_STATE_SCHEMA_VERSION = "26.5-macro-headline-ladder"
 
 
 st.set_page_config(
@@ -94,7 +94,7 @@ if "debt_markets_refresh_token" not in st.session_state:
 
 
 def build_tabs():
-    return st.tabs(["AI MACRO", "FINANCE", "ENERGY", "SECTORS", "EVIDENCE"])
+    return st.tabs(["AI MACRO", "FINANCE", "ENERGY", "MARKET", "EVIDENCE"])
 
 
 def build_sector_dashboard_data():

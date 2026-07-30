@@ -16,7 +16,23 @@ import pandas as pd
 from analytics.financial_conditions import nfci_snapshot
 
 
-MACRO_INTERPRETATION_VERSION = "1.0"
+MACRO_INTERPRETATION_VERSION = "1.1"
+
+
+MACRO_STATE_HEADLINES = frozenset(
+    {
+        "Partial current-state view",
+        "Supportive conditions",
+        "Resilient",
+        "Resilient under rising pressure",
+        "Resilient under broad-based pressure",
+        "Increasingly constrained",
+        "Funding-constrained",
+        "Broad deterioration",
+        "Stabilizing",
+        "Conditions improving",
+    }
+)
 
 
 def _number(value) -> float:
@@ -833,41 +849,40 @@ def build_macro_interpretation(
     available = sum(pd.notna(value) for value in required_values)
     confidence = "high" if available >= 8 else "moderate" if available >= 6 else "low"
 
+    # The headline uses a finite state ladder. Direction, breadth, and severity
+    # determine the state; the summary below carries the specific drivers.
     if confidence == "low":
         headline = "Partial current-state view"
-    elif funding_level == "weak" and ("credit" in pressure_domains or "financial-conditions" in pressure_domains):
+    elif funding_level == "weak" and (
+        "credit" in pressure_domains
+        or "financial-conditions" in pressure_domains
+    ):
         headline = "Funding-constrained"
     elif max_pressure >= 3 and len(pressure_domains) >= 3 and strong_resilience <= 1:
         headline = "Broad deterioration"
-    elif pressure_domains and not rising_domains and any(item["direction"] == "easing" for item in pressures):
-        headline = "Stabilizing after elevated pressure"
+    elif pressure_domains and not rising_domains and any(
+        item["direction"] == "easing" for item in pressures
+    ):
+        headline = "Stabilizing"
     elif funding_strength >= 2:
-        if len(pressure_domains) >= 2:
-            if rising_domains == {"credit"} or rising_domains == {"financial-conditions"}:
-                headline = "Resilient, with rising financing pressure"
-            elif rising_domains == {"energy"}:
-                headline = "Resilient, with rising energy pressure"
-            elif commitments >= 3 and len(rising_domains) <= 1:
-                headline = "Resilient, with elevated commitments"
-            else:
-                headline = "Resilient, with broader pressure"
+        if rising_domains:
+            headline = "Resilient under rising pressure"
+        elif len(pressure_domains) >= 3:
+            headline = "Resilient under broad-based pressure"
         elif pressure_domains:
-            dominant = selected_pressure[0]["domain"] if selected_pressure else ""
-            modifier = {
-                "credit": "financing pressure",
-                "financial-conditions": "tighter financial conditions",
-                "energy": "energy pressure",
-                "commitments": "elevated commitments",
-                "validation": "a validation gap",
-                "market": "concentrated market risk",
-            }.get(dominant, "contained pressure")
-            headline = f"Resilient, with {modifier}"
+            headline = "Resilient"
+        elif strong_resilience >= 2:
+            headline = "Supportive conditions"
         else:
             headline = "Resilient"
-    elif len(pressure_domains) >= 2:
-        headline = "Pressure building"
+    elif len(pressure_domains) >= 2 or rising_domains:
+        headline = "Increasingly constrained"
+    elif pressure_domains:
+        headline = "Increasingly constrained"
+    elif strong_resilience >= 1:
+        headline = "Conditions improving"
     else:
-        headline = "Mixed conditions"
+        headline = "Resilient"
 
     if funding_level == "strong":
         opening = "The buildout remains supported by strong internal funding capacity"
@@ -904,6 +919,9 @@ def build_macro_interpretation(
                 "score": 0.0,
             }
         ]
+
+    if headline not in MACRO_STATE_HEADLINES:
+        raise RuntimeError(f"Unapproved Macro state headline: {headline}")
 
     return {
         "headline": headline,

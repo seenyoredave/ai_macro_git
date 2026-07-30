@@ -15,7 +15,7 @@ The research interface is organized into five primary tabs:
 - **AI Macro:** deterministic current-state interpretation, equity conditions, development intensity, power stress, concentration, and gap metrics
 - **Finance:** deployment funding, public corporate-bond market functioning, Borrower Strain, Lender Strain, and NFCI/ANFCI confirmation
 - **Energy:** fuel supply, power production, grid capacity, and AI-linked electricity demand
-- **Sectors:** sector assessment, positioning, rotation, the consolidated sector table, and dropdown-selected sector detail
+- **Market:** AI-specific sector analysis with cross-sectional positioning, movement, fundamental evolution, and market performance
 - **Evidence:** purpose, metric definitions, FRED observations, and EDGAR company data
 
 The tab reorganization does not change metric definitions, calculations, gauges, histories, component charts, or the dashboard color system.
@@ -50,6 +50,8 @@ The Macro tab translates the measured system into a compact current-state view w
 - up to three material changes from prior completed observations.
 
 The language is assembled deterministically from approved clauses using measured level, direction, persistence, breadth, and offsetting resilience. Small movements are suppressed. The output and domain states are archived with each new macro observation under a versioned interpretation contract, so later wording or threshold changes do not silently rewrite prior states.
+
+Headlines are restricted to a plain-language state ladder: Supportive conditions, Resilient, Resilient under rising pressure, Resilient under broad-based pressure, Increasingly constrained, Funding-constrained, Broad deterioration, Stabilizing, Conditions improving, or Partial current-state view when coverage is insufficient. Specific drivers remain in the summary and factor lists rather than being compressed into awkward headline modifiers.
 
 The interpretation does not collapse the platform into a single numerical master score. The underlying metrics remain visible immediately below it.
 

@@ -216,7 +216,7 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
 
     namespace = runpy.run_path(str(ROOT / "ai_macro.py"), run_name="__main__")
 
-    assert namespace["APP_VERSION"] == "v4.07"
+    assert namespace["APP_VERSION"] == "v4.09"
     assert namespace["benchmark_metrics"]["source_mode"] == "archive_market_closed"
     assert st.session_state.force_rebuild is False
     assert "sector_data" in st.session_state

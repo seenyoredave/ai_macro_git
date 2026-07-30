@@ -23,7 +23,7 @@
 3. Grid capacity: Power Capacity Gap, output growth, capacity growth, utilization, and eight-year response history
 4. AI energy demand: construction, capital deployment, and commercial-load evidence
 
-## Sectors
+## Market
 
 1. Current assessment strip
 2. Positioning and rotation views

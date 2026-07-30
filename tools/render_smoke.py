@@ -151,7 +151,7 @@ def main() -> int:
         "Speculation Gap": -35.0,
         "Economic Validation Gap": -53.0,
         "Macro Interpretation": {
-            "headline": "Resilient, with broader pressure",
+            "headline": "Resilient under rising pressure",
             "summary": "The buildout remains financeable while selected pressures are increasing.",
             "pressure_factors": ["Forward commitments remain elevated."],
             "resilience_factors": ["Internal funding remains adequate."],

@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_research_overlay_keeps_five_primary_tabs():
     source = (ROOT / "ai_macro.py").read_text()
-    assert '["AI MACRO", "FINANCE", "ENERGY", "SECTORS", "EVIDENCE"]' in source
+    assert '["AI MACRO", "FINANCE", "ENERGY", "MARKET", "EVIDENCE"]' in source
 
 
 def test_ai_macro_is_the_only_streamlit_entrypoint():
@@ -219,7 +219,7 @@ def test_gap_scale_note_is_attached_to_chart_column():
 def test_developer_tools_header_includes_right_aligned_version_and_divider():
     app = (ROOT / "ai_macro.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert 'APP_VERSION = "v4.07"' in app
+    assert 'APP_VERSION = "v4.09"' in app
     assert 'class="rm-developer-tools-header"' in app
     assert 'class="rm-developer-tools-version"' in app
     assert 'class="rm-developer-tools-divider"' in app
@@ -245,7 +245,7 @@ def test_research_ui_cleanup_is_structurally_present():
     assert '("Acceleration", fmt_number((trend or {}).get("acceleration"), 2, signed=True), None)' in renderer
     assert 'source_stat,' in renderer
 
-    for tab in ("macro", "finance", "energy", "sectors"):
+    for tab in ("macro", "finance", "energy", "market"):
         assert f'_render_tab_metric_registry("{tab}")' in renderer
     assert '_render_tab_metric_registry("evidence")' not in renderer
 
@@ -267,7 +267,7 @@ def test_deliberate_line_breaks_separate_dashboard_layers():
     assert 'def render_line_break()' in components
     assert 'st.markdown("<br>", unsafe_allow_html=True)' in components
 
-    for tab in ("macro", "finance", "energy", "sectors"):
+    for tab in ("macro", "finance", "energy", "market"):
         expected = (
             'render_line_break()\n'
             f'    _render_tab_metric_registry("{tab}")'
@@ -294,7 +294,7 @@ def test_first_content_section_after_each_metric_registry_uses_standard_divider(
         ('_render_tab_metric_registry("macro")', 'render_section("Regime board", "Current readings with retained histories and source state.")'),
         ('_render_tab_metric_registry("finance")', 'render_section("Funding profile", "Current funding ratios and retained cohort history.")'),
         ('_render_tab_metric_registry("energy")', 'render_section("Energy supply", "Current fuel prices and production momentum.")'),
-        ('_render_tab_metric_registry("sectors")', 'render_section("Cross-sector state", "Current leaders in market behavior.")'),
+        ('_render_tab_metric_registry("market")', 'render_section("Cross-sector state", "Current leaders in market behavior.")'),
     )
     for registry_call, section_call in expected:
         registry_index = renderer.index(registry_call)

@@ -151,7 +151,7 @@ def main() -> int:
         raise AssertionError("Macro interpretation did not produce a headline")
     if not interpretation.get("summary"):
         raise AssertionError("Macro interpretation did not produce a summary")
-    if namespace.get("APP_VERSION") != "v4.07":
+    if namespace.get("APP_VERSION") != "v4.09":
         raise AssertionError(f"Unexpected build: {namespace.get('APP_VERSION')}")
     if not st.plotly_keys:
         raise AssertionError("The application did not reach the rendered dashboard")

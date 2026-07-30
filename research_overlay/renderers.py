@@ -175,7 +175,7 @@ TAB_METRIC_REGISTRIES = {
         "Power Stress Index",
         "Power Capacity Gap",
     ],
-    "sectors": [
+    "market": [
         "Sector AI Equity Index",
         "Trading Pressure",
         "Forward EV/EBIT",
@@ -1273,16 +1273,16 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
         st.dataframe(arrow_safe_dataframe(metrics.get("Pressure Components", pd.DataFrame())), width="stretch", hide_index=True)
 
 
-def render_sectors_tab(sector_metrics, sector_data, regime_metrics, dashboard_data):
+def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data):
     del regime_metrics
     macro_df = dashboard_data["macro_df"]
     render_tab_header(
-        "Sectors",
-        "Cross-sectional positioning, movement, fundamental evolution, and metric-driven sector detail.",
+        "Market",
+        "AI-specific sector analysis with cross-sectional positioning, movement, fundamental evolution, and market performance.",
         f"{len(macro_df)} sectors",
     )
     render_line_break()
-    _render_tab_metric_registry("sectors")
+    _render_tab_metric_registry("market")
     render_section("Cross-sector state", "Current leaders in market behavior.")
     render_statline(_assessment_stats(macro_df, sector_data), key_prefix="sector-cross-state")
 
@@ -1530,7 +1530,7 @@ def render_research_dashboard(
             dashboard_data,
         )
     with tabs[3]:
-        render_sectors_tab(
+        render_market_tab(
             sector_metrics,
             sector_data,
             regime_metrics,

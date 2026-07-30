@@ -17,8 +17,8 @@ def render_sectors_dashboard(
     dashboard_data=None,
 ):
     """Render the consolidated sector overview and selected-sector detail."""
-    st.title("Sectors")
-    st.caption("Sector positioning • rotation • pressure • company-level detail")
+    st.title("Market")
+    st.caption("AI-specific sector analysis with cross-sectional positioning, movement, fundamental evolution, and market performance.")
     st.markdown("---")
 
     dashboard_data = dashboard_data or build_macro_dashboard_data(

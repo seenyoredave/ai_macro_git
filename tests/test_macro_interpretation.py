@@ -6,6 +6,7 @@ import pandas as pd
 
 from analytics.macro_interpretation import (
     MACRO_INTERPRETATION_VERSION,
+    MACRO_STATE_HEADLINES,
     build_macro_interpretation,
 )
 
@@ -118,7 +119,8 @@ def test_macro_interpretation_is_deterministic_sensitive_and_compact():
 
     assert first == second
     assert first["version"] == MACRO_INTERPRETATION_VERSION
-    assert first["headline"].startswith("Resilient")
+    assert first["headline"] == "Resilient under rising pressure"
+    assert first["headline"] in MACRO_STATE_HEADLINES
     assert 1 <= len(first["pressure_factors"]) <= 3
     assert 1 <= len(first["resilience_factors"]) <= 3
     assert 1 <= len(first["changes"]) <= 3
@@ -180,3 +182,23 @@ def test_power_capacity_gap_uses_peer_statline_without_sparkline():
     assert 'key_prefix="energy-grid-capacity"' in block
     assert 'key="energy-capacity-gap"' not in block
     assert "metric_card(" not in block
+
+
+def test_macro_state_headlines_use_the_approved_plain_language_ladder():
+    assert MACRO_STATE_HEADLINES == frozenset(
+        {
+            "Partial current-state view",
+            "Supportive conditions",
+            "Resilient",
+            "Resilient under rising pressure",
+            "Resilient under broad-based pressure",
+            "Increasingly constrained",
+            "Funding-constrained",
+            "Broad deterioration",
+            "Stabilizing",
+            "Conditions improving",
+        }
+    )
+    assert not any(", with" in headline for headline in MACRO_STATE_HEADLINES)
+    assert "Pressure building" not in MACRO_STATE_HEADLINES
+    assert "Mixed conditions" not in MACRO_STATE_HEADLINES

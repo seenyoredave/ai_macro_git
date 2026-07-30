@@ -190,7 +190,7 @@ def test_energy_tab_has_no_fake_weekly_metric_and_uses_refresh_button():
     renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
     definitions = (ROOT / "config" / "metric_definitions.py").read_text()
 
-    assert '["AI MACRO", "FINANCE", "ENERGY", "SECTORS", "EVIDENCE"]' in app
+    assert '["AI MACRO", "FINANCE", "ENERGY", "MARKET", "EVIDENCE"]' in app
     assert 'st.button("Refresh Energy"' in app
     assert "load_energy_data(" in app
     assert "fred_data=fred_data" in app
