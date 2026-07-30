@@ -271,11 +271,18 @@ streamlit run ai_macro.py
 
 ## Validation
 
-Run the regression suite from the project root:
+Install the development dependencies and run the mandatory release gate from
+the project root:
 
 ```bash
-PYTHONPATH=. python -m unittest discover -s tests -v
+python -m pip install -r requirements-dev.txt
+python tools/release_check.py
 ```
+
+The release gate compiles the repository and runs the complete pytest suite,
+including a first-render smoke test that executes `ai_macro.py` from top to
+bottom with deterministic source stubs. Packaging should not proceed unless the
+gate exits successfully.
 
 ## Architecture
 
@@ -317,3 +324,7 @@ The command uses SEC CompanyFacts for core financials and original SEC filings
 for commitment disclosures. It writes a review ledger and accepts only explicit,
 high-confidence obligation values automatically. See
 `data_notes/borrower_strain_history_backfill.md` for methodology and review rules.
+
+### Benchmark loading policy
+
+The active QQQ proxy follows the same session boundary as the market universe but uses its own archive. During market hours, the first build without a current-date compatible benchmark row performs a live benchmark pull. After the close and on weekends, the latest compatible row in `archive/benchmark_history.csv` is used. **Refresh YFinance** explicitly refreshes both the 168-ticker universe and the active benchmark proxy.

@@ -6,48 +6,25 @@ from archive.archive_reader import load_benchmark_history, rows_for_date
 from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
 from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
 from config.debug_config import debug_print
-from loaders.benchmark_loader import load_all_benchmarks
+from config.market_clock import is_market_hours, market_cache_token
+from loaders.benchmark_loader import load_benchmark
 
 
-@st.cache_data(ttl=3600)
-def _load_raw_benchmarks():
-    return load_all_benchmarks()
+_REQUIRED_ARCHIVE_COLUMNS = {
+    "Date",
+    "Benchmark",
+    "Forward EV/EBIT",
+    "Forward EBIT Yield",
+    "Avg Return",
+    "Beta",
+    "Member Count",
+    "Benchmark Version",
+}
 
 
-def get_archived_benchmark_metrics(benchmark: str):
-    try:
-        history = load_benchmark_history()
-    except Exception:
-        return None
 
-    required = {
-        "Date",
-        "Benchmark",
-        "Forward EV/EBIT",
-        "Forward EBIT Yield",
-        "Avg Return",
-        "Beta",
-        "Member Count",
-        "Benchmark Version",
-    }
-    if history is None or history.empty or not required.issubset(history.columns):
-        return None
-
-    current = rows_for_date(history)
-    if current.empty:
-        return None
-
-    current = current.copy()
-    current["Benchmark"] = current["Benchmark"].astype(str).str.upper().str.strip()
-    current["Benchmark Version"] = current["Benchmark Version"].astype(str).str.strip()
-    row = current[
-        (current["Benchmark"] == benchmark.upper().strip())
-        & (current["Benchmark Version"] == BENCHMARK_VERSION)
-    ]
-    if row.empty:
-        return None
-
-    row = row.iloc[-1]
+def _metrics_from_archive_row(row):
+    archive_date = pd.to_datetime(row.get("Date"), errors="coerce")
     return {
         "forward_ev_ebit": row.get("Forward EV/EBIT", np.nan),
         "forward_ebit_yield": row.get("Forward EBIT Yield", np.nan),
@@ -55,56 +32,140 @@ def get_archived_benchmark_metrics(benchmark: str):
         "beta": row.get("Beta", np.nan),
         "member_count": row.get("Member Count", 0),
         "version": BENCHMARK_VERSION,
+        "source_mode": "archive",
+        "archive_date": (
+            archive_date.date().isoformat() if pd.notna(archive_date) else None
+        ),
     }
 
 
-@st.cache_data(ttl=3600)
-def get_benchmark_package():
-    package = {}
-    raw_package = None
+def get_archived_benchmark_metrics(benchmark: str, *, current_only: bool = True):
+    """Return the current or latest compatible benchmark archive row."""
+    try:
+        history = load_benchmark_history()
+    except Exception:
+        return None
 
-    for name in ACTIVE_BENCHMARKS:
-        archived = get_archived_benchmark_metrics(name)
-        if archived is not None:
-            debug_print(f"Loading today's weighted benchmark from archive: {name}")
-            package[name] = {"raw": pd.DataFrame(), "normalized": archived, "metrics": archived}
-            continue
+    if history is None or history.empty or not _REQUIRED_ARCHIVE_COLUMNS.issubset(history.columns):
+        return None
 
-        if raw_package is None:
-            raw_package = _load_raw_benchmarks()
-        frame = raw_package.get(name, pd.DataFrame())
-        normalized = normalize_benchmark_dataframe(frame)
-        normalized["version"] = BENCHMARK_VERSION
-        package[name] = {"raw": frame, "normalized": normalized, "metrics": normalized}
+    eligible = history.copy()
+    eligible["Benchmark"] = eligible["Benchmark"].astype(str).str.upper().str.strip()
+    eligible["Benchmark Version"] = eligible["Benchmark Version"].astype(str).str.strip()
+    eligible = eligible[
+        (eligible["Benchmark"] == benchmark.upper().strip())
+        & (eligible["Benchmark Version"] == BENCHMARK_VERSION)
+    ].copy()
+    if eligible.empty:
+        return None
 
-    return package
+    if current_only:
+        eligible = rows_for_date(eligible)
+    else:
+        eligible["_parsed_date"] = pd.to_datetime(
+            eligible["Date"], errors="coerce", format="mixed"
+        )
+        eligible = eligible.loc[eligible["_parsed_date"].notna()].sort_values(
+            "_parsed_date",
+            kind="stable",
+        )
+
+    if eligible.empty:
+        return None
+
+    return _metrics_from_archive_row(eligible.iloc[-1])
 
 
-@st.cache_data(ttl=3600)
-def get_benchmark_metrics(benchmark: str):
+def get_benchmark_metrics(
+    benchmark: str,
+    *,
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    clock_token: str | None = None,
+):
     if benchmark not in ACTIVE_BENCHMARKS:
         raise ValueError(f"Benchmark {benchmark} is configured but not active")
 
-    archived = get_archived_benchmark_metrics(benchmark)
-    if archived is not None:
-        return archived
-
-    package = get_benchmark_package()
-    return package.get(
+    return _get_benchmark_metrics_cached(
         benchmark,
-        {
-            "forward_ev_ebit": np.nan,
-            "forward_ebit_yield": np.nan,
-            "avg_return": np.nan,
-            "beta": np.nan,
-            "member_count": 0,
-            "version": BENCHMARK_VERSION,
-        },
-    )["metrics"] if benchmark in package else {
-        "forward_ev_ebit": np.nan,
-        "forward_ebit_yield": np.nan,
-        "avg_return": np.nan,
-        "beta": np.nan,
-        "member_count": 0,
-        "version": BENCHMARK_VERSION,
+        force_refresh=bool(force_refresh),
+        refresh_token=int(refresh_token),
+        clock_token=clock_token or market_cache_token(),
+    )
+
+
+@st.cache_data(ttl=900)
+def _get_benchmark_metrics_cached(
+    benchmark: str,
+    *,
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    clock_token: str | None = None,
+):
+    # refresh_token and clock_token are cache-key inputs by design.
+    current_archive = get_archived_benchmark_metrics(benchmark, current_only=True)
+    latest_archive = get_archived_benchmark_metrics(benchmark, current_only=False)
+
+    if not force_refresh and current_archive is not None:
+        debug_print(f"Loading current-date weighted benchmark from archive: {benchmark}")
+        current_archive["source_mode"] = "archive_current"
+        return current_archive
+
+    if not force_refresh and not is_market_hours():
+        if latest_archive is not None:
+            debug_print(f"Market closed; loading latest weighted benchmark archive: {benchmark}")
+            latest_archive["source_mode"] = "archive_market_closed"
+            return latest_archive
+        raise RuntimeError(
+            f"{benchmark} benchmark archive is unavailable outside regular market hours. "
+            "Use Refresh YFinance to request a manual live pull."
+        )
+
+    try:
+        trigger = "manual" if force_refresh else "automatic_daily"
+        debug_print(f"Pulling current weighted benchmark ({trigger}): {benchmark}")
+        frame = load_benchmark(
+            benchmark,
+            force_refresh=force_refresh,
+            refresh_token=refresh_token,
+            clock_token=clock_token,
+        )
+        if frame is None or frame.empty:
+            raise ValueError(f"{benchmark} benchmark pull returned an empty DataFrame")
+
+        normalized = normalize_benchmark_dataframe(frame)
+        normalized["version"] = BENCHMARK_VERSION
+        normalized["source_mode"] = "live"
+        normalized["refresh_trigger"] = trigger
+        return normalized
+    except Exception as exc:
+        if latest_archive is not None:
+            debug_print(f"Benchmark live pull failed; using archive: {benchmark} -> {exc}")
+            latest_archive["source_mode"] = "archive_fallback"
+            latest_archive["live_error"] = str(exc)
+            return latest_archive
+        raise
+
+
+def get_benchmark_package(
+    *,
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    clock_token: str | None = None,
+):
+    return {
+        name: {
+            "raw": pd.DataFrame(),
+            "normalized": metrics,
+            "metrics": metrics,
+        }
+        for name in ACTIVE_BENCHMARKS
+        for metrics in [
+            get_benchmark_metrics(
+                name,
+                force_refresh=force_refresh,
+                refresh_token=refresh_token,
+                clock_token=clock_token,
+            )
+        ]
     }

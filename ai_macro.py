@@ -31,8 +31,8 @@ from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v3.22"
-APP_STATE_SCHEMA_VERSION = "22.0-source-refresh-policy"
+APP_VERSION = "v3.25"
+APP_STATE_SCHEMA_VERSION = "25.0-registry-section-divider"
 
 
 st.set_page_config(
@@ -100,7 +100,11 @@ def build_sector_dashboard_data():
         edgar_refresh_token=st.session_state.edgar_refresh_token,
     )
     st.session_state.market_universe_load_report = raw_universe_data.get("_load_report", {})
-    benchmark_metrics = get_benchmark_metrics("QQQ")
+    benchmark_metrics = get_benchmark_metrics(
+        "QQQ",
+        force_refresh=st.session_state.force_yfinance_refresh,
+        refresh_token=st.session_state.yfinance_refresh_token,
+    )
 
     for sector, cfg in st.session_state.sectors.items():
         df = get_sector_data(
@@ -116,7 +120,7 @@ def build_sector_dashboard_data():
         sector_data[sector] = df
         sector_metrics[sector] = build_sector_metrics(factor_df, df)
 
-    return sector_data, sector_metrics, raw_universe_data
+    return sector_data, sector_metrics, raw_universe_data, benchmark_metrics
 
 
 def render_developer_load_report(report):
@@ -234,7 +238,9 @@ with st.sidebar:
 
 
 if st.session_state.force_rebuild:
-    sector_data, sector_metrics, raw_universe_data = build_sector_dashboard_data()
+    sector_data, sector_metrics, raw_universe_data, benchmark_metrics = (
+        build_sector_dashboard_data()
+    )
 
     fred_data = load_fred()
     nfci_history = load_nfci_history()
@@ -254,8 +260,18 @@ if st.session_state.force_rebuild:
     if not st.session_state.archive_suspended:
         append_macro_history(regime_metrics, fred_data)
         append_sector_history(sector_metrics)
-        append_benchmark_history()
-        append_yf_history(sector_data)
+        benchmark_source_mode = str(benchmark_metrics.get("source_mode", ""))
+        if benchmark_source_mode == "live":
+            append_benchmark_history({"QQQ": benchmark_metrics})
+
+        yfinance_source_mode = str(
+            ((raw_universe_data.get("_load_report", {}) or {}).get("yfinance", {}) or {}).get(
+                "source_mode",
+                "",
+            )
+        )
+        if yfinance_source_mode in {"live_complete", "live_with_archive_fallback"}:
+            append_yf_history(sector_data)
         edgar_snapshot = build_edgar_archive_snapshot(
             sector_data,
             raw_universe_data.get("edgar", {}),

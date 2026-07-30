@@ -212,7 +212,7 @@ def test_gap_scale_note_is_attached_to_chart_column():
 def test_developer_tools_header_includes_right_aligned_version_and_divider():
     app = (ROOT / "ai_macro.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert 'APP_VERSION = "v3.22"' in app
+    assert 'APP_VERSION = "v3.25"' in app
     assert 'class="rm-developer-tools-header"' in app
     assert 'class="rm-developer-tools-version"' in app
     assert 'class="rm-developer-tools-divider"' in app
@@ -263,8 +263,7 @@ def test_deliberate_line_breaks_separate_dashboard_layers():
     for tab in ("macro", "finance", "sectors"):
         expected = (
             'render_line_break()\n'
-            f'    _render_tab_metric_registry("{tab}")\n'
-            '    render_line_break()'
+            f'    _render_tab_metric_registry("{tab}")'
         )
         assert expected in renderer
 
@@ -279,3 +278,22 @@ def test_deliberate_line_breaks_separate_dashboard_layers():
     assert purpose_end < second_break < evidence.index('render_section("Source Data")')
     assert evidence.index('render_section("Source Data")') < evidence.index('render_macro_data(fred_data)')
     assert 'render_section("Source Data",' not in evidence
+
+
+def test_first_content_section_after_each_metric_registry_uses_standard_divider():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+
+    expected = (
+        ('_render_tab_metric_registry("macro")', 'render_section("Regime board", "Current readings with retained histories and source state.")'),
+        ('_render_tab_metric_registry("finance")', 'render_section("Funding profile", "Current funding ratios and retained cohort history.")'),
+        ('_render_tab_metric_registry("sectors")', 'render_section("Cross-sector state", "Current leaders in market behavior.")'),
+    )
+    for registry_call, section_call in expected:
+        registry_index = renderer.index(registry_call)
+        section_index = renderer.index(section_call, registry_index)
+        between = renderer[registry_index:section_index]
+        assert "render_line_break()" not in between
+        assert "first=True" not in section_call
+
+    assert '.rm-section {' in (ROOT / "research_overlay" / "theme.py").read_text()
+    assert 'border-top: 1px solid var(--rm-border);' in (ROOT / "research_overlay" / "theme.py").read_text()

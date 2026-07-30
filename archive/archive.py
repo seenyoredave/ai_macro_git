@@ -296,10 +296,12 @@ def append_sector_history(sector_metrics):
         write_archive_snapshot(pd.DataFrame(rows), ARCHIVE_SPECS["sector"])
 
 
-def append_benchmark_history():
+def append_benchmark_history(metrics_by_benchmark=None):
+    """Persist the benchmark metrics used by the current dashboard build."""
+    supplied = metrics_by_benchmark or {}
     rows = []
     for benchmark in ACTIVE_BENCHMARKS:
-        metrics = get_benchmark_metrics(benchmark)
+        metrics = supplied.get(benchmark) or get_benchmark_metrics(benchmark)
         rows.append({
             "Date": today_iso(),
             "Benchmark": benchmark,

@@ -6,7 +6,13 @@ from config.benchmark_config import (
 from loaders.market_loader import load_yfinance
 
 
-def load_benchmark(name: str):
+def load_benchmark(
+    name: str,
+    *,
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    clock_token: str | None = None,
+):
     if name not in BENCHMARK_UNIVERSES:
         raise ValueError(f"Unknown benchmark: {name}")
 
@@ -14,7 +20,12 @@ def load_benchmark(name: str):
     if not members:
         return None
 
-    frame = load_yfinance(tuple(sorted(members.items()))).copy()
+    frame = load_yfinance(
+        tuple(sorted(members.items())),
+        force_refresh=bool(force_refresh),
+        refresh_token=int(refresh_token),
+        clock_token=clock_token,
+    ).copy()
     weights = BENCHMARK_WEIGHTS.get(name)
     if not weights:
         raise ValueError(f"Active benchmark {name} has no configured weights")
@@ -23,5 +34,18 @@ def load_benchmark(name: str):
     return frame
 
 
-def load_all_benchmarks():
-    return {name: load_benchmark(name) for name in ACTIVE_BENCHMARKS}
+def load_all_benchmarks(
+    *,
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    clock_token: str | None = None,
+):
+    return {
+        name: load_benchmark(
+            name,
+            force_refresh=force_refresh,
+            refresh_token=refresh_token,
+            clock_token=clock_token,
+        )
+        for name in ACTIVE_BENCHMARKS
+    }
