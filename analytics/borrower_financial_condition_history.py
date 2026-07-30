@@ -1,11 +1,11 @@
-"""Historical Capital Stress reconstruction utilities.
+"""Historical Borrower Financial Condition reconstruction utilities.
 
 The historical series is stored separately from the live macro archive.  This
 keeps sparse annual/quarterly reconstruction rows from polluting the general
 macro table while allowing the dashboard to display one continuous series.
 
 No historical value is manufactured at runtime.  The companion CLI in
-``tools/backfill_capital_stress.py`` downloads SEC data, writes the retained raw
+``tools/backfill_borrower_financial_condition.py`` downloads SEC data, writes the retained raw
 inputs, and produces the accepted history file.
 """
 
@@ -21,17 +21,17 @@ import pandas as pd
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_HISTORY_PATH = PROJECT_ROOT / "data" / "capital_stress_history.csv"
+DEFAULT_HISTORY_PATH = PROJECT_ROOT / "data" / "borrower_financial_condition_history.csv"
 DEFAULT_FUNDAMENTALS_PATH = (
-    PROJECT_ROOT / "data" / "capital_stress_fundamentals_history.csv"
+    PROJECT_ROOT / "data" / "borrower_financial_condition_fundamentals_history.csv"
 )
 DEFAULT_COMMITMENTS_HISTORY_PATH = (
     PROJECT_ROOT / "data" / "capital_commitments_history.csv"
 )
 DEFAULT_REVIEW_PATH = PROJECT_ROOT / "data" / "capital_commitments_review.csv"
-DEFAULT_AUDIT_PATH = PROJECT_ROOT / "data" / "capital_stress_backfill_audit.csv"
+DEFAULT_AUDIT_PATH = PROJECT_ROOT / "data" / "borrower_financial_condition_backfill_audit.csv"
 
-CAPITAL_STRESS_CIKS = {
+BORROWER_FINANCIAL_CONDITION_CIKS = {
     "MSFT": "0000789019",
     "AMZN": "0001018724",
     "GOOG": "0001652044",
@@ -47,18 +47,18 @@ CAPITAL_STRESS_CIKS = {
 HISTORY_COLUMNS = [
     "Date",
     "Observation Frequency",
-    "Capital Stress",
-    "Capital Cash Flow Strain",
-    "Capital Debt Capacity Stress",
-    "Capital Committed Burden",
-    "Capital Contingent Exposure",
+    "Borrower Financial Condition",
+    "Borrower Cash Flow Strain",
+    "Borrower Debt Capacity Strain",
+    "Borrower Committed Burden",
+    "Borrower Contingent Exposure",
     "FCF Margin",
     "Reinvestment Ratio",
     "Positive EBITDA Net Debt/EBITDA",
     "Negative EBITDA Net Debt/Revenue",
     "Committed Burden Ratio",
     "Contingent Burden Ratio",
-    "Capital Stress Version",
+    "Borrower Financial Condition Version",
     "Valid Components",
     "Component Coverage",
     "Cohort Companies",
@@ -239,7 +239,7 @@ def _read_csv(path: Path, columns: Sequence[str]) -> pd.DataFrame:
     return frame
 
 
-def load_capital_stress_backfill(path: str | Path | None = None) -> pd.DataFrame:
+def load_borrower_financial_condition_backfill(path: str | Path | None = None) -> pd.DataFrame:
     frame = _read_csv(Path(path) if path else DEFAULT_HISTORY_PATH, HISTORY_COLUMNS)
     if frame.empty:
         return frame
@@ -247,29 +247,29 @@ def load_capital_stress_backfill(path: str | Path | None = None) -> pd.DataFrame
     frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce").dt.date.astype("string")
     frame = frame.loc[frame["Date"].notna()].copy()
     for column in [
-        "Capital Stress",
-        "Capital Cash Flow Strain",
-        "Capital Debt Capacity Stress",
-        "Capital Committed Burden",
-        "Capital Contingent Exposure",
+        "Borrower Financial Condition",
+        "Borrower Cash Flow Strain",
+        "Borrower Debt Capacity Strain",
+        "Borrower Committed Burden",
+        "Borrower Contingent Exposure",
         "Component Coverage",
     ]:
         frame[column] = pd.to_numeric(frame[column], errors="coerce")
     return frame.sort_values("Date", kind="stable").reset_index(drop=True)
 
 
-def combine_capital_stress_history(
+def combine_borrower_financial_condition_history(
     live_macro_history: pd.DataFrame | None,
     backfill_history: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Combine accepted backfill rows with live archive rows.
 
-    Live rows win on duplicate dates.  Only Capital Stress fields are carried
+    Live rows win on duplicate dates.  Only Borrower Financial Condition fields are carried
     into this dedicated frame; unrelated macro columns are intentionally not
     manufactured for historical dates.
     """
     backfill = (
-        load_capital_stress_backfill()
+        load_borrower_financial_condition_backfill()
         if backfill_history is None
         else backfill_history.copy()
     )
@@ -277,12 +277,12 @@ def combine_capital_stress_history(
 
     desired = [
         "Date",
-        "Capital Stress",
-        "Capital Cash Flow Strain",
-        "Capital Debt Capacity Stress",
-        "Capital Committed Burden",
-        "Capital Contingent Exposure",
-        "Capital Stress Version",
+        "Borrower Financial Condition",
+        "Borrower Cash Flow Strain",
+        "Borrower Debt Capacity Strain",
+        "Borrower Committed Burden",
+        "Borrower Contingent Exposure",
+        "Borrower Financial Condition Version",
         "Observation Frequency",
         "Valid Components",
         "Component Coverage",
@@ -297,20 +297,20 @@ def combine_capital_stress_history(
         backfill["_source_priority"] = 0
         frames.append(backfill[desired + ["_source_priority"]])
 
-    if not live.empty and {"Date", "Capital Stress"}.issubset(live.columns):
+    if not live.empty and {"Date", "Borrower Financial Condition"}.issubset(live.columns):
         live = live.copy()
         # Early archives used the previous label even after the debt-capacity
         # branch was introduced.  Preserve the old column and only use it as a
         # compatibility fallback when the explicit current field is absent.
-        if "Capital Debt Capacity Stress" not in live.columns:
-            live["Capital Debt Capacity Stress"] = np.nan
-        if "Capital Book Leverage" in live.columns:
+        if "Borrower Debt Capacity Strain" not in live.columns:
+            live["Borrower Debt Capacity Strain"] = np.nan
+        if "Borrower Book Leverage" in live.columns:
             current_version = live.get(
-                "Capital Stress Version", pd.Series(index=live.index, dtype=object)
+                "Borrower Financial Condition Version", pd.Series(index=live.index, dtype=object)
             ).astype(str).eq("3.0")
-            missing = live["Capital Debt Capacity Stress"].isna() & current_version
-            live.loc[missing, "Capital Debt Capacity Stress"] = pd.to_numeric(
-                live.loc[missing, "Capital Book Leverage"], errors="coerce"
+            missing = live["Borrower Debt Capacity Strain"].isna() & current_version
+            live.loc[missing, "Borrower Debt Capacity Strain"] = pd.to_numeric(
+                live.loc[missing, "Borrower Book Leverage"], errors="coerce"
             )
         for column in desired:
             if column not in live.columns:
@@ -604,7 +604,7 @@ def build_company_snapshot(
         {fact.method for fact in [revenue, ocf, capex, operating_income, depreciation]}
     )
 
-    cik = CAPITAL_STRESS_CIKS.get(str(ticker).upper())
+    cik = BORROWER_FINANCIAL_CONDITION_CIKS.get(str(ticker).upper())
     return {
         "Date": cutoff_ts.date().isoformat(),
         "Observation Frequency": observation_frequency,
@@ -650,17 +650,17 @@ def snapshot_to_sector_data(snapshot: pd.DataFrame) -> dict[str, pd.DataFrame]:
     for column in expected:
         if column not in frame.columns:
             frame[column] = np.nan
-    return {"Historical Capital Stress Cohort": frame[expected].copy()}
+    return {"Historical Borrower Financial Condition Cohort": frame[expected].copy()}
 
 
-def capital_result_to_history_row(
+def borrower_condition_result_to_history_row(
     observation_date: str | date | pd.Timestamp,
     observation_frequency: str,
     result: Mapping,
     fundamentals_snapshot: pd.DataFrame,
     ledger_snapshot: pd.DataFrame,
     *,
-    version: str = "3.0",
+    version: str = "4.0",
 ) -> dict:
     components = (result or {}).get("components", {}) or {}
     component_score = lambda name: (components.get(name, {}) or {}).get("score", np.nan)
@@ -679,22 +679,22 @@ def capital_result_to_history_row(
     return {
         "Date": pd.Timestamp(observation_date).date().isoformat(),
         "Observation Frequency": observation_frequency,
-        "Capital Stress": score,
-        "Capital Cash Flow Strain": component_score("Cash Flow Strain"),
-        "Capital Debt Capacity Stress": component_score("Debt Capacity Stress"),
-        "Capital Committed Burden": component_score("Committed Burden"),
-        "Capital Contingent Exposure": component_score("Contingent Exposure"),
+        "Borrower Financial Condition": score,
+        "Borrower Cash Flow Strain": component_score("Cash Flow Strain"),
+        "Borrower Debt Capacity Strain": component_score("Debt Capacity Strain"),
+        "Borrower Committed Burden": component_score("Committed Burden"),
+        "Borrower Contingent Exposure": component_score("Contingent Exposure"),
         "FCF Margin": (components.get("Cash Flow Strain", {}) or {}).get("raw", np.nan),
         "Reinvestment Ratio": (components.get("Cash Flow Strain", {}) or {}).get("secondary_raw", np.nan),
-        "Positive EBITDA Net Debt/EBITDA": (components.get("Debt Capacity Stress", {}) or {}).get("raw", np.nan),
-        "Negative EBITDA Net Debt/Revenue": (components.get("Debt Capacity Stress", {}) or {}).get("secondary_raw", np.nan),
+        "Positive EBITDA Net Debt/EBITDA": (components.get("Debt Capacity Strain", {}) or {}).get("raw", np.nan),
+        "Negative EBITDA Net Debt/Revenue": (components.get("Debt Capacity Strain", {}) or {}).get("secondary_raw", np.nan),
         "Committed Burden Ratio": (components.get("Committed Burden", {}) or {}).get("raw", np.nan),
         "Contingent Burden Ratio": (components.get("Contingent Exposure", {}) or {}).get("raw", np.nan),
-        "Capital Stress Version": version,
+        "Borrower Financial Condition Version": version,
         "Valid Components": valid_components,
         "Component Coverage": (result or {}).get("coverage", np.nan),
         "Cohort Companies": (result or {}).get("cohort_companies", 0),
-        "Target Cohort Size": (result or {}).get("target_cohort_size", len(CAPITAL_STRESS_CIKS)),
+        "Target Cohort Size": (result or {}).get("target_cohort_size", len(BORROWER_FINANCIAL_CONDITION_CIKS)),
         "Financial Companies": int(fundamentals_snapshot["Ticker"].nunique()) if not fundamentals_snapshot.empty else 0,
         "Commitment Companies": len((result or {}).get("commitment_tickers", []) or []),
         "Contingent Companies": len((result or {}).get("contingent_tickers", []) or []),

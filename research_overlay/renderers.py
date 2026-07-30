@@ -28,7 +28,7 @@ from helpers.labels import (
     validation_label,
 )
 from helpers.macro_dashboard import (
-    _capital_component_table,
+    _borrower_condition_component_table,
     _component_table,
     _intermediation_component_table,
     render_edgar_data,
@@ -132,6 +132,79 @@ def _metric_context(name, value):
     if name == "Concentration HHI":
         return "Market-value concentration"
     return ""
+
+
+TAB_METRIC_REGISTRIES = {
+    "macro": [
+        "AI Equity Index",
+        "AI Development Intensity",
+        "Speculation Gap",
+        "Economic Validation Gap",
+        "AI-Industrial Growth Gap",
+        "Power Stress Index",
+        "Power Capacity Gap",
+        "Concentration HHI",
+    ],
+    "finance": [
+        "Internal Funding Coverage",
+        "Cash Reserve Coverage",
+        "Debt Financing Pulse",
+        "Forward Commitment Load",
+        "Lender Strain",
+        "Financial Conditions Confirmation",
+    ],
+    "sectors": [
+        "Forward EV/EBIT",
+        "Loss-Making EV Share",
+        "Earnings Support",
+        "Speculative Load",
+        "Most Crowded",
+        "Fastest Mover",
+        "Biggest Risk",
+    ],
+}
+
+
+def _render_tab_metric_registry(tab_key):
+    definitions = TAB_METRIC_REGISTRIES[tab_key]
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.expander("Metric registry", expanded=False):
+        selected = st.selectbox(
+            "Metric or analytical product",
+            definitions,
+            key=f"research-{tab_key}-definition",
+            label_visibility="collapsed",
+        )
+        render_definition(METRIC_DEFINITIONS[selected])
+    st.markdown("<br>", unsafe_allow_html=True)
+
+
+def _latest_component_date(components):
+    dates = []
+    for payload in (components or {}).values():
+        if not isinstance(payload, dict):
+            continue
+        parsed = pd.to_datetime(payload.get("as_of"), errors="coerce", format="mixed")
+        if pd.notna(parsed):
+            dates.append(parsed)
+    return max(dates) if dates else None
+
+
+def _financial_condition_source_stat(*, source, fallback_date, trend, components, live_sources):
+    source_text = str(source or "").strip()
+    is_archive = "archive" in source_text.lower()
+    history_date = None
+    history = (trend or {}).get("history")
+    if isinstance(history, pd.DataFrame) and not history.empty and "Date" in history.columns:
+        parsed = pd.to_datetime(history["Date"], errors="coerce", format="mixed").dropna()
+        if not parsed.empty:
+            history_date = parsed.max()
+    observation_date = fallback_date or _latest_component_date(components) or history_date
+    date_text = fmt_date(observation_date)
+    if is_archive:
+        return "Source", "Archive", date_text
+    note = f"{live_sources}  \n{date_text}"
+    return "Source", "Live data", note
 
 
 def _render_primary_macro_cards(regime_metrics, trends):
@@ -268,7 +341,7 @@ def _render_macro_components(regime_metrics, sector_data):
                 )
     with component_columns[3]:
         with st.container(border=True):
-            render_panel_heading("Concentration contributors", "Top five companies plus the remainder")
+            render_panel_heading("Concentration contributors")
             st.plotly_chart(
                 hhi_component_chart(hhi_breakdown),
                 width="stretch",
@@ -301,10 +374,6 @@ def _render_macro_components(regime_metrics, sector_data):
         power_capacity_result = (regime_metrics or {}).get("Power Capacity Gap Components", {}) or {}
         st.markdown("**Power Capacity Gap**")
         render_static_table(_component_table(power_capacity_result.get("components", {})))
-        st.caption(
-            f"Deployment pressure: {fmt_number(power_capacity_result.get('deployment_pressure_score'), 1)} · "
-            f"Power-system response: {fmt_number(power_capacity_result.get('power_response_score'), 1)}"
-        )
 
         st.markdown("**Concentration HHI**")
         hhi_table = hhi_breakdown.copy()
@@ -316,10 +385,6 @@ def _render_macro_components(regime_metrics, sector_data):
                 "HHI Contribution Share": "Share of HHI (%)",
             })
         render_static_table(hhi_table)
-        st.caption(
-            f"Raw AI HHI: {fmt_number((regime_metrics or {}).get('Raw AI HHI'), 4)} · "
-            f"Average sector pressure: {fmt_number((regime_metrics or {}).get('Avg Sector Pressure'), 1)}"
-        )
 
 
 def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data):
@@ -329,6 +394,7 @@ def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, das
         "Equity trends, observable deployment, power utilization, and validation gaps.",
         "market / buildout / validation",
     )
+    _render_tab_metric_registry("macro")
     render_section("Regime board", "Current readings with retained histories and source state.", first=True)
     _render_primary_macro_cards(regime_metrics, dashboard_data["trends"])
     render_section("Gap Measures", "Approximations of divergence from broader economic trends.")
@@ -448,7 +514,7 @@ def _fmt_dollars(value):
 
 
 
-def _render_stress_product(
+def _render_financial_condition_product(
     *,
     title,
     value,
@@ -458,18 +524,25 @@ def _render_stress_product(
     components,
     detail_table,
     note,
+    live_sources,
 ):
     with st.container(border=True):
         render_panel_heading(title)
-        dynamics_note = (trend or {}).get("dynamics_note", "native-version history")
+        source_stat = _financial_condition_source_stat(
+            source=source,
+            fallback_date=fallback_date,
+            trend=trend,
+            components=components,
+            live_sources=live_sources,
+        )
         render_statline(
             [
-                ("Current", fmt_number(value, 1, signed=True), "reference = 0"),
-                ("Source", source, f"fallback {fmt_date(fallback_date)}" if fallback_date else "current run"),
-                ("Velocity", fmt_number((trend or {}).get("velocity"), 2, signed=True), dynamics_note),
-                ("Acceleration", fmt_number((trend or {}).get("acceleration"), 2, signed=True), dynamics_note),
+                ("Current", fmt_number(value, 1, signed=True), None),
+                ("Velocity", fmt_number((trend or {}).get("velocity"), 2, signed=True), None),
+                ("Acceleration", fmt_number((trend or {}).get("acceleration"), 2, signed=True), None),
+                source_stat,
             ],
-            key_prefix=f"finance-stress-{title.lower().replace(' ', '-')}",
+            key_prefix=f"finance-condition-{title.lower().replace(' ', '-')}",
         )
         history_col, components_col = st.columns([1.25, 1])
         with history_col:
@@ -526,32 +599,34 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
     del sector_metrics, sector_data
     render_tab_header(
         "Finance",
-        "Funding capacity, contractual burden, borrower stress, intermediation stress, and broad financial conditions.",
+        "Funding capacity, contractual burden, borrower strain, lender strain, and broad financial conditions.",
         "funding / borrowers / lenders / system",
     )
+    _render_tab_metric_registry("finance")
     render_section("Funding profile", "Current funding ratios and retained cohort history.", first=True)
     _render_funding_section(regime_metrics)
 
-    render_section("Borrower and lender stress", "Financial market liquidity, exposure, and credit availability.")
-    capital = (regime_metrics or {}).get("Capital Stress Components", {}) or {}
-    _render_stress_product(
-        title="Capital Stress",
-        value=_value(regime_metrics, "Capital Stress"),
-        source=_source(regime_metrics, "Capital Stress"),
-        fallback_date=_fallback(regime_metrics, "Capital Stress"),
-        trend=dashboard_data["trends"].get("capital_stress_trend", {}),
-        components=capital.get("components", {}),
-        detail_table=_capital_component_table(capital),
-        note="Borrower-side financing strain from cash flow, leverage, disclosed commitments, and contingent exposure.",
+    render_section("Credit Conditions")
+    borrower_condition = (regime_metrics or {}).get("Borrower Financial Condition Components", {}) or {}
+    _render_financial_condition_product(
+        title="Borrower Strain",
+        value=_value(regime_metrics, "Borrower Financial Condition"),
+        source=_source(regime_metrics, "Borrower Financial Condition"),
+        fallback_date=_fallback(regime_metrics, "Borrower Financial Condition"),
+        trend=dashboard_data["trends"].get("borrower_financial_condition_trend", {}),
+        components=borrower_condition.get("components", {}),
+        detail_table=_borrower_condition_component_table(borrower_condition),
+        note="Cash-flow and debt-capacity strain combined with disclosed commitments and contingent exposure.",
+        live_sources="yfinance + EDGAR",
     )
 
-    intermediation = (regime_metrics or {}).get("Credit Intermediation Stress Components", {}) or {}
-    _render_stress_product(
-        title="Credit Intermediation Stress",
-        value=_value(regime_metrics, "Credit Intermediation Stress"),
-        source=_source(regime_metrics, "Credit Intermediation Stress"),
-        fallback_date=_fallback(regime_metrics, "Credit Intermediation Stress"),
-        trend=dashboard_data["trends"].get("intermediation_stress_trend", {}),
+    intermediation = (regime_metrics or {}).get("Credit Intermediation Strain Components", {}) or {}
+    _render_financial_condition_product(
+        title="Lender Strain",
+        value=_value(regime_metrics, "Credit Intermediation Strain"),
+        source=_source(regime_metrics, "Credit Intermediation Strain"),
+        fallback_date=_fallback(regime_metrics, "Credit Intermediation Strain"),
+        trend=dashboard_data["trends"].get("intermediation_strain_trend", {}),
         components=intermediation.get("components", {}),
         detail_table=_intermediation_component_table(intermediation),
         note=(
@@ -559,6 +634,7 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
             f"Nonbank channel {fmt_number(intermediation.get('nonbank_channel_score'), 1, signed=True)} · "
             f"{intermediation.get('elevated_pillars', 0)} of 4 pillars above neutral."
         ),
+        live_sources="FRED + EDGAR",
     )
 
     _render_nfci(fred_data, nfci_history)
@@ -767,7 +843,7 @@ def render_sectors_tab(sector_metrics, sector_data, regime_metrics, dashboard_da
         "Cross-sectional positioning, movement, fundamental evolution, and metric-driven sector detail.",
         f"{len(macro_df)} sectors",
     )
-    st.markdown("<br>", unsafe_allow_html=True)
+    _render_tab_metric_registry("sectors")
     render_section("Cross-sector state", "Current leaders in market behavior.", first=True)
     render_statline(_assessment_stats(macro_df, sector_data), key_prefix="sector-cross-state")
 
@@ -809,28 +885,37 @@ def render_sectors_tab(sector_metrics, sector_data, regime_metrics, dashboard_da
 
 def _status_rows(regime_metrics):
     mappings = [
-        ("AI Equity Index", "AEI", "AEI Version"),
-        ("AI Development Intensity", "ADI", "ADI Version"),
-        ("Economic Validation Gap", "Economic Validation Gap", "EVG Version"),
-        ("Power Stress Index", "Power Stress", "Power Stress Version"),
-        ("Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap Version"),
-        ("Capital Stress", "Capital Stress", "Capital Stress Version"),
-        ("Credit Intermediation Stress", "Credit Intermediation Stress", "Credit Intermediation Stress Version"),
-        ("Concentration HHI", None, None),
-        ("Speculation Gap", None, None),
-        ("Average Sector Pressure", None, "Pressure Version"),
+        ("AI Equity Index", "AI Equity Index", "AEI", "AEI Version"),
+        ("AI Development Intensity", "AI Development Intensity", "ADI", "ADI Version"),
+        ("Economic Validation Gap", "Economic Validation Gap", "Economic Validation Gap", "EVG Version"),
+        ("Power Stress Index", "Power Stress Index", "Power Stress", "Power Stress Version"),
+        ("Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap Version"),
+        ("Borrower Strain", "Borrower Financial Condition", "Borrower Financial Condition", "Borrower Financial Condition Version"),
+        ("Lender Strain", "Credit Intermediation Strain", "Credit Intermediation Strain", "Credit Intermediation Strain Version"),
+        ("Concentration HHI", "Concentration HHI", None, None),
+        ("Speculation Gap", "Speculation Gap", None, None),
+        ("Average Sector Pressure", "Avg Sector Pressure", None, "Pressure Version"),
     ]
+    signed_products = {
+        "Economic Validation Gap",
+        "Power Stress Index",
+        "Power Capacity Gap",
+        "Borrower Strain",
+        "Lender Strain",
+        "Speculation Gap",
+    }
     rows = []
-    for product, prefix, version_key in mappings:
-        value_key = "Avg Sector Pressure" if product == "Average Sector Pressure" else product
+    for product, value_key, prefix, version_key in mappings:
         source = (regime_metrics or {}).get(f"{prefix} Source", "Current") if prefix else "Derived current"
         fallback = (regime_metrics or {}).get(f"{prefix} Fallback Date") if prefix else None
         rows.append(
             {
                 "Product": product,
-                "Reading": fmt_number((regime_metrics or {}).get(value_key), 2, signed=product in {
-                    "Economic Validation Gap", "Power Stress Index", "Power Capacity Gap", "Capital Stress", "Credit Intermediation Stress", "Speculation Gap"
-                }),
+                "Reading": fmt_number(
+                    (regime_metrics or {}).get(value_key),
+                    2,
+                    signed=product in signed_products,
+                ),
                 "Source State": source,
                 "Fallback Date": str(fallback or ""),
                 "Version": str((regime_metrics or {}).get(version_key, "") if version_key else ""),
@@ -845,8 +930,8 @@ def _coverage_rows(regime_metrics):
         ("Economic Validation Gap", (regime_metrics or {}).get("Economic Validation Gap Components", {}), 3),
         ("Power Stress Index", (regime_metrics or {}).get("Power Stress Components", {}), 3),
         ("Power Capacity Gap", (regime_metrics or {}).get("Power Capacity Gap Components", {}), 4),
-        ("Capital Stress", (regime_metrics or {}).get("Capital Stress Components", {}), 4),
-        ("Credit Intermediation Stress", (regime_metrics or {}).get("Credit Intermediation Stress Components", {}), 4),
+        ("Borrower Strain", (regime_metrics or {}).get("Borrower Financial Condition Components", {}), 4),
+        ("Lender Strain", (regime_metrics or {}).get("Credit Intermediation Strain Components", {}), 4),
     ]
     rows = []
     for product, result, total in groups:
@@ -937,10 +1022,10 @@ def _sector_methodology_rows():
 def render_evidence_tab(fred_data, sector_data, regime_metrics):
     render_tab_header(
         "Evidence",
-        "Model contract, current source state, component coverage, definitions, and source observations.",
-        "definitions / versions / raw observations",
+        "Model contract, current source state, component coverage, definitions, and source data.",
+        "definitions / versions / source data",
     )
-    render_section("Purpose and boundary", first=True)
+    render_section("Purpose Statement", first=True)
     render_definition(METRIC_DEFINITIONS["Purpose Statement"])
 
     render_section("Product status", "Current readings, source state, fallback dates, and calculation versions.")
@@ -952,12 +1037,7 @@ def render_evidence_tab(fred_data, sector_data, regime_metrics):
     render_section("Sector construction", "Current equations and aggregation rules for the sector analytical products.")
     render_static_table(_sector_methodology_rows())
 
-    render_section("Metric registry", "Definitions remain available without interrupting the primary analytical surfaces.")
-    definitions = [name for name in METRIC_DEFINITIONS if name != "Purpose Statement"]
-    selected = st.selectbox("Metric or analytical product", definitions, key="research-evidence-definition")
-    render_definition(METRIC_DEFINITIONS[selected])
-
-    render_section("Source observations", "Raw FRED and EDGAR views from the current data pipeline.")
+    render_section("Source Data")
     render_macro_data(fred_data)
     render_edgar_data(sector_data)
 

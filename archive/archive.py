@@ -212,11 +212,11 @@ def append_macro_history(regime_metrics, fred_data):
             "Power Capacity Gap",
             "Power Capacity Gap Source",
         ),
-        "Capital Stress": _current_metric_value(regime_metrics, "Capital Stress", "Capital Stress Source"),
-        "Credit Intermediation Stress": _current_metric_value(
+        "Borrower Financial Condition": _current_metric_value(regime_metrics, "Borrower Financial Condition", "Borrower Financial Condition Source"),
+        "Credit Intermediation Strain": _current_metric_value(
             regime_metrics,
-            "Credit Intermediation Stress",
-            "Credit Intermediation Stress Source",
+            "Credit Intermediation Strain",
+            "Credit Intermediation Strain Source",
         ),
         "Concentration HHI": regime_metrics.get("Concentration HHI", np.nan),
         "Raw AI HHI": regime_metrics.get("Raw AI HHI", np.nan),
@@ -234,32 +234,32 @@ def append_macro_history(regime_metrics, fred_data):
         "PCG Capital Deployment": _component_value(regime_metrics, "Power Capacity Gap Components", "Capital Deployment"),
         "PCG Delivered Power Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Delivered Power Growth"),
         "PCG Installed Capacity Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Installed Capacity Growth"),
-        "Capital Cash Flow Strain": _component_value(regime_metrics, "Capital Stress Components", "Cash Flow Strain"),
-        "Capital Debt Capacity Stress": _component_value(
+        "Borrower Cash Flow Strain": _component_value(regime_metrics, "Borrower Financial Condition Components", "Cash Flow Strain"),
+        "Borrower Debt Capacity Strain": _component_value(
             regime_metrics,
-            "Capital Stress Components",
-            "Debt Capacity Stress",
+            "Borrower Financial Condition Components",
+            "Debt Capacity Strain",
         ),
-        "Capital Committed Burden": _component_value(regime_metrics, "Capital Stress Components", "Committed Burden"),
-        "Capital Contingent Exposure": _component_value(regime_metrics, "Capital Stress Components", "Contingent Exposure"),
+        "Borrower Committed Burden": _component_value(regime_metrics, "Borrower Financial Condition Components", "Committed Burden"),
+        "Borrower Contingent Exposure": _component_value(regime_metrics, "Borrower Financial Condition Components", "Contingent Exposure"),
         "Intermediation Bank Credit Tightening": _component_value(
             regime_metrics,
-            "Credit Intermediation Stress Components",
+            "Credit Intermediation Strain Components",
             "Bank Credit Tightening",
         ),
         "Intermediation Bank Capital Strain": _component_value(
             regime_metrics,
-            "Credit Intermediation Stress Components",
+            "Credit Intermediation Strain Components",
             "Bank Capital Strain",
         ),
         "Intermediation Private Credit Impairment": _component_value(
             regime_metrics,
-            "Credit Intermediation Stress Components",
+            "Credit Intermediation Strain Components",
             "Private Credit Impairment",
         ),
         "Intermediation PE Portfolio Financing Strain": _component_value(
             regime_metrics,
-            "Credit Intermediation Stress Components",
+            "Credit Intermediation Strain Components",
             "PE Portfolio Financing Strain",
         ),
         "AEI Version": regime_metrics.get("AEI Version", np.nan),
@@ -267,9 +267,9 @@ def append_macro_history(regime_metrics, fred_data):
         "EVG Version": regime_metrics.get("EVG Version", np.nan),
         "Power Stress Version": regime_metrics.get("Power Stress Version", np.nan),
         "Power Capacity Gap Version": regime_metrics.get("Power Capacity Gap Version", np.nan),
-        "Capital Stress Version": regime_metrics.get("Capital Stress Version", np.nan),
-        "Credit Intermediation Stress Version": regime_metrics.get(
-            "Credit Intermediation Stress Version", np.nan
+        "Borrower Financial Condition Version": regime_metrics.get("Borrower Financial Condition Version", np.nan),
+        "Credit Intermediation Strain Version": regime_metrics.get(
+            "Credit Intermediation Strain Version", np.nan
         ),
         "Pressure Version": regime_metrics.get("Pressure Version", np.nan),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),

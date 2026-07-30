@@ -7,7 +7,7 @@ from helpers.macro_dashboard import render_edgar_data, render_macro_data
 def render_evidence_dashboard(fred_data=None, sector_data=None):
     """Render methodology, definitions, and source-data evidence."""
     st.title("Evidence")
-    st.caption("Purpose • metric definitions • source observations")
+    st.caption("Purpose • metric definitions • source data")
     st.markdown("---")
 
     st.subheader("Purpose Statement")

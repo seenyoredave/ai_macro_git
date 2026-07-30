@@ -3,7 +3,7 @@
 The metric compares observable AI deployment pressure with a national proxy for
 power-system response. It is deliberately distinct from Power Stress: the gap
 asks whether deployment is moving faster than measured power delivery and
-capacity expansion, while Power Stress asks how strained the system appears
+capacity expansion, while Power Stress asks how much pressure is acting on the system relative to reference conditions
 relative to reference conditions.
 """
 

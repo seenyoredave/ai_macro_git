@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the retained Capital Stress history from public SEC filings.
+"""Build the retained Borrower Financial Condition history from public SEC filings.
 
 This is an offline maintenance command, not part of Streamlit runtime.  It:
 
@@ -7,14 +7,14 @@ This is an offline maintenance command, not part of Streamlit runtime.  It:
 2. reconstructs point-in-time TTM fundamentals at annual and quarterly dates;
 3. conservatively extracts commitment candidates from 10-K/10-Q filings;
 4. accepts only high-confidence, explicitly labeled obligations;
-5. calculates Capital Stress with the live v3 engine; and
+5. calculates Borrower Financial Condition with the live v3 engine; and
 6. writes retained raw inputs, an audit table, and the dashboard history file.
 
 Run from the project root:
 
-    python tools/backfill_capital_stress.py
+    python tools/backfill_borrower_financial_condition.py
 
-The command resumes from ``.cache/capital_stress_backfill``.  Set
+The command resumes from ``.cache/borrower_financial_condition_backfill``.  Set
 ``SEC_USER_AGENT`` or place ``SEC_USER_AGENT`` in
 ``~/.streamlit/secrets.toml`` before running.
 """
@@ -44,9 +44,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from analytics.capital_stress_engine import calculate_capital_stress
-from analytics.capital_stress_history import (
-    CAPITAL_STRESS_CIKS,
+from analytics.borrower_financial_condition_engine import calculate_borrower_financial_condition
+from analytics.borrower_financial_condition_history import (
+    BORROWER_FINANCIAL_CONDITION_CIKS,
     DEFAULT_AUDIT_PATH,
     DEFAULT_COMMITMENTS_HISTORY_PATH,
     DEFAULT_FUNDAMENTALS_PATH,
@@ -57,13 +57,13 @@ from analytics.capital_stress_history import (
     LEDGER_COLUMNS,
     REVIEW_COLUMNS,
     build_company_snapshot,
-    capital_result_to_history_row,
+    borrower_condition_result_to_history_row,
     historical_observation_dates,
     snapshot_to_sector_data,
 )
 
 
-CACHE_DIR = PROJECT_ROOT / ".cache" / "capital_stress_backfill"
+CACHE_DIR = PROJECT_ROOT / ".cache" / "borrower_financial_condition_backfill"
 SEC_SUBMISSIONS = "https://data.sec.gov/submissions/CIK{cik}.json"
 SEC_SUBMISSIONS_FILE = "https://data.sec.gov/submissions/{name}"
 SEC_COMPANYFACTS = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
@@ -545,7 +545,7 @@ def build_fundamentals(
     observations: list[tuple[pd.Timestamp, str]],
 ) -> pd.DataFrame:
     rows = []
-    for ticker, cik in CAPITAL_STRESS_CIKS.items():
+    for ticker, cik in BORROWER_FINANCIAL_CONDITION_CIKS.items():
         print(f"[companyfacts] {ticker}")
         companyfacts = client.json(SEC_COMPANYFACTS.format(cik=cik))
         for cutoff, frequency in observations:
@@ -558,7 +558,7 @@ def build_commitments(
     observations: list[tuple[pd.Timestamp, str]],
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     candidates = []
-    for ticker, cik in CAPITAL_STRESS_CIKS.items():
+    for ticker, cik in BORROWER_FINANCIAL_CONDITION_CIKS.items():
         print(f"[filings] {ticker}")
         filings = load_filings(client, ticker, cik)
         relevant = select_relevant_filings(filings, observations)
@@ -595,7 +595,7 @@ def build_history(
             .any(axis=1)
         ].copy()
         sector_data = snapshot_to_sector_data(usable)
-        result = calculate_capital_stress(
+        result = calculate_borrower_financial_condition(
             sector_data,
             as_of_date=cutoff,
             commitments_df=ledger,
@@ -615,7 +615,7 @@ def build_history(
                 .tail(1)
             )
         rows.append(
-            capital_result_to_history_row(
+            borrower_condition_result_to_history_row(
                 cutoff,
                 frequency,
                 result,
@@ -667,7 +667,7 @@ def main():
             fundamentals = build_fundamentals(cached_client, observations)
             if fundamentals.empty:
                 raise RuntimeError(
-                    "Capital Stress fundamentals could not be restored from the local SEC cache. "
+                    "Borrower Financial Condition fundamentals could not be restored from the local SEC cache. "
                     "Run the backfill once without --reuse-raw to repopulate the cache."
                 )
             _atomic_csv(fundamentals, DEFAULT_FUNDAMENTALS_PATH, FUNDAMENTAL_COLUMNS)
@@ -719,8 +719,8 @@ def main():
     _atomic_csv(history, DEFAULT_HISTORY_PATH, HISTORY_COLUMNS)
     _atomic_csv(history, DEFAULT_AUDIT_PATH, HISTORY_COLUMNS)
 
-    accepted = int(history["Capital Stress"].notna().sum()) if not history.empty else 0
-    print("\nCapital Stress backfill complete")
+    accepted = int(history["Borrower Financial Condition"].notna().sum()) if not history.empty else 0
+    print("\nBorrower Financial Condition backfill complete")
     print(f"  Observations requested: {len(observations)}")
     print(f"  Accepted scores:       {accepted}")
     print(f"  Fundamentals rows:     {len(fundamentals)}")

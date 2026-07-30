@@ -1,4 +1,4 @@
-"""Capital Stress engine.
+"""Borrower Financial Condition engine.
 
 The engine combines standardized company fundamentals with a curated,
 human-verifiable commitment ledger. Missing note disclosures remain unknown;
@@ -18,14 +18,14 @@ from analytics.scoring import tanh_score, weighted_available_score
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_COMMITMENTS_PATH = PROJECT_ROOT / "data" / "capital_commitments.csv"
 
-CAPITAL_STRESS_TICKERS = {
+BORROWER_FINANCIAL_CONDITION_TICKERS = {
     "MSFT", "AMZN", "GOOG", "META", "ORCL",
     "NVDA", "AMD", "IREN", "SMCI", "ANET",
 }
 
-CAPITAL_STRESS_WEIGHTS = {
+BORROWER_FINANCIAL_CONDITION_WEIGHTS = {
     "Cash Flow Strain": 0.30,
-    "Debt Capacity Stress": 0.25,
+    "Debt Capacity Strain": 0.25,
     "Committed Burden": 0.30,
     "Contingent Exposure": 0.15,
 }
@@ -35,29 +35,29 @@ CASH_FLOW_SUBWEIGHTS = {
     "Reinvestment Burden": 0.40,
 }
 
-def capital_stress_to_signed(value):
-    """Map the internal 0-100 stress score to a centered -100 to +100 scale."""
+def borrower_financial_condition_to_signed(value):
+    """Map the internal 0-100 adverse-condition score to a centered -100 to +100 scale."""
     value = pd.to_numeric(value, errors="coerce")
     if pd.isna(value) or not np.isfinite(value):
         return np.nan
     return float(np.clip(2.0 * (float(value) - 50.0), -100.0, 100.0))
 
 
-def normalize_capital_stress_history(history):
-    """Normalize current-version Capital Stress archive metadata.
+def normalize_borrower_financial_condition_history(history):
+    """Normalize current-version Borrower Financial Condition archive metadata.
 
     Historical values are rebuilt offline from retained raw inputs. Runtime
     code does not migrate or rescale legacy calculated values.
     """
-    if history is None or history.empty or "Capital Stress" not in history.columns:
+    if history is None or history.empty or "Borrower Financial Condition" not in history.columns:
         return history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
 
     out = history.copy()
-    out["Capital Stress"] = pd.to_numeric(out["Capital Stress"], errors="coerce")
-    if "Capital Stress Version" in out.columns:
-        out["Capital Stress Version"] = out["Capital Stress Version"].astype("string")
+    out["Borrower Financial Condition"] = pd.to_numeric(out["Borrower Financial Condition"], errors="coerce")
+    if "Borrower Financial Condition Version" in out.columns:
+        out["Borrower Financial Condition Version"] = out["Borrower Financial Condition Version"].astype("string")
     else:
-        out["Capital Stress Version"] = pd.Series(pd.NA, index=out.index, dtype="string")
+        out["Borrower Financial Condition Version"] = pd.Series(pd.NA, index=out.index, dtype="string")
     return out
 
 
@@ -96,7 +96,7 @@ def _normalize_commitment_ledger(df, *, as_of_date=None) -> pd.DataFrame:
     if as_of_date is not None:
         cutoff = pd.to_datetime(as_of_date, errors="coerce")
         if pd.isna(cutoff):
-            raise ValueError(f"Invalid capital-stress as_of_date: {as_of_date}")
+            raise ValueError(f"Invalid borrower-financial-condition as_of_date: {as_of_date}")
         df = df.loc[df["Filing Date"].notna() & (df["Filing Date"] <= cutoff)].copy()
 
     df = df.sort_values(["Ticker", "As Of Date", "Filing Date"], kind="stable")
@@ -135,7 +135,7 @@ def _universe_company_frame(sector_data) -> pd.DataFrame:
 
     combined["Ticker"] = combined["Ticker"].astype(str).str.upper().str.strip()
     combined = combined.drop_duplicates(subset=["Ticker"], keep="first")
-    return combined[combined["Ticker"].isin(CAPITAL_STRESS_TICKERS)].copy()
+    return combined[combined["Ticker"].isin(BORROWER_FINANCIAL_CONDITION_TICKERS)].copy()
 
 
 def _ratio_of_sums(df, numerator, denominator, *, min_companies=2):
@@ -197,14 +197,14 @@ def _ledger_burden(ledger, cohort, columns, *, min_companies=2):
     return burden, valid_count, obligation_total, sorted(merged.loc[valid, "Ticker"].tolist())
 
 
-def _debt_capacity_stress(cohort, *, min_companies=2):
+def _debt_capacity_strain(cohort, *, min_companies=2):
     """Score debt capacity without discarding negative-EBITDA companies.
 
     Branches:
       * positive EBITDA: aggregate net debt / aggregate EBITDA;
       * non-positive EBITDA with positive net debt: aggregate net debt / revenue
-        with a high-stress floor;
-      * non-positive EBITDA with net cash: low leverage stress, because the
+        with an impairment floor;
+      * non-positive EBITDA with net cash: limited debt-capacity strain, because the
         operating weakness is captured separately by Cash Flow Strain.
 
     Branch scores are combined by represented revenue; company counts are the
@@ -319,14 +319,14 @@ def _debt_capacity_stress(cohort, *, min_companies=2):
     }
 
 
-def calculate_capital_stress(
+def calculate_borrower_financial_condition(
     sector_data,
     commitments_path=None,
     *,
     as_of_date=None,
     commitments_df=None,
 ) -> dict:
-    """Calculate Capital Stress with a fixed 3-of-4 component rule.
+    """Calculate Borrower Financial Condition with a fixed 3-of-4 component rule.
 
     ``commitments_df`` is used by the audited historical backfill.  Runtime
     callers continue to use the retained current ledger at
@@ -345,7 +345,7 @@ def calculate_capital_stress(
         "CapEx",
         "Operating Cash Flow",
     )
-    debt_capacity = _debt_capacity_stress(cohort)
+    debt_capacity = _debt_capacity_strain(cohort)
 
     cash_flow_subscores = {
         "FCF Margin Strain": (
@@ -380,21 +380,21 @@ def calculate_capital_stress(
 
     base_scores = {
         "Cash Flow Strain": cash_flow_result["score"],
-        "Debt Capacity Stress": debt_capacity["score"],
+        "Debt Capacity Strain": debt_capacity["score"],
         "Committed Burden": tanh_score(committed_burden, center=1.5, scale=2.0),
         "Contingent Exposure": tanh_score(contingent_burden, center=0.10, scale=0.20),
     }
 
     combined = weighted_available_score(
         base_scores,
-        CAPITAL_STRESS_WEIGHTS,
+        BORROWER_FINANCIAL_CONDITION_WEIGHTS,
         min_components=3,
     )
     signed_scores = {
-        name: capital_stress_to_signed(score)
+        name: borrower_financial_condition_to_signed(score)
         for name, score in base_scores.items()
     }
-    signed_score = capital_stress_to_signed(combined["score"])
+    signed_score = borrower_financial_condition_to_signed(combined["score"])
 
     cohort_tickers = sorted(cohort["Ticker"].unique().tolist()) if not cohort.empty else []
     ledger_tickers = sorted(ledger["Ticker"].unique().tolist()) if not ledger.empty else []
@@ -405,7 +405,7 @@ def calculate_capital_stress(
             "secondary_raw": reinvestment,
             "score": signed_scores["Cash Flow Strain"],
             "base_score": base_scores["Cash Flow Strain"],
-            "weight": CAPITAL_STRESS_WEIGHTS["Cash Flow Strain"],
+            "weight": BORROWER_FINANCIAL_CONDITION_WEIGHTS["Cash Flow Strain"],
             "observations": max(fcf_count, reinvestment_count),
             "subcomponents": {
                 "FCF Margin Strain": {
@@ -420,12 +420,12 @@ def calculate_capital_stress(
                 },
             },
         },
-        "Debt Capacity Stress": {
+        "Debt Capacity Strain": {
             "raw": debt_capacity["positive_ebitda_ratio"],
             "secondary_raw": debt_capacity["fallback_ratio"],
-            "score": signed_scores["Debt Capacity Stress"],
-            "base_score": base_scores["Debt Capacity Stress"],
-            "weight": CAPITAL_STRESS_WEIGHTS["Debt Capacity Stress"],
+            "score": signed_scores["Debt Capacity Strain"],
+            "base_score": base_scores["Debt Capacity Strain"],
+            "weight": BORROWER_FINANCIAL_CONDITION_WEIGHTS["Debt Capacity Strain"],
             "observations": debt_capacity["observations"],
             "positive_ebitda_companies": debt_capacity["positive_ebitda_companies"],
             "impaired_companies": debt_capacity["impaired_companies"],
@@ -436,7 +436,7 @@ def calculate_capital_stress(
             "raw": committed_burden,
             "score": signed_scores["Committed Burden"],
             "base_score": base_scores["Committed Burden"],
-            "weight": CAPITAL_STRESS_WEIGHTS["Committed Burden"],
+            "weight": BORROWER_FINANCIAL_CONDITION_WEIGHTS["Committed Burden"],
             "observations": committed_count,
             "obligation_total": committed_total,
             "tickers": committed_tickers,
@@ -445,7 +445,7 @@ def calculate_capital_stress(
             "raw": contingent_burden,
             "score": signed_scores["Contingent Exposure"],
             "base_score": base_scores["Contingent Exposure"],
-            "weight": CAPITAL_STRESS_WEIGHTS["Contingent Exposure"],
+            "weight": BORROWER_FINANCIAL_CONDITION_WEIGHTS["Contingent Exposure"],
             "observations": contingent_count,
             "obligation_total": contingent_total,
             "tickers": contingent_tickers,
@@ -461,7 +461,7 @@ def calculate_capital_stress(
         "coverage": combined["coverage"],
         "components": components,
         "cohort_tickers": cohort_tickers,
-        "target_cohort_size": len(CAPITAL_STRESS_TICKERS),
+        "target_cohort_size": len(BORROWER_FINANCIAL_CONDITION_TICKERS),
         "ledger_tickers": ledger_tickers,
         "ledger_companies": int(ledger["Ticker"].nunique()) if not ledger.empty else 0,
         "cohort_companies": len(cohort_tickers),

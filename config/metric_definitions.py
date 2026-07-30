@@ -14,16 +14,6 @@ At least 3 of 4 pillars must be valid; available static weights are renormalized
 
 
 METRIC_DEFINITIONS = {
-    "AI Economy Snapshot": (
-        "**AI Equity Index:** Strength and breadth of the selected AI equity universe.  \n"
-        "**AI Development Intensity:** Observable physical and capital AI development.  \n"
-        "**Power Stress Index:** Electricity-demand pressure relative to grid capacity and reference conditions.  \n"
-        "**Concentration HHI:** Concentration of market value among the selected AI-related companies.  \n"
-        "**Capital Stress:** Borrower-side financing strain from cash flow, leverage, commitments, and contingent exposure.  \n"
-        "**Credit Intermediation Stress:** Lender-side stress across banks, public BDCs, and private-equity portfolio financing.  \n"
-        "**Financial Conditions Confirmation:** NFCI is the headline check on broad liquidity, leverage, funding, and market conditions; ANFCI appears only as a macro-adjusted comparison line.  \n\n"
-        "**How to read it:** Each metric has its own scale and direction. Higher is not uniformly better; use the interpretation included with each metric."
-    ),
 
     "AI Equity Index": """
 Measures the current valuation, relative performance, and market breadth of the selected AI equity universe.
@@ -39,11 +29,6 @@ All 3 sector factors and at least 75% of sector scores must be valid. The forwar
 
     "AI Development Intensity": ADI_HELP,
 
-    "Gap Scores": """
-Gap Scores compare two related parts of the AI economy on a common -100 to +100 scale.
-
-**How to read them:** A score near zero indicates relative alignment. Positive and negative values identify which side of each relationship is running ahead; the direction is defined in each score's helper. Larger absolute values indicate a wider divergence.
-""",
 
     "Speculation Gap": """
 Compares equity enthusiasm with observable AI development activity.
@@ -80,19 +65,6 @@ The deployment leg reuses the two ADI pillars most directly associated with phys
 **Scope limitation:** This is a national response proxy, not a regional resource-adequacy model. It does not directly capture transmission constraints, interconnection queues, local congestion, generation firmness, or the differing reliability characteristics of capacity types.
 """,
 
-    "Capital Stress": """
-Measures borrower-side financing strain using cash flow, debt capacity, disclosed commitments, and contingent exposure.
-
-Capital Stress = 2 × [0.30(Cash-Flow Strain) + 0.25(Debt Capacity Stress) + 0.30(Committed Burden) + 0.15(Contingent Exposure) - 50]
-
-Sources: standardized company fundamentals and a filing-backed ledger of disclosed contractual and contingent obligations.
-
-Debt Capacity Stress uses net debt/EBITDA for profitable companies, net debt/revenue with a stress floor for negative-EBITDA borrowers, and a lower leverage score for negative-EBITDA companies that retain net cash.
-
-At least 3 of 4 components must be valid; available static weights are renormalized. Filing-driven inputs produce a quarterly step series.
-
-**How to read it:** Positive values indicate greater financing strain and less balance-sheet flexibility. Negative values indicate stronger cash-flow support, lower leverage, or lighter obligation burdens. Zero represents the model's reference condition. Scale: -100 to +100.
-""",
 
     "Internal Funding Coverage": """
 **IFC = OCF / CapEx**
@@ -118,26 +90,26 @@ Positive values indicate debt expanded relative to the current buildout rate; ne
 Higher values mean more future spending is contractually locked in relative to the current annual buildout rate.
 """,
 
-    "Credit Intermediation Stress": """
-Measures whether the U.S. financing channel is tightening or losing loss-absorbing capacity across bank and nonbank channels.
+    "Lender Strain": """
+Measures deterioration in the U.S. financing channel's behavior, asset quality, and loss-absorbing capacity across bank and nonbank channels.
 
 Bank Channel = 0.50(Bank Credit Tightening) + 0.50(Bank Capital Strain)
 
 Nonbank Channel = 0.50(Private Credit Impairment) + 0.50(PE Portfolio Financing Strain)
 
-Credit Intermediation Stress = 2 × [0.50(Bank Channel) + 0.50(Nonbank Channel) - 50]
+Lender Strain = 2 × [0.50(Bank Channel) + 0.50(Nonbank Channel) - 50]
 
 Sources: Federal Reserve SLOOS for business-loan standards; Federal Reserve Z.1 for the aggregate regulatory Tier 1 capital ratio; public BDC filings for asset-weighted non-accruals; and SEC Form PF statistics for private-equity portfolio leverage and payment-in-kind borrowing.
 
 Each pillar is normalized against its own available history when sufficient observations exist; otherwise an explicit anchored scale is used. At least 3 of 4 pillars and at least one pillar from each channel must be valid. Missing weight is renormalized only within its channel. Quarterly and annual inputs produce a step series.
 
-**How to read it:** Positive values indicate a tighter or more impaired financing channel. Negative values indicate easier credit conditions and stronger intermediation capacity. Zero represents the model's reference condition. Scale: -100 to +100.
+**How to read it:** Positive values indicate greater intermediation strain: tighter lending behavior, weaker capital capacity, or more impaired private credit. Negative values indicate stronger intermediation capacity and easier credit transmission. Zero represents the model's reference condition. Scale: -100 to +100.
 """,
 
     "Financial Conditions Confirmation": """
-Provides an independent, fast-moving check on whether broad U.S. financial conditions confirm or contradict the borrower- and lender-side stress metrics.
+Provides an independent, fast-moving check on whether broad U.S. financial conditions confirm or contradict borrower and lender strain.
 
-The strip reports the Chicago Fed National Financial Conditions Index, its current relationship to the long-run average, and its three-month direction. It is not blended into Capital Stress or Credit Intermediation Stress.
+The strip reports the Chicago Fed National Financial Conditions Index, its current relationship to the long-run average, and its three-month direction. It is not blended into Borrower Strain or Lender Strain.
 
 Source: Chicago Fed NFCI and ANFCI via FRED. Frequency: weekly. NFCI remains the headline reading; ANFCI is contextual only.
 
@@ -181,7 +153,7 @@ Source: AI Development Intensity and Federal Reserve industrial-production data.
     "Purpose Statement": """
 Measure whether AI-related market enthusiasm is supported by observable economic development, corporate financial performance, and resilient financing conditions.
 
-Identify divergences, constraints, and financial stresses that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
+Identify divergences, constraints, and financial pressures that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
     """,
 
     "Forward EV/EBIT": """
@@ -234,11 +206,6 @@ The diagonal is the Pressure = AEI reference line.
 """,
 
 
-    "Current Sector Assessment": """
-Summarizes sector crowding, movement, and the breadth of year-over-year financial deterioration.
-
-**How to read it:** These cards identify relative leaders within the selected universe. They are descriptive comparisons, not buy, sell, or timing recommendations. Each card has its own helper describing the selection rule.
-""",
 
     "Most Crowded": """
 Identifies the sector with the highest current Trading Pressure score.

@@ -42,7 +42,7 @@ FORWARD_VALUATION_COLUMNS = [
     "Enterprise Value",
     "Forward EV/EBIT",
 ]
-FINANCIAL_STRAIN_COLUMNS = [
+FINANCIAL_CONDITION_COLUMNS = [
     "Operating Cash Flow",
     "Free Cash Flow",
     "Net Income",
@@ -70,7 +70,7 @@ YF_REQUIRED_COLUMNS = [
     "Operating Margin",
     "Forward EBIT",
     *EVG_REQUIRED_COLUMNS,
-    *FINANCIAL_STRAIN_COLUMNS,
+    *FINANCIAL_CONDITION_COLUMNS,
     "Beta",
     "52W High",
     "52W Low",

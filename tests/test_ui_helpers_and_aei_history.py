@@ -63,3 +63,31 @@ def test_section_titles_have_no_helpers_and_chart_subtitles_do():
         'help=metric_help("Speculative Load"))'
         in dashboard_source
     )
+
+
+def test_metric_registry_excludes_broad_section_titles():
+    root = Path(__file__).resolve().parents[1]
+    definitions = (root / "config" / "metric_definitions.py").read_text()
+    renderer = (root / "research_overlay" / "renderers.py").read_text()
+
+    for title in (
+        "AI Economy Snapshot",
+        "Gap Scores",
+        "Borrower Financial Condition",
+        "Current Sector Assessment",
+    ):
+        assert f'    "{title}":' not in definitions
+
+    registry_block = renderer.split("TAB_METRIC_REGISTRIES =", 1)[1].split("def _render_tab_metric_registry", 1)[0]
+    for title in (
+        "AI Economy Snapshot",
+        "Gap Scores",
+        "Borrower Financial Condition",
+        "Current Sector Assessment",
+    ):
+        assert f'        "{title}",' not in registry_block
+
+    assert '        "Lender Strain",' in registry_block
+    assert 'render_section("Credit Conditions")' in renderer
+    assert 'title="Borrower Strain"' in renderer
+    assert 'title="Lender Strain"' in renderer

@@ -12,8 +12,8 @@
 
 1. Four comparable funding cards with retained histories
 2. Combined funding-history chart
-3. Capital Stress: reading, source state, trend statistics, history, components
-4. Credit Intermediation Stress: same structure, kept economically distinct
+3. Borrower Strain: reading, source state, trend statistics, history, components
+4. Lender Strain: same structure, kept economically distinct
 5. NFCI confirmation panel
 
 ## Sectors

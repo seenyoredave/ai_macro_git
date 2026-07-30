@@ -106,14 +106,14 @@ def build_concentration_gauge(value):
     return _build_gauge(value, "Concentration HHI")
 
 
-def build_capital_stress_gauge(value):
-    return _build_gauge(value, "Capital Stress", axis_range=(-100, 100))
+def build_borrower_financial_condition_gauge(value):
+    return _build_gauge(value, "Borrower Strain", axis_range=(-100, 100))
 
 
-def build_intermediation_stress_gauge(value):
+def build_intermediation_strain_gauge(value):
     return _build_gauge(
         value,
-        "Credit Intermediation Stress",
+        "Lender Strain",
         axis_range=(-100, 100),
     )
 

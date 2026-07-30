@@ -4,7 +4,7 @@
 
 Measure whether AI-related market enthusiasm is supported by observable economic development, corporate financial performance, and resilient financing conditions.
 
-Identify divergences, constraints, and financial stresses that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
+Identify divergences, constraints, and financial pressures that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
 
 The dashboard is a personal analytical system, not a trading platform. It describes observable conditions and does not claim to predict the date or proximity of a market correction.
 
@@ -13,7 +13,7 @@ The dashboard is a personal analytical system, not a trading platform. It descri
 The research interface is organized into four primary tabs:
 
 - **AI Macro:** equity conditions, development intensity, power stress, concentration, and gap metrics
-- **Finance:** deployment funding, Capital Stress, Credit Intermediation Stress, and NFCI confirmation with ANFCI context
+- **Finance:** deployment funding, Borrower Strain, Lender Strain, and NFCI confirmation with ANFCI context
 - **Sectors:** sector assessment, positioning, rotation, the consolidated sector table, and dropdown-selected sector detail
 - **Evidence:** purpose, metric definitions, FRED observations, and EDGAR company data
 
@@ -134,18 +134,18 @@ At least two of three components must be valid.
 
 Scale: **-100 to +100**, centered at 0
 
-### Capital Stress
+### Borrower Strain
 
-Capital Stress measures borrower-side financial strain:
+Borrower Strain combines cash-flow and debt-capacity strain with applied obligations and contingent exposures:
 
 - Cash Flow Strain: 30%
-- Debt Capacity Stress: 25%
+- Debt Capacity Strain: 25%
 - Committed Burden: 30%
 - Contingent Exposure: 15%
 
 At least three of four components must be valid.
 
-Debt Capacity Stress distinguishes:
+Debt Capacity Strain distinguishes:
 
 - profitable companies with positive EBITDA;
 - nonprofitable companies carrying positive net debt; and
@@ -153,13 +153,13 @@ Debt Capacity Stress distinguishes:
 
 Negative EBITDA is therefore not silently excluded from the leverage assessment.
 
-Capital Stress is filing-driven rather than truly daily. Its chart retains every dated snapshot, while displayed velocity and acceleration use only distinct score observations so repeated same-value app runs do not create false zero movement.
+Borrower Strain is filing-driven rather than truly daily. Its chart retains every dated snapshot, while displayed velocity and acceleration use only distinct score observations so repeated same-value app runs do not create false zero movement.
 
 Scale: **-100 to +100**, centered at 0
 
-### Credit Intermediation Stress
+### Lender Strain
 
-CIS measures financing-system condition through two equally weighted channels.
+CIS measures deterioration in financing-system behavior and capacity through two equally weighted channels.
 
 **Bank Channel: 50%**
 
@@ -183,7 +183,7 @@ The Chicago Fed National Financial Conditions Index is shown directly as an inde
 - Positive NFCI: conditions tighter than the long-run average
 - Three-month change: current direction of travel
 
-NFCI is not blended into Capital Stress or CIS. ANFCI is shown only as a dashed comparator in the same financial-conditions plot and is not promoted to a separate dashboard product.
+NFCI is not blended into Borrower Strain or Lender Strain. ANFCI is shown only as a dashed comparator in the same financial-conditions plot and is not promoted to a separate dashboard product.
 
 ### Concentration HHI
 
@@ -230,14 +230,14 @@ The revised definitions use new version boundaries:
 - AEI: 3.0
 - Economic Validation Gap: 2.0
 - Power Capacity Gap: 1.0
-- Capital Stress: 3.0
-- Credit Intermediation Stress: 3.0
+- Borrower Strain: 3.0
+- Lender Strain: 3.0
 - Trading Pressure: 3.0
 - Current Sector Assessment: CSA_v4.0
 
 Older derived histories are retained but are not silently treated as observations from the revised definitions. New compatible history accumulates prospectively unless source fields permit a defensible rebuild.
 
-## Capital Stress historical backfill
+## Borrower Strain historical backfill
 
 The recommended history is:
 
@@ -245,9 +245,9 @@ The recommended history is:
 - quarterly observations from 2025 until the existing live archive begins; and
 - the current archive thereafter.
 
-SEC structured statements can support Cash Flow Strain and Debt Capacity Stress. Committed Burden and Contingent Exposure require semi-automated filing-note reconstruction and review. Missing historical disclosures must remain unknown.
+SEC structured statements can support Cash Flow Strain and Debt Capacity Strain. Committed Burden and Contingent Exposure require semi-automated filing-note reconstruction and review. Missing historical disclosures must remain unknown.
 
-See `data_notes/capital_stress_history_backfill.md`.
+See `data_notes/borrower_financial_condition_history_backfill.md`.
 
 ## Benchmark
 
@@ -293,8 +293,8 @@ PYTHONPATH=. python -m unittest discover -s tests -v
 - `loaders/edgar_loader.py`: EDGAR data quality and archive eligibility
 - `analytics/factor_engine.py`: three-factor AEI inputs
 - `analytics/economic_validation.py`: aligned EVG construction
-- `analytics/capital_stress_engine.py`: borrower-side financial stress
-- `analytics/intermediation_stress_engine.py`: bank/nonbank financing stress
+- `analytics/borrower_financial_condition_engine.py`: borrower financial condition
+- `analytics/intermediation_strain_engine.py`: bank/nonbank financing strain
 - `archive/archive.py`: atomic archive persistence
 - `helpers/macro_dashboard.py`: shared macro, finance, sector, and evidence render components
 - `helpers/render_ai_macro.py`: AI Macro tab orchestration
@@ -302,18 +302,18 @@ PYTHONPATH=. python -m unittest discover -s tests -v
 - `helpers/render_sectors.py`: consolidated sector overview and dropdown-selected detail
 - `helpers/render_evidence.py`: purpose, definitions, and raw-source evidence
 
-## Capital Stress historical backfill
+## Borrower Strain historical backfill
 
-Capital Stress history is retained separately from the live macro archive. The
+Borrower Strain history is retained separately from the live macro archive. The
 maintenance build uses annual point-in-time observations from 2014 through 2024,
 then quarterly observations through June 13, 2026.
 
 ```bash
 python -m pip install -r requirements-backfill.txt
-python tools/backfill_capital_stress.py
+python tools/backfill_borrower_financial_condition.py
 ```
 
 The command uses SEC CompanyFacts for core financials and original SEC filings
 for commitment disclosures. It writes a review ledger and accepts only explicit,
 high-confidence obligation values automatically. See
-`data_notes/capital_stress_history_backfill.md` for methodology and review rules.
+`data_notes/borrower_financial_condition_history_backfill.md` for methodology and review rules.

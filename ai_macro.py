@@ -32,8 +32,8 @@ from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v3.15"
-APP_STATE_SCHEMA_VERSION = "16.4-market-freshness-capital-dynamics"
+APP_VERSION = "v3.19"
+APP_STATE_SCHEMA_VERSION = "19.0-credit-conditions-cleanup"
 
 
 st.set_page_config(
@@ -252,14 +252,32 @@ ticker_count = len({
     for ticker in df["Ticker"].dropna().astype(str)
 })
 
+
+def dashboard_source_status(metrics):
+    """Report whether any headline product is using an archive fallback."""
+    source_keys = (
+        "AEI Source",
+        "ADI Source",
+        "Economic Validation Gap Source",
+        "Power Stress Source",
+        "Power Capacity Gap Source",
+        "Borrower Financial Condition Source",
+        "Credit Intermediation Strain Source",
+    )
+    sources = [str((metrics or {}).get(key, "")) for key in source_keys]
+    return "archive" if any("archive" in source.lower() for source in sources) else "live"
+
+
+run_date = date.today()
+
 render_masthead(
     "AI Economic Research Platform",
     "A structural assessment of the AI economy linking market expectations, capital deployment, financing conditions, infrastructure constraints, and observable economic validation.",
     [
-        ("Run", date.today().isoformat()),
-        ("Archive", "suspended" if st.session_state.archive_suspended else "active"),
+        ("Run", f"{run_date.month}.{run_date.day}.{run_date.year}"),
+        ("Status", dashboard_source_status(regime_metrics)),
         ("Universe", f"{len(sector_data)} sectors / {ticker_count} tickers"),
-        ("Build", "primary app"),
+        ("Build", APP_VERSION),
     ],
 )
 

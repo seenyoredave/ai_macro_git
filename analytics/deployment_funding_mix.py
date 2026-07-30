@@ -12,14 +12,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from analytics.capital_stress_engine import (
-    CAPITAL_STRESS_TICKERS,
+from analytics.borrower_financial_condition_engine import (
+    BORROWER_FINANCIAL_CONDITION_TICKERS,
     load_commitment_ledger,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_FUNDAMENTALS_HISTORY_PATH = (
-    PROJECT_ROOT / "data" / "capital_stress_fundamentals_history.csv"
+    PROJECT_ROOT / "data" / "borrower_financial_condition_fundamentals_history.csv"
 )
 DEFAULT_COMMITMENTS_HISTORY_PATH = (
     PROJECT_ROOT / "data" / "capital_commitments_history.csv"
@@ -59,7 +59,7 @@ def _cohort_frame(sector_data) -> pd.DataFrame:
 
     combined["Ticker"] = combined["Ticker"].astype(str).str.upper().str.strip()
     combined = combined.drop_duplicates(subset=["Ticker"], keep="first")
-    combined = combined[combined["Ticker"].isin(CAPITAL_STRESS_TICKERS)].copy()
+    combined = combined[combined["Ticker"].isin(BORROWER_FINANCIAL_CONDITION_TICKERS)].copy()
 
     for column in ("Operating Cash Flow", "CapEx", "Cash", "Total Debt"):
         combined[column] = pd.to_numeric(combined.get(column), errors="coerce")
@@ -108,7 +108,7 @@ def _aggregate_fundamentals(history: pd.DataFrame) -> pd.DataFrame:
 
     frame = history.copy()
     frame["Ticker"] = frame["Ticker"].astype(str).str.upper().str.strip()
-    frame = frame[frame["Ticker"].isin(CAPITAL_STRESS_TICKERS)].copy()
+    frame = frame[frame["Ticker"].isin(BORROWER_FINANCIAL_CONDITION_TICKERS)].copy()
     frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce", format="mixed")
     for column in ("Operating Cash Flow", "CapEx", "Cash", "Total Debt"):
         frame[column] = pd.to_numeric(frame.get(column), errors="coerce")
@@ -181,7 +181,7 @@ def _normalize_commitments(history: pd.DataFrame) -> pd.DataFrame:
 
     frame = history.copy()
     frame["Ticker"] = frame["Ticker"].astype(str).str.upper().str.strip()
-    frame = frame[frame["Ticker"].isin(CAPITAL_STRESS_TICKERS)].copy()
+    frame = frame[frame["Ticker"].isin(BORROWER_FINANCIAL_CONDITION_TICKERS)].copy()
 
     as_of = pd.to_datetime(frame.get("As Of Date"), errors="coerce", format="mixed")
     filing = pd.to_datetime(frame.get("Filing Date"), errors="coerce", format="mixed")
@@ -212,7 +212,7 @@ def _forward_commitment_history(
         return pd.DataFrame(columns=["Date", "Forward Commitment Load"])
 
     fundamentals["Ticker"] = fundamentals["Ticker"].astype(str).str.upper().str.strip()
-    fundamentals = fundamentals[fundamentals["Ticker"].isin(CAPITAL_STRESS_TICKERS)].copy()
+    fundamentals = fundamentals[fundamentals["Ticker"].isin(BORROWER_FINANCIAL_CONDITION_TICKERS)].copy()
     fundamentals["Date"] = pd.to_datetime(
         fundamentals["Date"], errors="coerce", format="mixed"
     )

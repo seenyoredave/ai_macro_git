@@ -383,7 +383,7 @@ def calc_financial_deterioration_fields(ticker_obj):
     }
 
 
-def calc_financial_strain_fields(ticker_obj, info, capex_value=np.nan):
+def calc_financial_condition_fields(ticker_obj, info, capex_value=np.nan):
     info = info or {}
 
     operating_cash_flow = _safe_info_number(info, "operatingCashflow", "operating_cashflow")
@@ -512,5 +512,5 @@ def extract_fundamental_fields(ticker_obj, info):
         "Operating Income": operating_income,
         "Operating Margin": operating_margin,
         "Forward EBIT": forward_ebit,
-        **calc_financial_strain_fields(ticker_obj, info, capex_value=capex),
+        **calc_financial_condition_fields(ticker_obj, info, capex_value=capex),
     }

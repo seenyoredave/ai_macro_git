@@ -1,8 +1,8 @@
-"""Credit Intermediation Stress engine.
+"""Credit Intermediation Strain engine.
 
 The metric measures whether the financing system is becoming less able or less
 willing to support operating businesses. It deliberately separates borrower
-health (Capital Stress) from lender/transmission health.
+health (Borrower Financial Condition) from lender/transmission health.
 
 Public inputs:
   1. Federal Reserve SLOOS business-loan tightening;
@@ -28,7 +28,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BANK_PATH = PROJECT_ROOT / "data" / "bank_credit_tightening_history.csv"
 DEFAULT_BANK_CAPITAL_PATH = PROJECT_ROOT / "data" / "bank_tier1_capital_history.csv"
 DEFAULT_BDC_PATH = PROJECT_ROOT / "data" / "private_credit_bdc_history.csv"
-DEFAULT_PE_PATH = PROJECT_ROOT / "data" / "private_equity_stress_history.csv"
+DEFAULT_PE_PATH = PROJECT_ROOT / "data" / "private_equity_strain_history.csv"
 
 INTERMEDIATION_WEIGHTS = {
     "Bank Credit Tightening": 0.25,
@@ -55,33 +55,33 @@ PE_SUBWEIGHTS = {
 BDC_COHORT = ("ARCC", "OBDC", "FSK", "GBDC", "CION")
 
 
-def intermediation_stress_to_signed(value):
-    """Map the internal 0-100 stress score to centered -100 to +100."""
+def intermediation_strain_to_signed(value):
+    """Map the internal 0-100 adverse-condition score to centered -100 to +100."""
     value = pd.to_numeric(value, errors="coerce")
     if pd.isna(value) or not np.isfinite(value):
         return np.nan
     return float(np.clip(2.0 * (float(value) - 50.0), -100.0, 100.0))
 
 
-def normalize_intermediation_stress_history(history):
+def normalize_intermediation_strain_history(history):
     """Normalize archive metadata for the current metric version."""
     if (
         history is None
         or history.empty
-        or "Credit Intermediation Stress" not in history.columns
+        or "Credit Intermediation Strain" not in history.columns
     ):
         return history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
 
     out = history.copy()
-    out["Credit Intermediation Stress"] = pd.to_numeric(
-        out["Credit Intermediation Stress"], errors="coerce"
+    out["Credit Intermediation Strain"] = pd.to_numeric(
+        out["Credit Intermediation Strain"], errors="coerce"
     )
-    if "Credit Intermediation Stress Version" in out.columns:
-        out["Credit Intermediation Stress Version"] = out[
-            "Credit Intermediation Stress Version"
+    if "Credit Intermediation Strain Version" in out.columns:
+        out["Credit Intermediation Strain Version"] = out[
+            "Credit Intermediation Strain Version"
         ].astype("string")
     else:
-        out["Credit Intermediation Stress Version"] = pd.Series(
+        out["Credit Intermediation Strain Version"] = pd.Series(
             pd.NA, index=out.index, dtype="string"
         )
     return out
@@ -296,7 +296,7 @@ def _historical_or_anchored_score(
     value,
     history,
     *,
-    higher_is_stress=True,
+    higher_is_adverse=True,
     center,
     scale,
 ):
@@ -314,11 +314,11 @@ def _historical_or_anchored_score(
         below = float(np.sum(distinct < float(value)))
         equal = float(np.sum(distinct == round(float(value), 8)))
         percentile = 100.0 * (below + 0.5 * equal) / len(distinct)
-        score = percentile if higher_is_stress else 100.0 - percentile
+        score = percentile if higher_is_adverse else 100.0 - percentile
         return float(np.clip(score, 0, 100)), "Historical Percentile", len(distinct)
 
     anchored = tanh_score(value, center=center, scale=scale)
-    if not higher_is_stress and pd.notna(anchored):
+    if not higher_is_adverse and pd.notna(anchored):
         anchored = 100.0 - anchored
     return anchored, "Anchored Tanh", len(distinct)
 
@@ -395,7 +395,7 @@ def _score_snapshot(
     bank_score, bank_method, bank_history_count = _historical_or_anchored_score(
         bank_raw,
         history_values(bank_history, "Tightening Percent"),
-        higher_is_stress=True,
+        higher_is_adverse=True,
         center=0.0,
         scale=35.0,
     )
@@ -403,7 +403,7 @@ def _score_snapshot(
         _historical_or_anchored_score(
             bank_capital_raw,
             history_values(bank_capital_history, "Tier 1 Capital Ratio (%)"),
-            higher_is_stress=False,
+            higher_is_adverse=False,
             center=12.5,
             scale=4.0,
         )
@@ -411,7 +411,7 @@ def _score_snapshot(
     bdc_score, bdc_method, bdc_history_count = _historical_or_anchored_score(
         bdc_raw,
         history_values(bdc_history, "Weighted Nonaccrual at Cost (%)"),
-        higher_is_stress=True,
+        higher_is_adverse=True,
         center=2.0,
         scale=2.5,
     )
@@ -419,14 +419,14 @@ def _score_snapshot(
     pe_high_score, pe_high_method, pe_high_history_count = _historical_or_anchored_score(
         pe_high_leverage,
         history_values(pe_history, "High-Leverage Portfolio Share (%)"),
-        higher_is_stress=True,
+        higher_is_adverse=True,
         center=30.0,
         scale=12.0,
     )
     pe_pik_score, pe_pik_method, pe_pik_history_count = _historical_or_anchored_score(
         pe_pik,
         history_values(pe_history, "PIK Mean (%)"),
-        higher_is_stress=True,
+        higher_is_adverse=True,
         center=18.0,
         scale=10.0,
     )
@@ -468,12 +468,12 @@ def _score_snapshot(
         **{name: 0.5 * weight for name, weight in nonbank_channel_weights.items()},
     }
     signed_scores = {
-        name: intermediation_stress_to_signed(score)
+        name: intermediation_strain_to_signed(score)
         for name, score in base_scores.items()
     }
 
     return {
-        "score": intermediation_stress_to_signed(combined_score),
+        "score": intermediation_strain_to_signed(combined_score),
         "base_score": combined_score,
         "valid_components": valid_components,
         "coverage": valid_components / 4.0,
@@ -518,7 +518,7 @@ def _score_snapshot(
     }
 
 
-def build_intermediation_stress_history(
+def build_intermediation_strain_history(
     bank_history,
     bank_capital_history,
     bdc_history,
@@ -559,7 +559,7 @@ def build_intermediation_stress_history(
         rows.append(
             {
                 "Date": pd.Timestamp(observation_date),
-                "Credit Intermediation Stress": snapshot["score"],
+                "Credit Intermediation Strain": snapshot["score"],
                 "Bank Credit Tightening": snapshot["signed_scores"].get(
                     "Bank Credit Tightening", np.nan
                 ),
@@ -589,7 +589,7 @@ def _row_date(row):
     return value.date().isoformat() if pd.notna(value) else None
 
 
-def calculate_intermediation_stress(
+def calculate_intermediation_strain(
     fred_data=None,
     *,
     bank_path=None,
@@ -597,7 +597,7 @@ def calculate_intermediation_stress(
     bdc_path=None,
     pe_path=None,
 ) -> dict:
-    """Calculate the signed Credit Intermediation Stress metric."""
+    """Calculate the signed Credit Intermediation Strain metric."""
     bank_history = load_bank_tightening_history(bank_path)
     bank_history = _with_live_observation(
         bank_history,
@@ -623,7 +623,7 @@ def calculate_intermediation_stress(
     bdc_history = load_bdc_impairment_history(bdc_path)
     pe_history = load_pe_financing_history(pe_path)
 
-    history = build_intermediation_stress_history(
+    history = build_intermediation_strain_history(
         bank_history,
         bank_capital_history,
         bdc_history,

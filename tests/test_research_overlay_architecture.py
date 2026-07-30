@@ -32,8 +32,8 @@ def test_research_overlay_retains_existing_products():
         "Cash Reserve Coverage",
         "Debt Financing Pulse",
         "Forward Commitment Load",
-        "Capital Stress",
-        "Credit Intermediation Stress",
+        "Borrower Strain",
+        "Lender Strain",
         "Financial Conditions Confirmation",
         "Most Crowded",
         "Fastest Mover",
@@ -114,7 +114,7 @@ def test_all_statline_calls_use_explicit_namespaces():
     assert 'key_prefix="macro-current-divergence-primary"' in source
     assert 'key_prefix="macro-current-divergence-context"' in source
     assert 'key_prefix="finance-funding-cohort-totals"' in source
-    assert 'key_prefix=f"finance-stress-' in source
+    assert 'key_prefix=f"finance-condition-' in source
     assert "title.lower().replace(' ', '-')" in source
     assert 'key_prefix="finance-nfci-confirmation"' in source
     assert 'key_prefix="sector-dossier-summary"' in source
@@ -124,7 +124,7 @@ def test_all_statline_calls_use_explicit_namespaces():
 def test_finance_tab_cleanup_contract_is_present():
     renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert '"Financial market liquidity, exposure, and credit availability."' in renderer
+    assert 'render_section("Credit Conditions")' in renderer
     assert 'render_section("System confirmation"' not in renderer
     assert '("Source", "Chicago Fed NFCI", "updated every Wednesday at 8:30am ET")' in renderer
     assert 'funding_history(history, years=10)' in renderer
@@ -212,10 +212,45 @@ def test_gap_scale_note_is_attached_to_chart_column():
 def test_developer_tools_header_includes_right_aligned_version_and_divider():
     app = (ROOT / "ai_macro.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert 'APP_VERSION = "v3.15"' in app
+    assert 'APP_VERSION = "v3.19"' in app
     assert 'class="rm-developer-tools-header"' in app
     assert 'class="rm-developer-tools-version"' in app
     assert 'class="rm-developer-tools-divider"' in app
     assert 'justify-content: space-between' in theme
     assert '.rm-developer-tools-divider' in theme
     assert 'border-top: 1px solid var(--rm-border)' in theme
+
+
+def test_research_ui_cleanup_is_structurally_present():
+    app = (ROOT / "ai_macro.py").read_text()
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+
+    assert '("Status", dashboard_source_status(regime_metrics))' in app
+    assert '("Build", APP_VERSION)' in app
+    assert 'f"{run_date.month}.{run_date.day}.{run_date.year}"' in app
+
+    assert '"reference = 0"' not in renderer
+    assert '"current run"' not in renderer
+    assert '"Top five companies plus the remainder"' not in renderer
+    assert '"Deployment pressure:' not in renderer
+    assert '"Raw AI HHI:' not in renderer
+
+    assert '("Current", fmt_number(value, 1, signed=True), None)' in renderer
+    assert '("Velocity", fmt_number((trend or {}).get("velocity"), 2, signed=True), None)' in renderer
+    assert '("Acceleration", fmt_number((trend or {}).get("acceleration"), 2, signed=True), None)' in renderer
+    assert 'source_stat,' in renderer
+
+    for tab in ("macro", "finance", "sectors"):
+        assert f'_render_tab_metric_registry("{tab}")' in renderer
+    assert '_render_tab_metric_registry("evidence")' not in renderer
+
+
+def test_evidence_purpose_and_source_data_are_rendered_cleanly():
+    source = (ROOT / "research_overlay" / "renderers.py").read_text()
+    evidence = source.split("def render_evidence_tab", 1)[1].split("def render_research_dashboard", 1)[0]
+    assert 'render_section("Purpose Statement", first=True)' in evidence
+    assert 'render_definition(METRIC_DEFINITIONS["Purpose Statement"])' in evidence
+    assert '_render_tab_metric_registry("evidence")' not in evidence
+    assert 'render_section("Source Data")' in evidence
+    assert 'render_section("Source observations"' not in evidence
+    assert '"evidence": [' not in source

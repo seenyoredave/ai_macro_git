@@ -2,11 +2,11 @@ import unittest
 
 import pandas as pd
 
-from analytics.capital_stress_engine import _debt_capacity_stress
+from analytics.borrower_financial_condition_engine import _debt_capacity_strain
 
 
 class DebtCapacityStressTests(unittest.TestCase):
-    def test_negative_ebitda_with_net_debt_is_high_stress(self):
+    def test_negative_ebitda_with_net_debt_is_high_strain(self):
         frame = pd.DataFrame(
             {
                 "Net Debt": [100.0, 200.0],
@@ -14,7 +14,7 @@ class DebtCapacityStressTests(unittest.TestCase):
                 "Revenue": [500.0, 500.0],
             }
         )
-        result = _debt_capacity_stress(frame)
+        result = _debt_capacity_strain(frame)
         self.assertGreaterEqual(result["score"], 70.0)
         self.assertEqual(result["impaired_companies"], 2)
 
@@ -26,7 +26,7 @@ class DebtCapacityStressTests(unittest.TestCase):
                 "Revenue": [500.0, 500.0],
             }
         )
-        result = _debt_capacity_stress(frame)
+        result = _debt_capacity_strain(frame)
         self.assertEqual(result["score"], 25.0)
         self.assertEqual(result["net_cash_companies"], 2)
 
@@ -38,7 +38,7 @@ class DebtCapacityStressTests(unittest.TestCase):
                 "Revenue": [1000.0, 500.0, 500.0],
             }
         )
-        result = _debt_capacity_stress(frame)
+        result = _debt_capacity_strain(frame)
         self.assertTrue(pd.notna(result["score"]))
         self.assertEqual(result["observations"], 3)
         self.assertEqual(result["positive_ebitda_companies"], 1)

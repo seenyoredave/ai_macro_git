@@ -17,8 +17,8 @@ def test_sector_detail_is_selected_inside_consolidated_tab():
     assert 'render_sector_table(macro_df, use_expander=False)' in source
 
 
-def test_financial_stress_products_remain_distinct():
+def test_financial_condition_products_remain_distinct():
     source = (ROOT / "helpers" / "macro_dashboard.py").read_text()
-    assert '_render_capital_stress(' in source
-    assert '_render_intermediation_stress(' in source
+    assert '_render_borrower_financial_condition(' in source
+    assert '_render_intermediation_strain(' in source
     assert '_render_financial_conditions_confirmation(' in source

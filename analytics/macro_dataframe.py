@@ -5,15 +5,15 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from analytics.capital_stress_engine import normalize_capital_stress_history
-from analytics.capital_stress_history import combine_capital_stress_history
-from analytics.intermediation_stress_engine import normalize_intermediation_stress_history
+from analytics.borrower_financial_condition_engine import normalize_borrower_financial_condition_history
+from analytics.borrower_financial_condition_history import combine_borrower_financial_condition_history
+from analytics.intermediation_strain_engine import normalize_intermediation_strain_history
 from analytics.power_engine import normalize_power_stress_history
 from analytics.regime_engine import (
     AEI_VERSION,
     ADI_VERSION,
-    CAPITAL_STRESS_VERSION,
-    INTERMEDIATION_STRESS_VERSION,
+    BORROWER_FINANCIAL_CONDITION_VERSION,
+    INTERMEDIATION_STRAIN_VERSION,
     POWER_STRESS_VERSION,
 )
 from analytics.trend_engine import (
@@ -165,22 +165,22 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
     macro_history = load_macro_history()
     regime_metrics = regime_metrics or {}
     signed_power_history = normalize_power_stress_history(macro_history)
-    signed_capital_history = normalize_capital_stress_history(
-        combine_capital_stress_history(macro_history)
+    signed_capital_history = normalize_borrower_financial_condition_history(
+        combine_borrower_financial_condition_history(macro_history)
     )
-    signed_intermediation_history = normalize_intermediation_stress_history(macro_history)
+    signed_intermediation_history = normalize_intermediation_strain_history(macro_history)
 
-    if regime_metrics.get("Capital Stress Source") == "Current":
+    if regime_metrics.get("Borrower Financial Condition Source") == "Current":
         signed_capital_history = _append_current_metric_observation(
             signed_capital_history,
-            "Capital Stress",
-            regime_metrics.get("Capital Stress", np.nan),
-            version_column="Capital Stress Version",
-            version=CAPITAL_STRESS_VERSION,
+            "Borrower Financial Condition",
+            regime_metrics.get("Borrower Financial Condition", np.nan),
+            version_column="Borrower Financial Condition Version",
+            version=BORROWER_FINANCIAL_CONDITION_VERSION,
         )
 
     native_intermediation_history = (
-        (regime_metrics.get("Credit Intermediation Stress Components", {}) or {})
+        (regime_metrics.get("Credit Intermediation Strain Components", {}) or {})
         .get("history")
     )
     if not isinstance(native_intermediation_history, pd.DataFrame) or native_intermediation_history.empty:
@@ -207,25 +207,25 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             macro_history,
             "Concentration HHI",
         ),
-        "capital_stress_trend": calc_metric_trend(
+        "borrower_financial_condition_trend": calc_metric_trend(
             signed_capital_history,
-            "Capital Stress",
-            version_column="Capital Stress Version",
-            required_version=CAPITAL_STRESS_VERSION,
+            "Borrower Financial Condition",
+            version_column="Borrower Financial Condition Version",
+            required_version=BORROWER_FINANCIAL_CONDITION_VERSION,
             distinct_observations=True,
             repeat_tolerance=1e-8,
         ),
-        "intermediation_stress_trend": calc_metric_trend(
+        "intermediation_strain_trend": calc_metric_trend(
             native_intermediation_history,
-            "Credit Intermediation Stress",
+            "Credit Intermediation Strain",
             version_column=(
-                "Credit Intermediation Stress Version"
-                if "Credit Intermediation Stress Version" in native_intermediation_history.columns
+                "Credit Intermediation Strain Version"
+                if "Credit Intermediation Strain Version" in native_intermediation_history.columns
                 else None
             ),
             required_version=(
-                INTERMEDIATION_STRESS_VERSION
-                if "Credit Intermediation Stress Version" in native_intermediation_history.columns
+                INTERMEDIATION_STRAIN_VERSION
+                if "Credit Intermediation Strain Version" in native_intermediation_history.columns
                 else None
             ),
         ),
@@ -237,10 +237,10 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
         ),
     }
 
-    trends["capital_stress_trend"]["dynamics_note"] = "distinct observations"
-    trends["capital_stress_trend"]["history_note"] = (
+    trends["borrower_financial_condition_trend"]["dynamics_note"] = "distinct observations"
+    trends["borrower_financial_condition_trend"]["history_note"] = (
         "Chart history retains every dated snapshot; velocity and acceleration "
-        "use only distinct Capital Stress observations."
+        "use only distinct Borrower Financial Condition observations."
     )
 
     return {
