@@ -185,6 +185,7 @@ def inject_research_theme() -> None:
             text-align: right;
         }
 
+
         .rm-section {
             margin: 1.35rem 0 0.7rem 0;
             padding-top: 0.95rem;

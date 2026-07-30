@@ -15,6 +15,7 @@ from archive.archive_reader import (
     rows_for_date,
 )
 from config.debug_config import debug_print
+from config.market_clock import market_date
 
 
 #################################################
@@ -253,7 +254,7 @@ def _latest_edgar_rows(tickers, *, max_age_days=None):
     filtered["_parsed_date"] = parsed.loc[filtered.index]
 
     if max_age_days is not None:
-        cutoff = date.today() - timedelta(days=int(max_age_days))
+        cutoff = market_date() - timedelta(days=int(max_age_days))
         filtered = filtered[filtered["_parsed_date"] >= cutoff].copy()
 
         if filtered.empty:
@@ -846,7 +847,7 @@ def _extract_taxonomy_metrics(company_facts, taxonomy, revenue_concepts, capex_c
         }
 
     latest_revenue_end = max(revenue_series["EndDate"])
-    age_days = (date.today() - latest_revenue_end).days
+    age_days = (market_date() - latest_revenue_end).days
 
     if age_days > EDGAR_MAX_ANNUAL_AGE_DAYS:
         return {
@@ -1059,7 +1060,7 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
     }
 
 
-def load_edgar_with_report(tickers):
+def load_edgar_with_report(tickers, force_refresh=False):
     expected = _expected_ticker_set(tickers)
 
     recent_rows = read_recent_edgar_archive(
@@ -1081,9 +1082,9 @@ def load_edgar_with_report(tickers):
         if _is_usable_edgar_row(payload)
     }
 
-    tickers_to_fetch = sorted(expected - usable_recent)
+    tickers_to_fetch = sorted(expected if force_refresh else expected - usable_recent)
 
-    edgar_data = {
+    edgar_data = {} if force_refresh else {
         ticker: recent_data[ticker]
         for ticker in sorted(usable_recent)
         if ticker in recent_data
@@ -1091,7 +1092,12 @@ def load_edgar_with_report(tickers):
 
     report = describe_edgar_freshness_status(tickers)
     report.update({
-        "source_mode": "archive_recent" if not tickers_to_fetch else "partial_live",
+        "source_mode": (
+            "manual_live" if force_refresh
+            else "archive_recent" if not tickers_to_fetch
+            else "partial_live"
+        ),
+        "refresh_trigger": "manual" if force_refresh else "automatic",
         "archive_recent_tickers_used": int(len(edgar_data)),
         "live_needed_tickers": tickers_to_fetch,
         "live_attempted_tickers": [],
@@ -1133,7 +1139,13 @@ def load_edgar_with_report(tickers):
     edgar_data.update(live_data)
     report.update(live_report)
 
-    if len(tickers_to_fetch) == len(expected):
+    if force_refresh:
+        report["source_mode"] = (
+            "manual_live"
+            if live_report.get("live_succeeded_tickers")
+            else "manual_archive_fallback"
+        )
+    elif len(tickers_to_fetch) == len(expected):
         report["source_mode"] = "full_live"
     elif live_report.get("live_succeeded_tickers"):
         report["source_mode"] = "partial_live"

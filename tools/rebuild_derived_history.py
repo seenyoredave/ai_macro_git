@@ -7,12 +7,12 @@ modifies the raw YFinance, EDGAR, or benchmark observations. It rebuilds:
 - macro AEI and concentration HHI;
 - release-aware Power Stress and its raw FRED inputs;
 - ADI and its four pillars where the 3-of-4 data contract is met;
-- Borrower Financial Condition where archived financial fields and filing disclosures exist;
+- Borrower Strain where archived financial fields and filing disclosures exist;
 - Speculation Gap = AEI - ADI.
 
-Pressure v3 is rebuilt only when its price/volume and forward operating-
+The current pressure methodology is rebuilt only when its price/volume and forward operating-
 earnings valuation inputs were actually archived. Older pressure values are
-retained in an explicit Legacy Pressure column rather than being relabeled.
+retained in an explicit Prior Method Pressure column rather than being relabeled.
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from analytics.borrower_financial_condition_engine import calculate_borrower_financial_condition
+from analytics.borrower_strain_engine import calculate_borrower_strain
 from analytics.development_engine import calculate_ai_development_intensity
 from analytics.factor_engine import (
     calc_forward_ebit_yield_discount,
@@ -50,7 +50,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 AEI_VERSION = "3.1"
 ADI_VERSION = "1.0"
 POWER_STRESS_VERSION = "3.0"
-BORROWER_FINANCIAL_CONDITION_VERSION = "3.0"
+BORROWER_STRAIN_VERSION = "3.0"
 PRESSURE_VERSION = "3.0"
 
 RAW_FINANCIAL_COLUMNS = [
@@ -494,12 +494,12 @@ def rebuild_sector_history(
     benchmark_history: pd.DataFrame,
     prior_sector_history: pd.DataFrame,
 ) -> pd.DataFrame:
-    legacy_lookup = {}
+    prior_method_lookup = {}
     if not prior_sector_history.empty:
         for _, row in prior_sector_history.iterrows():
             key = (str(row.get("Date")), str(row.get("Sector")))
-            value = pd.to_numeric(row.get("Legacy Pressure", row.get("Pressure")), errors="coerce")
-            legacy_lookup[key] = value
+            value = pd.to_numeric(row.get("Prior Method Pressure", row.get("Pressure")), errors="coerce")
+            prior_method_lookup[key] = value
 
     rows = []
     for target_date in sorted(yf_history["Date"].astype(str).unique()):
@@ -525,7 +525,7 @@ def rebuild_sector_history(
                     "Avg Return": values.get("Avg Return", np.nan),
                     "AEI Version": AEI_VERSION,
                     "Pressure Version": PRESSURE_VERSION if pd.notna(pressure) else pd.NA,
-                    "Legacy Pressure": legacy_lookup.get((target_date, sector), np.nan),
+                    "Prior Method Pressure": prior_method_lookup.get((target_date, sector), np.nan),
                 }
             )
 
@@ -550,11 +550,11 @@ def rebuild_macro_history(
     ]
 
     prior_by_date = prior_macro_history.set_index("Date", drop=False) if not prior_macro_history.empty else pd.DataFrame()
-    legacy_pressure = {}
+    prior_method_pressure = {}
     if not prior_macro_history.empty:
         for _, row in prior_macro_history.iterrows():
-            legacy_pressure[str(row.get("Date"))] = pd.to_numeric(
-                row.get("Legacy Avg Sector Pressure", row.get("Avg Sector Pressure")),
+            prior_method_pressure[str(row.get("Date"))] = pd.to_numeric(
+                row.get("Prior Method Avg Sector Pressure", row.get("Avg Sector Pressure")),
                 errors="coerce",
             )
 
@@ -587,14 +587,14 @@ def rebuild_macro_history(
             construction_data=construction,
             power_result=power_result,
         )
-        borrower_condition_result = calculate_borrower_financial_condition(
+        borrower_strain_result = calculate_borrower_strain(
             sector_data,
             as_of_date=target_date,
         )
 
         adi = pd.to_numeric(development.get("score"), errors="coerce")
         power_score = pd.to_numeric(power_result.get("score"), errors="coerce")
-        borrower_condition_score = pd.to_numeric(borrower_condition_result.get("score"), errors="coerce")
+        borrower_strain_score = pd.to_numeric(borrower_strain_result.get("score"), errors="coerce")
         speculation = float(aei - adi) if pd.notna(aei) and pd.notna(adi) else np.nan
 
         row = {
@@ -604,11 +604,11 @@ def rebuild_macro_history(
             "AI Development Intensity": adi,
             "Speculation Gap": speculation,
             "Power Stress Index": power_score,
-            "Borrower Financial Condition": borrower_condition_score,
+            "Borrower Strain": borrower_strain_score,
             "Concentration HHI": hhi,
             "Raw AI HHI": raw_hhi,
             "Avg Sector Pressure": avg_pressure,
-            "Legacy Avg Sector Pressure": legacy_pressure.get(target_date, np.nan),
+            "Prior Method Avg Sector Pressure": prior_method_pressure.get(target_date, np.nan),
             "ADI Capital Deployment": _component_value(development, "Capital Deployment"),
             "ADI Data Center Construction": _component_value(development, "Data Center Construction"),
             "ADI Compute Supply Realization": _component_value(development, "Compute Supply Realization"),
@@ -616,16 +616,16 @@ def rebuild_macro_history(
             "Power Nonresidential Load": _component_value(power_result, "Nonresidential Load Pressure"),
             "Power Grid Utilization": _component_value(power_result, "Grid Utilization Pressure"),
             "Power Capacity Response": _component_value(power_result, "Capacity Response Gap"),
-            "Borrower Cash Flow Strain": _component_value(borrower_condition_result, "Cash Flow Strain"),
+            "Borrower Cash Flow Strain": _component_value(borrower_strain_result, "Cash Flow Strain"),
             "Borrower Debt Capacity Strain": _component_value(
-                borrower_condition_result, "Debt Capacity Strain"
+                borrower_strain_result, "Debt Capacity Strain"
             ),
-            "Borrower Committed Burden": _component_value(borrower_condition_result, "Committed Burden"),
-            "Borrower Contingent Exposure": _component_value(borrower_condition_result, "Contingent Exposure"),
+            "Borrower Committed Burden": _component_value(borrower_strain_result, "Committed Burden"),
+            "Borrower Contingent Exposure": _component_value(borrower_strain_result, "Contingent Exposure"),
             "AEI Version": AEI_VERSION if pd.notna(aei) else pd.NA,
             "ADI Version": ADI_VERSION if pd.notna(adi) else pd.NA,
             "Power Stress Version": POWER_STRESS_VERSION if pd.notna(power_score) else pd.NA,
-            "Borrower Financial Condition Version": BORROWER_FINANCIAL_CONDITION_VERSION if pd.notna(borrower_condition_score) else pd.NA,
+            "Borrower Strain Version": BORROWER_STRAIN_VERSION if pd.notna(borrower_strain_score) else pd.NA,
             "Pressure Version": PRESSURE_VERSION if pd.notna(avg_pressure) else pd.NA,
             "Construction Observation Date": construction.get("date"),
             "Construction Release Date": construction.get("release_date"),

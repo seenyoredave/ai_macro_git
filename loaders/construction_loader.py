@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from io import BytesIO
-from datetime import date
 from pathlib import Path
 import re
 
@@ -13,6 +12,7 @@ import requests
 import streamlit as st
 
 from config.debug_config import debug_print
+from config.market_clock import market_date
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -145,7 +145,7 @@ def _record_construction_availability(latest_observation_date) -> None:
         return
 
     row = pd.DataFrame([{
-        "Release Date": date.today().isoformat(),
+        "Release Date": market_date().isoformat(),
         "Observation Date": observation.date().isoformat(),
     }])
 

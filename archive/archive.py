@@ -6,8 +6,6 @@ validation, same-key replacement, column ordering, and atomic writes.
 
 from __future__ import annotations
 
-from datetime import datetime
-
 import numpy as np
 import pandas as pd
 
@@ -22,6 +20,7 @@ from archive.archive_reader import (
 from archive.schemas import ARCHIVE_SPECS, ArchiveSpec, spec_for_path
 from benchmarks.benchmark_service import get_benchmark_metrics
 from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
+from config.market_clock import eastern_now
 
 
 YF_ARCHIVE_COLUMNS = [
@@ -73,7 +72,7 @@ def _normalize_frame(frame, archive_file, keys):
 
 
 def _quarantine(archive_file, reason):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = eastern_now().strftime("%Y%m%d_%H%M%S")
     backup = archive_file.with_name(
         f"{archive_file.stem}.malformed_{timestamp}{archive_file.suffix}"
     )
@@ -133,13 +132,8 @@ def _atomic_write(frame, archive_file, keys):
     temp_file.replace(archive_file)
 
 
-def write_archive_snapshot(snapshot, archive_path, replace_today=True, key_cols=None):
-    """Replace matching full-key rows and preserve every unrelated row.
-
-    ``replace_today`` remains for call compatibility. Its practical meaning is
-    full-key replacement, so multiple same-day sectors or tickers cannot erase
-    one another.
-    """
+def write_archive_snapshot(snapshot, archive_path, key_cols=None):
+    """Replace matching full-key rows and preserve every unrelated row."""
     spec = archive_path if isinstance(archive_path, ArchiveSpec) else spec_for_path(archive_path)
     path = spec.path if spec else archive_path
     keys = tuple(key_cols or (spec.keys if spec else ()))
@@ -155,8 +149,7 @@ def write_archive_snapshot(snapshot, archive_path, replace_today=True, key_cols=
         reset_malformed=bool(spec and spec.reset_malformed),
     )
 
-    if replace_today:
-        existing = _remove_matching_keys(existing, incoming, keys)
+    existing = _remove_matching_keys(existing, incoming, keys)
 
     combined = (
         pd.concat([existing, incoming], ignore_index=True)
@@ -212,11 +205,11 @@ def append_macro_history(regime_metrics, fred_data):
             "Power Capacity Gap",
             "Power Capacity Gap Source",
         ),
-        "Borrower Financial Condition": _current_metric_value(regime_metrics, "Borrower Financial Condition", "Borrower Financial Condition Source"),
-        "Credit Intermediation Strain": _current_metric_value(
+        "Borrower Strain": _current_metric_value(regime_metrics, "Borrower Strain", "Borrower Strain Source"),
+        "Lender Strain": _current_metric_value(
             regime_metrics,
-            "Credit Intermediation Strain",
-            "Credit Intermediation Strain Source",
+            "Lender Strain",
+            "Lender Strain Source",
         ),
         "Concentration HHI": regime_metrics.get("Concentration HHI", np.nan),
         "Raw AI HHI": regime_metrics.get("Raw AI HHI", np.nan),
@@ -234,32 +227,32 @@ def append_macro_history(regime_metrics, fred_data):
         "PCG Capital Deployment": _component_value(regime_metrics, "Power Capacity Gap Components", "Capital Deployment"),
         "PCG Delivered Power Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Delivered Power Growth"),
         "PCG Installed Capacity Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Installed Capacity Growth"),
-        "Borrower Cash Flow Strain": _component_value(regime_metrics, "Borrower Financial Condition Components", "Cash Flow Strain"),
+        "Borrower Cash Flow Strain": _component_value(regime_metrics, "Borrower Strain Components", "Cash Flow Strain"),
         "Borrower Debt Capacity Strain": _component_value(
             regime_metrics,
-            "Borrower Financial Condition Components",
+            "Borrower Strain Components",
             "Debt Capacity Strain",
         ),
-        "Borrower Committed Burden": _component_value(regime_metrics, "Borrower Financial Condition Components", "Committed Burden"),
-        "Borrower Contingent Exposure": _component_value(regime_metrics, "Borrower Financial Condition Components", "Contingent Exposure"),
-        "Intermediation Bank Credit Tightening": _component_value(
+        "Borrower Committed Burden": _component_value(regime_metrics, "Borrower Strain Components", "Committed Burden"),
+        "Borrower Contingent Exposure": _component_value(regime_metrics, "Borrower Strain Components", "Contingent Exposure"),
+        "Lender Credit Tightening": _component_value(
             regime_metrics,
-            "Credit Intermediation Strain Components",
+            "Lender Strain Components",
             "Bank Credit Tightening",
         ),
-        "Intermediation Bank Capital Strain": _component_value(
+        "Lender Bank Capital Strain": _component_value(
             regime_metrics,
-            "Credit Intermediation Strain Components",
+            "Lender Strain Components",
             "Bank Capital Strain",
         ),
-        "Intermediation Private Credit Impairment": _component_value(
+        "Lender Private Credit Impairment": _component_value(
             regime_metrics,
-            "Credit Intermediation Strain Components",
+            "Lender Strain Components",
             "Private Credit Impairment",
         ),
-        "Intermediation PE Portfolio Financing Strain": _component_value(
+        "Lender PE Portfolio Financing Strain": _component_value(
             regime_metrics,
-            "Credit Intermediation Strain Components",
+            "Lender Strain Components",
             "PE Portfolio Financing Strain",
         ),
         "AEI Version": regime_metrics.get("AEI Version", np.nan),
@@ -267,9 +260,9 @@ def append_macro_history(regime_metrics, fred_data):
         "EVG Version": regime_metrics.get("EVG Version", np.nan),
         "Power Stress Version": regime_metrics.get("Power Stress Version", np.nan),
         "Power Capacity Gap Version": regime_metrics.get("Power Capacity Gap Version", np.nan),
-        "Borrower Financial Condition Version": regime_metrics.get("Borrower Financial Condition Version", np.nan),
-        "Credit Intermediation Strain Version": regime_metrics.get(
-            "Credit Intermediation Strain Version", np.nan
+        "Borrower Strain Version": regime_metrics.get("Borrower Strain Version", np.nan),
+        "Lender Strain Version": regime_metrics.get(
+            "Lender Strain Version", np.nan
         ),
         "Pressure Version": regime_metrics.get("Pressure Version", np.nan),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),

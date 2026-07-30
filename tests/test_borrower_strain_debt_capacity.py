@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 
-from analytics.borrower_financial_condition_engine import _debt_capacity_strain
+from analytics.borrower_strain_engine import _debt_capacity_strain
 
 
 class DebtCapacityStressTests(unittest.TestCase):

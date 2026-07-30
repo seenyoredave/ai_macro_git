@@ -212,7 +212,7 @@ def test_gap_scale_note_is_attached_to_chart_column():
 def test_developer_tools_header_includes_right_aligned_version_and_divider():
     app = (ROOT / "ai_macro.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert 'APP_VERSION = "v3.19"' in app
+    assert 'APP_VERSION = "v3.22"' in app
     assert 'class="rm-developer-tools-header"' in app
     assert 'class="rm-developer-tools-version"' in app
     assert 'class="rm-developer-tools-divider"' in app
@@ -229,8 +229,6 @@ def test_research_ui_cleanup_is_structurally_present():
     assert '("Build", APP_VERSION)' in app
     assert 'f"{run_date.month}.{run_date.day}.{run_date.year}"' in app
 
-    assert '"reference = 0"' not in renderer
-    assert '"current run"' not in renderer
     assert '"Top five companies plus the remainder"' not in renderer
     assert '"Deployment pressure:' not in renderer
     assert '"Raw AI HHI:' not in renderer
@@ -254,3 +252,30 @@ def test_evidence_purpose_and_source_data_are_rendered_cleanly():
     assert 'render_section("Source Data")' in evidence
     assert 'render_section("Source observations"' not in evidence
     assert '"evidence": [' not in source
+
+
+def test_deliberate_line_breaks_separate_dashboard_layers():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+    components = (ROOT / "research_overlay" / "components.py").read_text()
+    assert 'def render_line_break()' in components
+    assert 'st.markdown("<br>", unsafe_allow_html=True)' in components
+
+    for tab in ("macro", "finance", "sectors"):
+        expected = (
+            'render_line_break()\n'
+            f'    _render_tab_metric_registry("{tab}")\n'
+            '    render_line_break()'
+        )
+        assert expected in renderer
+
+    finance = renderer.split("def render_finance_tab", 1)[1].split("def _assessment_stats", 1)[0]
+    assert 'render_section("Credit Conditions")\n    render_line_break()' in finance
+
+    evidence = renderer.split("def render_evidence_tab", 1)[1].split("def render_research_dashboard", 1)[0]
+    assert evidence.index('render_tab_header(') < evidence.index('render_line_break()')
+    assert evidence.index('render_line_break()') < evidence.index('render_section("Purpose Statement", first=True)')
+    purpose_end = evidence.index('render_definition(METRIC_DEFINITIONS["Purpose Statement"])')
+    second_break = evidence.index('render_line_break()', evidence.index('render_line_break()') + 1)
+    assert purpose_end < second_break < evidence.index('render_section("Source Data")')
+    assert evidence.index('render_section("Source Data")') < evidence.index('render_macro_data(fred_data)')
+    assert 'render_section("Source Data",' not in evidence

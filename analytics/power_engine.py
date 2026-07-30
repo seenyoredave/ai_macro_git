@@ -32,7 +32,7 @@ def normalize_power_stress_history(history):
     """Normalize current-version Power Stress archive metadata.
 
     Historical values are rebuilt offline from retained raw inputs. Runtime
-    code does not migrate or rescale legacy calculated values.
+    code does not migrate or rescale previous-method calculated values.
     """
     if history is None or history.empty or "Power Stress Index" not in history.columns:
         return history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()

@@ -1,8 +1,8 @@
-"""Credit Intermediation Strain engine.
+"""Lender Strain engine.
 
 The metric measures whether the financing system is becoming less able or less
 willing to support operating businesses. It deliberately separates borrower
-health (Borrower Financial Condition) from lender/transmission health.
+health (Borrower Strain) from lender/transmission health.
 
 Public inputs:
   1. Federal Reserve SLOOS business-loan tightening;
@@ -30,7 +30,7 @@ DEFAULT_BANK_CAPITAL_PATH = PROJECT_ROOT / "data" / "bank_tier1_capital_history.
 DEFAULT_BDC_PATH = PROJECT_ROOT / "data" / "private_credit_bdc_history.csv"
 DEFAULT_PE_PATH = PROJECT_ROOT / "data" / "private_equity_strain_history.csv"
 
-INTERMEDIATION_WEIGHTS = {
+LENDER_STRAIN_WEIGHTS = {
     "Bank Credit Tightening": 0.25,
     "Bank Capital Strain": 0.25,
     "Private Credit Impairment": 0.25,
@@ -55,7 +55,7 @@ PE_SUBWEIGHTS = {
 BDC_COHORT = ("ARCC", "OBDC", "FSK", "GBDC", "CION")
 
 
-def intermediation_strain_to_signed(value):
+def lender_strain_to_signed(value):
     """Map the internal 0-100 adverse-condition score to centered -100 to +100."""
     value = pd.to_numeric(value, errors="coerce")
     if pd.isna(value) or not np.isfinite(value):
@@ -63,25 +63,25 @@ def intermediation_strain_to_signed(value):
     return float(np.clip(2.0 * (float(value) - 50.0), -100.0, 100.0))
 
 
-def normalize_intermediation_strain_history(history):
+def normalize_lender_strain_history(history):
     """Normalize archive metadata for the current metric version."""
     if (
         history is None
         or history.empty
-        or "Credit Intermediation Strain" not in history.columns
+        or "Lender Strain" not in history.columns
     ):
         return history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
 
     out = history.copy()
-    out["Credit Intermediation Strain"] = pd.to_numeric(
-        out["Credit Intermediation Strain"], errors="coerce"
+    out["Lender Strain"] = pd.to_numeric(
+        out["Lender Strain"], errors="coerce"
     )
-    if "Credit Intermediation Strain Version" in out.columns:
-        out["Credit Intermediation Strain Version"] = out[
-            "Credit Intermediation Strain Version"
+    if "Lender Strain Version" in out.columns:
+        out["Lender Strain Version"] = out[
+            "Lender Strain Version"
         ].astype("string")
     else:
-        out["Credit Intermediation Strain Version"] = pd.Series(
+        out["Lender Strain Version"] = pd.Series(
             pd.NA, index=out.index, dtype="string"
         )
     return out
@@ -468,12 +468,12 @@ def _score_snapshot(
         **{name: 0.5 * weight for name, weight in nonbank_channel_weights.items()},
     }
     signed_scores = {
-        name: intermediation_strain_to_signed(score)
+        name: lender_strain_to_signed(score)
         for name, score in base_scores.items()
     }
 
     return {
-        "score": intermediation_strain_to_signed(combined_score),
+        "score": lender_strain_to_signed(combined_score),
         "base_score": combined_score,
         "valid_components": valid_components,
         "coverage": valid_components / 4.0,
@@ -518,7 +518,7 @@ def _score_snapshot(
     }
 
 
-def build_intermediation_strain_history(
+def build_lender_strain_history(
     bank_history,
     bank_capital_history,
     bdc_history,
@@ -559,7 +559,7 @@ def build_intermediation_strain_history(
         rows.append(
             {
                 "Date": pd.Timestamp(observation_date),
-                "Credit Intermediation Strain": snapshot["score"],
+                "Lender Strain": snapshot["score"],
                 "Bank Credit Tightening": snapshot["signed_scores"].get(
                     "Bank Credit Tightening", np.nan
                 ),
@@ -589,7 +589,7 @@ def _row_date(row):
     return value.date().isoformat() if pd.notna(value) else None
 
 
-def calculate_intermediation_strain(
+def calculate_lender_strain(
     fred_data=None,
     *,
     bank_path=None,
@@ -597,7 +597,7 @@ def calculate_intermediation_strain(
     bdc_path=None,
     pe_path=None,
 ) -> dict:
-    """Calculate the signed Credit Intermediation Strain metric."""
+    """Calculate the signed Lender Strain metric."""
     bank_history = load_bank_tightening_history(bank_path)
     bank_history = _with_live_observation(
         bank_history,
@@ -623,7 +623,7 @@ def calculate_intermediation_strain(
     bdc_history = load_bdc_impairment_history(bdc_path)
     pe_history = load_pe_financing_history(pe_path)
 
-    history = build_intermediation_strain_history(
+    history = build_lender_strain_history(
         bank_history,
         bank_capital_history,
         bdc_history,
@@ -684,7 +684,7 @@ def calculate_intermediation_strain(
             "base_score": snapshot["base_scores"].get(
                 "Bank Credit Tightening", np.nan
             ),
-            "weight": INTERMEDIATION_WEIGHTS["Bank Credit Tightening"],
+            "weight": LENDER_STRAIN_WEIGHTS["Bank Credit Tightening"],
             "active_weight": snapshot["normalized_weights"].get(
                 "Bank Credit Tightening", np.nan
             ),
@@ -709,7 +709,7 @@ def calculate_intermediation_strain(
             "base_score": snapshot["base_scores"].get(
                 "Bank Capital Strain", np.nan
             ),
-            "weight": INTERMEDIATION_WEIGHTS["Bank Capital Strain"],
+            "weight": LENDER_STRAIN_WEIGHTS["Bank Capital Strain"],
             "active_weight": snapshot["normalized_weights"].get(
                 "Bank Capital Strain", np.nan
             ),
@@ -736,7 +736,7 @@ def calculate_intermediation_strain(
             "base_score": snapshot["base_scores"].get(
                 "Private Credit Impairment", np.nan
             ),
-            "weight": INTERMEDIATION_WEIGHTS["Private Credit Impairment"],
+            "weight": LENDER_STRAIN_WEIGHTS["Private Credit Impairment"],
             "active_weight": snapshot["normalized_weights"].get(
                 "Private Credit Impairment", np.nan
             ),
@@ -771,7 +771,7 @@ def calculate_intermediation_strain(
             "base_score": snapshot["base_scores"].get(
                 "PE Portfolio Financing Strain", np.nan
             ),
-            "weight": INTERMEDIATION_WEIGHTS[
+            "weight": LENDER_STRAIN_WEIGHTS[
                 "PE Portfolio Financing Strain"
             ],
             "active_weight": snapshot["normalized_weights"].get(

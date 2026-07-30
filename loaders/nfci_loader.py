@@ -42,7 +42,7 @@ def _get_fred_client():
 def _normalize_nfci_history(frame: pd.DataFrame | None) -> pd.DataFrame:
     """Return a clean Date/Value/ANFCI financial-conditions history frame.
 
-    ``Value`` remains the NFCI column for backward compatibility with the
+    ``Value`` remains the NFCI column used by the
     existing snapshot and chart helpers. ANFCI is retained as an optional
     comparator and never replaces the headline NFCI reading.
     """

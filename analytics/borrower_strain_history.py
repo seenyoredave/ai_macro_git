@@ -1,11 +1,11 @@
-"""Historical Borrower Financial Condition reconstruction utilities.
+"""Historical Borrower Strain reconstruction utilities.
 
 The historical series is stored separately from the live macro archive.  This
 keeps sparse annual/quarterly reconstruction rows from polluting the general
 macro table while allowing the dashboard to display one continuous series.
 
 No historical value is manufactured at runtime.  The companion CLI in
-``tools/backfill_borrower_financial_condition.py`` downloads SEC data, writes the retained raw
+``tools/backfill_borrower_strain.py`` downloads SEC data, writes the retained raw
 inputs, and produces the accepted history file.
 """
 
@@ -21,17 +21,17 @@ import pandas as pd
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_HISTORY_PATH = PROJECT_ROOT / "data" / "borrower_financial_condition_history.csv"
+DEFAULT_HISTORY_PATH = PROJECT_ROOT / "data" / "borrower_strain_history.csv"
 DEFAULT_FUNDAMENTALS_PATH = (
-    PROJECT_ROOT / "data" / "borrower_financial_condition_fundamentals_history.csv"
+    PROJECT_ROOT / "data" / "borrower_strain_fundamentals_history.csv"
 )
 DEFAULT_COMMITMENTS_HISTORY_PATH = (
     PROJECT_ROOT / "data" / "capital_commitments_history.csv"
 )
 DEFAULT_REVIEW_PATH = PROJECT_ROOT / "data" / "capital_commitments_review.csv"
-DEFAULT_AUDIT_PATH = PROJECT_ROOT / "data" / "borrower_financial_condition_backfill_audit.csv"
+DEFAULT_AUDIT_PATH = PROJECT_ROOT / "data" / "borrower_strain_backfill_audit.csv"
 
-BORROWER_FINANCIAL_CONDITION_CIKS = {
+BORROWER_STRAIN_CIKS = {
     "MSFT": "0000789019",
     "AMZN": "0001018724",
     "GOOG": "0001652044",
@@ -47,7 +47,7 @@ BORROWER_FINANCIAL_CONDITION_CIKS = {
 HISTORY_COLUMNS = [
     "Date",
     "Observation Frequency",
-    "Borrower Financial Condition",
+    "Borrower Strain",
     "Borrower Cash Flow Strain",
     "Borrower Debt Capacity Strain",
     "Borrower Committed Burden",
@@ -58,7 +58,7 @@ HISTORY_COLUMNS = [
     "Negative EBITDA Net Debt/Revenue",
     "Committed Burden Ratio",
     "Contingent Burden Ratio",
-    "Borrower Financial Condition Version",
+    "Borrower Strain Version",
     "Valid Components",
     "Component Coverage",
     "Cohort Companies",
@@ -239,7 +239,7 @@ def _read_csv(path: Path, columns: Sequence[str]) -> pd.DataFrame:
     return frame
 
 
-def load_borrower_financial_condition_backfill(path: str | Path | None = None) -> pd.DataFrame:
+def load_borrower_strain_backfill(path: str | Path | None = None) -> pd.DataFrame:
     frame = _read_csv(Path(path) if path else DEFAULT_HISTORY_PATH, HISTORY_COLUMNS)
     if frame.empty:
         return frame
@@ -247,7 +247,7 @@ def load_borrower_financial_condition_backfill(path: str | Path | None = None) -
     frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce").dt.date.astype("string")
     frame = frame.loc[frame["Date"].notna()].copy()
     for column in [
-        "Borrower Financial Condition",
+        "Borrower Strain",
         "Borrower Cash Flow Strain",
         "Borrower Debt Capacity Strain",
         "Borrower Committed Burden",
@@ -258,18 +258,18 @@ def load_borrower_financial_condition_backfill(path: str | Path | None = None) -
     return frame.sort_values("Date", kind="stable").reset_index(drop=True)
 
 
-def combine_borrower_financial_condition_history(
+def combine_borrower_strain_history(
     live_macro_history: pd.DataFrame | None,
     backfill_history: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Combine accepted backfill rows with live archive rows.
 
-    Live rows win on duplicate dates.  Only Borrower Financial Condition fields are carried
+    Live rows win on duplicate dates.  Only Borrower Strain fields are carried
     into this dedicated frame; unrelated macro columns are intentionally not
     manufactured for historical dates.
     """
     backfill = (
-        load_borrower_financial_condition_backfill()
+        load_borrower_strain_backfill()
         if backfill_history is None
         else backfill_history.copy()
     )
@@ -277,12 +277,12 @@ def combine_borrower_financial_condition_history(
 
     desired = [
         "Date",
-        "Borrower Financial Condition",
+        "Borrower Strain",
         "Borrower Cash Flow Strain",
         "Borrower Debt Capacity Strain",
         "Borrower Committed Burden",
         "Borrower Contingent Exposure",
-        "Borrower Financial Condition Version",
+        "Borrower Strain Version",
         "Observation Frequency",
         "Valid Components",
         "Component Coverage",
@@ -297,21 +297,10 @@ def combine_borrower_financial_condition_history(
         backfill["_source_priority"] = 0
         frames.append(backfill[desired + ["_source_priority"]])
 
-    if not live.empty and {"Date", "Borrower Financial Condition"}.issubset(live.columns):
+    if not live.empty and {"Date", "Borrower Strain"}.issubset(live.columns):
         live = live.copy()
-        # Early archives used the previous label even after the debt-capacity
-        # branch was introduced.  Preserve the old column and only use it as a
-        # compatibility fallback when the explicit current field is absent.
         if "Borrower Debt Capacity Strain" not in live.columns:
             live["Borrower Debt Capacity Strain"] = np.nan
-        if "Borrower Book Leverage" in live.columns:
-            current_version = live.get(
-                "Borrower Financial Condition Version", pd.Series(index=live.index, dtype=object)
-            ).astype(str).eq("3.0")
-            missing = live["Borrower Debt Capacity Strain"].isna() & current_version
-            live.loc[missing, "Borrower Debt Capacity Strain"] = pd.to_numeric(
-                live.loc[missing, "Borrower Book Leverage"], errors="coerce"
-            )
         for column in desired:
             if column not in live.columns:
                 live[column] = np.nan
@@ -604,7 +593,7 @@ def build_company_snapshot(
         {fact.method for fact in [revenue, ocf, capex, operating_income, depreciation]}
     )
 
-    cik = BORROWER_FINANCIAL_CONDITION_CIKS.get(str(ticker).upper())
+    cik = BORROWER_STRAIN_CIKS.get(str(ticker).upper())
     return {
         "Date": cutoff_ts.date().isoformat(),
         "Observation Frequency": observation_frequency,
@@ -650,10 +639,10 @@ def snapshot_to_sector_data(snapshot: pd.DataFrame) -> dict[str, pd.DataFrame]:
     for column in expected:
         if column not in frame.columns:
             frame[column] = np.nan
-    return {"Historical Borrower Financial Condition Cohort": frame[expected].copy()}
+    return {"Historical Borrower Strain Cohort": frame[expected].copy()}
 
 
-def borrower_condition_result_to_history_row(
+def borrower_strain_result_to_history_row(
     observation_date: str | date | pd.Timestamp,
     observation_frequency: str,
     result: Mapping,
@@ -679,7 +668,7 @@ def borrower_condition_result_to_history_row(
     return {
         "Date": pd.Timestamp(observation_date).date().isoformat(),
         "Observation Frequency": observation_frequency,
-        "Borrower Financial Condition": score,
+        "Borrower Strain": score,
         "Borrower Cash Flow Strain": component_score("Cash Flow Strain"),
         "Borrower Debt Capacity Strain": component_score("Debt Capacity Strain"),
         "Borrower Committed Burden": component_score("Committed Burden"),
@@ -690,11 +679,11 @@ def borrower_condition_result_to_history_row(
         "Negative EBITDA Net Debt/Revenue": (components.get("Debt Capacity Strain", {}) or {}).get("secondary_raw", np.nan),
         "Committed Burden Ratio": (components.get("Committed Burden", {}) or {}).get("raw", np.nan),
         "Contingent Burden Ratio": (components.get("Contingent Exposure", {}) or {}).get("raw", np.nan),
-        "Borrower Financial Condition Version": version,
+        "Borrower Strain Version": version,
         "Valid Components": valid_components,
         "Component Coverage": (result or {}).get("coverage", np.nan),
         "Cohort Companies": (result or {}).get("cohort_companies", 0),
-        "Target Cohort Size": (result or {}).get("target_cohort_size", len(BORROWER_FINANCIAL_CONDITION_CIKS)),
+        "Target Cohort Size": (result or {}).get("target_cohort_size", len(BORROWER_STRAIN_CIKS)),
         "Financial Companies": int(fundamentals_snapshot["Ticker"].nunique()) if not fundamentals_snapshot.empty else 0,
         "Commitment Companies": len((result or {}).get("commitment_tickers", []) or []),
         "Contingent Companies": len((result or {}).get("contingent_tickers", []) or []),

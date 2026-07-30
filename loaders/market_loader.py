@@ -1,8 +1,10 @@
 """Market-data orchestration.
 
-This module owns live-first loading with archive fallback and coordinates YFinance plus EDGAR.
-Statement parsing lives in ``company_fundamentals``; price-history calculations
-live in ``market_prices``.
+YFinance follows a daily-session policy: during regular U.S. market hours the
+first complete load of the Eastern trading date is live, later loads use that
+day's archive, and closed-session loads use the latest complete archive. Manual
+refreshes bypass the automatic policy. EDGAR retains its own recency policy and
+can also be refreshed explicitly.
 """
 
 from __future__ import annotations
@@ -23,6 +25,12 @@ from archive.archive_reader import (
     rows_for_date,
 )
 from config.debug_config import debug_print
+from config.market_clock import (
+    is_market_hours,
+    market_cache_token,
+    utc_now,
+    yfinance_load_decision,
+)
 from loaders.company_fundamentals import extract_fundamental_fields, safe_float
 from loaders.edgar_loader import (
     describe_edgar_freshness_status,
@@ -292,61 +300,120 @@ def pull_yfinance(ticker_tuple, attempts=2):
     return pd.DataFrame(ordered)
 
 
+def _archive_yfinance_result(frame, tickers, *, source_mode, decision):
+    archived = ensure_yf_schema(frame).copy()
+    expected = _expected_ticker_set(tickers)
+    returned = (
+        set(archived["Ticker"].dropna().astype(str).str.upper().str.strip())
+        if "Ticker" in archived.columns
+        else set()
+    )
+    archived.attrs["load_report"] = {
+        "source_mode": source_mode,
+        "decision": decision,
+        "requested_at_utc": utc_now().isoformat(timespec="seconds"),
+        "archive_tickers": len(returned),
+        "missing_tickers": sorted(expected - returned),
+    }
+    return archived
+
+
+def load_yfinance(
+    ticker_tuple,
+    sector=None,
+    *,
+    force_refresh=False,
+    refresh_token=0,
+    clock_token=None,
+):
+    """Load YFinance under the daily market-session decision policy."""
+    return _load_yfinance_cached(
+        ticker_tuple,
+        sector=sector,
+        force_refresh=bool(force_refresh),
+        refresh_token=int(refresh_token),
+        clock_token=clock_token or market_cache_token(),
+    )
+
+
 @st.cache_data(ttl=900)
-def load_yfinance(ticker_tuple, sector=None):
+def _load_yfinance_cached(
+    ticker_tuple,
+    sector=None,
+    *,
+    force_refresh=False,
+    refresh_token=0,
+    clock_token=None,
+):
+    # refresh_token and clock_token are cache-key inputs by design.
+    del refresh_token, clock_token
+
     tickers = dict(ticker_tuple)
     archived_today = read_yf_history_for_date(tickers, sector=sector)
+    latest_archive = read_latest_yf_history(tickers, sector=sector)
+    decision = yfinance_load_decision(
+        force_refresh=bool(force_refresh),
+        market_open=is_market_hours(),
+        has_current_archive=archived_today is not None and not archived_today.empty,
+        has_latest_archive=latest_archive is not None and not latest_archive.empty,
+    )
+
+    if decision == "archive_current":
+        debug_print(f"Using current-date YFinance archive: {sector}")
+        return _archive_yfinance_result(
+            archived_today,
+            tickers,
+            source_mode="archive_current",
+            decision=decision,
+        )
+
+    if decision == "archive_closed":
+        debug_print(f"Market closed; using latest complete YFinance archive: {sector}")
+        return _archive_yfinance_result(
+            latest_archive,
+            tickers,
+            source_mode="archive_market_closed",
+            decision=decision,
+        )
+
+    if decision == "unavailable":
+        raise RuntimeError(
+            "YFinance archive is unavailable outside regular market hours. "
+            "Use Refresh YFinance to request a manual live pull."
+        )
+
+    fallback = archived_today if archived_today is not None and not archived_today.empty else latest_archive
 
     try:
-        debug_print(f"Pulling current yfinance data: {sector}")
-
+        trigger = "manual" if force_refresh else "automatic_daily"
+        debug_print(f"Pulling current YFinance data ({trigger}): {sector}")
         fresh = pull_yfinance(ticker_tuple)
         if fresh is None or fresh.empty:
             raise ValueError("yfinance returned an empty DataFrame")
 
-        fresh = ensure_yf_schema(fresh)
-        fresh["Ticker"] = (
-            fresh["Ticker"]
-            .astype(str)
-            .str.upper()
-            .str.strip()
-        )
-        fresh = fresh.drop_duplicates("Ticker", keep="last")
-
-        # Fresh data wins. Today's archive only fills fields or tickers
-        # that the current Yahoo request failed to return.
-        if archived_today is not None and not archived_today.empty:
-            archive = ensure_yf_schema(archived_today)
-            archive["Ticker"] = (
-                archive["Ticker"]
-                .astype(str)
-                .str.upper()
-                .str.strip()
-            )
-            archive = archive.drop_duplicates("Ticker", keep="last")
-
-            fresh = (
-                fresh.set_index("Ticker")
-                .combine_first(archive.set_index("Ticker"))
-                .reset_index()
-            )
-
-        return ensure_yf_schema(fresh)
+        merged = merge_live_yfinance_with_archive(fresh, fallback, tickers)
+        report = dict(getattr(merged, "attrs", {}).get("load_report", {}))
+        report.update({
+            "decision": decision,
+            "refresh_trigger": trigger,
+        })
+        merged.attrs["load_report"] = report
+        return ensure_yf_schema(merged)
 
     except Exception as exc:
-        debug_print(f"Current yfinance pull failed -> {exc}")
-
-        if archived_today is not None and not archived_today.empty:
-            debug_print(f"Using today's archive fallback: {sector}")
-            return ensure_yf_schema(archived_today)
-
-        fallback = read_latest_yf_history(tickers, sector=sector)
+        debug_print(f"Current YFinance pull failed -> {exc}")
         if fallback is not None and not fallback.empty:
-            debug_print(f"Using latest historical fallback: {sector}")
-            return ensure_yf_schema(fallback)
+            result = _archive_yfinance_result(
+                fallback,
+                tickers,
+                source_mode="archive_fallback",
+                decision=decision,
+            )
+            result.attrs["load_report"]["live_error"] = str(exc)
+            return result
 
         raise RuntimeError(
-            "yfinance failed and no usable yf_history fallback exists."
+            "YFinance failed and no usable yf_history fallback exists."
         ) from exc
 
 
@@ -358,19 +425,59 @@ def load_sector_data(tickers, sector=None):
     }
 
 
+def load_market_universe(
+    tickers,
+    *,
+    force_yfinance_refresh=False,
+    yfinance_refresh_token=0,
+    force_edgar_refresh=False,
+    edgar_refresh_token=0,
+    clock_token=None,
+):
+    """Load the full universe with explicit source-refresh controls."""
+    return _load_market_universe_cached(
+        tickers,
+        force_yfinance_refresh=bool(force_yfinance_refresh),
+        yfinance_refresh_token=int(yfinance_refresh_token),
+        force_edgar_refresh=bool(force_edgar_refresh),
+        edgar_refresh_token=int(edgar_refresh_token),
+        clock_token=clock_token or market_cache_token(),
+    )
+
+
 @st.cache_data(ttl=900)
-def load_market_universe(tickers):
+def _load_market_universe_cached(
+    tickers,
+    *,
+    force_yfinance_refresh=False,
+    yfinance_refresh_token=0,
+    force_edgar_refresh=False,
+    edgar_refresh_token=0,
+    clock_token=None,
+):
+    # Refresh tokens and the session token deliberately participate in caching.
+    del edgar_refresh_token
+
     load_started = time.perf_counter()
     expected_count = len(tickers)
     yf_archive_status = describe_yf_archive_status(tickers, sector=None)
     edgar_archive_status = describe_edgar_archive_status(tickers)
 
     yf_started = time.perf_counter()
-    raw_yf = load_yfinance(tuple(sorted(tickers.items())), sector=None)
+    raw_yf = load_yfinance(
+        tuple(sorted(tickers.items())),
+        sector=None,
+        force_refresh=force_yfinance_refresh,
+        refresh_token=yfinance_refresh_token,
+        clock_token=clock_token,
+    )
     yf_elapsed = time.perf_counter() - yf_started
 
     edgar_started = time.perf_counter()
-    raw_edgar, edgar_runtime_report = load_edgar_with_report(tickers)
+    raw_edgar, edgar_runtime_report = load_edgar_with_report(
+        tickers,
+        force_refresh=force_edgar_refresh,
+    )
     edgar_elapsed = time.perf_counter() - edgar_started
 
     yf_runtime_report = dict(getattr(raw_yf, "attrs", {}).get("load_report", {}))
@@ -396,3 +503,4 @@ def load_market_universe(tickers):
             },
         },
     }
+

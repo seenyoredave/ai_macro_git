@@ -1,4 +1,4 @@
-"""Macro regime calculations: AEI, ADI, Power Stress, and Borrower Financial Condition."""
+"""Macro regime calculations: AEI, ADI, Power Stress, and Borrower Strain."""
 
 from __future__ import annotations
 
@@ -7,18 +7,18 @@ import math
 import numpy as np
 import pandas as pd
 
-from analytics.borrower_financial_condition_engine import (
-    calculate_borrower_financial_condition,
-    normalize_borrower_financial_condition_history,
+from analytics.borrower_strain_engine import (
+    calculate_borrower_strain,
+    normalize_borrower_strain_history,
 )
-from analytics.borrower_financial_condition_history import combine_borrower_financial_condition_history
+from analytics.borrower_strain_history import combine_borrower_strain_history
 from analytics.deployment_funding_mix import calculate_deployment_funding_mix
 from analytics.development_engine import calculate_ai_development_intensity
 from analytics.economic_validation import calculate_economic_validation_gap
 from analytics.hhi_engine import calc_hhi_from_sector_data, normalize_hhi
-from analytics.intermediation_strain_engine import (
-    calculate_intermediation_strain,
-    normalize_intermediation_strain_history,
+from analytics.lender_strain_engine import (
+    calculate_lender_strain,
+    normalize_lender_strain_history,
 )
 from analytics.power_engine import (
     calculate_power_stress,
@@ -34,8 +34,8 @@ AEI_VERSION = "3.1"
 ADI_VERSION = "1.0"
 EVG_VERSION = "2.0"
 POWER_STRESS_VERSION = "3.0"
-BORROWER_FINANCIAL_CONDITION_VERSION = "3.0"
-INTERMEDIATION_STRAIN_VERSION = "3.0"
+BORROWER_STRAIN_VERSION = "3.0"
+LENDER_STRAIN_VERSION = "3.0"
 PRESSURE_VERSION = "3.0"
 
 
@@ -198,8 +198,8 @@ def build_regime_metrics(
     construction_data=None,
     macro_history=None,
 ):
-    """Build current macro metrics while preserving the legacy signature."""
-    del fred_history  # retained in the public signature for compatibility
+    """Build current macro metrics."""
+    del fred_history
 
     current_aei = calc_aei(sector_metrics)
     avg_pressure = calc_avg_sector_pressure(sector_metrics)
@@ -218,16 +218,16 @@ def build_regime_metrics(
         development_result,
         fred_data or {},
     )
-    borrower_condition_result = calculate_borrower_financial_condition(sector_data or {})
+    borrower_strain_result = calculate_borrower_strain(sector_data or {})
     funding_mix_result = calculate_deployment_funding_mix(sector_data or {})
-    intermediation_result = calculate_intermediation_strain(fred_data or {})
+    lender_strain_result = calculate_lender_strain(fred_data or {})
 
     current_adi = development_result.get("score", np.nan)
     current_validation_gap = validation_result.get("score", np.nan)
     current_power = power_result.get("score", np.nan)
     current_power_capacity_gap = power_capacity_gap_result.get("score", np.nan)
-    current_borrower_condition = borrower_condition_result.get("score", np.nan)
-    current_intermediation = intermediation_result.get("score", np.nan)
+    current_borrower_strain = borrower_strain_result.get("score", np.nan)
+    current_lender_strain = lender_strain_result.get("score", np.nan)
 
     aei, aei_source, aei_date = _resolve_with_archive(
         current_aei,
@@ -265,23 +265,23 @@ def build_regime_metrics(
         version_column="Power Capacity Gap Version",
         required_version=POWER_CAPACITY_GAP_VERSION,
     )
-    borrower_condition_history = normalize_borrower_financial_condition_history(
-        combine_borrower_financial_condition_history(macro_history)
+    borrower_strain_history = normalize_borrower_strain_history(
+        combine_borrower_strain_history(macro_history)
     )
-    borrower_financial_condition, borrower_condition_source, borrower_condition_date = _resolve_with_archive(
-        current_borrower_condition,
-        borrower_condition_history,
-        "Borrower Financial Condition",
-        version_column="Borrower Financial Condition Version",
-        required_version=BORROWER_FINANCIAL_CONDITION_VERSION,
+    borrower_strain, borrower_strain_source, borrower_strain_date = _resolve_with_archive(
+        current_borrower_strain,
+        borrower_strain_history,
+        "Borrower Strain",
+        version_column="Borrower Strain Version",
+        required_version=BORROWER_STRAIN_VERSION,
     )
-    intermediation_history = normalize_intermediation_strain_history(macro_history)
-    intermediation_strain, intermediation_source, intermediation_date = _resolve_with_archive(
-        current_intermediation,
-        intermediation_history,
-        "Credit Intermediation Strain",
-        version_column="Credit Intermediation Strain Version",
-        required_version=INTERMEDIATION_STRAIN_VERSION,
+    lender_strain_history = normalize_lender_strain_history(macro_history)
+    lender_strain, lender_strain_source, lender_strain_date = _resolve_with_archive(
+        current_lender_strain,
+        lender_strain_history,
+        "Lender Strain",
+        version_column="Lender Strain Version",
+        required_version=LENDER_STRAIN_VERSION,
     )
 
     speculation_gap = (
@@ -326,14 +326,14 @@ def build_regime_metrics(
         "Power Capacity Gap Current": current_power_capacity_gap,
         "Power Capacity Gap Source": power_capacity_gap_source,
         "Power Capacity Gap Fallback Date": power_capacity_gap_date,
-        "Borrower Financial Condition": borrower_financial_condition,
-        "Borrower Financial Condition Current": current_borrower_condition,
-        "Borrower Financial Condition Source": borrower_condition_source,
-        "Borrower Financial Condition Fallback Date": borrower_condition_date,
-        "Credit Intermediation Strain": intermediation_strain,
-        "Credit Intermediation Strain Current": current_intermediation,
-        "Credit Intermediation Strain Source": intermediation_source,
-        "Credit Intermediation Strain Fallback Date": intermediation_date,
+        "Borrower Strain": borrower_strain,
+        "Borrower Strain Current": current_borrower_strain,
+        "Borrower Strain Source": borrower_strain_source,
+        "Borrower Strain Fallback Date": borrower_strain_date,
+        "Lender Strain": lender_strain,
+        "Lender Strain Current": current_lender_strain,
+        "Lender Strain Source": lender_strain_source,
+        "Lender Strain Fallback Date": lender_strain_date,
         "Concentration HHI": normalize_hhi(raw_hhi),
         "Raw AI HHI": raw_hhi,
         "Avg Sector Pressure": avg_pressure,
@@ -341,15 +341,15 @@ def build_regime_metrics(
         "Economic Validation Gap Components": validation_result,
         "Power Stress Components": power_result,
         "Power Capacity Gap Components": power_capacity_gap_result,
-        "Borrower Financial Condition Components": borrower_condition_result,
+        "Borrower Strain Components": borrower_strain_result,
         "Deployment Funding Mix": funding_mix_result,
-        "Credit Intermediation Strain Components": intermediation_result,
+        "Lender Strain Components": lender_strain_result,
         "AEI Version": AEI_VERSION,
         "ADI Version": ADI_VERSION,
         "EVG Version": EVG_VERSION,
         "Power Stress Version": POWER_STRESS_VERSION,
         "Power Capacity Gap Version": POWER_CAPACITY_GAP_VERSION,
-        "Borrower Financial Condition Version": BORROWER_FINANCIAL_CONDITION_VERSION,
-        "Credit Intermediation Strain Version": INTERMEDIATION_STRAIN_VERSION,
+        "Borrower Strain Version": BORROWER_STRAIN_VERSION,
+        "Lender Strain Version": LENDER_STRAIN_VERSION,
         "Pressure Version": PRESSURE_VERSION,
     }

@@ -7,11 +7,12 @@ deterioration breadth without exposing implementation details in the UI.
 
 from __future__ import annotations
 
-from datetime import date
 from typing import Any
 
 import numpy as np
 import pandas as pd
+
+from config.market_clock import market_date
 
 from archive.archive_reader import load_sector_history
 
@@ -66,7 +67,7 @@ def _current_sector_snapshot(macro_df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame()
 
     snapshot = macro_df[required].copy()
-    snapshot.insert(0, "Date", date.today().isoformat())
+    snapshot.insert(0, "Date", market_date().isoformat())
     snapshot["Pressure Version"] = PRESSURE_VERSION
 
     return snapshot
@@ -105,7 +106,7 @@ def _prepare_sector_history(frames: list[pd.DataFrame]) -> pd.DataFrame:
 
 
 def _sector_history_with_current(macro_df: pd.DataFrame) -> pd.DataFrame:
-    """Return Pressure-v3 history plus the current in-memory snapshot."""
+    """Return current-methodology pressure history plus the in-memory snapshot."""
     history = load_sector_history()
     current = _current_sector_snapshot(macro_df)
 
@@ -121,10 +122,10 @@ def _sector_history_with_current(macro_df: pd.DataFrame) -> pd.DataFrame:
     return _prepare_sector_history([history, current])
 
 
-def _legacy_sector_history() -> pd.DataFrame:
-    """Return the most recent internally consistent legacy movement history.
+def _prior_method_sector_history() -> pd.DataFrame:
+    """Return the most recent internally consistent prior-method movement history.
 
-    Legacy pressure values are never mixed with Pressure v3. This fallback keeps
+    Prior-method pressure values are never mixed with the current methodology. This fallback keeps
     Fastest Mover useful while the new formulation accumulates enough archived
     observations to calculate movement on its own terms.
     """
@@ -135,18 +136,18 @@ def _legacy_sector_history() -> pd.DataFrame:
     history = history.copy()
 
     # Rebuilt archives keep incompatible historical pressure in an explicit
-    # Legacy Pressure column. This prevents the live Pressure column from
+    # Prior Method Pressure column. This prevents the live Pressure column from
     # mixing two different formulas while preserving Fastest Mover continuity.
-    if "Legacy Pressure" in history.columns:
+    if "Prior Method Pressure" in history.columns:
         history["Pressure"] = pd.to_numeric(
-            history["Legacy Pressure"],
+            history["Prior Method Pressure"],
             errors="coerce",
         )
     elif "Pressure Version" in history.columns:
-        legacy_mask = history["Pressure Version"].isna() | (
+        prior_method_mask = history["Pressure Version"].isna() | (
             history["Pressure Version"].astype(str) != PRESSURE_VERSION
         )
-        history = history.loc[legacy_mask].copy()
+        history = history.loc[prior_method_mask].copy()
 
     return _prepare_sector_history([history])
 
@@ -199,12 +200,12 @@ def calculate_sector_movement(
     macro_df: pd.DataFrame,
     lookback: int = SECTOR_MOVEMENT_LOOKBACK,
 ) -> pd.DataFrame:
-    """Calculate sector movement without crossing pressure-version boundaries.
+    """Calculate sector movement without crossing methodology boundaries.
 
-    Pressure-v2 history is preferred. Until it contains at least two valid
+    Current-methodology history is preferred. Until it contains at least two valid
     observations for a sector, the function falls back to the latest complete
-    legacy movement result. The legacy result is selection history only; it is
-    not blended with today's Pressure-v2 value.
+    prior-method movement result. The fallback is used only for selection history
+    and is never blended with today's current-methodology value.
     """
     current_history = _sector_history_with_current(macro_df)
     movement = _movement_from_history(
@@ -216,9 +217,9 @@ def calculate_sector_movement(
         return movement
 
     return _movement_from_history(
-        _legacy_sector_history(),
+        _prior_method_sector_history(),
         lookback=lookback,
-        source="Legacy Archive Fallback",
+        source="Prior-Method Archive Fallback",
     )
 
 

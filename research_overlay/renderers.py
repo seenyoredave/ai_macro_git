@@ -28,9 +28,9 @@ from helpers.labels import (
     validation_label,
 )
 from helpers.macro_dashboard import (
-    _borrower_condition_component_table,
+    _borrower_strain_component_table,
     _component_table,
-    _intermediation_component_table,
+    _lender_strain_component_table,
     render_edgar_data,
     render_macro_data,
 )
@@ -42,6 +42,7 @@ from research_overlay.components import (
     fmt_number,
     metric_card,
     render_definition,
+    render_line_break,
     render_panel_heading,
     render_section,
     render_static_table,
@@ -167,7 +168,6 @@ TAB_METRIC_REGISTRIES = {
 
 def _render_tab_metric_registry(tab_key):
     definitions = TAB_METRIC_REGISTRIES[tab_key]
-    st.markdown("<br>", unsafe_allow_html=True)
     with st.expander("Metric registry", expanded=False):
         selected = st.selectbox(
             "Metric or analytical product",
@@ -176,7 +176,6 @@ def _render_tab_metric_registry(tab_key):
             label_visibility="collapsed",
         )
         render_definition(METRIC_DEFINITIONS[selected])
-    st.markdown("<br>", unsafe_allow_html=True)
 
 
 def _latest_component_date(components):
@@ -394,7 +393,9 @@ def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, das
         "Equity trends, observable deployment, power utilization, and validation gaps.",
         "market / buildout / validation",
     )
+    render_line_break()
     _render_tab_metric_registry("macro")
+    render_line_break()
     render_section("Regime board", "Current readings with retained histories and source state.", first=True)
     _render_primary_macro_cards(regime_metrics, dashboard_data["trends"])
     render_section("Gap Measures", "Approximations of divergence from broader economic trends.")
@@ -602,37 +603,40 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
         "Funding capacity, contractual burden, borrower strain, lender strain, and broad financial conditions.",
         "funding / borrowers / lenders / system",
     )
+    render_line_break()
     _render_tab_metric_registry("finance")
+    render_line_break()
     render_section("Funding profile", "Current funding ratios and retained cohort history.", first=True)
     _render_funding_section(regime_metrics)
 
     render_section("Credit Conditions")
-    borrower_condition = (regime_metrics or {}).get("Borrower Financial Condition Components", {}) or {}
+    render_line_break()
+    borrower_strain = (regime_metrics or {}).get("Borrower Strain Components", {}) or {}
     _render_financial_condition_product(
         title="Borrower Strain",
-        value=_value(regime_metrics, "Borrower Financial Condition"),
-        source=_source(regime_metrics, "Borrower Financial Condition"),
-        fallback_date=_fallback(regime_metrics, "Borrower Financial Condition"),
-        trend=dashboard_data["trends"].get("borrower_financial_condition_trend", {}),
-        components=borrower_condition.get("components", {}),
-        detail_table=_borrower_condition_component_table(borrower_condition),
+        value=_value(regime_metrics, "Borrower Strain"),
+        source=_source(regime_metrics, "Borrower Strain"),
+        fallback_date=_fallback(regime_metrics, "Borrower Strain"),
+        trend=dashboard_data["trends"].get("borrower_strain_trend", {}),
+        components=borrower_strain.get("components", {}),
+        detail_table=_borrower_strain_component_table(borrower_strain),
         note="Cash-flow and debt-capacity strain combined with disclosed commitments and contingent exposure.",
         live_sources="yfinance + EDGAR",
     )
 
-    intermediation = (regime_metrics or {}).get("Credit Intermediation Strain Components", {}) or {}
+    lender_strain = (regime_metrics or {}).get("Lender Strain Components", {}) or {}
     _render_financial_condition_product(
         title="Lender Strain",
-        value=_value(regime_metrics, "Credit Intermediation Strain"),
-        source=_source(regime_metrics, "Credit Intermediation Strain"),
-        fallback_date=_fallback(regime_metrics, "Credit Intermediation Strain"),
-        trend=dashboard_data["trends"].get("intermediation_strain_trend", {}),
-        components=intermediation.get("components", {}),
-        detail_table=_intermediation_component_table(intermediation),
+        value=_value(regime_metrics, "Lender Strain"),
+        source=_source(regime_metrics, "Lender Strain"),
+        fallback_date=_fallback(regime_metrics, "Lender Strain"),
+        trend=dashboard_data["trends"].get("lender_strain_trend", {}),
+        components=lender_strain.get("components", {}),
+        detail_table=_lender_strain_component_table(lender_strain),
         note=(
-            f"Bank channel {fmt_number(intermediation.get('bank_channel_score'), 1, signed=True)} · "
-            f"Nonbank channel {fmt_number(intermediation.get('nonbank_channel_score'), 1, signed=True)} · "
-            f"{intermediation.get('elevated_pillars', 0)} of 4 pillars above neutral."
+            f"Bank channel {fmt_number(lender_strain.get('bank_channel_score'), 1, signed=True)} · "
+            f"Nonbank channel {fmt_number(lender_strain.get('nonbank_channel_score'), 1, signed=True)} · "
+            f"{lender_strain.get('elevated_pillars', 0)} of 4 pillars above neutral."
         ),
         live_sources="FRED + EDGAR",
     )
@@ -843,7 +847,9 @@ def render_sectors_tab(sector_metrics, sector_data, regime_metrics, dashboard_da
         "Cross-sectional positioning, movement, fundamental evolution, and metric-driven sector detail.",
         f"{len(macro_df)} sectors",
     )
+    render_line_break()
     _render_tab_metric_registry("sectors")
+    render_line_break()
     render_section("Cross-sector state", "Current leaders in market behavior.", first=True)
     render_statline(_assessment_stats(macro_df, sector_data), key_prefix="sector-cross-state")
 
@@ -890,8 +896,8 @@ def _status_rows(regime_metrics):
         ("Economic Validation Gap", "Economic Validation Gap", "Economic Validation Gap", "EVG Version"),
         ("Power Stress Index", "Power Stress Index", "Power Stress", "Power Stress Version"),
         ("Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap Version"),
-        ("Borrower Strain", "Borrower Financial Condition", "Borrower Financial Condition", "Borrower Financial Condition Version"),
-        ("Lender Strain", "Credit Intermediation Strain", "Credit Intermediation Strain", "Credit Intermediation Strain Version"),
+        ("Borrower Strain", "Borrower Strain", "Borrower Strain", "Borrower Strain Version"),
+        ("Lender Strain", "Lender Strain", "Lender Strain", "Lender Strain Version"),
         ("Concentration HHI", "Concentration HHI", None, None),
         ("Speculation Gap", "Speculation Gap", None, None),
         ("Average Sector Pressure", "Avg Sector Pressure", None, "Pressure Version"),
@@ -930,8 +936,8 @@ def _coverage_rows(regime_metrics):
         ("Economic Validation Gap", (regime_metrics or {}).get("Economic Validation Gap Components", {}), 3),
         ("Power Stress Index", (regime_metrics or {}).get("Power Stress Components", {}), 3),
         ("Power Capacity Gap", (regime_metrics or {}).get("Power Capacity Gap Components", {}), 4),
-        ("Borrower Strain", (regime_metrics or {}).get("Borrower Financial Condition Components", {}), 4),
-        ("Lender Strain", (regime_metrics or {}).get("Credit Intermediation Strain Components", {}), 4),
+        ("Borrower Strain", (regime_metrics or {}).get("Borrower Strain Components", {}), 4),
+        ("Lender Strain", (regime_metrics or {}).get("Lender Strain Components", {}), 4),
     ]
     rows = []
     for product, result, total in groups:
@@ -1025,21 +1031,23 @@ def render_evidence_tab(fred_data, sector_data, regime_metrics):
         "Model contract, current source state, component coverage, definitions, and source data.",
         "definitions / versions / source data",
     )
+    render_line_break()
     render_section("Purpose Statement", first=True)
     render_definition(METRIC_DEFINITIONS["Purpose Statement"])
+
+    render_line_break()
+    render_section("Source Data")
+    render_macro_data(fred_data)
+    render_edgar_data(sector_data)
 
     render_section("Product status", "Current readings, source state, fallback dates, and calculation versions.")
     render_static_table(_status_rows(regime_metrics))
 
-    render_section("Coverage", "Component and cohort sufficiency for the current run.")
+    render_section("Coverage")
     render_static_table(_coverage_rows(regime_metrics))
 
     render_section("Sector construction", "Current equations and aggregation rules for the sector analytical products.")
     render_static_table(_sector_methodology_rows())
-
-    render_section("Source Data")
-    render_macro_data(fred_data)
-    render_edgar_data(sector_data)
 
 
 def render_research_dashboard(

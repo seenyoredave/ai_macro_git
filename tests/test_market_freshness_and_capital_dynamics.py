@@ -66,21 +66,21 @@ def test_distinct_observation_trend_ignores_repeated_daily_snapshots():
                 "2026-07-25",
                 "2026-07-28",
             ],
-            "Borrower Financial Condition": [
+            "Borrower Strain": [
                 -14.139242,
                 -0.447844,
                 -0.447844,
                 -0.167322,
                 -0.167322,
             ],
-            "Borrower Financial Condition Version": ["3.0"] * 5,
+            "Borrower Strain Version": ["3.0"] * 5,
         }
     )
 
     trend = calc_metric_trend(
         history,
-        "Borrower Financial Condition",
-        version_column="Borrower Financial Condition Version",
+        "Borrower Strain",
+        version_column="Borrower Strain Version",
         required_version="3.0",
         distinct_observations=True,
     )

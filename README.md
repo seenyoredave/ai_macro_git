@@ -25,13 +25,13 @@ The tab reorganization does not change metric definitions, calculations, gauges,
 - Static, explicit weights
 - Defined minimum-data requirements
 - Missing values remain missing rather than becoming zero
-- Versioned definitions to prevent silent blending with legacy calculations
+- Versioned definitions to prevent silent blending with previous-method calculations
 - No press-release project estimates inside scoring engines
 - No numerical confidence scores for subjective information
 
 ## Primary data sources
 
-- **YFinance:** prices, market capitalization, enterprise-value inputs, analyst revenue estimates, company statements, and price/volume history. Current pulls take precedence; archive rows fill only failed tickers or missing fields.
+- **YFinance:** prices, market capitalization, enterprise-value inputs, analyst revenue estimates, company statements, and price/volume history. During regular U.S. market hours, the first complete load of each Eastern trading date is live; later loads use that day's complete archive. Closed-session loads use the latest complete archive. Manual YFinance refreshes remain available in Developer Tools.
 - **SEC / EDGAR:** standardized financial facts, filing-backed commitment disclosures, public BDC credit quality, and Form PF aggregates
 - **FRED:** macroeconomic, bank, industrial-production, financial-conditions, information-investment, and power series
 - **U.S. Census Bureau:** private data-center construction spending
@@ -218,7 +218,7 @@ Opposing changes cannot cancel, and movement remains on a nonnegative scale.
 - Composite scores use explicit minimum-data rules.
 - Static weights are renormalized only after the minimum-data rule is met.
 - Current headlines may use the latest valid archive value from the same metric version.
-- Market-sensitive YFinance products attempt a live pull every 15-minute cache cycle; a same-day archive never blocks that pull.
+- YFinance performs one automatic live universe pull per Eastern trading date during regular market hours. A complete same-day archive blocks repeated automatic pulls; after 4:00 p.m. Eastern and on weekends, the latest complete archive is used.
 - A partial hosted-market pull is retried once, then reconciled ticker-by-ticker with the latest complete archive rather than silently shrinking the universe.
 - Carried-forward display values are not archived as new observations.
 - The renderer shows a bordered **No Data** state when neither current nor compatible archive data exists.
@@ -247,7 +247,7 @@ The recommended history is:
 
 SEC structured statements can support Cash Flow Strain and Debt Capacity Strain. Committed Burden and Contingent Exposure require semi-automated filing-note reconstruction and review. Missing historical disclosures must remain unknown.
 
-See `data_notes/borrower_financial_condition_history_backfill.md`.
+See `data_notes/borrower_strain_history_backfill.md`.
 
 ## Benchmark
 
@@ -286,15 +286,15 @@ PYTHONPATH=. python -m unittest discover -s tests -v
 - `research_overlay/theme.py`: platform visual system
 - `loaders/market_prices.py`: price-history calculations
 - `loaders/company_fundamentals.py`: statement parsing and company financial calculations
-- `loaders/market_loader.py`: live-first market orchestration, retry logic, and complete-universe archive fallback
+- `loaders/market_loader.py`: session-aware YFinance orchestration, manual source refreshes, retry logic, and complete-universe archive fallback
 - `loaders/market_freshness.py`: pure live/archive reconciliation and runtime source diagnostics
 - `loaders/fred_loader.py`: macro and power data
 - `loaders/nfci_loader.py`: isolated NFCI history and fallback chain
 - `loaders/edgar_loader.py`: EDGAR data quality and archive eligibility
 - `analytics/factor_engine.py`: three-factor AEI inputs
 - `analytics/economic_validation.py`: aligned EVG construction
-- `analytics/borrower_financial_condition_engine.py`: borrower financial condition
-- `analytics/intermediation_strain_engine.py`: bank/nonbank financing strain
+- `analytics/borrower_strain_engine.py`: borrower strain
+- `analytics/lender_strain_engine.py`: bank/nonbank financing strain
 - `archive/archive.py`: atomic archive persistence
 - `helpers/macro_dashboard.py`: shared macro, finance, sector, and evidence render components
 - `helpers/render_ai_macro.py`: AI Macro tab orchestration
@@ -310,10 +310,10 @@ then quarterly observations through June 13, 2026.
 
 ```bash
 python -m pip install -r requirements-backfill.txt
-python tools/backfill_borrower_financial_condition.py
+python tools/backfill_borrower_strain.py
 ```
 
 The command uses SEC CompanyFacts for core financials and original SEC filings
 for commitment disclosures. It writes a review ledger and accepts only explicit,
 high-confidence obligation values automatically. See
-`data_notes/borrower_financial_condition_history_backfill.md` for methodology and review rules.
+`data_notes/borrower_strain_history_backfill.md` for methodology and review rules.

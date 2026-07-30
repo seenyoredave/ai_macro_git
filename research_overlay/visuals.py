@@ -644,9 +644,6 @@ def earnings_support_map(macro_df: pd.DataFrame):
     return _base_layout(fig, height=390, margin=dict(l=52, r=24, t=18, b=48))
 
 
-# Backward-compatible alias for earlier overlay imports.
-def earnings_supported_repricing_map(macro_df: pd.DataFrame):
-    return earnings_support_map(macro_df)
 
 
 def speculative_load_matrix(macro_df: pd.DataFrame):
@@ -726,6 +723,3 @@ def speculative_load_matrix(macro_df: pd.DataFrame):
     return _base_layout(fig, height=390, margin=dict(l=52, r=24, t=18, b=48))
 
 
-# Backward-compatible alias for earlier overlay imports.
-def pressure_burden_matrix(macro_df: pd.DataFrame):
-    return speculative_load_matrix(macro_df)

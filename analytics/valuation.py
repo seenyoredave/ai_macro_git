@@ -80,9 +80,9 @@ def aggregate_signed_forward_ev_ebit(
     min_count: int = 5,
     min_coverage: float = 0.60,
 ) -> dict:
-    """Legacy signed-multiple aggregation retained for archive compatibility.
+    """Aggregate signed forward EV/EBIT values for diagnostic analysis.
 
-    This function is no longer used by the current sector valuation product;
+    This function is not used by the current sector valuation product;
     near-zero EBIT denominators make the signed weighted average unstable.
 
     Each company multiple is ``enterprise value / forward EBIT``. Negative

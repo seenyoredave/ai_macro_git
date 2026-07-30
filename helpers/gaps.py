@@ -114,7 +114,7 @@ def validation_gap(
     fred_data,
     sector="ENTERPRISE_AI_SOFTWARE",
 ):
-    """Compatibility wrapper for the current Economic Validation Gap engine."""
+    """Return the current Economic Validation Gap score."""
     from analytics.economic_validation import calculate_economic_validation_gap
 
     return calculate_economic_validation_gap(
@@ -152,11 +152,9 @@ def normalize_nfci_liquidity(nfci):
 
 def liquidity_gap(macro_df, fred_data):
     """
-    Legacy Liquidity Support Gap diagnostic.
+    Liquidity Support Gap diagnostic.
 
-    Retained for model comparison, but no longer rendered in the headline Gap
-    Scores section. Measures whether AI risk appetite is outrunning broad
-    financial liquidity.
+    Measures whether AI risk appetite is outrunning broad financial liquidity.
 
     Positive = AI risk appetite exceeds liquidity support.
     Negative = liquidity is supportive relative to AI market appetite.

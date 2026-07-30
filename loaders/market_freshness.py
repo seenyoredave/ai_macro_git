@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-
 import pandas as pd
+
+from config.market_clock import utc_now
 
 
 def _ticker_order(tickers):
@@ -107,7 +107,7 @@ def merge_live_with_archive(
 
     merged.attrs["load_report"] = {
         "source_mode": source_mode,
-        "requested_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "requested_at_utc": utc_now().isoformat(timespec="seconds"),
         "live_tickers": len(live_tickers),
         "archive_fallback_tickers": len(archive_row_fallback),
         "archive_fallback_symbols": archive_row_fallback,

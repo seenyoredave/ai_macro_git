@@ -3,13 +3,13 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from analytics.borrower_financial_condition_history import (
+from analytics.borrower_strain_history import (
     build_company_snapshot,
-    combine_borrower_financial_condition_history,
+    combine_borrower_strain_history,
     historical_observation_dates,
     ttm_fact,
 )
-from tools.backfill_borrower_financial_condition import Filing, accepted_ledger, extract_commitment_candidates
+from tools.backfill_borrower_strain import Filing, accepted_ledger, extract_commitment_candidates
 
 
 def _duration(val, start, end, filed, *, form="10-Q", fp="Q1", fy=2024, frame=None):
@@ -142,24 +142,24 @@ def test_combine_history_prefers_live_row_on_duplicate_date():
     backfill = pd.DataFrame(
         {
             "Date": ["2026-06-13"],
-            "Borrower Financial Condition": [10.0],
-            "Borrower Financial Condition Version": ["3.0"],
+            "Borrower Strain": [10.0],
+            "Borrower Strain Version": ["3.0"],
         }
     )
     live = pd.DataFrame(
         {
             "Date": ["2026-06-13"],
-            "Borrower Financial Condition": [12.0],
-            "Borrower Financial Condition Version": ["3.0"],
+            "Borrower Strain": [12.0],
+            "Borrower Strain Version": ["3.0"],
         }
     )
-    result = combine_borrower_financial_condition_history(live, backfill)
+    result = combine_borrower_strain_history(live, backfill)
     assert len(result) == 1
-    assert result.iloc[0]["Borrower Financial Condition"] == 12.0
+    assert result.iloc[0]["Borrower Strain"] == 12.0
 
 
 def test_backfill_history_constitutes_with_three_components():
-    from tools.backfill_borrower_financial_condition import build_history
+    from tools.backfill_borrower_strain import build_history
 
     fundamentals = pd.DataFrame(
         [
@@ -228,5 +228,5 @@ def test_backfill_history_constitutes_with_three_components():
     )
     assert len(history) == 1
     assert history.iloc[0]["Valid Components"] == 3
-    assert pd.notna(history.iloc[0]["Borrower Financial Condition"])
+    assert pd.notna(history.iloc[0]["Borrower Strain"])
     assert history.iloc[0]["Backfill Status"] == "Accepted"

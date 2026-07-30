@@ -128,7 +128,7 @@ def calc_metric_trend(
     distinct_observations=False,
     repeat_tolerance=1e-9,
 ):
-    del group_cols  # retained for public-signature compatibility
+    del group_cols
     series_df = metric_series(
         df,
         metric_col,

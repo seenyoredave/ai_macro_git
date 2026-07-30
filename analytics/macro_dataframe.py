@@ -5,15 +5,15 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from analytics.borrower_financial_condition_engine import normalize_borrower_financial_condition_history
-from analytics.borrower_financial_condition_history import combine_borrower_financial_condition_history
-from analytics.intermediation_strain_engine import normalize_intermediation_strain_history
+from analytics.borrower_strain_engine import normalize_borrower_strain_history
+from analytics.borrower_strain_history import combine_borrower_strain_history
+from analytics.lender_strain_engine import normalize_lender_strain_history
 from analytics.power_engine import normalize_power_stress_history
 from analytics.regime_engine import (
     AEI_VERSION,
     ADI_VERSION,
-    BORROWER_FINANCIAL_CONDITION_VERSION,
-    INTERMEDIATION_STRAIN_VERSION,
+    BORROWER_STRAIN_VERSION,
+    LENDER_STRAIN_VERSION,
     POWER_STRESS_VERSION,
 )
 from analytics.trend_engine import (
@@ -62,9 +62,9 @@ def _append_current_metric_observation(
 
 
 def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
-    """Return native AEI-v3.1 trend statistics with the full archived chart history.
+    """Return current-methodology AEI trend statistics with the full archived chart history.
 
-    Values before the first AEI-v3.1 observation remain explicitly legacy data.
+    Observations from earlier methodologies remain available for chart continuity.
     They are shown for continuity but are not used to calculate current-model
     velocity or acceleration.
     """
@@ -116,7 +116,7 @@ def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
         trend["acceleration"] = calc_acceleration(native_values["Value"])
 
     trend["history"] = history.reset_index(drop=True)
-    # AEI v3.1 starts a clean native calculation series without a chart revision marker.
+    # The current AEI methodology starts a clean calculation series without a chart revision marker.
     trend.setdefault("revision_date", None)
     trend.setdefault("revision_label", None)
     trend.setdefault(
@@ -165,26 +165,26 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
     macro_history = load_macro_history()
     regime_metrics = regime_metrics or {}
     signed_power_history = normalize_power_stress_history(macro_history)
-    signed_capital_history = normalize_borrower_financial_condition_history(
-        combine_borrower_financial_condition_history(macro_history)
+    signed_capital_history = normalize_borrower_strain_history(
+        combine_borrower_strain_history(macro_history)
     )
-    signed_intermediation_history = normalize_intermediation_strain_history(macro_history)
+    signed_lender_strain_history = normalize_lender_strain_history(macro_history)
 
-    if regime_metrics.get("Borrower Financial Condition Source") == "Current":
+    if regime_metrics.get("Borrower Strain Source") == "Current":
         signed_capital_history = _append_current_metric_observation(
             signed_capital_history,
-            "Borrower Financial Condition",
-            regime_metrics.get("Borrower Financial Condition", np.nan),
-            version_column="Borrower Financial Condition Version",
-            version=BORROWER_FINANCIAL_CONDITION_VERSION,
+            "Borrower Strain",
+            regime_metrics.get("Borrower Strain", np.nan),
+            version_column="Borrower Strain Version",
+            version=BORROWER_STRAIN_VERSION,
         )
 
-    native_intermediation_history = (
-        (regime_metrics.get("Credit Intermediation Strain Components", {}) or {})
+    native_lender_strain_history = (
+        (regime_metrics.get("Lender Strain Components", {}) or {})
         .get("history")
     )
-    if not isinstance(native_intermediation_history, pd.DataFrame) or native_intermediation_history.empty:
-        native_intermediation_history = signed_intermediation_history
+    if not isinstance(native_lender_strain_history, pd.DataFrame) or native_lender_strain_history.empty:
+        native_lender_strain_history = signed_lender_strain_history
 
     trends = {
         "aei_trend": _build_version_aware_aei_trend(
@@ -207,25 +207,25 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             macro_history,
             "Concentration HHI",
         ),
-        "borrower_financial_condition_trend": calc_metric_trend(
+        "borrower_strain_trend": calc_metric_trend(
             signed_capital_history,
-            "Borrower Financial Condition",
-            version_column="Borrower Financial Condition Version",
-            required_version=BORROWER_FINANCIAL_CONDITION_VERSION,
+            "Borrower Strain",
+            version_column="Borrower Strain Version",
+            required_version=BORROWER_STRAIN_VERSION,
             distinct_observations=True,
             repeat_tolerance=1e-8,
         ),
-        "intermediation_strain_trend": calc_metric_trend(
-            native_intermediation_history,
-            "Credit Intermediation Strain",
+        "lender_strain_trend": calc_metric_trend(
+            native_lender_strain_history,
+            "Lender Strain",
             version_column=(
-                "Credit Intermediation Strain Version"
-                if "Credit Intermediation Strain Version" in native_intermediation_history.columns
+                "Lender Strain Version"
+                if "Lender Strain Version" in native_lender_strain_history.columns
                 else None
             ),
             required_version=(
-                INTERMEDIATION_STRAIN_VERSION
-                if "Credit Intermediation Strain Version" in native_intermediation_history.columns
+                LENDER_STRAIN_VERSION
+                if "Lender Strain Version" in native_lender_strain_history.columns
                 else None
             ),
         ),
@@ -236,12 +236,6 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             required_version=AEI_VERSION,
         ),
     }
-
-    trends["borrower_financial_condition_trend"]["dynamics_note"] = "distinct observations"
-    trends["borrower_financial_condition_trend"]["history_note"] = (
-        "Chart history retains every dated snapshot; velocity and acceleration "
-        "use only distinct Borrower Financial Condition observations."
-    )
 
     return {
         "macro_df": macro_df,

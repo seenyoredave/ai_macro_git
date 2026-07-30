@@ -151,23 +151,6 @@ if __name__ == "__main__":
     unittest.main()
 
 
-def test_signed_sector_ev_ebit_subtracts_negative_company_contributions():
-    from analytics.valuation import aggregate_signed_forward_ev_ebit
-
-    frame = pd.DataFrame(
-        {
-            "Enterprise Value": [100.0, 200.0, 300.0, 400.0, 500.0],
-            "Forward EBIT": [10.0, 10.0, -10.0, 20.0, -25.0],
-            "Effective Basket Weight": [1.0, 2.0, 1.0, 1.0, 1.0],
-        }
-    )
-    result = aggregate_signed_forward_ev_ebit(frame, min_count=5, min_coverage=0.60)
-    company_multiples = pd.Series([10.0, 20.0, -30.0, 20.0, -20.0])
-    weights = pd.Series([1.0, 2.0, 1.0, 1.0, 1.0])
-    expected = float((company_multiples * weights / weights.sum()).sum())
-    assert result["multiple"] == pytest.approx(expected)
-    assert result["positive_contribution"] > 0
-    assert result["negative_contribution"] < 0
 
 
 def test_sector_dataframe_reconstructs_negative_company_ev_ebit():

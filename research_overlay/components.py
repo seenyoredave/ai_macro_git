@@ -73,6 +73,11 @@ def render_tab_header(title: str, subtitle: str, meta: str | None = None) -> Non
     )
 
 
+def render_line_break() -> None:
+    """Insert the same proven HTML break used elsewhere in the app."""
+    st.markdown("<br>", unsafe_allow_html=True)
+
+
 def render_section(title: str, subtitle: str | None = None, *, first=False) -> None:
     body = f'<div class="rm-section-copy">{html.escape(subtitle)}</div>' if subtitle else ""
     first_class = " first" if first else ""

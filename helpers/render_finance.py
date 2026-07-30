@@ -14,7 +14,7 @@ def render_finance_dashboard(
 ):
     """Render the financing and financial-condition tab."""
     st.title("Finance")
-    st.caption("Buildout funding • borrower condition • intermediation strain • financial conditions")
+    st.caption("Buildout funding • borrower strain • lender strain • financial conditions")
     st.markdown("---")
 
     dashboard_data = dashboard_data or build_macro_dashboard_data(
@@ -35,7 +35,7 @@ def render_finance_dashboard(
         fred_data=fred_data,
         sector_data=sector_data,
         regime_metrics=regime_metrics,
-        borrower_financial_condition_trend=trends["borrower_financial_condition_trend"],
-        intermediation_strain_trend=trends["intermediation_strain_trend"],
+        borrower_strain_trend=trends["borrower_strain_trend"],
+        lender_strain_trend=trends["lender_strain_trend"],
         nfci_history=nfci_history,
     )

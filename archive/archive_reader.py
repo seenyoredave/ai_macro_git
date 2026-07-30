@@ -7,6 +7,8 @@ from typing import Iterable, Mapping, Optional, Sequence
 import numpy as np
 import pandas as pd
 
+from config.market_clock import market_date
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE_DIR = PROJECT_ROOT / "archive"
@@ -62,12 +64,12 @@ EDGAR_REQUIRED_COLUMNS = [
 #################################################
 
 def today_iso() -> str:
-    return date.today().isoformat()
+    return market_date().isoformat()
 
 
 def parse_archive_dates(values) -> pd.Series:
     """
-    Parse legacy archive date strings into normalized pandas dates.
+    Parse historical archive date strings into normalized pandas dates.
 
     Accepts ISO dates and historical M/D/YY style dates. Two-digit years are
     parsed by pandas into the expected 2000s range for the existing archive.
@@ -213,14 +215,14 @@ def rows_for_date(
     if df.empty:
         return df.iloc[0:0].copy()
 
-    target = target_date or date.today()
+    target = target_date or market_date()
     target = pd.to_datetime(target).date().isoformat()
 
     return df[df["Date"].astype(str) == target].copy()
 
 
 def current_sunday_saturday_window(reference_date: date | None = None):
-    ref = reference_date or date.today()
+    ref = reference_date or market_date()
     start = ref - timedelta(days=(ref.weekday() + 1) % 7)
     end = start + timedelta(days=6)
     return start, end

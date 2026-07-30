@@ -25,12 +25,12 @@ from helpers.labels import (
     validation_label,
 )
 from helpers.visualization import (
-    build_borrower_financial_condition_gauge,
+    build_borrower_strain_gauge,
     build_component_score_chart,
     build_concentration_gauge,
     build_development_gauge,
     build_equity_gauge,
-    build_intermediation_strain_gauge,
+    build_lender_strain_gauge,
     build_nfci_history,
     build_nfci_sparkline,
     build_metric_history,
@@ -176,10 +176,10 @@ def _render_metric_panel(
                     y_range=history_range,
                     adaptive_range=True,
                     min_span=20,
-                    step=title in {"Power Stress Index", "Borrower Financial Condition"},
+                    step=title in {"Power Stress Index", "Borrower Strain"},
                     flat_annotation=(
                         "No change in filing/fundamental inputs during this archive window."
-                        if title == "Borrower Financial Condition"
+                        if title == "Borrower Strain"
                         else None
                     ),
                     revision_date=trend.get("revision_date"),
@@ -207,8 +207,8 @@ def _component_table(component_group):
     return pd.DataFrame(rows)
 
 
-def _intermediation_component_table(intermediation_result):
-    components = (intermediation_result or {}).get("components", {}) or {}
+def _lender_strain_component_table(lender_strain_result):
+    components = (lender_strain_result or {}).get("components", {}) or {}
     rows = []
 
     for name, payload in components.items():
@@ -265,8 +265,8 @@ def _intermediation_component_table(intermediation_result):
     return pd.DataFrame(rows)
 
 
-def _borrower_condition_component_table(borrower_condition_result):
-    components = (borrower_condition_result or {}).get("components", {}) or {}
+def _borrower_strain_component_table(borrower_strain_result):
+    components = (borrower_strain_result or {}).get("components", {}) or {}
     rows = []
 
     for name, payload in components.items():
@@ -409,9 +409,9 @@ def _snapshot_values(macro_df, fred_data, sector_data, regime_metrics):
         "adi": adi,
         "power_stress": regime_metrics.get("Power Stress Index", np.nan),
         "concentration_hhi": regime_metrics.get("Concentration HHI", np.nan),
-        "borrower_financial_condition": regime_metrics.get("Borrower Financial Condition", np.nan),
-        "intermediation_strain": regime_metrics.get(
-            "Credit Intermediation Strain", np.nan
+        "borrower_strain": regime_metrics.get("Borrower Strain", np.nan),
+        "lender_strain": regime_metrics.get(
+            "Lender Strain", np.nan
         ),
         "speculation_gap": regime_metrics.get("Speculation Gap", np.nan),
         "validation_gap": regime_metrics.get("Economic Validation Gap", np.nan),
@@ -453,8 +453,7 @@ def _render_equity_and_development(values, trends, regime_metrics):
         st.caption("ADI is constituted when at least three of four top-level pillars are valid.")
         if regime_metrics.get("ADI Source") == "Archive Fallback":
             st.caption(
-                "The headline ADI is carried forward; component detail reflects "
-                "the current run's available inputs."
+                "Headline: archive. Component detail: available current inputs."
             )
 
 
@@ -607,16 +606,16 @@ def _render_deployment_funding_mix(regime_metrics, sector_data=None):
                 _funding_mix_card(*spec)
 
 
-def _render_borrower_financial_condition(values, trend, regime_metrics):
-    borrower_condition_result = regime_metrics.get("Borrower Financial Condition Components", {}) or {}
+def _render_borrower_strain(values, trend, regime_metrics):
+    borrower_strain_result = regime_metrics.get("Borrower Strain Components", {}) or {}
     with st.container(border=True):
         st.subheader("Borrower Strain")
         gauge_col, history_col, component_col = st.columns([1, 1.15, 1.35])
 
         with gauge_col:
-            if pd.notna(pd.to_numeric(values["borrower_financial_condition"], errors="coerce")):
+            if pd.notna(pd.to_numeric(values["borrower_strain"], errors="coerce")):
                 st.plotly_chart(
-                    build_borrower_financial_condition_gauge(values["borrower_financial_condition"]),
+                    build_borrower_strain_gauge(values["borrower_strain"]),
                     width="stretch",
                     config={"responsive": True},
                 )
@@ -624,15 +623,15 @@ def _render_borrower_financial_condition(values, trend, regime_metrics):
                 render_no_data_panel("Borrower Strain")
             render_trend_strip(trend)
             _render_source_caption(
-                regime_metrics.get("Borrower Financial Condition Source", "Current"),
-                regime_metrics.get("Borrower Financial Condition Fallback Date"),
+                regime_metrics.get("Borrower Strain Source", "Current"),
+                regime_metrics.get("Borrower Strain Fallback Date"),
             )
 
         with history_col:
             st.plotly_chart(
                 build_metric_history(
                     trend,
-                    "Borrower Financial Condition",
+                    "Borrower Strain",
                     y_range=(-100, 100),
                     adaptive_range=True,
                     min_span=20,
@@ -648,8 +647,8 @@ def _render_borrower_financial_condition(values, trend, regime_metrics):
         with component_col:
             st.plotly_chart(
                 build_component_score_chart(
-                    borrower_condition_result.get("components", {}),
-                    "Borrower Financial Condition Components",
+                    borrower_strain_result.get("components", {}),
+                    "Borrower Strain Components",
                     x_range=(-100, 100),
                 ),
                 width="stretch",
@@ -658,20 +657,19 @@ def _render_borrower_financial_condition(values, trend, regime_metrics):
 
     with st.expander("Borrower Strain Detail", expanded=False):
         st.dataframe(
-            arrow_safe_dataframe(_borrower_condition_component_table(borrower_condition_result)),
+            arrow_safe_dataframe(_borrower_strain_component_table(borrower_strain_result)),
             width="stretch",
             hide_index=True,
         )
-        if regime_metrics.get("Borrower Financial Condition Source") == "Archive Fallback":
+        if regime_metrics.get("Borrower Strain Source") == "Archive Fallback":
             st.caption(
-                "The headline Borrower Strain value is carried forward; component "
-                "detail reflects the current run's available inputs."
+                "Headline: archive. Component detail: available current inputs."
             )
 
 
-def _render_intermediation_strain(values, trend, regime_metrics):
-    intermediation_result = (
-        regime_metrics.get("Credit Intermediation Strain Components", {}) or {}
+def _render_lender_strain(values, trend, regime_metrics):
+    lender_strain_result = (
+        regime_metrics.get("Lender Strain Components", {}) or {}
     )
     with st.container(border=True):
         st.subheader("Lender Strain", help=metric_help("Lender Strain"))
@@ -679,11 +677,11 @@ def _render_intermediation_strain(values, trend, regime_metrics):
 
         with gauge_col:
             if pd.notna(
-                pd.to_numeric(values["intermediation_strain"], errors="coerce")
+                pd.to_numeric(values["lender_strain"], errors="coerce")
             ):
                 st.plotly_chart(
-                    build_intermediation_strain_gauge(
-                        values["intermediation_strain"]
+                    build_lender_strain_gauge(
+                        values["lender_strain"]
                     ),
                     width="stretch",
                     config={"responsive": True},
@@ -693,16 +691,16 @@ def _render_intermediation_strain(values, trend, regime_metrics):
             render_trend_strip(trend)
             _render_source_caption(
                 regime_metrics.get(
-                    "Credit Intermediation Strain Source", "Current"
+                    "Lender Strain Source", "Current"
                 ),
-                regime_metrics.get("Credit Intermediation Strain Fallback Date"),
+                regime_metrics.get("Lender Strain Fallback Date"),
             )
 
         with history_col:
             st.plotly_chart(
                 build_metric_history(
                     trend,
-                    "Credit Intermediation Strain",
+                    "Lender Strain",
                     y_range=(-100, 100),
                     adaptive_range=True,
                     min_span=20,
@@ -718,8 +716,8 @@ def _render_intermediation_strain(values, trend, regime_metrics):
         with component_col:
             st.plotly_chart(
                 build_component_score_chart(
-                    intermediation_result.get("components", {}),
-                    "Credit Intermediation Strain Components",
+                    lender_strain_result.get("components", {}),
+                    "Lender Strain Components",
                     x_range=(-100, 100),
                 ),
                 width="stretch",
@@ -728,19 +726,19 @@ def _render_intermediation_strain(values, trend, regime_metrics):
 
     with st.expander("Lender Strain Detail", expanded=False):
         bank_channel = pd.to_numeric(
-            intermediation_result.get("bank_channel_score", np.nan), errors="coerce"
+            lender_strain_result.get("bank_channel_score", np.nan), errors="coerce"
         )
         nonbank_channel = pd.to_numeric(
-            intermediation_result.get("nonbank_channel_score", np.nan), errors="coerce"
+            lender_strain_result.get("nonbank_channel_score", np.nan), errors="coerce"
         )
-        elevated = int(intermediation_result.get("elevated_pillars", 0) or 0)
+        elevated = int(lender_strain_result.get("elevated_pillars", 0) or 0)
         st.caption(
             f"Bank channel: {fmt_decimal(bank_channel)} | "
             f"Nonbank channel: {fmt_decimal(nonbank_channel)} | "
             f"Adverse breadth: {elevated} of 4 pillars above neutral"
         )
         st.dataframe(
-            arrow_safe_dataframe(_intermediation_component_table(intermediation_result)),
+            arrow_safe_dataframe(_lender_strain_component_table(lender_strain_result)),
             width="stretch",
             hide_index=True,
         )
@@ -926,11 +924,11 @@ def render_finance_snapshot(
     sector_data=None,
     regime_metrics=None,
     *,
-    borrower_financial_condition_trend=None,
-    intermediation_strain_trend=None,
+    borrower_strain_trend=None,
+    lender_strain_trend=None,
     nfci_history=None,
 ):
-    """Render funding, borrower condition, intermediation strain, and financial conditions."""
+    """Render funding, borrower strain, lender strain, and financial conditions."""
     fred_data, sector_data, regime_metrics, _trends, values = _snapshot_render_inputs(
         macro_df,
         fred_data=fred_data,
@@ -940,17 +938,18 @@ def render_finance_snapshot(
 
     if DEBUG:
         debug_print("\n=== FINANCE SNAPSHOT ===")
-        debug_print("Borrower Financial Condition:", values["borrower_financial_condition"])
-        debug_print("Credit Intermediation Strain:", values["intermediation_strain"])
+        debug_print("Borrower Strain:", values["borrower_strain"])
+        debug_print("Lender Strain:", values["lender_strain"])
 
     st.subheader("AI Buildout Financing")
     st.markdown("---")
     _render_deployment_funding_mix(regime_metrics, sector_data)
-    _render_borrower_financial_condition(values, borrower_financial_condition_trend or {}, regime_metrics)
-    _render_intermediation_strain(
-        values, intermediation_strain_trend or {}, regime_metrics
+    _render_borrower_strain(values, borrower_strain_trend or {}, regime_metrics)
+    _render_lender_strain(
+        values, lender_strain_trend or {}, regime_metrics
     )
     _render_financial_conditions_confirmation(fred_data, nfci_history)
+
 
 
 def render_regime_snapshot(
@@ -963,11 +962,11 @@ def render_regime_snapshot(
     *,
     aei_trend=None,
     adi_trend=None,
-    borrower_financial_condition_trend=None,
-    intermediation_strain_trend=None,
+    borrower_strain_trend=None,
+    lender_strain_trend=None,
     nfci_history=None,
 ):
-    """Backward-compatible full snapshot renderer."""
+    """Render the complete macro and credit-conditions snapshot."""
     render_ai_macro_snapshot(
         macro_df=macro_df,
         fred_data=fred_data,
@@ -984,10 +983,11 @@ def render_regime_snapshot(
         fred_data=fred_data,
         sector_data=sector_data,
         regime_metrics=regime_metrics,
-        borrower_financial_condition_trend=borrower_financial_condition_trend,
-        intermediation_strain_trend=intermediation_strain_trend,
+        borrower_strain_trend=borrower_strain_trend,
+        lender_strain_trend=lender_strain_trend,
         nfci_history=nfci_history,
     )
+
 
 def render_sector_assessment(macro_df, sector_data=None):
     st.subheader("Current Sector Assessment")

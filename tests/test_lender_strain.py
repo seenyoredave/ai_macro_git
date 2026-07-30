@@ -4,16 +4,16 @@ from pathlib import Path
 
 import pandas as pd
 
-from analytics.intermediation_strain_engine import (
-    calculate_intermediation_strain,
+from analytics.lender_strain_engine import (
+    calculate_lender_strain,
     load_bank_capital_history,
     load_bdc_impairment_history,
 )
 
 
-class CreditIntermediationStressTests(unittest.TestCase):
+class LenderStrainTests(unittest.TestCase):
     def test_current_metric_is_finite_and_fully_constituted(self):
-        result = calculate_intermediation_strain({})
+        result = calculate_lender_strain({})
         self.assertTrue(pd.notna(result["score"]))
         self.assertEqual(result["valid_components"], 4)
         self.assertEqual(result["coverage"], 1.0)
@@ -38,7 +38,7 @@ class CreditIntermediationStressTests(unittest.TestCase):
         )
 
     def test_live_fred_payload_overrides_bundled_bank_observations(self):
-        result = calculate_intermediation_strain(
+        result = calculate_lender_strain(
             {
                 "Business Loan Tightening": {
                     "value": 20.0,
@@ -71,7 +71,7 @@ class CreditIntermediationStressTests(unittest.TestCase):
                     "Nonaccrual at Cost (%)",
                 ]
             ).to_csv(empty_bdc, index=False)
-            result = calculate_intermediation_strain({}, bdc_path=empty_bdc)
+            result = calculate_lender_strain({}, bdc_path=empty_bdc)
             self.assertTrue(pd.notna(result["score"]))
             self.assertEqual(result["valid_components"], 3)
             self.assertEqual(result["coverage"], 0.75)
@@ -99,13 +99,13 @@ class CreditIntermediationStressTests(unittest.TestCase):
                     "D/E 5+ ($bn)",
                 ]
             ).to_csv(empty_pe, index=False)
-            result = calculate_intermediation_strain(
+            result = calculate_lender_strain(
                 {}, bdc_path=empty_bdc, pe_path=empty_pe
             )
             self.assertTrue(pd.isna(result["score"]))
 
     def test_channel_weights_are_balanced(self):
-        result = calculate_intermediation_strain({})
+        result = calculate_lender_strain({})
         components = result["components"]
         bank_weight = sum(
             components[name]["active_weight"]
@@ -122,10 +122,10 @@ class CreditIntermediationStressTests(unittest.TestCase):
         self.assertAlmostEqual(nonbank_weight, 0.5)
 
     def test_history_uses_step_observation_dates(self):
-        result = calculate_intermediation_strain({})
+        result = calculate_lender_strain({})
         history = result["history"]
         self.assertFalse(history.empty)
-        self.assertIn("Credit Intermediation Strain", history.columns)
+        self.assertIn("Lender Strain", history.columns)
         self.assertIn("Bank Capital Strain", history.columns)
         self.assertEqual(
             pd.Timestamp(history.iloc[-1]["Date"]).date().isoformat(),

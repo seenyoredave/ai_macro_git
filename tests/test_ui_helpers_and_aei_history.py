@@ -73,7 +73,7 @@ def test_metric_registry_excludes_broad_section_titles():
     for title in (
         "AI Economy Snapshot",
         "Gap Scores",
-        "Borrower Financial Condition",
+        "Borrower Strain",
         "Current Sector Assessment",
     ):
         assert f'    "{title}":' not in definitions
@@ -82,7 +82,7 @@ def test_metric_registry_excludes_broad_section_titles():
     for title in (
         "AI Economy Snapshot",
         "Gap Scores",
-        "Borrower Financial Condition",
+        "Borrower Strain",
         "Current Sector Assessment",
     ):
         assert f'        "{title}",' not in registry_block

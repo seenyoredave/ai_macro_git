@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import date
-
 import streamlit as st
 
 from analytics.factor_engine import calc_sector_factors
@@ -19,6 +17,7 @@ from archive.archive import (
 )
 from archive.archive_reader import load_fred_history, load_macro_history
 from benchmarks.benchmark_service import get_benchmark_metrics
+from config.market_clock import market_date
 from config.sector_config import SECTOR_CONFIG
 from helpers.render_sector import render_basket_tier_developer_tool
 from loaders.construction_loader import load_data_center_construction
@@ -32,8 +31,8 @@ from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v3.19"
-APP_STATE_SCHEMA_VERSION = "19.0-credit-conditions-cleanup"
+APP_VERSION = "v3.22"
+APP_STATE_SCHEMA_VERSION = "22.0-source-refresh-policy"
 
 
 st.set_page_config(
@@ -65,6 +64,18 @@ if "tier_test_module_open" not in st.session_state:
 if "developer_load_report_open" not in st.session_state:
     st.session_state.developer_load_report_open = False
 
+if "force_yfinance_refresh" not in st.session_state:
+    st.session_state.force_yfinance_refresh = False
+
+if "force_edgar_refresh" not in st.session_state:
+    st.session_state.force_edgar_refresh = False
+
+if "yfinance_refresh_token" not in st.session_state:
+    st.session_state.yfinance_refresh_token = 0
+
+if "edgar_refresh_token" not in st.session_state:
+    st.session_state.edgar_refresh_token = 0
+
 
 def build_tabs():
     return st.tabs(["AI MACRO", "FINANCE", "SECTORS", "EVIDENCE"])
@@ -81,7 +92,13 @@ def build_sector_dashboard_data():
     })
     ticker_map = {ticker: ticker for ticker in all_tickers}
 
-    raw_universe_data = load_market_universe(ticker_map)
+    raw_universe_data = load_market_universe(
+        ticker_map,
+        force_yfinance_refresh=st.session_state.force_yfinance_refresh,
+        yfinance_refresh_token=st.session_state.yfinance_refresh_token,
+        force_edgar_refresh=st.session_state.force_edgar_refresh,
+        edgar_refresh_token=st.session_state.edgar_refresh_token,
+    )
     st.session_state.market_universe_load_report = raw_universe_data.get("_load_report", {})
     benchmark_metrics = get_benchmark_metrics("QQQ")
 
@@ -126,6 +143,12 @@ def render_developer_load_report(report):
         st.write(f"Mode: `{block.get('source_mode', 'unknown')}`")
         st.write(f"Elapsed: `{fmt_seconds(block.get('elapsed_sec'))}`")
         st.write(f"Returned: `{block.get('returned_tickers', 0)}` tickers")
+        if block.get("decision"):
+            st.write(f"Decision: `{block.get('decision')}`")
+        if block.get("refresh_trigger"):
+            st.write(f"Trigger: `{block.get('refresh_trigger')}`")
+        if "archive_tickers" in block:
+            st.write(f"Archive rows: `{block.get('archive_tickers', 0)}` tickers")
         if "live_tickers" in block:
             st.write(f"Live rows: `{block.get('live_tickers', 0)}` tickers")
             st.write(
@@ -164,8 +187,19 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    if st.button("Refresh live dashboard", use_container_width=True):
-        st.cache_data.clear()
+    if st.button("Refresh Dashboard", use_container_width=True):
+        st.session_state.force_rebuild = True
+        st.rerun()
+
+    if st.button("Refresh YFinance", use_container_width=True):
+        st.session_state.yfinance_refresh_token += 1
+        st.session_state.force_yfinance_refresh = True
+        st.session_state.force_rebuild = True
+        st.rerun()
+
+    if st.button("Refresh EDGAR", use_container_width=True):
+        st.session_state.edgar_refresh_token += 1
+        st.session_state.force_edgar_refresh = True
         st.session_state.force_rebuild = True
         st.rerun()
 
@@ -235,6 +269,8 @@ if st.session_state.force_rebuild:
     st.session_state.nfci_history = nfci_history
     st.session_state.construction_data = construction_data
     st.session_state.regime_metrics = regime_metrics
+    st.session_state.force_yfinance_refresh = False
+    st.session_state.force_edgar_refresh = False
     st.session_state.force_rebuild = False
 
 
@@ -261,14 +297,14 @@ def dashboard_source_status(metrics):
         "Economic Validation Gap Source",
         "Power Stress Source",
         "Power Capacity Gap Source",
-        "Borrower Financial Condition Source",
-        "Credit Intermediation Strain Source",
+        "Borrower Strain Source",
+        "Lender Strain Source",
     )
     sources = [str((metrics or {}).get(key, "")) for key in source_keys]
     return "archive" if any("archive" in source.lower() for source in sources) else "live"
 
 
-run_date = date.today()
+run_date = market_date()
 
 render_masthead(
     "AI Economic Research Platform",

@@ -103,7 +103,7 @@ Sources: Federal Reserve SLOOS for business-loan standards; Federal Reserve Z.1 
 
 Each pillar is normalized against its own available history when sufficient observations exist; otherwise an explicit anchored scale is used. At least 3 of 4 pillars and at least one pillar from each channel must be valid. Missing weight is renormalized only within its channel. Quarterly and annual inputs produce a step series.
 
-**How to read it:** Positive values indicate greater intermediation strain: tighter lending behavior, weaker capital capacity, or more impaired private credit. Negative values indicate stronger intermediation capacity and easier credit transmission. Zero represents the model's reference condition. Scale: -100 to +100.
+**How to read it:** Positive values indicate greater lender strain: tighter lending behavior, weaker capital capacity, or more impaired private credit. Negative values indicate stronger lending capacity and easier credit availability. Zero represents the model's reference condition. Scale: -100 to +100.
 """,
 
     "Financial Conditions Confirmation": """

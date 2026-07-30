@@ -19,6 +19,6 @@ def test_sector_detail_is_selected_inside_consolidated_tab():
 
 def test_financial_condition_products_remain_distinct():
     source = (ROOT / "helpers" / "macro_dashboard.py").read_text()
-    assert '_render_borrower_financial_condition(' in source
-    assert '_render_intermediation_strain(' in source
+    assert '_render_borrower_strain(' in source
+    assert '_render_lender_strain(' in source
     assert '_render_financial_conditions_confirmation(' in source
