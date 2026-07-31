@@ -780,3 +780,406 @@ def speculative_load_matrix(macro_df: pd.DataFrame):
     return _base_layout(fig, height=390, margin=dict(l=52, r=24, t=18, b=48))
 
 
+
+
+FACILITY_SIZE_METRICS = {
+    "Facility count": None,
+    "Square feet": "Square Feet",
+    "Planned data-center capacity": "Planned Data Center Capacity MW",
+    "Contracted utility capacity": "Contracted Utility Capacity MW",
+    "Energized capacity": "Energized Capacity MW",
+    "Annual electricity consumption": "Annual Electricity Consumption MWh",
+    "Water withdrawal": "Water Withdrawal Gallons/Year",
+    "Water consumption": "Water Consumption Gallons/Year",
+}
+
+
+def _bubble_sizes(values: pd.Series, *, minimum: float = 6.0, maximum: float = 30.0) -> pd.Series:
+    numeric = pd.to_numeric(values, errors="coerce")
+    valid = numeric.where(numeric > 0)
+    if valid.notna().sum() <= 1:
+        return pd.Series(np.where(valid.notna(), (minimum + maximum) / 2.0, minimum), index=values.index)
+    transformed = np.sqrt(valid)
+    lower = transformed.min()
+    upper = transformed.quantile(0.95)
+    if pd.isna(upper) or upper <= lower:
+        upper = transformed.max()
+    if pd.isna(upper) or upper <= lower:
+        return pd.Series(np.where(valid.notna(), (minimum + maximum) / 2.0, minimum), index=values.index)
+    scaled = minimum + (transformed.clip(upper=upper) - lower) / (upper - lower) * (maximum - minimum)
+    return scaled.fillna(minimum)
+
+
+def _facility_hover(row: pd.Series, metric_column: str | None = None, metric_label: str | None = None) -> str:
+    facility = str(row.get("Facility") or "Unnamed facility")
+    operator = str(row.get("Operator") or "Operator not reported")
+    place = ", ".join(part for part in [str(row.get("County") or ""), str(row.get("State") or "")] if part)
+    status = str(row.get("Status") or "Status unknown")
+    evidence = str(row.get("Evidence Grade") or "Evidence not graded")
+    precision = str(row.get("Location Precision") or "Location precision not reported")
+    lines = [facility, operator, place, f"Status: {status}", f"Evidence: {evidence}", f"Location: {precision}"]
+    if metric_column:
+        value = pd.to_numeric(row.get(metric_column), errors="coerce")
+        if pd.notna(value):
+            if "Gallons" in metric_column:
+                rendered = f"{value:,.0f} gal/year"
+            elif "MWh" in metric_column:
+                rendered = f"{value:,.0f} MWh/year"
+            elif "MW" in metric_column:
+                rendered = f"{value:,.0f} MW"
+            elif metric_column == "Square Feet":
+                rendered = f"{value:,.0f} sq ft"
+            else:
+                rendered = f"{value:,.2f}"
+            lines.append(f"{metric_label or metric_column}: {rendered}")
+        else:
+            lines.append(f"{metric_label or metric_column}: unavailable")
+    return "<br>".join(lines)
+
+
+def data_center_map(
+    locations: pd.DataFrame | None,
+    *,
+    size_by: str = "Facility count",
+    height: int = 510,
+):
+    """Map evidence-graded data-center records using one homogeneous size field.
+
+    Records missing the selected field remain visible as small outlined markers;
+    they are never treated as zero and never sized from a different metric.
+    """
+    required = {"Latitude", "Longitude"}
+    if locations is None or not isinstance(locations, pd.DataFrame) or locations.empty or not required.issubset(locations.columns):
+        clean = pd.DataFrame(columns=["Latitude", "Longitude", "Facility", "Operator", "County", "State"])
+    else:
+        clean = locations.copy()
+        for column in ["Latitude", "Longitude"]:
+            clean[column] = pd.to_numeric(clean[column], errors="coerce")
+        for column in ["Facility", "Operator", "County", "State", "Status", "Evidence Grade", "Location Precision"]:
+            if column not in clean.columns:
+                clean[column] = ""
+            clean[column] = clean[column].fillna("").astype(str)
+        clean = clean.dropna(subset=["Latitude", "Longitude"]).reset_index(drop=True)
+
+    metric_column = FACILITY_SIZE_METRICS.get(size_by)
+    figure = go.Figure()
+    if not clean.empty:
+        if metric_column is None:
+            clean["_known"] = True
+            clean["_marker_size"] = 6.0
+        else:
+            if metric_column not in clean.columns:
+                clean[metric_column] = np.nan
+            clean[metric_column] = pd.to_numeric(clean[metric_column], errors="coerce")
+            clean["_known"] = clean[metric_column].notna() & (clean[metric_column] > 0)
+            clean["_marker_size"] = _bubble_sizes(clean[metric_column])
+
+        known = clean.loc[clean["_known"]].copy()
+        unknown = clean.loc[~clean["_known"]].copy()
+        if not known.empty:
+            figure.add_trace(
+                go.Scattergeo(
+                    lon=known["Longitude"],
+                    lat=known["Latitude"],
+                    text=[_facility_hover(row, metric_column, size_by) for _, row in known.iterrows()],
+                    mode="markers",
+                    hovertemplate="%{text}<extra></extra>",
+                    marker={
+                        "size": known["_marker_size"],
+                        "color": COLORS["violet"],
+                        "opacity": 0.70,
+                        "line": {"width": 0.45, "color": "#111827"},
+                        "sizemode": "diameter",
+                    },
+                    name="Metric available" if metric_column else "Facility records",
+                )
+            )
+        if not unknown.empty:
+            figure.add_trace(
+                go.Scattergeo(
+                    lon=unknown["Longitude"],
+                    lat=unknown["Latitude"],
+                    text=[_facility_hover(row, metric_column, size_by) for _, row in unknown.iterrows()],
+                    mode="markers",
+                    hovertemplate="%{text}<extra></extra>",
+                    marker={
+                        "size": 6.0,
+                        "color": "rgba(15,23,42,0.30)",
+                        "opacity": 0.86,
+                        "line": {"width": 1.25, "color": COLORS["slate"]},
+                    },
+                    name="Metric unavailable",
+                )
+            )
+    figure.update_layout(
+        height=height,
+        margin=dict(l=0, r=0, t=4, b=0),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        showlegend=bool(metric_column),
+        legend={"orientation": "h", "y": 1.02, "x": 0, "font": {"color": COLORS["muted"], "size": 11}},
+        font={"color": COLORS["text"], "family": "Inter, ui-sans-serif, system-ui"},
+        hoverlabel={"bgcolor": "#0f172a", "font": {"color": COLORS["text"]}},
+        geo={
+            "scope": "usa",
+            "projection": {"type": "albers usa"},
+            "bgcolor": "rgba(0,0,0,0)",
+            "showland": True,
+            "landcolor": "rgba(30,41,59,0.72)",
+            "showlakes": True,
+            "lakecolor": "rgba(15,23,42,0.78)",
+            "showsubunits": True,
+            "subunitcolor": "rgba(148,163,184,0.28)",
+            "subunitwidth": 0.65,
+            "showcountries": False,
+            "showcoastlines": False,
+        },
+    )
+    return figure
+
+
+def water_availability_context_map(
+    water: pd.DataFrame | None,
+    geojson: dict | None,
+    facilities: pd.DataFrame | None = None,
+    *,
+    height: int = 560,
+):
+    """Display a physical surface-water context layer without legal inference."""
+    required = {"HUC8", "Median SUI"}
+    if water is None or not isinstance(water, pd.DataFrame) or water.empty or not required.issubset(water.columns):
+        clean = pd.DataFrame(columns=["HUC8", "Median SUI", "P75 SUI", "HUC12 Count", "Watershed"])
+    else:
+        clean = water.copy()
+        clean["HUC8"] = clean["HUC8"].astype(str).str.zfill(8)
+        for column in ["Median SUI", "P75 SUI", "HUC12 Count"]:
+            if column not in clean.columns:
+                clean[column] = np.nan
+            clean[column] = pd.to_numeric(clean[column], errors="coerce")
+        if "Watershed" not in clean.columns:
+            clean["Watershed"] = ""
+        clean = clean.dropna(subset=["Median SUI"])
+
+    figure = go.Figure()
+    if not clean.empty and isinstance(geojson, dict) and geojson.get("features"):
+        custom = np.column_stack(
+            [
+                clean["Watershed"].fillna(""),
+                clean["P75 SUI"],
+                clean["HUC12 Count"],
+            ]
+        )
+        figure.add_trace(
+            go.Choropleth(
+                geojson=geojson,
+                locations=clean["HUC8"],
+                z=clean["Median SUI"],
+                featureidkey="properties.huc8",
+                zmin=0,
+                zmax=1,
+                colorscale=[
+                    [0.00, "#0f766e"],
+                    [0.25, "#34d399"],
+                    [0.50, "#fbbf24"],
+                    [0.75, "#fb923c"],
+                    [1.00, "#fb7185"],
+                ],
+                marker_line_color="rgba(15,23,42,0.65)",
+                marker_line_width=0.45,
+                colorbar={
+                    "title": {"text": "Surface-water<br>supply/use index", "font": {"color": COLORS["muted"]}},
+                    "tickfont": {"color": COLORS["muted"]},
+                    "thickness": 12,
+                    "len": 0.68,
+                },
+                customdata=custom,
+                hovertemplate=(
+                    "%{customdata[0]}<br>HUC8 %{location}"
+                    "<br>Median SUI: %{z:.2f}"
+                    "<br>75th percentile: %{customdata[1]:.2f}"
+                    "<br>HUC12 observations: %{customdata[2]:.0f}<extra></extra>"
+                ),
+                name="Surface-water context",
+            )
+        )
+
+    if isinstance(facilities, pd.DataFrame) and not facilities.empty and {"Latitude", "Longitude"}.issubset(facilities.columns):
+        points = facilities.copy()
+        points["Latitude"] = pd.to_numeric(points["Latitude"], errors="coerce")
+        points["Longitude"] = pd.to_numeric(points["Longitude"], errors="coerce")
+        points = points.dropna(subset=["Latitude", "Longitude"])
+        if not points.empty:
+            figure.add_trace(
+                go.Scattergeo(
+                    lon=points["Longitude"],
+                    lat=points["Latitude"],
+                    text=[_facility_hover(row) for _, row in points.iterrows()],
+                    mode="markers",
+                    hovertemplate="%{text}<extra></extra>",
+                    marker={"size": 7, "color": COLORS["violet"], "line": {"width": 0.8, "color": "#111827"}},
+                    name="Facility records",
+                )
+            )
+
+    figure.update_layout(
+        height=height,
+        margin=dict(l=0, r=0, t=8, b=0),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        showlegend=True,
+        legend={"orientation": "h", "y": 1.02, "x": 0, "font": {"color": COLORS["muted"], "size": 11}},
+        font={"color": COLORS["text"], "family": "Inter, ui-sans-serif, system-ui"},
+        hoverlabel={"bgcolor": "#0f172a", "font": {"color": COLORS["text"]}},
+        geo={
+            "projection": {"type": "albers usa"},
+            "fitbounds": "locations",
+            "visible": False,
+            "bgcolor": "rgba(0,0,0,0)",
+        },
+    )
+    return figure
+
+def infrastructure_construction_history(history: pd.DataFrame | None, *, height: int = 330, years: int = 10):
+    """Plot data-center and semiconductor-facility construction rates."""
+    columns = [
+        ("Data Center Construction", "Data centers", COLORS["violet"]),
+        ("Computer, Electronic & Electrical Manufacturing Construction", "Computer, electronic & electrical manufacturing", COLORS["blue"]),
+    ]
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty or "Observation Date" not in history.columns:
+        clean = pd.DataFrame(columns=["Observation Date", *[column for column, _, _ in columns]])
+    else:
+        clean = history.copy()
+        clean["Observation Date"] = pd.to_datetime(clean["Observation Date"], errors="coerce", format="mixed")
+        for column, _, _ in columns:
+            if column not in clean.columns:
+                clean[column] = np.nan
+            clean[column] = pd.to_numeric(clean[column], errors="coerce")
+        clean = clean.dropna(subset=["Observation Date"]).sort_values("Observation Date", kind="stable")
+        if not clean.empty and years:
+            clean = clean.loc[clean["Observation Date"] >= clean["Observation Date"].max() - pd.DateOffset(years=years)]
+
+    figure = go.Figure()
+    for column, name, color in columns:
+        rows = clean.dropna(subset=[column]) if not clean.empty else clean
+        if rows.empty:
+            continue
+        figure.add_trace(go.Scatter(
+            x=rows["Observation Date"],
+            y=rows[column] / 1000.0,
+            mode="lines",
+            name=name,
+            line={"color": color, "width": 2.6},
+            hovertemplate=f"%{{x|%Y-%m}}<br>{name}: $%{{y:,.1f}}B SAAR<extra></extra>",
+        ))
+    figure.update_yaxes(ticksuffix="B", tickprefix="$", separatethousands=True)
+    return _base_layout(figure, height=height, legend=True, margin=dict(l=52, r=18, t=28, b=36))
+
+
+def supporting_construction_history(history: pd.DataFrame | None, *, height: int = 315, years: int = 8):
+    columns = [
+        ("Communication Construction", "Communication", COLORS["violet"]),
+        ("Public Highway and Street Construction", "Highways and streets", COLORS["blue"]),
+        ("Public Transportation Construction", "Transportation", COLORS["slate"]),
+        ("Public Water Supply Construction", "Water supply", COLORS["green"]),
+    ]
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty or "Observation Date" not in history.columns:
+        clean = pd.DataFrame(columns=["Observation Date", *[column for column, _, _ in columns]])
+    else:
+        clean = history.copy()
+        clean["Observation Date"] = pd.to_datetime(clean["Observation Date"], errors="coerce", format="mixed")
+        for column, _, _ in columns:
+            if column not in clean.columns:
+                clean[column] = np.nan
+            clean[column] = pd.to_numeric(clean[column], errors="coerce")
+        clean = clean.dropna(subset=["Observation Date"]).sort_values("Observation Date", kind="stable")
+        if not clean.empty and years:
+            clean = clean.loc[clean["Observation Date"] >= clean["Observation Date"].max() - pd.DateOffset(years=years)]
+    figure = go.Figure()
+    for column, name, color in columns:
+        rows = clean.dropna(subset=[column]) if not clean.empty else clean
+        if rows.empty:
+            continue
+        figure.add_trace(go.Scatter(
+            x=rows["Observation Date"],
+            y=rows[column] / 1000.0,
+            mode="lines",
+            name=name,
+            line={"color": color, "width": 2.2},
+            hovertemplate=f"%{{x|%Y-%m}}<br>{name}: $%{{y:,.1f}}B SAAR<extra></extra>",
+        ))
+    figure.update_yaxes(ticksuffix="B", tickprefix="$", separatethousands=True)
+    return _base_layout(figure, height=height, legend=True, margin=dict(l=52, r=18, t=28, b=36))
+
+
+def adaptation_history(history: pd.DataFrame | None, *, height: int = 325, years: int = 3):
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty or "Date" not in history.columns:
+        clean = pd.DataFrame(columns=["Date", "Current AI Use", "Expected AI Use"])
+    else:
+        clean = history.copy()
+        clean["Date"] = pd.to_datetime(clean["Date"], errors="coerce", format="mixed")
+        for column in ["Current AI Use", "Expected AI Use", "Current AI Use SE", "Expected AI Use SE"]:
+            if column not in clean.columns:
+                clean[column] = np.nan
+            clean[column] = pd.to_numeric(clean[column], errors="coerce")
+        clean = clean.dropna(subset=["Date"]).sort_values("Date", kind="stable")
+        if not clean.empty and years:
+            clean = clean.loc[clean["Date"] >= clean["Date"].max() - pd.DateOffset(years=years)]
+    figure = go.Figure()
+    for column, label, color, dash in [
+        ("Current AI Use", "Current use", COLORS["violet"], "solid"),
+        ("Expected AI Use", "Expected use within six months", COLORS["blue"], "dash"),
+    ]:
+        rows = clean.dropna(subset=[column]) if not clean.empty else clean
+        if rows.empty:
+            continue
+        se_column = f"{column} SE"
+        error_values = (1.96 * pd.to_numeric(rows.get(se_column), errors="coerce")) if se_column in rows.columns else None
+        figure.add_trace(go.Scatter(
+            x=rows["Date"],
+            y=rows[column],
+            mode="lines",
+            name=label,
+            line={"color": color, "width": 2.6, "dash": dash},
+            error_y={
+                "type": "data",
+                "array": error_values,
+                "visible": error_values is not None,
+                "color": color,
+                "thickness": 1.0,
+                "width": 2,
+            },
+            hovertemplate=f"%{{x|%Y-%m-%d}}<br>{label}: %{{y:.1f}}%<extra></extra>",
+        ))
+    figure.update_yaxes(ticksuffix="%", rangemode="tozero")
+    return _base_layout(figure, height=height, legend=True, margin=dict(l=44, r=18, t=28, b=36))
+
+
+def adaptation_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int = 520, limit: int = 12):
+    required = {"Sector", "Current AI Use", "Expected AI Use"}
+    if sector_snapshot is None or not isinstance(sector_snapshot, pd.DataFrame) or sector_snapshot.empty or not required.issubset(sector_snapshot.columns):
+        clean = pd.DataFrame(columns=list(required))
+    else:
+        clean = sector_snapshot.copy()
+        clean = clean.loc[clean.get("Sector Code", "").astype(str) != "XX"] if "Sector Code" in clean.columns else clean
+        for column in ["Current AI Use", "Expected AI Use", "Current AI Use SE", "Expected AI Use SE"]:
+            if column not in clean.columns:
+                clean[column] = np.nan
+            clean[column] = pd.to_numeric(clean[column], errors="coerce")
+        clean = clean.dropna(subset=["Current AI Use"]).nlargest(limit, "Current AI Use").sort_values("Current AI Use")
+    figure = go.Figure()
+    if not clean.empty:
+        figure.add_trace(go.Bar(
+            x=clean["Current AI Use"], y=clean["Sector"], orientation="h", name="Current use",
+            marker_color=COLORS["violet"],
+            error_x={"type": "data", "array": 1.96 * clean["Current AI Use SE"], "visible": True, "color": COLORS["violet"], "thickness": 1.0},
+            hovertemplate="%{y}<br>Current use: %{x:.1f}%<extra></extra>",
+        ))
+        figure.add_trace(go.Bar(
+            x=clean["Expected AI Use"], y=clean["Sector"], orientation="h", name="Expected within six months",
+            marker_color=COLORS["blue"], opacity=0.72,
+            error_x={"type": "data", "array": 1.96 * clean["Expected AI Use SE"], "visible": True, "color": COLORS["blue"], "thickness": 1.0},
+            hovertemplate="%{y}<br>Expected use: %{x:.1f}%<extra></extra>",
+        ))
+    figure.update_layout(barmode="group")
+    figure.update_xaxes(ticksuffix="%", rangemode="tozero")
+    return _base_layout(figure, height=height, legend=True, margin=dict(l=255, r=18, t=30, b=36))

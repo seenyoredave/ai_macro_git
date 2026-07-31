@@ -119,14 +119,19 @@ def test_macro_interpretation_is_deterministic_sensitive_and_compact():
 
     assert first == second
     assert first["version"] == MACRO_INTERPRETATION_VERSION
-    assert first["headline"] == "Resilient under rising pressure"
+    assert first["headline"] == "Expansion with material constraints"
     assert first["headline"] in MACRO_STATE_HEADLINES
-    assert 1 <= len(first["pressure_factors"]) <= 3
-    assert 1 <= len(first["resilience_factors"]) <= 3
+    assert 1 <= len(first["constraint_factors"]) <= 3
+    assert 1 <= len(first["expansion_factors"]) <= 3
+    assert first["pressure_factors"] == first["constraint_factors"]
+    assert first["resilience_factors"] == first["expansion_factors"]
     assert 1 <= len(first["changes"]) <= 3
-    assert "Forward commitments" in " ".join(first["pressure_factors"])
-    assert "WTI" in " ".join(first["pressure_factors"] + first["changes"])
-    assert "cash" in first["summary"].lower() or "financeable" in first["summary"].lower()
+    assert "Forward commitments" in " ".join(first["constraint_factors"])
+    assert "WTI" in " ".join(first["constraint_factors"])
+    assert first["summary"] == ""
+    assert "summary_clause" not in (ROOT / "analytics" / "macro_interpretation.py").read_text()
+    assert all(" while " not in item.lower() for item in first["expansion_factors"] + first["constraint_factors"])
+    assert all(";" not in item for item in first["expansion_factors"] + first["constraint_factors"])
 
 
 def test_macro_interpretation_changes_when_funding_buffer_is_removed():
@@ -145,8 +150,8 @@ def test_macro_interpretation_changes_when_funding_buffer_is_removed():
         fred_data={},
         nfci_history=pd.DataFrame(),
     )
-    assert result["headline"] in {"Funding-constrained", "Broad deterioration"}
-    assert any("covers only" in item or "less than one year" in item for item in result["pressure_factors"])
+    assert result["headline"] in {"Financing constrained", "Broad contraction"}
+    assert any("covers only" in item or "less than one year" in item for item in result["constraint_factors"])
 
 
 def test_macro_interpretation_archive_fields_are_written_by_macro_archiver():
@@ -155,12 +160,18 @@ def test_macro_interpretation_archive_fields_are_written_by_macro_archiver():
     for field in (
         "Macro State",
         "Macro State Summary",
+        "Macro Constraint Factors",
+        "Macro Expansion Factors",
         "Macro Pressure Factors",
         "Macro Resilience Factors",
         "Macro Change Factors",
+        "Macro Metric Changes",
+        "Macro Weekly References",
+        "Macro Weekly Context",
         "Macro Interpretation Confidence",
         "Macro Interpretation Version",
         "Macro Domain States",
+        "Macro Snapshot Context",
     ):
         assert f'"{field}"' in source
         assert field in archive_columns
@@ -170,7 +181,7 @@ def test_macro_interpretation_archive_fields_are_written_by_macro_archiver():
 def test_macro_current_state_is_rendered_before_regime_board():
     source = (ROOT / "research_overlay" / "renderers.py").read_text()
     macro = source.split("def render_macro_tab", 1)[1].split("def _funding_specs", 1)[0]
-    assert macro.index('render_section("Current state")') < macro.index('render_section("Regime board"')
+    assert macro.index('render_section("Snapshot")') < macro.index('render_section("Regime board"')
     assert "_render_macro_interpretation(regime_metrics)" in macro
     assert "Partial source coverage" in source
 
@@ -187,18 +198,18 @@ def test_power_capacity_gap_uses_peer_statline_without_sparkline():
 def test_macro_state_headlines_use_the_approved_plain_language_ladder():
     assert MACRO_STATE_HEADLINES == frozenset(
         {
-            "Partial current-state view",
-            "Supportive conditions",
-            "Resilient",
-            "Resilient under rising pressure",
-            "Resilient under broad-based pressure",
-            "Increasingly constrained",
-            "Funding-constrained",
-            "Broad deterioration",
+            "Partial snapshot",
+            "Broad expansion",
+            "Expansion continuing",
+            "Uneven expansion",
+            "Expansion with emerging constraints",
+            "Expansion with material constraints",
+            "Constraints broadening",
+            "Financing constrained",
+            "Broad contraction",
             "Stabilizing",
-            "Conditions improving",
+            "Expansion reaccelerating",
         }
     )
-    assert not any(", with" in headline for headline in MACRO_STATE_HEADLINES)
-    assert "Pressure building" not in MACRO_STATE_HEADLINES
-    assert "Mixed conditions" not in MACRO_STATE_HEADLINES
+    assert not any("pressure" in headline.lower() for headline in MACRO_STATE_HEADLINES)
+    assert not any("resilient" in headline.lower() for headline in MACRO_STATE_HEADLINES)

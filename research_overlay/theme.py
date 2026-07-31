@@ -236,14 +236,6 @@ def inject_research_theme() -> None:
             font-weight: 780;
         }
 
-        .rm-state-summary {
-            color: #c7d0dd;
-            font-size: 0.91rem;
-            line-height: 1.5;
-            margin-top: 0.42rem;
-            max-width: 1160px;
-        }
-
         .rm-state-column {
             padding: 0.05rem 0.2rem 0.1rem 0.2rem;
         }
@@ -267,6 +259,37 @@ def inject_research_theme() -> None:
             font-size: 0.82rem;
             line-height: 1.42;
             margin-bottom: 0.38rem;
+        }
+
+        .rm-snapshot-references {
+            border-top: 1px solid var(--rm-border);
+            color: #7f8a9a;
+            font-size: 0.72rem;
+            line-height: 1.45;
+            margin-top: 0.55rem;
+            padding: 0.7rem 0.2rem 0.05rem 0.2rem;
+        }
+
+        .rm-snapshot-references-label {
+            color: #aeb8c8;
+            font-weight: 700;
+            margin-right: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .rm-snapshot-references a {
+            color: #9fb4d0;
+            text-decoration: none;
+        }
+
+        .rm-snapshot-references a:hover {
+            color: #dce4ef;
+            text-decoration: underline;
+        }
+
+        .rm-snapshot-reference-separator {
+            color: #566273;
         }
 
         .rm-card {

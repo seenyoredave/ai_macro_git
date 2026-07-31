@@ -4,9 +4,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_primary_navigation_uses_five_research_tabs():
+def test_primary_navigation_uses_seven_research_tabs():
     source = (ROOT / "ai_macro.py").read_text()
-    assert '["AI MACRO", "FINANCE", "ENERGY", "MARKET", "EVIDENCE"]' in source
+    assert '["AI MACRO", "MARKET", "FINANCE", "INFRASTRUCTURE", "ENERGY", "ADAPTATION", "EVIDENCE"]' in source
 
 
 def test_sector_detail_is_selected_inside_consolidated_tab():

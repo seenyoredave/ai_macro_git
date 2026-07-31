@@ -46,7 +46,7 @@ def test_retired_product_names_are_absent():
 
 def test_current_build_label_is_exact():
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    assert 'APP_VERSION = "v4.09"' in app
+    assert 'APP_VERSION = "v4.14-dev"' in app
     assert app.count("APP_VERSION =") == 1
 
 

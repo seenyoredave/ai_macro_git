@@ -148,6 +148,12 @@ def build_macro_dataframe(sector_metrics):
             "Loss-Making EV Share": metrics.get("Loss-Making EV Share", np.nan),
             "Loss-Making Company Count": metrics.get("Loss-Making Company Count", 0),
             "Beta": metrics.get("Beta", np.nan),
+            "Sector Basket Concentration": metrics.get("Sector Basket Concentration", np.nan),
+            "Sector Raw HHI": metrics.get("Sector Raw HHI", np.nan),
+            "Sector Effective Firms": metrics.get("Sector Effective Firms", np.nan),
+            "Sector Concentration Company Count": metrics.get("Sector Concentration Company Count", 0),
+            "Sector Concentration Coverage": metrics.get("Sector Concentration Coverage", np.nan),
+            "Sector Concentration Version": metrics.get("Sector Concentration Version", ""),
         })
 
     macro_df = pd.DataFrame(rows)

@@ -1,7 +1,7 @@
 """Financial-conditions confirmation helpers.
 
 This module keeps NFCI interpretation independent from Streamlit rendering so
-current-state labels and direction calculations remain testable and reusable.
+current-condition labels and direction calculations remain testable and reusable.
 """
 
 from __future__ import annotations

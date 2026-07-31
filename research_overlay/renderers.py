@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from analytics.hhi_engine import hhi_component_breakdown
+from analytics.hhi_engine import sector_hhi_component_breakdown
 from analytics.financial_conditions import (
     nfci_condition,
     nfci_direction,
@@ -61,6 +61,12 @@ from research_overlay.visuals import (
     earnings_support_map,
     debt_market_history,
     financial_conditions_history,
+    FACILITY_SIZE_METRICS,
+    data_center_map,
+    infrastructure_construction_history,
+    supporting_construction_history,
+    adaptation_history,
+    adaptation_sector_bars,
     funding_history,
     history_from_frame,
     hhi_component_chart,
@@ -135,8 +141,8 @@ def _metric_context(name, value):
         if pd.isna(value):
             return "Power-system stress unavailable"
         return "Above reference" if value > 0 else "Below reference"
-    if name == "Concentration HHI":
-        return "Market-value concentration"
+    if name == "Sector Basket Concentration":
+        return "Adjusted market-value concentration"
     return ""
 
 
@@ -149,7 +155,6 @@ TAB_METRIC_REGISTRIES = {
         "AI-Industrial Growth Gap",
         "Power Stress Index",
         "Power Capacity Gap",
-        "Concentration HHI",
     ],
     "finance": [
         "Internal Funding Coverage",
@@ -164,16 +169,33 @@ TAB_METRIC_REGISTRIES = {
         "NFCI",
         "ANFCI",
     ],
+    "infrastructure": [
+        "Data Center Construction",
+        "Evidence-Graded Facility Registry",
+        "Computer, Electronic & Electrical Manufacturing Construction",
+        "Communication Construction",
+        "Public Highway and Street Construction",
+        "Public Transportation Construction",
+        "Public Water Supply Construction",
+    ],
     "energy": [
         "Henry Hub Natural Gas",
         "WTI Crude Oil",
         "Coal Production",
         "Renewable Power Output",
+        "Commercial Electricity Price",
+        "Industrial Electricity Price",
         "Electric Power Output",
         "Electric Power Capacity",
         "Electric Power Capacity Utilization",
         "Power Stress Index",
         "Power Capacity Gap",
+    ],
+    "adaptation": [
+        "Current Business AI Use",
+        "Expected Business AI Use",
+        "Expected Adoption Gap",
+        "Adoption Breadth",
     ],
     "market": [
         "Sector AI Equity Index",
@@ -184,6 +206,7 @@ TAB_METRIC_REGISTRIES = {
         "Speculative Load",
         "Sector Movement",
         "Risk Breadth",
+        "Sector Basket Concentration",
     ],
 }
 
@@ -251,10 +274,32 @@ def _render_interpretation_list(title, items, *, empty_text):
     )
 
 
+def _render_weekly_references(references):
+    links = []
+    for reference in references or []:
+        number = int(reference.get("reference_number") or 0)
+        label = str(reference.get("source_label") or reference.get("source_name") or "").strip()
+        url = str(reference.get("source_url") or "").strip()
+        if number <= 0 or not label or not url.startswith("https://"):
+            continue
+        links.append(
+            f'<a href="{html.escape(url, quote=True)}" target="_blank" '
+            f'rel="noopener noreferrer">[{number}] {html.escape(label)}</a>'
+        )
+    if not links:
+        return
+    st.markdown(
+        '<div class="rm-snapshot-references">'
+        '<span class="rm-snapshot-references-label">References</span>'
+        + '<span class="rm-snapshot-reference-separator"> · </span>'.join(links)
+        + '</div>',
+        unsafe_allow_html=True,
+    )
+
+
 def _render_macro_interpretation(regime_metrics):
     interpretation = (regime_metrics or {}).get("Macro Interpretation", {}) or {}
-    headline = str(interpretation.get("headline") or "Current state unavailable")
-    summary = str(interpretation.get("summary") or "The current interpretation could not be assembled from the available readings.")
+    headline = str(interpretation.get("headline") or "Snapshot unavailable")
     confidence = str(interpretation.get("confidence") or "unknown")
     coverage_note = (
         '<div class="rm-state-kicker">Partial source coverage</div>'
@@ -267,32 +312,40 @@ def _render_macro_interpretation(regime_metrics):
             '<div class="rm-state-head">'
             f'{coverage_note}'
             f'<div class="rm-state-title">{html.escape(headline)}</div>'
-            f'<div class="rm-state-summary">{html.escape(summary)}</div>'
             '</div>'
         )
         st.markdown(state_head_html, unsafe_allow_html=True)
-        pressure_col, resilience_col, change_col = st.columns(3)
-        with pressure_col:
+        expansion_col, constraint_col, change_col = st.columns(3)
+        with expansion_col:
             _render_interpretation_list(
-                "Pressure",
-                interpretation.get("pressure_factors"),
-                empty_text="No material pressure signal is currently active.",
+                "Expansion",
+                interpretation.get("expansion_factors", interpretation.get("resilience_factors")),
+                empty_text="No material expansion signal is currently available.",
             )
-        with resilience_col:
+        with constraint_col:
             _render_interpretation_list(
-                "Resilience",
-                interpretation.get("resilience_factors"),
-                empty_text="No material resilience signal is currently available.",
+                "Constraints",
+                interpretation.get("constraint_factors", interpretation.get("pressure_factors")),
+                empty_text="No material constraint is currently active.",
             )
         with change_col:
             _render_interpretation_list(
-                "What changed",
+                "This week",
                 interpretation.get("changes"),
-                empty_text="No material change was detected.",
+                empty_text="No material development this week.",
             )
+        _render_weekly_references(interpretation.get("weekly_references"))
 
 
-def _render_primary_macro_cards(regime_metrics, trends):
+
+def _render_primary_macro_cards(regime_metrics, trends, adaptation_data):
+    adaptation_history_frame = history_from_frame(
+        (adaptation_data or {}).get("national_history"),
+        "Current AI Use",
+    )
+    adaptation_value = pd.to_numeric(
+        (adaptation_data or {}).get("current_use"), errors="coerce"
+    )
     specs = [
         (
             "macro-card-aei",
@@ -303,6 +356,7 @@ def _render_primary_macro_cards(regime_metrics, trends):
             _source(regime_metrics, "AEI"),
             _fallback(regime_metrics, "AEI"),
             "violet",
+            _metric_context("AI Equity Index", _value(regime_metrics, "AI Equity Index")),
         ),
         (
             "macro-card-adi",
@@ -313,6 +367,7 @@ def _render_primary_macro_cards(regime_metrics, trends):
             _source(regime_metrics, "ADI"),
             _fallback(regime_metrics, "ADI"),
             "blue",
+            _metric_context("AI Development Intensity", _value(regime_metrics, "AI Development Intensity")),
         ),
         (
             "macro-card-power",
@@ -323,28 +378,30 @@ def _render_primary_macro_cards(regime_metrics, trends):
             _source(regime_metrics, "Power Stress"),
             _fallback(regime_metrics, "Power Stress"),
             "violet",
+            _metric_context("Power Stress Index", _value(regime_metrics, "Power Stress Index")),
         ),
         (
-            "macro-card-hhi",
-            "Concentration HHI",
-            _value(regime_metrics, "Concentration HHI"),
-            trends.get("concentration_trend", {}).get("history"),
+            "macro-card-adaptation",
+            "Business Adaptation",
+            adaptation_value,
+            adaptation_history_frame,
             (0, 100),
-            "Current",
-            None,
-            "slate",
+            str((adaptation_data or {}).get("source") or "Census BTOS"),
+            (adaptation_data or {}).get("snapshot_date"),
+            "green",
+            "Employer businesses reporting current AI use",
         ),
     ]
 
     for col, spec in zip(st.columns(4), specs):
-        key, label, value, history, scale, source, fallback, accent = spec
+        key, label, value, history, scale, source, fallback, accent, context = spec
         with col:
             metric_card(
                 key=key,
                 label=label,
                 value=value,
-                value_text=fmt_number(value, 1),
-                context=_metric_context(label, value),
+                value_text=fmt_number(value, 1, suffix="%" if label == "Business Adaptation" else ""),
+                context=context,
                 history=history,
                 scale=scale,
                 source=source,
@@ -384,7 +441,7 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
             render_statline(
                 [
                     ("Speculation", fmt_number(gaps["Speculation Gap"], 0, signed=True), speculation_label(gaps["Speculation Gap"])),
-                    ("Validation", fmt_number(gaps["Economic Validation Gap"], 0, signed=True), validation_label(gaps["Economic Validation Gap"])),
+                    ("Economic Validation", fmt_number(gaps["Economic Validation Gap"], 0, signed=True), validation_label(gaps["Economic Validation Gap"])),
                 ],
                 key_prefix="macro-current-divergence-primary",
             )
@@ -398,20 +455,17 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
 
 
 def _render_macro_components(regime_metrics, sector_data):
+    del sector_data
     adi_result = (regime_metrics or {}).get("ADI Components", {}) or {}
     validation_result = (regime_metrics or {}).get("Economic Validation Gap Components", {}) or {}
     power_result = (regime_metrics or {}).get("Power Stress Components", {}) or {}
 
-    hhi_breakdown = hhi_component_breakdown(sector_data, top_n=5)
     groups = [
         ("macro-adi-components", "ADI pillars", adi_result.get("components", {}), False, COLORS["violet"]),
-        ("macro-validation-components", "Validation legs", validation_result.get("components", {}), False, COLORS["blue"]),
+        ("macro-validation-components", "Economic validation legs", validation_result.get("components", {}), False, COLORS["blue"]),
         ("macro-power-stress-components", "Power-stress components", power_result.get("components", {}), True, COLORS["violet"]),
     ]
-    first_row = st.columns(2)
-    second_row = st.columns(2)
-    component_columns = first_row + second_row
-    for col, (chart_key, title, components, signed, color) in zip(component_columns[:3], groups):
+    for col, (chart_key, title, components, signed, color) in zip(st.columns(3), groups):
         with col:
             with st.container(border=True):
                 render_panel_heading(title)
@@ -426,15 +480,6 @@ def _render_macro_components(regime_metrics, sector_data):
                     config={"displayModeBar": False, "responsive": True},
                     key=chart_key,
                 )
-    with component_columns[3]:
-        with st.container(border=True):
-            render_panel_heading("Concentration contributors")
-            st.plotly_chart(
-                hhi_component_chart(hhi_breakdown),
-                width="stretch",
-                config={"displayModeBar": False, "responsive": True},
-                key="macro-concentration-contributors",
-            )
 
     with st.expander("Component observations and normalization", expanded=False):
         st.markdown("**AI Development Intensity**")
@@ -463,31 +508,20 @@ def _render_macro_components(regime_metrics, sector_data):
         st.markdown("**Power Capacity Gap**")
         render_static_table(_component_table(power_capacity_result.get("components", {})))
 
-        st.markdown("**Concentration HHI**")
-        hhi_table = hhi_breakdown.copy()
-        if not hhi_table.empty:
-            hhi_table["Market Cap Share"] = (hhi_table["Market Cap Share"] * 100.0).round(2)
-            hhi_table["HHI Contribution Share"] = hhi_table["HHI Contribution Share"].round(2)
-            hhi_table = hhi_table.rename(columns={
-                "Market Cap Share": "Market Cap Share (%)",
-                "HHI Contribution Share": "Share of HHI (%)",
-            })
-        render_static_table(hhi_table)
 
-
-def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data):
+def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data, adaptation_data):
     del sector_metrics
     render_tab_header(
         "AI Macro",
-        "Current state of the AI economy across markets, capital deployment, financing, energy, and economic validation.",
-        "market / buildout / validation",
+        "Overview of the AI economy using novel metrics to track the evolution.",
+        "market / buildout / adaptation / validation",
     )
     render_line_break()
     _render_tab_metric_registry("macro")
-    render_section("Current state")
+    render_section("Snapshot")
     _render_macro_interpretation(regime_metrics)
     render_section("Regime board", "Current readings with retained histories and source state.")
-    _render_primary_macro_cards(regime_metrics, dashboard_data["trends"])
+    _render_primary_macro_cards(regime_metrics, dashboard_data["trends"], adaptation_data)
     render_section("Gap Measures", "Approximations of divergence from broader economic trends.")
     _render_gap_measures(regime_metrics, fred_data, dashboard_data)
     render_section("Component evidence", "Structural decomposition of top-level AI economy metrics.")
@@ -808,6 +842,275 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
 
 
 
+
+def _infrastructure_item(infrastructure_data, name):
+    return (((infrastructure_data or {}).get("series", {}) or {}).get(name, {}) or {})
+
+
+def _construction_value_text(item):
+    value = pd.to_numeric((item or {}).get("value"), errors="coerce")
+    return "n/a" if pd.isna(value) else f"${value / 1000.0:,.1f}B"
+
+
+def _construction_change_text(item):
+    growth = pd.to_numeric((item or {}).get("yoy_growth"), errors="coerce")
+    return "year over year n/a" if pd.isna(growth) else f"{growth * 100:+.1f}% year over year"
+
+
+def _infrastructure_source_rows(infrastructure_data):
+    rows = []
+    for name, item in ((infrastructure_data or {}).get("series", {}) or {}).items():
+        rows.append({
+            "Series": name,
+            "Reading": _construction_value_text(item),
+            "Change": _construction_change_text(item),
+            "Observation Date": fmt_date(item.get("date")),
+            "Source": str(item.get("source") or (infrastructure_data or {}).get("construction_source") or "Census"),
+        })
+    coverage = (infrastructure_data or {}).get("facility_coverage", {}) or {}
+    rows.append({
+        "Series": "Evidence-Graded Facility Registry",
+        "Reading": f"{int(coverage.get('records', 0) or 0):,} records",
+        "Change": f"{int(coverage.get('verified_project_records', 0) or 0):,} curated project records",
+        "Observation Date": "varies by source",
+        "Source": str((infrastructure_data or {}).get("map_source") or "IM3") + " + curated primary evidence",
+    })
+    return pd.DataFrame(rows)
+
+
+def _render_infrastructure_summary(infrastructure_data):
+    data_centers = _infrastructure_item(infrastructure_data, "Data Center Construction")
+    manufacturing = _infrastructure_item(
+        infrastructure_data,
+        "Computer, Electronic & Electrical Manufacturing Construction",
+    )
+    coverage = (infrastructure_data or {}).get("facility_coverage", {}) or {}
+    records = int(coverage.get("records", 0) or 0)
+    states = int(coverage.get("states", 0) or 0)
+    verified = int(coverage.get("verified_project_records", 0) or 0)
+    render_statline(
+        [
+            ("Data-center construction", _construction_value_text(data_centers), _construction_change_text(data_centers)),
+            ("compute/electrical", _construction_value_text(manufacturing), _construction_change_text(manufacturing)),
+            ("Facility registry", f"{records:,}" if records else "n/a", f"{states} states · {verified} curated projects" if records else "registry unavailable"),
+            ("Observation", fmt_date(data_centers.get("date")), str((infrastructure_data or {}).get("construction_source") or "Census")),
+        ],
+        key_prefix="infrastructure-summary",
+    )
+
+
+def _facility_metric_coverage(infrastructure_data, metric_label):
+    field = FACILITY_SIZE_METRICS.get(metric_label)
+    coverage = (infrastructure_data or {}).get("facility_coverage", {}) or {}
+    total = int(coverage.get("records", 0) or 0)
+    if field is None:
+        return total, total
+    item = ((coverage.get("fields", {}) or {}).get(field, {}) or {})
+    return int(item.get("records", 0) or 0), int(item.get("total", total) or total)
+
+
+def _facility_table(registry: pd.DataFrame, size_by: str) -> pd.DataFrame:
+    if not isinstance(registry, pd.DataFrame) or registry.empty:
+        return pd.DataFrame()
+    metric = FACILITY_SIZE_METRICS.get(size_by)
+    columns = [
+        "Facility", "Operator", "State", "County", "Status", "Location Precision",
+        "Square Feet", "Planned Data Center Capacity MW", "Contracted Utility Capacity MW",
+        "Energized Capacity MW", "Annual Electricity Consumption MWh",
+        "Planned Onsite Generation MW", "Water Withdrawal Gallons/Year",
+        "Water Consumption Gallons/Year", "Site WUE L/kWh", "Cooling System",
+        "Water Source", "Evidence Grade", "Evidence Type", "Source Date", "Source",
+    ]
+    available = [column for column in columns if column in registry.columns]
+    table = registry[available].copy()
+    if metric and metric in table.columns:
+        table[metric] = pd.to_numeric(table[metric], errors="coerce")
+        table = table.sort_values(metric, ascending=False, na_position="last", kind="stable")
+    else:
+        table = table.sort_values([column for column in ["State", "Facility"] if column in table.columns], kind="stable")
+    for column in ["Source Date"]:
+        if column in table.columns:
+            table[column] = pd.to_datetime(table[column], errors="coerce", format="mixed").dt.date.astype("string").fillna("")
+    return table.reset_index(drop=True)
+
+
+def _render_data_center_footprint(infrastructure_data):
+    registry = (infrastructure_data or {}).get("facility_registry")
+    if registry is None or not isinstance(registry, pd.DataFrame):
+        registry = (infrastructure_data or {}).get("locations")
+    source = str((infrastructure_data or {}).get("map_source") or "IM3")
+    size_options = list(FACILITY_SIZE_METRICS)
+    size_by = st.selectbox(
+        "Bubble size",
+        size_options,
+        index=size_options.index("Square feet"),
+        key="infrastructure-facility-size-by",
+    )
+    valid, total = _facility_metric_coverage(infrastructure_data, size_by)
+
+    with st.container(border=True):
+        render_panel_heading("Data Center Registry", f"metric coverage: {valid:,}/{total:,} facility records")
+        if registry is None or not isinstance(registry, pd.DataFrame) or registry.empty:
+            st.caption("The facility registry is unavailable. Live source records are cached after a successful refresh.")
+        else:
+            st.plotly_chart(
+                data_center_map(registry, size_by=size_by),
+                width="stretch",
+                config={"displayModeBar": True, "responsive": True},
+                key="infrastructure-data-center-map",
+            )
+        st.caption(
+            "Outlined markers remain visible when the selected metric is unavailable. "
+            f"Base footprint: {source}; curated project records use explicit primary evidence. Records do not establish AI-specific use, compute output, or undisclosed operating demand."
+        )
+
+    if isinstance(registry, pd.DataFrame) and not registry.empty:
+        with st.expander("Facility evidence table", expanded=False):
+            render_static_table(_facility_table(registry, size_by))
+
+
+def _render_infrastructure_construction(infrastructure_data):
+    history = (infrastructure_data or {}).get("construction_history")
+    with st.container(border=True):
+        render_panel_heading("AI-linked buildout measures", "seasonally adjusted annual rate")
+        st.plotly_chart(
+            infrastructure_construction_history(history),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="infrastructure-core-construction-history",
+        )
+        st.caption(
+            "Data-center construction is reported separately from the broader computer, electronic, and electrical manufacturing category. "
+            "The manufacturing series includes semiconductor-fab construction but is not semiconductor-exclusive."
+        )
+
+
+def _render_supporting_infrastructure(infrastructure_data):
+    history = (infrastructure_data or {}).get("construction_history")
+    names = [
+        "Communication Construction",
+        "Public Highway and Street Construction",
+        "Public Transportation Construction",
+        "Public Water Supply Construction",
+    ]
+    stats = []
+    for name in names:
+        item = _infrastructure_item(infrastructure_data, name)
+        stats.append((name.replace(" Construction", ""), _construction_value_text(item), _construction_change_text(item)))
+    render_statline(stats, key_prefix="infrastructure-supporting")
+    with st.container(border=True):
+        render_panel_heading("US Infrastructure Expenditure")
+        st.plotly_chart(
+            supporting_construction_history(history),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="infrastructure-supporting-history",
+        )
+        st.caption(
+            "These are full national construction series. The platform does not estimate an AI-attributable share, and proximity or correlation must not be read as causation. "
+            "Public water-supply construction is capital spending on water infrastructure, not data-center water withdrawal or consumption."
+        )
+
+
+
+def render_infrastructure_tab(infrastructure_data):
+    render_tab_header(
+        "Infrastructure",
+        "Physical AI buildout, evidence-graded facility capacity, and supporting infrastructure expenditure.",
+        "construction / facilities / infrastructure expenditure",
+    )
+    render_line_break()
+    _render_tab_metric_registry("infrastructure")
+    render_section("Buildout", "Current construction scale and evidence-graded facility coverage.")
+    _render_infrastructure_summary(infrastructure_data)
+    _render_infrastructure_construction(infrastructure_data)
+
+    render_section("Facility registry", "Observed locations and verified projects, with homogeneous bubble sizing and explicit unknowns.")
+    _render_data_center_footprint(infrastructure_data)
+
+
+    render_section(
+        "US Infrastructure Expenditure",
+        "National-level communication, transport, and public water-supply construction expenditures",
+    )
+    _render_supporting_infrastructure(infrastructure_data)
+
+
+def _adaptation_source_rows(adaptation_data):
+    national = (adaptation_data or {}).get("national_history")
+    rows = []
+    if isinstance(national, pd.DataFrame) and not national.empty:
+        latest = national.sort_values("Date").iloc[-1]
+        for name, display_name in [
+            ("Current AI Use", "Current AI Use"),
+            ("Expected AI Use", "Expected AI Use"),
+            ("Expected Adoption Gap", "Expected Adoption Gap"),
+        ]:
+            rows.append({
+                "Series": display_name,
+                "Reading": fmt_number(latest.get(name), 1, suffix=" percentage points" if name == "Expected Adoption Gap" else "%"),
+                "Observation Date": fmt_date(latest.get("Date")),
+                "Source": str((adaptation_data or {}).get("source") or "Census BTOS"),
+            })
+    return pd.DataFrame(rows)
+
+
+def _render_adaptation_summary(adaptation_data):
+    current = pd.to_numeric((adaptation_data or {}).get("current_use"), errors="coerce")
+    expected = pd.to_numeric((adaptation_data or {}).get("expected_use"), errors="coerce")
+    expected_gap = pd.to_numeric((adaptation_data or {}).get("expected_adoption_gap"), errors="coerce")
+    annual = pd.to_numeric((adaptation_data or {}).get("annual_change"), errors="coerce")
+    render_statline(
+        [
+            ("Current business use", fmt_number(current, 1, suffix="%"), "used AI in any business function"),
+            ("Expected use", fmt_number(expected, 1, suffix="%"), "expected within six months"),
+            ("Expected adoption gap", fmt_number(expected_gap, 1, signed=True, suffix=" pp"), "expected minus current use"),
+            ("12-month change", fmt_number(annual, 1, signed=True, suffix=" pp"), fmt_date((adaptation_data or {}).get("snapshot_date"))),
+        ],
+        key_prefix="adaptation-summary",
+    )
+
+
+def render_adaptation_tab(adaptation_data):
+    render_tab_header(
+        "Adaptation",
+        "Observed business AI use, expected near-term adoption, and the breadth of integration across the US economy.",
+        "use / diffusion / breadth",
+    )
+    render_line_break()
+    _render_tab_metric_registry("adaptation")
+    render_section("Business adoption", "Observed use and expected use within the next six months.")
+    _render_adaptation_summary(adaptation_data)
+    with st.container(border=True):
+        render_panel_heading("AI use trajectory", "Census BTOS / employer businesses / 95% confidence intervals")
+        st.plotly_chart(
+            adaptation_history((adaptation_data or {}).get("national_history")),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="adaptation-national-history",
+        )
+        st.caption("Error bars are estimate ± 1.96 standard errors. They reflect reported sampling error, not systematic error or model uncertainty.")
+
+    render_section("Adoption breadth", "Current and expected use across major industries.")
+    with st.container(border=True):
+        render_panel_heading("Highest-use sectors", "latest published observation / 95% confidence intervals")
+        st.plotly_chart(
+            adaptation_sector_bars((adaptation_data or {}).get("sector_snapshot")),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="adaptation-sector-breadth",
+        )
+        st.caption(
+            "Sector estimates are survey observations with sampling error. Suppressed values are omitted; small differences should not be overinterpreted. "
+            "No confidence interval is shown for expected use minus current use because the covariance between the paired estimates is not available in the retained contract."
+        )
+
+    render_section("Measurement boundary")
+    with st.container(border=True):
+        st.markdown(
+            "This view measures **adoption**, not realized productivity, return on investment, labor displacement, or institutional adaptation. Those outcomes require separate measurements and will not be inferred from AI use alone."
+        )
+
 def _energy_item(energy_data, name):
     return (((energy_data or {}).get("series", {}) or {}).get(name, {}) or {})
 
@@ -834,6 +1137,8 @@ def _energy_source_rows(energy_data):
             reading = f"${fmt_number(value, 2)}"
         elif unit == "%":
             reading = fmt_number(value, 1, suffix="%")
+        elif unit == "¢/kWh":
+            reading = fmt_number(value, 2, suffix="¢/kWh")
         else:
             reading = fmt_number(value, 1)
 
@@ -920,6 +1225,49 @@ def _render_energy_supply(energy_data):
                 accent=accent,
                 years=6,
             )
+
+
+def _render_electricity_cost(energy_data):
+    commercial = _energy_item(energy_data, "Commercial Electricity Price")
+    industrial = _energy_item(energy_data, "Industrial Electricity Price")
+    with st.container(border=True):
+        render_statline(
+            [
+                (
+                    "Commercial price",
+                    fmt_number(commercial.get("value"), 2, suffix="¢/kWh"),
+                    _energy_change_text(commercial, "12-month change"),
+                ),
+                (
+                    "Industrial price",
+                    fmt_number(industrial.get("value"), 2, suffix="¢/kWh"),
+                    _energy_change_text(industrial, "12-month change"),
+                ),
+            ],
+            key_prefix="energy-electricity-cost",
+        )
+        render_panel_heading("US Retail Electricity Prices", "Commercial and industrial customer classes")
+        st.plotly_chart(
+            dual_history(
+                commercial.get("history"),
+                industrial.get("history"),
+                first_name="Commercial",
+                second_name="Industrial",
+                first_color=COLORS["violet"],
+                second_color=COLORS["blue"],
+                years=8,
+                height=330,
+                value_suffix="¢/kWh",
+            ),
+            width="stretch",
+            config={"displayModeBar": True, "responsive": True},
+            key="energy-electricity-cost-history",
+        )
+        st.markdown(
+            '<div class="rm-chart-note">National commercial and industrial averages provide '
+            'electricity-cost context; they do not represent contracted data-center rates.</div>',
+            unsafe_allow_html=True,
+        )
 
 
 def _render_power_production(energy_data, regime_metrics):
@@ -1059,13 +1407,16 @@ def render_energy_tab(fred_data, regime_metrics, energy_data, dashboard_data):
     del fred_data
     render_tab_header(
         "Energy",
-        "Fuel supply, power production, grid capacity, and AI-linked electricity demand.",
-        "weekly / fuel / power / grid",
+        "Fuel supply, electricity cost, power production, grid capacity, and AI-linked demand.",
+        "weekly / cost / power / grid",
     )
     render_line_break()
     _render_tab_metric_registry("energy")
     render_section("Energy supply", "Current fuel prices and production momentum.")
     _render_energy_supply(energy_data)
+
+    render_section("Electricity cost", "Average retail prices paid by commercial and industrial customers.")
+    _render_electricity_cost(energy_data)
 
     render_section("Power production", "Electric-power output, capacity, utilization, and system pressure.")
     _render_power_production(energy_data, regime_metrics)
@@ -1098,21 +1449,32 @@ def _assessment_stats(macro_df, sector_data):
             note = f"Deterioration breadth {fmt_number(row.get('Risk Breadth Score'), 0)}%"
         stats.append((label, sector, note))
 
-    leader = None
-    if macro_df is not None and not macro_df.empty and {'Sector', 'Sector Score'}.issubset(macro_df.columns):
-        leader_frame = macro_df[['Sector', 'Sector Score']].copy()
-        leader_frame['Sector Score'] = pd.to_numeric(leader_frame['Sector Score'], errors='coerce')
-        leader_frame = leader_frame.dropna(subset=['Sector Score'])
-        if not leader_frame.empty:
-            leader = leader_frame.loc[leader_frame['Sector Score'].idxmax()]
+    concentration = None
+    required = {
+        "Sector", "Sector Basket Concentration", "Sector Raw HHI",
+        "Sector Effective Firms", "Sector Concentration Company Count",
+        "Sector Concentration Coverage",
+    }
+    if macro_df is not None and not macro_df.empty and required.issubset(macro_df.columns):
+        frame = macro_df[list(required)].copy()
+        for column in required - {"Sector"}:
+            frame[column] = pd.to_numeric(frame[column], errors="coerce")
+        frame = frame.loc[
+            frame["Sector Basket Concentration"].notna()
+            & frame["Sector Concentration Company Count"].ge(3)
+            & frame["Sector Concentration Coverage"].ge(0.60)
+        ]
+        if not frame.empty:
+            concentration = frame.loc[frame["Sector Basket Concentration"].idxmax()]
 
-    if leader is None:
-        stats.append(("Most Profitable", "n/a", "insufficient eligible data"))
+    if concentration is None:
+        stats.append(("Most Concentrated", "n/a", "insufficient market-cap coverage"))
     else:
+        note = f"Adjusted HHI {fmt_number(concentration.get('Sector Basket Concentration'), 1)}"
         stats.append((
-            "Most Profitable",
-            sector_display_name(leader.get('Sector')),
-            f"AEI leader {fmt_number(leader.get('Sector Score'), 0)}",
+            "Most Concentrated",
+            sector_display_name(concentration.get("Sector")),
+            note,
         ))
     return stats
 
@@ -1161,17 +1523,26 @@ def _sector_table(macro_df):
         "Forward EV/EBIT Status",
         "Forward EV/EBIT Data Coverage",
         "Loss-Making EV Share",
+        "Sector Basket Concentration",
+        "Sector Effective Firms",
+        "Sector Concentration Company Count",
+        "Sector Concentration Coverage",
         "Beta",
     ]
     available = [column for column in required if column in macro_df.columns]
     table = macro_df[available].copy()
     table["Sector"] = table["Sector"].apply(sector_display_name)
     table = table.rename(columns={"Sector Score": "AEI", "Avg Return": "1Y Return"})
-    for column in ["AEI", "Pressure", "Beta"]:
+    for column in ["AEI", "Pressure", "Sector Basket Concentration", "Sector Effective Firms", "Beta"]:
         if column in table.columns:
             table[column] = pd.to_numeric(table[column], errors="coerce")
     if "1Y Return" in table.columns:
         table["1Y Return"] = pd.to_numeric(table["1Y Return"], errors="coerce")
+    if "Sector Concentration Coverage" in table.columns:
+        table["Sector Concentration Coverage"] = (
+            pd.to_numeric(table["Sector Concentration Coverage"], errors="coerce") * 100.0
+        ).round(1)
+        table = table.rename(columns={"Sector Concentration Coverage": "Concentration Coverage (%)"})
     if "Forward EV/EBIT Data Coverage" in table.columns:
         table["Forward EV/EBIT Data Coverage"] = (
             pd.to_numeric(table["Forward EV/EBIT Data Coverage"], errors="coerce") * 100.0
@@ -1226,13 +1597,24 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
                 ),
                 multiple_rank,
             ),
+        ],
+        key_prefix="sector-dossier-summary-primary",
+    )
+    render_statline(
+        [
             (
                 "Loss-Making EV Share",
                 fmt_number(pd.to_numeric(metrics.get("Loss-Making EV Share"), errors="coerce") * 100, 1, suffix="%"),
                 f"{int(metrics.get('Loss-Making Company Count', 0) or 0)} companies with non-positive forward EBIT",
             ),
+            (
+                "Basket Concentration",
+                fmt_number(metrics.get("Sector Basket Concentration"), 1),
+                f"Adjusted HHI · {int(metrics.get('Sector Concentration Company Count', 0) or 0)} valid firms · effective firms {fmt_number(metrics.get('Sector Effective Firms'), 1)}",
+                "Adjusted HHI controls for different sector-basket sizes. 0 is equal-weighted; 100 is single-company concentration.",
+            ),
         ],
-        key_prefix="sector-dossier-summary",
+        key_prefix="sector-dossier-summary-structure",
     )
 
     factors_col, pressure_col = st.columns(2)
@@ -1271,15 +1653,44 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
         st.dataframe(arrow_safe_dataframe(metrics.get("Scored Factors", pd.DataFrame())), width="stretch", hide_index=True)
         st.markdown("**Trading-pressure components**")
         st.dataframe(arrow_safe_dataframe(metrics.get("Pressure Components", pd.DataFrame())), width="stretch", hide_index=True)
+        st.markdown("**Basket-concentration contributors**")
+        concentration_table = sector_hhi_component_breakdown(df, top_n=8)
+        if not concentration_table.empty:
+            concentration_table["Market Cap Share"] = (concentration_table["Market Cap Share"] * 100.0).round(2)
+            concentration_table["HHI Contribution Share"] = concentration_table["HHI Contribution Share"].round(2)
+            concentration_table = concentration_table.rename(columns={
+                "Market Cap Share": "Market Cap Share (%)",
+                "HHI Contribution Share": "Share of HHI (%)",
+            })
+        st.dataframe(arrow_safe_dataframe(concentration_table), width="stretch", hide_index=True)
 
 
-def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data):
+def _market_universe_label(summary, macro_df):
+    summary = summary or {}
+    loaded_sectors = int(summary.get("loaded_sectors", len(macro_df)) or 0)
+    configured_sectors = int(summary.get("configured_sectors", loaded_sectors) or loaded_sectors)
+    loaded_tickers = int(summary.get("loaded_tickers", 0) or 0)
+    configured_tickers = int(summary.get("configured_tickers", loaded_tickers) or loaded_tickers)
+    sector_text = (
+        f"{loaded_sectors} sectors"
+        if loaded_sectors == configured_sectors
+        else f"{loaded_sectors} of {configured_sectors} sectors"
+    )
+    ticker_text = (
+        f"{loaded_tickers} tickers loaded"
+        if loaded_tickers == configured_tickers
+        else f"{loaded_tickers} of {configured_tickers} tickers loaded"
+    )
+    return f"{sector_text} / {ticker_text}"
+
+
+def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data, market_universe_summary=None):
     del regime_metrics
     macro_df = dashboard_data["macro_df"]
     render_tab_header(
         "Market",
         "AI-specific sector analysis with cross-sectional positioning, movement, fundamental evolution, and market performance.",
-        f"{len(macro_df)} sectors",
+        _market_universe_label(market_universe_summary, macro_df),
     )
     render_line_break()
     _render_tab_metric_registry("market")
@@ -1333,7 +1744,6 @@ def _status_rows(regime_metrics):
         ("Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap Version"),
         ("Borrower Strain", "Borrower Strain", "Borrower Strain", "Borrower Strain Version"),
         ("Lender Strain", "Lender Strain", "Lender Strain", "Lender Strain Version"),
-        ("Concentration HHI", "Concentration HHI", None, None),
         ("Speculation Gap", "Speculation Gap", None, None),
         ("Average Sector Pressure", "Avg Sector Pressure", None, "Pressure Version"),
     ]
@@ -1436,6 +1846,13 @@ def _sector_methodology_rows():
                 "Interpretation": "Earnings-supported, broad-based sector equity strength",
             },
             {
+                "Product": "Sector Basket Concentration",
+                "Version": "1.0",
+                "Construction": "100 × (Raw HHI − 1/N) ÷ (1 − 1/N)",
+                "Treatment": "Valid positive-market-cap constituents only; rankings require at least 3 firms and 60% coverage",
+                "Interpretation": "Concentration relative to an equal-weight basket with the same constituent count",
+            },
+            {
                 "Product": "Trading Pressure",
                 "Version": PRESSURE_VERSION,
                 "Construction": "0.25 Valuation Stretch + 0.25 Price Extension + 0.20 Momentum Acceleration + 0.15 Volatility Expansion + 0.15 Volume Activity",
@@ -1460,7 +1877,7 @@ def _sector_methodology_rows():
     )
 
 
-def render_evidence_tab(fred_data, sector_data, regime_metrics, energy_data, debt_markets_data):
+def render_evidence_tab(fred_data, sector_data, regime_metrics, energy_data, debt_markets_data, infrastructure_data=None, adaptation_data=None):
     render_tab_header(
         "Evidence",
         "Model contract, current source state, component coverage, definitions, and source data.",
@@ -1478,6 +1895,10 @@ def render_evidence_tab(fred_data, sector_data, regime_metrics, energy_data, deb
         render_static_table(_energy_source_rows(energy_data))
     with st.expander("Debt Markets Data", expanded=False):
         render_static_table(_debt_market_source_rows(debt_markets_data))
+    with st.expander("Infrastructure Data", expanded=False):
+        render_static_table(_infrastructure_source_rows(infrastructure_data or {}))
+    with st.expander("Adaptation Data", expanded=False):
+        render_static_table(_adaptation_source_rows(adaptation_data or {}))
 
     render_section("Product status", "Current readings, source state, fallback dates, and calculation versions.")
     render_static_table(_status_rows(regime_metrics))
@@ -1498,6 +1919,9 @@ def render_research_dashboard(
     nfci_history=None,
     energy_data=None,
     debt_markets_data=None,
+    infrastructure_data=None,
+    adaptation_data=None,
+    market_universe_summary=None,
 ):
     dashboard_data = build_macro_dashboard_data(
         sector_metrics=sector_metrics,
@@ -1511,8 +1935,17 @@ def render_research_dashboard(
             fred_data,
             regime_metrics,
             dashboard_data,
+            adaptation_data or {},
         )
     with tabs[1]:
+        render_market_tab(
+            sector_metrics,
+            sector_data,
+            regime_metrics,
+            dashboard_data,
+            market_universe_summary,
+        )
+    with tabs[2]:
         render_finance_tab(
             sector_metrics,
             sector_data,
@@ -1522,25 +1955,24 @@ def render_research_dashboard(
             debt_markets_data or {},
             dashboard_data,
         )
-    with tabs[2]:
+    with tabs[3]:
+        render_infrastructure_tab(infrastructure_data or {})
+    with tabs[4]:
         render_energy_tab(
             fred_data,
             regime_metrics,
             energy_data or {},
             dashboard_data,
         )
-    with tabs[3]:
-        render_market_tab(
-            sector_metrics,
-            sector_data,
-            regime_metrics,
-            dashboard_data,
-        )
-    with tabs[4]:
+    with tabs[5]:
+        render_adaptation_tab(adaptation_data or {})
+    with tabs[6]:
         render_evidence_tab(
             fred_data,
             sector_data,
             regime_metrics,
             energy_data or {},
             debt_markets_data or {},
+            infrastructure_data or {},
+            adaptation_data or {},
         )

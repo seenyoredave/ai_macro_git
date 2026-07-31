@@ -1,8 +1,8 @@
-"""Deterministic interpretation layer for the AI Macro view.
+"""Deterministic interpretation layer for the AI Macro Snapshot.
 
-The module translates the platform's measured state into a compact headline,
-summary, pressure factors, resilience factors, and material changes. It does not
-use a language model, random phrasing, or ungrounded causal claims.
+The module translates measured platform state into a compact headline,
+expansion factors, constraints, and a weekly context rollup. It does not use a
+language model, random phrasing, or ungrounded causal claims.
 """
 
 from __future__ import annotations
@@ -16,21 +16,22 @@ import pandas as pd
 from analytics.financial_conditions import nfci_snapshot
 
 
-MACRO_INTERPRETATION_VERSION = "1.1"
+MACRO_INTERPRETATION_VERSION = "2.0"
 
 
 MACRO_STATE_HEADLINES = frozenset(
     {
-        "Partial current-state view",
-        "Supportive conditions",
-        "Resilient",
-        "Resilient under rising pressure",
-        "Resilient under broad-based pressure",
-        "Increasingly constrained",
-        "Funding-constrained",
-        "Broad deterioration",
+        "Partial snapshot",
+        "Broad expansion",
+        "Expansion continuing",
+        "Uneven expansion",
+        "Expansion with emerging constraints",
+        "Expansion with material constraints",
+        "Constraints broadening",
+        "Financing constrained",
+        "Broad contraction",
         "Stabilizing",
-        "Conditions improving",
+        "Expansion reaccelerating",
     }
 )
 
@@ -73,15 +74,12 @@ def _history_frame(history, value_column, *, version_column=None, required_versi
         return pd.DataFrame(columns=["Date", "Value"])
     if "Date" not in history.columns or value_column not in history.columns:
         return pd.DataFrame(columns=["Date", "Value"])
-
     frame = history.copy()
     if version_column and required_version is not None:
         if version_column not in frame.columns:
             return pd.DataFrame(columns=["Date", "Value"])
         frame = frame[frame[version_column].astype(str) == str(required_version)].copy()
-
-    frame = frame[["Date", value_column]].rename(columns={value_column: "Value"})
-    return _series_frame(frame)
+    return _series_frame(frame[["Date", value_column]].rename(columns={value_column: "Value"}))
 
 
 def _prior_delta(series, current, *, lookback=1):
@@ -89,7 +87,6 @@ def _prior_delta(series, current, *, lookback=1):
     frame = _series_frame(series)
     if pd.isna(current) or frame.empty:
         return np.nan
-
     values = frame["Value"].tolist()
     if values and math.isclose(values[-1], current, rel_tol=0.0, abs_tol=1e-10):
         values = values[:-1]
@@ -98,19 +95,47 @@ def _prior_delta(series, current, *, lookback=1):
     return current - float(values[-lookback])
 
 
+def _previous_completed_friday(as_of=None) -> pd.Timestamp:
+    current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
+    days_since_friday = (current.weekday() - 4) % 7
+    if days_since_friday == 0:
+        days_since_friday = 7
+    return current - pd.Timedelta(days=days_since_friday)
+
+
+def _weekly_delta(series, current, *, as_of=None):
+    """Compare a current reading with the last observation at/before prior Friday.
+
+    A metric only enters the weekly rollup when its newest observation arrived
+    after that Friday. Slow-moving series therefore do not repeat annual or
+    monthly changes every week merely because the level remains noteworthy.
+    """
+    current = _number(current)
+    frame = _series_frame(series)
+    if pd.isna(current) or frame.empty:
+        return np.nan
+    current_date = frame.iloc[-1]["Date"]
+    if not math.isclose(float(frame.iloc[-1]["Value"]), current, rel_tol=0.0, abs_tol=1e-10):
+        current_date = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
+    baseline_date = _previous_completed_friday(as_of)
+    if pd.Timestamp(current_date).normalize() <= baseline_date:
+        return np.nan
+    prior = frame.loc[frame["Date"] <= baseline_date]
+    if prior.empty:
+        return np.nan
+    return current - float(prior.iloc[-1]["Value"])
+
+
 def _consecutive_direction(series, current, *, adverse_when_higher=True, tolerance=0.0):
-    """Count consecutive adverse or favorable moves ending at current."""
     current = _number(current)
     frame = _series_frame(series)
     if pd.isna(current):
         return 0
-
     values = frame["Value"].tolist()
     if not values or not math.isclose(values[-1], current, rel_tol=0.0, abs_tol=1e-10):
         values.append(current)
     if len(values) < 2:
         return 0
-
     streak = 0
     for index in range(len(values) - 1, 0, -1):
         change = values[index] - values[index - 1]
@@ -141,15 +166,7 @@ def _level(value, thresholds):
 
 
 def _factor(
-    *,
-    key,
-    domain,
-    kind,
-    severity,
-    direction,
-    statement,
-    summary_clause,
-    score=0.0,
+    *, key, domain, kind, severity, direction, statement, score=0.0
 ):
     return {
         "key": key,
@@ -158,7 +175,6 @@ def _factor(
         "severity": int(max(0, severity)),
         "direction": direction,
         "statement": statement,
-        "summary_clause": summary_clause,
         "score": float(score),
     }
 
@@ -166,14 +182,10 @@ def _factor(
 def _select_diverse(factors, limit=3):
     ranked = sorted(
         [factor for factor in factors if factor.get("statement")],
-        key=lambda item: (
-            int(item.get("severity", 0)),
-            float(item.get("score", 0.0)),
-        ),
+        key=lambda item: (int(item.get("severity", 0)), float(item.get("score", 0.0))),
         reverse=True,
     )
-    chosen = []
-    used_domains = set()
+    chosen, used_domains = [], set()
     for factor in ranked:
         if factor["domain"] in used_domains:
             continue
@@ -182,23 +194,11 @@ def _select_diverse(factors, limit=3):
         if len(chosen) >= limit:
             return chosen
     for factor in ranked:
-        if factor in chosen:
-            continue
-        chosen.append(factor)
+        if factor not in chosen:
+            chosen.append(factor)
         if len(chosen) >= limit:
             break
     return chosen
-
-
-def _join_clauses(clauses):
-    clean = [str(item).strip().rstrip(".") for item in clauses if str(item).strip()]
-    if not clean:
-        return ""
-    if len(clean) == 1:
-        return clean[0]
-    if len(clean) == 2:
-        return f"{clean[0]} and {clean[1]}"
-    return f"{', '.join(clean[:-1])}, and {clean[-1]}"
 
 
 def _funding_state(funding_current):
@@ -206,13 +206,11 @@ def _funding_state(funding_current):
     runway = _number((funding_current or {}).get("cash_reserve_coverage_years"))
     if pd.isna(internal) and pd.isna(runway):
         return "unknown", 0
-
     score = 0
     if pd.notna(internal):
         score += 2 if internal >= 1.5 else 1 if internal >= 1.0 else -1 if internal >= 0.75 else -2
     if pd.notna(runway):
         score += 2 if runway >= 2.0 else 1 if runway >= 1.0 else -1 if runway >= 0.5 else -2
-
     if score >= 3:
         return "strong", 3
     if score >= 1:
@@ -222,39 +220,30 @@ def _funding_state(funding_current):
     return "weak", 0
 
 
-def _metric_change(
-    changes,
-    *,
-    key,
-    label,
-    current,
-    delta,
-    threshold,
-    unit="points",
-    adverse_when_higher=True,
-    score_scale=None,
-):
-    current = _number(current)
-    delta = _number(delta)
+def _metric_change(changes, *, key, label, current, delta, threshold, unit="points", score_scale=None):
+    current, delta = _number(current), _number(delta)
     if pd.isna(current) or pd.isna(delta) or abs(delta) < threshold:
         return
-    direction = "increased" if delta > 0 else "decreased"
-    if not adverse_when_higher:
-        direction = "improved" if delta > 0 else "weakened"
     if unit == "%":
-        statement = f"{label} {direction} {abs(delta):.1f}%."
+        statement = f"{label} {'increased' if delta > 0 else 'decreased'} {abs(delta):.1f}%."
     elif unit == "x":
-        statement = f"{label} {direction} to {current:.2f}×."
+        verb = "rose" if delta > 0 else "fell"
+        statement = f"{label} {verb} to {current:.2f} times annual capital spending."
+    elif unit == "percentage points":
+        statement = f"{label} {'increased' if delta > 0 else 'decreased'} {abs(delta):.1f} percentage points."
     else:
-        statement = f"{label} {direction} by {abs(delta):.1f} points."
-    scale = score_scale or threshold
+        statement = f"{label} {'increased' if delta > 0 else 'decreased'} by {abs(delta):.1f} points."
     changes.append(
         {
             "key": key,
             "statement": statement,
-            "score": abs(delta) / max(float(scale), 1e-9),
+            "score": abs(delta) / max(float(score_scale or threshold), 1e-9),
         }
     )
+
+
+def _energy_item(energy_data, name):
+    return (((energy_data or {}).get("series", {}) or {}).get(name, {}) or {})
 
 
 def build_macro_interpretation(
@@ -265,12 +254,18 @@ def build_macro_interpretation(
     energy_data=None,
     fred_data=None,
     nfci_history=None,
+    infrastructure_data=None,
+    adaptation_data=None,
+    weekly_context=None,
 ):
-    """Build a compact, deterministic interpretation of the current state."""
+    """Build a compact, deterministic Snapshot from measured platform domains."""
     regime = regime_metrics or {}
     macro_history = macro_history if isinstance(macro_history, pd.DataFrame) else pd.DataFrame()
     debt_markets_data = debt_markets_data or {}
     energy_data = energy_data or {}
+    infrastructure_data = infrastructure_data or {}
+    adaptation_data = adaptation_data or {}
+    weekly_context = weekly_context or {}
     funding = (regime.get("Deployment Funding Mix", {}) or {}).get("current", {}) or {}
     funding_series = (regime.get("Deployment Funding Mix", {}) or {}).get("series", {}) or {}
 
@@ -280,65 +275,86 @@ def build_macro_interpretation(
     capacity_gap = _number(regime.get("Power Capacity Gap"))
     validation_gap = _number(regime.get("Economic Validation Gap"))
     speculation_gap = _number(regime.get("Speculation Gap"))
-    concentration = _number(regime.get("Concentration HHI"))
     aei = _number(regime.get("AI Equity Index"))
     adi = _number(regime.get("AI Development Intensity"))
 
-    borrower_series = _history_frame(
-        macro_history,
-        "Borrower Strain",
-        version_column="Borrower Strain Version",
-        required_version=regime.get("Borrower Strain Version"),
-    )
-    lender_series = _history_frame(
-        macro_history,
-        "Lender Strain",
-        version_column="Lender Strain Version",
-        required_version=regime.get("Lender Strain Version"),
-    )
-    power_series = _history_frame(
-        macro_history,
-        "Power Stress Index",
-        version_column="Power Stress Version",
-        required_version=regime.get("Power Stress Version"),
-    )
-    capacity_gap_series = _history_frame(
-        macro_history,
-        "Power Capacity Gap",
-        version_column="Power Capacity Gap Version",
-        required_version=regime.get("Power Capacity Gap Version"),
-    )
-    validation_series = _history_frame(
-        macro_history,
-        "Economic Validation Gap",
-        version_column="EVG Version",
-        required_version=regime.get("EVG Version"),
-    )
-    aei_series = _history_frame(
-        macro_history,
-        "AI Equity Index",
-        version_column="AEI Version",
-        required_version=regime.get("AEI Version"),
-    )
-    adi_series = _history_frame(
-        macro_history,
-        "AI Development Intensity",
-        version_column="ADI Version",
-        required_version=regime.get("ADI Version"),
-    )
-    concentration_series = _history_frame(macro_history, "Concentration HHI")
+    infrastructure_series = (infrastructure_data.get("series", {}) or {})
+    construction_item = (infrastructure_series.get("Data Center Construction", {}) or {})
+    construction_yoy = _number(construction_item.get("yoy_growth"))
+    construction_date = construction_item.get("date")
+    construction_history = _series_frame(construction_item.get("history"))
 
-    borrower_delta = _prior_delta(borrower_series, borrower)
-    lender_delta = _prior_delta(lender_series, lender)
-    power_delta = _prior_delta(power_series, power_stress)
-    capacity_gap_delta = _prior_delta(capacity_gap_series, capacity_gap)
-    validation_delta = _prior_delta(validation_series, validation_gap)
-    aei_delta = _prior_delta(aei_series, aei)
-    adi_delta = _prior_delta(adi_series, adi)
-    concentration_delta = _prior_delta(concentration_series, concentration)
+    current_use = _number(adaptation_data.get("current_use"))
+    expected_use = _number(adaptation_data.get("expected_use"))
+    expected_adoption_gap = _number(
+        adaptation_data.get("expected_adoption_gap", adaptation_data.get("adoption" + "_pipeline"))
+    )
+    adaptation_annual_change = _number(adaptation_data.get("annual_change"))
+    adaptation_date = adaptation_data.get("snapshot_date")
+    adaptation_history = _history_frame(
+        adaptation_data.get("national_history"), "Current AI Use"
+    )
 
-    pressures = []
-    resilience = []
+    metric_specs = {
+        "borrower": ("Borrower Strain", "Borrower Strain Version", "Borrower Strain Version"),
+        "lender": ("Lender Strain", "Lender Strain Version", "Lender Strain Version"),
+        "power": ("Power Stress Index", "Power Stress Version", "Power Stress Version"),
+        "capacity": ("Power Capacity Gap", "Power Capacity Gap Version", "Power Capacity Gap Version"),
+        "validation": ("Economic Validation Gap", "EVG Version", "EVG Version"),
+        "aei": ("AI Equity Index", "AEI Version", "AEI Version"),
+        "adi": ("AI Development Intensity", "ADI Version", "ADI Version"),
+    }
+    histories = {
+        key: _history_frame(
+            macro_history,
+            value_column,
+            version_column=version_column,
+            required_version=regime.get(required_key),
+        )
+        for key, (value_column, version_column, required_key) in metric_specs.items()
+    }
+    deltas = {
+        "borrower": _prior_delta(histories["borrower"], borrower),
+        "lender": _prior_delta(histories["lender"], lender),
+        "power": _prior_delta(histories["power"], power_stress),
+        "capacity": _prior_delta(histories["capacity"], capacity_gap),
+        "validation": _prior_delta(histories["validation"], validation_gap),
+        "aei": _prior_delta(histories["aei"], aei),
+        "adi": _prior_delta(histories["adi"], adi),
+    }
+
+    constraints, expansion = [], []
+
+    # Market and development establish whether observable activity is expanding.
+    if pd.notna(adi):
+        if adi >= 55:
+            expansion.append(_factor(
+                key="development", domain="development", kind="expansion",
+                severity=3 if adi >= 75 else 2, direction="rising" if deltas["adi"] > 1.5 else "stable",
+                statement="AI investment and infrastructure development remain elevated.",
+                score=adi / 20,
+            ))
+        elif adi <= 35:
+            constraints.append(_factor(
+                key="development", domain="development", kind="constraint",
+                severity=2, direction="rising", statement="AI investment and infrastructure development remain subdued.",
+                score=(35-adi)/10,
+            ))
+    if pd.notna(aei):
+        if aei >= 55:
+            expansion.append(_factor(
+                key="market", domain="market", kind="expansion",
+                severity=3 if aei >= 70 else 2, direction="rising" if deltas["aei"] > 1 else "stable",
+                statement="AI equity fundamentals and market performance remain healthy.",
+                score=aei/20,
+            ))
+        elif aei <= 35:
+            constraints.append(_factor(
+                key="market", domain="market", kind="constraint", severity=2,
+                direction="rising" if deltas["aei"] < -1 else "stable",
+                statement="AI equity fundamentals and market performance remain weak.",
+                score=(35-aei)/10,
+            ))
 
     # Funding capacity and contractual burden.
     internal = _number(funding.get("internal_funding_coverage"))
@@ -349,587 +365,434 @@ def build_macro_interpretation(
 
     if pd.notna(internal):
         if internal >= 1.0:
-            severity = 3 if internal >= 1.5 else 2
-            resilience.append(
-                _factor(
-                    key="internal-funding",
-                    domain="funding",
-                    kind="resilience",
-                    severity=severity,
-                    direction="stable",
-                    statement=f"Operating cash flow covers {_fmt(internal, 2, suffix='×')} current CapEx.",
-                    summary_clause="internal cash generation covers current capital spending",
-                    score=internal,
-                )
-            )
+            expansion.append(_factor(
+                key="internal-funding", domain="funding", kind="expansion",
+                severity=3 if internal >= 1.5 else 2, direction="stable",
+                statement=f"Operating cash flow covers {_fmt(internal, 2)} times current capital spending.",
+                score=internal,
+            ))
         else:
-            pressures.append(
-                _factor(
-                    key="internal-funding",
-                    domain="funding",
-                    kind="pressure",
-                    severity=3 if internal < 0.75 else 2,
-                    direction="rising",
-                    statement=f"Operating cash flow covers only {_fmt(internal, 2, suffix='×')} current CapEx.",
-                    summary_clause="internal cash generation no longer covers current capital spending",
-                    score=1.0 - internal,
-                )
-            )
-
+            constraints.append(_factor(
+                key="internal-funding", domain="funding", kind="constraint",
+                severity=3 if internal < .75 else 2, direction="rising",
+                statement=f"Operating cash flow covers only {_fmt(internal, 2)} times current capital spending.",
+                score=1-internal,
+            ))
     if pd.notna(runway):
         if runway >= 1.0:
-            resilience.append(
-                _factor(
-                    key="cash-runway",
-                    domain="liquidity",
-                    kind="resilience",
-                    severity=3 if runway >= 2.0 else 2,
-                    direction="stable",
-                    statement=f"Cash reserves cover about {_fmt(runway, 2, suffix=' years')} of current CapEx.",
-                    summary_clause="liquid reserves provide additional funding runway",
-                    score=runway,
-                )
-            )
+            expansion.append(_factor(
+                key="cash-runway", domain="liquidity", kind="expansion",
+                severity=3 if runway >= 2 else 2, direction="stable",
+                statement=f"Cash reserves cover about {_fmt(runway, 2)} years of current capital spending.",
+                score=runway,
+            ))
         else:
-            pressures.append(
-                _factor(
-                    key="cash-runway",
-                    domain="liquidity",
-                    kind="pressure",
-                    severity=3 if runway < 0.5 else 2,
-                    direction="rising",
-                    statement=f"Cash reserves cover less than one year of current CapEx ({_fmt(runway, 2, suffix=' years')}).",
-                    summary_clause="cash reserves provide limited buildout runway",
-                    score=1.0 - runway,
-                )
-            )
-
+            constraints.append(_factor(
+                key="cash-runway", domain="liquidity", kind="constraint",
+                severity=3 if runway < .5 else 2, direction="rising",
+                statement=f"Cash reserves cover {_fmt(runway, 2)} years of current capital spending.",
+                score=1-runway,
+            ))
     if pd.notna(commitments) and commitments >= 1.5:
-        severity = 4 if commitments >= 3.0 else 3 if commitments >= 2.0 else 2
-        pressures.append(
-            _factor(
-                key="commitments",
-                domain="commitments",
-                kind="pressure",
-                severity=severity,
-                direction="stable",
-                statement=f"Forward commitments equal {_fmt(commitments, 2, suffix='×')} trailing CapEx.",
-                summary_clause="forward commitments are large relative to the current buildout rate",
-                score=commitments,
-            )
-        )
+        constraints.append(_factor(
+            key="commitments", domain="commitments", kind="constraint",
+            severity=4 if commitments >= 3 else 3 if commitments >= 2 else 2,
+            direction="stable", statement=f"Forward commitments are {_fmt(commitments, 2)} times the past year's capital spending.",
+            score=commitments,
+        ))
+    if pd.notna(debt_pulse) and debt_pulse >= .5:
+        constraints.append(_factor(
+            key="debt-pulse", domain="funding", kind="constraint", severity=3 if debt_pulse >= 1 else 2,
+            direction="rising", statement=f"New debt over the past year equals {_fmt(debt_pulse, 2)} times current capital spending.",
+            score=debt_pulse,
+        ))
 
-    if pd.notna(debt_pulse) and debt_pulse >= 0.5:
-        pressures.append(
-            _factor(
-                key="debt-pulse",
-                domain="funding",
-                kind="pressure",
-                severity=3 if debt_pulse >= 1.0 else 2,
-                direction="rising",
-                statement=f"Debt expanded by {_fmt(debt_pulse, 2, suffix='×')} current CapEx over twelve months.",
-                summary_clause="debt formation is contributing materially to current funding",
-                score=debt_pulse,
-            )
-        )
-
-    # Borrower and lender strain.
+    # Borrower and lender condition.
     for key, label, value, delta, series in (
-        ("borrower-strain", "Borrower strain", borrower, borrower_delta, borrower_series),
-        ("lender-strain", "Lender strain", lender, lender_delta, lender_series),
+        ("borrower-strain", "Borrower strain", borrower, deltas["borrower"], histories["borrower"]),
+        ("lender-strain", "Lender strain", lender, deltas["lender"], histories["lender"]),
     ):
         if pd.isna(value):
             continue
-        severity = _level(value, (10.0, 25.0, 50.0))
-        direction = _direction(delta, threshold=1.0)
-        streak = _consecutive_direction(series, value, tolerance=0.75)
+        severity = _level(value, (10, 25, 50))
+        direction = _direction(delta, threshold=1)
+        streak = _consecutive_direction(series, value, tolerance=.75)
         if severity >= 1 or direction == "rising":
-            if streak >= 2:
-                movement = f"has increased for {streak} consecutive observations"
-            elif direction == "rising":
-                movement = "is rising"
-            elif direction == "easing":
-                movement = "is easing but remains above neutral"
-            else:
-                movement = "remains above neutral"
-            qualifier = " from a low level" if severity == 0 else ""
-            pressures.append(
-                _factor(
-                    key=key,
-                    domain="credit",
-                    kind="pressure",
-                    severity=max(1, severity),
-                    direction=direction,
-                    statement=f"{label} {movement}{qualifier}.",
-                    summary_clause=f"{label.lower()} is moving higher" if direction == "rising" else f"{label.lower()} remains elevated",
-                    score=abs(value) + (abs(delta) if pd.notna(delta) else 0),
-                )
-            )
+            movement = f"has increased for {streak} consecutive observations" if streak >= 2 else "is rising" if direction == "rising" else "remains above neutral"
+            constraints.append(_factor(
+                key=key, domain="credit", kind="constraint", severity=max(1, severity), direction=direction,
+                statement=f"{label} {movement}.",
+                score=abs(value) + (abs(delta) if pd.notna(delta) else 0),
+            ))
         elif value <= -10:
-            resilience.append(
-                _factor(
-                    key=key,
-                    domain="credit",
-                    kind="resilience",
-                    severity=2 if value > -25 else 3,
-                    direction=direction,
-                    statement=f"{label} remains below neutral.",
-                    summary_clause=f"{label.lower()} remains contained",
-                    score=abs(value),
-                )
-            )
+            expansion.append(_factor(
+                key=key, domain="credit", kind="expansion", severity=3 if value <= -25 else 2,
+                direction=direction, statement=f"{label} remains below neutral.",
+                score=abs(value),
+            ))
 
     # Corporate bond market functioning.
-    debt_series = (debt_markets_data.get("series", {}) or {})
     debt_items = []
-    for name in (
-        "Corporate Bond Market Distress",
-        "Investment-Grade Bond Distress",
-        "High-Yield Bond Distress",
-    ):
-        item = debt_series.get(name, {}) or {}
+    for name in ("Corporate Bond Market Distress", "Investment-Grade Bond Distress", "High-Yield Bond Distress"):
+        item = ((debt_markets_data.get("series", {}) or {}).get(name, {}) or {})
         value = _number(item.get("value"))
         history = _series_frame(item.get("history"))
         delta = _prior_delta(history, value, lookback=min(4, max(1, len(history))))
-        debt_items.append((name, value, delta, history))
-
+        debt_items.append((name, value, delta))
     valid_debt = [item for item in debt_items if pd.notna(item[1])]
     if valid_debt:
-        dominant_name, dominant_value, dominant_delta, dominant_history = max(
-            valid_debt, key=lambda item: item[1]
-        )
-        debt_severity = _level(dominant_value, (0.15, 0.30, 0.50))
-        debt_direction = _direction(dominant_delta, threshold=0.03)
-        dominant_short = dominant_name.replace(" Bond Distress", "")
-        if debt_severity >= 1 or debt_direction == "rising":
-            if debt_direction == "rising":
-                statement = f"Corporate bond-market distress is rising, led by {dominant_short.lower()} credit."
-                clause = "corporate bond-market pressure is increasing"
-            elif debt_direction == "easing":
-                statement = f"Corporate bond-market distress is easing but remains most pronounced in {dominant_short.lower()} credit."
-                clause = "corporate bond-market pressure remains elevated"
-            else:
-                statement = f"Corporate bond-market distress remains most pronounced in {dominant_short.lower()} credit."
-                clause = "corporate bond-market pressure remains elevated"
-            pressures.append(
-                _factor(
-                    key="debt-markets",
-                    domain="credit",
-                    kind="pressure",
-                    severity=max(1, debt_severity),
-                    direction=debt_direction,
-                    statement=statement,
-                    summary_clause=clause,
-                    score=dominant_value * 10 + (abs(dominant_delta) if pd.notna(dominant_delta) else 0),
-                )
-            )
+        dominant_name, dominant_value, dominant_delta = max(valid_debt, key=lambda item: item[1])
+        severity = _level(dominant_value, (.15, .30, .50))
+        direction = _direction(dominant_delta, threshold=.03)
+        short = dominant_name.replace(" Bond Distress", "")
+        short = {
+            "Investment-Grade": "Investment-grade",
+            "High-Yield": "High-yield",
+            "Corporate Bond Market Distress": "Corporate",
+        }.get(short, short)
+        if severity >= 1 or direction == "rising":
+            constraints.append(_factor(
+                key="debt-markets", domain="credit", kind="constraint", severity=max(1, severity), direction=direction,
+                statement=f"{short} credit shows the most stress in corporate bond markets.",
+                score=dominant_value*10,
+            ))
         else:
-            resilience.append(
-                _factor(
-                    key="debt-markets",
-                    domain="credit",
-                    kind="resilience",
-                    severity=2,
-                    direction=debt_direction,
-                    statement="Corporate bond markets remain broadly functional.",
-                    summary_clause="public debt markets remain functional",
-                    score=1.0 - dominant_value,
-                )
-            )
+            expansion.append(_factor(
+                key="debt-markets", domain="credit", kind="expansion", severity=2, direction=direction,
+                statement="Corporate bond markets remain broadly functional.",
+                score=1-dominant_value,
+            ))
 
     # Broad financial conditions.
     nfci = nfci_snapshot(fred_data or {}, nfci_history)
     nfci_value = _number(nfci.get("value"))
     nfci_change = _number(nfci.get("three_month_change"))
     if pd.notna(nfci_value):
-        nfci_direction = _direction(nfci_change, threshold=0.10)
-        if nfci_value > 0.10 or nfci_direction == "rising":
-            pressures.append(
-                _factor(
-                    key="nfci",
-                    domain="financial-conditions",
-                    kind="pressure",
-                    severity=3 if nfci_value >= 0.50 else 2 if nfci_value > 0.10 else 1,
-                    direction=nfci_direction,
-                    statement=(
-                        "Broad financial conditions are tightening."
-                        if nfci_direction == "rising"
-                        else "Broad financial conditions are tighter than average."
-                    ),
-                    summary_clause="broad financial conditions are tightening" if nfci_direction == "rising" else "broad financial conditions remain tight",
-                    score=max(nfci_value, 0) + (max(nfci_change, 0) if pd.notna(nfci_change) else 0),
-                )
-            )
-        elif nfci_value < -0.10:
-            resilience.append(
-                _factor(
-                    key="nfci",
-                    domain="financial-conditions",
-                    kind="resilience",
-                    severity=3 if nfci_value <= -0.50 else 2,
-                    direction=nfci_direction,
-                    statement="Broad financial conditions remain looser than their long-run average.",
-                    summary_clause="broad financial conditions remain supportive",
-                    score=abs(nfci_value),
-                )
-            )
+        direction = _direction(nfci_change, threshold=.10)
+        if nfci_value > .10 or direction == "rising":
+            constraints.append(_factor(
+                key="nfci", domain="financial-conditions", kind="constraint",
+                severity=3 if nfci_value >= .50 else 2 if nfci_value > .10 else 1,
+                direction=direction,
+                statement="Broad financial conditions are tightening." if direction == "rising" else "Broad financial conditions are tighter than average.",
+                score=max(nfci_value, 0) + max(nfci_change, 0) if pd.notna(nfci_change) else max(nfci_value, 0),
+            ))
+        elif nfci_value < -.10:
+            expansion.append(_factor(
+                key="nfci", domain="financial-conditions", kind="expansion", severity=3 if nfci_value <= -.50 else 2,
+                direction=direction, statement="Broad financial conditions remain looser than average.",
+                score=abs(nfci_value),
+            ))
 
-    # Energy and power-system pressure.
-    energy_series = (energy_data.get("series", {}) or {})
-    gas_change = _number((energy_series.get("Natural Gas Price", {}) or {}).get("change_pct"))
-    oil_change = _number((energy_series.get("WTI Crude Oil", {}) or {}).get("change_pct"))
-    if pd.notna(oil_change) and oil_change >= 10:
-        pressures.append(
-            _factor(
-                key="oil-price",
-                domain="energy",
-                kind="pressure",
-                severity=3 if oil_change >= 25 else 2,
-                direction="rising",
-                statement=f"WTI crude oil is up {_fmt(oil_change, 1, suffix='%')} over four weeks.",
-                summary_clause="oil prices have risen sharply",
-                score=oil_change / 10,
-            )
-        )
-    if pd.notna(gas_change) and gas_change >= 15:
-        pressures.append(
-            _factor(
-                key="gas-price",
-                domain="energy",
-                kind="pressure",
-                severity=3 if gas_change >= 35 else 2,
-                direction="rising",
-                statement=f"Henry Hub natural gas is up {_fmt(gas_change, 1, suffix='%')} over four weeks.",
-                summary_clause="natural-gas prices are rising",
-                score=gas_change / 15,
-            )
-        )
+    # Energy costs and physical power response.
+    oil_change = _number(_energy_item(energy_data, "WTI Crude Oil").get("change_pct"))
+    gas_change = _number(_energy_item(energy_data, "Natural Gas Price").get("change_pct"))
+    commercial_price_change = _number(_energy_item(energy_data, "Commercial Electricity Price").get("change_pct"))
+    industrial_price_change = _number(_energy_item(energy_data, "Industrial Electricity Price").get("change_pct"))
+    retail_changes = [v for v in (commercial_price_change, industrial_price_change) if pd.notna(v)]
+    if retail_changes and max(retail_changes) >= 8:
+        constraints.append(_factor(
+            key="electricity-cost", domain="energy", kind="constraint", severity=2,
+            direction="rising", statement="Average U.S. retail electricity prices are substantially higher than a year ago.",
+            score=max(retail_changes)/8,
+        ))
+    if pd.notna(oil_change) and oil_change >= 15:
+        constraints.append(_factor(
+            key="oil", domain="energy", kind="constraint", severity=3 if oil_change >= 25 else 2,
+            direction="rising", statement=f"WTI crude oil is up {_fmt(oil_change, 1, suffix='%')} over four weeks.",
+            score=oil_change/10,
+        ))
+    if pd.notna(gas_change) and gas_change >= 20:
+        constraints.append(_factor(
+            key="gas", domain="energy", kind="constraint", severity=3 if gas_change >= 35 else 2,
+            direction="rising", statement=f"Henry Hub natural gas is up {_fmt(gas_change, 1, suffix='%')} over four weeks.",
+            score=gas_change/15,
+        ))
 
     if pd.notna(capacity_gap):
-        capacity_severity = _level(capacity_gap, (20.0, 40.0, 65.0))
-        capacity_direction = _direction(capacity_gap_delta, threshold=2.0)
-        if capacity_severity >= 1 or capacity_direction == "rising":
-            pressures.append(
-                _factor(
-                    key="capacity-gap",
-                    domain="energy",
-                    kind="pressure",
-                    severity=max(1, capacity_severity),
-                    direction=capacity_direction,
-                    statement=(
-                        "Deployment pressure is moving further ahead of measured power-system response."
-                        if capacity_direction == "rising"
-                        else "Deployment pressure remains ahead of measured power-system response."
-                    ),
-                    summary_clause="deployment is outpacing measured power-system response",
-                    score=max(capacity_gap, 0) / 10 + (max(capacity_gap_delta, 0) if pd.notna(capacity_gap_delta) else 0),
-                )
-            )
+        direction = _direction(deltas["capacity"], threshold=2)
+        if capacity_gap >= 15:
+            constraints.append(_factor(
+                key="capacity-gap", domain="energy", kind="constraint",
+                severity=3 if capacity_gap >= 40 else 2, direction=direction,
+                statement="Measured power supply is not expanding as quickly as AI deployment.",
+                score=max(capacity_gap,0)/10,
+            ))
         elif capacity_gap <= -20:
-            resilience.append(
-                _factor(
-                    key="capacity-gap",
-                    domain="energy",
-                    kind="resilience",
-                    severity=3 if capacity_gap <= -40 else 2,
-                    direction=capacity_direction,
-                    statement="Measured power-system response is advancing ahead of deployment pressure.",
-                    summary_clause="measured power-system response is keeping pace",
-                    score=abs(capacity_gap),
-                )
-            )
-
+            expansion.append(_factor(
+                key="capacity-gap", domain="energy", kind="expansion", severity=3 if capacity_gap <= -40 else 2,
+                direction=direction, statement="Measured power supply is expanding faster than AI deployment.",
+                score=abs(capacity_gap),
+            ))
     if pd.notna(power_stress):
-        power_severity = _level(power_stress, (15.0, 35.0, 60.0))
-        power_direction = _direction(power_delta, threshold=2.0)
-        if power_severity >= 1 or power_direction == "rising":
-            pressures.append(
-                _factor(
-                    key="power-stress",
-                    domain="energy",
-                    kind="pressure",
-                    severity=max(1, power_severity),
-                    direction=power_direction,
-                    statement=(
-                        "Power-system pressure is increasing."
-                        if power_direction == "rising"
-                        else "Power-system pressure remains above reference."
-                    ),
-                    summary_clause="power-system pressure is increasing" if power_direction == "rising" else "power-system pressure remains elevated",
-                    score=max(power_stress, 0) / 10,
-                )
-            )
+        severity = _level(power_stress, (15,35,60))
+        direction = _direction(deltas["power"], threshold=2)
+        if severity >= 1 or direction == "rising":
+            constraints.append(_factor(
+                key="power-stress", domain="energy", kind="constraint", severity=max(1,severity), direction=direction,
+                statement="National power conditions remain above the constraint reference." if direction != "rising" else "Power-system constraints are increasing.",
+                score=max(power_stress,0)/10,
+            ))
         elif power_stress <= -10:
-            resilience.append(
-                _factor(
-                    key="power-stress",
-                    domain="energy",
-                    kind="resilience",
-                    severity=2,
-                    direction=power_direction,
-                    statement="The national power-system proxy remains below its pressure reference.",
-                    summary_clause="the national power-system proxy retains headroom",
-                    score=abs(power_stress),
-                )
-            )
+            expansion.append(_factor(
+                key="power-stress", domain="energy", kind="expansion", severity=2, direction=direction,
+                statement="National power conditions remain below the constraint reference.",
+                score=abs(power_stress),
+            ))
 
-    # Validation, equity expectations, and concentration.
+    # Infrastructure is expansion evidence on its own, and a constraint only
+    # when a separate power-response measure corroborates the interaction.
+    if pd.notna(construction_yoy):
+        if construction_yoy >= .10:
+            expansion.append(_factor(
+                key="data-center-construction", domain="infrastructure", kind="expansion",
+                severity=3 if construction_yoy >= .40 else 2 if construction_yoy >= .20 else 1,
+                direction="rising", statement=f"Data-center construction is up {_fmt(construction_yoy*100, 1, suffix='%')} year over year.",
+                score=construction_yoy*5,
+            ))
+        elif construction_yoy <= -.10:
+            constraints.append(_factor(
+                key="data-center-construction", domain="infrastructure", kind="constraint",
+                severity=2, direction="rising", statement=f"Data-center construction is down {_fmt(abs(construction_yoy)*100, 1, suffix='%')} year over year.",
+                score=abs(construction_yoy)*5,
+            ))
+    if pd.notna(construction_yoy) and construction_yoy >= .20 and pd.notna(capacity_gap) and capacity_gap >= 20:
+        constraints.append(_factor(
+            key="buildout-power-interaction", domain="infrastructure", kind="constraint",
+            severity=3 if construction_yoy >= .40 and capacity_gap >= 40 else 2,
+            direction="rising",
+            statement=(f"Rapid data-center construction is outpacing measured power-system growth."),
+            score=construction_yoy*5 + max(capacity_gap,0)/20,
+        ))
+
+    # Business adaptation is descriptive diffusion evidence, not productivity.
+    if pd.notna(adaptation_annual_change):
+        if adaptation_annual_change >= 1:
+            expansion.append(_factor(
+                key="business-adaptation", domain="adaptation", kind="expansion",
+                severity=2 if adaptation_annual_change >= 3 else 1, direction="rising",
+                statement=f"Business AI use rose {_fmt(adaptation_annual_change, 1)} percentage points over the past year.",
+                score=adaptation_annual_change,
+            ))
+        elif adaptation_annual_change <= -1:
+            constraints.append(_factor(
+                key="business-adaptation", domain="adaptation", kind="constraint",
+                severity=2 if adaptation_annual_change <= -3 else 1, direction="rising",
+                statement=f"Business AI use fell {_fmt(abs(adaptation_annual_change), 1)} percentage points over the past year.",
+                score=abs(adaptation_annual_change),
+            ))
+    elif pd.notna(current_use):
+        expansion.append(_factor(
+            key="business-adaptation", domain="adaptation", kind="expansion", severity=1,
+            direction="stable", statement=f"Businesses report current AI use at {_fmt(current_use, 1, suffix='%')}.",
+            score=current_use/20,
+        ))
+
+    # Economic validation and relative market/development positioning.
     if pd.notna(validation_gap):
-        validation_direction = _direction(validation_delta, threshold=3.0)
+        direction = _direction(deltas["validation"], threshold=3)
         if validation_gap >= 15:
-            pressures.append(
-                _factor(
-                    key="validation-gap",
-                    domain="validation",
-                    kind="pressure",
-                    severity=3 if validation_gap >= 35 else 2,
-                    direction=validation_direction,
-                    statement="AI deployment is running ahead of realized economic validation.",
-                    summary_clause="deployment is running ahead of realized economic validation",
-                    score=validation_gap / 10,
-                )
-            )
+            constraints.append(_factor(
+                key="validation-gap", domain="validation", kind="constraint", severity=3 if validation_gap >= 35 else 2,
+                direction=direction, statement="AI deployment is growing faster than measured economic activity.",
+                score=validation_gap/10,
+            ))
         elif validation_gap <= -15:
-            resilience.append(
-                _factor(
-                    key="validation-gap",
-                    domain="validation",
-                    kind="resilience",
-                    severity=3 if validation_gap <= -35 else 2,
-                    direction=validation_direction,
-                    statement="Realized economic validation is keeping pace with or exceeding deployment.",
-                    summary_clause="realized economic validation is keeping pace with deployment",
-                    score=abs(validation_gap) / 10,
-                )
-            )
-
+            expansion.append(_factor(
+                key="validation-gap", domain="validation", kind="expansion", severity=3 if validation_gap <= -35 else 2,
+                direction=direction, statement="Measured economic activity is keeping pace with AI deployment.",
+                score=abs(validation_gap)/10,
+            ))
     if pd.notna(speculation_gap):
         if speculation_gap >= 20:
-            pressures.append(
-                _factor(
-                    key="speculation-gap",
-                    domain="market",
-                    kind="pressure",
-                    severity=3 if speculation_gap >= 40 else 2,
-                    direction="rising" if _prior_delta(_history_frame(macro_history, "Speculation Gap"), speculation_gap) > 2 else "stable",
-                    statement="AI equity pricing is running ahead of observable development.",
-                    summary_clause="equity pricing is running ahead of observable development",
-                    score=speculation_gap / 10,
-                )
-            )
+            constraints.append(_factor(
+                key="speculation-gap", domain="market", kind="constraint", severity=3 if speculation_gap >= 40 else 2,
+                direction="rising" if _prior_delta(_history_frame(macro_history, "Speculation Gap"), speculation_gap) > 2 else "stable",
+                statement="AI equity pricing is growing faster than observable development.",
+                score=speculation_gap/10,
+            ))
         elif speculation_gap <= -20:
-            resilience.append(
-                _factor(
-                    key="speculation-gap",
-                    domain="market",
-                    kind="resilience",
-                    severity=2,
-                    direction="stable",
-                    statement="AI equity pricing is not running ahead of observable development.",
-                    summary_clause="equity pricing is not outrunning observable development",
-                    score=abs(speculation_gap) / 10,
-                )
-            )
+            expansion.append(_factor(
+                key="speculation-gap", domain="market", kind="expansion", severity=2, direction="stable",
+                statement="AI equity pricing is not outpacing observable development.",
+                score=abs(speculation_gap)/10,
+            ))
 
-    if pd.notna(concentration) and concentration >= 30:
-        pressures.append(
-            _factor(
-                key="concentration",
-                domain="market",
-                kind="pressure",
-                severity=3 if concentration >= 50 else 2,
-                direction=_direction(concentration_delta, threshold=0.75),
-                statement="AI market value is concentrated in a small number of companies.",
-                summary_clause="market resilience is concentrated among a small number of firms",
-                score=concentration / 10,
-            )
-        )
-
-    # Material changes: select mechanically, not editorially.
+    # Weekly changes use the previous completed Friday as the baseline and only
+    # include observations that arrived after it.
     changes = []
-    _metric_change(changes, key="aei", label="AI equity conditions", current=aei, delta=aei_delta, threshold=1.0)
-    _metric_change(changes, key="adi", label="AI development intensity", current=adi, delta=adi_delta, threshold=1.5)
-    _metric_change(changes, key="borrower", label="Borrower strain", current=borrower, delta=borrower_delta, threshold=1.0)
-    _metric_change(changes, key="lender", label="Lender strain", current=lender, delta=lender_delta, threshold=1.0)
-    _metric_change(changes, key="power", label="Power-system pressure", current=power_stress, delta=power_delta, threshold=2.0)
-    _metric_change(changes, key="capacity", label="Power Capacity Gap", current=capacity_gap, delta=capacity_gap_delta, threshold=2.0)
-    _metric_change(changes, key="validation", label="Economic Validation Gap", current=validation_gap, delta=validation_delta, threshold=3.0)
-    _metric_change(changes, key="concentration", label="Market concentration", current=concentration, delta=concentration_delta, threshold=0.75)
+    for key, label, value, threshold in (
+        ("aei", "AI equity conditions", aei, 1.0),
+        ("adi", "AI development intensity", adi, 1.5),
+        ("borrower", "Borrower strain", borrower, 1.0),
+        ("lender", "Lender strain", lender, 1.0),
+        ("power", "Power-system conditions", power_stress, 2.0),
+        ("capacity", "Power Capacity Gap", capacity_gap, 2.0),
+        ("validation", "Economic Validation Gap", validation_gap, 3.0),
+    ):
+        _metric_change(changes, key=key, label=label, current=value, delta=_weekly_delta(histories[key], value), threshold=threshold)
 
     commitment_series = _series_frame(funding_series.get("forward_commitment_load"))
-    commitment_delta = _prior_delta(commitment_series, commitments)
     _metric_change(
-        changes,
-        key="commitments",
-        label="Forward commitment load",
-        current=commitments,
-        delta=commitment_delta,
-        threshold=0.15,
-        unit="x",
+        changes, key="commitments", label="Forward commitments", current=commitments,
+        delta=_weekly_delta(commitment_series, commitments), threshold=.15, unit="x",
     )
-
-    if pd.notna(oil_change) and abs(oil_change) >= 10:
-        changes.append(
-            {
-                "key": "oil",
-                "statement": f"WTI crude oil {'rose' if oil_change > 0 else 'fell'} {abs(oil_change):.1f}% over four weeks.",
-                "score": abs(oil_change) / 10,
-            }
-        )
-    if pd.notna(gas_change) and abs(gas_change) >= 15:
-        changes.append(
-            {
-                "key": "gas",
-                "statement": f"Henry Hub natural gas {'rose' if gas_change > 0 else 'fell'} {abs(gas_change):.1f}% over four weeks.",
-                "score": abs(gas_change) / 15,
-            }
-        )
-    if pd.notna(nfci_change) and abs(nfci_change) >= 0.10:
-        changes.append(
-            {
-                "key": "nfci",
-                "statement": f"Broad financial conditions {'tightened' if nfci_change > 0 else 'eased'} over three months.",
-                "score": abs(nfci_change) / 0.10,
-            }
+    _metric_change(
+        changes, key="business-adaptation", label="Reported business AI use", current=current_use,
+        delta=_weekly_delta(adaptation_history, current_use), threshold=.5, unit="percentage points",
+    )
+    if not construction_history.empty:
+        current_construction = _number(construction_history.iloc[-1]["Value"])
+        _metric_change(
+            changes, key="data-center-construction", label="Data-center construction", current=current_construction,
+            delta=_weekly_delta(construction_history, current_construction), threshold=.5,
         )
 
-    selected_pressure = _select_diverse(pressures, limit=3)
-    selected_resilience = _select_diverse(resilience, limit=3)
+    selected_constraints = _select_diverse(constraints, limit=3)
+    selected_expansion = _select_diverse(expansion, limit=3)
     selected_changes = sorted(changes, key=lambda item: item["score"], reverse=True)[:3]
 
-    # Domain states remain compact but are archived for later transition analysis.
-    domain_names = ("funding", "credit", "financial-conditions", "energy", "validation", "market", "commitments", "liquidity")
+    domain_names = (
+        "market", "development", "funding", "liquidity", "commitments", "credit",
+        "financial-conditions", "energy", "infrastructure", "adaptation", "validation",
+    )
     domain_states = {}
     for domain in domain_names:
-        domain_pressures = [item for item in pressures if item["domain"] == domain]
-        domain_resilience = [item for item in resilience if item["domain"] == domain]
-        severity = max([item["severity"] for item in domain_pressures], default=0)
-        support = max([item["severity"] for item in domain_resilience], default=0)
-        directions = Counter(item["direction"] for item in domain_pressures)
+        domain_constraints = [item for item in constraints if item["domain"] == domain]
+        domain_expansion = [item for item in expansion if item["domain"] == domain]
+        severity = max([item["severity"] for item in domain_constraints], default=0)
+        strength = max([item["severity"] for item in domain_expansion], default=0)
+        directions = Counter(item["direction"] for item in domain_constraints)
         direction = "rising" if directions["rising"] else "easing" if directions["easing"] else "stable"
         if severity >= 3:
-            level = "high pressure"
+            level = "material constraint"
         elif severity >= 2:
-            level = "elevated pressure"
+            level = "emerging constraint"
         elif severity >= 1:
-            level = "mild pressure"
-        elif support >= 3:
-            level = "strong support"
-        elif support >= 1:
-            level = "supportive"
+            level = "limited constraint"
+        elif strength >= 3:
+            level = "strong expansion"
+        elif strength >= 1:
+            level = "expanding"
         else:
             level = "neutral"
         domain_states[domain] = {
             "level": level,
             "direction": direction,
+            "constraint_severity": severity,
+            "expansion_strength": strength,
+            # Compatibility fields retained for existing archives and downstream readers.
             "pressure_severity": severity,
-            "support_strength": support,
+            "support_strength": strength,
         }
 
-    pressure_domains = {
-        item["domain"] for item in pressures if item["severity"] >= 2
-    }
-    rising_domains = {
-        item["domain"] for item in pressures if item["direction"] == "rising"
-    }
-    max_pressure = max([item["severity"] for item in pressures], default=0)
-    strong_resilience = len([item for item in resilience if item["severity"] >= 2])
+    constraint_domains = {item["domain"] for item in constraints if item["severity"] >= 2}
+    expansion_domains = {item["domain"] for item in expansion if item["severity"] >= 2}
+    rising_constraint_domains = {item["domain"] for item in constraints if item["direction"] == "rising"}
+    max_constraint = max([item["severity"] for item in constraints], default=0)
+    max_expansion = max([item["severity"] for item in expansion], default=0)
 
-    required_values = [
-        aei,
-        adi,
-        borrower,
-        lender,
-        power_stress,
-        capacity_gap,
-        internal,
-        runway,
-        commitments,
-    ]
-    available = sum(pd.notna(value) for value in required_values)
-    confidence = "high" if available >= 8 else "moderate" if available >= 6 else "low"
+    core_values = [aei, adi, borrower, lender, power_stress, capacity_gap, internal, runway, commitments]
+    supplemental_values = [construction_yoy, current_use]
+    core_available = sum(pd.notna(value) for value in core_values)
+    supplemental_available = sum(pd.notna(value) for value in supplemental_values)
+    available = core_available + supplemental_available
+    tracked = len(core_values) + len(supplemental_values)
+    confidence = "high" if core_available >= 8 and supplemental_available == 2 else "moderate" if ((core_available >= 6 and supplemental_available >= 1) or core_available >= 8) else "low"
 
-    # The headline uses a finite state ladder. Direction, breadth, and severity
-    # determine the state; the summary below carries the specific drivers.
     if confidence == "low":
-        headline = "Partial current-state view"
-    elif funding_level == "weak" and (
-        "credit" in pressure_domains
-        or "financial-conditions" in pressure_domains
-    ):
-        headline = "Funding-constrained"
-    elif max_pressure >= 3 and len(pressure_domains) >= 3 and strong_resilience <= 1:
-        headline = "Broad deterioration"
-    elif pressure_domains and not rising_domains and any(
-        item["direction"] == "easing" for item in pressures
-    ):
+        headline = "Partial snapshot"
+    elif funding_level == "weak" and ({"credit", "financial-conditions"} & constraint_domains):
+        headline = "Financing constrained"
+    elif max_constraint >= 3 and len(constraint_domains) >= 3 and len(expansion_domains) <= 1:
+        headline = "Broad contraction"
+    elif constraint_domains and not rising_constraint_domains and any(item["direction"] == "easing" for item in constraints):
         headline = "Stabilizing"
-    elif funding_strength >= 2:
-        if rising_domains:
-            headline = "Resilient under rising pressure"
-        elif len(pressure_domains) >= 3:
-            headline = "Resilient under broad-based pressure"
-        elif pressure_domains:
-            headline = "Resilient"
-        elif strong_resilience >= 2:
-            headline = "Supportive conditions"
-        else:
-            headline = "Resilient"
-    elif len(pressure_domains) >= 2 or rising_domains:
-        headline = "Increasingly constrained"
-    elif pressure_domains:
-        headline = "Increasingly constrained"
-    elif strong_resilience >= 1:
-        headline = "Conditions improving"
+    elif len(constraint_domains) >= 3:
+        headline = "Expansion with material constraints" if expansion_domains else "Constraints broadening"
+    elif constraint_domains and expansion_domains:
+        headline = "Expansion with emerging constraints" if max_constraint <= 2 else "Uneven expansion"
+    elif constraint_domains:
+        headline = "Constraints broadening"
+    elif len(expansion_domains) >= 3:
+        headline = "Broad expansion"
+    elif expansion_domains:
+        positive_changes = [item for item in selected_changes if "increased" in item["statement"]]
+        headline = "Expansion reaccelerating" if len(positive_changes) >= 2 else "Expansion continuing"
     else:
-        headline = "Resilient"
+        headline = "Uneven expansion"
 
-    if funding_level == "strong":
-        opening = "The buildout remains supported by strong internal funding capacity"
-    elif funding_level == "adequate":
-        opening = "The buildout remains financeable at the current operating and cash base"
-    elif funding_level == "thin":
-        opening = "The buildout remains funded, but financial headroom is narrowing"
-    elif funding_level == "weak":
-        opening = "The buildout is becoming more dependent on outside capital"
-    else:
-        opening = "The buildout's funding position is only partially observable"
-
-    pressure_clauses = [item["summary_clause"] for item in selected_pressure[:2]]
-    if pressure_clauses:
-        summary = f"{opening}, while {_join_clauses(pressure_clauses)}."
-    else:
-        summary = f"{opening}, and the main financing and infrastructure pressure readings remain contained."
-    summary_resilience = next(
-        (
-            item
-            for item in selected_resilience
-            if item.get("domain") not in {"funding", "liquidity"}
-        ),
-        None,
-    )
-    if summary_resilience:
-        summary += f" {summary_resilience['statement']}"
-
-    if not selected_changes:
-        selected_changes = [
-            {
-                "key": "no-material-change",
-                "statement": "No material change was detected across the tracked domains.",
-                "score": 0.0,
-            }
-        ]
-
+    # Primary-source events lead the weekly rollup. Material platform changes
+    # fill any unused slots. Events report a verified fact followed by a
+    # restrained relevance statement; neither layer asserts causation.
+    weekly_items = []
+    weekly_references = []
+    for event in list(weekly_context.get("events", []) or [])[:3]:
+        display = str(event.get("display") or "").strip()
+        reference_number = int(event.get("reference_number") or 0)
+        if not display:
+            continue
+        statement = f"{display} [{reference_number}]" if reference_number else display
+        weekly_items.append(statement)
+        if reference_number:
+            weekly_references.append(
+                {
+                    "reference_number": reference_number,
+                    "event_id": str(event.get("event_id") or ""),
+                    "source_name": str(event.get("source_name") or ""),
+                    "source_label": str(event.get("source_label") or ""),
+                    "source_url": str(event.get("source_url") or ""),
+                    "event_date": str(event.get("event_date") or ""),
+                }
+            )
+    for item in selected_changes:
+        if len(weekly_items) >= 3:
+            break
+        weekly_items.append(item["statement"])
+    if not weekly_items:
+        weekly_items = ["No material development this week."]
     if headline not in MACRO_STATE_HEADLINES:
         raise RuntimeError(f"Unapproved Macro state headline: {headline}")
 
+    expansion_statements = [item["statement"] for item in selected_expansion]
+    constraint_statements = [item["statement"] for item in selected_constraints]
     return {
         "headline": headline,
-        "summary": summary,
-        "pressure_factors": [item["statement"] for item in selected_pressure],
-        "resilience_factors": [item["statement"] for item in selected_resilience],
-        "changes": [item["statement"] for item in selected_changes],
+        "summary": "",  # Deprecated: the three-column Snapshot is the summary.
+        "expansion_factors": expansion_statements,
+        "constraint_factors": constraint_statements,
+        "changes": weekly_items,
+        "metric_changes": [item["statement"] for item in selected_changes],
+        "weekly_references": weekly_references,
+        "weekly_context": {
+            "as_of": weekly_context.get("as_of"),
+            "window_start": weekly_context.get("window_start"),
+            "source": weekly_context.get("source"),
+            "version": weekly_context.get("version"),
+        },
+        # Compatibility aliases retained for archive schema continuity.
+        "resilience_factors": expansion_statements,
+        "pressure_factors": constraint_statements,
         "domains": domain_states,
+        "snapshot_context": {
+            "infrastructure": {
+                "data_center_construction_yoy": construction_yoy,
+                "observation_date": construction_date,
+            },
+            "adaptation": {
+                "current_use": current_use,
+                "expected_use": expected_use,
+                "expected_adoption_gap": expected_adoption_gap,
+                "annual_change": adaptation_annual_change,
+                "observation_date": adaptation_date,
+            },
+            "coverage": {
+                "available": available,
+                "tracked": tracked,
+                "core_available": core_available,
+                "supplemental_available": supplemental_available,
+            },
+        },
         "confidence": confidence,
         "version": MACRO_INTERPRETATION_VERSION,
     }

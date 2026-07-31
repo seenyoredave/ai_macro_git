@@ -1,7 +1,7 @@
 """Execute the complete application with real bundled data and no network.
 
 A lightweight Streamlit stand-in exercises the actual loaders, analytics,
-archive fallbacks, and all five render paths. Network calls are forced to fail
+archive fallbacks, and all seven render paths. Network calls are forced to fail
 so the smoke test proves that the packaged archives can support a complete
 closed-session startup without mutating source data.
 """
@@ -149,9 +149,13 @@ def main() -> int:
     interpretation = st.session_state.regime_metrics.get("Macro Interpretation", {})
     if not interpretation.get("headline"):
         raise AssertionError("Macro interpretation did not produce a headline")
-    if not interpretation.get("summary"):
-        raise AssertionError("Macro interpretation did not produce a summary")
-    if namespace.get("APP_VERSION") != "v4.09":
+    if not interpretation.get("expansion_factors"):
+        raise AssertionError("Macro interpretation did not produce expansion factors")
+    if not interpretation.get("constraint_factors"):
+        raise AssertionError("Macro interpretation did not produce constraint factors")
+    if not interpretation.get("changes"):
+        raise AssertionError("Macro interpretation did not produce a weekly rollup")
+    if namespace.get("APP_VERSION") != "v4.14-dev":
         raise AssertionError(f"Unexpected build: {namespace.get('APP_VERSION')}")
     if not st.plotly_keys:
         raise AssertionError("The application did not reach the rendered dashboard")
@@ -177,6 +181,9 @@ def main() -> int:
         "Macro Pressure Factors",
         "Macro Resilience Factors",
         "Macro Change Factors",
+        "Macro Metric Changes",
+        "Macro Weekly References",
+        "Macro Weekly Context",
         "Macro Interpretation Version",
         "Macro Domain States",
     }
@@ -188,7 +195,10 @@ def main() -> int:
         "Full startup smoke passed: "
         f"{interpretation['headline']} · {len(st.plotly_keys)} Plotly elements."
     )
-    print(interpretation["summary"])
+    print("Expansion:", " | ".join(interpretation.get("expansion_factors", [])))
+    print("Constraints:", " | ".join(interpretation.get("constraint_factors", [])))
+    print("This week:", " | ".join(interpretation.get("changes", [])))
+    print("References:", len(interpretation.get("weekly_references", [])))
     return 0
 
 

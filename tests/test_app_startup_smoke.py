@@ -181,6 +181,33 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
                 },
             },
         ),
+        "loaders.infrastructure_loader": _module(
+            "loaders.infrastructure_loader",
+            load_infrastructure_data=lambda *args, **kwargs: {
+                "source_mode": "local_history",
+                "construction_source": "Census Local History",
+                "map_source": "IM3 Local History",
+                "construction_history": pd.DataFrame(),
+                "locations": pd.DataFrame(),
+                "location_count": 0,
+                "state_count": 0,
+                "series": {},
+            },
+        ),
+        "loaders.adaptation_loader": _module(
+            "loaders.adaptation_loader",
+            load_adaptation_data=lambda *args, **kwargs: {
+                "source_mode": "local_history",
+                "source": "Census BTOS Local History",
+                "snapshot_date": "2026-07-30",
+                "national_history": pd.DataFrame(),
+                "sector_snapshot": pd.DataFrame(),
+                "current_use": 21.5,
+                "expected_use": 24.3,
+                "expected_adoption_gap": 2.8,
+                "annual_change": 1.0,
+            },
+        ),
         "loaders.fred_loader": _module(
             "loaders.fred_loader",
             load_fred=lambda: {},
@@ -192,6 +219,17 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
         "loaders.nfci_loader": _module(
             "loaders.nfci_loader",
             load_nfci_history=lambda: pd.DataFrame(),
+        ),
+        "loaders.weekly_context_loader": _module(
+            "loaders.weekly_context_loader",
+            load_weekly_context=lambda **kwargs: {
+                "events": [],
+                "references": [],
+                "as_of": "2026-07-29",
+                "window_start": "2026-07-25",
+                "source": "curated primary-source registry",
+                "version": "1.0",
+            },
         ),
         "research_overlay.components": _module(
             "research_overlay.components",
@@ -216,10 +254,12 @@ def test_streamlit_entry_point_completes_first_render(monkeypatch):
 
     namespace = runpy.run_path(str(ROOT / "ai_macro.py"), run_name="__main__")
 
-    assert namespace["APP_VERSION"] == "v4.09"
+    assert namespace["APP_VERSION"] == "v4.14-dev"
     assert namespace["benchmark_metrics"]["source_mode"] == "archive_market_closed"
     assert st.session_state.force_rebuild is False
     assert "sector_data" in st.session_state
     assert "regime_metrics" in st.session_state
     assert "energy_data" in st.session_state
     assert "debt_markets_data" in st.session_state
+    assert "infrastructure_data" in st.session_state
+    assert "adaptation_data" in st.session_state

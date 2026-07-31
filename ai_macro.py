@@ -26,17 +26,20 @@ from loaders.construction_loader import load_data_center_construction
 from loaders.debt_markets_loader import load_debt_markets_data
 from loaders.edgar_loader import build_edgar_archive_snapshot
 from loaders.energy_loader import load_energy_data
+from loaders.infrastructure_loader import load_infrastructure_data
+from loaders.adaptation_loader import load_adaptation_data
 from loaders.fred_loader import load_fred
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
+from loaders.weekly_context_loader import load_weekly_context
 from research_overlay.components import render_masthead
 from research_overlay.renderers import render_research_dashboard
 from research_overlay.theme import inject_research_theme
 from sectors.sector_builder import get_sector_data
 
 
-APP_VERSION = "v4.09"
-APP_STATE_SCHEMA_VERSION = "26.5-macro-headline-ladder"
+APP_VERSION = "v4.14-dev"
+APP_STATE_SCHEMA_VERSION = "27.0-weekly-context-snapshot"
 
 
 st.set_page_config(
@@ -92,9 +95,21 @@ if "force_debt_markets_refresh" not in st.session_state:
 if "debt_markets_refresh_token" not in st.session_state:
     st.session_state.debt_markets_refresh_token = 0
 
+if "force_infrastructure_refresh" not in st.session_state:
+    st.session_state.force_infrastructure_refresh = False
+
+if "infrastructure_refresh_token" not in st.session_state:
+    st.session_state.infrastructure_refresh_token = 0
+
+if "force_adaptation_refresh" not in st.session_state:
+    st.session_state.force_adaptation_refresh = False
+
+if "adaptation_refresh_token" not in st.session_state:
+    st.session_state.adaptation_refresh_token = 0
+
 
 def build_tabs():
-    return st.tabs(["AI MACRO", "FINANCE", "ENERGY", "MARKET", "EVIDENCE"])
+    return st.tabs(["AI MACRO", "MARKET", "FINANCE", "INFRASTRUCTURE", "ENERGY", "ADAPTATION", "EVIDENCE"])
 
 
 def build_sector_dashboard_data():
@@ -243,6 +258,18 @@ with st.sidebar:
         st.session_state.force_rebuild = True
         st.rerun()
 
+    if st.button("Refresh Infrastructure", use_container_width=True):
+        st.session_state.infrastructure_refresh_token += 1
+        st.session_state.force_infrastructure_refresh = True
+        st.session_state.force_rebuild = True
+        st.rerun()
+
+    if st.button("Refresh Adaptation", use_container_width=True):
+        st.session_state.adaptation_refresh_token += 1
+        st.session_state.force_adaptation_refresh = True
+        st.session_state.force_rebuild = True
+        st.rerun()
+
     if st.button("Clear cache", use_container_width=True):
         st.cache_data.clear()
         st.session_state.force_rebuild = True
@@ -302,6 +329,15 @@ if st.session_state.force_rebuild:
         force_refresh=st.session_state.force_debt_markets_refresh,
         refresh_token=st.session_state.debt_markets_refresh_token,
     )
+    infrastructure_data = load_infrastructure_data(
+        force_refresh=st.session_state.force_infrastructure_refresh,
+        refresh_token=st.session_state.infrastructure_refresh_token,
+    )
+    adaptation_data = load_adaptation_data(
+        force_refresh=st.session_state.force_adaptation_refresh,
+        refresh_token=st.session_state.adaptation_refresh_token,
+    )
+    weekly_context = load_weekly_context(as_of=market_date())
     regime_metrics["Macro Interpretation"] = build_macro_interpretation(
         regime_metrics=regime_metrics,
         macro_history=macro_history,
@@ -309,6 +345,9 @@ if st.session_state.force_rebuild:
         energy_data=energy_data,
         fred_data=fred_data,
         nfci_history=nfci_history,
+        infrastructure_data=infrastructure_data,
+        adaptation_data=adaptation_data,
+        weekly_context=weekly_context,
     )
     market_report = dict(st.session_state.get("market_universe_load_report", {}) or {})
     market_report["energy"] = energy_data.get("load_report", {})
@@ -352,10 +391,14 @@ if st.session_state.force_rebuild:
     st.session_state.regime_metrics = regime_metrics
     st.session_state.energy_data = energy_data
     st.session_state.debt_markets_data = debt_markets_data
+    st.session_state.infrastructure_data = infrastructure_data
+    st.session_state.adaptation_data = adaptation_data
     st.session_state.force_yfinance_refresh = False
     st.session_state.force_edgar_refresh = False
     st.session_state.force_energy_refresh = False
     st.session_state.force_debt_markets_refresh = False
+    st.session_state.force_infrastructure_refresh = False
+    st.session_state.force_adaptation_refresh = False
     st.session_state.force_rebuild = False
 
 
@@ -366,42 +409,32 @@ nfci_history = st.session_state.get("nfci_history")
 regime_metrics = st.session_state.regime_metrics
 energy_data = st.session_state.get("energy_data", {})
 debt_markets_data = st.session_state.get("debt_markets_data", {})
+infrastructure_data = st.session_state.get("infrastructure_data", {})
+adaptation_data = st.session_state.get("adaptation_data", {})
 
 
-ticker_count = len({
-    ticker
-    for df in sector_data.values()
-    if df is not None and not df.empty and "Ticker" in df.columns
-    for ticker in df["Ticker"].dropna().astype(str)
-})
-
-
-def dashboard_source_status(metrics):
-    """Report whether any headline product is using an archive fallback."""
-    source_keys = (
-        "AEI Source",
-        "ADI Source",
-        "Economic Validation Gap Source",
-        "Power Stress Source",
-        "Power Capacity Gap Source",
-        "Borrower Strain Source",
-        "Lender Strain Source",
-    )
-    sources = [str((metrics or {}).get(key, "")) for key in source_keys]
-    return "archive" if any("archive" in source.lower() for source in sources) else "live"
-
-
-run_date = market_date()
+loaded_ticker_count = sum(
+    len({str(ticker).strip() for ticker in frame["Ticker"].dropna() if str(ticker).strip()})
+    for frame in sector_data.values()
+    if frame is not None and not frame.empty and "Ticker" in frame.columns
+)
+configured_ticker_count = sum(
+    len({str(ticker).strip() for ticker in config.get("basket", []) if str(ticker).strip()})
+    for config in st.session_state.sectors.values()
+)
+market_universe_summary = {
+    "loaded_sectors": sum(
+        1 for frame in sector_data.values()
+        if frame is not None and not frame.empty and "Ticker" in frame.columns
+    ),
+    "configured_sectors": len(st.session_state.sectors),
+    "loaded_tickers": int(loaded_ticker_count),
+    "configured_tickers": int(configured_ticker_count),
+}
 
 render_masthead(
     "AI Economic Research Platform",
-    "A structural assessment of the AI economy linking market expectations, capital deployment, financing conditions, infrastructure constraints, and observable economic validation.",
-    [
-        ("Run", f"{run_date.month}.{run_date.day}.{run_date.year}"),
-        ("Status", dashboard_source_status(regime_metrics)),
-        ("Universe", f"{len(sector_data)} sectors / {ticker_count} tickers"),
-        ("Build", APP_VERSION),
-    ],
+    "market conditions • capital deployment • financing • infrastructure development • resource utilization • observable economic validation",
 )
 
 if st.session_state.tier_test_module_open:
@@ -416,4 +449,7 @@ else:
         nfci_history=nfci_history,
         energy_data=energy_data,
         debt_markets_data=debt_markets_data,
+        infrastructure_data=infrastructure_data,
+        adaptation_data=adaptation_data,
+        market_universe_summary=market_universe_summary,
     )

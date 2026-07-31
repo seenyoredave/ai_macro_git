@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 
-ENERGY_DATA_VERSION = "1.1"
+ENERGY_DATA_VERSION = "1.2"
 
-# The Energy refresh fetches only the four series that are not already owned by
-# the application's primary FRED loader. Power output, capacity, and utilization
-# are reused from the existing FRED payload and power-series history.
+# Energy-only market and production series refreshed from FRED.
 ENERGY_PUBLIC_SERIES = {
     "Natural Gas Price": {
         "series_id": "WHHNGSP",
@@ -16,6 +14,7 @@ ENERGY_PUBLIC_SERIES = {
         "frequency": "weekly",
         "change_months": None,
         "change_days": 28,
+        "source": "FRED / EIA",
     },
     "WTI Crude Oil": {
         "series_id": "WCOILWTICO",
@@ -24,6 +23,7 @@ ENERGY_PUBLIC_SERIES = {
         "frequency": "weekly",
         "change_months": None,
         "change_days": 28,
+        "source": "FRED / EIA",
     },
     "Coal Production": {
         "series_id": "IPN2121S",
@@ -32,6 +32,7 @@ ENERGY_PUBLIC_SERIES = {
         "frequency": "monthly",
         "change_months": 3,
         "change_days": None,
+        "source": "FRED",
     },
     "Renewable Power Output": {
         "series_id": "IPN221114T8S",
@@ -40,6 +41,30 @@ ENERGY_PUBLIC_SERIES = {
         "frequency": "monthly",
         "change_months": 3,
         "change_days": None,
+        "source": "FRED",
+    },
+}
+
+# National delivered electricity-cost context from EIA Electric Power Monthly,
+# Table 5.3. Values are average revenue per kWh, not a contracted data-center tariff.
+ENERGY_RETAIL_PRICE_SERIES = {
+    "Commercial Electricity Price": {
+        "display_name": "Commercial Electricity Price",
+        "unit": "¢/kWh",
+        "frequency": "monthly",
+        "change_months": 12,
+        "change_days": None,
+        "source": "EIA Electric Power Monthly",
+        "table_column": "Commercial",
+    },
+    "Industrial Electricity Price": {
+        "display_name": "Industrial Electricity Price",
+        "unit": "¢/kWh",
+        "frequency": "monthly",
+        "change_months": 12,
+        "change_days": None,
+        "source": "EIA Electric Power Monthly",
+        "table_column": "Industrial",
     },
 }
 
@@ -52,6 +77,7 @@ ENERGY_POWER_SERIES = {
         "frequency": "monthly",
         "change_months": 12,
         "change_days": None,
+        "source": "FRED",
     },
     "Electric Power Capacity": {
         "fred_name": "Electric Power Capacity",
@@ -61,6 +87,7 @@ ENERGY_POWER_SERIES = {
         "frequency": "monthly",
         "change_months": 12,
         "change_days": None,
+        "source": "FRED",
     },
     "Electric Power Utilization": {
         "fred_name": "Electric Power Capacity Utilization",
@@ -70,15 +97,20 @@ ENERGY_POWER_SERIES = {
         "frequency": "monthly",
         "change_months": 12,
         "change_days": None,
+        "source": "FRED",
     },
 }
 
-ENERGY_SERIES = {**ENERGY_PUBLIC_SERIES, **ENERGY_POWER_SERIES}
+ENERGY_REFRESH_SERIES = {**ENERGY_PUBLIC_SERIES, **ENERGY_RETAIL_PRICE_SERIES}
+ENERGY_SERIES = {**ENERGY_REFRESH_SERIES, **ENERGY_POWER_SERIES}
 
 ENERGY_FRED_CSV_URL = (
     "https://fred.stlouisfed.org/graph/fredgraph.csv?id="
     + ",".join(item["series_id"] for item in ENERGY_PUBLIC_SERIES.values())
     + "&cosd=2015-01-01"
+)
+ENERGY_RETAIL_PRICE_XLSX_URL = (
+    "https://www.eia.gov/electricity/monthly/xls/table_5_03.xlsx"
 )
 
 # The weekly refresh date advances after Friday's regular U.S. market close.

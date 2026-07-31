@@ -140,6 +140,12 @@ def test_incomplete_current_week_archive_does_not_suppress_refresh():
         )
 
     loader._fetch_public_energy_history = fetch
+    loader._fetch_retail_price_history = lambda: pd.DataFrame(
+        [
+            {"Date": "2026-05-01", "Series": name, "Value": 10.0}
+            for name in loader.ENERGY_RETAIL_PRICE_SERIES
+        ]
+    )
     result = loader._load_energy_data_cached(
         force_refresh=False,
         refresh_token=0,
@@ -158,7 +164,7 @@ def test_seeded_energy_history_and_existing_fred_power_data_populate_all_metrics
     )
 
     assert set(result["series"]) == set(loader.ENERGY_SERIES)
-    assert result["load_report"]["returned_series"] == 7
+    assert result["load_report"]["returned_series"] == 9
     for name, payload in result["series"].items():
         assert np.isfinite(float(payload["value"])), name
         assert payload["date"], name
@@ -174,6 +180,9 @@ def test_source_failure_uses_seeded_history_and_reports_the_exception():
     loader._fetch_public_energy_history = lambda: (_ for _ in ()).throw(
         RuntimeError("simulated source outage")
     )
+    loader._fetch_retail_price_history = lambda: (_ for _ in ()).throw(
+        RuntimeError("simulated retail source outage")
+    )
 
     result = loader._load_energy_data_cached(
         force_refresh=False,
@@ -181,8 +190,9 @@ def test_source_failure_uses_seeded_history_and_reports_the_exception():
         clock_token="2026-07-31",
     )
     assert result["source_mode"] == "local_history_fallback"
-    assert result["load_report"]["returned_series"] == 4
-    assert result["load_report"]["error"] == "RuntimeError: simulated source outage"
+    assert result["load_report"]["returned_series"] == 6
+    assert "simulated source outage" in result["load_report"]["error"]
+    assert "simulated retail source outage" in result["load_report"]["error"]
 
 
 def test_energy_tab_has_no_fake_weekly_metric_and_uses_refresh_button():
@@ -190,7 +200,7 @@ def test_energy_tab_has_no_fake_weekly_metric_and_uses_refresh_button():
     renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
     definitions = (ROOT / "config" / "metric_definitions.py").read_text()
 
-    assert '["AI MACRO", "FINANCE", "ENERGY", "MARKET", "EVIDENCE"]' in app
+    assert '["AI MACRO", "MARKET", "FINANCE", "INFRASTRUCTURE", "ENERGY", "ADAPTATION", "EVIDENCE"]' in app
     assert 'st.button("Refresh Energy"' in app
     assert "load_energy_data(" in app
     assert "fred_data=fred_data" in app
@@ -198,6 +208,7 @@ def test_energy_tab_has_no_fake_weekly_metric_and_uses_refresh_button():
     assert 'render_tab_header(\n        "Energy"' in renderer
     for section in (
         "Energy supply",
+        "Electricity cost",
         "Power production",
         "Grid capacity",
         "AI energy demand",
@@ -333,7 +344,7 @@ def test_energy_renderer_executes_all_sections_without_runtime_error():
         }
 
         renderer.render_energy_tab({}, regime_metrics, energy_data, dashboard_data)
-        assert len(plotly_keys) == 7
+        assert len(plotly_keys) == 8
     finally:
         if old_streamlit is None:
             sys.modules.pop("streamlit", None)

@@ -9,7 +9,7 @@ after Friday 16:00 America/New_York; Refresh Energy bypasses the weekly gate.
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta
-from io import StringIO
+from io import BytesIO, StringIO
 from pathlib import Path
 import time as time_module
 
@@ -25,6 +25,9 @@ from config.energy_config import (
     ENERGY_FRED_CSV_URL,
     ENERGY_POWER_SERIES,
     ENERGY_PUBLIC_SERIES,
+    ENERGY_REFRESH_SERIES,
+    ENERGY_RETAIL_PRICE_SERIES,
+    ENERGY_RETAIL_PRICE_XLSX_URL,
     ENERGY_SERIES,
     ENERGY_WEEKLY_CUTOFF_HOUR,
     ENERGY_WEEKLY_CUTOFF_WEEKDAY,
@@ -110,7 +113,7 @@ def _load_local_history() -> pd.DataFrame:
 
 def _persist_local_history(frame: pd.DataFrame) -> None:
     clean = _normalize_long_history(frame)
-    clean = clean[clean["Series"].isin(ENERGY_PUBLIC_SERIES)]
+    clean = clean[clean["Series"].isin(ENERGY_REFRESH_SERIES)]
     if clean.empty:
         return
     output = clean.copy()
@@ -216,6 +219,75 @@ def _fetch_public_energy_history() -> pd.DataFrame:
     return history
 
 
+_MONTHS = {
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "sept": 9,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+}
+
+
+def parse_eia_retail_price_workbook(content: bytes) -> pd.DataFrame:
+    """Parse national monthly commercial and industrial prices from EPM Table 5.3."""
+    raw = pd.read_excel(BytesIO(content), sheet_name=0, header=None, engine="openpyxl")
+    if raw.empty or raw.shape[1] < 4:
+        return _empty_history()
+
+    header_row = None
+    for index, value in raw.iloc[:, 0].items():
+        if str(value).strip().lower() == "period":
+            header_row = int(index)
+            break
+    if header_row is None:
+        raise ValueError("EIA retail-price workbook missing Period header")
+
+    headers = {str(raw.iloc[header_row, column]).strip(): column for column in range(raw.shape[1])}
+    if not {"Commercial", "Industrial"}.issubset(headers):
+        raise ValueError("EIA retail-price workbook missing commercial or industrial columns")
+
+    rows = []
+    current_year = None
+    for index in range(header_row + 1, len(raw)):
+        label = str(raw.iloc[index, 0]).strip()
+        lowered = label.lower()
+        if lowered.startswith("year "):
+            year = pd.to_numeric(label.split()[-1], errors="coerce")
+            current_year = int(year) if pd.notna(year) else None
+            continue
+        month = _MONTHS.get(lowered)
+        if current_year is None or month is None:
+            continue
+        date = pd.Timestamp(year=current_year, month=month, day=1)
+        for series_name, spec in ENERGY_RETAIL_PRICE_SERIES.items():
+            value = pd.to_numeric(raw.iloc[index, headers[spec["table_column"]]], errors="coerce")
+            if pd.notna(value) and np.isfinite(value):
+                rows.append({"Date": date, "Series": series_name, "Value": float(value)})
+
+    history = _normalize_long_history(pd.DataFrame(rows))
+    if history.empty:
+        raise ValueError("EIA retail-price workbook produced no monthly observations")
+    return history
+
+
+def _fetch_retail_price_history() -> pd.DataFrame:
+    response = requests.get(
+        ENERGY_RETAIL_PRICE_XLSX_URL,
+        timeout=ENERGY_REQUEST_TIMEOUT,
+        headers={"User-Agent": "ai-macro-energy-tab/1.2"},
+    )
+    response.raise_for_status()
+    return parse_eia_retail_price_workbook(response.content)
+
+
 def _merge_histories(*frames: pd.DataFrame) -> pd.DataFrame:
     usable = [frame for frame in frames if frame is not None and not frame.empty]
     if not usable:
@@ -270,7 +342,7 @@ def _series_payload(history: pd.DataFrame, name: str, *, source: str | None = No
         "change_pct": float(change_pct) if np.isfinite(change_pct) else np.nan,
         "frequency": spec["frequency"],
         "unit": spec["unit"],
-        "source": source or "FRED",
+        "source": source or spec.get("source", "Current"),
         "history": series_history,
     }
 
@@ -285,8 +357,16 @@ def _snapshot_from_history(
     error: str | None = None,
 ) -> dict:
     series = {
-        name: _series_payload(history, name, source="FRED" if source_mode.startswith("live") else "Energy archive")
-        for name in ENERGY_PUBLIC_SERIES
+        name: _series_payload(
+            history,
+            name,
+            source=(
+                ENERGY_SERIES[name].get("source", "Current")
+                if source_mode.startswith("live")
+                else "Energy archive"
+            ),
+        )
+        for name in ENERGY_REFRESH_SERIES
     }
     return {
         "version": ENERGY_DATA_VERSION,
@@ -317,7 +397,7 @@ def _history_from_archive(archive: pd.DataFrame | None) -> pd.DataFrame:
     if archive is None or archive.empty:
         return _empty_history()
     rows = []
-    for name in ENERGY_PUBLIC_SERIES:
+    for name in ENERGY_REFRESH_SERIES:
         if name not in archive.columns:
             continue
         values = pd.to_numeric(archive[name], errors="coerce")
@@ -342,6 +422,12 @@ def _history_from_archive(archive: pd.DataFrame | None) -> pd.DataFrame:
 
 
 def _archive_row_is_complete(row: pd.Series | None) -> bool:
+    """Return whether the weekly archive has its weekly-source observations.
+
+    Monthly retail electricity prices are retained in the long local history and
+    may legitimately lag the weekly archive date. They therefore do not block a
+    current-week archive decision.
+    """
     if row is None:
         return False
     for name in ENERGY_PUBLIC_SERIES:
@@ -385,21 +471,31 @@ def _snapshot_from_archive_row(
     error: str | None = None,
 ) -> dict:
     series = {}
-    for name, spec in ENERGY_PUBLIC_SERIES.items():
+    for name, spec in ENERGY_REFRESH_SERIES.items():
         value = pd.to_numeric(row.get(name, np.nan), errors="coerce")
         change = pd.to_numeric(row.get(f"{name} Change", np.nan), errors="coerce")
         observation_date = row.get(f"{name} Date", None)
-        series[name] = {
-            "value": float(value) if pd.notna(value) and np.isfinite(value) else np.nan,
-            "date": None if pd.isna(observation_date) else str(observation_date),
-            "change_pct": float(change)
-            if pd.notna(change) and np.isfinite(change)
-            else np.nan,
-            "frequency": spec["frequency"],
-            "unit": spec["unit"],
-            "source": "Energy archive",
-            "history": _series_history(history, name),
-        }
+        if pd.notna(value) and np.isfinite(value):
+            series[name] = {
+                "value": float(value),
+                "date": None if pd.isna(observation_date) else str(observation_date),
+                "change_pct": float(change)
+                if pd.notna(change) and np.isfinite(change)
+                else np.nan,
+                "frequency": spec["frequency"],
+                "unit": spec["unit"],
+                "source": "Energy archive",
+                "history": _series_history(history, name),
+            }
+        else:
+            # Older weekly archive rows predate the retail-price fields. Use the
+            # retained monthly series rather than turning a known observation
+            # into n/a or forcing an unnecessary network request.
+            series[name] = _series_payload(
+                history,
+                name,
+                source=spec.get("source", "Local retained history"),
+            )
     return {
         "version": str(row.get("Version", ENERGY_DATA_VERSION)),
         "source_mode": mode,
@@ -528,16 +624,33 @@ def _load_energy_data_cached(
         )
 
     try:
-        fresh_history = _fetch_public_energy_history()
-        merged = _merge_histories(local_history, fresh_history)
+        fresh_frames = []
+        refresh_errors = []
+        for label, fetcher in (
+            ("FRED", _fetch_public_energy_history),
+            ("EIA retail prices", _fetch_retail_price_history),
+        ):
+            try:
+                fresh_frames.append(fetcher())
+            except Exception as source_exc:
+                refresh_errors.append(f"{label}: {type(source_exc).__name__}: {source_exc}")
+        if not fresh_frames:
+            raise RuntimeError("; ".join(refresh_errors) or "No Energy source returned data")
+        merged = _merge_histories(local_history, *fresh_frames)
         _persist_local_history(merged)
-        mode = "live_manual" if decision == "manual_live" else "live_weekly"
+        if refresh_errors:
+            mode = "live_with_local_fallback"
+            error = "; ".join(refresh_errors)
+        else:
+            mode = "live_manual" if decision == "manual_live" else "live_weekly"
+            error = None
         return _snapshot_from_history(
             merged,
             source_mode=mode,
             snapshot_date=week_date,
             decision=decision,
             elapsed=time_module.perf_counter() - started,
+            error=error,
         )
     except Exception as exc:
         error = f"{type(exc).__name__}: {exc}"

@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from analytics.regime_engine import cycle_strategy
+from analytics.hhi_engine import sector_basket_concentration
 from analytics.valuation import (
     SECTOR_VALUATION_VERSION,
     aggregate_forward_ebit_yield,
@@ -163,6 +164,12 @@ def build_sector_metrics(factor_df, yf_df):
             "Loss-Making EV Share": np.nan,
             "Loss-Making Company Count": 0,
             "Beta": np.nan,
+            "Sector Basket Concentration": np.nan,
+            "Sector Raw HHI": np.nan,
+            "Sector Effective Firms": np.nan,
+            "Sector Concentration Company Count": 0,
+            "Sector Concentration Coverage": 0.0,
+            "Sector Concentration Version": "",
             "Scored Factors": pd.DataFrame(),
             "Pressure Components": pd.DataFrame(),
         }
@@ -170,6 +177,7 @@ def build_sector_metrics(factor_df, yf_df):
     normalized_df = normalize_factor_table(factor_df)
     sector_score = calc_sector_scores(normalized_df)
     pressure_score, pressure_components = calc_trading_pressure(yf_df, factor_df)
+    concentration = sector_basket_concentration(yf_df)
     valuation_discount = _factor_raw(factor_df, "forward_ebit_yield_discount")
 
     valuation = aggregate_forward_ebit_yield(
@@ -226,6 +234,12 @@ def build_sector_metrics(factor_df, yf_df):
         "Loss-Making Company Count": cohort_valuation.get("loss_making_company_count", 0),
         "Valuation Discount": valuation_discount,
         "Beta": _mean_column(yf_df, "Beta"),
+        "Sector Basket Concentration": concentration.get("adjusted_hhi", np.nan),
+        "Sector Raw HHI": concentration.get("raw_hhi", np.nan),
+        "Sector Effective Firms": concentration.get("effective_firms", np.nan),
+        "Sector Concentration Company Count": concentration.get("valid_company_count", 0),
+        "Sector Concentration Coverage": concentration.get("coverage", 0.0),
+        "Sector Concentration Version": concentration.get("version", ""),
         "Scored Factors": normalized_df,
         "Pressure Components": pressure_components,
     }

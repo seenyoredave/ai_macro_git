@@ -36,10 +36,10 @@ def fmt_date(value) -> str:
     return "n/a" if pd.isna(ts) else ts.strftime("%Y-%m-%d")
 
 
-def render_masthead(title: str, subtitle: str, meta: Iterable[tuple[str, str]]) -> None:
+def render_masthead(title: str, subtitle: str, meta: Iterable[tuple[str, str]] | None = None) -> None:
     meta_html = "".join(
         f"<div><b>{html.escape(str(label))}</b> {html.escape(str(value))}</div>"
-        for label, value in meta
+        for label, value in (meta or [])
         if value not in (None, "")
     )
     st.markdown(
@@ -50,7 +50,7 @@ def render_masthead(title: str, subtitle: str, meta: Iterable[tuple[str, str]]) 
                 <h1 class="rm-title">{html.escape(title)}</h1>
                 <div class="rm-subtitle">{html.escape(subtitle)}</div>
             </div>
-            <div class="rm-mast-meta">{meta_html}</div>
+            {f'<div class="rm-mast-meta">{meta_html}</div>' if meta_html else ''}
         </div>
         """,
         unsafe_allow_html=True,
@@ -203,7 +203,14 @@ def render_statline(
         raise ValueError("render_statline requires a non-empty key_prefix")
 
     columns = st.columns(len(items))
-    for index, (column, (label, value, note)) in enumerate(zip(columns, items)):
+    for index, (column, item) in enumerate(zip(columns, items)):
+        if len(item) == 3:
+            label, value, note = item
+            help_text = None
+        elif len(item) == 4:
+            label, value, note, help_text = item
+        else:
+            raise ValueError("render_statline items must contain 3 or 4 values")
         key = f"statline-{namespace}-{index}"
         st.markdown(
             f"""
@@ -222,7 +229,7 @@ def render_statline(
         )
         with column:
             with st.container(key=key):
-                st.caption(str(label).upper())
+                st.markdown(f"**{str(label).upper()}**", help=help_text)
                 st.markdown(f"### {str(value)}")
                 if note:
                     st.caption(str(note))

@@ -87,14 +87,16 @@ Power Capacity Gap = Deployment Pressure - Power-System Response
 **Scope:** This is a national response proxy. It does not directly measure regional transmission constraints, interconnection queues, local congestion, or firm deliverable capacity.
 """,
 
-    "Concentration HHI": """
-Measures market-value concentration within the selected AI-related company universe.
+    "Sector Basket Concentration": """
+Measures market-value concentration inside each selected sector basket while controlling for differences in valid constituent count.
 
-HHI = Σ(company market-cap share)²
+Raw HHI = Σ(company market-cap share)²
 
-HHI Score = clip[100 × (HHI - 0.01) ÷ (0.25 - 0.01), 0, 100]
+Adjusted HHI = 100 × (Raw HHI − 1/N) ÷ (1 − 1/N)
 
-**How to read it:** Higher values indicate that a smaller number of companies account for more of the universe's market value. Scale: 0 to 100.
+N is the number of companies with valid positive market capitalization. A value of 0 represents an equal-weight basket of the same size; 100 represents single-company concentration.
+
+**How to read it:** Higher values indicate that sector-basket market value is carried by fewer companies. The metric describes the configured basket, not the entire economic sector. Rankings require at least three valid companies and 60% market-cap coverage.
 """,
 
     "Henry Hub Natural Gas": """
@@ -127,6 +129,18 @@ Monthly Federal Reserve industrial-production index for renewable and other elec
 The card reports the latest index and three-month percentage change.
 
 **How to read it:** The reading tracks renewable-output momentum. It does not distinguish generation technology, location, storage support, or firmness.
+""",
+
+    "Commercial Electricity Price": """
+Monthly U.S. average retail electricity price paid by commercial customers, reported in cents per kilowatt-hour by the U.S. Energy Information Administration.
+
+**How to read it:** The series provides downstream electricity-cost context. It is a national customer-class average and does not represent a contracted hyperscale data-center tariff, wholesale power price, congestion charge, or site-specific delivered cost.
+""",
+
+    "Industrial Electricity Price": """
+Monthly U.S. average retail electricity price paid by industrial customers, reported in cents per kilowatt-hour by the U.S. Energy Information Administration.
+
+**How to read it:** The series provides downstream electricity-cost context. It is a national customer-class average and does not represent a contracted hyperscale data-center tariff, wholesale power price, congestion charge, or site-specific delivered cost.
 """,
 
     "Electric Power Output": """
@@ -301,9 +315,90 @@ Signals are adverse when free-cash-flow margin falls, net debt/EBITDA rises, or 
 **How to read it:** Higher values indicate that deterioration is affecting more of the sector's available financial signals. It does not estimate failure probability.
 """,
 
-    "Purpose Statement": """
-Measure whether AI-related market enthusiasm is supported by observable economic development, corporate financial performance, and resilient financing conditions.
+    "Data Center Construction": """
+Measures the seasonally adjusted annual rate of private construction spending on data-center facilities.
 
-Identify divergences, constraints, and financial pressures that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
+**Source:** U.S. Census Bureau, Value of Construction Put in Place.
+
+**How to read it:** Higher values indicate a larger active construction footprint. These spending data do not measure facility size, construction stage, compute capacity, power demand, or utilization, and they exclude announced projects until spending is put in place.
+""",
+
+    "Evidence-Graded Facility Registry": """
+Combines the observed IM3/OpenStreetMap facility footprint with explicitly curated project records supported by primary evidence.
+
+The registry keeps square footage, planned data-center capacity, contracted utility capacity, energized capacity, annual electricity consumption, onsite generation, water withdrawal, water consumption, WUE, cooling system, and water source as separate fields. Missing values remain missing and are never inferred from another field.
+
+**How to read it:** Bubble size uses one homogeneous selected metric. Outlined markers indicate records where that metric is unavailable. The registry is not a complete census of U.S. data centers.
+""",
+
+    "Computer, Electronic & Electrical Manufacturing Construction": """
+Measures private construction spending on computer, electronic, and electrical manufacturing facilities.
+
+**Source:** U.S. Census Bureau, Value of Construction Put in Place.
+
+**How to read it:** The category includes semiconductor-fab construction but is not semiconductor-exclusive. It is a broad manufacturing-buildout measure, not a pure fab series.
+""",
+
+    "Communication Construction": """
+Measures private construction spending on communication infrastructure.
+
+**How to read it:** The series provides broad supporting-infrastructure context. It does not identify the share attributable to AI or data centers.
+""",
+
+    "Public Highway and Street Construction": """
+Measures the seasonally adjusted annual rate of public highway and street construction spending.
+
+**How to read it:** The series describes broad transport-system investment. It is not allocated specifically to AI-related projects.
+""",
+
+    "Public Transportation Construction": """
+Measures the seasonally adjusted annual rate of public transportation construction spending.
+
+**How to read it:** The series provides supporting-infrastructure context and is not an AI-attributed measure.
+""",
+
+    "Public Water Supply Construction": """
+Measures the seasonally adjusted annual rate of public water-supply construction spending.
+
+**How to read it:** The series provides broad supporting-system context. It is capital spending on public water infrastructure, not facility withdrawal, consumptive use, legal access, or AI-attributed investment.
+""",
+
+
+    "Current Business AI Use": """
+Share of U.S. employer businesses reporting that they used artificial intelligence in at least one business function during the prior two weeks.
+
+**Source:** U.S. Census Bureau, Business Trends and Outlook Survey.
+
+**How to read it:** This is a survey measure of adoption. It does not measure intensity of use, productivity, return on investment, or labor effects.
+""",
+
+    "Expected Business AI Use": """
+Share of U.S. employer businesses expecting to use artificial intelligence in at least one business function during the next six months.
+
+**How to read it:** This measures stated near-term intent, not guaranteed future adoption.
+""",
+
+    "Expected Adoption Gap": """
+Difference between expected business AI use within six months and current reported use.
+
+Expected Adoption Gap = Expected Business AI Use − Current Business AI Use
+
+**How to read it:** A positive value indicates more businesses expect to use AI than currently report using it. It is stated intent, not committed implementation. No confidence interval is reported for the difference because the retained survey contract does not provide the covariance between the paired estimates.
+""",
+
+    "Adoption Breadth": """
+Compares current and expected AI use across major U.S. industries.
+
+**How to read it:** Broader adoption means use is distributed across more industries rather than concentrated in a small number of high-use sectors. Sector estimates are subject to sampling error and suppression.
+""",
+
+    "Purpose Statement": """
+AI Macro tracks the development of AI as an economic instrument and its footprint in the US economy.
+
+It examines who is building it, how the buildout is financed, where this growth occurs, and the physical capacity required to sustain it.
+
+It measures deployment, economic returns, and the adaptation of businesses, workers, and institutions to AI integration.
+
+Using publicly available data, the platform connects capital committed, capacity built, adoption achieved, and value realized.
 """,
 }

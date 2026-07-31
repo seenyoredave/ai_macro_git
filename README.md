@@ -2,23 +2,27 @@
 
 ## Purpose
 
-Measure whether AI-related market enthusiasm is supported by observable economic development, corporate financial performance, and resilient financing conditions.
+AI Macro tracks the development of AI as an economic instrument and its footprint in the US economy.
 
-Identify divergences, constraints, and financial pressures that may increase vulnerability to market corrections using publicly available market, company-filing, construction, power, and Federal Reserve data.
+It examines who is building it, how the buildout is financed, where this growth occurs, and the physical capacity required to sustain it.
 
-The dashboard is a personal analytical system, not a trading platform. It describes observable conditions and does not claim to predict the date or proximity of a market correction.
+It measures deployment, economic returns, and the adaptation of businesses, workers, and institutions to AI integration.
+
+Using publicly available data, the platform connects capital committed, capacity built, adoption achieved, and value realized.
 
 ## Dashboard structure
 
-The research interface is organized into five primary tabs:
+The v4.14 development interface is organized into seven primary tabs:
 
-- **AI Macro:** deterministic current-state interpretation, equity conditions, development intensity, power stress, concentration, and gap metrics
+- **AI Macro:** a deterministic Snapshot spanning markets, financing, infrastructure, energy, adaptation, and economic validation
+- **Market:** AI-specific sector analysis with cross-sectional positioning, movement, sector-basket concentration, fundamental evolution, and market performance; the header reports the actually loaded sector and ticker counts
 - **Finance:** deployment funding, public corporate-bond market functioning, Borrower Strain, Lender Strain, and NFCI/ANFCI confirmation
-- **Energy:** fuel supply, power production, grid capacity, and AI-linked electricity demand
-- **Market:** AI-specific sector analysis with cross-sectional positioning, movement, fundamental evolution, and market performance
-- **Evidence:** purpose, metric definitions, FRED observations, and EDGAR company data
+- **Infrastructure:** direct buildout measures, an evidence-graded facility registry, and national infrastructure expenditure
+- **Energy:** fuel supply, retail electricity cost, power production, grid capacity, and AI-linked electricity demand
+- **Adaptation:** observed business AI use, expected near-term use, uncertainty intervals, and adoption breadth by industry
+- **Evidence:** purpose, metric definitions, source state, coverage, methodology, and underlying observations
 
-The tab reorganization does not change metric definitions, calculations, gauges, histories, component charts, or the dashboard color system.
+The masthead contains only the platform identity and purpose. Data coverage and freshness are reported where they are analytically relevant rather than compressed into a global status label.
 
 ## Design principles
 
@@ -36,24 +40,34 @@ The tab reorganization does not change metric definitions, calculations, gauges,
 - **SEC / EDGAR:** standardized financial facts, filing-backed commitment disclosures, public BDC credit quality, and Form PF aggregates
 - **FRED:** macroeconomic, bank, industrial-production, financial-conditions, information-investment, power, and weekly energy-market series
 - **Federal Reserve Bank of New York:** Corporate Bond Market Distress Index history for the overall, investment-grade, and high-yield markets
-- **U.S. Census Bureau:** private data-center construction spending
+- **U.S. Census Bureau:** private and public construction spending; Business Trends and Outlook Survey observations of current and expected business AI use
+- **IM3 Open Source Data Center Atlas:** OpenStreetMap-derived reference locations for the observed U.S. data-center footprint
+- **Primary project evidence:** company disclosures, state registrations, regulatory records, and other attributable documents used for explicitly curated facility records
+- **U.S. Energy Information Administration:** monthly national commercial and industrial average retail electricity prices from Electric Power Monthly Table 5.3
+- **Curated weekly context:** confirmed primary records from federal agencies, regulators, grid operators, public filings, and attributable project sources; only sources used in the current Snapshot are linked below it
 
 ## Headline framework
 
-### Macro current-state interpretation
+### Snapshot interpretation
 
-The Macro tab translates the measured system into a compact current-state view without using a language model or requiring a weekly editorial narrative. The interpretation layer produces:
+The AI Macro tab translates the measured system into a compact Snapshot without using a language model or requiring a weekly editorial narrative. The interpretation layer produces:
 
 - one categorical state headline;
-- up to three active pressure factors;
-- up to three resilience factors; and
-- up to three material changes from prior completed observations.
+- up to three expansion factors;
+- up to three constraints; and
+- up to three current-week events or material metric changes.
 
-The language is assembled deterministically from approved clauses using measured level, direction, persistence, breadth, and offsetting resilience. Small movements are suppressed. The output and domain states are archived with each new macro observation under a versioned interpretation contract, so later wording or threshold changes do not silently rewrite prior states.
+The headline and factor selection remain deterministic. The former free-standing synthesis sentence has been removed: the headline and three columns are the Snapshot. Each factor is a short, single-claim statement written in ordinary language.
 
-Headlines are restricted to a plain-language state ladder: Supportive conditions, Resilient, Resilient under rising pressure, Resilient under broad-based pressure, Increasingly constrained, Funding-constrained, Broad deterioration, Stabilizing, Conditions improving, or Partial current-state view when coverage is insufficient. Specific drivers remain in the summary and factor lists rather than being compressed into awkward headline modifiers.
+The **This week** column uses a small, reviewable registry of confirmed primary-source events. It does not scrape headlines or generate commentary. Each entry pairs a verified fact with a restrained statement of platform relevance, and numbered source links appear directly below the Snapshot. Material platform changes since the previous completed Friday fill unused slots. Slow annual or monthly changes do not repeat unless a new observation arrives after the weekly baseline. Events expire automatically after their stated window.
+
+The output, domain states, metric changes, weekly event metadata, and references are archived under a versioned interpretation contract, so later wording or threshold changes do not silently rewrite prior states.
+
+Headlines are restricted to a neutral expansion-and-constraint ladder: Broad expansion, Expansion continuing, Uneven expansion, Expansion with emerging constraints, Expansion with material constraints, Constraints broadening, Financing constrained, Broad contraction, Stabilizing, Expansion reaccelerating, or Partial snapshot when coverage is insufficient.
 
 The interpretation does not collapse the platform into a single numerical master score. The underlying metrics remain visible immediately below it.
+
+Infrastructure and Adaptation are first-class Snapshot domains. Data-center construction is expansion evidence on its own and becomes a constraint only when rapid construction growth is corroborated by an independently measured Power Capacity Gap. Business AI-use changes can describe diffusion or weakening, but do not imply productivity, return on investment, or labor effects. Snapshot coverage distinguishes nine core inputs from two supplemental Infrastructure and Adaptation inputs. The selected values, domain states, and Snapshot context are archived under the versioned interpretation contract.
 
 ### AI Equity Index
 
@@ -192,6 +206,12 @@ The headline requires at least three of four pillars and at least one valid pill
 
 Scale: **-100 to +100**, centered at 0
 
+### Electricity Cost
+
+The Energy tab reports monthly U.S. commercial and industrial average retail electricity prices in cents per kilowatt-hour. Both customer classes are shown because neither is a universal data-center tariff. The readings provide downstream delivered-cost context and do not represent wholesale prices, nodal congestion, utility riders, or negotiated hyperscale contracts.
+
+Wholesale power prices remain outside the current national product because they are regional and nodal. They become analytically useful when facility records can be mapped consistently to organized-market and balancing-authority geography.
+
 ### Debt Markets
 
 The Finance tab adds the New York Fed Corporate Bond Market Distress Index as a direct reading of public debt-market functioning. The section shows the overall market, investment-grade, and high-yield indexes plus ten years of weekly observation history.
@@ -210,9 +230,55 @@ The Chicago Fed National Financial Conditions Index is shown directly as an inde
 
 NFCI is not blended into Borrower Strain or Lender Strain. ANFCI is shown as a contextual comparator in the same financial-conditions plot.
 
-### Concentration HHI
+### Sector Basket Concentration
 
-HHI measures market-cap concentration within the selected AI universe. Higher readings mean a greater share of market value is concentrated in fewer companies.
+Market concentration is reported by sector on the Market tab rather than as a universe-wide AI Macro reading. Each sector uses raw market-cap HHI adjusted for its valid constituent count:
+
+`Adjusted HHI = 100 × (Raw HHI - 1/N) / (1 - 1/N)`
+
+A value of 0 represents an equal-weight basket with the same number of valid companies; 100 represents single-company concentration. Rankings require at least three positive-market-cap constituents and 60% coverage. The measure describes the configured sector basket, not the entire economic sector.
+
+## Infrastructure tab
+
+Infrastructure records buildout and site context.
+
+### Evidence-graded facility registry
+
+The facility layer combines the IM3/OpenStreetMap observed footprint with explicitly curated project records. It is a registry of source-backed records, not a complete census and not a confirmed AI-compute inventory. Curated records retain source, evidence grade, status, observation date, and location precision. Geographic proxies are labeled as proxies.
+
+The data contract keeps the following fields separate:
+
+- square footage;
+- planned data-center capacity;
+- contracted utility capacity;
+- energized capacity;
+- annual electricity consumption;
+- planned onsite generation;
+- water withdrawal;
+- water consumption;
+- site WUE;
+- cooling system; and
+- water source.
+
+A value is never inferred from another field. Planned generation is not treated as data-center capacity, square footage is not converted into MW, and undisclosed water use remains missing. The map sizes records using one selected metric at a time. Records without that metric remain visible as outlined markers rather than being treated as zero or sized with a substitute. The evidence table reports the underlying fields and provenance.
+
+The initial curated ledger adds three Texas Panhandle projects that are absent from the observed IM3 footprint: Project Caprock, Google's Armstrong County campus, and Project Matador. Their markers use disclosed-area proxies where exact coordinates are unavailable.
+
+### Buildout and U.S. Infrastructure Expenditure
+
+The Buildout section places the direct construction chart immediately below its summary readings. It contains Data Center Construction and the Census **Computer, Electronic & Electrical Manufacturing Construction** category. The latter includes semiconductor-fab construction but is not semiconductor-exclusive.
+
+The separate **U.S. Infrastructure Expenditure** section reports national communication, transport, and public water-supply construction expenditures. The complete national series are shown without inferring an AI-attributable share.
+
+Communication, highway and street, public transportation, and public water-supply construction are shown separately and in full. The platform does not estimate an AI-attributable share. Public water-supply construction is capital spending on water infrastructure, not data-center withdrawal or consumption.
+
+## Adaptation tab
+
+The first Adaptation view measures observed employer-business AI use, expected use within six months, the **Expected Adoption Gap**, and the breadth of use across industries using Census Business Trends and Outlook Survey estimates.
+
+Current-use and expected-use charts display 95% confidence intervals calculated as estimate ± 1.96 × published standard error. The platform does not display an exact interval for the Expected Adoption Gap because the covariance between the two estimates is not available in the published input; assuming independence would imply unsupported precision.
+
+Adoption is not treated as productivity, return on investment, labor displacement, or institutional adaptation. Those outcomes require separate measurements.
 
 ## Energy tab
 
@@ -259,7 +325,7 @@ Opposing changes cannot cancel, and movement remains on a nonnegative scale.
 - Static weights are renormalized only after the minimum-data rule is met.
 - Current headlines may use the latest valid archive value from the same metric version.
 - YFinance performs one automatic live universe pull per Eastern trading date during regular market hours. A complete same-day archive blocks repeated automatic pulls; after 4:00 p.m. Eastern and on weekends, the latest complete archive is used.
-- Energy performs one automatic public-source pull per completed week. A completed-week archive blocks repeated requests; manual Energy refreshes remain independent.
+- Energy performs one automatic public-source refresh per completed week. Weekly FRED observations and monthly EIA retail-price observations retain separate source dates; a current weekly archive plus retained monthly history blocks unnecessary requests. Manual Energy refreshes remain independent.
 - Debt Markets uses the bundled CMDI history until a new scheduled monthly release is due. Manual Debt Markets refreshes bypass the release gate.
 - A partial hosted-market pull is retried once, then reconciled ticker-by-ticker with the latest complete archive rather than silently shrinking the universe.
 - Carried-forward display values are not archived as new observations.
@@ -329,7 +395,7 @@ stand-in. Packaging should not proceed unless the gate exits successfully.
 ## Architecture
 
 - `ai_macro.py`: sole Streamlit execution entry point and application data pipeline
-- `research_overlay/renderers.py`: five-tab research interface orchestration
+- `research_overlay/renderers.py`: seven-tab research interface orchestration
 - `research_overlay/components.py`: reusable research UI components
 - `research_overlay/visuals.py`: Plotly research figures
 - `research_overlay/theme.py`: platform visual system
@@ -340,11 +406,15 @@ stand-in. Packaging should not proceed unless the gate exits successfully.
 - `loaders/fred_loader.py`: macro and power data
 - `loaders/nfci_loader.py`: isolated NFCI history and fallback chain
 - `loaders/debt_markets_loader.py`: monthly publication gate and bundled New York Fed CMDI history
+- `loaders/infrastructure_loader.py`: construction history, IM3 footprint ingestion, composite facility-registry assembly, and coverage
+- `loaders/facility_registry_loader.py`: field-specific evidence contract for observed and curated facility records
+- `loaders/adaptation_loader.py`: Census BTOS current/expected AI-use history, standard errors, and industry snapshot
 - `loaders/edgar_loader.py`: EDGAR data quality and archive eligibility
 - `analytics/factor_engine.py`: three-factor AEI inputs
 - `analytics/economic_validation.py`: aligned EVG construction
 - `analytics/borrower_strain_engine.py`: borrower strain
 - `analytics/lender_strain_engine.py`: bank/nonbank financing strain
+- `analytics/macro_interpretation.py`: deterministic Snapshot state engine and domain coverage contract
 - `archive/archive.py`: atomic archive persistence
 - `helpers/macro_dashboard.py`: shared macro, finance, sector, and evidence render components
 - `helpers/render_ai_macro.py`: AI Macro tab orchestration

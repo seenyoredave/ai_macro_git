@@ -4,9 +4,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_research_overlay_keeps_five_primary_tabs():
+def test_research_overlay_keeps_seven_primary_tabs():
     source = (ROOT / "ai_macro.py").read_text()
-    assert '["AI MACRO", "FINANCE", "ENERGY", "MARKET", "EVIDENCE"]' in source
+    assert '["AI MACRO", "MARKET", "FINANCE", "INFRASTRUCTURE", "ENERGY", "ADAPTATION", "EVIDENCE"]' in source
 
 
 def test_ai_macro_is_the_only_streamlit_entrypoint():
@@ -24,7 +24,7 @@ def test_research_overlay_retains_existing_products():
         "AI Development Intensity",
         "Power Stress Index",
         "Power Capacity Gap",
-        "Concentration HHI",
+        "Sector Basket Concentration",
         "Speculation Gap",
         "Economic Validation Gap",
         "AI–Industrial Growth Gap",
@@ -42,6 +42,8 @@ def test_research_overlay_retains_existing_products():
         "Sector Movement",
         "Risk Breadth",
         "Loss-Making EV Share",
+        "Commercial Electricity Price",
+        "Industrial Electricity Price",
     ]
     for product in required_products:
         assert product in source
@@ -68,7 +70,8 @@ def test_plotly_overlay_does_not_serialize_empty_titles():
 
 def test_sector_tab_revision_is_structurally_present():
     source = (ROOT / "research_overlay" / "renderers.py").read_text()
-    assert "AEI leader" in source
+    assert '"Most Concentrated"' in source
+    assert '"Most Profitable"' not in source
     assert '"Earnings Support"' in source
     assert '"Speculative Load"' in source
     assert 'with st.expander("Sector matrix", expanded=False)' in source
@@ -120,7 +123,8 @@ def test_all_statline_calls_use_explicit_namespaces():
     assert 'key_prefix=f"finance-condition-' in source
     assert "title.lower().replace(' ', '-')" in source
     assert 'key_prefix="finance-nfci-confirmation"' in source
-    assert 'key_prefix="sector-dossier-summary"' in source
+    assert 'key_prefix="sector-dossier-summary-primary"' in source
+    assert 'key_prefix="sector-dossier-summary-structure"' in source
     assert 'key_prefix="sector-cross-state"' in source
 
 
@@ -161,7 +165,7 @@ def test_nfci_and_anfci_share_one_plot_without_promoting_anfci_to_a_card():
 
 def test_ai_macro_cleanup_contract_is_present():
     source = (ROOT / "research_overlay" / "renderers.py").read_text()
-    assert '"Current state of the AI economy across markets, capital deployment, financing, energy, and economic validation."' in source
+    assert '"Overview of the AI economy using novel metrics to track the evolution."' in source
     assert 'render_section("Gap Measures", "Approximations of divergence from broader economic trends.")' in source
     assert '"Expectations and development"' not in source
     macro_block = source.split("def render_macro_tab", 1)[1].split("def _funding_specs", 1)[0]
@@ -173,14 +177,17 @@ def test_ai_macro_cleanup_contract_is_present():
     assert 'f"""\n            <div class="rm-state-head">' not in source
 
 
-def test_hhi_component_evidence_is_rendered_as_an_additive_breakdown():
+def test_sector_concentration_is_rehomed_and_propagated():
     renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
-    visuals = (ROOT / "research_overlay" / "visuals.py").read_text()
     hhi_engine = (ROOT / "analytics" / "hhi_engine.py").read_text()
-    assert 'render_panel_heading("Concentration contributors"' in renderer
-    assert 'hhi_component_chart(hhi_breakdown)' in renderer
-    assert 'def hhi_component_breakdown' in hhi_engine
-    assert 'def hhi_component_chart' in visuals
+    assert '"Sector Basket Concentration"' in renderer
+    assert '"Most Concentrated"' in renderer
+    assert '"Basket Concentration"' in renderer
+    assert '"**Basket-concentration contributors**"' in renderer
+    assert 'sector_hhi_component_breakdown(df, top_n=8)' in renderer
+    assert 'def adjusted_hhi' in hhi_engine
+    assert 'def sector_basket_concentration' in hhi_engine
+    assert 'def sector_hhi_component_breakdown' in hhi_engine
 
 
 def test_platform_title_replaces_station_title():
@@ -219,7 +226,7 @@ def test_gap_scale_note_is_attached_to_chart_column():
 def test_developer_tools_header_includes_right_aligned_version_and_divider():
     app = (ROOT / "ai_macro.py").read_text()
     theme = (ROOT / "research_overlay" / "theme.py").read_text()
-    assert 'APP_VERSION = "v4.09"' in app
+    assert 'APP_VERSION = "v4.14-dev"' in app
     assert 'class="rm-developer-tools-header"' in app
     assert 'class="rm-developer-tools-version"' in app
     assert 'class="rm-developer-tools-divider"' in app
@@ -232,9 +239,13 @@ def test_research_ui_cleanup_is_structurally_present():
     app = (ROOT / "ai_macro.py").read_text()
     renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
 
-    assert '("Status", dashboard_source_status(regime_metrics))' in app
-    assert '("Build", APP_VERSION)' in app
-    assert 'f"{run_date.month}.{run_date.day}.{run_date.year}"' in app
+    assert 'dashboard_source_status' not in app
+    assert '("Run",' not in app
+    assert '("Status",' not in app
+    assert '("Universe",' not in app
+    assert '("Build", APP_VERSION)' not in app
+    assert 'market_universe_summary = {' in app
+    assert 'render_masthead(' in app
 
     assert '"Top five companies plus the remainder"' not in renderer
     assert '"Deployment pressure:' not in renderer
@@ -249,6 +260,17 @@ def test_research_ui_cleanup_is_structurally_present():
         assert f'_render_tab_metric_registry("{tab}")' in renderer
     assert '_render_tab_metric_registry("evidence")' not in renderer
 
+
+
+
+def test_purpose_statement_matches_current_scope():
+    definitions = (ROOT / "config" / "metric_definitions.py").read_text()
+    assert "AI Macro tracks the development of AI as an economic instrument and its footprint in the US economy." in definitions
+    assert "where this growth occurs" in definitions
+    assert "adaptation of businesses, workers, and institutions to AI integration" in definitions
+    assert "capital committed, capacity built, adoption achieved, and value realized" in definitions
+    assert "market enthusiasm" not in definitions
+    assert "market corrections" not in definitions
 
 def test_evidence_purpose_and_source_data_are_rendered_cleanly():
     source = (ROOT / "research_overlay" / "renderers.py").read_text()
@@ -305,3 +327,18 @@ def test_first_content_section_after_each_metric_registry_uses_standard_divider(
 
     assert '.rm-section {' in (ROOT / "research_overlay" / "theme.py").read_text()
     assert 'border-top: 1px solid var(--rm-border);' in (ROOT / "research_overlay" / "theme.py").read_text()
+
+
+def test_most_concentrated_card_is_compact_and_has_no_helper_tooltip():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+    assessment = renderer.split("def _assessment_stats", 1)[1].split("def _rank_text", 1)[0]
+    assert "Adjusted HHI compares each sector basket" not in assessment
+    assert "effective firms" not in assessment
+    assert "Sector Concentration Company Count" in assessment
+    assert 'f"Adjusted HHI {fmt_number' in assessment
+
+
+def test_data_center_registry_panel_title_is_direct():
+    renderer = (ROOT / "research_overlay" / "renderers.py").read_text()
+    assert 'render_panel_heading("Data Center Registry"' in renderer
+    assert 'render_panel_heading("Evidence-graded data-center registry"' not in renderer

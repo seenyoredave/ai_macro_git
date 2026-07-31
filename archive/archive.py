@@ -269,6 +269,19 @@ def append_macro_history(regime_metrics, fred_data):
         "Pressure Version": regime_metrics.get("Pressure Version", np.nan),
         "Macro State": (regime_metrics.get("Macro Interpretation", {}) or {}).get("headline", ""),
         "Macro State Summary": (regime_metrics.get("Macro Interpretation", {}) or {}).get("summary", ""),
+        "Macro Constraint Factors": " || ".join(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get(
+                "constraint_factors",
+                (regime_metrics.get("Macro Interpretation", {}) or {}).get("pressure_factors", []),
+            )
+        ),
+        "Macro Expansion Factors": " || ".join(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get(
+                "expansion_factors",
+                (regime_metrics.get("Macro Interpretation", {}) or {}).get("resilience_factors", []),
+            )
+        ),
+        # Legacy names remain populated for archive-reader compatibility.
         "Macro Pressure Factors": " || ".join(
             (regime_metrics.get("Macro Interpretation", {}) or {}).get("pressure_factors", [])
         ),
@@ -278,10 +291,28 @@ def append_macro_history(regime_metrics, fred_data):
         "Macro Change Factors": " || ".join(
             (regime_metrics.get("Macro Interpretation", {}) or {}).get("changes", [])
         ),
+        "Macro Metric Changes": " || ".join(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("metric_changes", [])
+        ),
+        "Macro Weekly References": json.dumps(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("weekly_references", []),
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
+        "Macro Weekly Context": json.dumps(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("weekly_context", {}),
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
         "Macro Interpretation Confidence": (regime_metrics.get("Macro Interpretation", {}) or {}).get("confidence", ""),
         "Macro Interpretation Version": (regime_metrics.get("Macro Interpretation", {}) or {}).get("version", ""),
         "Macro Domain States": json.dumps(
             (regime_metrics.get("Macro Interpretation", {}) or {}).get("domains", {}),
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
+        "Macro Snapshot Context": json.dumps(
+            (regime_metrics.get("Macro Interpretation", {}) or {}).get("snapshot_context", {}),
             sort_keys=True,
             separators=(",", ":"),
         ),
@@ -390,7 +421,7 @@ def append_fred_history(fred_data):
 
 def append_energy_history(energy_data):
     """Persist one completed-week Energy snapshot after a successful live load."""
-    if not energy_data or str(energy_data.get("source_mode", "")) not in {"live_weekly", "live_manual"}:
+    if not energy_data or str(energy_data.get("source_mode", "")) not in {"live_weekly", "live_manual", "live_with_local_fallback"}:
         return
 
     row = {
