@@ -1,5 +1,3 @@
-"""Sector-level AI Equity Index and trading-pressure calculations."""
-
 from __future__ import annotations
 
 import numpy as np
@@ -17,7 +15,6 @@ from config.debug_config import DEBUG, debug_print
 from factors.factor_normalization import normalize_factor
 from factors.factor_weights import FACTOR_WEIGHTS
 
-
 PRESSURE_WEIGHTS = {
     "Valuation Stretch": 0.25,
     "Price Extension": 0.25,
@@ -25,7 +22,6 @@ PRESSURE_WEIGHTS = {
     "Volatility Expansion": 0.15,
     "Volume Activity": 0.15,
 }
-
 
 def normalize_factor_table(factor_df):
     rows = []
@@ -43,9 +39,7 @@ def normalize_factor_table(factor_df):
 
     return pd.DataFrame(rows)
 
-
 def calc_sector_scores(normalized_df):
-    """Combine the three AEI factors; all three are required."""
     if normalized_df is None or normalized_df.empty:
         return np.nan
 
@@ -66,9 +60,7 @@ def calc_sector_scores(normalized_df):
 
     return combined["score"]
 
-
 def _median_numeric(df, column, min_count=3):
-    """Robust sector aggregate for ticker-level pressure inputs."""
     if df is None or df.empty or column not in df.columns:
         return np.nan
 
@@ -78,7 +70,6 @@ def _median_numeric(df, column, min_count=3):
         .dropna()
     )
     return float(values.median()) if len(values) >= min_count else np.nan
-
 
 def _factor_raw(factor_df, factor_name):
     if factor_df is None or factor_df.empty:
@@ -90,15 +81,7 @@ def _factor_raw(factor_df, factor_name):
 
     return pd.to_numeric(rows.iloc[-1]["Value"], errors="coerce")
 
-
 def calc_trading_pressure(yf_df, factor_df=None):
-    """Calculate sector trading pressure from extension and instability.
-
-    Pressure is intentionally distinct from AEI. It uses valuation stretch,
-    price extension, momentum acceleration, volatility expansion, and abnormal
-    volume. At least three of five components must be valid. Fixed weights are
-    renormalized over valid components; missing values are never zero-filled.
-    """
     raw = {
         "Valuation Stretch": _factor_raw(
             factor_df, "forward_ebit_yield_discount"
@@ -135,17 +118,13 @@ def calc_trading_pressure(yf_df, factor_df=None):
 
     return combined["score"], pd.DataFrame(rows)
 
-
-
 def _mean_column(yf_df, column):
     if yf_df is None or yf_df.empty or column not in yf_df.columns:
         return np.nan
     values = pd.to_numeric(yf_df[column], errors="coerce").replace([np.inf, -np.inf], np.nan)
     return float(values.mean()) if values.notna().any() else np.nan
 
-
 def build_sector_metrics(factor_df, yf_df):
-    """Return the existing public sector-metrics schema with AEI semantics."""
     if factor_df is None or factor_df.empty:
         return {
             "Sector Score": np.nan,

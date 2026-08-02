@@ -1,10 +1,3 @@
-"""Deterministic interpretation layer for the AI Macro Snapshot.
-
-The module translates measured platform state into a compact headline,
-expansion factors, constraints, and a weekly context rollup. It does not use a
-language model, random phrasing, or ungrounded causal claims.
-"""
-
 from __future__ import annotations
 
 from collections import Counter
@@ -15,9 +8,7 @@ import pandas as pd
 
 from analytics.financial_conditions import nfci_snapshot
 
-
 MACRO_INTERPRETATION_VERSION = "2.0"
-
 
 MACRO_STATE_HEADLINES = frozenset(
     {
@@ -35,13 +26,11 @@ MACRO_STATE_HEADLINES = frozenset(
     }
 )
 
-
 def _number(value) -> float:
     numeric = pd.to_numeric(value, errors="coerce")
     if pd.isna(numeric) or not np.isfinite(numeric):
         return np.nan
     return float(numeric)
-
 
 def _fmt(value, digits=1, *, signed=False, suffix="") -> str:
     numeric = _number(value)
@@ -49,7 +38,6 @@ def _fmt(value, digits=1, *, signed=False, suffix="") -> str:
         return "n/a"
     spec = f"+.{digits}f" if signed else f".{digits}f"
     return f"{numeric:{spec}}{suffix}"
-
 
 def _series_frame(payload) -> pd.DataFrame:
     if not isinstance(payload, pd.DataFrame) or payload.empty:
@@ -68,7 +56,6 @@ def _series_frame(payload) -> pd.DataFrame:
         .reset_index(drop=True)
     )
 
-
 def _history_frame(history, value_column, *, version_column=None, required_version=None):
     if not isinstance(history, pd.DataFrame) or history.empty:
         return pd.DataFrame(columns=["Date", "Value"])
@@ -80,7 +67,6 @@ def _history_frame(history, value_column, *, version_column=None, required_versi
             return pd.DataFrame(columns=["Date", "Value"])
         frame = frame[frame[version_column].astype(str) == str(required_version)].copy()
     return _series_frame(frame[["Date", value_column]].rename(columns={value_column: "Value"}))
-
 
 def _prior_delta(series, current, *, lookback=1):
     current = _number(current)
@@ -94,7 +80,6 @@ def _prior_delta(series, current, *, lookback=1):
         return np.nan
     return current - float(values[-lookback])
 
-
 def _previous_completed_friday(as_of=None) -> pd.Timestamp:
     current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
     days_since_friday = (current.weekday() - 4) % 7
@@ -102,14 +87,7 @@ def _previous_completed_friday(as_of=None) -> pd.Timestamp:
         days_since_friday = 7
     return current - pd.Timedelta(days=days_since_friday)
 
-
 def _weekly_delta(series, current, *, as_of=None):
-    """Compare a current reading with the last observation at/before prior Friday.
-
-    A metric only enters the weekly rollup when its newest observation arrived
-    after that Friday. Slow-moving series therefore do not repeat annual or
-    monthly changes every week merely because the level remains noteworthy.
-    """
     current = _number(current)
     frame = _series_frame(series)
     if pd.isna(current) or frame.empty:
@@ -124,7 +102,6 @@ def _weekly_delta(series, current, *, as_of=None):
     if prior.empty:
         return np.nan
     return current - float(prior.iloc[-1]["Value"])
-
 
 def _consecutive_direction(series, current, *, adverse_when_higher=True, tolerance=0.0):
     current = _number(current)
@@ -145,7 +122,6 @@ def _consecutive_direction(series, current, *, adverse_when_higher=True, toleran
         streak += 1
     return streak
 
-
 def _direction(delta, *, threshold, adverse_when_higher=True):
     delta = _number(delta)
     if pd.isna(delta):
@@ -157,13 +133,11 @@ def _direction(delta, *, threshold, adverse_when_higher=True):
         return "easing"
     return "stable"
 
-
 def _level(value, thresholds):
     value = _number(value)
     if pd.isna(value):
         return 0
     return int(sum(value >= threshold for threshold in thresholds))
-
 
 def _factor(
     *, key, domain, kind, severity, direction, statement, score=0.0
@@ -177,7 +151,6 @@ def _factor(
         "statement": statement,
         "score": float(score),
     }
-
 
 def _select_diverse(factors, limit=3):
     ranked = sorted(
@@ -200,7 +173,6 @@ def _select_diverse(factors, limit=3):
             break
     return chosen
 
-
 def _funding_state(funding_current):
     internal = _number((funding_current or {}).get("internal_funding_coverage"))
     runway = _number((funding_current or {}).get("cash_reserve_coverage_years"))
@@ -218,7 +190,6 @@ def _funding_state(funding_current):
     if score >= -1:
         return "thin", 1
     return "weak", 0
-
 
 def _metric_change(changes, *, key, label, current, delta, threshold, unit="points", score_scale=None):
     current, delta = _number(current), _number(delta)
@@ -241,10 +212,8 @@ def _metric_change(changes, *, key, label, current, delta, threshold, unit="poin
         }
     )
 
-
 def _energy_item(energy_data, name):
     return (((energy_data or {}).get("series", {}) or {}).get(name, {}) or {})
-
 
 def build_macro_interpretation(
     *,
@@ -258,7 +227,6 @@ def build_macro_interpretation(
     adaptation_data=None,
     weekly_context=None,
 ):
-    """Build a compact, deterministic Snapshot from measured platform domains."""
     regime = regime_metrics or {}
     macro_history = macro_history if isinstance(macro_history, pd.DataFrame) else pd.DataFrame()
     debt_markets_data = debt_markets_data or {}
@@ -325,7 +293,6 @@ def build_macro_interpretation(
 
     constraints, expansion = [], []
 
-    # Market and development establish whether observable activity is expanding.
     if pd.notna(adi):
         if adi >= 55:
             expansion.append(_factor(
@@ -356,7 +323,6 @@ def build_macro_interpretation(
                 score=(35-aei)/10,
             ))
 
-    # Funding capacity and contractual burden.
     internal = _number(funding.get("internal_funding_coverage"))
     runway = _number(funding.get("cash_reserve_coverage_years"))
     debt_pulse = _number(funding.get("debt_financing_pulse"))
@@ -407,7 +373,6 @@ def build_macro_interpretation(
             score=debt_pulse,
         ))
 
-    # Borrower and lender condition.
     for key, label, value, delta, series in (
         ("borrower-strain", "Borrower strain", borrower, deltas["borrower"], histories["borrower"]),
         ("lender-strain", "Lender strain", lender, deltas["lender"], histories["lender"]),
@@ -431,7 +396,6 @@ def build_macro_interpretation(
                 score=abs(value),
             ))
 
-    # Corporate bond market functioning.
     debt_items = []
     for name in ("Corporate Bond Market Distress", "Investment-Grade Bond Distress", "High-Yield Bond Distress"):
         item = ((debt_markets_data.get("series", {}) or {}).get(name, {}) or {})
@@ -463,7 +427,6 @@ def build_macro_interpretation(
                 score=1-dominant_value,
             ))
 
-    # Broad financial conditions.
     nfci = nfci_snapshot(fred_data or {}, nfci_history)
     nfci_value = _number(nfci.get("value"))
     nfci_change = _number(nfci.get("three_month_change"))
@@ -484,7 +447,6 @@ def build_macro_interpretation(
                 score=abs(nfci_value),
             ))
 
-    # Energy costs and physical power response.
     oil_change = _number(_energy_item(energy_data, "WTI Crude Oil").get("change_pct"))
     gas_change = _number(_energy_item(energy_data, "Natural Gas Price").get("change_pct"))
     commercial_price_change = _number(_energy_item(energy_data, "Commercial Electricity Price").get("change_pct"))
@@ -540,8 +502,6 @@ def build_macro_interpretation(
                 score=abs(power_stress),
             ))
 
-    # Infrastructure is expansion evidence on its own, and a constraint only
-    # when a separate power-response measure corroborates the interaction.
     if pd.notna(construction_yoy):
         if construction_yoy >= .10:
             expansion.append(_factor(
@@ -565,7 +525,6 @@ def build_macro_interpretation(
             score=construction_yoy*5 + max(capacity_gap,0)/20,
         ))
 
-    # Business adaptation is descriptive diffusion evidence, not productivity.
     if pd.notna(adaptation_annual_change):
         if adaptation_annual_change >= 1:
             expansion.append(_factor(
@@ -588,7 +547,6 @@ def build_macro_interpretation(
             score=current_use/20,
         ))
 
-    # Economic validation and relative market/development positioning.
     if pd.notna(validation_gap):
         direction = _direction(deltas["validation"], threshold=3)
         if validation_gap >= 15:
@@ -618,8 +576,6 @@ def build_macro_interpretation(
                 score=abs(speculation_gap)/10,
             ))
 
-    # Weekly changes use the previous completed Friday as the baseline and only
-    # include observations that arrived after it.
     changes = []
     for key, label, value, threshold in (
         ("aei", "AI equity conditions", aei, 1.0),
@@ -639,7 +595,7 @@ def build_macro_interpretation(
     )
     _metric_change(
         changes, key="business-adaptation", label="Reported business AI use", current=current_use,
-        delta=_weekly_delta(adaptation_history, current_use), threshold=.5, unit="percentage points",
+        delta=_weekly_delta(adaptation_history, current_use, as_of=adaptation_date), threshold=.5, unit="percentage points",
     )
     if not construction_history.empty:
         current_construction = _number(construction_history.iloc[-1]["Value"])
@@ -681,7 +637,7 @@ def build_macro_interpretation(
             "direction": direction,
             "constraint_severity": severity,
             "expansion_strength": strength,
-            # Compatibility fields retained for existing archives and downstream readers.
+
             "pressure_severity": severity,
             "support_strength": strength,
         }
@@ -722,9 +678,6 @@ def build_macro_interpretation(
     else:
         headline = "Uneven expansion"
 
-    # Primary-source events lead the weekly rollup. Material platform changes
-    # fill any unused slots. Events report a verified fact followed by a
-    # restrained relevance statement; neither layer asserts causation.
     weekly_items = []
     weekly_references = []
     for event in list(weekly_context.get("events", []) or [])[:3]:
@@ -758,7 +711,7 @@ def build_macro_interpretation(
     constraint_statements = [item["statement"] for item in selected_constraints]
     return {
         "headline": headline,
-        "summary": "",  # Deprecated: the three-column Snapshot is the summary.
+        "summary": "",
         "expansion_factors": expansion_statements,
         "constraint_factors": constraint_statements,
         "changes": weekly_items,
@@ -770,7 +723,7 @@ def build_macro_interpretation(
             "source": weekly_context.get("source"),
             "version": weekly_context.get("version"),
         },
-        # Compatibility aliases retained for archive schema continuity.
+
         "resilience_factors": expansion_statements,
         "pressure_factors": constraint_statements,
         "domains": domain_states,

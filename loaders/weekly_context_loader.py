@@ -1,18 +1,9 @@
-"""Curated weekly context for the AI Economy Snapshot.
-
-The loader intentionally does not scrape headlines or generate prose. It reads a
-small, reviewable registry of confirmed primary-source events, filters it to the
-active weekly window, and returns source metadata alongside two short display
-sentences: a verified fact and a restrained statement of platform relevance.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
 from urllib.parse import urlparse
 
 import pandas as pd
-
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVENT_PATH = ROOT / "data" / "weekly_context_events.csv"
@@ -33,21 +24,11 @@ REQUIRED_COLUMNS = {
     "expires_after_days",
 }
 
-
-def previous_completed_friday(as_of=None) -> pd.Timestamp:
-    current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
-    days_since_friday = (current.weekday() - 4) % 7
-    if days_since_friday == 0:
-        days_since_friday = 7
-    return current - pd.Timedelta(days=days_since_friday)
-
-
 def _clean_sentence(value) -> str:
     text = " ".join(str(value or "").split()).strip()
     if not text:
         return ""
     return text if text.endswith((".", "!", "?")) else f"{text}."
-
 
 def _valid_https_url(value) -> bool:
     try:
@@ -56,9 +37,7 @@ def _valid_https_url(value) -> bool:
         return False
     return parsed.scheme == "https" and bool(parsed.netloc)
 
-
 def _select_diverse(frame: pd.DataFrame, limit: int) -> pd.DataFrame:
-    """Prefer different domains before filling remaining slots by priority."""
     if frame.empty or limit <= 0:
         return frame.iloc[0:0].copy()
     ranked = frame.sort_values(
@@ -84,17 +63,10 @@ def _select_diverse(frame: pd.DataFrame, limit: int) -> pd.DataFrame:
             break
     return ranked.loc[chosen_indexes].copy()
 
-
 def load_weekly_context(*, as_of=None, path=None, limit=3):
-    """Return confirmed primary-source events in the active weekly window.
-
-    The weekly window begins the day after the previous completed Friday and
-    ends on ``as_of``. Records must remain inside their explicit expiry window.
-    Invalid or unsupported records are dropped rather than repaired.
-    """
     current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
     source_path = Path(path or DEFAULT_EVENT_PATH)
-    window_start = previous_completed_friday(current) + pd.Timedelta(days=1)
+    window_start = current - pd.Timedelta(days=6)
     empty_result = {
         "events": [],
         "references": [],

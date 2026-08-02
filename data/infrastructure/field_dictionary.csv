@@ -1,0 +1,34 @@
+field,layer,definition,unit,treatment
+Facility ID,Facility registry,Stable internal record identifier,text,Platform-generated; source namespace preserved
+Status,Facility registry,Evidence-supported project stage or observed-footprint state,controlled text,Open geospatial rows remain Observed footprint; stage is not inferred
+Square Feet,Facility registry,Mapped building or campus area where the source provides it,square feet,Observed; not converted to MW
+Published Capacity Estimate Low MW,Facility registry,Lower bound of a third-party published capacity estimate,MW,"Estimate only; never treated as planned, contracted, or energized"
+Published Capacity Estimate MW,Facility registry,Midpoint or point value of a third-party published capacity estimate,MW,"Estimate only; never treated as planned, contracted, or energized"
+Published Capacity Estimate High MW,Facility registry,Upper bound of a third-party published capacity estimate,MW,"Estimate only; never treated as planned, contracted, or energized"
+Capacity Estimate Basis,Facility registry,Source description of how a published capacity estimate was formed,controlled text,Retained verbatim where available
+Planned Data Center Capacity MW,Facility registry,Announced or filed campus or data-center capacity,MW,Reported; requires attributable project evidence
+Contracted Utility Capacity MW,Facility registry,Documented contracted utility service,MW,Reported; not inferred from project capacity
+Energized Capacity MW,Facility registry,Capacity explicitly documented as energized,MW,Reported; operating status alone is insufficient
+Inventory Confidence,Facility registry,Confidence label assigned by an upstream third-party inventory,controlled text,Metadata only; not promoted into platform Evidence Grade
+Upstream Source URL,Facility registry,Record-level upstream citation supplied by the compiled inventory,URL,Blank remains blank; dataset URL is retained separately
+Component Layer,Compute project ledger,Compute-manufacturing function,controlled text,Analytical classification
+Expected CapEx USD B,Compute project ledger,Expected project or portfolio expenditure,billions USD,Reported; portfolio-deduplicated in summaries
+Direct Funding USD B,Compute project ledger,CHIPS direct award amount,billions USD,Reported; funding scope controls aggregation
+AI Relevance,Compute project ledger,"Core AI, enabling compute, or broader compute classification",controlled text,Analytical classification; not an official program field
+Evidence Grade,All infrastructure ledgers,Authority and directness of the platform record,A-E,"Assigned by platform contract, not copied from source confidence"
+Resilience Grade,All infrastructure ledgers,Recoverability and operational durability,R1-R5,Assigned by platform contract
+Observation Date,Compute G.17 history,Monthly observation period for each retained G.17 value,date,Per-series latest dates are preserved; mixed latest dates are disclosed
+Series ID,Compute G.17 contract,Exact Federal Reserve/FRED identifier for the displayed series,text,Controlled contract; display labels alone are insufficient
+Output Index,Compute G.17 history,Real output index for the contracted domestic manufacturing industry,Index 2017=100,Seasonally adjusted broad industry proxy; not AI-specific or a physical-unit count
+Capacity Utilization,Compute G.17 history,Estimated output relative to sustainable maximum industry output,percent,Seasonally adjusted operating-rate estimate; not AI-specific capacity
+Comparison Status,Compute G.17 validation,Latest retained observation compared with the checked official release,controlled text,Any mismatch produces a visible warning and raises a validation error
+Expected Service Date,Facility registry,Published actual or expected ready-for-service date or year,date / year,"Source value retained; year-only values are displayed as year-level trajectory evidence, not exact commissioning dates"
+Tracked Project Stage,Facility registry,"Online, under-construction, or planned/announced stage within the bounded active inventory",controlled text,Counts apply only to the tracked project set and are not represented as a national census
+Electric Power Construction,Census construction ledger,Private electric-power construction value put in place,millions USD SAAR,Broad enabling-system capital-flow proxy; no AI-attributable share is inferred
+Operating Data Centers,National data-center buildout database,Operating facilities in the published national analysis.,facilities,National scale measure; facility definitions may include buildings campuses or named projects.
+Data Centers in Development,National data-center buildout database,"Under-construction, planned, and land-banked facilities in the published national analysis.",facilities,Canceled and uncertain records are excluded.
+Project Stage,National data-center buildout database,"Reported project stage: proposed, approved/under construction, expanding, operating, suspended, or cancelled.",controlled text,Used for the project funnel and state distributions.
+Active Development Pipeline,National data-center buildout database,Proposed plus approved/under-construction plus expanding project records.,projects/sites,Measures visible development activity before full operation.
+Published Project Capacity,National data-center buildout database,Published capacity for projects or stage groups where disclosed.,MW,"Partial disclosure coverage; not inferred, not energized load, and not imputed for missing records."
+Dataset,National data-center buildout database,The dataset used for the observation.,controlled text,National totals and project-development records retain their own definitions and dates.
+Geography Level,National data-center buildout database,"United States, Census region, state, or facility/project level.",controlled text,Geographic levels remain explicit.

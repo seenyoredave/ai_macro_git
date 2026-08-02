@@ -1,10 +1,3 @@
-"""New York Fed Corporate Bond Market Distress Index loader.
-
-The CMDI workbook contains weekly observations and is published on a monthly
-schedule. Bundled history provides deterministic startup. The loader contacts
-the source only after a new scheduled release or when explicitly refreshed.
-"""
-
 from __future__ import annotations
 
 from calendar import monthrange
@@ -28,23 +21,15 @@ from config.debt_markets_config import (
 from config.debug_config import debug_print
 from config.market_clock import EASTERN_TIME, eastern_now, utc_now
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEBT_MARKETS_HISTORY_PATH = PROJECT_ROOT / "data" / "debt_markets_history.csv"
 DEBT_MARKETS_METADATA_PATH = PROJECT_ROOT / "data" / "debt_markets_metadata.json"
-
 
 def _last_weekday_of_month(year: int, month: int, weekday: int) -> date:
     last = date(year, month, monthrange(year, month)[1])
     return last - timedelta(days=(last.weekday() - weekday) % 7)
 
-
 def completed_debt_market_release(now: datetime | None = None) -> date:
-    """Return the latest scheduled CMDI release whose cutoff has passed.
-
-    The New York Fed publishes the CMDI at 10:00 a.m. Eastern on the last
-    Wednesday of each month. The workbook itself contains weekly observations.
-    """
     current = eastern_now(now)
     release_date = _last_weekday_of_month(current.year, current.month, 2)
     cutoff = datetime.combine(release_date, time(10, 0), tzinfo=EASTERN_TIME)
@@ -58,14 +43,11 @@ def completed_debt_market_release(now: datetime | None = None) -> date:
         2,
     )
 
-
 def debt_markets_cache_token(now: datetime | None = None) -> str:
     return completed_debt_market_release(now).isoformat()
 
-
 def _empty_history() -> pd.DataFrame:
     return pd.DataFrame(columns=["Date", *DEBT_MARKET_SERIES])
-
 
 def _normalize_history(frame: pd.DataFrame | None) -> pd.DataFrame:
     if frame is None or frame.empty or "Date" not in frame.columns:
@@ -90,7 +72,6 @@ def _normalize_history(frame: pd.DataFrame | None) -> pd.DataFrame:
         .reset_index(drop=True)
     )
 
-
 def _load_local_history() -> pd.DataFrame:
     if (
         not DEBT_MARKETS_HISTORY_PATH.exists()
@@ -103,7 +84,6 @@ def _load_local_history() -> pd.DataFrame:
         debug_print(f"Debt-markets local history load failed -> {exc}")
         return _empty_history()
 
-
 def _load_metadata() -> dict:
     if not DEBT_MARKETS_METADATA_PATH.exists():
         return {}
@@ -113,7 +93,6 @@ def _load_metadata() -> dict:
     except Exception as exc:
         debug_print(f"Debt-markets metadata load failed -> {exc}")
         return {}
-
 
 def _persist_local_history(frame: pd.DataFrame, *, release_date: date) -> None:
     clean = _normalize_history(frame)
@@ -139,7 +118,6 @@ def _persist_local_history(frame: pd.DataFrame, *, release_date: date) -> None:
     )
     metadata_temporary.replace(DEBT_MARKETS_METADATA_PATH)
 
-
 def _normalize_workbook(frame: pd.DataFrame | None) -> pd.DataFrame:
     if frame is None or frame.empty:
         return _empty_history()
@@ -153,7 +131,6 @@ def _normalize_workbook(frame: pd.DataFrame | None) -> pd.DataFrame:
     for name, spec in DEBT_MARKET_SERIES.items():
         out[name] = frame[spec["source_column"]]
     return _normalize_history(out)
-
 
 def _fetch_history() -> pd.DataFrame:
     response = requests.get(
@@ -171,7 +148,6 @@ def _fetch_history() -> pd.DataFrame:
     if history.empty:
         raise ValueError("New York Fed workbook returned no recognized CMDI history")
     return history
-
 
 def _series_payload(history: pd.DataFrame, name: str, source: str) -> dict:
     if history.empty or name not in history.columns:
@@ -193,7 +169,6 @@ def _series_payload(history: pd.DataFrame, name: str, source: str) -> dict:
         "source": source,
         "history": series,
     }
-
 
 def _snapshot(
     history: pd.DataFrame,
@@ -236,7 +211,6 @@ def _snapshot(
             "error": error,
         },
     }
-
 
 @st.cache_data(ttl=86400)
 def _load_debt_markets_cached(
@@ -287,7 +261,6 @@ def _load_debt_markets_cached(
             release_date=required_release,
             error=str(exc),
         )
-
 
 def load_debt_markets_data(
     *,

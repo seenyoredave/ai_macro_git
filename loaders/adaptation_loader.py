@@ -1,5 +1,3 @@
-"""Census business AI-use observations for the Adaptation research view."""
-
 from __future__ import annotations
 
 from io import BytesIO
@@ -11,7 +9,6 @@ import requests
 import streamlit as st
 
 from config.debug_config import debug_print
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 NATIONAL_HISTORY_PATH = PROJECT_ROOT / "data" / "adaptation_national_history.csv"
@@ -42,17 +39,14 @@ NAICS_SECTORS = {
     "XX": "Multi-unit Companies",
 }
 
-
 def _percent(value):
     text = str(value).strip()
     if not text.endswith("%"):
         return np.nan
     return pd.to_numeric(text[:-1], errors="coerce")
 
-
 def _cycle_columns(frame: pd.DataFrame) -> list[str]:
     return [str(column) for column in frame.columns if str(column).isdigit() and len(str(column)) == 6]
-
 
 def _cycle_dates(workbook: bytes) -> dict[str, pd.Timestamp]:
     dates = pd.read_excel(BytesIO(workbook), sheet_name="Collection and Reference Dates", engine="openpyxl")
@@ -62,7 +56,6 @@ def _cycle_dates(workbook: bytes) -> dict[str, pd.Timestamp]:
         str(int(row["Smpdt"])): pd.Timestamp(row["Publication Date"])
         for _, row in dates.dropna(subset=["Smpdt", "Publication Date"]).iterrows()
     }
-
 
 def parse_btos_national_workbook(content: bytes) -> pd.DataFrame:
     estimates = pd.read_excel(BytesIO(content), sheet_name="Response Estimates", engine="openpyxl")
@@ -99,7 +92,6 @@ def parse_btos_national_workbook(content: bytes) -> pd.DataFrame:
     output["Expected Adoption Gap"] = output["Expected AI Use"] - output["Current AI Use"]
     return output.sort_values("Date", kind="stable").drop_duplicates("Date", keep="last").reset_index(drop=True)
 
-
 def parse_btos_sector_workbook(content: bytes) -> pd.DataFrame:
     estimates = pd.read_excel(BytesIO(content), sheet_name="Response Estimates", engine="openpyxl")
     errors = pd.read_excel(BytesIO(content), sheet_name="Response Standard Errors", engine="openpyxl")
@@ -129,9 +121,7 @@ def parse_btos_sector_workbook(content: bytes) -> pd.DataFrame:
         rows.append(payload)
     return pd.DataFrame(rows)
 
-
 def _ensure_expected_adoption_gap(frame: pd.DataFrame) -> pd.DataFrame:
-    """Recompute the descriptive gap whenever both component estimates exist."""
     if frame is None or frame.empty:
         return frame.copy() if isinstance(frame, pd.DataFrame) else pd.DataFrame()
     output = frame.copy()
@@ -142,7 +132,6 @@ def _ensure_expected_adoption_gap(frame: pd.DataFrame) -> pd.DataFrame:
         output["Expected AI Use"] = expected
         output["Expected Adoption Gap"] = expected - current
     return output
-
 
 def _persist(national: pd.DataFrame, sector: pd.DataFrame) -> None:
     national_out = _ensure_expected_adoption_gap(national)
@@ -155,7 +144,6 @@ def _persist(national: pd.DataFrame, sector: pd.DataFrame) -> None:
     sector_out.to_csv(sector_temp, index=False)
     national_temp.replace(NATIONAL_HISTORY_PATH)
     sector_temp.replace(SECTOR_SNAPSHOT_PATH)
-
 
 def _load_local() -> tuple[pd.DataFrame, pd.DataFrame]:
     national = pd.read_csv(NATIONAL_HISTORY_PATH) if NATIONAL_HISTORY_PATH.exists() else pd.DataFrame()
@@ -179,7 +167,6 @@ def _load_local() -> tuple[pd.DataFrame, pd.DataFrame]:
     national = _ensure_expected_adoption_gap(national)
     sector = _ensure_expected_adoption_gap(sector)
     return national, sector
-
 
 def _summarize(national: pd.DataFrame, sector: pd.DataFrame, *, source: str) -> dict:
     national = _ensure_expected_adoption_gap(national)
@@ -216,15 +203,13 @@ def _summarize(national: pd.DataFrame, sector: pd.DataFrame, *, source: str) -> 
         "annual_change": annual_change,
     }
 
-
 @st.cache_data(ttl=43200)
 def load_adaptation_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
-    """Return observed business AI use and expected near-term use.
+    del refresh_token
+    local_national, local_sector = _load_local()
+    if not force_refresh and not local_national.empty:
+        return _summarize(local_national, local_sector, source="Census BTOS Local History")
 
-    The first-pass Adaptation view is descriptive. It does not infer productivity,
-    causality, labor displacement, or realized return from adoption alone.
-    """
-    del force_refresh, refresh_token
     try:
         national_response = requests.get(BTOS_NATIONAL_URL, timeout=45)
         national_response.raise_for_status()
@@ -236,5 +221,4 @@ def load_adaptation_data(force_refresh: bool = False, refresh_token: int = 0) ->
         return _summarize(national, sector, source="Census BTOS Live")
     except Exception as exc:
         debug_print(f"BTOS adaptation refresh failed -> {exc}")
-        national, sector = _load_local()
-        return _summarize(national, sector, source="Census BTOS Local History")
+        return _summarize(local_national, local_sector, source="Census BTOS Local History")

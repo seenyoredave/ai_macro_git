@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 from config.debug_config import debug_print
@@ -21,7 +20,6 @@ AI_EXPOSURE_WEIGHTS = {
     5: 1.40,
 }
 
-
 def percentile_score(series, higher_is_better=True):
     values = pd.to_numeric(series, errors="coerce")
 
@@ -35,7 +33,6 @@ def percentile_score(series, higher_is_better=True):
 
     return ranks.fillna(50.0)
 
-
 def assign_tiers(score_series):
     scores = pd.to_numeric(score_series, errors="coerce")
 
@@ -48,21 +45,7 @@ def assign_tiers(score_series):
         labels=[4, 3, 2, 1]
     ).astype(int)
 
-
 def add_basket_tiers(df, ai_exposure_score=None):
-    """
-    Adds basket tiering and AI exposure weighting.
-
-    Basket Score / Basket Tier / Basket Weight:
-        Economic significance inside the basket.
-
-    AI Exposure Score:
-        Manual 1-5 score for how directly the company expresses
-        the assigned sector's AI thesis.
-
-    Effective Basket Weight:
-        Basket Weight adjusted by AI Weight.
-    """
 
     df = df.copy()
 
@@ -83,7 +66,6 @@ def add_basket_tiers(df, ai_exposure_score=None):
         higher_is_better=True
     )
 
-    # Existing economic-significance score.
     df["Basket Score"] = (
         0.70 * market_cap_score
         + 0.20 * revenue_score

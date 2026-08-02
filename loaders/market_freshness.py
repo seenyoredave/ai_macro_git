@@ -1,16 +1,12 @@
-"""Pure helpers for reconciling current market data with archive fallback."""
-
 from __future__ import annotations
 
 import pandas as pd
 
 from config.market_clock import utc_now
 
-
 def _ticker_order(tickers):
     raw = tickers.keys() if isinstance(tickers, dict) else tickers
     return [str(ticker).upper().strip() for ticker in raw]
-
 
 def _normalize_rows(frame, expected, required_columns):
     if frame is None or not isinstance(frame, pd.DataFrame) or frame.empty:
@@ -27,7 +23,6 @@ def _normalize_rows(frame, expected, required_columns):
     normalized = normalized.loc[normalized["Ticker"].isin(expected)].copy()
     return normalized.drop_duplicates(subset=["Ticker"], keep="last")
 
-
 def merge_live_with_archive(
     fresh,
     fallback,
@@ -36,12 +31,6 @@ def merge_live_with_archive(
     required_columns,
     metadata_columns=("Date", "Sector", "Ticker", "Company"),
 ):
-    """Merge ticker rows with current values taking precedence.
-
-    Complete current rows are preferred. Archive rows fill failed tickers and
-    individual missing fields, and the returned DataFrame carries a structured
-    ``load_report`` in ``DataFrame.attrs``.
-    """
     expected_order = _ticker_order(tickers)
     expected = set(expected_order)
     live = _normalize_rows(fresh, expected, required_columns)

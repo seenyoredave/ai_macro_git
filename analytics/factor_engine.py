@@ -5,37 +5,12 @@ from analytics.valuation import aggregate_forward_ebit_yield
 from config.factor_config import FACTOR_CONFIG
 from config.debug_config import debug_print, DEBUG
 
-
 def _weighted_mean(df, column, *, min_count=5):
     if df is None or df.empty or column not in df.columns:
         return np.nan
-
     values = pd.to_numeric(df[column], errors="coerce")
-    weight_column = next(
-        (
-            name
-            for name in ("Effective Basket Weight", "Basket Weight")
-            if name in df.columns
-        ),
-        None,
-    )
-
-    if weight_column is None:
-        valid = values.notna() & np.isfinite(values)
-        return float(values.loc[valid].mean()) if int(valid.sum()) >= min_count else np.nan
-
-    weights = pd.to_numeric(df[weight_column], errors="coerce")
-    valid = (
-        values.notna()
-        & weights.notna()
-        & np.isfinite(values)
-        & np.isfinite(weights)
-        & (weights > 0)
-    )
-    if int(valid.sum()) < min_count:
-        return np.nan
-    return float(np.average(values.loc[valid], weights=weights.loc[valid]))
-
+    valid = values.notna() & np.isfinite(values)
+    return float(values.loc[valid].mean()) if int(valid.sum()) >= min_count else np.nan
 
 def calc_relative_performance(df, benchmark_return):
     sector_return = _weighted_mean(df, "1Y Return", min_count=5)
@@ -43,13 +18,7 @@ def calc_relative_performance(df, benchmark_return):
         return np.nan
     return sector_return - float(benchmark_return)
 
-
 def calc_forward_ebit_yield_discount(df, benchmark_ebit_yield):
-    """Benchmark forward EBIT yield minus sector aggregate forward EBIT yield.
-
-    Positive values mean the sector is more richly valued than the benchmark.
-    Both sides use ratio-of-sums operating earnings yields.
-    """
     valuation = aggregate_forward_ebit_yield(
         df,
         min_count=5,
@@ -65,9 +34,7 @@ def calc_forward_ebit_yield_discount(df, benchmark_ebit_yield):
         return np.nan
     return float(benchmark_ebit_yield) - float(sector_yield)
 
-
 def calc_market_breadth(df):
-    """Share of sector companies trading above their 200-day moving average."""
     if df is None or df.empty or "Price Extension 200D" not in df.columns:
         return np.nan
     extension = (
@@ -79,7 +46,6 @@ def calc_market_breadth(df):
         return np.nan
     return float((extension > 0).mean())
 
-
 FACTOR_FUNCTIONS = {
     "relative_performance": lambda df, benchmark_return, benchmark_yield: calc_relative_performance(
         df, benchmark_return
@@ -89,7 +55,6 @@ FACTOR_FUNCTIONS = {
     ),
     "market_breadth": lambda df, benchmark_return, benchmark_yield: calc_market_breadth(df),
 }
-
 
 def calc_sector_factors(sector, yf_df, benchmark_metrics=None):
     empty_out = pd.DataFrame(columns=["Sector", "Factor", "Value"])

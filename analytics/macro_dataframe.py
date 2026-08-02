@@ -1,5 +1,3 @@
-"""Macro dashboard data products."""
-
 from __future__ import annotations
 
 import numpy as np
@@ -25,9 +23,7 @@ from analytics.trend_engine import (
 from archive.archive_reader import load_macro_history
 from config.debug_config import DEBUG, debug_print
 
-
 AEI_HISTORY_START = pd.Timestamp("2026-06-14")
-
 
 def _append_current_metric_observation(
     history,
@@ -37,7 +33,6 @@ def _append_current_metric_observation(
     version_column=None,
     version=None,
 ):
-    """Append today's genuinely current reading to a trend input."""
     numeric = pd.to_numeric(current_value, errors="coerce")
     if pd.isna(numeric) or not np.isfinite(numeric):
         return history
@@ -60,14 +55,7 @@ def _append_current_metric_observation(
     )
     return working
 
-
 def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
-    """Return current-methodology AEI trend statistics with the full archived chart history.
-
-    Observations from earlier methodologies remain available for chart continuity.
-    They are shown for continuity but are not used to calculate current-model
-    velocity or acceleration.
-    """
     trend = calc_metric_trend(
         macro_history,
         "AI Equity Index",
@@ -116,7 +104,7 @@ def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
         trend["acceleration"] = calc_acceleration(native_values["Value"])
 
     trend["history"] = history.reset_index(drop=True)
-    # The current AEI methodology starts a clean calculation series without a chart revision marker.
+
     trend.setdefault("revision_date", None)
     trend.setdefault("revision_label", None)
     trend.setdefault(
@@ -126,7 +114,6 @@ def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
     )
 
     return trend
-
 
 def build_macro_dataframe(sector_metrics):
     rows = []
@@ -164,9 +151,7 @@ def build_macro_dataframe(sector_metrics):
 
     return macro_df
 
-
 def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
-    """Prepare macro-level data products without rendering."""
     macro_df = build_macro_dataframe(sector_metrics)
     macro_history = load_macro_history()
     regime_metrics = regime_metrics or {}

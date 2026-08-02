@@ -1,9 +1,3 @@
-"""Key-based archive writers.
-
-Each domain function builds a snapshot. One generic coalescing engine owns file
-validation, same-key replacement, column ordering, and atomic writes.
-"""
-
 from __future__ import annotations
 
 import json
@@ -24,7 +18,6 @@ from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
 from config.energy_config import ENERGY_DATA_VERSION, ENERGY_SERIES
 from config.market_clock import eastern_now
 
-
 YF_ARCHIVE_COLUMNS = [
     "Ticker", "Company", "Price", "P/E", "Forward EV/EBIT",
     "Market Cap", "Enterprise Value", "Revenue", "Forward Revenue",
@@ -37,7 +30,6 @@ YF_ARCHIVE_COLUMNS = [
     "Momentum Acceleration", "Volatility Expansion", "Volume Activity",
     "Basket Score", "Basket Tier", "Basket Weight",
 ]
-
 
 def _validate_keys(frame, keys, archive_file, *, require_values=False):
     missing = [key for key in keys if key not in frame.columns]
@@ -63,7 +55,6 @@ def _validate_keys(frame, keys, archive_file, *, require_values=False):
                 f"{int(bad.sum())} unparseable Date values"
             )
 
-
 def _normalize_frame(frame, archive_file, keys):
     normalized = frame.copy().dropna(how="all")
     normalized = normalize_key_columns(normalized)
@@ -71,7 +62,6 @@ def _normalize_frame(frame, archive_file, keys):
         normalized = normalize_date_column(normalized, "Date")
     _validate_keys(normalized, keys, archive_file, require_values=True)
     return normalized
-
 
 def _quarantine(archive_file, reason):
     timestamp = eastern_now().strftime("%Y%m%d_%H%M%S")
@@ -86,7 +76,6 @@ def _quarantine(archive_file, reason):
         counter += 1
     archive_file.replace(backup)
     print(f"Archive reset: moved malformed file to {backup}. Reason: {reason}")
-
 
 def _read_existing(archive_file, keys, *, reset_malformed=False):
     if not archive_file.exists() or archive_file.stat().st_size == 0:
@@ -103,7 +92,6 @@ def _read_existing(archive_file, keys, *, reset_malformed=False):
         _quarantine(archive_file, str(exc))
         return pd.DataFrame()
 
-
 def _remove_matching_keys(existing, snapshot, keys):
     if existing is None or existing.empty or snapshot.empty:
         return existing
@@ -112,7 +100,6 @@ def _remove_matching_keys(existing, snapshot, keys):
     identities["_replace"] = True
     merged = existing.merge(identities, on=list(keys), how="left")
     return merged.loc[merged["_replace"].isna()].drop(columns="_replace")
-
 
 def _ordered_columns(existing, snapshot, keys):
     ordered = list(keys)
@@ -124,7 +111,6 @@ def _ordered_columns(existing, snapshot, keys):
                 ordered.append(column)
     return ordered
 
-
 def _atomic_write(frame, archive_file, keys):
     _validate_keys(frame, keys, archive_file, require_values=True)
     temp_file = archive_file.with_suffix(archive_file.suffix + ".tmp")
@@ -133,9 +119,7 @@ def _atomic_write(frame, archive_file, keys):
     _validate_keys(check, keys, archive_file, require_values=True)
     temp_file.replace(archive_file)
 
-
 def write_archive_snapshot(snapshot, archive_path, key_cols=None):
-    """Replace matching full-key rows and preserve every unrelated row."""
     spec = archive_path if isinstance(archive_path, ArchiveSpec) else spec_for_path(archive_path)
     path = spec.path if spec else archive_path
     keys = tuple(key_cols or (spec.keys if spec else ()))
@@ -162,12 +146,10 @@ def write_archive_snapshot(snapshot, archive_path, key_cols=None):
     combined = combined.reindex(columns=_ordered_columns(existing, incoming, keys))
     _atomic_write(combined, archive_file, keys)
 
-
 def append_dataframe_history(frame, archive_path, key_cols=None):
     snapshot = frame.copy()
     snapshot.insert(0, "Date", today_iso())
     write_archive_snapshot(snapshot, archive_path, key_cols=key_cols)
-
 
 def _component_value(regime_metrics, group_key, component_name, field="score"):
     return (
@@ -176,7 +158,6 @@ def _component_value(regime_metrics, group_key, component_name, field="score"):
         .get(field, np.nan)
     )
 
-
 def _current_metric_value(regime_metrics, metric_name, source_name):
     if regime_metrics.get(source_name) != "Current":
         return np.nan
@@ -184,7 +165,6 @@ def _current_metric_value(regime_metrics, metric_name, source_name):
         f"{metric_name} Current",
         regime_metrics.get(metric_name, np.nan),
     )
-
 
 def append_macro_history(regime_metrics, fred_data):
     row = {
@@ -281,7 +261,7 @@ def append_macro_history(regime_metrics, fred_data):
                 (regime_metrics.get("Macro Interpretation", {}) or {}).get("resilience_factors", []),
             )
         ),
-        # Legacy names remain populated for archive-reader compatibility.
+
         "Macro Pressure Factors": " || ".join(
             (regime_metrics.get("Macro Interpretation", {}) or {}).get("pressure_factors", [])
         ),
@@ -323,7 +303,6 @@ def append_macro_history(regime_metrics, fred_data):
     }
     write_archive_snapshot(pd.DataFrame([row]), ARCHIVE_SPECS["macro"])
 
-
 def append_sector_history(sector_metrics):
     rows = [
         {
@@ -346,9 +325,7 @@ def append_sector_history(sector_metrics):
     if rows:
         write_archive_snapshot(pd.DataFrame(rows), ARCHIVE_SPECS["sector"])
 
-
 def append_benchmark_history(metrics_by_benchmark=None):
-    """Persist the benchmark metrics used by the current dashboard build."""
     supplied = metrics_by_benchmark or {}
     rows = []
     for benchmark in ACTIVE_BENCHMARKS:
@@ -365,7 +342,6 @@ def append_benchmark_history(metrics_by_benchmark=None):
         })
     if rows:
         write_archive_snapshot(pd.DataFrame(rows), ARCHIVE_SPECS["benchmark"])
-
 
 def append_yf_history(sector_data):
     rows = []
@@ -384,9 +360,7 @@ def append_yf_history(sector_data):
             key_cols=ARCHIVE_KEYS["yf"],
         )
 
-
 def append_edgar_history(edgar_snapshot):
-    """Persist a loader-approved EDGAR snapshot without re-evaluating quality."""
     if edgar_snapshot is None or edgar_snapshot.empty:
         return
 
@@ -395,7 +369,6 @@ def append_edgar_history(edgar_snapshot):
         snapshot.insert(0, "Date", today_iso())
     snapshot = snapshot.reindex(columns=EDGAR_REQUIRED_COLUMNS)
     write_archive_snapshot(snapshot, ARCHIVE_SPECS["edgar"])
-
 
 def append_fred_history(fred_data):
     if not fred_data:
@@ -420,7 +393,6 @@ def append_fred_history(fred_data):
     write_archive_snapshot(pd.DataFrame([row]), ARCHIVE_SPECS["fred"])
 
 def append_energy_history(energy_data):
-    """Persist one completed-week Energy snapshot after a successful live load."""
     if not energy_data or str(energy_data.get("source_mode", "")) not in {"live_weekly", "live_manual", "live_with_local_fallback"}:
         return
 
@@ -435,4 +407,3 @@ def append_energy_history(energy_data):
         row[f"{name} Change"] = payload.get("change_pct", np.nan)
 
     write_archive_snapshot(pd.DataFrame([row]), ARCHIVE_SPECS["energy"])
-

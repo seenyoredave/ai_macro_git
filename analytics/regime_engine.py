@@ -1,5 +1,3 @@
-"""Macro regime calculations: AEI, ADI, Power Stress, and Borrower Strain."""
-
 from __future__ import annotations
 
 import math
@@ -29,22 +27,15 @@ from analytics.power_capacity_gap import (
     calculate_power_capacity_gap,
 )
 
-
 AEI_VERSION = "3.1"
 ADI_VERSION = "1.0"
 EVG_VERSION = "2.0"
 POWER_STRESS_VERSION = "3.0"
 BORROWER_STRAIN_VERSION = "3.0"
-LENDER_STRAIN_VERSION = "3.0"
+LENDER_STRAIN_VERSION = "3.1"
 PRESSURE_VERSION = "3.0"
 
-
 def calc_aei(sector_metrics):
-    """AI Equity Index = equal mean of valid sector AEI scores.
-
-    At least 75% of configured sector scores must be valid. Remaining sectors
-    retain equal weighting; missing sectors are not treated as zero.
-    """
     if not sector_metrics:
         return np.nan
 
@@ -63,7 +54,6 @@ def calc_aei(sector_metrics):
         return np.nan
 
     return float(valid.mean())
-
 
 def calc_avg_sector_pressure(sector_metrics):
     if not sector_metrics:
@@ -85,9 +75,7 @@ def calc_avg_sector_pressure(sector_metrics):
 
     return float(valid.mean())
 
-
 def cycle_strategy(score):
-    """Non-prescriptive AEI regime labels."""
     if pd.isna(score):
         return {
             "regime": "No Data",
@@ -111,7 +99,6 @@ def cycle_strategy(score):
         "risk": "Not a trading directive",
         "positioning": "No prescribed positioning",
     }
-
 
 def _latest_valid_archive_value(
     history,
@@ -161,7 +148,6 @@ def _latest_valid_archive_value(
 
     return float(working.iloc[-1]["_metric_value"]), as_of
 
-
 def _resolve_with_archive(
     current,
     history,
@@ -189,7 +175,6 @@ def _resolve_with_archive(
 
     return np.nan, "Unavailable", None
 
-
 def build_regime_metrics(
     sector_metrics,
     sector_data=None,
@@ -198,7 +183,6 @@ def build_regime_metrics(
     construction_data=None,
     macro_history=None,
 ):
-    """Build current macro metrics."""
     del fred_history
 
     current_aei = calc_aei(sector_metrics)

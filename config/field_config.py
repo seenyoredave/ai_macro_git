@@ -1,31 +1,3 @@
-"""
-Central field classification registry.
-
-FIELD_GROUPS:
-    Maps dashboard fields to data groups.
-
-FIELD_PRIORITY:
-    Defines preferred source hierarchy for each group.
-
-Used by loaders and factor calculations to determine
-where metrics originate.
-
-Currently most fields originate from a single source,
-but this structure exists to support future multi-source
-validation and fallback logic.
-
-Example future use:
-
-fundamentals:
-    SEC -> YFinance -> AlphaVantage
-
-market_prices:
-    Polygon -> YFinance
-
-macro_indicators:
-    FRED -> BLS
-"""
-
 FIELD_PRIORITY = {
     "fundamentals": ["EDGAR", "YFinance"],
     "market_prices": ["YFinance"],
@@ -33,7 +5,6 @@ FIELD_PRIORITY = {
     "macro_indicators": ["FRED"]
 }
 
-# Map fields to groups
 FIELD_GROUPS = {
     "P/E": "fundamentals",
     "Forward EV/EBIT": "fundamentals",

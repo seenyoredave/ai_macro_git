@@ -9,7 +9,6 @@ from config.debug_config import debug_print
 from config.market_clock import is_market_hours, market_cache_token
 from loaders.benchmark_loader import load_benchmark
 
-
 _REQUIRED_ARCHIVE_COLUMNS = {
     "Date",
     "Benchmark",
@@ -20,8 +19,6 @@ _REQUIRED_ARCHIVE_COLUMNS = {
     "Member Count",
     "Benchmark Version",
 }
-
-
 
 def _metrics_from_archive_row(row):
     archive_date = pd.to_datetime(row.get("Date"), errors="coerce")
@@ -38,9 +35,7 @@ def _metrics_from_archive_row(row):
         ),
     }
 
-
 def get_archived_benchmark_metrics(benchmark: str, *, current_only: bool = True):
-    """Return the current or latest compatible benchmark archive row."""
     try:
         history = load_benchmark_history()
     except Exception:
@@ -75,7 +70,6 @@ def get_archived_benchmark_metrics(benchmark: str, *, current_only: bool = True)
 
     return _metrics_from_archive_row(eligible.iloc[-1])
 
-
 def get_benchmark_metrics(
     benchmark: str,
     *,
@@ -93,7 +87,6 @@ def get_benchmark_metrics(
         clock_token=clock_token or market_cache_token(),
     )
 
-
 @st.cache_data(ttl=900)
 def _get_benchmark_metrics_cached(
     benchmark: str,
@@ -102,7 +95,7 @@ def _get_benchmark_metrics_cached(
     refresh_token: int = 0,
     clock_token: str | None = None,
 ):
-    # refresh_token and clock_token are cache-key inputs by design.
+
     current_archive = get_archived_benchmark_metrics(benchmark, current_only=True)
     latest_archive = get_archived_benchmark_metrics(benchmark, current_only=False)
 
@@ -145,27 +138,3 @@ def _get_benchmark_metrics_cached(
             latest_archive["live_error"] = str(exc)
             return latest_archive
         raise
-
-
-def get_benchmark_package(
-    *,
-    force_refresh: bool = False,
-    refresh_token: int = 0,
-    clock_token: str | None = None,
-):
-    return {
-        name: {
-            "raw": pd.DataFrame(),
-            "normalized": metrics,
-            "metrics": metrics,
-        }
-        for name in ACTIVE_BENCHMARKS
-        for metrics in [
-            get_benchmark_metrics(
-                name,
-                force_refresh=force_refresh,
-                refresh_token=refresh_token,
-                clock_token=clock_token,
-            )
-        ]
-    }

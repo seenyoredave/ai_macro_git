@@ -1,11 +1,3 @@
-"""Weekly Energy-tab source loader.
-
-The loader refreshes four Energy-only FRED series once per completed week. The
-three electric-power readings already owned by the application's primary FRED
-pipeline are reused rather than fetched a second time. A completed week rolls
-after Friday 16:00 America/New_York; Refresh Energy bypasses the weekly gate.
-"""
-
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta
@@ -34,15 +26,12 @@ from config.energy_config import (
 )
 from config.market_clock import EASTERN_TIME, eastern_now, utc_now
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ENERGY_SERIES_HISTORY_PATH = PROJECT_ROOT / "data" / "energy_series_history.csv"
 POWER_SERIES_HISTORY_PATH = PROJECT_ROOT / "data" / "power_series_history.csv"
 ENERGY_REQUEST_TIMEOUT = 25
 
-
 def completed_energy_week(now: datetime | None = None):
-    """Return the Friday date representing the latest completed Energy week."""
     current = eastern_now(now)
     days_since_friday = (current.weekday() - ENERGY_WEEKLY_CUTOFF_WEEKDAY) % 7
     friday_date = current.date() - timedelta(days=days_since_friday)
@@ -55,11 +44,8 @@ def completed_energy_week(now: datetime | None = None):
         friday_date -= timedelta(days=7)
     return friday_date
 
-
 def energy_cache_token(now: datetime | None = None) -> str:
-    """Invalidate the cached decision when the completed Energy week changes."""
     return completed_energy_week(now).isoformat()
-
 
 def energy_load_decision(
     *, force_refresh: bool, has_current_archive: bool, has_any_archive: bool
@@ -72,10 +58,8 @@ def energy_load_decision(
         return "automatic_live"
     return "bootstrap_live"
 
-
 def _empty_history() -> pd.DataFrame:
     return pd.DataFrame(columns=["Date", "Series", "Value"])
-
 
 def _normalize_long_history(frame: pd.DataFrame | None) -> pd.DataFrame:
     if frame is None or frame.empty:
@@ -97,7 +81,6 @@ def _normalize_long_history(frame: pd.DataFrame | None) -> pd.DataFrame:
         .reset_index(drop=True)
     )
 
-
 def _load_local_history() -> pd.DataFrame:
     if (
         not ENERGY_SERIES_HISTORY_PATH.exists()
@@ -110,7 +93,6 @@ def _load_local_history() -> pd.DataFrame:
         debug_print(f"Energy local history load failed -> {exc}")
         return _empty_history()
 
-
 def _persist_local_history(frame: pd.DataFrame) -> None:
     clean = _normalize_long_history(frame)
     clean = clean[clean["Series"].isin(ENERGY_REFRESH_SERIES)]
@@ -122,7 +104,6 @@ def _persist_local_history(frame: pd.DataFrame) -> None:
     temporary = ENERGY_SERIES_HISTORY_PATH.with_suffix(".csv.tmp")
     output.to_csv(temporary, index=False)
     temporary.replace(ENERGY_SERIES_HISTORY_PATH)
-
 
 def _load_power_history() -> pd.DataFrame:
     if not POWER_SERIES_HISTORY_PATH.exists():
@@ -164,7 +145,6 @@ def _load_power_history() -> pd.DataFrame:
             )
     return _empty_history() if not rows else _normalize_long_history(pd.concat(rows, ignore_index=True))
 
-
 def _normalize_fred_csv(frame: pd.DataFrame | None) -> pd.DataFrame:
     if frame is None or frame.empty:
         return _empty_history()
@@ -205,7 +185,6 @@ def _normalize_fred_csv(frame: pd.DataFrame | None) -> pd.DataFrame:
         return _empty_history()
     return _normalize_long_history(pd.concat(rows, ignore_index=True))
 
-
 def _fetch_public_energy_history() -> pd.DataFrame:
     response = requests.get(
         ENERGY_FRED_CSV_URL,
@@ -217,7 +196,6 @@ def _fetch_public_energy_history() -> pd.DataFrame:
     if history.empty:
         raise ValueError("FRED returned no recognized Energy series")
     return history
-
 
 _MONTHS = {
     "january": 1,
@@ -235,9 +213,7 @@ _MONTHS = {
     "december": 12,
 }
 
-
 def parse_eia_retail_price_workbook(content: bytes) -> pd.DataFrame:
-    """Parse national monthly commercial and industrial prices from EPM Table 5.3."""
     raw = pd.read_excel(BytesIO(content), sheet_name=0, header=None, engine="openpyxl")
     if raw.empty or raw.shape[1] < 4:
         return _empty_history()
@@ -277,7 +253,6 @@ def parse_eia_retail_price_workbook(content: bytes) -> pd.DataFrame:
         raise ValueError("EIA retail-price workbook produced no monthly observations")
     return history
 
-
 def _fetch_retail_price_history() -> pd.DataFrame:
     response = requests.get(
         ENERGY_RETAIL_PRICE_XLSX_URL,
@@ -287,20 +262,17 @@ def _fetch_retail_price_history() -> pd.DataFrame:
     response.raise_for_status()
     return parse_eia_retail_price_workbook(response.content)
 
-
 def _merge_histories(*frames: pd.DataFrame) -> pd.DataFrame:
     usable = [frame for frame in frames if frame is not None and not frame.empty]
     if not usable:
         return _empty_history()
     return _normalize_long_history(pd.concat(usable, ignore_index=True))
 
-
 def _series_history(history: pd.DataFrame, name: str) -> pd.DataFrame:
     if history is None or history.empty:
         return pd.DataFrame(columns=["Date", "Value"])
     subset = history.loc[history["Series"].eq(name), ["Date", "Value"]].copy()
     return subset.sort_values("Date", kind="stable").reset_index(drop=True)
-
 
 def _prior_value(history: pd.DataFrame, latest_date: pd.Timestamp, spec: dict):
     if history.empty:
@@ -311,7 +283,6 @@ def _prior_value(history: pd.DataFrame, latest_date: pd.Timestamp, spec: dict):
         target = latest_date - pd.DateOffset(months=int(spec.get("change_months") or 0))
     prior = history.loc[history["Date"] <= target]
     return np.nan if prior.empty else float(prior.iloc[-1]["Value"])
-
 
 def _series_payload(history: pd.DataFrame, name: str, *, source: str | None = None) -> dict:
     spec = ENERGY_SERIES[name]
@@ -345,7 +316,6 @@ def _series_payload(history: pd.DataFrame, name: str, *, source: str | None = No
         "source": source or spec.get("source", "Current"),
         "history": series_history,
     }
-
 
 def _snapshot_from_history(
     history: pd.DataFrame,
@@ -392,7 +362,6 @@ def _snapshot_from_history(
         },
     }
 
-
 def _history_from_archive(archive: pd.DataFrame | None) -> pd.DataFrame:
     if archive is None or archive.empty:
         return _empty_history()
@@ -420,14 +389,7 @@ def _history_from_archive(archive: pd.DataFrame | None) -> pd.DataFrame:
             )
     return _empty_history() if not rows else _normalize_long_history(pd.concat(rows, ignore_index=True))
 
-
 def _archive_row_is_complete(row: pd.Series | None) -> bool:
-    """Return whether the weekly archive has its weekly-source observations.
-
-    Monthly retail electricity prices are retained in the long local history and
-    may legitimately lag the weekly archive date. They therefore do not block a
-    current-week archive decision.
-    """
     if row is None:
         return False
     for name in ENERGY_PUBLIC_SERIES:
@@ -435,7 +397,6 @@ def _archive_row_is_complete(row: pd.Series | None) -> bool:
         if pd.isna(value) or not np.isfinite(value):
             return False
     return True
-
 
 def _archive_row_for_week(archive: pd.DataFrame, week_date) -> pd.Series | None:
     if archive is None or archive.empty or "Date" not in archive.columns:
@@ -446,7 +407,6 @@ def _archive_row_for_week(archive: pd.DataFrame, week_date) -> pd.Series | None:
         return None
     row = rows.iloc[-1]
     return row if _archive_row_is_complete(row) else None
-
 
 def _latest_archive_row(archive: pd.DataFrame) -> pd.Series | None:
     if archive is None or archive.empty or "Date" not in archive.columns:
@@ -459,7 +419,6 @@ def _latest_archive_row(archive: pd.DataFrame) -> pd.Series | None:
     complete = working.apply(_archive_row_is_complete, axis=1)
     working = working.loc[complete]
     return None if working.empty else working.iloc[-1]
-
 
 def _snapshot_from_archive_row(
     row: pd.Series,
@@ -488,9 +447,7 @@ def _snapshot_from_archive_row(
                 "history": _series_history(history, name),
             }
         else:
-            # Older weekly archive rows predate the retail-price fields. Use the
-            # retained monthly series rather than turning a known observation
-            # into n/a or forcing an unnecessary network request.
+
             series[name] = _series_payload(
                 history,
                 name,
@@ -518,11 +475,9 @@ def _snapshot_from_archive_row(
         },
     }
 
-
 def _fred_item(fred_data: dict | None, name: str) -> dict:
     payload = (fred_data or {}).get(name, {})
     return payload if isinstance(payload, dict) else {"value": payload}
-
 
 def _append_observation(history: pd.DataFrame, name: str, value, date) -> pd.DataFrame:
     numeric = pd.to_numeric(value, errors="coerce")
@@ -531,7 +486,6 @@ def _append_observation(history: pd.DataFrame, name: str, value, date) -> pd.Dat
         return history
     row = pd.DataFrame([{"Date": parsed_date, "Series": name, "Value": float(numeric)}])
     return _merge_histories(history, row)
-
 
 def _attach_power_series(snapshot: dict, fred_data: dict | None) -> dict:
     power_history = _load_power_history()
@@ -548,8 +502,7 @@ def _attach_power_series(snapshot: dict, fred_data: dict | None) -> dict:
             name,
             source=str(fred_item.get("source") or "FRED archive"),
         )
-        # If the current FRED payload is finite, it is authoritative even when
-        # its date format differs from the bundled history.
+
         current_value = pd.to_numeric(fred_item.get("value"), errors="coerce")
         if pd.notna(current_value) and np.isfinite(current_value):
             item["value"] = float(current_value)
@@ -572,7 +525,6 @@ def _attach_power_series(snapshot: dict, fred_data: dict | None) -> dict:
     report["latest_complete_date"] = _latest_observation_date(snapshot.get("series", {}))
     return snapshot
 
-
 def _latest_observation_date(series: dict) -> str | None:
     dates = []
     for payload in (series or {}).values():
@@ -580,7 +532,6 @@ def _latest_observation_date(series: dict) -> str | None:
         if pd.notna(parsed):
             dates.append(parsed)
     return None if not dates else max(dates).date().isoformat()
-
 
 def load_energy_data(
     *,
@@ -595,7 +546,6 @@ def load_energy_data(
         clock_token=clock_token or energy_cache_token(),
     )
     return _attach_power_series(dict(supply_snapshot), fred_data)
-
 
 @st.cache_data(ttl=3600)
 def _load_energy_data_cached(

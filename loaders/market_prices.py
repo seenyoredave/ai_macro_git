@@ -1,10 +1,7 @@
-"""Price-history calculations for the market data pipeline."""
-
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-
 
 PRESSURE_COLUMNS = [
     "Price Extension 200D",
@@ -12,7 +9,6 @@ PRESSURE_COLUMNS = [
     "Volatility Expansion",
     "Volume Activity",
 ]
-
 
 def calc_trading_pressure_fields(history):
     out = {column: np.nan for column in PRESSURE_COLUMNS}
@@ -46,7 +42,6 @@ def calc_trading_pressure_fields(history):
                 out["Volume Activity"] = (volume.tail(20).mean() / long_volume) - 1
 
     return out
-
 
 def one_year_return(history):
     if history is None or history.empty or "Close" not in history.columns:

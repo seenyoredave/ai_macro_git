@@ -1,10 +1,7 @@
-"""Weighted benchmark proxy normalization."""
-
 import numpy as np
 import pandas as pd
 
 from analytics.valuation import aggregate_forward_ebit_yield
-
 
 def _weighted_mean(df, value_col, weight_col="Benchmark Weight"):
     if value_col not in df.columns or weight_col not in df.columns:
@@ -17,16 +14,13 @@ def _weighted_mean(df, value_col, weight_col="Benchmark Weight"):
         return np.nan
     return float(np.average(values[valid], weights=weights[valid]))
 
-
 def _aggregate_forward_ebit_yield(df):
-    """Return ratio-of-sums forward EBIT yield for the benchmark proxy."""
     return aggregate_forward_ebit_yield(
         df,
         min_count=2,
         min_coverage=0.60,
         coverage_weight_column="Benchmark Weight",
     )
-
 
 def normalize_benchmark_dataframe(df: pd.DataFrame) -> dict:
     frame = df.copy()

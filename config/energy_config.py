@@ -1,11 +1,7 @@
-"""Configuration for the weekly Energy tab and its source series."""
-
 from __future__ import annotations
-
 
 ENERGY_DATA_VERSION = "1.2"
 
-# Energy-only market and production series refreshed from FRED.
 ENERGY_PUBLIC_SERIES = {
     "Natural Gas Price": {
         "series_id": "WHHNGSP",
@@ -45,8 +41,6 @@ ENERGY_PUBLIC_SERIES = {
     },
 }
 
-# National delivered electricity-cost context from EIA Electric Power Monthly,
-# Table 5.3. Values are average revenue per kWh, not a contracted data-center tariff.
 ENERGY_RETAIL_PRICE_SERIES = {
     "Commercial Electricity Price": {
         "display_name": "Commercial Electricity Price",
@@ -82,7 +76,7 @@ ENERGY_POWER_SERIES = {
     "Electric Power Capacity": {
         "fred_name": "Electric Power Capacity",
         "history_column": "Electric Power Capacity",
-        "display_name": "Electric Power Capacity",
+        "display_name": "Sustainable Potential Output",
         "unit": "index",
         "frequency": "monthly",
         "change_months": 12,
@@ -113,8 +107,5 @@ ENERGY_RETAIL_PRICE_XLSX_URL = (
     "https://www.eia.gov/electricity/monthly/xls/table_5_03.xlsx"
 )
 
-# The weekly refresh date advances after Friday's regular U.S. market close.
-# Before that cutoff, the prior Friday remains the current completed week.
-# Manual Refresh Energy always bypasses this policy.
-ENERGY_WEEKLY_CUTOFF_WEEKDAY = 4  # Friday
+ENERGY_WEEKLY_CUTOFF_WEEKDAY = 4
 ENERGY_WEEKLY_CUTOFF_HOUR = 16

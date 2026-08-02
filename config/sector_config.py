@@ -1,10 +1,5 @@
 from copy import deepcopy
 
-
-def get_sector_config():
-    return deepcopy(SECTOR_CONFIG)
-
-
 SECTOR_CONFIG = {
 
     "COMPUTE": {

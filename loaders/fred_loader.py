@@ -18,7 +18,6 @@ from archive.archive_reader import (
 from config import fred_indicators
 from config.debug_config import debug_print
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INDPRO_HISTORY_PATH = PROJECT_ROOT / "data" / "industrial_production_history.csv"
 INFO_INVESTMENT_HISTORY_PATH = (
@@ -32,46 +31,17 @@ INFO_INVESTMENT_PUBLIC_CSV_URL = (
 )
 
 def _optional_streamlit_secret(name, default=None):
-    """Read an optional Streamlit secret without requiring secrets.toml.
-
-    Accessing ``st.secrets`` raises StreamlitSecretNotFoundError when the
-    project has no secrets file at all, including through ``.get()``.  This
-    helper keeps local/offline runs on the archive fallback path instead of
-    crashing during startup.
-    """
     try:
         return st.secrets.get(name, default)
     except Exception as exc:
         debug_print(f"Optional Streamlit secret unavailable: {name} -> {exc}")
         return default
 
-
 def get_fred_client():
     key = os.getenv("FRED_API_KEY") or _optional_streamlit_secret("FRED_API_KEY")
     return Fred(api_key=key) if key else None
 
-
-def _row_to_fred_payload(row, source):
-    data = {}
-
-    for name in fred_indicators.all_indicator_names():
-        value = row.get(name, np.nan)
-        obs_date = row.get(f"{name} Date", None)
-
-        if obs_date is None or str(obs_date).strip() == "" or str(obs_date).lower() == "nan":
-            obs_date = row.get("Date", None)
-
-        data[name] = {
-            "value": value,
-            "date": obs_date,
-            "source": source,
-        }
-
-    return data
-
-
 def _rows_to_fred_payload(rows, source):
-    """Build a field-wise latest payload from a sparse FRED archive slice."""
     if rows is None or rows.empty:
         return {}
 
@@ -108,7 +78,6 @@ def _rows_to_fred_payload(rows, source):
 
     return data
 
-
 def _payload_has_required_values(payload, required):
     if not payload:
         return False
@@ -124,7 +93,6 @@ def _payload_has_required_values(payload, required):
             return False
 
     return True
-
 
 def _latest_weekly_fred_archive():
     df = load_fred_history()
@@ -144,7 +112,6 @@ def _latest_weekly_fred_archive():
 
     payload = _rows_to_fred_payload(current_week, "FRED Archive")
 
-    # A pre-Power Stress archive cannot satisfy the current engine contract.
     if not _payload_has_required_values(
         payload,
         fred_indicators.POWER_REQUIRED_INDICATORS,
@@ -152,7 +119,6 @@ def _latest_weekly_fred_archive():
         return None
 
     return payload
-
 
 def _latest_fred_archive_fallback():
     df = load_fred_history()
@@ -166,7 +132,6 @@ def _latest_fred_archive_fallback():
         return None
 
     return _rows_to_fred_payload(df, "FRED Archive Fallback")
-
 
 def _year_over_year_growth(series):
     clean = pd.to_numeric(series, errors="coerce").dropna().sort_index()
@@ -191,7 +156,6 @@ def _year_over_year_growth(series):
 
     return (latest_value / prior_value) - 1, latest_date
 
-
 def _derived_payload(series_cache, base_name, derived_name):
     series = series_cache.get(base_name)
 
@@ -210,7 +174,6 @@ def _derived_payload(series_cache, base_name, derived_name):
         "source": "FRED Live Derived",
     }
 
-
 def _payload_value_is_finite(payload, key):
     item = (payload or {}).get(key, {})
     value = item.get("value", np.nan) if isinstance(item, dict) else item
@@ -219,7 +182,6 @@ def _payload_value_is_finite(payload, key):
         return bool(np.isfinite(float(value)))
     except (TypeError, ValueError):
         return False
-
 
 def _normalize_indpro_frame(frame):
     if frame is None or frame.empty:
@@ -258,7 +220,6 @@ def _normalize_indpro_frame(frame):
 
     return out if not out.empty else None
 
-
 def _persist_indpro_history(frame):
     normalized = _normalize_indpro_frame(frame)
     if normalized is None:
@@ -271,7 +232,6 @@ def _persist_indpro_history(frame):
     out.to_csv(temporary, index=False)
     temporary.replace(INDPRO_HISTORY_PATH)
 
-
 def _series_from_indpro_frame(frame):
     normalized = _normalize_indpro_frame(frame)
     if normalized is None:
@@ -283,7 +243,6 @@ def _series_from_indpro_frame(frame):
         name="INDPRO",
     )
 
-
 def _load_local_indpro_series():
     if not INDPRO_HISTORY_PATH.exists() or INDPRO_HISTORY_PATH.stat().st_size == 0:
         return None
@@ -294,13 +253,7 @@ def _load_local_indpro_series():
         debug_print(f"Local INDPRO history load failed -> {exc}")
         return None
 
-
 def _fetch_public_indpro_series():
-    """Fetch INDPRO without requiring an API key.
-
-    The public CSV endpoint is used only to complete the missing YoY data
-    contract. The bundled local history remains the deterministic fallback.
-    """
     try:
         response = requests.get(INDPRO_PUBLIC_CSV_URL, timeout=20)
         response.raise_for_status()
@@ -314,7 +267,6 @@ def _fetch_public_indpro_series():
     except Exception as exc:
         debug_print(f"Public INDPRO history load failed -> {exc}")
         return None
-
 
 def _load_indpro_series(fred=None):
     if fred is not None:
@@ -345,17 +297,7 @@ def _load_indpro_series(fred=None):
 
     return None, "FRED Unavailable"
 
-
 def _hydrate_industrial_growth(payload, fred=None):
-    """Guarantee the AI-Industrial Growth Gap input when history is available.
-
-    Resolution order:
-      1. authenticated FRED client, when configured;
-      2. public no-key FRED CSV endpoint;
-      3. bundled/persisted raw INDPRO history.
-
-    Every other archived FRED field is preserved unchanged.
-    """
     if _payload_value_is_finite(payload, "Industrial Production YoY"):
         return payload
 
@@ -386,7 +328,6 @@ def _hydrate_industrial_growth(payload, fred=None):
         "source": f"{source} Derived",
     }
     return out
-
 
 def _normalize_info_investment_frame(frame):
     if frame is None or frame.empty:
@@ -422,7 +363,6 @@ def _normalize_info_investment_frame(frame):
     out = out.drop_duplicates(subset=["Observation Date"], keep="last")
     return out if not out.empty else None
 
-
 def _series_from_info_investment_frame(frame):
     normalized = _normalize_info_investment_frame(frame)
     if normalized is None:
@@ -432,7 +372,6 @@ def _series_from_info_investment_frame(frame):
         index=pd.DatetimeIndex(normalized["Observation Date"]),
         name="A679RX1Q020SBEA",
     )
-
 
 def _persist_info_investment_history(frame):
     normalized = _normalize_info_investment_frame(frame)
@@ -444,7 +383,6 @@ def _persist_info_investment_history(frame):
     temporary = INFO_INVESTMENT_HISTORY_PATH.with_suffix(".csv.tmp")
     out.to_csv(temporary, index=False)
     temporary.replace(INFO_INVESTMENT_HISTORY_PATH)
-
 
 def _load_local_info_investment_series():
     if (
@@ -460,7 +398,6 @@ def _load_local_info_investment_series():
         debug_print(f"Local information-investment history load failed -> {exc}")
         return None
 
-
 def _fetch_public_info_investment_series():
     try:
         response = requests.get(INFO_INVESTMENT_PUBLIC_CSV_URL, timeout=20)
@@ -473,7 +410,6 @@ def _fetch_public_info_investment_series():
     except Exception as exc:
         debug_print(f"Public information-investment history load failed -> {exc}")
         return None
-
 
 def _load_info_investment_series(fred=None):
     if fred is not None:
@@ -506,7 +442,6 @@ def _load_info_investment_series(fred=None):
 
     return None, "FRED Unavailable"
 
-
 def _hydrate_information_investment(payload, fred=None):
     if _payload_value_is_finite(payload, "Info Processing Investment YoY"):
         return payload
@@ -532,7 +467,6 @@ def _hydrate_information_investment(payload, fred=None):
         "source": f"{source} Derived",
     }
     return out
-
 
 def _fill_failed_from_archive(data, fallback):
     if not fallback:
@@ -565,7 +499,6 @@ def _fill_failed_from_archive(data, fallback):
                 out[name] = fallback_payload
 
     return out
-
 
 @st.cache_data(ttl=86400)
 def load_fred():

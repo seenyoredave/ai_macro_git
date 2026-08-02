@@ -1,19 +1,3 @@
-"""Lender Strain engine.
-
-The metric measures whether the financing system is becoming less able or less
-willing to support operating businesses. It deliberately separates borrower
-health (Borrower Strain) from lender/transmission health.
-
-Public inputs:
-  1. Federal Reserve SLOOS business-loan tightening;
-  2. aggregate U.S. regulatory Tier 1 capital relative to risk-weighted assets;
-  3. asset-weighted non-accruals for a fixed public BDC cohort;
-  4. SEC Form PF private-equity portfolio leverage and PIK borrowing.
-
-The public-history ledgers are explicit, reviewable CSVs. Missing inputs remain
-missing and the headline requires at least three of the four pillars.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -23,7 +7,6 @@ import pandas as pd
 
 from analytics.scoring import tanh_score, weighted_available_score
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BANK_PATH = PROJECT_ROOT / "data" / "bank_credit_tightening_history.csv"
 DEFAULT_BANK_CAPITAL_PATH = PROJECT_ROOT / "data" / "bank_tier1_capital_history.csv"
@@ -31,10 +14,10 @@ DEFAULT_BDC_PATH = PROJECT_ROOT / "data" / "private_credit_bdc_history.csv"
 DEFAULT_PE_PATH = PROJECT_ROOT / "data" / "private_equity_strain_history.csv"
 
 LENDER_STRAIN_WEIGHTS = {
-    "Bank Credit Tightening": 0.25,
-    "Bank Capital Strain": 0.25,
-    "Private Credit Impairment": 0.25,
-    "PE Portfolio Financing Strain": 0.25,
+    "Bank Credit Tightening": 0.30,
+    "Bank Capital Strain": 0.30,
+    "Private Credit Impairment": 0.20,
+    "PE Portfolio Financing Strain": 0.20,
 }
 
 BANK_CHANNEL_COMPONENTS = (
@@ -46,25 +29,29 @@ NONBANK_CHANNEL_COMPONENTS = (
     "PE Portfolio Financing Strain",
 )
 MIN_PERCENTILE_OBSERVATIONS = 8
+MIN_LENDER_COMPONENTS = 3
+NEUTRAL_COMPONENT_SCORE = 50.0
 
 PE_SUBWEIGHTS = {
     "High-Leverage Portfolio Share": 0.60,
     "PIK Burden": 0.40,
 }
 
-BDC_COHORT = ("ARCC", "OBDC", "FSK", "GBDC", "CION")
-
+BDC_OPTIONAL_METRICS = (
+    "Nonaccrual at Fair Value (%)",
+    "PIK Income Share (%)",
+    "NAV Change (%)",
+    "Net Losses / Portfolio (%)",
+    "Debt to Equity (x)",
+)
 
 def lender_strain_to_signed(value):
-    """Map the internal 0-100 adverse-condition score to centered -100 to +100."""
     value = pd.to_numeric(value, errors="coerce")
     if pd.isna(value) or not np.isfinite(value):
         return np.nan
     return float(np.clip(2.0 * (float(value) - 50.0), -100.0, 100.0))
 
-
 def normalize_lender_strain_history(history):
-    """Normalize archive metadata for the current metric version."""
     if (
         history is None
         or history.empty
@@ -86,7 +73,6 @@ def normalize_lender_strain_history(history):
         )
     return out
 
-
 def _load_csv(path, required_columns):
     path = Path(path)
     if not path.exists() or path.stat().st_size == 0:
@@ -97,7 +83,6 @@ def _load_csv(path, required_columns):
     if missing:
         raise ValueError(f"{path.name} missing columns: {missing}")
     return frame.copy()
-
 
 def load_bank_tightening_history(path=None):
     frame = _load_csv(
@@ -115,7 +100,6 @@ def load_bank_tightening_history(path=None):
         .reset_index(drop=True)
     )
 
-
 def load_bank_capital_history(path=None):
     frame = _load_csv(
         path or DEFAULT_BANK_CAPITAL_PATH,
@@ -132,7 +116,6 @@ def load_bank_capital_history(path=None):
         .reset_index(drop=True)
     )
 
-
 def load_bdc_impairment_history(path=None):
     frame = _load_csv(
         path or DEFAULT_BDC_PATH,
@@ -140,14 +123,13 @@ def load_bdc_impairment_history(path=None):
     )
     frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce")
     frame["Ticker"] = frame["Ticker"].astype(str).str.upper().str.strip()
-    frame["Portfolio Cost ($mm)"] = pd.to_numeric(
-        frame["Portfolio Cost ($mm)"], errors="coerce"
-    )
-    frame["Nonaccrual at Cost (%)"] = pd.to_numeric(
-        frame["Nonaccrual at Cost (%)"], errors="coerce"
-    )
+    numeric_columns = ["Portfolio Cost ($mm)", "Nonaccrual at Cost (%)", *BDC_OPTIONAL_METRICS]
+    for column in numeric_columns:
+        if column not in frame.columns:
+            frame[column] = np.nan
+        frame[column] = pd.to_numeric(frame[column], errors="coerce")
     frame = frame[
-        frame["Ticker"].isin(BDC_COHORT)
+        frame["Ticker"].ne("")
         & frame["Date"].notna()
         & frame["Portfolio Cost ($mm)"].gt(0)
         & frame["Nonaccrual at Cost (%)"].notna()
@@ -156,49 +138,54 @@ def load_bdc_impairment_history(path=None):
     rows = []
     for observation_date, group in frame.groupby("Date", sort=True):
         total_cost = float(group["Portfolio Cost ($mm)"].sum())
-        weighted_ratio = (
-            float(
-                (
-                    group["Portfolio Cost ($mm)"]
-                    * group["Nonaccrual at Cost (%)"]
-                ).sum()
-                / total_cost
-            )
-            if total_cost > 0
-            else np.nan
-        )
-        urls = sorted(
-            {
-                str(value).strip()
-                for value in group.get("Source URL", pd.Series(dtype=object)).dropna()
-                if str(value).strip()
+        row = {
+            "Date": observation_date,
+            "Portfolio Cost ($mm)": total_cost,
+            "Observations": int(group["Ticker"].nunique()),
+            "Cohort": ", ".join(sorted(group["Ticker"].unique())),
+        }
+        metric_map = {
+            "Nonaccrual at Cost (%)": "Weighted Nonaccrual at Cost (%)",
+            "Nonaccrual at Fair Value (%)": "Weighted Nonaccrual at Fair Value (%)",
+            "PIK Income Share (%)": "Weighted PIK Income Share (%)",
+            "NAV Change (%)": "Weighted NAV Change (%)",
+            "Net Losses / Portfolio (%)": "Weighted Net Losses / Portfolio (%)",
+            "Debt to Equity (x)": "Weighted Debt to Equity (x)",
+        }
+        metric_coverage = {}
+        for source_column, output_column in metric_map.items():
+            available = group[source_column].notna()
+            covered_cost = float(group.loc[available, "Portfolio Cost ($mm)"].sum())
+            if covered_cost > 0:
+                row[output_column] = float(
+                    (group.loc[available, "Portfolio Cost ($mm)"] * group.loc[available, source_column]).sum()
+                    / covered_cost
+                )
+            else:
+                row[output_column] = np.nan
+            metric_coverage[source_column] = {
+                "observations": int(group.loc[available, "Ticker"].nunique()),
+                "portfolio_cost_mm": covered_cost,
+                "portfolio_share": covered_cost / total_cost if total_cost > 0 else np.nan,
             }
-        )
-        rows.append(
-            {
-                "Date": observation_date,
-                "Weighted Nonaccrual at Cost (%)": weighted_ratio,
-                "Portfolio Cost ($mm)": total_cost,
-                "Observations": int(group["Ticker"].nunique()),
-                "Cohort": ", ".join(sorted(group["Ticker"].unique())),
-                "Source URL": " | ".join(urls),
-            }
-        )
+        urls = sorted({
+            str(value).strip()
+            for value in group.get("Source URL", pd.Series(dtype=object)).dropna()
+            if str(value).strip()
+        })
+        row["Source URL"] = " | ".join(urls)
+        row["Metric Coverage"] = metric_coverage
+        rows.append(row)
 
+    columns = [
+        "Date", "Weighted Nonaccrual at Cost (%)", "Weighted Nonaccrual at Fair Value (%)",
+        "Weighted PIK Income Share (%)", "Weighted NAV Change (%)",
+        "Weighted Net Losses / Portfolio (%)", "Weighted Debt to Equity (x)",
+        "Portfolio Cost ($mm)", "Observations", "Cohort", "Source URL", "Metric Coverage",
+    ]
     if not rows:
-        return pd.DataFrame(
-            columns=[
-                "Date",
-                "Weighted Nonaccrual at Cost (%)",
-                "Portfolio Cost ($mm)",
-                "Observations",
-                "Cohort",
-                "Source URL",
-            ]
-        )
-
-    return pd.DataFrame(rows).sort_values("Date", kind="stable").reset_index(drop=True)
-
+        return pd.DataFrame(columns=columns)
+    return pd.DataFrame(rows).reindex(columns=columns).sort_values("Date", kind="stable").reset_index(drop=True)
 
 def load_pe_financing_history(path=None):
     required = [
@@ -242,7 +229,6 @@ def load_pe_financing_history(path=None):
         .reset_index(drop=True)
     )
 
-
 def _fred_observation(fred_data, payload_name, value_column, source_url):
     payload = (fred_data or {}).get(payload_name, {})
     if isinstance(payload, dict):
@@ -264,7 +250,6 @@ def _fred_observation(fred_data, payload_name, value_column, source_url):
         "Source_URL": source_url,
     }
 
-
 def _with_live_observation(history, observation):
     if observation is None:
         return history
@@ -284,13 +269,11 @@ def _with_live_observation(history, observation):
         .reset_index(drop=True)
     )
 
-
 def _asof_row(frame, observation_date):
     if frame is None or frame.empty:
         return None
     eligible = frame.loc[frame["Date"] <= observation_date]
     return None if eligible.empty else eligible.iloc[-1]
-
 
 def _historical_or_anchored_score(
     value,
@@ -322,21 +305,24 @@ def _historical_or_anchored_score(
         anchored = 100.0 - anchored
     return anchored, "Anchored Tanh", len(distinct)
 
-
 def _channel_score(base_scores, component_names):
-    valid = {
-        name: float(base_scores[name])
+    values = {
+        name: pd.to_numeric(base_scores.get(name), errors="coerce")
         for name in component_names
-        if pd.notna(base_scores.get(name)) and np.isfinite(base_scores.get(name))
+    }
+    valid = {
+        name: float(value)
+        for name, value in values.items()
+        if pd.notna(value) and np.isfinite(value)
     }
     if not valid:
         return np.nan, {}
-    weight = 1.0 / len(valid)
-    return (
-        float(sum(valid.values()) / len(valid)),
-        {name: weight for name in valid},
+    weights = {name: 1.0 / len(component_names) for name in component_names}
+    score = sum(
+        (valid[name] if name in valid else NEUTRAL_COMPONENT_SCORE) * weights[name]
+        for name in component_names
     )
-
+    return float(score), weights
 
 def _score_snapshot(
     bank_row=None,
@@ -457,16 +443,27 @@ def _score_snapshot(
     valid_components = int(
         sum(pd.notna(score) and np.isfinite(score) for score in base_scores.values())
     )
-    channel_complete = pd.notna(bank_channel) and pd.notna(nonbank_channel)
     combined_score = (
-        0.5 * bank_channel + 0.5 * nonbank_channel
-        if valid_components >= 3 and channel_complete
+        float(
+            sum(
+                (
+                    float(base_scores[name])
+                    if pd.notna(base_scores.get(name))
+                    and np.isfinite(base_scores.get(name))
+                    else NEUTRAL_COMPONENT_SCORE
+                )
+                * weight
+                for name, weight in LENDER_STRAIN_WEIGHTS.items()
+            )
+        )
+        if valid_components >= MIN_LENDER_COMPONENTS
         else np.nan
     )
-    normalized_weights = {
-        **{name: 0.5 * weight for name, weight in bank_channel_weights.items()},
-        **{name: 0.5 * weight for name, weight in nonbank_channel_weights.items()},
-    }
+    normalized_weights = (
+        dict(LENDER_STRAIN_WEIGHTS)
+        if pd.notna(combined_score)
+        else {}
+    )
     signed_scores = {
         name: lender_strain_to_signed(score)
         for name, score in base_scores.items()
@@ -516,7 +513,6 @@ def _score_snapshot(
             "pe_pik": pe_pik,
         },
     }
-
 
 def build_lender_strain_history(
     bank_history,
@@ -581,13 +577,11 @@ def build_lender_strain_history(
 
     return pd.DataFrame(rows).sort_values("Date", kind="stable").reset_index(drop=True)
 
-
 def _row_date(row):
     if row is None:
         return None
     value = pd.to_datetime(row.get("Date"), errors="coerce")
     return value.date().isoformat() if pd.notna(value) else None
-
 
 def calculate_lender_strain(
     fred_data=None,
@@ -597,7 +591,6 @@ def calculate_lender_strain(
     bdc_path=None,
     pe_path=None,
 ) -> dict:
-    """Calculate the signed Lender Strain metric."""
     bank_history = load_bank_tightening_history(bank_path)
     bank_history = _with_live_observation(
         bank_history,
@@ -752,15 +745,18 @@ def calculate_lender_strain(
                 bdc_row.get("Source URL", "") if bdc_row is not None else ""
             ),
             "cohort": (
-                bdc_row.get("Cohort", ", ".join(BDC_COHORT))
-                if bdc_row is not None
-                else ", ".join(BDC_COHORT)
+                bdc_row.get("Cohort", "") if bdc_row is not None else ""
             ),
             "portfolio_cost_mm": (
-                bdc_row.get("Portfolio Cost ($mm)", np.nan)
-                if bdc_row is not None
-                else np.nan
+                bdc_row.get("Portfolio Cost ($mm)", np.nan) if bdc_row is not None else np.nan
             ),
+            "metric_coverage": (bdc_row.get("Metric Coverage", {}) if bdc_row is not None else {}),
+            "nonaccrual_fair_value": (bdc_row.get("Weighted Nonaccrual at Fair Value (%)", np.nan) if bdc_row is not None else np.nan),
+            "pik_income_share": (bdc_row.get("Weighted PIK Income Share (%)", np.nan) if bdc_row is not None else np.nan),
+            "nav_change": (bdc_row.get("Weighted NAV Change (%)", np.nan) if bdc_row is not None else np.nan),
+            "net_losses_portfolio": (bdc_row.get("Weighted Net Losses / Portfolio (%)", np.nan) if bdc_row is not None else np.nan),
+            "debt_to_equity": (bdc_row.get("Weighted Debt to Equity (x)", np.nan) if bdc_row is not None else np.nan),
+            "panel_history": bdc_history.copy(),
         },
         "PE Portfolio Financing Strain": {
             "raw": snapshot["raw"]["pe_high_leverage"],

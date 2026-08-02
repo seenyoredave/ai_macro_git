@@ -1,5 +1,3 @@
-"""Power Stress Index and power-footprint calculations."""
-
 from __future__ import annotations
 
 import numpy as np
@@ -7,11 +5,10 @@ import pandas as pd
 
 from analytics.scoring import tanh_score, weighted_available_score
 
-
 POWER_STRESS_WEIGHTS = {
-    "Nonresidential Load Pressure": 0.40,
-    "Grid Utilization Pressure": 0.35,
-    "Capacity Response Gap": 0.25,
+    "Commercial-vs-Residential Output Pressure": 0.40,
+    "Power-System Utilization Pressure": 0.35,
+    "Potential-Output Response Gap": 0.25,
 }
 
 POWER_FOOTPRINT_WEIGHTS = {
@@ -19,21 +16,13 @@ POWER_FOOTPRINT_WEIGHTS = {
     "Electric Output Growth": 0.40,
 }
 
-
 def power_stress_to_signed(value):
-    """Map the internal 0-100 stress score to a centered -100 to +100 scale."""
     value = pd.to_numeric(value, errors="coerce")
     if pd.isna(value) or not np.isfinite(value):
         return np.nan
     return float(np.clip(2.0 * (float(value) - 50.0), -100.0, 100.0))
 
-
 def normalize_power_stress_history(history):
-    """Normalize current-version Power Stress archive metadata.
-
-    Historical values are rebuilt offline from retained raw inputs. Runtime
-    code does not migrate or rescale previous-method calculated values.
-    """
     if history is None or history.empty or "Power Stress Index" not in history.columns:
         return history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
 
@@ -47,7 +36,6 @@ def normalize_power_stress_history(history):
         out["Power Stress Version"] = pd.Series(pd.NA, index=out.index, dtype="string")
     return out
 
-
 def _fred_value(fred_data, name):
     if not fred_data or name not in fred_data:
         return np.nan
@@ -56,19 +44,7 @@ def _fred_value(fred_data, name):
     value = payload.get("value", np.nan) if isinstance(payload, dict) else payload
     return pd.to_numeric(value, errors="coerce")
 
-
 def calculate_power_stress(fred_data) -> dict:
-    """Calculate Power Stress from three observable system effects.
-
-    Components:
-      1. commercial electricity-sales growth minus residential growth;
-      2. electric-power capacity utilization;
-      3. electric-power output growth minus capacity growth.
-
-    Two of three stress components are sufficient. A separate power-footprint
-    score is returned for ADI so development does not directly reuse the entire
-    stress score.
-    """
     commercial_yoy = _fred_value(fred_data, "Commercial Electricity Sales YoY")
     residential_yoy = _fred_value(fred_data, "Residential Electricity Sales YoY")
     utilization = _fred_value(fred_data, "Electric Power Capacity Utilization")
@@ -87,9 +63,9 @@ def calculate_power_stress(fred_data) -> dict:
     )
 
     base_stress_scores = {
-        "Nonresidential Load Pressure": tanh_score(load_gap, center=0.0, scale=0.04),
-        "Grid Utilization Pressure": tanh_score(utilization, center=75.0, scale=10.0),
-        "Capacity Response Gap": tanh_score(capacity_gap, center=0.0, scale=0.03),
+        "Commercial-vs-Residential Output Pressure": tanh_score(load_gap, center=0.0, scale=0.04),
+        "Power-System Utilization Pressure": tanh_score(utilization, center=75.0, scale=10.0),
+        "Potential-Output Response Gap": tanh_score(capacity_gap, center=0.0, scale=0.03),
     }
     stress_combined = weighted_available_score(
         base_stress_scores,
@@ -120,23 +96,23 @@ def calculate_power_stress(fred_data) -> dict:
         "footprint_score": footprint_combined["score"],
         "footprint_valid_components": footprint_combined["valid_components"],
         "components": {
-            "Nonresidential Load Pressure": {
+            "Commercial-vs-Residential Output Pressure": {
                 "raw": load_gap,
-                "score": signed_stress_scores["Nonresidential Load Pressure"],
-                "base_score": base_stress_scores["Nonresidential Load Pressure"],
-                "weight": POWER_STRESS_WEIGHTS["Nonresidential Load Pressure"],
+                "score": signed_stress_scores["Commercial-vs-Residential Output Pressure"],
+                "base_score": base_stress_scores["Commercial-vs-Residential Output Pressure"],
+                "weight": POWER_STRESS_WEIGHTS["Commercial-vs-Residential Output Pressure"],
             },
-            "Grid Utilization Pressure": {
+            "Power-System Utilization Pressure": {
                 "raw": utilization,
-                "score": signed_stress_scores["Grid Utilization Pressure"],
-                "base_score": base_stress_scores["Grid Utilization Pressure"],
-                "weight": POWER_STRESS_WEIGHTS["Grid Utilization Pressure"],
+                "score": signed_stress_scores["Power-System Utilization Pressure"],
+                "base_score": base_stress_scores["Power-System Utilization Pressure"],
+                "weight": POWER_STRESS_WEIGHTS["Power-System Utilization Pressure"],
             },
-            "Capacity Response Gap": {
+            "Potential-Output Response Gap": {
                 "raw": capacity_gap,
-                "score": signed_stress_scores["Capacity Response Gap"],
-                "base_score": base_stress_scores["Capacity Response Gap"],
-                "weight": POWER_STRESS_WEIGHTS["Capacity Response Gap"],
+                "score": signed_stress_scores["Potential-Output Response Gap"],
+                "base_score": base_stress_scores["Potential-Output Response Gap"],
+                "weight": POWER_STRESS_WEIGHTS["Potential-Output Response Gap"],
             },
         },
         "footprint_components": {
@@ -152,4 +128,3 @@ def calculate_power_stress(fred_data) -> dict:
             },
         },
     }
-

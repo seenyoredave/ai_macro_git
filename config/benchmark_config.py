@@ -1,9 +1,3 @@
-"""Static benchmark proxy configuration.
-
-QQQ is the only active runtime benchmark. SPY and DIA remain configured for
-future use but are not downloaded or archived by the current page.
-"""
-
 QQQ_MEMBERS = {
     "NVDA": "NVIDIA Corp",
     "AAPL": "Apple Inc",
@@ -17,8 +11,6 @@ QQQ_MEMBERS = {
     "TSLA": "Tesla Inc",
 }
 
-# QQQ holdings snapshot dated 2026-07-21. The selected holdings represented
-# 45.95% of QQQ; ratios are normalized to 100% for the ten-member proxy.
 QQQ_RAW_WEIGHTS = {
     "NVDA": 8.05,
     "AAPL": 7.85,

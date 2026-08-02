@@ -1,9 +1,6 @@
-"""Archive identities and write contracts."""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
-
 
 @dataclass(frozen=True)
 class ArchiveSpec:
@@ -11,7 +8,6 @@ class ArchiveSpec:
     path: str
     keys: tuple[str, ...]
     reset_malformed: bool = False
-
 
 ARCHIVE_SPECS = {
     "benchmark": ArchiveSpec("benchmark", "archive/benchmark_history.csv", ("Date", "Benchmark")),
@@ -22,7 +18,6 @@ ARCHIVE_SPECS = {
     "sector": ArchiveSpec("sector", "archive/sector_history.csv", ("Date", "Sector")),
     "yf": ArchiveSpec("yf", "archive/yf_history.csv", ("Date", "Sector", "Ticker")),
 }
-
 
 def spec_for_path(path: str):
     normalized = str(path).replace("\\", "/")

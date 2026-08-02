@@ -1,14 +1,7 @@
-"""Financial-conditions confirmation helpers.
-
-This module keeps NFCI interpretation independent from Streamlit rendering so
-current-condition labels and direction calculations remain testable and reusable.
-"""
-
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-
 
 NFCI_KEYS = [
     "Financial Conditions NFCI",
@@ -16,7 +9,6 @@ NFCI_KEYS = [
     "National Financial Conditions Index",
     "Chicago Fed NFCI",
 ]
-
 
 def clean_nfci_history(history):
     columns = ["Date", "Value", "ANFCI"]
@@ -43,7 +35,6 @@ def clean_nfci_history(history):
         .reset_index(drop=True)[columns]
     )
 
-
 def _payload_value(fred_data):
     for key in NFCI_KEYS:
         if key not in (fred_data or {}):
@@ -54,7 +45,6 @@ def _payload_value(fred_data):
         if pd.notna(numeric):
             return float(numeric), payload if isinstance(payload, dict) else {}
     return np.nan, {}
-
 
 def nfci_snapshot(fred_data, history):
     current, payload = _payload_value(fred_data)
@@ -116,24 +106,6 @@ def nfci_snapshot(fred_data, history):
         "history": clean,
     }
 
-
-def nfci_condition(value):
-    value = pd.to_numeric(value, errors="coerce")
-    if pd.isna(value):
-        return "No Data"
-    if value <= -0.50:
-        return "Highly Supportive"
-    if value < -0.10:
-        return "Looser Than Average"
-    if value <= 0.10:
-        return "Near Average"
-    if value < 0.50:
-        return "Tighter Than Average"
-    if value < 1.00:
-        return "Stressed"
-    return "Acute Stress"
-
-
 def nfci_direction(change):
     change = pd.to_numeric(change, errors="coerce")
     if pd.isna(change):
@@ -143,25 +115,3 @@ def nfci_direction(change):
     if change <= -0.10:
         return "Easing ↓"
     return "Stable →"
-
-
-def nfci_summary(value, change):
-    value = pd.to_numeric(value, errors="coerce")
-    change = pd.to_numeric(change, errors="coerce")
-    if pd.isna(value):
-        return "Financial-conditions confirmation is unavailable."
-
-    if value < -0.10:
-        base = "Conditions remain looser than their long-run average"
-    elif value > 0.10:
-        base = "Conditions are tighter than their long-run average"
-    else:
-        base = "Conditions are near their long-run average"
-
-    if pd.isna(change):
-        return f"{base}."
-    if change >= 0.10:
-        return f"{base}, but have tightened over the past three months."
-    if change <= -0.10:
-        return f"{base}, and have eased over the past three months."
-    return f"{base}, with little net change over the past three months."

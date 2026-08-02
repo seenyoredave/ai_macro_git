@@ -1,10 +1,7 @@
-"""U.S. Census private data-center construction loader."""
-
 from __future__ import annotations
 
 from io import BytesIO
 from pathlib import Path
-import re
 
 import numpy as np
 import pandas as pd
@@ -12,8 +9,8 @@ import requests
 import streamlit as st
 
 from config.debug_config import debug_print
+from loaders.census import clean_header as _clean_header, parse_census_month as _parse_census_month
 from config.market_clock import market_date
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CONSTRUCTION_HISTORY_PATH = PROJECT_ROOT / "data" / "data_center_construction_history.csv"
@@ -23,22 +20,7 @@ CENSUS_PRIVATE_SA_URL = (
     "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx"
 )
 
-
-def _clean_header(value) -> str:
-    text = str(value).replace("\n_x000D_", " ").replace("\n", " ")
-    return " ".join(text.split()).strip()
-
-
-def _parse_census_month(value):
-    if value is None or pd.isna(value):
-        return pd.NaT
-
-    text = re.sub(r"[pr]$", "", str(value).strip(), flags=re.IGNORECASE)
-    return pd.to_datetime(text, format="%b-%y", errors="coerce")
-
-
 def parse_private_construction_workbook(content: bytes) -> pd.DataFrame:
-    """Parse the Census Private SA workbook into a stable three-column frame."""
     raw = pd.read_excel(
         BytesIO(content),
         sheet_name="Private SA",
@@ -80,11 +62,7 @@ def parse_private_construction_workbook(content: bytes) -> pd.DataFrame:
         ]
     ].reset_index(drop=True)
 
-
-
-
 def _persist_construction_history(df: pd.DataFrame) -> None:
-    """Persist the parsed Census series for future derived-history rebuilds."""
     if df is None or df.empty:
         return
 
@@ -98,9 +76,7 @@ def _persist_construction_history(df: pd.DataFrame) -> None:
     out.to_csv(temp, index=False)
     temp.replace(CONSTRUCTION_HISTORY_PATH)
 
-
 def _load_local_construction_history() -> pd.DataFrame | None:
-    """Return the persisted Census series when the live workbook is unavailable."""
     if (
         not CONSTRUCTION_HISTORY_PATH.exists()
         or CONSTRUCTION_HISTORY_PATH.stat().st_size == 0
@@ -137,9 +113,7 @@ def _load_local_construction_history() -> pd.DataFrame | None:
     frame = frame.drop_duplicates(subset=["Observation Date"], keep="last")
     return frame if not frame.empty else None
 
-
 def _record_construction_availability(latest_observation_date) -> None:
-    """Record when a Census observation first became available to this app."""
     observation = pd.to_datetime(latest_observation_date, errors="coerce")
     if pd.isna(observation):
         return
@@ -160,7 +134,6 @@ def _record_construction_availability(latest_observation_date) -> None:
     temp = CONSTRUCTION_RELEASE_PATH.with_suffix(".csv.tmp")
     combined.to_csv(temp, index=False)
     temp.replace(CONSTRUCTION_RELEASE_PATH)
-
 
 def summarize_data_center_construction(df: pd.DataFrame) -> dict:
     if df is None or df.empty:
@@ -209,15 +182,8 @@ def summarize_data_center_construction(df: pd.DataFrame) -> dict:
         "source": "Census Live",
     }
 
-
 @st.cache_data(ttl=86400)
 def load_data_center_construction() -> dict:
-    """Return latest data-center construction value and YoY growth.
-
-    The persisted Census series is used when the live workbook is temporarily
-    unavailable. Missing data is returned only when neither source can satisfy
-    the construction contract.
-    """
     try:
         response = requests.get(CENSUS_PRIVATE_SA_URL, timeout=30)
         response.raise_for_status()

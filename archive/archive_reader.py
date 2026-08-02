@@ -9,13 +9,10 @@ import pandas as pd
 
 from config.market_clock import market_date
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE_DIR = PROJECT_ROOT / "archive"
 
-
 def resolve_archive_path(archive_path: str | Path) -> Path:
-    """Resolve archive paths relative to the project root, not the process CWD."""
     path = Path(archive_path)
 
     if path.is_absolute():
@@ -60,28 +57,15 @@ EDGAR_REQUIRED_COLUMNS = [
     "EDGAR Status",
 ]
 
-
-#################################################
-# DATE + VALUE NORMALIZATION
-#################################################
-
 def today_iso() -> str:
     return market_date().isoformat()
 
-
 def parse_archive_dates(values) -> pd.Series:
-    """
-    Parse historical archive date strings into normalized pandas dates.
-
-    Accepts ISO dates and historical M/D/YY style dates. Two-digit years are
-    parsed by pandas into the expected 2000s range for the existing archive.
-    """
     return pd.to_datetime(
         values,
         errors="coerce",
         format="mixed",
     ).dt.date
-
 
 def normalize_date_column(df: pd.DataFrame, date_col: str = "Date") -> pd.DataFrame:
     df = df.copy()
@@ -95,7 +79,6 @@ def normalize_date_column(df: pd.DataFrame, date_col: str = "Date") -> pd.DataFr
     df[date_col] = parsed.map(lambda d: d.isoformat())
 
     return df
-
 
 def is_blank(value) -> bool:
     if value is None:
@@ -112,10 +95,8 @@ def is_blank(value) -> bool:
 
     return False
 
-
 def is_valid_value(value) -> bool:
     return not is_blank(value)
-
 
 def normalize_key_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
@@ -130,11 +111,6 @@ def normalize_key_columns(df: pd.DataFrame) -> pd.DataFrame:
         df["Benchmark"] = df["Benchmark"].astype(str).str.upper().str.strip()
 
     return df
-
-
-#################################################
-# GENERIC ARCHIVE READS
-#################################################
 
 def read_archive(
     archive_path: str | Path,
@@ -164,10 +140,8 @@ def read_archive(
 
     return df
 
-
 def load_benchmark_history():
     return read_archive(ARCHIVE_PATHS["benchmark"])
-
 
 def load_edgar_history():
     return read_archive(
@@ -175,43 +149,25 @@ def load_edgar_history():
         required_columns=EDGAR_REQUIRED_COLUMNS,
     )
 
-
 def load_energy_history():
     return read_archive(ARCHIVE_PATHS["energy"])
-
 
 def load_fred_history():
     return read_archive(ARCHIVE_PATHS["fred"])
 
-
 def load_macro_history():
     return read_archive(ARCHIVE_PATHS["macro"])
-
-
 
 def load_sector_history():
     return read_archive(ARCHIVE_PATHS["sector"])
 
-
 def load_yf_history():
     return read_archive(ARCHIVE_PATHS["yf"])
-
-
-#################################################
-# FILTERS + COMPLETENESS HELPERS
-#################################################
 
 def rows_for_date(
     df: pd.DataFrame,
     target_date: date | str | None = None,
 ) -> pd.DataFrame:
-    """
-    Return archive rows matching target_date while preserving the input schema.
-
-    A date rollover normally produces an empty current-day slice before the
-    first archive write. That empty slice is a valid state and downstream
-    status checks still need columns such as Date/Sector/Ticker to exist.
-    """
     if df is None:
         return pd.DataFrame()
 
@@ -226,16 +182,13 @@ def rows_for_date(
 
     return df[df["Date"].astype(str) == target].copy()
 
-
 def current_sunday_saturday_window(reference_date: date | None = None):
     ref = reference_date or market_date()
     start = ref - timedelta(days=(ref.weekday() + 1) % 7)
     end = start + timedelta(days=6)
     return start, end
 
-
 def rows_for_current_week(df: pd.DataFrame) -> pd.DataFrame:
-    """Return current-week archive rows while preserving the input schema."""
     if df is None:
         return pd.DataFrame()
 
@@ -250,36 +203,11 @@ def rows_for_current_week(df: pd.DataFrame) -> pd.DataFrame:
     mask = (parsed >= start) & (parsed <= end)
     return df.loc[mask.fillna(False)].copy()
 
-
-def latest_rows_by_key(
-    df: pd.DataFrame,
-    key_cols: Sequence[str],
-) -> pd.DataFrame:
-    if df is None or df.empty:
-        return pd.DataFrame()
-
-    missing = [col for col in key_cols if col not in df.columns]
-    if missing:
-        return pd.DataFrame()
-
-    working = normalize_date_column(df, "Date") if "Date" in df.columns else df.copy()
-    working = normalize_key_columns(working)
-
-    if "Date" in working.columns:
-        working["_parsed_date"] = parse_archive_dates(working["Date"])
-        working = working.sort_values(["_parsed_date"], kind="stable")
-
-    latest = working.groupby(list(key_cols), dropna=False, as_index=False).tail(1)
-
-    return latest.drop(columns=["_parsed_date"], errors="ignore").copy()
-
-
 def filter_expected_tickers(
     df: pd.DataFrame,
     tickers: Mapping | Iterable,
     sector: str | None = None,
 ) -> pd.DataFrame:
-    """Filter to expected tickers while preserving schema on empty results."""
     if df is None:
         return pd.DataFrame()
 
@@ -301,7 +229,6 @@ def filter_expected_tickers(
 
     return filtered
 
-
 def has_expected_tickers(df: pd.DataFrame, tickers: Mapping | Iterable) -> bool:
     if df is None or df.empty or "Ticker" not in df.columns:
         return False
@@ -313,7 +240,6 @@ def has_expected_tickers(df: pd.DataFrame, tickers: Mapping | Iterable) -> bool:
 
     found = set(df["Ticker"].dropna().astype(str).str.upper().str.strip())
     return expected.issubset(found)
-
 
 def latest_complete_ticker_rows(
     df: pd.DataFrame,
@@ -337,7 +263,6 @@ def latest_complete_ticker_rows(
 
     return None
 
-
 def latest_nonempty_row(df: pd.DataFrame) -> pd.Series | None:
     if df is None or df.empty:
         return None
@@ -355,62 +280,3 @@ def latest_nonempty_row(df: pd.DataFrame) -> pd.Series | None:
         return None
 
     return working.iloc[-1]
-
-
-#################################################
-# DEDUPE / MIGRATION HELPERS
-#################################################
-
-def coalesce_duplicate_group(group: pd.DataFrame) -> pd.Series:
-    """
-    Keep the latest row by file order, then fill only its blank fields from
-    earlier duplicate rows for the same logical archive key.
-    """
-    if group.empty:
-        return pd.Series(dtype="object")
-
-    base = group.iloc[-1].copy()
-
-    for _, older in group.iloc[:-1].iloc[::-1].iterrows():
-        for col in group.columns:
-            if is_blank(base.get(col)) and is_valid_value(older.get(col)):
-                base[col] = older[col]
-
-    return base
-
-
-def dedupe_by_key(df: pd.DataFrame, key_cols: Sequence[str]) -> pd.DataFrame:
-    if df is None or df.empty:
-        return pd.DataFrame()
-
-    missing = [col for col in key_cols if col not in df.columns]
-    if missing:
-        return df.copy()
-
-    working = df.copy()
-    working["_file_order"] = range(len(working))
-
-    rows = []
-
-    # Use explicit group iteration instead of groupby.apply. Newer pandas
-    # versions may exclude grouping columns from apply payloads, which strips
-    # archive key columns like Date/Sector/Ticker before writing.
-    for _, group in working.groupby(list(key_cols), dropna=False, sort=False):
-        rows.append(coalesce_duplicate_group(group.copy()))
-
-    if not rows:
-        return working.drop(columns=["_file_order"], errors="ignore").copy()
-
-    deduped = pd.DataFrame(rows)
-    deduped = deduped.sort_values("_file_order", kind="stable")
-    return deduped.drop(columns=["_file_order"], errors="ignore").copy()
-
-
-def ensure_columns(df: pd.DataFrame, columns: Sequence[str]) -> pd.DataFrame:
-    df = df.copy()
-
-    for col in columns:
-        if col not in df.columns:
-            df[col] = np.nan
-
-    return df

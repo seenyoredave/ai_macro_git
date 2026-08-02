@@ -1,10 +1,3 @@
-"""Borrower Strain engine.
-
-The engine combines standardized company fundamentals with a curated,
-human-verifiable commitment ledger. Missing note disclosures remain unknown;
-they are never silently converted to zero.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -13,7 +6,6 @@ import numpy as np
 import pandas as pd
 
 from analytics.scoring import tanh_score, weighted_available_score
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_COMMITMENTS_PATH = PROJECT_ROOT / "data" / "capital_commitments.csv"
@@ -36,19 +28,12 @@ CASH_FLOW_SUBWEIGHTS = {
 }
 
 def borrower_strain_to_signed(value):
-    """Map the internal 0-100 adverse-condition score to a centered -100 to +100 scale."""
     value = pd.to_numeric(value, errors="coerce")
     if pd.isna(value) or not np.isfinite(value):
         return np.nan
     return float(np.clip(2.0 * (float(value) - 50.0), -100.0, 100.0))
 
-
 def normalize_borrower_strain_history(history):
-    """Normalize current-version Borrower Strain archive metadata.
-
-    Historical values are rebuilt offline from retained raw inputs. Runtime
-    code does not migrate or rescale previous-method calculated values.
-    """
     if history is None or history.empty or "Borrower Strain" not in history.columns:
         return history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
 
@@ -60,7 +45,6 @@ def normalize_borrower_strain_history(history):
         out["Borrower Strain Version"] = pd.Series(pd.NA, index=out.index, dtype="string")
     return out
 
-
 REQUIRED_LEDGER_COLUMNS = [
     "Ticker",
     "As Of Date",
@@ -71,7 +55,6 @@ REQUIRED_LEDGER_COLUMNS = [
     "Source URL",
     "Notes",
 ]
-
 
 def _normalize_commitment_ledger(df, *, as_of_date=None) -> pd.DataFrame:
     if df is None or df.empty:
@@ -106,7 +89,6 @@ def _normalize_commitment_ledger(df, *, as_of_date=None) -> pd.DataFrame:
         .reset_index(drop=True)
     )
 
-
 def load_commitment_ledger(path=None, *, as_of_date=None) -> pd.DataFrame:
     ledger_path = Path(path) if path is not None else DEFAULT_COMMITMENTS_PATH
 
@@ -117,7 +99,6 @@ def load_commitment_ledger(path=None, *, as_of_date=None) -> pd.DataFrame:
         pd.read_csv(ledger_path),
         as_of_date=as_of_date,
     )
-
 
 def _universe_company_frame(sector_data) -> pd.DataFrame:
     frames = []
@@ -137,7 +118,6 @@ def _universe_company_frame(sector_data) -> pd.DataFrame:
     combined = combined.drop_duplicates(subset=["Ticker"], keep="first")
     return combined[combined["Ticker"].isin(BORROWER_STRAIN_TICKERS)].copy()
 
-
 def _ratio_of_sums(df, numerator, denominator, *, min_companies=2):
     if df is None or df.empty or numerator not in df or denominator not in df:
         return np.nan, 0
@@ -156,9 +136,7 @@ def _ratio_of_sums(df, numerator, denominator, *, min_companies=2):
 
     return float(num.loc[valid].sum()) / den_sum, valid_count
 
-
 def _ledger_burden(ledger, cohort, columns, *, min_companies=2):
-    """Ratio disclosed obligations to OCF for matching disclosed companies."""
     if ledger is None or ledger.empty or cohort is None or cohort.empty:
         return np.nan, 0, np.nan, []
 
@@ -196,20 +174,7 @@ def _ledger_burden(ledger, cohort, columns, *, min_companies=2):
 
     return burden, valid_count, obligation_total, sorted(merged.loc[valid, "Ticker"].tolist())
 
-
 def _debt_capacity_strain(cohort, *, min_companies=2):
-    """Score debt capacity without discarding negative-EBITDA companies.
-
-    Branches:
-      * positive EBITDA: aggregate net debt / aggregate EBITDA;
-      * non-positive EBITDA with positive net debt: aggregate net debt / revenue
-        with an impairment floor;
-      * non-positive EBITDA with net cash: limited debt-capacity strain, because the
-        operating weakness is captured separately by Cash Flow Strain.
-
-    Branch scores are combined by represented revenue; company counts are the
-    fallback when revenue weights are unavailable.
-    """
     if cohort is None or cohort.empty:
         return {
             "score": np.nan,
@@ -318,7 +283,6 @@ def _debt_capacity_strain(cohort, *, min_companies=2):
         "branch_scores": branch_scores,
     }
 
-
 def calculate_borrower_strain(
     sector_data,
     commitments_path=None,
@@ -326,12 +290,6 @@ def calculate_borrower_strain(
     as_of_date=None,
     commitments_df=None,
 ) -> dict:
-    """Calculate Borrower Strain with a fixed 3-of-4 component rule.
-
-    ``commitments_df`` is used by the audited historical backfill.  Runtime
-    callers continue to use the retained current ledger at
-    ``commitments_path``.
-    """
     ledger = (
         _normalize_commitment_ledger(commitments_df, as_of_date=as_of_date)
         if commitments_df is not None

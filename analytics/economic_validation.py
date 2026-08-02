@@ -1,11 +1,3 @@
-"""Economic Validation Gap engine.
-
-The metric compares the pace of enterprise-software capital deployment with
-realized company revenue growth and economy-wide real information-processing
-investment growth.  All three legs use year-over-year rates, aggregate company
-values by ratio of sums, and are normalized independently before comparison.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -16,7 +8,6 @@ import pandas as pd
 from analytics.development_engine import aggregate_growth_ratio
 from analytics.scoring import tanh_score
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 YF_HISTORY_PATH = PROJECT_ROOT / "archive" / "yf_history.csv"
 INFO_INVESTMENT_HISTORY_PATH = (
@@ -26,20 +17,11 @@ TARGET_SECTOR = "ENTERPRISE_AI_SOFTWARE"
 MIN_COMPANIES = 5
 MIN_DISTINCT_HISTORY = 8
 
-
 def _fred_payload_value(fred_data, key):
     payload = (fred_data or {}).get(key, np.nan)
     return payload.get("value", np.nan) if isinstance(payload, dict) else payload
 
-
 def _empirical_or_anchored_score(value, history, *, center, scale):
-    """Normalize to 0-100 using history only when it is informative.
-
-    A month of daily snapshots often contains the same unchanged fundamental
-    observation many times.  Empirical ranking is therefore enabled only when
-    at least ``MIN_DISTINCT_HISTORY`` distinct finite values exist.  Otherwise
-    the score uses an explicit, reproducible economic anchor.
-    """
     value = pd.to_numeric(value, errors="coerce")
     if pd.isna(value) or not np.isfinite(value):
         return np.nan, "Unavailable", 0
@@ -57,7 +39,6 @@ def _empirical_or_anchored_score(value, history, *, center, scale):
         return float(np.clip(percentile, 0, 100)), "Empirical Percentile", len(distinct)
 
     return tanh_score(value, center=center, scale=scale), "Anchored Tanh", len(distinct)
-
 
 def _company_growth_history(path=YF_HISTORY_PATH, sector=TARGET_SECTOR):
     path = Path(path)
@@ -95,7 +76,6 @@ def _company_growth_history(path=YF_HISTORY_PATH, sector=TARGET_SECTOR):
         )
     return pd.DataFrame(rows)
 
-
 def _information_investment_growth_history(path=INFO_INVESTMENT_HISTORY_PATH):
     path = Path(path)
     if not path.exists() or path.stat().st_size == 0:
@@ -131,7 +111,6 @@ def _information_investment_growth_history(path=INFO_INVESTMENT_HISTORY_PATH):
         index=pd.DatetimeIndex(frame[date_column]),
     )
     return series.pct_change(4).replace([np.inf, -np.inf], np.nan).dropna()
-
 
 def calculate_economic_validation_gap(
     sector_data,

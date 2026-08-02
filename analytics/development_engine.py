@@ -1,16 +1,9 @@
-"""AI Development Intensity (ADI) engine.
-
-ADI measures observable physical and capital buildout. It does not claim to
-measure broad productivity, social adoption, or an accounting-pure AI segment.
-"""
-
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
 from analytics.scoring import tanh_score, weighted_available_score
-
 
 ADI_WEIGHTS = {
     "Capital Deployment": 0.25,
@@ -47,7 +40,6 @@ COMPUTE_SUPPLY_SECTORS = {
     "DATA_CENTER_INFRASTRUCTURE",
 }
 
-
 def _unique_company_frame(sector_data, sectors):
     frames = []
 
@@ -68,9 +60,7 @@ def _unique_company_frame(sector_data, sectors):
 
     return combined
 
-
 def aggregate_growth_ratio(df, value_col, growth_col, min_companies=3):
-    """Reconstruct prior aggregate value and calculate ratio-of-sums growth."""
     if df is None or df.empty or value_col not in df or growth_col not in df:
         return np.nan, 0
 
@@ -97,7 +87,6 @@ def aggregate_growth_ratio(df, value_col, growth_col, min_companies=3):
 
     return (current_sum / prior_sum) - 1.0, valid_count
 
-
 def aggregate_ratio(df, numerator, denominator, min_companies=3):
     if df is None or df.empty or numerator not in df or denominator not in df:
         return np.nan, 0
@@ -123,7 +112,6 @@ def aggregate_ratio(df, numerator, denominator, min_companies=3):
 
     return float(num.loc[valid].sum()) / denominator_sum, valid_count
 
-
 def growth_breadth(df, growth_col, min_companies=3):
     if df is None or df.empty or growth_col not in df:
         return np.nan, 0
@@ -139,7 +127,6 @@ def growth_breadth(df, growth_col, min_companies=3):
 
     return float((growth > 0).mean()), int(len(growth))
 
-
 def _subindex(scores, weights, min_components=1):
     return weighted_available_score(
         scores,
@@ -147,13 +134,11 @@ def _subindex(scores, weights, min_components=1):
         min_components=min_components,
     )
 
-
 def calculate_ai_development_intensity(
     sector_data,
     construction_data=None,
     power_result=None,
 ) -> dict:
-    """Calculate ADI using a fixed 3-of-4 top-level coverage rule."""
     capital_df = _unique_company_frame(sector_data, CAPITAL_DEPLOYMENT_SECTORS)
     supply_df = _unique_company_frame(sector_data, COMPUTE_SUPPLY_SECTORS)
 

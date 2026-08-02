@@ -1,10 +1,8 @@
 from config.benchmark_config import (
-    ACTIVE_BENCHMARKS,
     BENCHMARK_UNIVERSES,
     BENCHMARK_WEIGHTS,
 )
 from loaders.market_loader import load_yfinance
-
 
 def load_benchmark(
     name: str,
@@ -32,20 +30,3 @@ def load_benchmark(
 
     frame["Benchmark Weight"] = frame["Ticker"].map(weights)
     return frame
-
-
-def load_all_benchmarks(
-    *,
-    force_refresh: bool = False,
-    refresh_token: int = 0,
-    clock_token: str | None = None,
-):
-    return {
-        name: load_benchmark(
-            name,
-            force_refresh=force_refresh,
-            refresh_token=refresh_token,
-            clock_token=clock_token,
-        )
-        for name in ACTIVE_BENCHMARKS
-    }

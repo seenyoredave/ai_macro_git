@@ -1,7 +1,4 @@
-"""Corporate-bond market source contract."""
-
 from __future__ import annotations
-
 
 DEBT_MARKETS_DATA_VERSION = "1.0"
 DEBT_MARKETS_SOURCE_URL = (

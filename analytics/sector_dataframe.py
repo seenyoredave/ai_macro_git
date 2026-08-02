@@ -6,7 +6,6 @@ from config.field_config import (
     FIELD_PRIORITY
 )
 
-
 def resolve_field(field_name, source_data):
 
     group = FIELD_GROUPS.get(field_name)

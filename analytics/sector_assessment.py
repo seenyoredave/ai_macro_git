@@ -1,10 +1,3 @@
-"""Current Sector Assessment selection logic.
-
-This module keeps sector-selection methods out of the display layer.
-The assessment cards present current crowding, movement, and financial
-deterioration breadth without exposing implementation details in the UI.
-"""
-
 from __future__ import annotations
 
 from typing import Any
@@ -16,16 +9,13 @@ from config.market_clock import market_date
 
 from archive.archive_reader import load_sector_history
 
-
 ASSESSMENT_VERSION = "CSA_v4.0"
 PRESSURE_VERSION = "3.0"
 SECTOR_MOVEMENT_LOOKBACK = 10
 RISK_COVERAGE_THRESHOLD = 0.50
 
-
 def _as_numeric(series: pd.Series) -> pd.Series:
     return pd.to_numeric(series, errors="coerce").replace([np.inf, -np.inf], np.nan)
-
 
 def _sector_row(macro_df: pd.DataFrame, sector: str) -> pd.Series | None:
     if macro_df is None or macro_df.empty or "Sector" not in macro_df.columns:
@@ -37,7 +27,6 @@ def _sector_row(macro_df: pd.DataFrame, sector: str) -> pd.Series | None:
         return None
 
     return rows.iloc[-1]
-
 
 def _empty_selection() -> dict[str, Any]:
     return {
@@ -55,7 +44,6 @@ def _empty_selection() -> dict[str, Any]:
         "risk": pd.DataFrame(),
     }
 
-
 def _current_sector_snapshot(macro_df: pd.DataFrame) -> pd.DataFrame:
     if macro_df is None or macro_df.empty:
         return pd.DataFrame()
@@ -72,9 +60,7 @@ def _current_sector_snapshot(macro_df: pd.DataFrame) -> pd.DataFrame:
 
     return snapshot
 
-
 def _prepare_sector_history(frames: list[pd.DataFrame]) -> pd.DataFrame:
-    """Normalize sector-history frames to the movement calculation contract."""
     usable_frames = [frame.copy() for frame in frames if frame is not None and not frame.empty]
     if not usable_frames:
         return pd.DataFrame()
@@ -104,9 +90,7 @@ def _prepare_sector_history(frames: list[pd.DataFrame]) -> pd.DataFrame:
     )
     return combined
 
-
 def _sector_history_with_current(macro_df: pd.DataFrame) -> pd.DataFrame:
-    """Return current-methodology pressure history plus the in-memory snapshot."""
     history = load_sector_history()
     current = _current_sector_snapshot(macro_df)
 
@@ -121,23 +105,13 @@ def _sector_history_with_current(macro_df: pd.DataFrame) -> pd.DataFrame:
 
     return _prepare_sector_history([history, current])
 
-
 def _prior_method_sector_history() -> pd.DataFrame:
-    """Return the most recent internally consistent prior-method movement history.
-
-    Prior-method pressure values are never mixed with the current methodology. This fallback keeps
-    Fastest Mover useful while the new formulation accumulates enough archived
-    observations to calculate movement on its own terms.
-    """
     history = load_sector_history()
     if history is None or history.empty:
         return pd.DataFrame()
 
     history = history.copy()
 
-    # Rebuilt archives keep incompatible historical pressure in an explicit
-    # Prior Method Pressure column. This prevents the live Pressure column from
-    # mixing two different formulas while preserving Fastest Mover continuity.
     if "Prior Method Pressure" in history.columns:
         history["Pressure"] = pd.to_numeric(
             history["Prior Method Pressure"],
@@ -150,7 +124,6 @@ def _prior_method_sector_history() -> pd.DataFrame:
         history = history.loc[prior_method_mask].copy()
 
     return _prepare_sector_history([history])
-
 
 def _movement_from_history(
     history: pd.DataFrame,
@@ -195,18 +168,10 @@ def _movement_from_history(
 
     return pd.DataFrame(rows)
 
-
 def calculate_sector_movement(
     macro_df: pd.DataFrame,
     lookback: int = SECTOR_MOVEMENT_LOOKBACK,
 ) -> pd.DataFrame:
-    """Calculate sector movement without crossing methodology boundaries.
-
-    Current-methodology history is preferred. Until it contains at least two valid
-    observations for a sector, the function falls back to the latest complete
-    prior-method movement result. The fallback is used only for selection history
-    and is never blended with today's current-methodology value.
-    """
     current_history = _sector_history_with_current(macro_df)
     movement = _movement_from_history(
         current_history,
@@ -222,23 +187,11 @@ def calculate_sector_movement(
         source="Prior-Method Archive Fallback",
     )
 
-
 def calculate_fundamental_risk(
     macro_df: pd.DataFrame,
     sector_data: dict[str, pd.DataFrame] | None,
     coverage_threshold: float = RISK_COVERAGE_THRESHOLD,
 ) -> pd.DataFrame:
-    """Calculate Biggest Risk as financial-deterioration breadth.
-
-    Each valid company-level signal receives an equal binary flag:
-      * FCF margin worsened YoY: current fiscal-year margin - prior margin < 0
-      * Net debt / EBITDA worsened YoY: current ratio - prior ratio > 0
-      * CapEx / OCF worsened YoY: current ratio - prior ratio > 0
-
-    Sector Risk Score = 100 * adverse flags / valid flags. A sector is
-    eligible only when the available signals cover at least the configured
-    share of its three-per-company opportunity set.
-    """
     if not sector_data or macro_df is None or macro_df.empty:
         return pd.DataFrame()
 
@@ -296,7 +249,6 @@ def calculate_fundamental_risk(
         })
 
     return pd.DataFrame(rows)
-
 
 def select_current_sector_assessment(
     macro_df: pd.DataFrame,

@@ -1,5 +1,3 @@
-
-
 from config.market_config import MARKET_BENCHMARKS
 
 def assert_no_benchmarks(tickers):

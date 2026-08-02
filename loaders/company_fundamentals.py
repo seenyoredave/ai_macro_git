@@ -1,14 +1,7 @@
-"""Company fundamental extraction for the market data pipeline.
-
-This module owns statement parsing and company-level financial calculations.
-It intentionally has no archive, Streamlit, or orchestration responsibilities.
-"""
-
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-
 
 CAPEX_ROW_NAMES = [
     "Capital Expenditure",
@@ -32,7 +25,6 @@ OPERATING_INCOME_ROW_NAMES = [
     "EBIT",
 ]
 
-
 def safe_float(value):
     try:
         if value is None or pd.isna(value):
@@ -40,7 +32,6 @@ def safe_float(value):
         return float(value)
     except Exception:
         return np.nan
-
 
 def get_statement_row(statement_df, possible_names):
     if statement_df is None or statement_df.empty:
@@ -55,7 +46,6 @@ def get_statement_row(statement_df, possible_names):
 
     return None
 
-
 def _statement(ticker_obj, attr):
     try:
         value = getattr(ticker_obj, attr)
@@ -63,9 +53,7 @@ def _statement(ticker_obj, attr):
         return pd.DataFrame()
     return value if isinstance(value, pd.DataFrame) else pd.DataFrame()
 
-
 def calc_capex_metrics(ticker_obj):
-    """Return absolute latest CapEx and comparable growth as decimals."""
     quarterly = _statement(ticker_obj, "quarterly_cashflow")
     row = get_statement_row(quarterly, CAPEX_ROW_NAMES)
 
@@ -88,7 +76,6 @@ def calc_capex_metrics(ticker_obj):
 
     return np.nan, np.nan
 
-
 def calc_revenue_growth(ticker_obj, info):
     direct = safe_float((info or {}).get("revenueGrowth"))
     if pd.notna(direct):
@@ -109,21 +96,10 @@ def calc_revenue_growth(ticker_obj, info):
     prior = float(values.iloc[4:8].sum())
     return (current / prior) - 1 if prior != 0 else np.nan
 
-
 def _normalized_label(value):
     return "".join(ch for ch in str(value).lower().strip() if ch.isalnum() or ch == "+")
 
-
 def calc_forward_revenue(ticker_obj, info, latest_revenue=np.nan):
-    """Return next-fiscal-year revenue consensus when Yahoo exposes it.
-
-    ``yfinance`` has changed the orientation and labels of its analyst-estimate
-    tables over time.  The parser therefore supports both the usual
-    ``+1y``-by-``avg`` layout and its transpose.  When direct consensus is not
-    available, the explicit fallback is latest revenue multiplied by Yahoo's
-    latest reported revenue-growth rate.  That fallback is deliberately less
-    authoritative than analyst consensus and exists only to preserve coverage.
-    """
     try:
         estimate = getattr(ticker_obj, "revenue_estimate")
     except Exception:
@@ -161,7 +137,6 @@ def calc_forward_revenue(ticker_obj, info, latest_revenue=np.nan):
                     if pd.notna(value) and value > 0:
                         return value
 
-        # Some yfinance versions return the analyst fields as rows.
         for value_name in value_candidates:
             normalized_value = _normalized_label(value_name)
             if normalized_value not in row_lookup:
@@ -174,8 +149,6 @@ def calc_forward_revenue(ticker_obj, info, latest_revenue=np.nan):
                     if pd.notna(value) and value > 0:
                         return value
 
-        # If Yahoo exposes only the analyst growth estimate, apply it to the
-        # latest revenue base before falling back to the reported-growth field.
         growth_candidates = ("growth", "revenuegrowth", "growthestimate")
         latest_revenue_value = safe_float(latest_revenue)
         if pd.notna(latest_revenue_value) and latest_revenue_value > 0:
@@ -210,7 +183,6 @@ def calc_forward_revenue(ticker_obj, info, latest_revenue=np.nan):
 
     return np.nan
 
-
 def _safe_info_number(info, *keys):
     info = info or {}
     for key in keys:
@@ -218,7 +190,6 @@ def _safe_info_number(info, *keys):
         if pd.notna(value):
             return value
     return np.nan
-
 
 def _latest_statement_value(ticker_obj, statement_attrs, row_names, *, ttm=False):
     for attr in statement_attrs:
@@ -233,22 +204,13 @@ def _latest_statement_value(ticker_obj, statement_attrs, row_names, *, ttm=False
         if ttm and attr.startswith("quarterly"):
             if len(values) >= 4:
                 return float(values.iloc[:4].sum())
-            # A single quarter is not comparable with an annual/TTM revenue
-            # base.  Continue to the annual statement rather than silently
-            # constructing a quarterly operating margin.
+
             continue
         return float(values.iloc[0])
 
     return np.nan
 
-
 def _statement_flow_pair(ticker_obj, statement_attrs, row_names):
-    """Return current and prior comparable flow values.
-
-    Quarterly data uses current TTM versus prior TTM when eight quarters exist.
-    Annual data is the explicit fallback because Yahoo often exposes only five
-    standardized quarters.
-    """
     for attr in statement_attrs:
         row = get_statement_row(_statement(ticker_obj, attr), row_names)
         if row is None:
@@ -261,7 +223,6 @@ def _statement_flow_pair(ticker_obj, statement_attrs, row_names):
             return float(values.iloc[0]), float(values.iloc[1])
 
     return np.nan, np.nan
-
 
 def _statement_point_pair(ticker_obj, statement_attrs, row_names):
     for attr in statement_attrs:
@@ -277,7 +238,6 @@ def _statement_point_pair(ticker_obj, statement_attrs, row_names):
 
     return np.nan, np.nan
 
-
 def _safe_ratio(numerator, denominator):
     numerator = safe_float(numerator)
     denominator = safe_float(denominator)
@@ -285,9 +245,7 @@ def _safe_ratio(numerator, denominator):
         return np.nan
     return numerator / denominator
 
-
 def calc_financial_deterioration_fields(ticker_obj):
-    """Calculate latest-fiscal-year versus prior-fiscal-year changes."""
     revenue_current, revenue_prior = _statement_flow_pair(
         ticker_obj,
         ["income_stmt"],
@@ -382,7 +340,6 @@ def calc_financial_deterioration_fields(ticker_obj):
         ),
     }
 
-
 def calc_financial_condition_fields(ticker_obj, info, capex_value=np.nan):
     info = info or {}
 
@@ -467,9 +424,7 @@ def calc_financial_condition_fields(ticker_obj, info, capex_value=np.nan):
         **calc_financial_deterioration_fields(ticker_obj),
     }
 
-
 def extract_fundamental_fields(ticker_obj, info):
-    """Return the complete fundamental payload consumed by market_loader."""
     capex, capex_growth = calc_capex_metrics(ticker_obj)
     latest_revenue = _safe_info_number(info, "totalRevenue", "total_revenue")
     if pd.isna(latest_revenue):

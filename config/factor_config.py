@@ -1,7 +1,3 @@
-#################################################
-# AI EQUITY INDEX FACTOR CONFIG
-#################################################
-
 DEFAULT_FACTORS = [
     "forward_ebit_yield_discount",
     "relative_performance",
@@ -33,7 +29,6 @@ FACTOR_HELP = {
     ),
     "market_breadth": "Share of sector stocks trading above their 200-day moving average.",
 }
-
 
 FACTOR_DISPLAY_NAMES = {
     "forward_ebit_yield_discount": "Forward EBIT-Yield Valuation",

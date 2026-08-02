@@ -1,0 +1,20 @@
+Field,Layer,Definition,Unit or Type,Treatment
+observation_id,Canonical,Stable unique observation key,text,platform-generated
+flow_type,Canonical,"Withdrawal, consumptive use, delivery, discharge, or other typed flow",controlled vocabulary,never collapsed into a generic total
+original_value,Canonical,Value exactly as represented by the retained source record,source-native,preserved before conversion
+original_unit,Canonical,Unit attached to the original value,source-native,preserved before conversion
+average_mgd,Canonical,Average million gallons per day,Mgal/d,derived only when period and volume permit
+source_category,Canonical,"Groundwater, surface water, reclaimed, mixed, or other source",controlled vocabulary,"source medium, not legal entitlement"
+water_quality_class,Canonical,"Fresh, brackish, saline, reclaimed, mixed, or other",controlled vocabulary,kept separate from source medium
+measurement_basis,Canonical,"Metered, reported estimate, agency model, inferred residual, or other basis",controlled vocabulary,determines evidentiary treatment
+TO-Wtotl,USGS 2015,Total withdrawals for all reported categories,Mgal/d,agency estimate; county record
+TO-WGWTo,USGS 2015,Total groundwater withdrawals,Mgal/d,fresh plus saline
+TO-WSWTo,USGS 2015,Total surface-water withdrawals,Mgal/d,fresh plus saline
+TO-WFrTo,USGS 2015,Total freshwater withdrawals,Mgal/d,groundwater plus surface water
+TO-WSaTo,USGS 2015,Total saline withdrawals,Mgal/d,groundwater plus surface water
+TO-CUTotPartial,USGS 2015,Partial consumptive-use total,Mgal/d,nationally available only for irrigation and thermoelectric power; not total U.S. consumption
+Water Withdrawal Volume (Million Gallons),EIA 2024,Monthly cooling-water withdrawal,million gallons,reported survey value
+Water Consumption Volume (Million Gallons),EIA 2024,Monthly cooling-water consumption,million gallons,reported survey value; anomalies retained and flagged
+Water Type,EIA 2024,"Fresh, saline, brackish, reclaimed, mixed, or other water-quality class",text,reported classification
+Water Source,EIA 2024,"Surface, ground, discharge/reclaimed, mixed, or other source",text,reported classification
+Cooling System Type,EIA 2024,"Open, closed, dry/hybrid, mixed, or other cooling system",text,reported classification

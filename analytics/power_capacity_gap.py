@@ -1,19 +1,9 @@
-"""Power Capacity Gap engine.
-
-The metric compares observable AI deployment pressure with a national proxy for
-power-system response. It is deliberately distinct from Power Stress: the gap
-asks whether deployment is moving faster than measured power delivery and
-capacity expansion, while Power Stress asks how much pressure is acting on the system relative to reference conditions
-relative to reference conditions.
-"""
-
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
 from analytics.scoring import tanh_score, weighted_available_score
-
 
 POWER_CAPACITY_GAP_VERSION = "1.0"
 
@@ -24,27 +14,15 @@ DEPLOYMENT_PRESSURE_WEIGHTS = {
 
 POWER_RESPONSE_WEIGHTS = {
     "Delivered Power Growth": 0.60,
-    "Installed Capacity Growth": 0.40,
+    "Sustainable Capacity Growth": 0.40,
 }
-
 
 def _fred_value(fred_data, name):
     payload = (fred_data or {}).get(name, np.nan)
     value = payload.get("value", np.nan) if isinstance(payload, dict) else payload
     return pd.to_numeric(value, errors="coerce")
 
-
 def calculate_power_capacity_gap(development_result, fred_data) -> dict:
-    """Return deployment pressure minus measured national power response.
-
-    Deployment pressure uses the two ADI pillars most directly associated with
-    physical power demand: data-center construction and capital deployment.
-
-    Power-system response blends actual electric-power output growth with
-    installed capacity growth. Requiring both components reduces reliance on
-    nameplate additions alone, although the result remains a national proxy and
-    does not measure regional transmission, interconnection, or firm capacity.
-    """
     development_components = (
         (development_result or {}).get("components", {}) or {}
     )
@@ -69,7 +47,7 @@ def calculate_power_capacity_gap(development_result, fred_data) -> dict:
             center=0.01,
             scale=0.04,
         ),
-        "Installed Capacity Growth": tanh_score(
+        "Sustainable Capacity Growth": tanh_score(
             capacity_yoy,
             center=0.01,
             scale=0.03,
@@ -127,10 +105,10 @@ def calculate_power_capacity_gap(development_result, fred_data) -> dict:
                 "weight": POWER_RESPONSE_WEIGHTS["Delivered Power Growth"],
                 "channel": "Power-System Response",
             },
-            "Installed Capacity Growth": {
+            "Sustainable Capacity Growth": {
                 "raw": capacity_yoy,
-                "score": response_scores["Installed Capacity Growth"],
-                "weight": POWER_RESPONSE_WEIGHTS["Installed Capacity Growth"],
+                "score": response_scores["Sustainable Capacity Growth"],
+                "weight": POWER_RESPONSE_WEIGHTS["Sustainable Capacity Growth"],
                 "channel": "Power-System Response",
             },
         },

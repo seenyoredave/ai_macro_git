@@ -1,12 +1,3 @@
-"""Market-data orchestration.
-
-YFinance follows a daily-session policy: during regular U.S. market hours the
-first complete load of the Eastern trading date is live, later loads use that
-day's archive, and closed-session loads use the latest complete archive. Manual
-refreshes bypass the automatic policy. EDGAR retains its own recency policy and
-can also be refreshed explicitly.
-"""
-
 from __future__ import annotations
 
 import time
@@ -39,7 +30,6 @@ from loaders.edgar_loader import (
 )
 from loaders.market_freshness import merge_live_with_archive
 from loaders.market_prices import PRESSURE_COLUMNS, calc_trading_pressure_fields, one_year_return
-
 
 EVG_REQUIRED_COLUMNS = ["Revenue Growth", "CapEx", "CapEx Growth"]
 FORWARD_VALUATION_COLUMNS = [
@@ -89,7 +79,6 @@ YF_REQUIRED_COLUMNS = [
     "Basket Weight",
 ]
 
-
 def ensure_yf_schema(df):
     df = df.copy()
     for column in YF_REQUIRED_COLUMNS:
@@ -97,11 +86,9 @@ def ensure_yf_schema(df):
             df[column] = np.nan
     return df
 
-
 def _expected_ticker_set(tickers):
     raw = tickers.keys() if isinstance(tickers, dict) else tickers
     return {str(ticker).upper().strip() for ticker in raw}
-
 
 def read_yf_history_for_date(tickers, sector=None, target_date=None):
     history = load_yf_history()
@@ -121,7 +108,6 @@ def read_yf_history_for_date(tickers, sector=None, target_date=None):
 
     return ensure_yf_schema(filtered)
 
-
 def read_latest_yf_history(tickers, sector=None):
     history = load_yf_history()
     if history is None or history.empty or not {"Date", "Ticker"}.issubset(history.columns):
@@ -133,7 +119,6 @@ def read_latest_yf_history(tickers, sector=None):
     if sector is None and "Ticker" in latest.columns:
         latest = latest.drop_duplicates(subset=["Ticker"], keep="last")
     return ensure_yf_schema(latest)
-
 
 def describe_yf_archive_status(tickers, sector=None):
     expected = _expected_ticker_set(tickers)
@@ -172,10 +157,8 @@ def describe_yf_archive_status(tickers, sector=None):
 
     return status
 
-
 def describe_edgar_archive_status(tickers):
     return describe_edgar_freshness_status(tickers)
-
 
 def _count_returned_tickers(payload):
     if isinstance(payload, pd.DataFrame):
@@ -185,7 +168,6 @@ def _count_returned_tickers(payload):
     if isinstance(payload, dict):
         return int(sum(value is not None for value in payload.values()))
     return 0
-
 
 def merge_live_yfinance_with_archive(fresh, fallback, tickers):
     return merge_live_with_archive(
@@ -204,7 +186,6 @@ def merge_live_yfinance_with_archive(fresh, fallback, tickers):
         ),
     )
 
-
 def _safe_market_number(fast_info, info, *keys):
     for key in keys:
         value = (fast_info or {}).get(key)
@@ -214,7 +195,6 @@ def _safe_market_number(fast_info, info, *keys):
         if pd.notna(value):
             return value
     return np.nan
-
 
 def _fetch_company(ticker, company):
     try:
@@ -268,9 +248,7 @@ def _fetch_company(ticker, company):
         print(f"{ticker} failed -> {exc}")
         return None
 
-
 def pull_yfinance(ticker_tuple, attempts=2):
-    """Pull the requested universe and retry only failed tickers once."""
     tickers = dict(ticker_tuple)
     pending = dict(tickers)
     collected = {}
@@ -299,7 +277,6 @@ def pull_yfinance(ticker_tuple, attempts=2):
     ]
     return pd.DataFrame(ordered)
 
-
 def _archive_yfinance_result(frame, tickers, *, source_mode, decision):
     archived = ensure_yf_schema(frame).copy()
     expected = _expected_ticker_set(tickers)
@@ -317,7 +294,6 @@ def _archive_yfinance_result(frame, tickers, *, source_mode, decision):
     }
     return archived
 
-
 def load_yfinance(
     ticker_tuple,
     sector=None,
@@ -326,7 +302,6 @@ def load_yfinance(
     refresh_token=0,
     clock_token=None,
 ):
-    """Load YFinance under the daily market-session decision policy."""
     return _load_yfinance_cached(
         ticker_tuple,
         sector=sector,
@@ -334,7 +309,6 @@ def load_yfinance(
         refresh_token=int(refresh_token),
         clock_token=clock_token or market_cache_token(),
     )
-
 
 @st.cache_data(ttl=900)
 def _load_yfinance_cached(
@@ -345,7 +319,7 @@ def _load_yfinance_cached(
     refresh_token=0,
     clock_token=None,
 ):
-    # refresh_token and clock_token are cache-key inputs by design.
+
     del refresh_token, clock_token
 
     tickers = dict(ticker_tuple)
@@ -416,14 +390,12 @@ def _load_yfinance_cached(
             "YFinance failed and no usable yf_history fallback exists."
         ) from exc
 
-
 @st.cache_data(ttl=900)
 def load_sector_data(tickers, sector=None):
     return {
         "yfinance": load_yfinance(tuple(sorted(tickers.items())), sector=sector),
         "edgar": load_edgar(tickers),
     }
-
 
 def load_market_universe(
     tickers,
@@ -434,7 +406,6 @@ def load_market_universe(
     edgar_refresh_token=0,
     clock_token=None,
 ):
-    """Load the full universe with explicit source-refresh controls."""
     return _load_market_universe_cached(
         tickers,
         force_yfinance_refresh=bool(force_yfinance_refresh),
@@ -443,7 +414,6 @@ def load_market_universe(
         edgar_refresh_token=int(edgar_refresh_token),
         clock_token=clock_token or market_cache_token(),
     )
-
 
 @st.cache_data(ttl=900)
 def _load_market_universe_cached(
@@ -455,7 +425,7 @@ def _load_market_universe_cached(
     edgar_refresh_token=0,
     clock_token=None,
 ):
-    # Refresh tokens and the session token deliberately participate in caching.
+
     del edgar_refresh_token
 
     load_started = time.perf_counter()
@@ -503,4 +473,3 @@ def _load_market_universe_cached(
             },
         },
     }
-

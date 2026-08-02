@@ -17,29 +17,17 @@ from archive.archive_reader import (
 from config.debug_config import debug_print
 from config.market_clock import market_date
 
-
-#################################################
-# SEC / EDGAR SETTINGS
-#################################################
-
 SEC_TICKER_URL = "https://www.sec.gov/files/company_tickers.json"
 SEC_COMPANY_FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
-# SEC asks for a descriptive User-Agent.
-# Better: add SEC_USER_AGENT to .streamlit/secrets.toml or the environment.
-# Example:
-# SEC_USER_AGENT = "AI Macro Dashboard your_email@example.com"
 DEFAULT_SEC_USER_AGENT = "AI Macro Dashboard contact@example.com"
 
-
 def _optional_streamlit_secret(name, default=None):
-    """Read an optional secret without requiring a secrets.toml file."""
     try:
         return st.secrets.get(name, default)
     except Exception as exc:
         debug_print(f"Optional Streamlit secret unavailable: {name} -> {exc}")
         return default
-
 
 def _sec_user_agent():
     return (
@@ -48,7 +36,6 @@ def _sec_user_agent():
         or DEFAULT_SEC_USER_AGENT
     )
 
-
 def sec_headers():
     return {
         "User-Agent": _sec_user_agent(),
@@ -56,17 +43,11 @@ def sec_headers():
         "Host": "data.sec.gov",
     }
 
-
 def sec_ticker_headers():
     return {
         "User-Agent": _sec_user_agent(),
         "Accept-Encoding": "gzip, deflate",
     }
-
-
-#################################################
-# EDGAR ARCHIVE CONTRACT
-#################################################
 
 EDGAR_FRESHNESS_DAYS = 7
 EDGAR_MAX_ANNUAL_AGE_DAYS = 550
@@ -102,7 +83,6 @@ TERMINAL_EDGAR_STATUS_PREFIXES = (
     "STALE",
 )
 
-
 def _expected_ticker_set(tickers):
     if isinstance(tickers, dict):
         raw = tickers.keys()
@@ -110,20 +90,6 @@ def _expected_ticker_set(tickers):
         raw = tickers
 
     return {str(t).upper().strip() for t in raw}
-
-
-def _ticker_mapping(tickers):
-    if isinstance(tickers, dict):
-        return {
-            str(ticker).upper().strip(): company
-            for ticker, company in tickers.items()
-        }
-
-    return {
-        str(ticker).upper().strip(): str(ticker).upper().strip()
-        for ticker in tickers
-    }
-
 
 def _is_present(value) -> bool:
     try:
@@ -134,16 +100,13 @@ def _is_present(value) -> bool:
 
     return str(value).strip() != ""
 
-
 def _status_prefix(payload) -> str:
     if not isinstance(payload, dict):
         return ""
 
     return str(payload.get("EDGAR Status", "")).upper().strip()
 
-
 def _edgar_quality_score(payload) -> int:
-    """Score archive payload quality without confusing row presence with data quality."""
     if not isinstance(payload, dict):
         return 0
 
@@ -180,14 +143,7 @@ def _edgar_quality_score(payload) -> int:
 
     return score
 
-
 def _is_usable_edgar_row(payload) -> bool:
-    """Return True when a recent archive row is a conclusive SEC result.
-
-    A usable row may contain a full coherent Revenue/CapEx observation or an
-    explicit terminal status explaining why standardized SEC facts were not
-    available. Failed/network rows remain retryable.
-    """
     if not isinstance(payload, dict):
         return False
 
@@ -210,24 +166,14 @@ def _is_usable_edgar_row(payload) -> bool:
     if status.startswith("PARTIAL"):
         return _is_present(payload.get("Revenue")) and _is_present(payload.get("Revenue FY"))
 
-    # Unsupported/unavailable/stale statuses are conclusive for the current
-    # seven-day archive window and should not trigger a fresh SEC request on
-    # every Streamlit rerun.
     return True
 
-
 def is_archive_eligible_edgar_payload(payload) -> bool:
-    """Return True only for live, conclusive SEC payloads.
-
-    Archive policy deliberately lives here with the EDGAR quality contract.
-    The archive layer only persists payloads approved by this function.
-    """
     return (
         isinstance(payload, dict)
         and str(payload.get("EDGAR Source", "")).strip() == "SEC Live"
         and _is_usable_edgar_row(payload)
     )
-
 
 def _latest_edgar_rows(tickers, *, max_age_days=None):
     df = load_edgar_history()
@@ -260,13 +206,10 @@ def _latest_edgar_rows(tickers, *, max_age_days=None):
         if filtered.empty:
             return pd.DataFrame(columns=df.columns)
 
-    # A ticker can move sectors. Archive identity for selecting the latest SEC
-    # observation is therefore Ticker, not Sector + Ticker.
     filtered = filtered.sort_values(["_parsed_date"], kind="stable")
     latest = filtered.groupby("Ticker", dropna=False, sort=False).tail(1)
 
     return latest.drop(columns=["_parsed_date"], errors="ignore").copy()
-
 
 def _usable_tickers_from_rows(rows):
     if rows is None or rows.empty or "Ticker" not in rows.columns:
@@ -282,36 +225,6 @@ def _usable_tickers_from_rows(rows):
 
     return usable
 
-
-def read_edgar_archive_for_today(tickers, require_complete=True):
-    df = load_edgar_history()
-
-    if df is None or df.empty:
-        return None
-
-    if "Date" not in df.columns or "Ticker" not in df.columns:
-        return None
-
-    today_df = rows_for_date(df)
-
-    if today_df.empty:
-        return None
-
-    filtered = filter_expected_tickers(today_df, tickers)
-
-    if not has_expected_tickers(filtered, tickers):
-        return None
-
-    if require_complete:
-        usable = _usable_tickers_from_rows(filtered)
-        expected = _expected_ticker_set(tickers)
-
-        if not expected.issubset(usable):
-            return None
-
-    return filtered
-
-
 def read_recent_edgar_archive(tickers, max_age_days=EDGAR_FRESHNESS_DAYS, require_complete=True):
     recent = _latest_edgar_rows(tickers, max_age_days=max_age_days)
 
@@ -325,7 +238,6 @@ def read_recent_edgar_archive(tickers, max_age_days=EDGAR_FRESHNESS_DAYS, requir
         return None
 
     return recent
-
 
 def read_latest_edgar_archive(tickers, require_complete=False):
     latest = _latest_edgar_rows(tickers, max_age_days=None)
@@ -341,7 +253,6 @@ def read_latest_edgar_archive(tickers, require_complete=False):
             return None
 
     return latest
-
 
 def edgar_archive_rows_to_dict(archived_rows, source_label="Archive"):
     data = {}
@@ -368,7 +279,6 @@ def edgar_archive_rows_to_dict(archived_rows, source_label="Archive"):
         data[ticker] = restored
 
     return data
-
 
 def describe_edgar_freshness_status(tickers, max_age_days=EDGAR_FRESHNESS_DAYS):
     expected = _expected_ticker_set(tickers)
@@ -411,14 +321,8 @@ def describe_edgar_freshness_status(tickers, max_age_days=EDGAR_FRESHNESS_DAYS):
         "latest_complete_date": latest_date,
     }
 
-
-#################################################
-# SEC API HELPERS
-#################################################
-
 @st.cache_data(ttl=86400)
 def load_ticker_cik_map():
-    """Load the SEC ticker -> ten-digit CIK mapping."""
     response = requests.get(
         SEC_TICKER_URL,
         headers=sec_ticker_headers(),
@@ -438,22 +342,17 @@ def load_ticker_cik_map():
 
     return ticker_map
 
-
 @st.cache_data(ttl=86400)
 def fetch_company_facts(cik):
-    """Fetch SEC Company Facts for one CIK."""
     url = SEC_COMPANY_FACTS_URL.format(cik=cik)
     response = requests.get(url, headers=sec_headers(), timeout=30)
     response.raise_for_status()
     return response.json()
 
-
 def get_taxonomy_facts(company_facts, taxonomy):
     return company_facts.get("facts", {}).get(taxonomy, {})
 
-
 def get_usd_unit_facts(taxonomy_facts, concept):
-    """Return facts reported in a pure USD unit for one taxonomy concept."""
     concept_payload = taxonomy_facts.get(concept, {})
     units = concept_payload.get("units", {})
 
@@ -462,7 +361,6 @@ def get_usd_unit_facts(taxonomy_facts, concept):
             return rows
 
     return []
-
 
 def _all_monetary_unit_facts(taxonomy_facts, concept):
     concept_payload = taxonomy_facts.get(concept, {})
@@ -473,7 +371,6 @@ def _all_monetary_unit_facts(taxonomy_facts, concept):
         for unit_name, rows in units.items()
         if isinstance(rows, list)
     }
-
 
 def _fact_period_days(fact):
     try:
@@ -487,7 +384,6 @@ def _fact_period_days(fact):
     except Exception:
         return None
 
-
 def _fact_end_date(fact):
     try:
         parsed = pd.to_datetime(fact.get("end"), errors="coerce")
@@ -497,7 +393,6 @@ def _fact_end_date(fact):
     except Exception:
         return None
 
-
 def _fact_fiscal_year(fact):
     end_date = _fact_end_date(fact)
     end_year = end_date.year if end_date is not None else None
@@ -506,16 +401,13 @@ def _fact_fiscal_year(fact):
     try:
         if fy is not None and not pd.isna(fy):
             fy = int(fy)
-            # Retail and 52/53-week calendars can label a fiscal year one year
-            # away from the calendar year in which the period ends. Anything
-            # farther away is filing metadata, not a trustworthy period label.
+
             if end_year is None or abs(fy - end_year) <= 1:
                 return fy
     except Exception:
         pass
 
     return end_year
-
 
 ANNUAL_FORMS = {
     "10-K",
@@ -525,7 +417,6 @@ ANNUAL_FORMS = {
     "40-F",
     "40-F/A",
 }
-
 
 def _is_annual_fact(fact):
     form = str(fact.get("form", "")).upper().strip()
@@ -538,10 +429,7 @@ def _is_annual_fact(fact):
     if period_days is None:
         return False
 
-    # Annual company facts can have fp values that are not perfectly uniform.
-    # Duration plus annual form is the stable contract.
     return 300 <= period_days <= 380
-
 
 def _annual_fact_rows(taxonomy_facts, concepts, *, unit="USD"):
     rows = []
@@ -590,10 +478,6 @@ def _annual_fact_rows(taxonomy_facts, concepts, *, unit="USD"):
 
     raw = pd.DataFrame(rows)
 
-    # Company Facts repeats comparative periods in later annual filings. EndDate
-    # is the economic period identity; FY belongs to filing metadata and cannot
-    # be used as the dedupe key. For each period prefer the latest filing, then
-    # an explicit FY context, then the curated concept priority.
     selected = []
 
     for _, group in raw.groupby("EndDate", sort=True):
@@ -611,16 +495,8 @@ def _annual_fact_rows(taxonomy_facts, concepts, *, unit="USD"):
     result = result.sort_values("EndDate", kind="stable").reset_index(drop=True)
     return result
 
-
 def annual_fact_series(taxonomy_facts, concepts):
-    """Return one coherent USD annual fact per economic period.
-
-    Public signature retained. Unlike the old implementation, this function
-    combines concept transitions instead of accepting the first concept that
-    ever reported a value.
-    """
     return _annual_fact_rows(taxonomy_facts, concepts, unit="USD")
-
 
 def _row_for_end(series_df, target_end, tolerance_days=0):
     if series_df is None or series_df.empty or target_end is None:
@@ -640,7 +516,6 @@ def _row_for_end(series_df, target_end, tolerance_days=0):
         return None
 
     return df.sort_values(["Distance", "EndDate"], ascending=[True, False]).iloc[0]
-
 
 def _value_and_growth_for_period(series_df, target_end, *, use_abs=False):
     selected = _row_for_end(series_df, target_end, tolerance_days=EDGAR_PERIOD_ALIGNMENT_DAYS)
@@ -686,25 +561,6 @@ def _value_and_growth_for_period(series_df, target_end, *, use_abs=False):
 
     return value, growth, selected_fy, selected_end
 
-
-def latest_and_growth(series_df, use_abs=False):
-    """Return latest annual value, comparable YoY growth, and fiscal year."""
-    if series_df is None or series_df.empty:
-        return np.nan, np.nan, None
-
-    latest_end = max(series_df["EndDate"])
-    value, growth, fiscal_year, _ = _value_and_growth_for_period(
-        series_df,
-        latest_end,
-        use_abs=use_abs,
-    )
-    return value, growth, fiscal_year
-
-
-#################################################
-# METRIC EXTRACTION
-#################################################
-
 US_GAAP_REVENUE_CONCEPTS = [
     "RevenueFromContractWithCustomerExcludingAssessedTax",
     "RevenueFromContractWithCustomerIncludingAssessedTax",
@@ -738,9 +594,7 @@ IFRS_CAPEX_CONCEPTS = [
     "CapitalExpenditures",
 ]
 
-
 def discover_capex_concepts(taxonomy_facts):
-    """Conservatively discover standardized PPE/capital-expenditure concepts."""
     discovered = []
     include_markers = [
         "PROPERTYPLANTANDEQUIPMENT",
@@ -781,7 +635,6 @@ def discover_capex_concepts(taxonomy_facts):
 
     return discovered
 
-
 def _has_non_usd_annual_facts(taxonomy_facts, concepts):
     for concept in concepts:
         for unit_name, facts in _all_monetary_unit_facts(taxonomy_facts, concept).items():
@@ -792,7 +645,6 @@ def _has_non_usd_annual_facts(taxonomy_facts, concepts):
                 return True
 
     return False
-
 
 def _extract_taxonomy_metrics(company_facts, taxonomy, revenue_concepts, capex_concepts):
     taxonomy_facts = get_taxonomy_facts(company_facts, taxonomy)
@@ -907,7 +759,6 @@ def _extract_taxonomy_metrics(company_facts, taxonomy, revenue_concepts, capex_c
         "NonUSDAnnualFacts": non_usd,
     }
 
-
 def _taxonomy_result_rank(result):
     revenue_end = result.get("Revenue Period End")
     ordinal = revenue_end.toordinal() if hasattr(revenue_end, "toordinal") else -1
@@ -928,14 +779,7 @@ def _taxonomy_result_rank(result):
 
     return ordinal, status_rank
 
-
 def extract_company_metrics(company_facts):
-    """Extract coherent latest annual Revenue and CapEx from SEC Company Facts.
-
-    Revenue anchors the observation period. CapEx is accepted only when its
-    annual period end aligns with that same Revenue period. This prevents stale
-    concepts from combining different fiscal eras in one row.
-    """
     candidates = [
         _extract_taxonomy_metrics(
             company_facts,
@@ -967,11 +811,6 @@ def extract_company_metrics(company_facts):
         "CapEx Concept": selected["CapEx Concept"],
     }
 
-
-#################################################
-# PUBLIC LOADER
-#################################################
-
 def _empty_edgar_payload(status, *, source="Failed"):
     return {
         "Revenue": np.nan,
@@ -985,7 +824,6 @@ def _empty_edgar_payload(status, *, source="Failed"):
         "EDGAR Source": source,
         "EDGAR Archive Date": None,
     }
-
 
 def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_data):
     edgar_data = {}
@@ -1058,7 +896,6 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
         "live_failed_tickers": failed,
         "live_rejected_quality_tickers": rejected_quality,
     }
-
 
 def load_edgar_with_report(tickers, force_refresh=False):
     expected = _expected_ticker_set(tickers)
@@ -1152,8 +989,6 @@ def load_edgar_with_report(tickers, force_refresh=False):
     else:
         report["source_mode"] = "archive_fallback"
 
-    # Guarantee all expected tickers have a payload so field-by-field YFinance
-    # fallback can fill holes downstream without losing the ticker row.
     for ticker_upper in sorted(expected):
         if ticker_upper not in edgar_data:
             edgar_data[ticker_upper] = archive_fallback_data.get(
@@ -1163,18 +998,11 @@ def load_edgar_with_report(tickers, force_refresh=False):
 
     return edgar_data, report
 
-
 def load_edgar(tickers):
     edgar_data, _ = load_edgar_with_report(tickers)
     return edgar_data
 
-
 def build_edgar_archive_snapshot(sector_data, raw_edgar_data):
-    """Return only live SEC rows approved by the EDGAR quality contract.
-
-    The archive layer receives a persistence-ready DataFrame and does not own
-    or repeat any EDGAR quality policy.
-    """
     columns = [
         "Sector", "Ticker", "Revenue", "Revenue Growth", "CapEx",
         "CapEx Growth", "Revenue FY", "CapEx FY", "CIK", "EDGAR Status",

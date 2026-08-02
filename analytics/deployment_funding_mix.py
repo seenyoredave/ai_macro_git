@@ -1,10 +1,3 @@
-"""AI buildout financing diagnostics.
-
-The module exposes four auditable ratios rather than another composite score:
-internal funding coverage, cash reserve coverage, debt financing pulse, and
-forward commitment load.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -33,7 +26,6 @@ _HISTORY_COLUMNS = [
     "Forward Commitment Load",
 ]
 
-
 def _read_nonempty_csv(path: Path) -> pd.DataFrame:
     if not path.exists() or path.stat().st_size == 0:
         return pd.DataFrame()
@@ -42,7 +34,6 @@ def _read_nonempty_csv(path: Path) -> pd.DataFrame:
     except Exception:
         return pd.DataFrame()
     return frame if not frame.empty else pd.DataFrame()
-
 
 def _cohort_frame(sector_data) -> pd.DataFrame:
     frames = [
@@ -65,11 +56,9 @@ def _cohort_frame(sector_data) -> pd.DataFrame:
         combined[column] = pd.to_numeric(combined.get(column), errors="coerce")
     return combined
 
-
 def _safe_sum(series) -> float:
     values = pd.to_numeric(series, errors="coerce").replace([np.inf, -np.inf], np.nan)
     return float(values.sum(min_count=1)) if values.notna().any() else np.nan
-
 
 def _safe_ratio(numerator, denominator) -> float:
     numerator = pd.to_numeric(numerator, errors="coerce")
@@ -84,7 +73,6 @@ def _safe_ratio(numerator, denominator) -> float:
         return np.nan
     return float(numerator) / float(denominator)
 
-
 def _ratio_of_sums(frame: pd.DataFrame, numerator: str, denominator: str, *, min_companies=2):
     if frame is None or frame.empty or numerator not in frame or denominator not in frame:
         return np.nan, 0
@@ -97,7 +85,6 @@ def _ratio_of_sums(frame: pd.DataFrame, numerator: str, denominator: str, *, min
         return np.nan, count
 
     return _safe_ratio(num.loc[valid].sum(), den.loc[valid].sum()), count
-
 
 def _aggregate_fundamentals(history: pd.DataFrame) -> pd.DataFrame:
     required = {"Date", "Ticker"}
@@ -122,7 +109,6 @@ def _aggregate_fundamentals(history: pd.DataFrame) -> pd.DataFrame:
         .sort_values("Date", kind="stable")
         .reset_index(drop=True)
     )
-
 
 def _nearest_prior_year_value(
     history: pd.DataFrame,
@@ -152,7 +138,6 @@ def _nearest_prior_year_value(
         return np.nan
     return float(nearest["Value"])
 
-
 def _debt_financing_pulse_history(fundamentals: pd.DataFrame) -> pd.Series:
     if fundamentals is None or fundamentals.empty:
         return pd.Series(dtype=float)
@@ -173,7 +158,6 @@ def _debt_financing_pulse_history(fundamentals: pd.DataFrame) -> pd.Series:
         )
         pulses.append(pulse)
     return pd.Series(pulses, index=fundamentals.index, dtype=float)
-
 
 def _normalize_commitments(history: pd.DataFrame) -> pd.DataFrame:
     if history is None or history.empty or "Ticker" not in history.columns:
@@ -196,7 +180,6 @@ def _normalize_commitments(history: pd.DataFrame) -> pd.DataFrame:
     ].sum(axis=1, min_count=1)
 
     return frame.dropna(subset=["Available Date", "Forward Commitments"])
-
 
 def _forward_commitment_history(
     fundamentals_history: pd.DataFrame,
@@ -265,7 +248,6 @@ def _forward_commitment_history(
 
     return pd.DataFrame(rows)
 
-
 def _current_forward_commitment_load(
     cohort: pd.DataFrame,
     ledger: pd.DataFrame,
@@ -297,7 +279,6 @@ def _current_forward_commitment_load(
     )
     total = _safe_sum(merged.loc[merged["Forward Commitments"].notna(), "Forward Commitments"])
     return ratio, total, count
-
 
 def _build_history(
     fundamentals_history: pd.DataFrame,
@@ -340,7 +321,6 @@ def _build_history(
         .reset_index(drop=True)
     )
 
-
 def _series(history: pd.DataFrame, column: str) -> pd.DataFrame:
     if history is None or history.empty or column not in history.columns:
         return pd.DataFrame(columns=["Date", "Value"])
@@ -353,7 +333,6 @@ def _series(history: pd.DataFrame, column: str) -> pd.DataFrame:
         .reset_index(drop=True)
     )
 
-
 def calculate_deployment_funding_mix(
     sector_data,
     *,
@@ -361,7 +340,6 @@ def calculate_deployment_funding_mix(
     fundamentals_history=None,
     commitments_history=None,
 ) -> dict:
-    """Calculate current funding diagnostics and retained point-in-time history."""
     cohort = _cohort_frame(sector_data)
     ledger = load_commitment_ledger() if commitments_df is None else commitments_df.copy()
 

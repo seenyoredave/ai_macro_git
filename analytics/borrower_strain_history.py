@@ -1,14 +1,3 @@
-"""Historical Borrower Strain reconstruction utilities.
-
-The historical series is stored separately from the live macro archive.  This
-keeps sparse annual/quarterly reconstruction rows from polluting the general
-macro table while allowing the dashboard to display one continuous series.
-
-No historical value is manufactured at runtime.  The companion CLI in
-``tools/backfill_borrower_strain.py`` downloads SEC data, writes the retained raw
-inputs, and produces the accepted history file.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -19,7 +8,6 @@ from typing import Iterable, Mapping, Sequence
 import numpy as np
 import pandas as pd
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_HISTORY_PATH = PROJECT_ROOT / "data" / "borrower_strain_history.csv"
 DEFAULT_FUNDAMENTALS_PATH = (
@@ -29,7 +17,7 @@ DEFAULT_COMMITMENTS_HISTORY_PATH = (
     PROJECT_ROOT / "data" / "capital_commitments_history.csv"
 )
 DEFAULT_REVIEW_PATH = PROJECT_ROOT / "data" / "capital_commitments_review.csv"
-DEFAULT_AUDIT_PATH = PROJECT_ROOT / "data" / "borrower_strain_backfill_audit.csv"
+DEFAULT_BACKFILL_REVIEW_PATH = PROJECT_ROOT / "data" / "borrower_strain_backfill_review.csv"
 
 BORROWER_STRAIN_CIKS = {
     "MSFT": "0000789019",
@@ -124,7 +112,6 @@ REVIEW_COLUMNS = [
     "Method",
 ]
 
-
 FLOW_TAG_ALIASES: Mapping[str, Sequence[str]] = {
     "Revenue": (
         "RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -186,7 +173,6 @@ CASH_GROUPS: Sequence[Sequence[str]] = (
     ("CashAndCashEquivalentsAtCarryingValue",),
 )
 
-
 @dataclass(frozen=True)
 class FactValue:
     value: float
@@ -196,7 +182,6 @@ class FactValue:
     quarters: int = 0
     tags: tuple[str, ...] = ()
 
-
 def historical_observation_dates(
     *,
     annual_start: int = 2014,
@@ -204,7 +189,6 @@ def historical_observation_dates(
     quarterly_start: str | date = "2025-03-31",
     end_date: str | date = "2026-06-13",
 ) -> list[tuple[pd.Timestamp, str]]:
-    """Return the agreed annual history and quarterly bridge dates."""
     observations: list[tuple[pd.Timestamp, str]] = []
     for year in range(int(annual_start), int(annual_end) + 1):
         observations.append((pd.Timestamp(year=year, month=12, day=31), "Historical Annual"))
@@ -221,10 +205,8 @@ def historical_observation_dates(
     unique = {(stamp.normalize(), label) for stamp, label in observations if stamp <= end}
     return sorted(unique, key=lambda item: item[0])
 
-
 def _empty_frame(columns: Sequence[str]) -> pd.DataFrame:
     return pd.DataFrame(columns=list(columns))
-
 
 def _read_csv(path: Path, columns: Sequence[str]) -> pd.DataFrame:
     if not path.exists() or path.stat().st_size == 0:
@@ -237,7 +219,6 @@ def _read_csv(path: Path, columns: Sequence[str]) -> pd.DataFrame:
         if column not in frame.columns:
             frame[column] = np.nan
     return frame
-
 
 def load_borrower_strain_backfill(path: str | Path | None = None) -> pd.DataFrame:
     frame = _read_csv(Path(path) if path else DEFAULT_HISTORY_PATH, HISTORY_COLUMNS)
@@ -257,17 +238,10 @@ def load_borrower_strain_backfill(path: str | Path | None = None) -> pd.DataFram
         frame[column] = pd.to_numeric(frame[column], errors="coerce")
     return frame.sort_values("Date", kind="stable").reset_index(drop=True)
 
-
 def combine_borrower_strain_history(
     live_macro_history: pd.DataFrame | None,
     backfill_history: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
-    """Combine accepted backfill rows with live archive rows.
-
-    Live rows win on duplicate dates.  Only Borrower Strain fields are carried
-    into this dedicated frame; unrelated macro columns are intentionally not
-    manufactured for historical dates.
-    """
     backfill = (
         load_borrower_strain_backfill()
         if backfill_history is None
@@ -322,7 +296,6 @@ def combine_borrower_strain_history(
     combined["Date"] = combined["Date"].dt.date.map(lambda value: value.isoformat())
     return combined
 
-
 def _unit_records(companyfacts: Mapping, tag: str) -> list[dict]:
     concept = (
         ((companyfacts or {}).get("facts", {}) or {}).get("us-gaap", {}) or {}
@@ -338,7 +311,6 @@ def _unit_records(companyfacts: Mapping, tag: str) -> list[dict]:
             payload["_unit"] = unit_name
             records.append(payload)
     return records
-
 
 def _fact_frame(
     companyfacts: Mapping,
@@ -382,9 +354,6 @@ def _fact_frame(
         frame["days"] = (frame["end"] - frame["start"]).dt.days + 1
         frame = frame.loc[frame["days"].between(45, 430)].copy()
 
-    # For each exact period, use the best-standardized tag and latest fact that
-    # was public by the observation date.  This handles amendments without
-    # allowing later filings to leak into earlier snapshots.
     keys = ["start", "end"] if duration else ["end"]
     frame = (
         frame.sort_values(
@@ -399,9 +368,7 @@ def _fact_frame(
     )
     return frame
 
-
 def _discrete_quarters(frame: pd.DataFrame) -> pd.DataFrame:
-    """Convert SEC duration facts into best-effort discrete fiscal quarters."""
     columns = ["start", "end", "value", "filed", "tag", "method"]
     if frame is None or frame.empty:
         return pd.DataFrame(columns=columns)
@@ -418,10 +385,7 @@ def _discrete_quarters(frame: pd.DataFrame) -> pd.DataFrame:
     )
 
     derived_rows: list[dict] = []
-    # Cumulative Q2/Q3/FY facts share the same fiscal-period start as Q1.
-    # Include the Q1 fact in each start-date chain so Q2 can be obtained by
-    # subtraction; standalone later quarters normally have different starts
-    # and therefore remain isolated.
+
     cumulative = frame.copy()
     for start, group in cumulative.groupby("start", dropna=True):
         group = group.sort_values("end", kind="stable")
@@ -447,7 +411,7 @@ def _discrete_quarters(frame: pd.DataFrame) -> pd.DataFrame:
     combined = pd.concat([direct[columns], derived], ignore_index=True, sort=False)
     if combined.empty:
         return combined
-    # Direct quarterly disclosures are preferred over subtraction-derived data.
+
     combined["_method_priority"] = combined["method"].map(
         {"Direct quarter": 0, "Derived from cumulative SEC facts": 1}
     ).fillna(9)
@@ -457,7 +421,6 @@ def _discrete_quarters(frame: pd.DataFrame) -> pd.DataFrame:
         .drop(columns="_method_priority")
         .reset_index(drop=True)
     )
-
 
 def ttm_fact(
     companyfacts: Mapping,
@@ -496,7 +459,6 @@ def ttm_fact(
 
     return FactValue(np.nan, pd.NaT, pd.NaT, "Unavailable")
 
-
 def _instant_series(
     companyfacts: Mapping,
     tag: str,
@@ -506,7 +468,6 @@ def _instant_series(
     if frame.empty:
         return frame
     return frame[["end", "filed", "val", "_tag"]].copy()
-
 
 def instant_group_fact(
     companyfacts: Mapping,
@@ -550,7 +511,6 @@ def instant_group_fact(
                     tags=tuple(used_tags),
                 )
     return FactValue(np.nan, pd.NaT, pd.NaT, "Unavailable")
-
 
 def build_company_snapshot(
     ticker: str,
@@ -620,7 +580,6 @@ def build_company_snapshot(
         ),
     }
 
-
 def snapshot_to_sector_data(snapshot: pd.DataFrame) -> dict[str, pd.DataFrame]:
     if snapshot is None or snapshot.empty:
         return {}
@@ -640,7 +599,6 @@ def snapshot_to_sector_data(snapshot: pd.DataFrame) -> dict[str, pd.DataFrame]:
         if column not in frame.columns:
             frame[column] = np.nan
     return {"Historical Borrower Strain Cohort": frame[expected].copy()}
-
 
 def borrower_strain_result_to_history_row(
     observation_date: str | date | pd.Timestamp,

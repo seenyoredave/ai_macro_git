@@ -1,5 +1,3 @@
-"""Primary Streamlit entry point for the AI Economic Research Platform."""
-
 from __future__ import annotations
 
 import streamlit as st
@@ -21,33 +19,32 @@ from archive.archive_reader import load_fred_history, load_macro_history
 from benchmarks.benchmark_service import get_benchmark_metrics
 from config.market_clock import market_date
 from config.sector_config import SECTOR_CONFIG
-from helpers.render_sector import render_basket_tier_developer_tool
+from rendering.sector import render_basket_tier_developer_tool
 from loaders.construction_loader import load_data_center_construction
 from loaders.debt_markets_loader import load_debt_markets_data
 from loaders.edgar_loader import build_edgar_archive_snapshot
 from loaders.energy_loader import load_energy_data
 from loaders.infrastructure_loader import load_infrastructure_data
+from loaders.water_loader import load_water_utilization_data
 from loaders.adaptation_loader import load_adaptation_data
 from loaders.fred_loader import load_fred
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
 from loaders.weekly_context_loader import load_weekly_context
-from research_overlay.components import render_masthead
-from research_overlay.renderers import render_research_dashboard
-from research_overlay.theme import inject_research_theme
-from sectors.sector_builder import get_sector_data
+from rendering.components import render_masthead
+from rendering.dashboard import render_research_dashboard
+from rendering.theme import inject_research_theme
+from analytics.sector_builder import get_sector_data
+from analytics.spatial_context import attach_water_context
 
-
-APP_VERSION = "v4.14-dev"
-APP_STATE_SCHEMA_VERSION = "27.0-weekly-context-snapshot"
-
+APP_VERSION = "v5.14"
+APP_STATE_SCHEMA_VERSION = "37.0-v5.14-spatial-platform"
 
 st.set_page_config(
     page_title="AI Economic Research Platform",
     layout="wide",
 )
 inject_research_theme()
-
 
 if "archive_suspended" not in st.session_state:
     st.session_state.archive_suspended = False
@@ -107,10 +104,8 @@ if "force_adaptation_refresh" not in st.session_state:
 if "adaptation_refresh_token" not in st.session_state:
     st.session_state.adaptation_refresh_token = 0
 
-
 def build_tabs():
-    return st.tabs(["AI MACRO", "MARKET", "FINANCE", "INFRASTRUCTURE", "ENERGY", "ADAPTATION", "EVIDENCE"])
-
+    return st.tabs(["AI MACRO", "MARKET", "FINANCE", "DATA CENTER", "COMPUTE", "INFRASTRUCTURE", "ENERGY", "WATER", "ADAPTATION", "EVIDENCE"])
 
 def build_sector_dashboard_data():
     sector_data = {}
@@ -152,7 +147,6 @@ def build_sector_dashboard_data():
         sector_metrics[sector] = build_sector_metrics(factor_df, df)
 
     return sector_data, sector_metrics, raw_universe_data, benchmark_metrics
-
 
 def render_developer_load_report(report):
     if not report:
@@ -216,7 +210,6 @@ def render_developer_load_report(report):
     render_source("Energy", report.get("energy"))
     st.markdown("---")
     render_source("Debt Markets", report.get("debt_markets"))
-
 
 with st.sidebar:
     st.markdown(
@@ -299,7 +292,6 @@ with st.sidebar:
         st.markdown("---")
         render_developer_load_report(st.session_state.get("market_universe_load_report"))
 
-
 if st.session_state.force_rebuild:
     sector_data, sector_metrics, raw_universe_data, benchmark_metrics = (
         build_sector_dashboard_data()
@@ -333,6 +325,8 @@ if st.session_state.force_rebuild:
         force_refresh=st.session_state.force_infrastructure_refresh,
         refresh_token=st.session_state.infrastructure_refresh_token,
     )
+    water_data = load_water_utilization_data()
+    infrastructure_data, water_data = attach_water_context(infrastructure_data, water_data)
     adaptation_data = load_adaptation_data(
         force_refresh=st.session_state.force_adaptation_refresh,
         refresh_token=st.session_state.adaptation_refresh_token,
@@ -392,6 +386,7 @@ if st.session_state.force_rebuild:
     st.session_state.energy_data = energy_data
     st.session_state.debt_markets_data = debt_markets_data
     st.session_state.infrastructure_data = infrastructure_data
+    st.session_state.water_data = water_data
     st.session_state.adaptation_data = adaptation_data
     st.session_state.force_yfinance_refresh = False
     st.session_state.force_edgar_refresh = False
@@ -401,7 +396,6 @@ if st.session_state.force_rebuild:
     st.session_state.force_adaptation_refresh = False
     st.session_state.force_rebuild = False
 
-
 sector_data = st.session_state.sector_data
 sector_metrics = st.session_state.sector_metrics
 fred_data = st.session_state.fred_data
@@ -410,8 +404,8 @@ regime_metrics = st.session_state.regime_metrics
 energy_data = st.session_state.get("energy_data", {})
 debt_markets_data = st.session_state.get("debt_markets_data", {})
 infrastructure_data = st.session_state.get("infrastructure_data", {})
+water_data = st.session_state.get("water_data", {})
 adaptation_data = st.session_state.get("adaptation_data", {})
-
 
 loaded_ticker_count = sum(
     len({str(ticker).strip() for ticker in frame["Ticker"].dropna() if str(ticker).strip()})
@@ -450,6 +444,7 @@ else:
         energy_data=energy_data,
         debt_markets_data=debt_markets_data,
         infrastructure_data=infrastructure_data,
+        water_data=water_data,
         adaptation_data=adaptation_data,
         market_universe_summary=market_universe_summary,
     )

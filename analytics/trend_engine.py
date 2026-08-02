@@ -1,25 +1,12 @@
-"""Archive trend helpers."""
-
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
-
 METRIC_ALIASES = {
     "AI Equity Index": ["AI Equity Index", "Sector Score"],
     "Sector Score": ["Sector Score", "AI Equity Index"],
 }
-
-
-
-def resolve_metric_col(df, metric_col):
-    if df is None or df.empty:
-        return None
-
-    candidates = METRIC_ALIASES.get(metric_col, [metric_col])
-    return next((col for col in candidates if col in df.columns), None)
-
 
 def metric_series(
     df,
@@ -29,7 +16,6 @@ def metric_series(
     version_column=None,
     required_version=None,
 ):
-    """Return a dated, finite metric series using row-wise alias fallback."""
     if df is None or df.empty:
         return pd.DataFrame(columns=["Date", "Value"])
 
@@ -65,32 +51,7 @@ def metric_series(
     out = out.dropna(subset=["Date", "Value"]).sort_values("Date", kind="stable")
     return out.drop_duplicates(subset=["Date"], keep="last").reset_index(drop=True)
 
-
-def sort_history_for_trend(df, date_col="Date", group_cols=None):
-    if df is None or df.empty:
-        return df
-
-    working = df.copy()
-    if date_col in working.columns:
-        working["_trend_date"] = pd.to_datetime(
-            working[date_col], errors="coerce", format="mixed"
-        )
-        working = working.loc[working["_trend_date"].notna()].copy()
-        sort_cols = [col for col in (group_cols or []) if col in working.columns]
-        sort_cols.append("_trend_date")
-        working = working.sort_values(sort_cols, kind="stable")
-        working = working.drop(columns=["_trend_date"], errors="ignore")
-
-    return working
-
-
 def distinct_metric_observations(series_df, *, tolerance=1e-9):
-    """Collapse consecutive repeated values without altering chart history.
-
-    Filing-driven metrics can be archived on every app run even when the
-    underlying observation has not changed.  Those repeated snapshots are not
-    new information and must not force velocity or acceleration to zero.
-    """
     if series_df is None or series_df.empty:
         return pd.DataFrame(columns=["Date", "Value"])
 
@@ -104,11 +65,9 @@ def distinct_metric_observations(series_df, *, tolerance=1e-9):
     keep = previous.isna() | ~repeated
     return working.loc[keep].reset_index(drop=True)
 
-
 def calc_velocity(series):
     clean = pd.to_numeric(series, errors="coerce").dropna()
     return clean.iloc[-1] - clean.iloc[-2] if len(clean) >= 2 else np.nan
-
 
 def calc_acceleration(series):
     clean = pd.to_numeric(series, errors="coerce").dropna()
@@ -116,6 +75,36 @@ def calc_acceleration(series):
         return np.nan
     return (clean.iloc[-1] - clean.iloc[-2]) - (clean.iloc[-2] - clean.iloc[-3])
 
+def calc_trailing_directional_pct(series_df, *, months, tolerance=1e-9):
+    if series_df is None or series_df.empty:
+        return np.nan
+    if not {"Date", "Value"}.issubset(series_df.columns):
+        return np.nan
+
+    frame = series_df[["Date", "Value"]].copy()
+    frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce", format="mixed")
+    frame["Value"] = pd.to_numeric(frame["Value"], errors="coerce")
+    frame = (
+        frame.dropna(subset=["Date", "Value"])
+        .sort_values("Date", kind="stable")
+        .drop_duplicates("Date", keep="last")
+        .reset_index(drop=True)
+    )
+    frame = distinct_metric_observations(frame, tolerance=tolerance)
+    if len(frame) < 2:
+        return np.nan
+
+    end = frame.iloc[-1]
+    target_date = end["Date"] - pd.DateOffset(months=int(months))
+    prior = frame.loc[frame["Date"] <= target_date]
+    if prior.empty:
+        return np.nan
+
+    start_value = float(prior.iloc[-1]["Value"])
+    end_value = float(end["Value"])
+    if abs(start_value) <= float(tolerance):
+        return np.nan
+    return (end_value - start_value) / abs(start_value) * 100.0
 
 def calc_metric_trend(
     df,
