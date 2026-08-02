@@ -6,11 +6,10 @@ import streamlit as st
 
 from analytics.gaps import industrial_growth_gap
 from rendering.labels import adoption_label, power_capacity_gap_label, speculation_label, validation_label
-from rendering.charts_common import COLORS, history_from_frame
-from rendering.charts_finance import component_bars, current_gap_bars
+from rendering.charts_common import history_from_frame
+from rendering.charts_finance import current_gap_bars
 from rendering.common import _fallback, _fred_value, _metric_context, _render_tab_metric_registry, _source, _value
-from rendering.components import fmt_number, metric_card, render_line_break, render_panel_heading, render_section, render_static_table, render_statline, render_tab_header
-from rendering.evidence_tables import _component_table
+from rendering.components import fmt_number, metric_card, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
 from rendering.spatial import render_spatial_explorer
 
 def _render_interpretation_list(title, items, *, empty_text):
@@ -205,68 +204,8 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
                 key_prefix="macro-current-divergence-context",
             )
 
-def _render_macro_components(regime_metrics, sector_data):
-    del sector_data
-    adi_result = (regime_metrics or {}).get("ADI Components", {}) or {}
-    validation_result = (regime_metrics or {}).get("Economic Validation Gap Components", {}) or {}
-    power_result = (regime_metrics or {}).get("Power Stress Components", {}) or {}
-
-    groups = [
-        ("macro-adi-components", "ADI pillars", adi_result.get("components", {}), False, COLORS["violet"]),
-        ("macro-validation-components", "Economic validation legs", validation_result.get("components", {}), False, COLORS["blue"]),
-        ("macro-power-stress-components", "Power-stress components", power_result.get("components", {}), True, COLORS["violet"]),
-    ]
-    for col, (chart_key, title, components, signed, color) in zip(st.columns(3), groups):
-        chart_components = components
-        if chart_key == "macro-power-stress-components":
-            chart_components = {
-                ("Output Pressure" if name == "Commercial-vs-Residential Output Pressure" else name): payload
-                for name, payload in (components or {}).items()
-            }
-        with col:
-            with st.container(border=True):
-                render_panel_heading(title)
-                st.plotly_chart(
-                    component_bars(
-                        chart_components,
-                        signed=signed,
-                        height=285,
-                        color=color,
-                    ),
-                    width="stretch",
-                    config={"displayModeBar": False, "responsive": True},
-                    key=chart_key,
-                )
-
-    with st.expander("Component observations and normalization", expanded=False):
-        st.markdown("**AI Development Intensity**")
-        render_static_table(_component_table(adi_result.get("components", {})))
-
-        validation_rows = []
-        for name, payload in (validation_result.get("components", {}) or {}).items():
-            payload = payload or {}
-            validation_rows.append(
-                {
-                    "Component": name,
-                    "Score": fmt_number(payload.get("score"), 1),
-                    "Raw": fmt_number(payload.get("raw"), 3),
-                    "Observations": payload.get("observations", ""),
-                    "Normalization": payload.get("normalization", ""),
-                    "History Observations": payload.get("history_observations", ""),
-                }
-            )
-        st.markdown("**Economic Validation Gap**")
-        render_static_table(pd.DataFrame(validation_rows))
-
-        st.markdown("**Power Stress Index**")
-        render_static_table(_component_table(power_result.get("components", {})))
-
-        power_capacity_result = (regime_metrics or {}).get("Power Capacity Gap Components", {}) or {}
-        st.markdown("**Power Capacity Gap**")
-        render_static_table(_component_table(power_capacity_result.get("components", {})))
-
 def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data, adaptation_data, infrastructure_data):
-    del sector_metrics
+    del sector_metrics, sector_data
     render_tab_header(
         "AI Macro",
         "Market, physical buildout, power, adaptation, and validation signals across the AI economy.",
@@ -282,5 +221,3 @@ def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, das
     render_spatial_explorer(infrastructure_data, key_prefix="macro-national-landscape")
     render_section("Gap Measures", "AI development relative to equity, industrial, economic-validation, and power-capacity benchmarks.")
     _render_gap_measures(regime_metrics, fred_data, dashboard_data)
-    render_section("Component evidence", "Underlying contributions to the top-level AI economy metrics.")
-    _render_macro_components(regime_metrics, sector_data)

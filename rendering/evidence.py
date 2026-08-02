@@ -7,10 +7,12 @@ from analytics.regime_engine import AEI_VERSION, PRESSURE_VERSION
 from analytics.valuation import SECTOR_VALUATION_VERSION
 from config.metric_definitions import METRIC_DEFINITIONS
 from rendering.adaptation import _adaptation_source_rows
+from rendering.charts_common import COLORS
+from rendering.charts_finance import component_bars
 from rendering.common import _coverage_text, _display_text
 from rendering.components import fmt_number, render_definition, render_line_break, render_section, render_static_table, render_tab_header
 from rendering.energy import _energy_source_rows
-from rendering.evidence_tables import render_edgar_data, render_macro_data
+from rendering.evidence_tables import _component_table, render_edgar_data, render_macro_data
 from rendering.finance import _debt_market_source_rows
 from rendering.infrastructure_common import _infrastructure_source_rows
 from rendering.water import _water_utilization_payload
@@ -313,6 +315,66 @@ def _facility_water_rows(water_data, infrastructure_data):
         table = table.sort_values("Total Withdrawal Mgal/d", ascending=False, na_position="last", kind="stable")
     return table
 
+
+def _render_component_evidence(regime_metrics):
+    adi_result = (regime_metrics or {}).get("ADI Components", {}) or {}
+    validation_result = (regime_metrics or {}).get("Economic Validation Gap Components", {}) or {}
+    power_result = (regime_metrics or {}).get("Power Stress Components", {}) or {}
+
+    groups = [
+        ("evidence-adi-components", "ADI pillars", adi_result.get("components", {}), False, COLORS["violet"]),
+        ("evidence-validation-components", "Economic validation legs", validation_result.get("components", {}), False, COLORS["blue"]),
+        ("evidence-power-stress-components", "Power-stress components", power_result.get("components", {}), True, COLORS["violet"]),
+    ]
+    for col, (chart_key, title, components, signed, color) in zip(st.columns(3), groups):
+        chart_components = components
+        if chart_key == "evidence-power-stress-components":
+            chart_components = {
+                ("Output Pressure" if name == "Commercial-vs-Residential Output Pressure" else name): payload
+                for name, payload in (components or {}).items()
+            }
+        with col:
+            with st.container(border=True):
+                st.markdown(f"**{title}**")
+                st.plotly_chart(
+                    component_bars(
+                        chart_components,
+                        signed=signed,
+                        height=285,
+                        color=color,
+                    ),
+                    width="stretch",
+                    config={"displayModeBar": False, "responsive": True},
+                    key=chart_key,
+                )
+
+    with st.expander("Component observations and normalization", expanded=False):
+        st.markdown("**AI Development Intensity**")
+        render_static_table(_component_table(adi_result.get("components", {})))
+
+        validation_rows = []
+        for name, payload in (validation_result.get("components", {}) or {}).items():
+            payload = payload or {}
+            validation_rows.append(
+                {
+                    "Component": name,
+                    "Score": fmt_number(payload.get("score"), 1),
+                    "Raw": fmt_number(payload.get("raw"), 3),
+                    "Observations": payload.get("observations", ""),
+                    "Normalization": payload.get("normalization", ""),
+                    "History Observations": payload.get("history_observations", ""),
+                }
+            )
+        st.markdown("**Economic Validation Gap**")
+        render_static_table(pd.DataFrame(validation_rows))
+
+        st.markdown("**Power Stress Index**")
+        render_static_table(_component_table(power_result.get("components", {})))
+
+        power_capacity_result = (regime_metrics or {}).get("Power Capacity Gap Components", {}) or {}
+        st.markdown("**Power Capacity Gap**")
+        render_static_table(_component_table(power_capacity_result.get("components", {})))
+
 def render_evidence_tab(fred_data, sector_data, regime_metrics, energy_data, debt_markets_data, infrastructure_data=None, water_data=None, adaptation_data=None):
     render_tab_header(
         "Evidence",
@@ -329,6 +391,9 @@ def render_evidence_tab(fred_data, sector_data, regime_metrics, energy_data, deb
 
     render_section("Coverage", "Minimum-data rules and component coverage for composite products.")
     render_static_table(_coverage_rows(regime_metrics))
+
+    render_section("Component evidence")
+    _render_component_evidence(regime_metrics)
 
     render_section("Source Data")
     st.caption("Source observations used by the platform.")
