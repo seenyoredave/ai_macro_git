@@ -1,0 +1,8 @@
+Dataset,Source,Coverage,File,Attribution boundary
+Workforce employment and earnings,BLS Current Employment Statistics,"Monthly, 2020-present",workforce_ces_history.csv,Tracks directly relevant industries; does not classify every job as AI-created.
+Workforce demand,BLS Job Openings and Labor Turnover Survey,"Monthly, 2020-present",workforce_job_openings_history.csv,Broad labor-market demand context; not AI-specific hiring.
+Economic impact,BLS Labor Productivity and Costs,"Quarterly, 2020-present",economic_impact_productivity_history.csv,Realized economy-wide and manufacturing outcomes; no causal attribution to AI.
+Manufacturing real output,BLS Labor Productivity and Costs,"Quarterly, 2020-present",economic_impact_productivity_history.csv,Includes both positive and negative year-over-year observations; no causal attribution to AI.
+Consumer price normalization,BLS Consumer Price Index via retained FRED history,"Monthly, 2020-present",economic_impact_cpi_history.csv,Used only to deflate nominal compensation and unit-labor-cost growth; productivity and real output are already real measures.
+Information-processing investment,BEA via retained FRED history,"Quarterly, chronology through latest retained release",info_processing_investment_history.csv,Real chained-dollar investment in the broader information-processing asset class; not exclusively AI.
+Wastewater construction,U.S. Census Value of Construction Put in Place,Monthly chronology through May 2026,infrastructure_construction_history.csv,Public-system investment context; no attribution to data centers without project evidence.

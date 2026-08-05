@@ -23,6 +23,7 @@ QQQ_RAW_WEIGHTS = {
     "META": 3.13,
     "TSLA": 3.02,
 }
+QQQ_WEIGHTS_EFFECTIVE_DATE = "2026-08-02"
 _QQQ_WEIGHT_TOTAL = sum(QQQ_RAW_WEIGHTS.values())
 QQQ_WEIGHTS = {
     ticker: weight / _QQQ_WEIGHT_TOTAL

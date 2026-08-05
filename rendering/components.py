@@ -9,6 +9,7 @@ import streamlit as st
 
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.charts_common import compact_sparkline
+from rendering.read_markup import build_domain_read_html
 
 ACCENTS = {
     "violet": "#a78bfa",
@@ -215,6 +216,37 @@ def render_statline(
                 st.markdown(f"### {str(value)}")
                 if note:
                     st.caption(str(note))
+
+
+def render_domain_read(read: dict | None, *, label: str | None = None, accent: str = "violet", macro: bool = False) -> None:
+    accent_color = ACCENTS.get(accent, ACCENTS["violet"])
+    st.markdown(
+        build_domain_read_html(
+            read,
+            label=label,
+            accent_color=accent_color,
+            macro=macro,
+        ),
+        unsafe_allow_html=True,
+    )
+
+def inject_panel_height_rules(rules: dict[str, int]) -> None:
+    """Apply restrained minimum heights to named side-by-side panels.
+
+    Rules are keyed by Streamlit container key.  This avoids brittle global DOM
+    stretching while keeping paired analytical windows aligned.
+    """
+    declarations = []
+    for key, height in (rules or {}).items():
+        clean_key = str(key).strip()
+        if not clean_key:
+            continue
+        declarations.append(
+            f'div[class*="st-key-{html.escape(clean_key)}"] {{ min-height: {max(int(height), 0)}px; }}'
+        )
+    if declarations:
+        st.markdown(f"<style>{''.join(declarations)}</style>", unsafe_allow_html=True)
+
 
 def render_panel_heading(title: str, meta: str | None = None) -> None:
     meta_html = f'<div class="rm-panel-meta">{html.escape(meta)}</div>' if meta else ""

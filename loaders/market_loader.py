@@ -29,7 +29,12 @@ from loaders.edgar_loader import (
     load_edgar_with_report,
 )
 from loaders.market_freshness import merge_live_with_archive
-from loaders.market_prices import PRESSURE_COLUMNS, calc_trading_pressure_fields, one_year_return
+from loaders.market_prices import (
+    PRESSURE_COLUMNS,
+    calc_trading_pressure_fields,
+    one_year_return,
+    year_to_date_snapshot,
+)
 
 EVG_REQUIRED_COLUMNS = ["Revenue Growth", "CapEx", "CapEx Growth"]
 FORWARD_VALUATION_COLUMNS = [
@@ -73,6 +78,9 @@ YF_REQUIRED_COLUMNS = [
     "52W High",
     "52W Low",
     "1Y Return",
+    "YTD Return",
+    "YTD Start Market Cap",
+    "YTD Year",
     *PRESSURE_COLUMNS,
     "Basket Score",
     "Basket Tier",
@@ -160,6 +168,25 @@ def describe_yf_archive_status(tickers, sector=None):
 def describe_edgar_archive_status(tickers):
     return describe_edgar_freshness_status(tickers)
 
+def _has_ytd_coverage(frame, tickers, threshold=0.90):
+    if frame is None or frame.empty or "Ticker" not in frame.columns:
+        return False
+    required = {"YTD Return", "YTD Start Market Cap"}
+    if not required.issubset(frame.columns):
+        return False
+    expected = _expected_ticker_set(tickers)
+    if not expected:
+        return False
+    current = frame.copy()
+    current["Ticker"] = current["Ticker"].astype(str).str.upper().str.strip()
+    valid = current.loc[
+        current["Ticker"].isin(expected)
+        & pd.to_numeric(current["YTD Return"], errors="coerce").notna()
+        & pd.to_numeric(current["YTD Start Market Cap"], errors="coerce").gt(0)
+    ]
+    return valid["Ticker"].nunique() >= int(np.ceil(len(expected) * float(threshold)))
+
+
 def _count_returned_tickers(payload):
     if isinstance(payload, pd.DataFrame):
         if payload.empty or "Ticker" not in payload.columns:
@@ -242,6 +269,7 @@ def _fetch_company(ticker, company):
             "52W High": _safe_market_number(fast_info, info, "year_high", "fiftyTwoWeekHigh"),
             "52W Low": _safe_market_number(fast_info, info, "year_low", "fiftyTwoWeekLow"),
             "1Y Return": one_year_return(history),
+            **year_to_date_snapshot(history, market_cap),
             **calc_trading_pressure_fields(history),
         }
     except Exception as exc:
@@ -332,6 +360,17 @@ def _load_yfinance_cached(
         has_latest_archive=latest_archive is not None and not latest_archive.empty,
     )
 
+    ytd_archive = (
+        archived_today
+        if archived_today is not None and not archived_today.empty
+        else latest_archive
+    )
+    if (
+        decision in {"archive_current", "archive_closed"}
+        and not _has_ytd_coverage(ytd_archive, tickers)
+    ):
+        decision = "live_ytd_bootstrap"
+
     if decision == "archive_current":
         debug_print(f"Using current-date YFinance archive: {sector}")
         return _archive_yfinance_result(
@@ -359,7 +398,13 @@ def _load_yfinance_cached(
     fallback = archived_today if archived_today is not None and not archived_today.empty else latest_archive
 
     try:
-        trigger = "manual" if force_refresh else "automatic_daily"
+        trigger = (
+            "manual"
+            if force_refresh
+            else "ytd_bootstrap"
+            if decision == "live_ytd_bootstrap"
+            else "automatic_daily"
+        )
         debug_print(f"Pulling current YFinance data ({trigger}): {sector}")
         fresh = pull_yfinance(ticker_tuple)
         if fresh is None or fresh.empty:

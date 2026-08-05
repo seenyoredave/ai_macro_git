@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import streamlit as st
 
-from rendering.ticker_state import add_ticker, mutate_and_rerun, remove_ticker
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.labels import sector_display_name
 
@@ -89,43 +88,3 @@ def render_basket_tier_developer_tool(sector_data):
         df,
         use_expander=False,
     )
-
-def render_ticker_controls(sector):
-    with st.expander("➕ Add / Remove Tickers"):
-        st.subheader("Add Ticker")
-
-        ticker_input = st.text_input(
-            "Enter Ticker",
-            key=f"add_input_{sector}"
-        )
-
-        if st.button(
-            "Add Ticker",
-            key=f"add_button_{sector}"
-        ):
-            mutate_and_rerun(
-                add_ticker,
-                sector,
-                ticker_input
-            )
-
-        basket = st.session_state.sectors[sector]["basket"]
-
-        if basket:
-            st.subheader("Remove Ticker")
-
-            remove_ticker_symbol = st.selectbox(
-                "Select ticker to remove",
-                basket,
-                key=f"remove_select_{sector}"
-            )
-
-            if st.button(
-                "Remove Ticker",
-                key=f"remove_button_{sector}"
-            ):
-                mutate_and_rerun(
-                    remove_ticker,
-                    sector,
-                    remove_ticker_symbol
-                )

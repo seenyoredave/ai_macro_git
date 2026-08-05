@@ -19,6 +19,8 @@ from config.debt_markets_config import (
     DEBT_MARKET_SERIES,
 )
 from config.debug_config import debug_print
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv, atomic_write_json
 from config.market_clock import EASTERN_TIME, eastern_now, utc_now
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -95,15 +97,15 @@ def _load_metadata() -> dict:
         return {}
 
 def _persist_local_history(frame: pd.DataFrame, *, release_date: date) -> None:
+    if not repository_writes_enabled():
+        return
     clean = _normalize_history(frame)
     if clean.empty:
         return
 
     output = clean.copy()
     output["Date"] = output["Date"].dt.date.astype(str)
-    temporary = DEBT_MARKETS_HISTORY_PATH.with_suffix(".csv.tmp")
-    output.to_csv(temporary, index=False)
-    temporary.replace(DEBT_MARKETS_HISTORY_PATH)
+    atomic_write_csv(output, DEBT_MARKETS_HISTORY_PATH)
 
     metadata = {
         "release_date": release_date.isoformat(),
@@ -111,12 +113,7 @@ def _persist_local_history(frame: pd.DataFrame, *, release_date: date) -> None:
         "latest_observation_date": clean["Date"].max().date().isoformat(),
         "data_version": DEBT_MARKETS_DATA_VERSION,
     }
-    metadata_temporary = DEBT_MARKETS_METADATA_PATH.with_suffix(".json.tmp")
-    metadata_temporary.write_text(
-        json.dumps(metadata, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    metadata_temporary.replace(DEBT_MARKETS_METADATA_PATH)
+    atomic_write_json(metadata, DEBT_MARKETS_METADATA_PATH)
 
 def _normalize_workbook(frame: pd.DataFrame | None) -> pd.DataFrame:
     if frame is None or frame.empty:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-ENERGY_DATA_VERSION = "1.2"
+ENERGY_DATA_VERSION = "2.0"
 
 ENERGY_PUBLIC_SERIES = {
     "Natural Gas Price": {

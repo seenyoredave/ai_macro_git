@@ -1,95 +1,20 @@
 from __future__ import annotations
 
 import html
+
 import pandas as pd
 import streamlit as st
 
 from analytics.gaps import industrial_growth_gap
+from analytics.infrastructure_cycle import current_buildout_momentum
+from config.metric_definitions import METRIC_DEFINITIONS
 from rendering.labels import adoption_label, power_capacity_gap_label, speculation_label, validation_label
 from rendering.charts_common import history_from_frame
 from rendering.charts_finance import current_gap_bars
+from rendering.charts_infrastructure import infrastructure_leadership_rotation
 from rendering.common import _fallback, _fred_value, _metric_context, _render_tab_metric_registry, _source, _value
-from rendering.components import fmt_number, metric_card, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
+from rendering.components import fmt_number, metric_card, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
 from rendering.spatial import render_spatial_explorer
-
-def _render_interpretation_list(title, items, *, empty_text):
-    clean = [str(item).strip() for item in (items or []) if str(item).strip()]
-    if not clean:
-        clean = [empty_text]
-    list_html = "".join(
-        f'<li>{html.escape(item)}</li>'
-        for item in clean[:3]
-    )
-    st.markdown(
-        f"""
-        <div class="rm-state-column">
-            <div class="rm-state-column-title">{html.escape(title)}</div>
-            <ul>{list_html}</ul>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-def _render_weekly_references(references):
-    links = []
-    for reference in references or []:
-        number = int(reference.get("reference_number") or 0)
-        label = str(reference.get("source_label") or reference.get("source_name") or "").strip()
-        url = str(reference.get("source_url") or "").strip()
-        if number <= 0 or not label or not url.startswith("https://"):
-            continue
-        links.append(
-            f'<a href="{html.escape(url, quote=True)}" target="_blank" '
-            f'rel="noopener noreferrer">[{number}] {html.escape(label)}</a>'
-        )
-    if not links:
-        return
-    st.markdown(
-        '<div class="rm-snapshot-references">'
-        '<span class="rm-snapshot-references-label">References</span>'
-        + '<span class="rm-snapshot-reference-separator"> · </span>'.join(links)
-        + '</div>',
-        unsafe_allow_html=True,
-    )
-
-def _render_macro_interpretation(regime_metrics):
-    interpretation = (regime_metrics or {}).get("Macro Interpretation", {}) or {}
-    headline = str(interpretation.get("headline") or "Snapshot unavailable")
-    confidence = str(interpretation.get("confidence") or "unknown")
-    coverage_note = (
-        '<div class="rm-state-kicker">Partial source coverage</div>'
-        if confidence != "high"
-        else ""
-    )
-
-    with st.container(border=True):
-        state_head_html = (
-            '<div class="rm-state-head">'
-            f'{coverage_note}'
-            f'<div class="rm-state-title">{html.escape(headline)}</div>'
-            '</div>'
-        )
-        st.markdown(state_head_html, unsafe_allow_html=True)
-        expansion_col, constraint_col, change_col = st.columns(3)
-        with expansion_col:
-            _render_interpretation_list(
-                "Expansion",
-                interpretation.get("expansion_factors", interpretation.get("resilience_factors")),
-                empty_text="No material expansion signal is currently available.",
-            )
-        with constraint_col:
-            _render_interpretation_list(
-                "Constraints",
-                interpretation.get("constraint_factors", interpretation.get("pressure_factors")),
-                empty_text="No material constraint is currently active.",
-            )
-        with change_col:
-            _render_interpretation_list(
-                "This week",
-                interpretation.get("changes"),
-                empty_text="No material development this week.",
-            )
-        _render_weekly_references(interpretation.get("weekly_references"))
 
 def _render_primary_macro_cards(regime_metrics, trends, adaptation_data):
     adaptation_history_frame = history_from_frame(
@@ -204,8 +129,40 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
                 key_prefix="macro-current-divergence-context",
             )
 
-def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data, adaptation_data, infrastructure_data):
+
+def _render_buildout_rotation(infrastructure_data):
+    history = (infrastructure_data or {}).get("construction_history")
+    current = current_buildout_momentum(history)
+    leader = current.iloc[0] if isinstance(current, pd.DataFrame) and not current.empty else None
+    meta = "Quarterly year-over-year construction growth"
+    if leader is not None:
+        meta = f"Current leader: {leader['Series']} · {float(leader['YoY Growth']) * 100:+.1f}% YoY"
+    with st.container(border=True, key="macro-panel-buildout-rotation"):
+        render_panel_heading("Buildout leadership rotation", meta)
+        st.plotly_chart(
+            infrastructure_leadership_rotation(history),
+            width="stretch",
+            config={"displayModeBar": False, "responsive": True},
+            key="macro-buildout-leadership-rotation",
+        )
+        st.caption(
+            "This is a capital-flow view across the physical AI stack. A falling growth rate can reflect normalization from an unusually high base; read momentum alongside spending levels and project evidence."
+        )
+
+def _render_front_page_purpose() -> None:
+    statement = METRIC_DEFINITIONS["Purpose Statement"].strip()
+    with st.container(key="front-page-purpose"):
+        with st.expander("Purpose statement", expanded=False):
+            st.markdown(
+                f'<div class="rm-purpose-copy">{html.escape(statement)}</div>',
+                unsafe_allow_html=True,
+            )
+    st.markdown('<div class="rm-purpose-divider" aria-hidden="true"></div>', unsafe_allow_html=True)
+
+
+def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data, adaptation_data, infrastructure_data, tab_read=None):
     del sector_metrics, sector_data
+    _render_front_page_purpose()
     render_tab_header(
         "AI Macro",
         "Market, physical buildout, power, adaptation, and validation signals across the AI economy.",
@@ -213,11 +170,12 @@ def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, das
     )
     render_line_break()
     _render_tab_metric_registry("macro")
-    render_section("Snapshot")
-    _render_macro_interpretation(regime_metrics)
+    render_domain_read(tab_read or (regime_metrics or {}).get("Macro Interpretation"), label="AI Macro Read", accent="violet", macro=True)
     render_section("Regime board", "Top-level indicators with historical context.")
     _render_primary_macro_cards(regime_metrics, dashboard_data["trends"], adaptation_data)
-    render_section("National landscape", "Facility geography with linked power, water, and infrastructure evidence.")
-    render_spatial_explorer(infrastructure_data, key_prefix="macro-national-landscape")
+    render_section("Buildout leadership", "Where construction momentum is rotating across data centers, compute manufacturing, power, communications, and water systems.")
+    _render_buildout_rotation(infrastructure_data)
     render_section("Gap Measures", "AI development relative to equity, industrial, economic-validation, and power-capacity benchmarks.")
     _render_gap_measures(regime_metrics, fred_data, dashboard_data)
+    render_section("National landscape", "Facility geography with linked power, water, and infrastructure evidence.")
+    render_spatial_explorer(infrastructure_data, key_prefix="macro-national-landscape")

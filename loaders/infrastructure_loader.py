@@ -9,12 +9,16 @@ import pandas as pd
 import requests
 import streamlit as st
 
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv
+
 from config.debug_config import debug_print
 from loaders.census import clean_header as _clean_header, parse_census_month as _parse_census_month
 from analytics.spatial_context import infrastructure_attribution
 from loaders.compute_manufacturing_loader import load_compute_manufacturing_data
 from loaders.data_center_inventory_loader import load_data_center_inventory
 from loaders.facility_registry_loader import (
+    build_campus_registry,
     build_facility_observations,
     canonicalize_facility_observations,
     load_fractracker_facility_records,
@@ -47,6 +51,7 @@ PUBLIC_SERIES = {
     "Public Highway and street": "Public Highway and Street Construction",
     "Public Transportation": "Public Transportation Construction",
     "Public Water supply": "Public Water Supply Construction",
+    "Public Sewage and waste disposal": "Public Sewage and Waste Disposal Construction",
 }
 
 def _parse_construction_workbook(content: bytes, *, sheet: str, series: dict[str, str]) -> pd.DataFrame:
@@ -104,14 +109,14 @@ def _normalize_construction_history(frame: pd.DataFrame | None) -> pd.DataFrame:
     return output
 
 def _persist_construction_history(frame: pd.DataFrame) -> None:
+    if not repository_writes_enabled():
+        return
     clean = _normalize_construction_history(frame)
     if clean.empty:
         return
     output = clean.copy()
     output["Observation Date"] = output["Observation Date"].dt.date.astype(str)
-    temp = CONSTRUCTION_HISTORY_PATH.with_suffix(".csv.tmp")
-    output.to_csv(temp, index=False)
-    temp.replace(CONSTRUCTION_HISTORY_PATH)
+    atomic_write_csv(output, CONSTRUCTION_HISTORY_PATH)
 
 def _load_local_construction_history() -> pd.DataFrame:
     if not CONSTRUCTION_HISTORY_PATH.exists() or CONSTRUCTION_HISTORY_PATH.stat().st_size == 0:
@@ -182,11 +187,9 @@ def parse_data_center_geojson(payload: dict) -> pd.DataFrame:
     return output.drop_duplicates(subset=["Latitude", "Longitude", "Facility"], keep="last").reset_index(drop=True)
 
 def _persist_locations(frame: pd.DataFrame) -> None:
-    if frame is None or frame.empty:
+    if not repository_writes_enabled() or frame is None or frame.empty:
         return
-    temp = DATA_CENTER_LOCATIONS_PATH.with_suffix(".csv.tmp")
-    frame.to_csv(temp, index=False)
-    temp.replace(DATA_CENTER_LOCATIONS_PATH)
+    atomic_write_csv(frame, DATA_CENTER_LOCATIONS_PATH)
 
 def _load_local_locations() -> pd.DataFrame:
     if not DATA_CENTER_LOCATIONS_PATH.exists() or DATA_CENTER_LOCATIONS_PATH.stat().st_size == 0:
@@ -226,7 +229,12 @@ def _load_live_locations() -> pd.DataFrame:
     return parse_data_center_geojson(payload)
 
 @st.cache_data(ttl=86400)
-def load_infrastructure_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_infrastructure_data(
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    force_fred_refresh: bool = False,
+    fred_refresh_token: int = 0,
+) -> dict:
     del refresh_token
 
     construction = _load_local_construction_history()
@@ -265,10 +273,14 @@ def load_infrastructure_data(force_refresh: bool = False, refresh_token: int = 0
     ) if not fractracker_records.empty or not gigawatt_all.empty else pd.DataFrame()
     facility_observations = build_facility_observations(locations, supplemental_records=supplemental)
     registry = canonicalize_facility_observations(facility_observations)
+    campus_registry = build_campus_registry(registry)
     coverage = registry_coverage(registry)
     stage_summary = registry_stage_summary(registry)
     water_coverage = water_evidence_coverage(registry)
-    compute_manufacturing = load_compute_manufacturing_data()
+    compute_manufacturing = load_compute_manufacturing_data(
+        force_refresh=force_fred_refresh,
+        refresh_token=fred_refresh_token,
+    )
     data_center_inventory = load_data_center_inventory()
 
     series = {
@@ -287,6 +299,7 @@ def load_infrastructure_data(force_refresh: bool = False, refresh_token: int = 0
         "Public Highway and Street Construction": _series_summary(construction, "Public Highway and Street Construction"),
         "Public Transportation Construction": _series_summary(construction, "Public Transportation Construction"),
         "Public Water Supply Construction": _series_summary(construction, "Public Water Supply Construction"),
+        "Public Sewage and Waste Disposal Construction": _series_summary(construction, "Public Sewage and Waste Disposal Construction"),
     }
     for payload in series.values():
         payload["source"] = construction_source
@@ -300,6 +313,7 @@ def load_infrastructure_data(force_refresh: bool = False, refresh_token: int = 0
         "construction_history": construction,
         "locations": locations,
         "facility_registry": registry,
+        "campus_registry": campus_registry,
         "facility_observations": facility_observations,
         "facility_coverage": coverage,
         "facility_stage_summary": stage_summary,

@@ -111,7 +111,8 @@ def _load_archived_nfci_history() -> pd.DataFrame:
     return _normalize_nfci_history(frame)
 
 @st.cache_data(ttl=86400)
-def load_nfci_history() -> pd.DataFrame:
+def load_nfci_history(force_refresh: bool = False, refresh_token: int = 0) -> pd.DataFrame:
+    del refresh_token
     fred = _get_fred_client()
     if fred is not None:
         try:

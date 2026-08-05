@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-from rendering.charts_common import COLORS, _base_layout
+from rendering.charts_common import COLORS, _base_layout, add_axis_headroom
 
 def adaptation_history(history: pd.DataFrame | None, *, height: int = 325, years: int = 3):
     if history is None or not isinstance(history, pd.DataFrame) or history.empty or "Date" not in history.columns:
@@ -46,9 +46,10 @@ def adaptation_history(history: pd.DataFrame | None, *, height: int = 325, years
             hovertemplate=f"%{{x|%Y-%m-%d}}<br>{label}: %{{y:.1f}}%<extra></extra>",
         ))
     figure.update_yaxes(ticksuffix="%", rangemode="tozero")
-    return _base_layout(figure, height=height, legend=True, margin=dict(l=44, r=18, t=28, b=36))
+    figure = _base_layout(figure, height=height, legend=True, margin=dict(l=44, r=18, t=28, b=36))
+    return add_axis_headroom(figure, upper=0.20, lower=0.05, include_zero=True)
 
-def adaptation_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int = 520, limit: int = 12):
+def adaptation_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int = 680, limit: int | None = None):
     required = {"Sector", "Current AI Use", "Expected AI Use"}
     if sector_snapshot is None or not isinstance(sector_snapshot, pd.DataFrame) or sector_snapshot.empty or not required.issubset(sector_snapshot.columns):
         clean = pd.DataFrame(columns=list(required))
@@ -59,7 +60,10 @@ def adaptation_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int 
             if column not in clean.columns:
                 clean[column] = np.nan
             clean[column] = pd.to_numeric(clean[column], errors="coerce")
-        clean = clean.dropna(subset=["Current AI Use"]).nlargest(limit, "Current AI Use").sort_values("Current AI Use")
+        clean = clean.dropna(subset=["Current AI Use"])
+        if limit is not None:
+            clean = clean.nlargest(int(limit), "Current AI Use")
+        clean = clean.sort_values("Current AI Use")
     figure = go.Figure()
     if not clean.empty:
         figure.add_trace(go.Bar(
@@ -76,4 +80,5 @@ def adaptation_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int 
         ))
     figure.update_layout(barmode="group")
     figure.update_xaxes(ticksuffix="%", rangemode="tozero")
-    return _base_layout(figure, height=height, legend=True, margin=dict(l=255, r=18, t=30, b=36))
+    figure = _base_layout(figure, height=height, legend=True, margin=dict(l=255, r=34, t=30, b=36))
+    return add_axis_headroom(figure, axis="x", upper=0.20, lower=0.0, include_zero=True)

@@ -18,6 +18,12 @@ from analytics.factor_engine import (
     calc_relative_performance,
 )
 from analytics.hhi_engine import calc_hhi_from_sector_data, normalize_hhi
+from analytics.economic_validation import calculate_economic_validation_gap
+from analytics.power_capacity_gap import (
+    POWER_CAPACITY_GAP_VERSION,
+    calculate_power_capacity_gap,
+)
+from config.factor_config import FACTOR_CONFIG
 from analytics.power_engine import calculate_power_stress
 from analytics.regime_engine import calc_aei, calc_avg_sector_pressure
 from analytics.sector_engine import (
@@ -174,25 +180,20 @@ def _benchmark_as_of(benchmark_history: pd.DataFrame, target_date) -> dict:
     }
 
 def _factor_frame(sector: str, df: pd.DataFrame, benchmark: dict) -> pd.DataFrame:
+    values = {
+        "relative_performance": calc_relative_performance(
+            df, benchmark.get("avg_return")
+        ),
+        "forward_ebit_yield_discount": calc_forward_ebit_yield_discount(
+            df, benchmark.get("forward_ebit_yield")
+        ),
+        "market_breadth": calc_market_breadth(df),
+    }
+    factors = FACTOR_CONFIG.get(sector, [])
     return pd.DataFrame(
         [
-            {
-                "Sector": sector,
-                "Factor": "relative_performance",
-                "Value": calc_relative_performance(df, benchmark.get("avg_return")),
-            },
-            {
-                "Sector": sector,
-                "Factor": "forward_ebit_yield_discount",
-                "Value": calc_forward_ebit_yield_discount(
-                    df, benchmark.get("forward_ebit_yield")
-                ),
-            },
-            {
-                "Sector": sector,
-                "Factor": "market_breadth",
-                "Value": calc_market_breadth(df),
-            },
+            {"Sector": sector, "Factor": factor, "Value": values.get(factor, np.nan)}
+            for factor in factors
         ]
     )
 
@@ -412,6 +413,13 @@ def _construction_for_date(target_date, history: pd.DataFrame, calendar: pd.Data
 def _component_value(result: dict, name: str, field: str = "score"):
     return ((result or {}).get("components", {}).get(name, {}) or {}).get(field, np.nan)
 
+
+def _mean_numeric(frame: pd.DataFrame, column: str) -> float:
+    if frame is None or frame.empty or column not in frame.columns:
+        return np.nan
+    values = pd.to_numeric(frame[column], errors="coerce").replace([np.inf, -np.inf], np.nan)
+    return float(values.mean()) if values.notna().any() else np.nan
+
 def rebuild_fred_history(
     fred_history: pd.DataFrame,
     power_series: pd.DataFrame,
@@ -438,16 +446,28 @@ def rebuild_sector_history(
     benchmark_history: pd.DataFrame,
     prior_sector_history: pd.DataFrame,
 ) -> pd.DataFrame:
-    prior_method_lookup = {}
+    prior_columns = list(prior_sector_history.columns) if not prior_sector_history.empty else [
+        "Date", "Sector", "Sector Score", "Pressure", "Forward P/E", "Avg Return",
+        "AEI Version", "Pressure Version", "Prior Method Pressure", "Forward EV/EBIT",
+        "Forward EBIT Yield", "Sector Valuation Version", "Forward EV/EBIT Coverage",
+        "Forward EV/EBIT Data Coverage", "Loss-Making EV Share",
+    ]
+    required_columns = [
+        "Date", "Sector", "Sector Score", "Pressure", "Forward P/E", "Avg Return",
+        "AEI Version", "Pressure Version", "Prior Method Pressure", "Forward EV/EBIT",
+        "Forward EBIT Yield", "Sector Valuation Version", "Forward EV/EBIT Coverage",
+        "Forward EV/EBIT Data Coverage", "Loss-Making EV Share",
+    ]
+    output_columns = list(dict.fromkeys(prior_columns + required_columns))
+
+    prior_lookup: dict[tuple[str, str], dict] = {}
     if not prior_sector_history.empty:
-        for _, row in prior_sector_history.iterrows():
-            key = (str(row.get("Date")), str(row.get("Sector")))
-            value = pd.to_numeric(row.get("Prior Method Pressure", row.get("Pressure")), errors="coerce")
-            prior_method_lookup[key] = value
+        for _, prior_row in prior_sector_history.iterrows():
+            prior_lookup[(str(prior_row.get("Date")), str(prior_row.get("Sector")))] = prior_row.to_dict()
 
     rows = []
     for target_date in sorted(yf_history["Date"].astype(str).unique()):
-        metrics, _, market_date = _sector_metrics_for_date(
+        metrics, sector_data, market_date = _sector_metrics_for_date(
             yf_history,
             edgar_history,
             benchmark_history,
@@ -457,23 +477,42 @@ def rebuild_sector_history(
             continue
 
         for sector, values in metrics.items():
+            key = (target_date, sector)
+            prior = prior_lookup.get(key, {})
+            row = {column: prior.get(column, np.nan) for column in output_columns}
+            frame = sector_data.get(sector, pd.DataFrame())
+            forward_pe = _mean_numeric(frame, "Forward P/E")
             pressure = pd.to_numeric(values.get("Sector Pressure"), errors="coerce")
-            rows.append(
+            sector_score = pd.to_numeric(values.get("Sector Score"), errors="coerce")
+            row.update(
                 {
                     "Date": target_date,
                     "Sector": sector,
-                    "Sector Score": values.get("Sector Score", np.nan),
+                    "Sector Score": sector_score,
                     "Pressure": pressure,
+                    "Forward P/E": forward_pe,
+                    "Avg Return": values.get("Avg Return", np.nan),
+                    "AEI Version": AEI_VERSION if pd.notna(sector_score) else pd.NA,
+                    "Pressure Version": PRESSURE_VERSION if pd.notna(pressure) else pd.NA,
+                    "Prior Method Pressure": pd.to_numeric(
+                        prior.get("Prior Method Pressure", prior.get("Pressure", np.nan)),
+                        errors="coerce",
+                    ),
                     "Forward EV/EBIT": values.get("Forward EV/EBIT", np.nan),
                     "Forward EBIT Yield": values.get("Forward EBIT Yield", np.nan),
-                    "Avg Return": values.get("Avg Return", np.nan),
-                    "AEI Version": AEI_VERSION,
-                    "Pressure Version": PRESSURE_VERSION if pd.notna(pressure) else pd.NA,
-                    "Prior Method Pressure": prior_method_lookup.get((target_date, sector), np.nan),
+                    "Sector Valuation Version": values.get("Sector Valuation Version", np.nan),
+                    "Forward EV/EBIT Coverage": values.get("Forward EV/EBIT Coverage", np.nan),
+                    "Forward EV/EBIT Data Coverage": values.get("Forward EV/EBIT Data Coverage", np.nan),
+                    "Loss-Making EV Share": values.get("Loss-Making EV Share", np.nan),
                 }
             )
+            rows.append(row)
 
-    return pd.DataFrame(rows).sort_values(["Date", "Sector"], kind="stable").reset_index(drop=True)
+    return (
+        pd.DataFrame(rows, columns=output_columns)
+        .sort_values(["Date", "Sector"], kind="stable")
+        .reset_index(drop=True)
+    )
 
 def rebuild_macro_history(
     prior_macro_history: pd.DataFrame,
@@ -485,25 +524,19 @@ def rebuild_macro_history(
     construction_history: pd.DataFrame,
     construction_calendar: pd.DataFrame,
 ) -> pd.DataFrame:
-    context_columns = [
-        "Consumer Sentiment",
-        "Fed Funds Rate",
-        "Industrial Production",
-        "Industrial Production YoY",
-    ]
+    if prior_macro_history.empty:
+        return prior_macro_history.copy()
 
-    prior_by_date = prior_macro_history.set_index("Date", drop=False) if not prior_macro_history.empty else pd.DataFrame()
-    prior_method_pressure = {}
-    if not prior_macro_history.empty:
-        for _, row in prior_macro_history.iterrows():
-            prior_method_pressure[str(row.get("Date"))] = pd.to_numeric(
-                row.get("Prior Method Avg Sector Pressure", row.get("Avg Sector Pressure")),
-                errors="coerce",
-            )
-
+    output_columns = list(prior_macro_history.columns)
+    prior_by_date = prior_macro_history.set_index("Date", drop=False)
     rows = []
-    target_dates = sorted(prior_macro_history["Date"].astype(str).unique())
-    for target_date in target_dates:
+
+    for target_date in sorted(prior_macro_history["Date"].astype(str).unique()):
+        prior_row = prior_by_date.loc[target_date]
+        if isinstance(prior_row, pd.DataFrame):
+            prior_row = prior_row.iloc[-1]
+        row = {column: prior_row.get(column, np.nan) for column in output_columns}
+
         metrics, sector_data, market_date = _sector_metrics_for_date(
             yf_history,
             edgar_history,
@@ -513,9 +546,11 @@ def rebuild_macro_history(
 
         aei = calc_aei(metrics)
         avg_pressure = calc_avg_sector_pressure(metrics)
-        raw_hhi = calc_hhi_from_sector_data(
-            {k: v for k, v in sector_data.items() if k in metrics}
-        ) if sector_data else np.nan
+        raw_hhi = (
+            calc_hhi_from_sector_data({k: v for k, v in sector_data.items() if k in metrics})
+            if sector_data
+            else np.nan
+        )
         hhi = normalize_hhi(raw_hhi)
 
         power_payload, power_raw = _power_payload_from_fred_archive(
@@ -530,61 +565,79 @@ def rebuild_macro_history(
             construction_data=construction,
             power_result=power_result,
         )
+        validation = calculate_economic_validation_gap(
+            sector_data,
+            power_payload,
+            deployment_result=development,
+        )
+        power_capacity_gap = calculate_power_capacity_gap(
+            development,
+            power_payload,
+        )
         borrower_strain_result = calculate_borrower_strain(
             sector_data,
             as_of_date=target_date,
         )
 
         adi = pd.to_numeric(development.get("score"), errors="coerce")
+        evg = pd.to_numeric(validation.get("score"), errors="coerce")
         power_score = pd.to_numeric(power_result.get("score"), errors="coerce")
-        borrower_strain_score = pd.to_numeric(borrower_strain_result.get("score"), errors="coerce")
+        pcg = pd.to_numeric(power_capacity_gap.get("score"), errors="coerce")
+        borrower_strain_score = pd.to_numeric(
+            borrower_strain_result.get("score"), errors="coerce"
+        )
         speculation = float(aei - adi) if pd.notna(aei) and pd.notna(adi) else np.nan
 
-        row = {
-            "Date": target_date,
-            "Market Data Date": market_date,
-            "AI Equity Index": aei,
-            "AI Development Intensity": adi,
-            "Speculation Gap": speculation,
-            "Power Stress Index": power_score,
-            "Borrower Strain": borrower_strain_score,
-            "Concentration HHI": hhi,
-            "Raw AI HHI": raw_hhi,
-            "Avg Sector Pressure": avg_pressure,
-            "Prior Method Avg Sector Pressure": prior_method_pressure.get(target_date, np.nan),
-            "ADI Capital Deployment": _component_value(development, "Capital Deployment"),
-            "ADI Data Center Construction": _component_value(development, "Data Center Construction"),
-            "ADI Compute Supply Realization": _component_value(development, "Compute Supply Realization"),
-            "ADI Power Footprint": _component_value(development, "Power Footprint"),
-            "Power Nonresidential Load": _component_value(power_result, "Nonresidential Load Pressure"),
-            "Power Grid Utilization": _component_value(power_result, "Grid Utilization Pressure"),
-            "Power Capacity Response": _component_value(power_result, "Capacity Response Gap"),
-            "Borrower Cash Flow Strain": _component_value(borrower_strain_result, "Cash Flow Strain"),
-            "Borrower Debt Capacity Strain": _component_value(
-                borrower_strain_result, "Debt Capacity Strain"
-            ),
-            "Borrower Committed Burden": _component_value(borrower_strain_result, "Committed Burden"),
-            "Borrower Contingent Exposure": _component_value(borrower_strain_result, "Contingent Exposure"),
-            "AEI Version": AEI_VERSION if pd.notna(aei) else pd.NA,
-            "ADI Version": ADI_VERSION if pd.notna(adi) else pd.NA,
-            "Power Stress Version": POWER_STRESS_VERSION if pd.notna(power_score) else pd.NA,
-            "Borrower Strain Version": BORROWER_STRAIN_VERSION if pd.notna(borrower_strain_score) else pd.NA,
-            "Pressure Version": PRESSURE_VERSION if pd.notna(avg_pressure) else pd.NA,
-            "Construction Observation Date": construction.get("date"),
-            "Construction Release Date": construction.get("release_date"),
-            **power_raw,
-        }
-
-        if not prior_macro_history.empty and target_date in prior_by_date.index:
-            prior_row = prior_by_date.loc[target_date]
-            if isinstance(prior_row, pd.DataFrame):
-                prior_row = prior_row.iloc[-1]
-            for column in context_columns:
-                row[column] = prior_row.get(column, np.nan)
-
+        row.update(
+            {
+                "Date": target_date,
+                "Market Data Date": market_date,
+                "AI Equity Index": aei,
+                "AI Development Intensity": adi,
+                "Speculation Gap": speculation,
+                "Economic Validation Gap": evg,
+                "Power Stress Index": power_score,
+                "Power Capacity Gap": pcg,
+                "Borrower Strain": borrower_strain_score,
+                "Concentration HHI": hhi,
+                "Raw AI HHI": raw_hhi,
+                "Avg Sector Pressure": avg_pressure,
+                "ADI Capital Deployment": _component_value(development, "Capital Deployment"),
+                "ADI Data Center Construction": _component_value(development, "Data Center Construction"),
+                "ADI Compute Supply Realization": _component_value(development, "Compute Supply Realization"),
+                "ADI Power Footprint": _component_value(development, "Power Footprint"),
+                "Power Nonresidential Load": _component_value(power_result, "Commercial-vs-Residential Output Pressure"),
+                "Power Grid Utilization": _component_value(power_result, "Power-System Utilization Pressure"),
+                "Power Capacity Response": _component_value(power_result, "Potential-Output Response Gap"),
+                "PCG Deployment Pressure": power_capacity_gap.get("deployment_pressure_score", np.nan),
+                "PCG Power Response": power_capacity_gap.get("power_response_score", np.nan),
+                "PCG Data Center Construction": _component_value(power_capacity_gap, "Data Center Construction"),
+                "PCG Capital Deployment": _component_value(power_capacity_gap, "Capital Deployment"),
+                "PCG Delivered Power Growth": _component_value(power_capacity_gap, "Delivered Power Growth"),
+                "PCG Installed Capacity Growth": _component_value(power_capacity_gap, "Sustainable Capacity Growth"),
+                "Borrower Cash Flow Strain": _component_value(borrower_strain_result, "Cash Flow Strain"),
+                "Borrower Debt Capacity Strain": _component_value(borrower_strain_result, "Debt Capacity Strain"),
+                "Borrower Committed Burden": _component_value(borrower_strain_result, "Committed Burden"),
+                "Borrower Contingent Exposure": _component_value(borrower_strain_result, "Contingent Exposure"),
+                "AEI Version": AEI_VERSION if pd.notna(aei) else pd.NA,
+                "ADI Version": ADI_VERSION if pd.notna(adi) else pd.NA,
+                "EVG Version": "3.0" if pd.notna(evg) else pd.NA,
+                "Power Stress Version": POWER_STRESS_VERSION if pd.notna(power_score) else pd.NA,
+                "Power Capacity Gap Version": POWER_CAPACITY_GAP_VERSION if pd.notna(pcg) else pd.NA,
+                "Borrower Strain Version": BORROWER_STRAIN_VERSION if pd.notna(borrower_strain_score) else pd.NA,
+                "Pressure Version": PRESSURE_VERSION if pd.notna(avg_pressure) else pd.NA,
+                "Construction Observation Date": construction.get("date"),
+                "Construction Release Date": construction.get("release_date"),
+                **power_raw,
+            }
+        )
         rows.append(row)
 
-    return pd.DataFrame(rows).sort_values("Date", kind="stable").reset_index(drop=True)
+    return (
+        pd.DataFrame(rows, columns=output_columns)
+        .sort_values("Date", kind="stable")
+        .reset_index(drop=True)
+    )
 
 def validate_rebuild(
     macro: pd.DataFrame,

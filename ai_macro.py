@@ -3,8 +3,9 @@ from __future__ import annotations
 import streamlit as st
 
 from analytics.factor_engine import calc_sector_factors
-from analytics.macro_interpretation import build_macro_interpretation
 from analytics.regime_engine import build_regime_metrics
+from analytics.macro_dataframe import build_macro_dashboard_data
+from analytics.read_architecture import build_platform_reads
 from analytics.sector_engine import build_sector_metrics
 from archive.archive import (
     append_benchmark_history,
@@ -17,43 +18,41 @@ from archive.archive import (
 )
 from archive.archive_reader import load_fred_history, load_macro_history
 from benchmarks.benchmark_service import get_benchmark_metrics
+from config.deployment import developer_mode, repository_writes_enabled
 from config.market_clock import market_date
-from config.sector_config import SECTOR_CONFIG
+from config.sector_config import SECTOR_CONFIG, all_tickers
 from rendering.sector import render_basket_tier_developer_tool
 from loaders.construction_loader import load_data_center_construction
 from loaders.debt_markets_loader import load_debt_markets_data
 from loaders.edgar_loader import build_edgar_archive_snapshot
 from loaders.energy_loader import load_energy_data
 from loaders.infrastructure_loader import load_infrastructure_data
+from loaders.workforce_loader import load_workforce_data
+from loaders.economic_impact_loader import load_economic_impact_data
 from loaders.water_loader import load_water_utilization_data
 from loaders.adaptation_loader import load_adaptation_data
 from loaders.fred_loader import load_fred
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
-from loaders.weekly_context_loader import load_weekly_context
+from loaders.weekly_context_loader import load_current_context, load_weekly_context
+from loaders.current_context_daily import refresh_current_context_once_daily
 from rendering.components import render_masthead
 from rendering.dashboard import render_research_dashboard
 from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v5.14"
-APP_STATE_SCHEMA_VERSION = "37.0-v5.14-spatial-platform"
+APP_VERSION = "v6.5.1"
+APP_STATE_SCHEMA_VERSION = "48.0-v6.5.1-stability-hardening"
 
 st.set_page_config(
-    page_title="AI Economic Research Platform",
+    page_title="AI Macro",
     layout="wide",
 )
 inject_research_theme()
 
 if "archive_suspended" not in st.session_state:
     st.session_state.archive_suspended = False
-
-if "sectors" not in st.session_state:
-    st.session_state.sectors = {
-        sector: SECTOR_CONFIG[sector].copy()
-        for sector in SECTOR_CONFIG
-    }
 
 if st.session_state.get("app_state_schema_version") != APP_STATE_SCHEMA_VERSION:
     st.session_state.force_rebuild = True
@@ -80,43 +79,32 @@ if "yfinance_refresh_token" not in st.session_state:
 if "edgar_refresh_token" not in st.session_state:
     st.session_state.edgar_refresh_token = 0
 
-if "force_energy_refresh" not in st.session_state:
-    st.session_state.force_energy_refresh = False
+if "force_fred_refresh" not in st.session_state:
+    st.session_state.force_fred_refresh = False
 
-if "energy_refresh_token" not in st.session_state:
-    st.session_state.energy_refresh_token = 0
+if "fred_refresh_token" not in st.session_state:
+    st.session_state.fred_refresh_token = 0
 
-if "force_debt_markets_refresh" not in st.session_state:
-    st.session_state.force_debt_markets_refresh = False
+if "force_nyfed_refresh" not in st.session_state:
+    st.session_state.force_nyfed_refresh = False
 
-if "debt_markets_refresh_token" not in st.session_state:
-    st.session_state.debt_markets_refresh_token = 0
+if "nyfed_refresh_token" not in st.session_state:
+    st.session_state.nyfed_refresh_token = 0
 
-if "force_infrastructure_refresh" not in st.session_state:
-    st.session_state.force_infrastructure_refresh = False
+if "force_energy_market_refresh" not in st.session_state:
+    st.session_state.force_energy_market_refresh = False
 
-if "infrastructure_refresh_token" not in st.session_state:
-    st.session_state.infrastructure_refresh_token = 0
-
-if "force_adaptation_refresh" not in st.session_state:
-    st.session_state.force_adaptation_refresh = False
-
-if "adaptation_refresh_token" not in st.session_state:
-    st.session_state.adaptation_refresh_token = 0
+if "energy_market_refresh_token" not in st.session_state:
+    st.session_state.energy_market_refresh_token = 0
 
 def build_tabs():
-    return st.tabs(["AI MACRO", "MARKET", "FINANCE", "DATA CENTER", "COMPUTE", "INFRASTRUCTURE", "ENERGY", "WATER", "ADAPTATION", "EVIDENCE"])
+    return st.tabs(["AI MACRO", "MARKET", "FINANCE", "COMPUTE", "DATA CENTER", "POWER", "GRID & STORAGE", "WATER", "ADAPTATION", "WORKFORCE", "ECONOMIC IMPACT", "EVIDENCE"])
 
 def build_sector_dashboard_data():
     sector_data = {}
     sector_metrics = {}
 
-    all_tickers = sorted({
-        ticker
-        for cfg in st.session_state.sectors.values()
-        for ticker in cfg["basket"]
-    })
-    ticker_map = {ticker: ticker for ticker in all_tickers}
+    ticker_map = {ticker: ticker for ticker in all_tickers()}
 
     raw_universe_data = load_market_universe(
         ticker_map,
@@ -132,7 +120,7 @@ def build_sector_dashboard_data():
         refresh_token=st.session_state.yfinance_refresh_token,
     )
 
-    for sector, cfg in st.session_state.sectors.items():
+    for sector, cfg in SECTOR_CONFIG.items():
         df = get_sector_data(
             sector,
             cfg["basket"],
@@ -191,6 +179,13 @@ def render_developer_load_report(report):
             st.write(f"Requested: `{block.get('requested_at_utc')}`")
         if block.get("latest_complete_date"):
             st.write(f"Latest complete archive: `{block.get('latest_complete_date')}`")
+        if block.get("market_source_mode"):
+            st.write(f"Market backbone: `{block.get('market_source_mode')}`")
+            returned_rows = block.get("market_returned_rows") or {}
+            if returned_rows:
+                st.write(f"Market rows: `{sum(int(value or 0) for value in returned_rows.values()):,}`")
+        if block.get("market_error"):
+            st.error(str(block.get("market_error")))
         if block.get("error"):
             st.error(str(block.get("error")))
         if fallback_symbols:
@@ -207,98 +202,97 @@ def render_developer_load_report(report):
     st.markdown("---")
     render_source("EDGAR", report.get("edgar"))
     st.markdown("---")
-    render_source("Energy", report.get("energy"))
+    render_source("Power", report.get("energy"))
     st.markdown("---")
-    render_source("Debt Markets", report.get("debt_markets"))
+    render_source("NY Fed", report.get("debt_markets"))
 
-with st.sidebar:
-    st.markdown(
-        f"""
-        <div class="rm-developer-tools-header">
-            <span class="rm-developer-tools-title">Developer Tools</span>
-            <span class="rm-developer-tools-version">{APP_VERSION}</span>
-        </div>
-        <div class="rm-developer-tools-divider"></div>
-        """,
-        unsafe_allow_html=True,
-    )
+if developer_mode():
+    with st.sidebar:
+        st.markdown(
+            f"""
+            <div class="rm-developer-tools-header">
+                <span class="rm-developer-tools-title">Developer Tools</span>
+                <span class="rm-developer-tools-version">ver. {APP_VERSION.removeprefix("v")}</span>
+            </div>
+            <div class="rm-developer-tools-divider"></div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    if st.button("Refresh Dashboard", use_container_width=True):
-        st.session_state.force_rebuild = True
-        st.rerun()
+        if st.button("Refresh Dashboard", use_container_width=True):
+            st.session_state.energy_market_refresh_token += 1
+            st.session_state.force_energy_market_refresh = True
+            st.session_state.force_rebuild = True
+            st.rerun()
 
-    if st.button("Refresh YFinance", use_container_width=True):
-        st.session_state.yfinance_refresh_token += 1
-        st.session_state.force_yfinance_refresh = True
-        st.session_state.force_rebuild = True
-        st.rerun()
+        if st.button("Clear cache", use_container_width=True):
+            st.cache_data.clear()
+            st.session_state.force_rebuild = True
+            st.rerun()
 
-    if st.button("Refresh EDGAR", use_container_width=True):
-        st.session_state.edgar_refresh_token += 1
-        st.session_state.force_edgar_refresh = True
-        st.session_state.force_rebuild = True
-        st.rerun()
+        archive_label = "Resume archive" if st.session_state.archive_suspended else "Suspend archive"
+        if st.button(archive_label, use_container_width=True):
+            st.session_state.archive_suspended = not st.session_state.archive_suspended
+            st.rerun()
 
-    if st.button("Refresh Energy", use_container_width=True):
-        st.session_state.energy_refresh_token += 1
-        st.session_state.force_energy_refresh = True
-        st.session_state.force_rebuild = True
-        st.rerun()
-
-    if st.button("Refresh Debt Markets", use_container_width=True):
-        st.session_state.debt_markets_refresh_token += 1
-        st.session_state.force_debt_markets_refresh = True
-        st.session_state.force_rebuild = True
-        st.rerun()
-
-    if st.button("Refresh Infrastructure", use_container_width=True):
-        st.session_state.infrastructure_refresh_token += 1
-        st.session_state.force_infrastructure_refresh = True
-        st.session_state.force_rebuild = True
-        st.rerun()
-
-    if st.button("Refresh Adaptation", use_container_width=True):
-        st.session_state.adaptation_refresh_token += 1
-        st.session_state.force_adaptation_refresh = True
-        st.session_state.force_rebuild = True
-        st.rerun()
-
-    if st.button("Clear cache", use_container_width=True):
-        st.cache_data.clear()
-        st.session_state.force_rebuild = True
-        st.rerun()
-
-    archive_label = "Resume archive" if st.session_state.archive_suspended else "Suspend archive"
-    if st.button(archive_label, use_container_width=True):
-        st.session_state.archive_suspended = not st.session_state.archive_suspended
-        st.rerun()
-
-    st.markdown("---")
-    if st.button(
-        "Close tier diagnostics" if st.session_state.tier_test_module_open else "Open tier diagnostics",
-        use_container_width=True,
-    ):
-        st.session_state.tier_test_module_open = not st.session_state.tier_test_module_open
-        st.rerun()
-
-    if st.button(
-        "Close load report" if st.session_state.developer_load_report_open else "Open load report",
-        use_container_width=True,
-    ):
-        st.session_state.developer_load_report_open = not st.session_state.developer_load_report_open
-        st.rerun()
-
-    if st.session_state.developer_load_report_open:
         st.markdown("---")
-        render_developer_load_report(st.session_state.get("market_universe_load_report"))
 
+        if st.button("Refresh YFinance", use_container_width=True):
+            st.session_state.yfinance_refresh_token += 1
+            st.session_state.force_yfinance_refresh = True
+            st.session_state.force_rebuild = True
+            st.rerun()
+
+        if st.button("Refresh EDGAR", use_container_width=True):
+            st.session_state.edgar_refresh_token += 1
+            st.session_state.force_edgar_refresh = True
+            st.session_state.force_rebuild = True
+            st.rerun()
+
+        if st.button("Refresh FRED", use_container_width=True):
+            st.session_state.fred_refresh_token += 1
+            st.session_state.force_fred_refresh = True
+            st.session_state.force_rebuild = True
+            st.rerun()
+
+        if st.button("Refresh NY Fed", use_container_width=True):
+            st.session_state.nyfed_refresh_token += 1
+            st.session_state.force_nyfed_refresh = True
+            st.session_state.force_rebuild = True
+            st.rerun()
+
+        st.markdown("---")
+
+        if st.button(
+            "Close tier diagnostics" if st.session_state.tier_test_module_open else "Open tier diagnostics",
+            use_container_width=True,
+        ):
+            st.session_state.tier_test_module_open = not st.session_state.tier_test_module_open
+            st.rerun()
+
+        if st.button(
+            "Close load report" if st.session_state.developer_load_report_open else "Open load report",
+            use_container_width=True,
+        ):
+            st.session_state.developer_load_report_open = not st.session_state.developer_load_report_open
+            st.rerun()
+
+        if st.session_state.developer_load_report_open:
+            st.markdown("---")
+            render_developer_load_report(st.session_state.get("market_universe_load_report"))
 if st.session_state.force_rebuild:
     sector_data, sector_metrics, raw_universe_data, benchmark_metrics = (
         build_sector_dashboard_data()
     )
 
-    fred_data = load_fred()
-    nfci_history = load_nfci_history()
+    fred_data = load_fred(
+        force_refresh=st.session_state.force_fred_refresh,
+        refresh_token=st.session_state.fred_refresh_token,
+    )
+    nfci_history = load_nfci_history(
+        force_refresh=st.session_state.force_fred_refresh,
+        refresh_token=st.session_state.fred_refresh_token,
+    )
     construction_data = load_data_center_construction()
     fred_history = load_fred_history()
     macro_history = load_macro_history()
@@ -314,35 +308,59 @@ if st.session_state.force_rebuild:
 
     energy_data = load_energy_data(
         fred_data=fred_data,
-        force_refresh=st.session_state.force_energy_refresh,
-        refresh_token=st.session_state.energy_refresh_token,
+        force_fred_refresh=st.session_state.force_fred_refresh,
+        fred_refresh_token=st.session_state.fred_refresh_token,
+        force_market_refresh=st.session_state.force_energy_market_refresh,
+        market_refresh_token=st.session_state.energy_market_refresh_token,
     )
     debt_markets_data = load_debt_markets_data(
-        force_refresh=st.session_state.force_debt_markets_refresh,
-        refresh_token=st.session_state.debt_markets_refresh_token,
+        force_refresh=st.session_state.force_nyfed_refresh,
+        refresh_token=st.session_state.nyfed_refresh_token,
     )
     infrastructure_data = load_infrastructure_data(
-        force_refresh=st.session_state.force_infrastructure_refresh,
-        refresh_token=st.session_state.infrastructure_refresh_token,
+        force_fred_refresh=st.session_state.force_fred_refresh,
+        fred_refresh_token=st.session_state.fred_refresh_token,
     )
     water_data = load_water_utilization_data()
     infrastructure_data, water_data = attach_water_context(infrastructure_data, water_data)
-    adaptation_data = load_adaptation_data(
-        force_refresh=st.session_state.force_adaptation_refresh,
-        refresh_token=st.session_state.adaptation_refresh_token,
+    adaptation_data = load_adaptation_data()
+    workforce_data = load_workforce_data()
+    economic_impact_data = load_economic_impact_data()
+    context_refresh = refresh_current_context_once_daily(as_of=market_date())
+    context_registry_path = context_refresh.get("registry_path")
+    current_context = load_current_context(
+        as_of=market_date(),
+        path=context_registry_path,
+        limit_per_domain=1,
+        include_live=False,
     )
-    weekly_context = load_weekly_context(as_of=market_date())
-    regime_metrics["Macro Interpretation"] = build_macro_interpretation(
+    sector_weekly_context = load_weekly_context(
+        as_of=market_date(),
+        path=context_registry_path,
+        surface="sector",
+        limit=15,
+        include_live=False,
+    )
+    dashboard_data = build_macro_dashboard_data(
+        sector_metrics=sector_metrics,
         regime_metrics=regime_metrics,
-        macro_history=macro_history,
-        debt_markets_data=debt_markets_data,
-        energy_data=energy_data,
+    )
+    platform_reads = build_platform_reads(
+        sector_data=sector_data,
+        dashboard_data=dashboard_data,
+        regime_metrics=regime_metrics,
         fred_data=fred_data,
         nfci_history=nfci_history,
+        energy_data=energy_data,
+        debt_markets_data=debt_markets_data,
         infrastructure_data=infrastructure_data,
+        water_data=water_data,
         adaptation_data=adaptation_data,
-        weekly_context=weekly_context,
+        workforce_data=workforce_data,
+        economic_impact_data=economic_impact_data,
+        current_context=current_context,
     )
+    regime_metrics["Macro Interpretation"] = platform_reads["macro"]
     market_report = dict(st.session_state.get("market_universe_load_report", {}) or {})
     market_report["energy"] = energy_data.get("load_report", {})
     market_report["debt_markets"] = debt_markets_data.get("load_report", {})
@@ -354,7 +372,7 @@ if st.session_state.force_rebuild:
     )
     st.session_state.market_universe_load_report = market_report
 
-    if not st.session_state.archive_suspended:
+    if repository_writes_enabled() and not st.session_state.archive_suspended:
         append_macro_history(regime_metrics, fred_data)
         append_sector_history(sector_metrics)
         benchmark_source_mode = str(benchmark_metrics.get("source_mode", ""))
@@ -388,12 +406,16 @@ if st.session_state.force_rebuild:
     st.session_state.infrastructure_data = infrastructure_data
     st.session_state.water_data = water_data
     st.session_state.adaptation_data = adaptation_data
+    st.session_state.workforce_data = workforce_data
+    st.session_state.economic_impact_data = economic_impact_data
+    st.session_state.sector_weekly_context = sector_weekly_context
+    st.session_state.dashboard_data = dashboard_data
+    st.session_state.platform_reads = platform_reads
     st.session_state.force_yfinance_refresh = False
     st.session_state.force_edgar_refresh = False
-    st.session_state.force_energy_refresh = False
-    st.session_state.force_debt_markets_refresh = False
-    st.session_state.force_infrastructure_refresh = False
-    st.session_state.force_adaptation_refresh = False
+    st.session_state.force_fred_refresh = False
+    st.session_state.force_nyfed_refresh = False
+    st.session_state.force_energy_market_refresh = False
     st.session_state.force_rebuild = False
 
 sector_data = st.session_state.sector_data
@@ -406,29 +428,38 @@ debt_markets_data = st.session_state.get("debt_markets_data", {})
 infrastructure_data = st.session_state.get("infrastructure_data", {})
 water_data = st.session_state.get("water_data", {})
 adaptation_data = st.session_state.get("adaptation_data", {})
+workforce_data = st.session_state.get("workforce_data", {})
+economic_impact_data = st.session_state.get("economic_impact_data", {})
+sector_weekly_context = st.session_state.get("sector_weekly_context", {})
+dashboard_data = st.session_state.get("dashboard_data")
+platform_reads = st.session_state.get("platform_reads", {})
 
-loaded_ticker_count = sum(
-    len({str(ticker).strip() for ticker in frame["Ticker"].dropna() if str(ticker).strip()})
+loaded_tickers = {
+    str(ticker).strip().upper()
     for frame in sector_data.values()
     if frame is not None and not frame.empty and "Ticker" in frame.columns
-)
-configured_ticker_count = sum(
-    len({str(ticker).strip() for ticker in config.get("basket", []) if str(ticker).strip()})
-    for config in st.session_state.sectors.values()
-)
+    for ticker in frame["Ticker"].dropna()
+    if str(ticker).strip()
+}
+configured_tickers = {
+    str(ticker).strip().upper()
+    for config in SECTOR_CONFIG.values()
+    for ticker in config.get("basket", [])
+    if str(ticker).strip()
+}
 market_universe_summary = {
     "loaded_sectors": sum(
         1 for frame in sector_data.values()
         if frame is not None and not frame.empty and "Ticker" in frame.columns
     ),
-    "configured_sectors": len(st.session_state.sectors),
-    "loaded_tickers": int(loaded_ticker_count),
-    "configured_tickers": int(configured_ticker_count),
+    "configured_sectors": len(SECTOR_CONFIG),
+    "loaded_tickers": int(len(loaded_tickers)),
+    "configured_tickers": int(len(configured_tickers)),
 }
 
 render_masthead(
-    "AI Economic Research Platform",
-    "market conditions • capital deployment • financing • infrastructure development • resource utilization • observable economic validation",
+    "AI Macro",
+    "An AI economic research platform",
 )
 
 if st.session_state.tier_test_module_open:
@@ -446,5 +477,10 @@ else:
         infrastructure_data=infrastructure_data,
         water_data=water_data,
         adaptation_data=adaptation_data,
+        workforce_data=workforce_data,
+        economic_impact_data=economic_impact_data,
         market_universe_summary=market_universe_summary,
+        sector_weekly_context=sector_weekly_context,
+        dashboard_data=dashboard_data,
+        platform_reads=platform_reads,
     )

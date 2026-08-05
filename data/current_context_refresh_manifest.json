@@ -1,0 +1,228 @@
+{
+  "as_of": "2026-08-05",
+  "audit_path": "/Users/Dave/Desktop/VSC/ai_macro_working/data/current_context_candidate_audit.csv",
+  "candidate_count": 392,
+  "discovery_version": "1.0",
+  "domains": [
+    "market",
+    "finance",
+    "compute",
+    "data_center",
+    "power",
+    "grid_storage",
+    "water",
+    "adaptation",
+    "workforce",
+    "economic_impact"
+  ],
+  "fetch_status": [
+    {
+      "domain": "compute",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 10,
+      "provider": "gdelt",
+      "query": "(AI chips OR semiconductor manufacturing OR chip export controls OR semiconductor fab OR GPU supply)",
+      "status": "error"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 6,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI chips OR semiconductor manufacturing OR chip export controls OR semiconductor fab OR GPU supply)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 10,
+      "provider": "gdelt",
+      "query": "(transmission project OR interconnection queue OR power grid OR battery storage OR transformer shortage OR curtailment)",
+      "status": "error"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 8,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(transmission project OR interconnection queue OR power grid OR battery storage OR transformer shortage OR curtailment)",
+      "status": "ok"
+    },
+    {
+      "domain": "water",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 14,
+      "provider": "gdelt",
+      "query": "(data center water OR wastewater infrastructure OR industrial water permit OR drought water supply)",
+      "status": "error"
+    },
+    {
+      "domain": "water",
+      "error": "",
+      "item_count": 38,
+      "lookback_days": 14,
+      "provider": "google_news_rss",
+      "query": "(data center water OR wastewater infrastructure OR industrial water permit OR drought water supply)",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 3,
+      "provider": "gdelt",
+      "query": "(AI earnings OR AI stocks OR semiconductor earnings OR cloud earnings OR AI software guidance)",
+      "status": "error"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 52,
+      "lookback_days": 3,
+      "provider": "google_news_rss",
+      "query": "(AI earnings OR AI stocks OR semiconductor earnings OR cloud earnings OR AI software guidance)",
+      "status": "ok"
+    },
+    {
+      "domain": "adaptation",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 14,
+      "provider": "gdelt",
+      "query": "(business AI adoption OR enterprise AI use OR AI deployment survey)",
+      "status": "error"
+    },
+    {
+      "domain": "adaptation",
+      "error": "",
+      "item_count": 68,
+      "lookback_days": 14,
+      "provider": "google_news_rss",
+      "query": "(business AI adoption OR enterprise AI use OR AI deployment survey)",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 7,
+      "provider": "gdelt",
+      "query": "(data center electricity demand OR power generation capacity OR electricity prices OR natural gas generation)",
+      "status": "error"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 46,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center electricity demand OR power generation capacity OR electricity prices OR natural gas generation)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 7,
+      "provider": "gdelt",
+      "query": "(AI financing OR private equity AI OR venture capital AI OR private credit OR interest rates technology investment)",
+      "status": "error"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 64,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI financing OR private equity AI OR venture capital AI OR private credit OR interest rates technology investment)",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 14,
+      "provider": "gdelt",
+      "query": "(data center moratorium OR data center permits OR data center construction OR data center campus)",
+      "status": "error"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 70,
+      "lookback_days": 14,
+      "provider": "google_news_rss",
+      "query": "(data center moratorium OR data center permits OR data center construction OR data center campus)",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 14,
+      "provider": "gdelt",
+      "query": "(AI employment OR technology hiring OR semiconductor jobs OR data center jobs OR AI workforce wages)",
+      "status": "error"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 18,
+      "lookback_days": 14,
+      "provider": "google_news_rss",
+      "query": "(AI employment OR technology hiring OR semiconductor jobs OR data center jobs OR AI workforce wages)",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "item_count": 0,
+      "lookback_days": 14,
+      "provider": "gdelt",
+      "query": "(AI productivity OR labor productivity release OR GDP industry technology investment OR economic output AI)",
+      "status": "error"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 22,
+      "lookback_days": 14,
+      "provider": "google_news_rss",
+      "query": "(AI productivity OR labor productivity release OR GDP industry technology investment OR economic output AI)",
+      "status": "ok"
+    }
+  ],
+  "providers": [
+    "gdelt",
+    "google_news_rss"
+  ],
+  "qualified_count": 2,
+  "registry_path": "/Users/Dave/Desktop/VSC/ai_macro_working/data/weekly_context_events.csv",
+  "registry_rows_added": 1,
+  "retrieved_at": "2026-08-05T08:56:56+00:00",
+  "selected": {
+    "adaptation": [],
+    "compute": [],
+    "data_center": [
+      {
+        "event_date": "2026-07-27",
+        "event_id": "auto-2026-07-27-902a30dc23a0",
+        "rank_score": 111.0,
+        "source_name": "Data Center Dynamics",
+        "source_url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxOOC1RSlQ2RXVzVnRPaDI1WW1GSERvX1I0MjVsbnEtNHpyUzEwVy1IYVlDZURLcjdkVm5kSS1EdEwzQ014dkczYVZhTXQ0cmdWd04yTDRHXzVJdXB0V3lKUXd2YWJ2bk1leWNHUWJkM1huN09yNjBIbW1reEZ5dDQ2WW96bk0wOVRYYkswR2JybktqUUgwLUhQczY2RGhtTmcybXBRMlZHVm5Sckx1ekx6SHJnYmR0YlZBTDJ5ZC05alVsTmF3WXVpM255Z1c5dlVOcHhWcTBDeDhpYWx3SFI4?oc=5"
+      }
+    ],
+    "economic_impact": [],
+    "finance": [],
+    "grid_storage": [],
+    "market": [],
+    "power": [],
+    "water": [],
+    "workforce": []
+  }
+}

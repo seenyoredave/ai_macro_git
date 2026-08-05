@@ -29,8 +29,7 @@ NONBANK_CHANNEL_COMPONENTS = (
     "PE Portfolio Financing Strain",
 )
 MIN_PERCENTILE_OBSERVATIONS = 8
-MIN_LENDER_COMPONENTS = 3
-NEUTRAL_COMPONENT_SCORE = 50.0
+MIN_LENDER_COMPONENTS = 4
 
 PE_SUBWEIGHTS = {
     "High-Leverage Portfolio Share": 0.60,
@@ -315,13 +314,10 @@ def _channel_score(base_scores, component_names):
         for name, value in values.items()
         if pd.notna(value) and np.isfinite(value)
     }
-    if not valid:
+    if len(valid) != len(component_names):
         return np.nan, {}
     weights = {name: 1.0 / len(component_names) for name in component_names}
-    score = sum(
-        (valid[name] if name in valid else NEUTRAL_COMPONENT_SCORE) * weights[name]
-        for name in component_names
-    )
+    score = sum(valid[name] * weights[name] for name in component_names)
     return float(score), weights
 
 def _score_snapshot(
@@ -446,13 +442,7 @@ def _score_snapshot(
     combined_score = (
         float(
             sum(
-                (
-                    float(base_scores[name])
-                    if pd.notna(base_scores.get(name))
-                    and np.isfinite(base_scores.get(name))
-                    else NEUTRAL_COMPONENT_SCORE
-                )
-                * weight
+                float(base_scores[name]) * weight
                 for name, weight in LENDER_STRAIN_WEIGHTS.items()
             )
         )

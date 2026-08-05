@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from rendering.common import _forward_multiple_text
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.labels import sector_display_name
 
@@ -35,6 +36,73 @@ def fmt_dollars(value):
 def _fmt_signed(value, decimals=2):
     value = pd.to_numeric(value, errors="coerce")
     return "No Data" if pd.isna(value) else f"{value:+.{decimals}f}"
+
+def build_sector_scoreboard_table(macro_df):
+    required = [
+        "Sector",
+        "Sector Score",
+        "Pressure",
+        "Avg Return",
+        "Forward EV/EBIT",
+        "Forward EV/EBIT Status",
+        "Forward EV/EBIT Data Coverage",
+        "Loss-Making EV Share",
+        "Sector Basket Concentration",
+        "Sector Effective Firms",
+        "Sector Concentration Company Count",
+        "Sector Concentration Coverage",
+        "Beta",
+    ]
+    if macro_df is None or macro_df.empty:
+        return pd.DataFrame(columns=required)
+
+    available = [column for column in required if column in macro_df.columns]
+    table = macro_df[available].copy()
+    if "Sector" in table.columns:
+        table["Sector"] = table["Sector"].apply(sector_display_name)
+    table = table.rename(columns={"Sector Score": "AEI", "Avg Return": "1Y Return"})
+
+    for column in ["AEI", "Pressure", "Sector Basket Concentration", "Sector Effective Firms", "Beta"]:
+        if column in table.columns:
+            table[column] = pd.to_numeric(table[column], errors="coerce")
+    if "1Y Return" in table.columns:
+        table["1Y Return"] = pd.to_numeric(table["1Y Return"], errors="coerce")
+    if "Sector Concentration Coverage" in table.columns:
+        table["Sector Concentration Coverage"] = (
+            pd.to_numeric(table["Sector Concentration Coverage"], errors="coerce") * 100.0
+        ).round(1)
+        table = table.rename(columns={"Sector Concentration Coverage": "Concentration Coverage (%)"})
+    if "Forward EV/EBIT Data Coverage" in table.columns:
+        table["Forward EV/EBIT Data Coverage"] = (
+            pd.to_numeric(table["Forward EV/EBIT Data Coverage"], errors="coerce") * 100.0
+        ).round(1)
+        table = table.rename(columns={"Forward EV/EBIT Data Coverage": "FWD EBIT Data Coverage (%)"})
+    if "Loss-Making EV Share" in table.columns:
+        table["Loss-Making EV Share"] = (
+            pd.to_numeric(table["Loss-Making EV Share"], errors="coerce") * 100.0
+        ).round(1)
+        table = table.rename(columns={"Loss-Making EV Share": "Loss-Making EV Share (%)"})
+    if "Forward EV/EBIT" in table.columns:
+        statuses = table.get("Forward EV/EBIT Status", pd.Series("", index=table.index))
+        table["Forward EV/EBIT"] = [
+            _forward_multiple_text(value, status)
+            for value, status in zip(table["Forward EV/EBIT"], statuses)
+        ]
+    table = table.drop(columns=["Forward EV/EBIT Status"], errors="ignore")
+    if "AEI" in table.columns:
+        table = table.sort_values("AEI", ascending=False, na_position="last")
+    return table
+
+
+def render_sector_scoreboard(macro_df):
+    with st.container(border=True):
+        st.dataframe(
+            arrow_safe_dataframe(build_sector_scoreboard_table(macro_df)),
+            width="stretch",
+            hide_index=True,
+            height=460,
+        )
+
 
 def _component_table(component_group):
     rows = []

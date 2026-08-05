@@ -3,8 +3,21 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
-from rendering.charts_common import COLORS, _base_layout
+from rendering.charts_common import COLORS, _base_layout, add_axis_headroom, add_stacked_axis_headroom, _nice_axis_range
+
+
+
+DATA_CENTER_COLORS = {
+    "operating": "#60a5fa",
+    "expanding": "#818cf8",
+    "construction": "#a78bfa",
+    "proposed": "#7c3aed",
+    "inactive": "#64748b",
+    "cancelled": "#475569",
+    "reference": "#94a3b8",
+}
 
 FACILITY_SIZE_METRICS = {
     "Facility count": None,
@@ -266,10 +279,10 @@ def data_center_service_trajectory(registry: pd.DataFrame | None, *, height: int
             x=cumulative["Year"],
             y=cumulative["Cumulative GW"],
             mode="lines+markers",
-            name="Cumulative disclosed capacity",
+            name="Cumulative published capacity estimate",
             line={"color": COLORS["amber"], "width": 2.2, "dash": "dot"},
             marker={"size": 6},
-            hovertemplate="%{x}<br>Cumulative disclosed capacity: %{y:,.1f} GW<extra></extra>",
+            hovertemplate="%{x}<br>Cumulative published capacity estimate: %{y:,.1f} GW<extra></extra>",
         ))
     fig.update_xaxes(dtick=1)
     fig.update_yaxes(title="Published capacity estimate", ticksuffix=" GW")
@@ -326,7 +339,82 @@ def data_center_national_stage(stage: pd.DataFrame | None, *, height: int = 350)
         ))
     fig.update_xaxes(title="Sites")
     fig.update_yaxes(title="")
-    return _base_layout(fig, height=height, legend=False, margin=dict(l=175, r=42, t=18, b=48))
+    fig = _base_layout(fig, height=height, legend=False, margin=dict(l=175, r=54, t=18, b=48))
+    return add_axis_headroom(fig, axis="x", upper=0.22, lower=0.0, include_zero=True)
+
+
+
+def data_center_stage_profile(stage: pd.DataFrame | None, *, height: int = 455):
+    """Pair site counts and published capacity in one calm lifecycle view."""
+    order = [
+        "Operating",
+        "Expanding",
+        "Approved / under construction",
+        "Proposed",
+        "Suspended",
+        "Cancelled",
+    ]
+    if stage is None or not isinstance(stage, pd.DataFrame) or stage.empty:
+        clean = pd.DataFrame({"Stage": order, "Sites": 0.0, "Published GW": 0.0})
+    else:
+        clean = stage.copy()
+        clean["Sites"] = pd.to_numeric(clean.get("Sites"), errors="coerce").fillna(0)
+        clean["Published MW"] = pd.to_numeric(clean.get("Published MW"), errors="coerce")
+        clean["Published GW"] = clean["Published MW"] / 1000.0
+        clean = pd.DataFrame({"Stage": order}).merge(
+            clean[["Stage", "Sites", "Published GW"]], on="Stage", how="left"
+        ).fillna({"Sites": 0, "Published GW": 0})
+
+    colors = {
+        "Operating": DATA_CENTER_COLORS["operating"],
+        "Expanding": DATA_CENTER_COLORS["expanding"],
+        "Approved / under construction": DATA_CENTER_COLORS["construction"],
+        "Proposed": DATA_CENTER_COLORS["proposed"],
+        "Suspended": DATA_CENTER_COLORS["inactive"],
+        "Cancelled": DATA_CENTER_COLORS["cancelled"],
+    }
+    display_order = list(reversed(order))
+    clean["Stage"] = pd.Categorical(clean["Stage"], categories=display_order, ordered=True)
+    clean = clean.sort_values("Stage", kind="stable")
+
+    fig = make_subplots(
+        rows=1, cols=2, shared_yaxes=True, horizontal_spacing=0.08,
+        column_widths=[0.46, 0.54],
+        subplot_titles=("Sites", "Published capacity"),
+    )
+    fig.add_trace(
+        go.Bar(
+            y=clean["Stage"].astype(str), x=clean["Sites"], orientation="h",
+            marker={"color": [colors.get(str(value), DATA_CENTER_COLORS["inactive"]) for value in clean["Stage"]]},
+            text=clean["Sites"].map(lambda value: f"{int(value):,}" if value else ""),
+            textposition="outside", cliponaxis=False, showlegend=False,
+            hovertemplate="%{y}<br>%{x:,.0f} sites<extra></extra>",
+        ),
+        row=1, col=1,
+    )
+    fig.add_trace(
+        go.Bar(
+            y=clean["Stage"].astype(str), x=clean["Published GW"], orientation="h",
+            marker={"color": [colors.get(str(value), DATA_CENTER_COLORS["inactive"]) for value in clean["Stage"]]},
+            text=clean["Published GW"].map(lambda value: f"{value:,.1f}" if value else ""),
+            textposition="outside", cliponaxis=False, showlegend=False,
+            customdata=clean[["Sites"]],
+            hovertemplate="%{y}<br>%{x:,.1f} GW published<br>%{customdata[0]:,.0f} sites<extra></extra>",
+        ),
+        row=1, col=2,
+    )
+    sites_max = float(pd.to_numeric(clean["Sites"], errors="coerce").max() or 0.0)
+    capacity_max = float(pd.to_numeric(clean["Published GW"], errors="coerce").max() or 0.0)
+    _, sites_upper, sites_step = _nice_axis_range(0.0, sites_max, upper=0.22, lower=0.0, include_zero=True)
+    _, capacity_upper, capacity_step = _nice_axis_range(0.0, capacity_max, upper=0.22, lower=0.0, include_zero=True)
+    fig.update_xaxes(title="Sites", range=[0, sites_upper], dtick=sites_step, row=1, col=1)
+    fig.update_xaxes(title="Published capacity (GW)", range=[0, capacity_upper], dtick=capacity_step, row=1, col=2)
+    fig.update_yaxes(title="", categoryorder="array", categoryarray=display_order, row=1, col=1)
+    fig = _base_layout(fig, height=height, legend=False, margin=dict(l=180, r=54, t=52, b=48))
+    fig.update_layout(plot_bgcolor="rgba(15,23,42,0.24)")
+    fig.update_annotations(font={"color": COLORS["muted"], "size": 11})
+    return fig
+
 
 def data_center_region_landscape(regions: pd.DataFrame | None, *, height: int = 350):
     if regions is None or not isinstance(regions, pd.DataFrame) or regions.empty:
@@ -341,19 +429,20 @@ def data_center_region_landscape(regions: pd.DataFrame | None, *, height: int = 
     if not clean.empty:
         fig.add_trace(go.Bar(
             y=clean["Region"], x=clean["Operating"], orientation="h", name="Operating",
-            marker={"color": COLORS["green"]},
+            marker={"color": DATA_CENTER_COLORS["operating"]},
             hovertemplate="%{y}<br>Operating: %{x:,.0f}<extra></extra>",
         ))
         fig.add_trace(go.Bar(
             y=clean["Region"], x=clean["Development"], orientation="h", name="In development",
-            marker={"color": COLORS["violet"]},
+            marker={"color": DATA_CENTER_COLORS["proposed"]},
             customdata=clean[["Total"]],
             hovertemplate="%{y}<br>In development: %{x:,.0f}<br>Total: %{customdata[0]:,.0f}<extra></extra>",
         ))
     fig.update_layout(barmode="stack")
     fig.update_xaxes(title="Facilities")
     fig.update_yaxes(title="")
-    return _base_layout(fig, height=height, legend=True, margin=dict(l=92, r=18, t=30, b=48))
+    fig = _base_layout(fig, height=height, legend=True, margin=dict(l=92, r=28, t=30, b=48))
+    return add_stacked_axis_headroom(fig, upper=0.20, lower=0.0, include_zero=True)
 
 def data_center_state_pipeline(states: pd.DataFrame | None, *, top_n: int = 15, height: int = 430):
     columns = ["Proposed", "Approved or Under Construction", "Expanding"]
@@ -367,9 +456,9 @@ def data_center_state_pipeline(states: pd.DataFrame | None, *, top_n: int = 15, 
         clean = clean.nlargest(top_n, "Active Pipeline").sort_values("Active Pipeline", ascending=True, kind="stable")
     fig = go.Figure()
     colors = {
-        "Proposed": COLORS["violet"],
-        "Approved or Under Construction": COLORS["amber"],
-        "Expanding": COLORS["blue"],
+        "Proposed": DATA_CENTER_COLORS["proposed"],
+        "Approved or Under Construction": DATA_CENTER_COLORS["construction"],
+        "Expanding": DATA_CENTER_COLORS["expanding"],
     }
     labels = {
         "Proposed": "Proposed",
@@ -386,7 +475,8 @@ def data_center_state_pipeline(states: pd.DataFrame | None, *, top_n: int = 15, 
         ))
     fig.update_layout(barmode="stack")
     fig.update_xaxes(title="Active pipeline sites")
-    return _base_layout(fig, height=height, legend=True, margin=dict(l=116, r=20, t=30, b=50))
+    fig = _base_layout(fig, height=height, legend=True, margin=dict(l=116, r=34, t=30, b=50))
+    return add_stacked_axis_headroom(fig, upper=0.20, lower=0.0, include_zero=True)
 
 def data_center_state_footprint(states: pd.DataFrame | None, *, metric: str = "Total", height: int = 500):
     allowed = {
@@ -473,3 +563,299 @@ def data_center_state_detail_map(
         figure.update_geos(fitbounds="locations", visible=False)
     figure.update_layout(showlegend=False)
     return figure
+
+CENSUS_REGIONS = {
+    "CT": "Northeast", "ME": "Northeast", "MA": "Northeast", "NH": "Northeast", "RI": "Northeast", "VT": "Northeast",
+    "NJ": "Northeast", "NY": "Northeast", "PA": "Northeast",
+    "IL": "Midwest", "IN": "Midwest", "MI": "Midwest", "OH": "Midwest", "WI": "Midwest",
+    "IA": "Midwest", "KS": "Midwest", "MN": "Midwest", "MO": "Midwest", "NE": "Midwest", "ND": "Midwest", "SD": "Midwest",
+    "DE": "South", "DC": "South", "FL": "South", "GA": "South", "MD": "South", "NC": "South", "SC": "South", "VA": "South", "WV": "South",
+    "AL": "South", "KY": "South", "MS": "South", "TN": "South", "AR": "South", "LA": "South", "OK": "South", "TX": "South",
+    "AZ": "West", "CO": "West", "ID": "West", "MT": "West", "NV": "West", "NM": "West", "UT": "West", "WY": "West",
+    "AK": "West", "CA": "West", "HI": "West", "OR": "West", "WA": "West",
+}
+
+ACTIVE_CAMPUS_STATUSES = {
+    "Expanding", "Approved / permitted / under construction", "Under construction",
+    "Proposed", "Planned", "Announced",
+}
+INACTIVE_CAMPUS_STATUSES = {"Suspended", "Cancelled", "Blocked"}
+
+
+def _campus_stage(value) -> str:
+    status = str(value or "").strip()
+    if status == "Operational":
+        return "Operating"
+    if status == "Expanding":
+        return "Expanding"
+    if status in {"Approved / permitted / under construction", "Under construction"}:
+        return "Approved / construction"
+    if status in {"Proposed", "Planned", "Announced"}:
+        return "Proposed / announced"
+    if status in INACTIVE_CAMPUS_STATUSES:
+        return "Suspended / cancelled"
+    return "Footprint / status unknown"
+
+
+def _campus_capacity(frame: pd.DataFrame) -> pd.Series:
+    published = pd.to_numeric(frame.get("Published Capacity Estimate MW"), errors="coerce")
+    planned = pd.to_numeric(frame.get("Planned Data Center Capacity MW"), errors="coerce")
+    return planned.combine_first(published).where(lambda values: values > 0)
+
+
+def data_center_campus_region(campuses: pd.DataFrame | None, *, height: int = 320):
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        grouped = pd.DataFrame(columns=["Region", "Operating", "Active pipeline"])
+    else:
+        clean = campuses.copy()
+        clean["Region"] = clean.get("State", "").map(CENSUS_REGIONS).fillna("Other")
+        clean["Operating"] = clean.get("Status", "").eq("Operational").astype(int)
+        clean["Active pipeline"] = clean.get("Status", "").isin(ACTIVE_CAMPUS_STATUSES).astype(int)
+        grouped = clean.groupby("Region", as_index=False)[["Operating", "Active pipeline"]].sum()
+        grouped["Total"] = grouped[["Operating", "Active pipeline"]].sum(axis=1)
+        grouped = grouped.sort_values("Total", ascending=True, kind="stable")
+    fig = go.Figure()
+    for column, color in [("Operating", DATA_CENTER_COLORS["operating"]), ("Active pipeline", DATA_CENTER_COLORS["proposed"])]:
+        if grouped.empty:
+            continue
+        fig.add_trace(go.Bar(
+            y=grouped["Region"], x=grouped[column], orientation="h", name=column,
+            marker={"color": color},
+            text=grouped[column].map(lambda value: f"{int(value):,}" if value else ""),
+            textposition="inside",
+            hovertemplate=f"%{{y}}<br>{column}: %{{x:,.0f}} campuses<extra></extra>",
+        ))
+    fig.update_layout(barmode="stack")
+    fig.update_xaxes(title="Campuses")
+    fig.update_yaxes(title="")
+    return _base_layout(fig, height=height, legend=True, margin=dict(l=88, r=28, t=22, b=46))
+
+
+def data_center_campus_stage(campuses: pd.DataFrame | None, *, height: int = 340):
+    order = ["Operating", "Expanding", "Approved / construction", "Proposed / announced", "Suspended / cancelled"]
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        grouped = pd.DataFrame({"Stage": order, "Campuses": 0})
+    else:
+        clean = campuses.copy()
+        clean["Stage"] = clean.get("Status", "").map(_campus_stage)
+        grouped = clean.loc[clean["Stage"].isin(order)].groupby("Stage", as_index=False).size().rename(columns={"size": "Campuses"})
+        grouped = pd.DataFrame({"Stage": order}).merge(grouped, on="Stage", how="left").fillna({"Campuses": 0})
+    colors = {
+        "Operating": DATA_CENTER_COLORS["operating"], "Expanding": DATA_CENTER_COLORS["expanding"],
+        "Approved / construction": DATA_CENTER_COLORS["construction"], "Proposed / announced": DATA_CENTER_COLORS["proposed"],
+        "Suspended / cancelled": DATA_CENTER_COLORS["inactive"],
+    }
+    fig = go.Figure(go.Bar(
+        y=grouped["Stage"], x=grouped["Campuses"], orientation="h",
+        marker={"color": grouped["Stage"].map(colors).tolist()},
+        text=grouped["Campuses"].map(lambda value: f"{int(value):,}"),
+        textposition="outside", cliponaxis=False,
+        hovertemplate="%{y}<br>%{x:,.0f} campuses<extra></extra>",
+    ))
+    fig.update_xaxes(title="Campuses")
+    fig.update_yaxes(title="", categoryorder="array", categoryarray=list(reversed(order)))
+    return _base_layout(fig, height=height, legend=False, margin=dict(l=170, r=46, t=18, b=46))
+
+
+def data_center_capacity_by_stage(campuses: pd.DataFrame | None, *, height: int = 340):
+    order = ["Operating", "Expanding", "Approved / construction", "Proposed / announced"]
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        grouped = pd.DataFrame({"Stage": order, "Capacity GW": 0.0, "Campuses": 0})
+    else:
+        clean = campuses.copy()
+        clean["Stage"] = clean.get("Status", "").map(_campus_stage)
+        clean["Capacity MW"] = _campus_capacity(clean)
+        grouped = (
+            clean.loc[clean["Stage"].isin(order) & clean["Capacity MW"].notna()]
+            .groupby("Stage", as_index=False)
+            .agg(**{"Capacity GW": ("Capacity MW", lambda values: values.sum() / 1000.0), "Campuses": ("Capacity MW", "size")})
+        )
+        grouped = pd.DataFrame({"Stage": order}).merge(grouped, on="Stage", how="left").fillna({"Capacity GW": 0, "Campuses": 0})
+    colors = {
+        "Operating": DATA_CENTER_COLORS["operating"], "Expanding": DATA_CENTER_COLORS["expanding"],
+        "Approved / construction": DATA_CENTER_COLORS["construction"], "Proposed / announced": DATA_CENTER_COLORS["proposed"],
+    }
+    fig = go.Figure(go.Bar(
+        y=grouped["Stage"], x=grouped["Capacity GW"], orientation="h",
+        marker={"color": grouped["Stage"].map(colors).tolist()},
+        text=grouped["Capacity GW"].map(lambda value: f"{value:,.1f}" if value else ""),
+        textposition="outside", cliponaxis=False,
+        customdata=grouped[["Campuses"]],
+        hovertemplate="%{y}<br>%{x:,.1f} GW<br>%{customdata[0]:,.0f} campuses with published capacity estimates<extra></extra>",
+    ))
+    fig.update_xaxes(title="Published capacity estimate", ticksuffix=" GW")
+    fig.update_yaxes(title="", categoryorder="array", categoryarray=list(reversed(order)))
+    return _base_layout(fig, height=height, legend=False, margin=dict(l=170, r=52, t=18, b=46))
+
+
+def _state_operating_pipeline(campuses: pd.DataFrame | None) -> pd.DataFrame:
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        return pd.DataFrame(columns=["State", "Operating", "Active pipeline", "Pipeline intensity"])
+    clean = campuses.copy()
+    clean = clean.loc[clean.get("State", "").fillna("").astype(str).str.len().eq(2)].copy()
+    clean["Operating"] = clean.get("Status", "").eq("Operational").astype(int)
+    clean["Active pipeline"] = clean.get("Status", "").isin(ACTIVE_CAMPUS_STATUSES).astype(int)
+    grouped = clean.groupby("State", as_index=False)[["Operating", "Active pipeline"]].sum()
+    grouped["Pipeline intensity"] = grouped["Active pipeline"] / grouped["Operating"].replace(0, np.nan)
+    grouped["Total"] = grouped[["Operating", "Active pipeline"]].sum(axis=1)
+    return grouped
+
+
+def data_center_state_landscape(campuses: pd.DataFrame | None, *, top_n: int = 15, height: int = 440):
+    grouped = _state_operating_pipeline(campuses)
+    grouped = grouped.nlargest(top_n, "Total").sort_values("Total", ascending=True, kind="stable") if not grouped.empty else grouped
+    fig = go.Figure()
+    for column, color in [("Operating", DATA_CENTER_COLORS["operating"]), ("Active pipeline", DATA_CENTER_COLORS["proposed"])]:
+        if grouped.empty:
+            continue
+        fig.add_trace(go.Bar(
+            y=grouped["State"], x=grouped[column], orientation="h", name=column,
+            marker={"color": color},
+            hovertemplate=f"%{{y}}<br>{column}: %{{x:,.0f}} campuses<extra></extra>",
+        ))
+    fig.update_layout(barmode="stack")
+    fig.update_xaxes(title="Campuses")
+    fig.update_yaxes(title="")
+    fig = _base_layout(fig, height=height, legend=True, margin=dict(l=54, r=34, t=18, b=46))
+    return add_stacked_axis_headroom(fig, upper=0.20, lower=0.0, include_zero=True)
+
+
+def data_center_pipeline_intensity(campuses: pd.DataFrame | None, *, top_n: int = 15, height: int = 440):
+    grouped = _state_operating_pipeline(campuses)
+    if not grouped.empty:
+        grouped = grouped.loc[(grouped["Operating"] >= 3) & (grouped["Active pipeline"] >= 3)].copy()
+        grouped = grouped.nlargest(top_n, "Pipeline intensity").sort_values("Pipeline intensity", ascending=True, kind="stable")
+    fig = go.Figure()
+    if not grouped.empty:
+        fig.add_trace(go.Bar(
+            y=grouped["State"], x=grouped["Pipeline intensity"], orientation="h",
+            marker={"color": COLORS["amber"]},
+            text=grouped["Pipeline intensity"].map(lambda value: f"{value:.1f}x"),
+            textposition="outside", cliponaxis=False,
+            customdata=grouped[["Operating", "Active pipeline"]],
+            hovertemplate=(
+                "%{y}<br>Pipeline intensity: %{x:.2f}x"
+                "<br>Operating: %{customdata[0]:,.0f}"
+                "<br>Active pipeline: %{customdata[1]:,.0f}<extra></extra>"
+            ),
+        ))
+    fig.update_xaxes(title="Active pipeline / operating campuses", ticksuffix="x")
+    fig.update_yaxes(title="")
+    fig = _base_layout(fig, height=height, legend=False, margin=dict(l=54, r=64, t=18, b=46))
+    return add_axis_headroom(fig, axis="x", upper=0.22, lower=0.0, include_zero=True)
+
+
+def data_center_capacity_distribution(campuses: pd.DataFrame | None, *, height: int = 350):
+    labels = ["Under 25", "25–99", "100–249", "250–499", "500–999", "1,000+"]
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        grouped = pd.DataFrame(columns=["Capacity band", "Portfolio", "Campuses"])
+    else:
+        clean = campuses.copy()
+        clean["Capacity MW"] = _campus_capacity(clean)
+        clean = clean.loc[clean["Capacity MW"].notna()].copy()
+        clean["Portfolio"] = np.where(clean.get("Status", "").eq("Operational"), "Operating", np.where(clean.get("Status", "").isin(ACTIVE_CAMPUS_STATUSES), "Active pipeline", "Other"))
+        clean = clean.loc[clean["Portfolio"].isin(["Operating", "Active pipeline"])]
+        clean["Capacity band"] = pd.cut(
+            clean["Capacity MW"], bins=[0, 25, 100, 250, 500, 1000, np.inf],
+            labels=labels, right=False, include_lowest=True,
+        )
+        grouped = clean.groupby(["Capacity band", "Portfolio"], observed=False).size().reset_index(name="Campuses")
+    fig = go.Figure()
+    for portfolio, color in [("Operating", DATA_CENTER_COLORS["operating"]), ("Active pipeline", DATA_CENTER_COLORS["proposed"])]:
+        rows = grouped.loc[grouped["Portfolio"].eq(portfolio)] if not grouped.empty else grouped
+        rows = pd.DataFrame({"Capacity band": labels}).merge(rows, on="Capacity band", how="left").fillna({"Campuses": 0})
+        fig.add_trace(go.Bar(
+            x=rows["Capacity band"].astype(str), y=rows["Campuses"], name=portfolio,
+            marker={"color": color},
+            hovertemplate=f"%{{x}} MW<br>{portfolio}: %{{y:,.0f}} campuses<extra></extra>",
+        ))
+    fig.update_layout(barmode="group")
+    fig.update_xaxes(title="Published capacity estimate (MW)")
+    fig.update_yaxes(title="Campuses")
+    fig = _base_layout(fig, height=height, legend=True, margin=dict(l=52, r=18, t=18, b=58))
+    return add_axis_headroom(fig, upper=0.20, lower=0.0, include_zero=True)
+
+
+def data_center_largest_campuses(campuses: pd.DataFrame | None, *, top_n: int = 12, height: int = 420):
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        clean = pd.DataFrame(columns=["Facility", "Capacity MW", "Status", "Operator", "State"])
+    else:
+        clean = campuses.copy()
+        clean["Capacity MW"] = _campus_capacity(clean)
+        clean = clean.loc[clean["Capacity MW"].notna() & ~clean.get("Status", "").isin(INACTIVE_CAMPUS_STATUSES)].copy()
+        clean["Facility"] = clean.get("Facility", "").replace("", "Unnamed campus")
+        clean = clean.nlargest(top_n, "Capacity MW").sort_values("Capacity MW", ascending=True, kind="stable")
+    colors = clean.get("Status", pd.Series(dtype=str)).map({
+        "Operational": DATA_CENTER_COLORS["operating"], "Expanding": DATA_CENTER_COLORS["expanding"],
+        "Approved / permitted / under construction": DATA_CENTER_COLORS["construction"], "Under construction": DATA_CENTER_COLORS["construction"],
+        "Proposed": DATA_CENTER_COLORS["proposed"], "Planned": DATA_CENTER_COLORS["proposed"], "Announced": "#6d28d9",
+    }).fillna(DATA_CENTER_COLORS["inactive"]) if not clean.empty else []
+    fig = go.Figure()
+    if not clean.empty:
+        custom = np.column_stack([
+            clean.get("Operator", "").replace("", "Unreported"),
+            clean.get("State", ""),
+            clean.get("Status", ""),
+        ])
+        fig.add_trace(go.Bar(
+            y=clean["Facility"], x=clean["Capacity MW"] / 1000.0, orientation="h",
+            marker={"color": colors.tolist()},
+            customdata=custom,
+            hovertemplate=(
+                "%{y}<br>%{x:,.2f} GW"
+                "<br>%{customdata[0]} · %{customdata[1]}"
+                "<br>%{customdata[2]}<extra></extra>"
+            ),
+        ))
+    fig.update_xaxes(title="Published capacity estimate", ticksuffix=" GW")
+    fig.update_yaxes(title="")
+    fig = _base_layout(fig, height=height, legend=False, margin=dict(l=210, r=44, t=18, b=46))
+    return add_axis_headroom(fig, axis="x", upper=0.22, lower=0.0, include_zero=True)
+
+
+def data_center_operator_label(value) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    lowered = text.casefold()
+    aliases = {
+        "amazon": "Amazon / AWS", "aws": "Amazon / AWS", "amazon web services": "Amazon / AWS",
+        "meta": "Meta", "meta platforms": "Meta", "facebook": "Meta",
+        "google": "Google", "google llc": "Google",
+        "microsoft": "Microsoft", "microsoft corporation": "Microsoft",
+        "crusoe": "Crusoe", "digitalrealty": "Digital Realty", "digital realty": "Digital Realty",
+    }
+    return aliases.get(lowered, text)
+
+
+def data_center_operator_pipeline(campuses: pd.DataFrame | None, *, top_n: int = 15, height: int = 430):
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        grouped = pd.DataFrame(columns=["Operator", "Campuses", "Capacity GW"])
+    else:
+        clean = campuses.loc[campuses.get("Status", "").isin(ACTIVE_CAMPUS_STATUSES)].copy()
+        clean["Operator"] = clean.get("Operator", "").map(data_center_operator_label)
+        clean = clean.loc[clean["Operator"].ne("")]
+        clean["Capacity MW"] = _campus_capacity(clean)
+        grouped = (
+            clean.groupby("Operator", as_index=False)
+            .agg(**{"Campuses": ("Facility ID", "size"), "Capacity GW": ("Capacity MW", lambda values: values.sum(min_count=1) / 1000.0)})
+        )
+        grouped = grouped.nlargest(top_n, "Campuses").sort_values("Campuses", ascending=True, kind="stable")
+    fig = go.Figure()
+    if not grouped.empty:
+        custom = grouped[["Capacity GW"]].copy()
+        fig.add_trace(go.Bar(
+            y=grouped["Operator"], x=grouped["Campuses"], orientation="h",
+            marker={"color": DATA_CENTER_COLORS["operating"]},
+            text=grouped["Campuses"].map(lambda value: f"{int(value):,}"),
+            textposition="outside", cliponaxis=False,
+            customdata=custom,
+            hovertemplate=(
+                "%{y}<br>%{x:,.0f} active campuses"
+                "<br>Published capacity estimate: %{customdata[0]:,.1f} GW<extra></extra>"
+            ),
+        ))
+    fig.update_xaxes(title="Active pipeline campuses")
+    fig.update_yaxes(title="")
+    fig = _base_layout(fig, height=height, legend=False, margin=dict(l=180, r=58, t=18, b=46))
+    return add_axis_headroom(fig, axis="x", upper=0.22, lower=0.0, include_zero=True)

@@ -34,17 +34,17 @@ Speculation Gap = AI Equity Index - AI Development Intensity
 """,
 
     "Economic Validation Gap": """
-Compares enterprise-software capital-deployment growth with realized company revenue growth and real economy-wide information-processing investment growth.
+Compares observable AI deployment with realized downstream operating validation.
 
-Deployment Score = normalized aggregate year-over-year CapEx growth
+Deployment Score = AI Development Intensity
 
-Validation Score = 0.50(normalized aggregate revenue growth) + 0.50(normalized real information-processing investment growth)
+Validation Score = 0.65(normalized aggregate revenue growth) + 0.35(normalized revenue-weighted change in free-cash-flow margin)
 
 Economic Validation Gap = Deployment Score - Validation Score
 
-Company growth uses ratio-of-sums aggregation. All legs use year-over-year periods and are normalized independently.
+Validation covers the configured cloud-hyperscaler and enterprise-AI-software cohorts. Revenue growth uses ratio-of-sums aggregation; cash-margin change is revenue weighted. Both validation legs use fixed, versioned tanh transforms and year-over-year inputs.
 
-**How to read it:** Positive values indicate the configured enterprise-software cohort's deployment proxy is running ahead of the selected revenue and economy-wide investment proxies. Negative values indicate those validation proxies are keeping pace with or exceeding deployment. It is not an AI productivity estimate. Scale: -100 to +100.
+**How to read it:** Positive values indicate observable deployment is running ahead of downstream revenue and cash-margin validation. Negative values indicate those operating outcomes are keeping pace with or exceeding deployment. It is not an AI productivity estimate or a causal return-on-investment measure. Scale: -100 to +100.
 """,
 
     "AI-Industrial Growth Gap": """
@@ -94,11 +94,24 @@ N is the number of companies with valid positive market capitalization. A value 
 """,
 
     "U.S. Water Utilization Ledger": """
-A retained, versioned accounting layer for typed U.S. water flows. The first active national module uses USGS 2015 county estimates to separate withdrawals by use, groundwater or surface water, and fresh or saline quality.
+A retained, versioned accounting layer for typed U.S. water flows. Current analytical surfaces use post-2020 evidence: the USGS 2020 national withdrawal comparison and EIA 2024 plant-level thermoelectric records. Older county records remain retained only as historical provenance and are not presented as current conditions.
 
 Reported, agency-estimated, permitted, inferred, and scenario values retain separate evidence classes. Withdrawal, consumption, delivery, and discharge are never collapsed into one generic total.
 
-**How to read it:** This is a national withdrawal baseline and data-legitimacy contract, not a current water-availability or facility-attribution model. Source year, coverage, resilience, and reconciliation remain visible.
+**How to read it:** This is an evidence and accounting framework, not a facility-attribution or current local water-availability model. Source year, coverage, and measurement basis remain visible.
+""",
+
+
+    "Freshwater Competition Context": """
+Compares the three largest modeled withdrawal categories in the retained USGS 2020 national release: crop irrigation, thermoelectric power, and public supply.
+
+**How to read it:** This is a current-window national allocation envelope, not a complete all-use account. Data centers are not a separate category in the source, so the product does not attribute another claimant's withdrawal to AI facilities or infer local shortage, causation, or displacement.
+""",
+
+    "AI Water Evidence Ladder": """
+Tracks how far the current facility evidence progresses from mapped location and state identification to direct water evidence, quantified withdrawal, and quantified consumption.
+
+**How to read it:** Each step is a stricter evidentiary threshold. State identification comes from the current facility registry. Direct evidence can include permits, utility records, cooling design, or source disclosure. Quantified withdrawal and consumption require facility-specific volumes. Older county-withdrawal records are retained only as historical provenance and do not count as a current evidence stage.
 """,
 
     "Thermoelectric Cooling-Water Records": """
@@ -106,7 +119,7 @@ Reports EIA 2024 plant-level cooling-water withdrawal and consumption records by
 
 Withdrawal and consumption remain separate, and source records with negative values or consumption greater than withdrawal are retained with quality flags rather than silently deleted.
 
-**How to read it:** The records describe reported thermoelectric cooling-water activity in the EIA survey frame. They are a separate 2024 layer and are not added to the USGS 2015 national total.
+**How to read it:** The records describe reported thermoelectric cooling-water activity in the EIA survey frame. They are a separate 2024 plant-level layer and are not added to the USGS 2020 national comparison.
 """,
 
     "Henry Hub Natural Gas": """
@@ -176,27 +189,27 @@ The Energy tab plots the retained history's 90th percentile as a statistical tig
 """,
 
     "Internal Funding Coverage": """
-Internal Funding Coverage = Operating Cash Flow ÷ Trailing-Twelve-Month CapEx
+Internal Funding Coverage = Σ SEC Trailing-Twelve-Month Operating Cash Flow ÷ Σ SEC Trailing-Twelve-Month CapEx
 
-**How to read it:** Above 1.0x means reported operating cash flow covers reported trailing capital spending for the configured company cohort. Below 1.0x indicates a funding gap at the current rate. It does not capture all project finance, leases, joint ventures, or unconsolidated obligations.
+Each company uses its latest available comparable fiscal period; both flows require four reported quarters. Companies missing either leg are excluded. **How to read it:** Above 1.0x means reported operating cash flow covers reported trailing capital spending for the matched cohort. Below 1.0x indicates a funding gap at the current rate. It does not capture all project finance, leases, joint ventures, or unconsolidated obligations.
 """,
 
     "Cash Reserve Runway": """
-Cash Reserve Runway = Cash and Equivalents ÷ Trailing-Twelve-Month CapEx
+Cash Reserve Runway = Σ SEC Period-End Cash and Equivalents ÷ Σ SEC Trailing-Twelve-Month CapEx
 
-**How to read it:** The result is expressed in years for the configured public-company cohort. It is a static ratio, not a liquidity forecast; it ignores future cash generation, minimum operating cash, restricted cash, financing access, and changes in spending.
+The numerator and denominator use each company's latest available fiscal period; CapEx requires four reported quarters. **How to read it:** The result is expressed in years for the matched public-company cohort. It is a static ratio, not a liquidity forecast; it ignores future cash generation, minimum operating cash, restricted cash, financing access, and changes in spending.
 """,
 
     "Debt Financing Pulse": """
-Debt Financing Pulse = Twelve-Month Change in Total Debt ÷ Trailing-Twelve-Month CapEx
+Debt Financing Pulse = Σ(SEC Total Debt at t − SEC Total Debt at comparable t−4q) ÷ Σ SEC Trailing-Twelve-Month CapEx at t
 
-**How to read it:** Positive values indicate reported total debt expanded relative to trailing capital spending for the configured cohort. Negative values indicate net debt reduction. The ratio does not identify whether borrowing financed AI projects.
+Only companies with matched debt observations and four-quarter CapEx are included; vendor and SEC debt taxonomies are not mixed. **How to read it:** Positive values indicate reported total debt expanded relative to trailing capital spending for the matched cohort. Negative values indicate net debt reduction. The ratio does not identify whether borrowing financed AI projects.
 """,
 
     "Forward Commitment Load": """
-Forward Commitment Load = Disclosed Forward Commitments ÷ Trailing-Twelve-Month CapEx
+Forward Commitment Load = Σ Latest Curated Disclosed Forward Commitments ÷ Σ Matched SEC Trailing-Twelve-Month CapEx
 
-**How to read it:** Higher values indicate more disclosed commitments relative to trailing capital spending for the reviewed issuer cohort. Coverage depends on issuer disclosure and extraction scope; undisclosed or ambiguously described obligations remain missing.
+The current cross-section is retained; no historical trend is asserted because prior ledger vintages are not definition-stable. **How to read it:** Higher values indicate more disclosed commitments relative to trailing capital spending for the reviewed issuer cohort. Coverage depends on issuer disclosure and extraction scope; undisclosed or ambiguously described obligations remain missing.
 """,
 
     "Corporate Bond Market Distress": """
@@ -253,6 +266,34 @@ The Chicago Fed National Financial Conditions Index summarizes U.S. money-market
 The Chicago Fed Adjusted National Financial Conditions Index removes the component of financial conditions associated with current economic conditions.
 
 **How to read it:** Positive values indicate tighter-than-average financial conditions after the adjustment; negative values indicate looser conditions. ANFCI is contextual and is not blended into Borrower Strain or Lender Strain.
+""",
+
+    "Market Leadership Concentration": """
+Measures how much of the configured public-equity universe's total company market capitalization belongs to its largest issuers.
+
+Top-N Share = Σ Market Capitalization of the N largest valid companies ÷ Σ Market Capitalization of all valid companies
+
+Raw HHI = Σ Company Market-Capitalization Share²
+
+**How to read it:** Higher Top-6, Top-10, or HHI values indicate that public-equity value is concentrated in fewer companies. These measures use each issuer's total market capitalization; they do not estimate the portion attributable specifically to AI activity.
+""",
+
+    "Effective Firms": """
+Translates raw market-capitalization HHI into the equivalent number of equally sized companies.
+
+Effective Firms = 1 ÷ Raw HHI
+
+**How to read it:** If a large company universe has 16 effective firms, its market-value concentration is equivalent to approximately 16 equally sized companies. This does not mean only 16 companies are present.
+""",
+
+    "Retained-Universe Market Return": """
+Tracks price performance using beginning-period market-capitalization weights from the earliest retained date meeting the required market-cap and price coverage threshold.
+
+Company Contribution = Beginning-Period Weight × Company Price Return
+
+The cap-weighted, equal-weighted, and median-company series use the same valid starting universe.
+
+**How to read it:** The cap-weighted versus equal-weighted gap shows whether the largest companies are outperforming or underperforming the typical constituent. It is a price-return history, excludes dividends, and begins with the retained archive.
 """,
 
     "Sector AI Equity Index": """
@@ -340,15 +381,11 @@ Measures the seasonally adjusted annual rate of private construction spending on
 """,
 
     "U.S. Data Center Footprint": """
-Tracks the national number of operating and in-development data-center facilities.
-
-**How to read it:** Use the total and operating counts to understand the current installed footprint. The in-development count captures the next wave of planned, under-construction, and land-banked facilities. Facility definitions can represent buildings, campuses, or named projects, so the measure is best used for national scale and direction rather than as a count of individual server halls.
+Tracks the national operating base and in-development data-center footprint. Detailed location records are deconflicted to physical campuses so multiple buildings at one site do not inflate campus counts.
 """,
 
     "Data Center Development Pipeline": """
-Tracks proposed, approved or under-construction, and expanding U.S. data-center projects, together with published project capacity where disclosed.
-
-**How to read it:** Project counts show the visible development queue. Published capacity provides a partial view of announced scale; it is not the same as energized load, current electricity demand, or completed capacity. Missing project capacity remains missing.
+Tracks active U.S. data-center campuses by development stage, geography, operator, and published capacity.
 """,
 
     "Computer, Electronic & Electrical Manufacturing Construction": """
@@ -383,6 +420,21 @@ Tracks Federal Reserve G.17 capacity-utilization rates for U.S. computer/periphe
 Tracks announced private capital spending and direct federal awards across official U.S. compute-manufacturing projects.
 
 **How to read it:** Expected private investment shows the scale of planned manufacturing buildout, while direct awards show the public funding contribution. The project set covers leading-edge logic, memory, packaging, photonics, and other compute-enabling layers. Announced investment is not completed construction or production output.
+""",
+
+
+    "Buildout Leadership Rotation": """
+Compares rolling year-over-year construction growth across data centers, compute manufacturing, electric power, communications, and public water. Quarterly snapshots show which layer of the physical AI stack is absorbing the strongest current investment momentum.
+
+**How to read it:** Leadership rotation is a flow measure, not a verdict on long-run importance. A sharp slowdown can reflect normalization from an unusually high base after an earlier investment surge, so momentum should be read alongside current spending levels.
+""",
+
+    "Net Infrastructure Support Balance": """
+Compares six enabling systems with channel-specific lagged baselines. Compute manufacturing, electric power, and communications are benchmarked to broad private-construction denominators; public water, roads and highways, and public transit are benchmarked to their lagged shares of the selected public-system construction mix.
+
+Net support balance = Σ(observed component − expected baseline component)
+
+**How to read it:** Positive and negative deviations are both retained. Gross positive excess reports only channels above baseline and is a secondary diagnostic; the net balance is the headline measure because it also includes below-baseline channels. This is a statistical composition relationship, not causal AI attribution or a measure of physical capacity adequacy.
 """,
 
     "Communication Construction": """
@@ -438,12 +490,85 @@ Compares current and expected AI use across major U.S. industries.
 """,
 
     "Purpose Statement": """
-AI Macro tracks the development of AI as an economic instrument and its footprint in the US economy.
-
-It examines who is building it, how the buildout is financed, where this growth occurs, and the physical capacity required to sustain it.
-
-It measures deployment, economic returns, and the adaptation of businesses, workers, and institutions to AI integration.
-
-Using publicly available data, the platform connects capital committed, capacity built, adoption achieved, and value realized.
+AI Macro traces the AI economy from capital and construction through deployment, adoption, and economic results. Using publicly available data, it connects companies and markets with the data centers, resources, and infrastructure behind the buildout—and examines how that buildout is reshaping the broader U.S. economy. Its central questions are whether rising investment and capacity are producing durable use, broad participation, and realized value—and how the resulting gains, costs, and risks are distributed across investors, businesses, workers, communities, and regions.
 """,
+
+    "Interconnection Pipeline": """
+Tracks active U.S. generator and storage interconnection requests using Berkeley Lab component accounting.
+
+**How to read it:** Requested queue capacity is not operating, financed, or deliverable capacity. Projects may withdraw, resize, change technology, or remain constrained by transmission and study requirements.
+""",
+
+    "Advanced-Stage Queue Share": """
+Share of submitted active interconnection capacity whose records indicate an executed interconnection agreement or construction-stage status.
+
+**How to read it:** A higher share indicates more of the queue has progressed beyond early study stages. It does not guarantee timely energization or firm deliverability.
+""",
+
+    "Electric Storage Deployment": """
+Combines EIA operating battery power and energy capacity with submitted storage components in the active Berkeley Lab interconnection queue.
+
+**How to read it:** Operating capacity and queued capacity remain separate. Queue storage is requested capacity, not installed capacity, and hybrid-project accounting is displayed using the retained component methodology.
+""",
+
+    "AI-Linked Employment Footprint": """
+Tracks BLS employment in computer-systems design, computing-infrastructure services, semiconductor manufacturing, and power-and-communication-line construction from 2020 to the present.
+
+**How to read it:** These industries are directly connected to the AI production and deployment stack, but their full employment changes are not attributed to AI.
+""",
+
+    "Supporting Labor Demand": """
+Tracks BLS JOLTS job openings in information, manufacturing, construction, and professional and business services.
+
+**How to read it:** These broad labor markets show the hiring environment in which AI-related employers compete for workers. They do not isolate AI-specific vacancies.
+""",
+
+    "AI-Linked Wage Trajectory": """
+Tracks average hourly earnings in directly relevant technology, semiconductor, and infrastructure-construction industries.
+
+**How to read it:** Wage changes can reflect labor scarcity, worker composition, inflation, bargaining conditions, and industry mix. The platform does not assign the full change to AI.
+""",
+
+    "Labor Productivity": """
+BLS nonfarm-business and manufacturing output-per-hour measures.
+
+**How to read it:** Productivity is a realized economic outcome and a validation test for the investment cycle. Quarterly movements are not attributed to AI without causal evidence.
+""",
+
+    "Real Value-Added Output": """
+BLS real value-added output for nonfarm business and manufacturing.
+
+**How to read it:** This measures inflation-adjusted production in the underlying sector account. It is not an AI-specific output series.
+""",
+
+    "Hourly Compensation": """
+BLS compensation per hour in the nonfarm-business productivity account.
+
+**How to read it:** Use alongside productivity to assess whether realized gains are reaching labor. It does not identify distribution across occupations or income groups.
+""",
+
+    "Inflation-Adjusted Realized Growth": """
+The Economic Impact comparison keeps BLS labor productivity and real output in their published inflation-adjusted form, while converting hourly compensation and unit labor costs using the latest year-over-year CPI change.
+
+**How to read it:** The adjustment separates purchasing-power growth from nominal growth. It is a descriptive normalization, not an estimate of AI's causal contribution.
+""",
+
+    "Unit Labor Costs": """
+BLS labor compensation required to produce one unit of output.
+
+**How to read it:** Growth can reflect compensation rising faster than productivity. It is a realized production-cost measure, not a market valuation or stock-price signal.
+""",
+
+    "Information-Processing Investment": """
+BEA investment in information-processing equipment and software, retained through FRED.
+
+**How to read it:** This is broader than AI investment. It supplies a consistent capital-formation benchmark for comparing investment growth with realized output and productivity.
+""",
+
+    "Wastewater System Investment": """
+U.S. Census seasonally adjusted annual rate of public sewage and waste-disposal construction spending.
+
+**How to read it:** This is a chronological public-system investment series, not a measure of wastewater volumes, treatment headroom, discharge permits, or AI-attributed spending.
+""",
+
 }

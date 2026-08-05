@@ -1,41 +1,173 @@
 from __future__ import annotations
 
+import html
+
 import numpy as np
 import pandas as pd
 import streamlit as st
 
-from analytics.hhi_engine import sector_hhi_component_breakdown
+from analytics.market_ledger import build_market_ledger
 from analytics.sector_assessment import select_current_sector_assessment
 from config.factor_config import FACTOR_DISPLAY_NAMES
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.labels import sector_display_name
-from rendering.charts_market import earnings_support_map, pressure_component_chart, sector_factor_chart, speculative_load_matrix
+from rendering.charts_market import (
+    concentration_history_chart,
+    earnings_support_map,
+    market_ownership_treemap,
+    participation_history_chart,
+    return_contribution_chart,
+    sector_signal_anatomy_chart,
+    speculative_load_matrix,
+)
 from rendering.common import _forward_multiple_text, _render_tab_metric_registry
-from rendering.components import fmt_number, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
-from rendering.sector import render_ticker_controls
+from rendering.components import fmt_number, inject_panel_height_rules, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
+from rendering.sector_dossier import (
+    build_sector_narrative,
+    build_structure_interpretation,
+    build_structure_snapshot,
+)
 from rendering.tables import _company_table
+
+
+def _inject_market_page_theme() -> None:
+    """Apply a contained visual system to Market-tab panels and stat cards."""
+    st.markdown(
+        """
+        <style>
+        div[class*="st-key-market-panel-"] {
+            border-color: rgba(148, 163, 184, 0.17) !important;
+            background: rgba(17, 24, 39, 0.78) !important;
+            box-shadow: inset 0 1px 0 rgba(167, 139, 250, 0.055) !important;
+        }
+        div[class*="st-key-market-panel-"] [data-testid="stPlotlyChart"] {
+            margin-top: -0.12rem;
+        }
+        div[class*="st-key-statline-market-ledger-"],
+        div[class*="st-key-statline-sector-cross-state-"],
+        div[class*="st-key-statline-sector-dossier-"] {
+            border-top-color: rgba(167, 139, 250, 0.86) !important;
+        }
+        .rm-sector-read {
+            border: 1px solid rgba(167, 139, 250, 0.22);
+            border-left: 3px solid #a78bfa;
+            border-radius: 0 13px 13px 0;
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.12), rgba(17, 24, 39, 0.64));
+            padding: 0.82rem 1rem 0.86rem 1rem;
+            margin: 0.15rem 0 0.95rem 0;
+        }
+        .rm-sector-read-kicker {
+            color: #a78bfa;
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+        }
+        .rm-sector-read-title {
+            color: #f8fafc;
+            font-size: 1.02rem;
+            font-weight: 760;
+            margin-top: 0.18rem;
+        }
+        .rm-sector-read-copy {
+            color: #b9c3d2;
+            font-size: 0.82rem;
+            line-height: 1.48;
+            margin-top: 0.2rem;
+        }
+        .rm-sector-read-weekly {
+            border-top: 1px solid rgba(148, 163, 184, 0.14);
+            color: #aab5c5;
+            font-size: 0.76rem;
+            line-height: 1.45;
+            margin-top: 0.62rem;
+            padding-top: 0.58rem;
+        }
+        .rm-sector-read-weekly span {
+            color: #60a5fa;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            margin-right: 0.28rem;
+            text-transform: uppercase;
+        }
+        .rm-sector-read-reference {
+            font-size: 0.68rem;
+            margin-top: 0.28rem;
+        }
+        .rm-sector-read-reference a { color: #93c5fd; text-decoration: none; }
+        .rm-sector-structure-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.52rem;
+            margin-top: 0.55rem;
+        }
+        .rm-sector-structure-item {
+            border: 1px solid rgba(148, 163, 184, 0.13);
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.50);
+            padding: 0.62rem 0.68rem;
+            min-height: 67px;
+        }
+        .rm-sector-structure-label {
+            color: #8591a5;
+            font-size: 0.61rem;
+            font-weight: 800;
+            letter-spacing: 0.075em;
+            text-transform: uppercase;
+        }
+        .rm-sector-structure-value {
+            color: #eef2f7;
+            font-size: 1.15rem;
+            font-weight: 740;
+            margin-top: 0.16rem;
+        }
+        .rm-sector-structure-note {
+            border-top: 1px solid rgba(148, 163, 184, 0.13);
+            color: #9ca8ba;
+            font-size: 0.75rem;
+            line-height: 1.45;
+            margin-top: 0.72rem;
+            padding-top: 0.68rem;
+        }
+        div[class*="st-key-market-panel-sector-structure"] {
+            min-height: 505px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 def _assessment_stats(macro_df, sector_data):
     selections = select_current_sector_assessment(macro_df, sector_data=sector_data)
     rows = selections.get("rows", {})
     stats = []
-    for label in ("Most Crowded", "Fastest Mover", "Biggest Risk"):
-        row = rows.get(label)
+    assessment_labels = (
+        ("Most Crowded", "Highest Trading Pressure"),
+        ("Fastest Mover", "Fastest Sector Movement"),
+        ("Biggest Risk", "Broadest Deterioration"),
+    )
+    for source_label, display_label in assessment_labels:
+        row = rows.get(source_label)
         if row is None:
-            stats.append((label, "n/a", "insufficient eligible data"))
+            stats.append((display_label, "n/a", "insufficient eligible data"))
             continue
         sector = sector_display_name(row.get("Sector"))
-        if label == "Most Crowded":
+        if source_label == "Most Crowded":
             note = f"Pressure {fmt_number(row.get('Pressure'), 0)}"
-        elif label == "Fastest Mover":
+        elif source_label == "Fastest Mover":
             delta_score = pd.to_numeric(row.get('_Delta Sector Score'), errors='coerce')
-            signed_move = pd.to_numeric(row.get('_Abs Sector Movement'), errors='coerce')
-            if pd.notna(delta_score) and pd.notna(signed_move):
-                signed_move = signed_move if delta_score >= 0 else -signed_move
-            note = f"Movement {fmt_number(signed_move, 1, signed=True)}"
+            delta_pressure = pd.to_numeric(row.get('_Delta Pressure'), errors='coerce')
+            movement = pd.to_numeric(row.get('_Abs Sector Movement'), errors='coerce')
+            note = (
+                f"Movement {fmt_number(movement, 1)} · "
+                f"ΔAEI {fmt_number(delta_score, 1, signed=True)} · "
+                f"ΔPressure {fmt_number(delta_pressure, 1, signed=True)}"
+            )
         else:
             note = f"Deterioration breadth {fmt_number(row.get('Risk Breadth Score'), 0)}%"
-        stats.append((label, sector, note))
+        stats.append((display_label, sector, note))
 
     concentration = None
     required = {
@@ -56,11 +188,11 @@ def _assessment_stats(macro_df, sector_data):
             concentration = frame.loc[frame["Sector Basket Concentration"].idxmax()]
 
     if concentration is None:
-        stats.append(("Most Concentrated", "n/a", "insufficient market-cap coverage"))
+        stats.append(("Most Concentrated Basket", "n/a", "insufficient market-cap coverage"))
     else:
         note = f"Adjusted HHI {fmt_number(concentration.get('Sector Basket Concentration'), 1)}"
         stats.append((
-            "Most Concentrated",
+            "Most Concentrated Basket",
             sector_display_name(concentration.get("Sector")),
             note,
         ))
@@ -98,56 +230,65 @@ def _pressure_movement_text(macro_df: pd.DataFrame, sector: str) -> str:
         return 'Shrinking'
     return 'Static'
 
-def _sector_table(macro_df):
-    required = [
-        "Sector",
-        "Sector Score",
-        "Pressure",
-        "Avg Return",
-        "Forward EV/EBIT",
-        "Forward EV/EBIT Status",
-        "Forward EV/EBIT Data Coverage",
-        "Loss-Making EV Share",
-        "Sector Basket Concentration",
-        "Sector Effective Firms",
-        "Sector Concentration Company Count",
-        "Sector Concentration Coverage",
-        "Beta",
-    ]
-    available = [column for column in required if column in macro_df.columns]
-    table = macro_df[available].copy()
-    table["Sector"] = table["Sector"].apply(sector_display_name)
-    table = table.rename(columns={"Sector Score": "AEI", "Avg Return": "1Y Return"})
-    for column in ["AEI", "Pressure", "Sector Basket Concentration", "Sector Effective Firms", "Beta"]:
-        if column in table.columns:
-            table[column] = pd.to_numeric(table[column], errors="coerce")
-    if "1Y Return" in table.columns:
-        table["1Y Return"] = pd.to_numeric(table["1Y Return"], errors="coerce")
-    if "Sector Concentration Coverage" in table.columns:
-        table["Sector Concentration Coverage"] = (
-            pd.to_numeric(table["Sector Concentration Coverage"], errors="coerce") * 100.0
-        ).round(1)
-        table = table.rename(columns={"Sector Concentration Coverage": "Concentration Coverage (%)"})
-    if "Forward EV/EBIT Data Coverage" in table.columns:
-        table["Forward EV/EBIT Data Coverage"] = (
-            pd.to_numeric(table["Forward EV/EBIT Data Coverage"], errors="coerce") * 100.0
-        ).round(1)
-        table = table.rename(columns={"Forward EV/EBIT Data Coverage": "FWD EBIT Data Coverage (%)"})
-    if "Loss-Making EV Share" in table.columns:
-        table["Loss-Making EV Share"] = (
-            pd.to_numeric(table["Loss-Making EV Share"], errors="coerce") * 100.0
-        ).round(1)
-        table = table.rename(columns={"Loss-Making EV Share": "Loss-Making EV Share (%)"})
-    if "Forward EV/EBIT" in table.columns:
-        statuses = table.get("Forward EV/EBIT Status", pd.Series("", index=table.index))
-        table["Forward EV/EBIT"] = [
-            _forward_multiple_text(value, status)
-            for value, status in zip(table["Forward EV/EBIT"], statuses)
-        ]
-    table = table.drop(columns=["Forward EV/EBIT Status"], errors="ignore")
-    return table.sort_values("AEI", ascending=False, na_position="last")
+def _render_sector_read(metrics: dict, selected: str, df: pd.DataFrame, peer_metrics: dict, weekly_context=None, movement=None) -> None:
+    narrative = build_sector_narrative(metrics, selected, sector_display_name(selected), df, peer_metrics, weekly_context, movement)
+    headline = narrative["headline"]
+    sentence = narrative["body"]
+    confidence = narrative.get("confidence", "moderate")
+    weekly_note = narrative.get("weekly_note")
+    reference = narrative.get("reference")
+    weekly_html = ""
+    if weekly_note:
+        reference_html = ""
+        citation = ""
+        if reference:
+            url = str(reference.get("source_url") or "")
+            label = str(reference.get("source_label") or reference.get("source_name") or "Source")
+            if url.startswith("https://"):
+                citation = " [1]"
+                reference_html = (
+                    f'<div class="rm-sector-read-reference"><a href="{html.escape(url, quote=True)}" '
+                    f'target="_blank" rel="noopener noreferrer">[1] {html.escape(label)}</a></div>'
+                )
+        weekly_html = (
+            f'<div class="rm-sector-read-weekly"><span>This week</span> '
+            f'{html.escape(weekly_note)}{citation}</div>{reference_html}'
+        )
+    st.markdown(
+        f"""
+        <div class="rm-sector-read">
+            <div class="rm-sector-read-kicker">Sector read · {html.escape(confidence)} confidence</div>
+            <div class="rm-sector-read-title">{html.escape(headline)}</div>
+            <div class="rm-sector-read-copy">{html.escape(sentence)}</div>
+            {weekly_html}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-def _render_sector_detail(sector_data, sector_metrics, macro_df):
+
+def _render_structure_snapshot(metrics: dict, company_count: int) -> None:
+    items = build_structure_snapshot(metrics, company_count)
+    cells = "".join(
+        (
+            '<div class="rm-sector-structure-item">'
+            f'<div class="rm-sector-structure-label">{html.escape(label)}</div>'
+            f'<div class="rm-sector-structure-value">{html.escape(value)}</div>'
+            '</div>'
+        )
+        for label, value in items
+    )
+    interpretation = build_structure_interpretation(metrics)
+    st.markdown(
+        (
+            f'<div class="rm-sector-structure-grid">{cells}</div>'
+            f'<div class="rm-sector-structure-note">{html.escape(interpretation)}</div>'
+        ),
+        unsafe_allow_html=True,
+    )
+
+
+def _render_sector_detail(sector_data, sector_metrics, macro_df, weekly_context=None):
     sectors = [
         sector for sector in sector_metrics
         if sector in sector_data and sector_data[sector] is not None and not sector_data[sector].empty
@@ -164,15 +305,26 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
     )
     metrics = sector_metrics[selected]
     df = sector_data[selected]
+    company_count = int(df["Ticker"].nunique()) if "Ticker" in df.columns else int(len(df))
     strategy = metrics.get("Cycle Strategy", {}) or {}
     pressure_note = _pressure_movement_text(macro_df, selected)
     return_rank = _rank_text(macro_df, selected, "Avg Return", ascending=False)
     multiple_rank = _rank_text(macro_df, selected, "Forward EV/EBIT", ascending=False)
+
     render_statline(
         [
             ("Sector AEI", fmt_number(metrics.get("Sector Score"), 1), strategy.get("regime", "n/a")),
             ("Trading Pressure", fmt_number(metrics.get("Sector Pressure"), 1), pressure_note),
-            ("1Y Return", fmt_number(pd.to_numeric(metrics.get("Avg Return"), errors="coerce") * 100, 1, signed=True, suffix="%"), return_rank),
+            (
+                "1Y Return",
+                fmt_number(
+                    pd.to_numeric(metrics.get("Avg Return"), errors="coerce") * 100,
+                    1,
+                    signed=True,
+                    suffix="%",
+                ),
+                return_rank,
+            ),
             (
                 "FWD EV/EBIT",
                 _forward_multiple_text(
@@ -184,70 +336,55 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
         ],
         key_prefix="sector-dossier-summary-primary",
     )
-    render_statline(
-        [
-            (
-                "Loss-Making EV Share",
-                fmt_number(pd.to_numeric(metrics.get("Loss-Making EV Share"), errors="coerce") * 100, 1, suffix="%"),
-                f"{int(metrics.get('Loss-Making Company Count', 0) or 0)} companies with non-positive forward EBIT",
-            ),
-            (
-                "Basket Concentration",
-                fmt_number(metrics.get("Sector Basket Concentration"), 1),
-                (
-                    f"Applied HHI · raw {fmt_number(metrics.get('Sector Raw HHI'), 3)} · "
-                    f"{int(metrics.get('Sector Concentration Company Count', 0) or 0)} firms"
-                ),
-            ),
-        ],
-        key_prefix="sector-dossier-summary-structure",
-    )
-    factors_col, pressure_col = st.columns(2)
-    with factors_col:
-        with st.container(border=True):
-            render_panel_heading("AEI factor structure", "Valuation · relative return · market breadth")
+    movement_frame = select_current_sector_assessment(macro_df, sector_data={}).get("movement", pd.DataFrame())
+    movement_row = movement_frame.loc[movement_frame["Sector"].astype(str).eq(str(selected))].iloc[0].to_dict() if movement_frame is not None and not movement_frame.empty and "Sector" in movement_frame.columns and movement_frame["Sector"].astype(str).eq(str(selected)).any() else {}
+    _render_sector_read(metrics, selected, df, sector_metrics, weekly_context, movement_row)
+
+    signal_col, structure_col = st.columns([1.65, 0.85])
+    with signal_col:
+        with st.container(border=True, key="market-panel-sector-signal-anatomy"):
+            render_panel_heading(
+                "Signal anatomy",
+                "AEI drivers and trading pressure · common 0–100 scale",
+            )
             factor_frame = metrics.get("Scored Factors", pd.DataFrame()).copy()
             if not factor_frame.empty and "Factor" in factor_frame.columns:
                 factor_frame["Factor"] = factor_frame["Factor"].map(
-                    lambda name: FACTOR_DISPLAY_NAMES.get(name, str(name).replace("_", " ").title())
+                    lambda name: FACTOR_DISPLAY_NAMES.get(
+                        name,
+                        str(name).replace("_", " ").title(),
+                    )
                 )
             st.plotly_chart(
-                sector_factor_chart(factor_frame),
+                sector_signal_anatomy_chart(
+                    factor_frame,
+                    metrics.get("Pressure Components", pd.DataFrame()),
+                ),
                 width="stretch",
                 config={"displayModeBar": False, "responsive": True},
-                key="sector-detail-aei-factor-structure",
+                key="sector-detail-signal-anatomy",
             )
-    with pressure_col:
-        with st.container(border=True):
-            render_panel_heading("Trading-pressure structure", "Valuation stretch · price extension · momentum · volatility · volume")
-            st.plotly_chart(
-                pressure_component_chart(metrics.get("Pressure Components", pd.DataFrame())),
-                width="stretch",
-                config={"displayModeBar": False, "responsive": True},
-                key="sector-detail-trading-pressure-structure",
+
+    with structure_col:
+        with st.container(border=True, key="market-panel-sector-structure"):
+            render_panel_heading(
+                "Structure & fragility",
+                f"{company_count} configured constituents",
             )
+            _render_structure_snapshot(metrics, company_count)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    render_panel_heading(f"{sector_display_name(selected)} companies", "YFinance + SEC EDGAR")
-    st.dataframe(arrow_safe_dataframe(_company_table(df)), width="stretch", hide_index=True, height=440)
+    with st.expander(f"View constituent companies · {company_count}", expanded=False):
+        st.caption(
+            "Company-level market and fundamental detail. Monetary values are displayed in USD millions."
+        )
+        st.dataframe(
+            arrow_safe_dataframe(_company_table(df)),
+            width="stretch",
+            hide_index=True,
+            height=440,
+        )
 
-    render_ticker_controls(selected)
-
-    with st.expander("Factor and pressure data", expanded=False):
-        st.markdown("**AEI factors**")
-        st.dataframe(arrow_safe_dataframe(metrics.get("Scored Factors", pd.DataFrame())), width="stretch", hide_index=True)
-        st.markdown("**Trading-pressure components**")
-        st.dataframe(arrow_safe_dataframe(metrics.get("Pressure Components", pd.DataFrame())), width="stretch", hide_index=True)
-        st.markdown("**Basket-concentration contributors**")
-        concentration_table = sector_hhi_component_breakdown(df, top_n=8)
-        if not concentration_table.empty:
-            concentration_table["Market Cap Share"] = (concentration_table["Market Cap Share"] * 100.0).round(2)
-            concentration_table["HHI Contribution Share"] = concentration_table["HHI Contribution Share"].round(2)
-            concentration_table = concentration_table.rename(columns={
-                "Market Cap Share": "Market Cap Share (%)",
-                "HHI Contribution Share": "Share of HHI (%)",
-            })
-        st.dataframe(arrow_safe_dataframe(concentration_table), width="stretch", hide_index=True)
 
 def _market_universe_label(summary, macro_df):
     summary = summary or {}
@@ -267,23 +404,171 @@ def _market_universe_label(summary, macro_df):
     )
     return f"{sector_text} / {ticker_text}"
 
-def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data, market_universe_summary=None):
+
+def _market_ledger_stats(ledger):
+    metrics = (ledger or {}).get("metrics", {}) or {}
+    company_count = int(metrics.get("company_count", 0) or 0)
+    return_count = int(metrics.get("return_count", 0) or 0)
+    positive_count = int(round(
+        float(metrics.get("positive_breadth", 0.0) or 0.0) * return_count
+    ))
+    return [
+        (
+            "Top 6 Share",
+            fmt_number(pd.to_numeric(metrics.get("top_6_share"), errors="coerce") * 100.0, 1, suffix="%"),
+            f"6 of {company_count} companies",
+        ),
+        (
+            "Top 10 Share",
+            fmt_number(pd.to_numeric(metrics.get("top_10_share"), errors="coerce") * 100.0, 1, suffix="%"),
+            f"10 of {company_count} companies",
+        ),
+        (
+            "Effective Firms",
+            fmt_number(metrics.get("effective_firms"), 1),
+            (
+                f"Raw HHI {fmt_number(metrics.get('raw_hhi'), 3)} · "
+                f"normalized {fmt_number(metrics.get('normalized_hhi'), 1)}"
+            ),
+        ),
+        (
+            "Positive 1Y Breadth",
+            fmt_number(pd.to_numeric(metrics.get("positive_breadth"), errors="coerce") * 100.0, 1, suffix="%"),
+            f"{positive_count} of {return_count} companies",
+        ),
+    ]
+
+
+def _history_label(metadata):
+    metadata = metadata or {}
+    start = metadata.get("start_date")
+    end = metadata.get("end_date")
+    if not start or not end:
+        return "Retained market history"
+    return f"Market structure · {start} to {end}"
+
+
+def _one_year_return_label(metadata):
+    metadata = metadata or {}
+    as_of_date = metadata.get("as_of_date")
+    company_count = int(metadata.get("company_count", 0) or 0)
+    universe_count = int(metadata.get("universe_count", 0) or 0)
+    coverage = (
+        f"{company_count} of {universe_count} companies"
+        if universe_count > 0
+        else "Company contribution"
+    )
+    return f"{coverage} · as of {as_of_date}" if as_of_date else coverage
+
+
+def _render_market_ledger(ledger, universe_label):
+    metrics = (ledger or {}).get("metrics", {}) or {}
+    company_count = int(metrics.get("company_count", 0) or 0)
+    sector_count = int(metrics.get("sector_count", 0) or 0)
+    coverage = pd.to_numeric(metrics.get("cap_coverage"), errors="coerce")
+    coverage_text = fmt_number(coverage * 100.0, 0, suffix="%")
+    render_section(
+        "Market ledger",
+        (
+            f"Ownership, concentration, and participation across {sector_count} sectors and "
+            f"{company_count} unique companies · {coverage_text} market-cap coverage."
+        ),
+    )
+    render_statline(_market_ledger_stats(ledger), key_prefix="market-ledger")
+
+    render_section(
+        "Ownership and return leadership",
+        "Where public-equity value resides and which companies drive the trailing 1-year price return.",
+        compact=True,
+    )
+    history_meta = (ledger or {}).get("history_metadata", {}) or {}
+    return_meta = (ledger or {}).get("return_metadata", {}) or {}
+    left, right = st.columns(2)
+    with left:
+        with st.container(border=True, key="market-panel-ownership"):
+            render_panel_heading(
+                "Who owns the universe?",
+                "Industry leaders by sector",
+            )
+            st.plotly_chart(
+                market_ownership_treemap((ledger or {}).get("companies", pd.DataFrame())),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="market-ownership-treemap-v3",
+            )
+    with right:
+        with st.container(border=True, key="market-panel-return-contribution"):
+            render_panel_heading("1 YR Return", _one_year_return_label(return_meta))
+            st.plotly_chart(
+                return_contribution_chart((ledger or {}).get("contributions", pd.DataFrame())),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="market-return-contribution-1y",
+            )
+
+    render_section(
+        "Market receipts",
+        "Leadership concentration and participation through the comparable retained history.",
+        compact=True,
+    )
+    left, right = st.columns(2)
+    with left:
+        with st.container(border=True, key="market-panel-concentration-history"):
+            render_panel_heading("Leadership concentration", _history_label(history_meta))
+            st.plotly_chart(
+                concentration_history_chart((ledger or {}).get("history", pd.DataFrame())),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="market-concentration-history",
+            )
+    with right:
+        with st.container(border=True, key="market-panel-participation-history"):
+            render_panel_heading("Participation gap", _history_label(history_meta))
+            st.plotly_chart(
+                participation_history_chart((ledger or {}).get("history", pd.DataFrame())),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="market-participation-history",
+            )
+
+    if universe_label:
+        st.caption(f"Current configured universe: {universe_label}. Historical panels begin with the earliest retained date meeting complete-data coverage requirements.")
+
+def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data, market_universe_summary=None, weekly_context=None, tab_read=None):
     del regime_metrics
     macro_df = dashboard_data["macro_df"]
+    market_ledger = build_market_ledger(sector_data)
+    _inject_market_page_theme()
+    inject_panel_height_rules({
+        "market-panel-ownership": 575,
+        "market-panel-return-contribution": 575,
+        "market-panel-concentration-history": 405,
+        "market-panel-participation-history": 405,
+        "market-panel-earnings-support": 470,
+        "market-panel-speculative-load": 470,
+        "market-panel-sector-signal-anatomy": 505,
+        "market-panel-sector-structure": 505,
+    })
     render_tab_header(
         "Market",
-        "AI-specific sector analysis with cross-sectional positioning, movement, fundamental evolution, and market performance.",
+        "Public-market allocation, concentration, participation, sector positioning, and company fundamentals across the AI economy.",
         "YFinance + SEC EDGAR",
     )
     render_line_break()
     _render_tab_metric_registry("market")
-    render_section("Cross-sector state", "Leading and lagging sectors across equity strength and trading pressure.")
+    render_domain_read(tab_read, label="Market Read", accent="violet")
+    _render_market_ledger(
+        market_ledger,
+        _market_universe_label(market_universe_summary, macro_df),
+    )
+
+    render_section("Cross-sector state", "Leading and lagging sectors across equity strength, trading pressure, movement, and fundamentals.")
     render_statline(_assessment_stats(macro_df, sector_data), key_prefix="sector-cross-state")
 
     render_section("Positioning", "Valuation support, realized repricing, equity strength, and trading pressure in cross section.", compact=True)
     left, right = st.columns(2)
     with left:
-        with st.container(border=True):
+        with st.container(border=True, key="market-panel-earnings-support"):
             render_panel_heading(
                 "Earnings Support",
                 "Trailing repricing relative to the profitable operating-earnings base",
@@ -295,7 +580,7 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
                 key="sectors-earnings-support",
             )
     with right:
-        with st.container(border=True):
+        with st.container(border=True, key="market-panel-speculative-load"):
             render_panel_heading(
                 "Speculative Load",
                 "Abnormal trading pressure relative to earnings-supported, broad-based equity strength",
@@ -307,12 +592,9 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
                 key="sectors-speculative-load",
             )
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    with st.expander("Sector matrix", expanded=False):
-        st.dataframe(arrow_safe_dataframe(_sector_table(macro_df)), width="stretch", hide_index=True, height=460)
 
     render_section(
         "Sector dossier",
-        "Sector equity conditions, trading pressure, factor structure, and constituent fundamentals.",
+        "A read-first diagnosis of sector strength, pressure, breadth, and company-level evidence.",
     )
-    _render_sector_detail(sector_data, sector_metrics, macro_df)
+    _render_sector_detail(sector_data, sector_metrics, macro_df, weekly_context)

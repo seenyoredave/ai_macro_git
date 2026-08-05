@@ -51,3 +51,59 @@ def one_year_return(history):
     if len(close) < 252:
         return np.nan
     return (close.iloc[-1] / close.iloc[-252]) - 1
+
+def year_to_date_snapshot(history, market_cap=np.nan):
+    """Return the standard YTD price return and implied opening market cap.
+
+    The return begins at the final available close before January 1.  The
+    opening market cap uses the current share count implied by the supplied
+    market cap, which keeps the contribution calculation internally coherent
+    without introducing a second shares-outstanding data request.
+    """
+    out = {
+        "YTD Return": np.nan,
+        "YTD Start Market Cap": np.nan,
+        "YTD Year": np.nan,
+    }
+    if history is None or history.empty or "Close" not in history.columns:
+        return out
+
+    close = pd.to_numeric(history["Close"], errors="coerce").dropna()
+    if close.empty:
+        return out
+
+    dates = pd.to_datetime(close.index, errors="coerce", utc=True)
+    valid = dates.notna()
+    close = close.loc[valid]
+    dates = dates[valid].tz_convert(None)
+    if close.empty:
+        return out
+
+    year = int(dates[-1].year)
+    year_start = pd.Timestamp(year=year, month=1, day=1)
+    prior_mask = dates < year_start
+    current_mask = dates >= year_start
+    if not current_mask.any():
+        return out
+
+    if prior_mask.any():
+        start_close = float(close.iloc[np.flatnonzero(prior_mask)[-1]])
+    else:
+        start_close = float(close.iloc[np.flatnonzero(current_mask)[0]])
+    end_close = float(close.iloc[-1])
+    if not np.isfinite(start_close) or not np.isfinite(end_close) or start_close <= 0:
+        return out
+
+    ytd_return = (end_close / start_close) - 1.0
+    cap = pd.to_numeric(market_cap, errors="coerce")
+    start_cap = (
+        float(cap) / (1.0 + ytd_return)
+        if pd.notna(cap) and float(cap) > 0 and (1.0 + ytd_return) > 0
+        else np.nan
+    )
+    return {
+        "YTD Return": float(ytd_return),
+        "YTD Start Market Cap": start_cap,
+        "YTD Year": year,
+    }
+

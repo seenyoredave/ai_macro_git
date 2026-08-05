@@ -86,6 +86,147 @@ def _ratio_of_sums(frame: pd.DataFrame, numerator: str, denominator: str, *, min
 
     return _safe_ratio(num.loc[valid].sum(), den.loc[valid].sum()), count
 
+def _normalize_fundamentals(history: pd.DataFrame) -> pd.DataFrame:
+    required = {"Date", "Ticker"}
+    if history is None or history.empty or not required.issubset(history.columns):
+        return pd.DataFrame()
+
+    frame = history.copy()
+    frame["Ticker"] = frame["Ticker"].astype(str).str.upper().str.strip()
+    frame = frame[frame["Ticker"].isin(BORROWER_STRAIN_TICKERS)].copy()
+    frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce", format="mixed")
+    frame["Financial Period End"] = pd.to_datetime(
+        frame.get("Financial Period End"), errors="coerce", format="mixed"
+    )
+    frame["Financial Filing Date"] = pd.to_datetime(
+        frame.get("Financial Filing Date"), errors="coerce", format="mixed"
+    )
+    for column in (
+        "Operating Cash Flow",
+        "CapEx",
+        "Cash",
+        "Total Debt",
+        "OCF Quarters",
+        "CapEx Quarters",
+    ):
+        frame[column] = pd.to_numeric(frame.get(column), errors="coerce")
+    return frame.dropna(subset=["Date", "Ticker"])
+
+def _latest_fundamentals_snapshot(
+    history: pd.DataFrame,
+    observation_date=None,
+) -> pd.DataFrame:
+    frame = _normalize_fundamentals(history)
+    if frame.empty:
+        return frame
+
+    cutoff = pd.to_datetime(observation_date, errors="coerce")
+    if pd.notna(cutoff):
+        frame = frame[frame["Date"] <= cutoff].copy()
+    if frame.empty:
+        return frame
+
+    # One internally coherent SEC observation per company. Period end is the
+    # measurement vintage; filing/archive dates only break ties.
+    return (
+        frame.sort_values(
+            ["Ticker", "Financial Period End", "Financial Filing Date", "Date"],
+            kind="stable",
+            na_position="first",
+        )
+        .groupby("Ticker", as_index=False, dropna=False)
+        .tail(1)
+        .reset_index(drop=True)
+    )
+
+def _ttm_ratio_of_sums(
+    snapshot: pd.DataFrame,
+    numerator: str,
+    denominator: str = "CapEx",
+    *,
+    min_companies=2,
+):
+    if snapshot is None or snapshot.empty:
+        return np.nan, 0
+    frame = snapshot.copy()
+    valid = pd.Series(True, index=frame.index)
+    if numerator == "Operating Cash Flow":
+        valid &= pd.to_numeric(frame.get("OCF Quarters"), errors="coerce").eq(4)
+    if denominator == "CapEx":
+        valid &= pd.to_numeric(frame.get("CapEx Quarters"), errors="coerce").eq(4)
+    return _ratio_of_sums(
+        frame.loc[valid], numerator, denominator, min_companies=min_companies
+    )
+
+def _matched_debt_pulse(
+    fundamentals_history: pd.DataFrame,
+    snapshot: pd.DataFrame,
+    *,
+    tolerance_days=62,
+    min_companies=2,
+):
+    if snapshot is None or snapshot.empty:
+        return np.nan, np.nan, np.nan, np.nan, 0
+
+    history = _normalize_fundamentals(fundamentals_history)
+    if history.empty:
+        return np.nan, np.nan, np.nan, np.nan, 0
+    history = (
+        history.dropna(subset=["Financial Period End", "Total Debt"])
+        .sort_values(
+            ["Ticker", "Financial Period End", "Financial Filing Date", "Date"],
+            kind="stable",
+        )
+        .drop_duplicates(subset=["Ticker", "Financial Period End"], keep="last")
+    )
+
+    matched = []
+    for _, current in snapshot.iterrows():
+        period_end = pd.to_datetime(current.get("Financial Period End"), errors="coerce")
+        capex = pd.to_numeric(current.get("CapEx"), errors="coerce")
+        debt = pd.to_numeric(current.get("Total Debt"), errors="coerce")
+        capex_quarters = pd.to_numeric(current.get("CapEx Quarters"), errors="coerce")
+        if (
+            pd.isna(period_end)
+            or pd.isna(capex)
+            or capex <= 0
+            or capex_quarters != 4
+            or pd.isna(debt)
+        ):
+            continue
+        target = period_end - pd.DateOffset(years=1)
+        candidates = history[
+            (history["Ticker"] == current["Ticker"])
+            & (history["Financial Period End"] < period_end)
+        ].copy()
+        if candidates.empty:
+            continue
+        candidates["Distance"] = (candidates["Financial Period End"] - target).abs()
+        prior = candidates.sort_values("Distance", kind="stable").iloc[0]
+        if prior["Distance"] > pd.Timedelta(days=tolerance_days):
+            continue
+        matched.append(
+            {
+                "CapEx": float(capex),
+                "Current Debt": float(debt),
+                "Prior Debt": float(prior["Total Debt"]),
+            }
+        )
+
+    matched = pd.DataFrame(matched)
+    if len(matched) < min_companies:
+        return np.nan, np.nan, np.nan, np.nan, len(matched)
+    current_total = _safe_sum(matched["Current Debt"])
+    prior_total = _safe_sum(matched["Prior Debt"])
+    capex_total = _safe_sum(matched["CapEx"])
+    return (
+        _safe_ratio(current_total - prior_total, capex_total),
+        current_total,
+        prior_total,
+        capex_total,
+        len(matched),
+    )
+
 def _aggregate_fundamentals(history: pd.DataFrame) -> pd.DataFrame:
     required = {"Date", "Ticker"}
     if history is None or history.empty or not required.issubset(history.columns):
@@ -284,34 +425,31 @@ def _build_history(
     fundamentals_history: pd.DataFrame,
     commitments_history: pd.DataFrame,
 ) -> pd.DataFrame:
-    fundamentals = _aggregate_fundamentals(fundamentals_history)
+    fundamentals = _normalize_fundamentals(fundamentals_history)
     if fundamentals.empty:
         return pd.DataFrame(columns=_HISTORY_COLUMNS)
 
-    history = fundamentals.copy()
-    history["Internal Funding Coverage"] = [
-        _safe_ratio(ocf, capex)
-        for ocf, capex in zip(history["Operating Cash Flow"], history["CapEx"])
-    ]
-    history["Cash Reserve Coverage"] = [
-        _safe_ratio(cash, capex)
-        for cash, capex in zip(history["Cash"], history["CapEx"])
-    ]
-    history["Debt Financing Pulse"] = _debt_financing_pulse_history(history)
-
-    commitment_history = _forward_commitment_history(
-        fundamentals_history,
-        commitments_history,
-    )
-    if not commitment_history.empty:
-        history = history.merge(
-            commitment_history[["Date", "Forward Commitment Load"]],
-            on="Date",
-            how="left",
+    rows = []
+    for observation_date in sorted(fundamentals["Date"].dropna().unique()):
+        snapshot = _latest_fundamentals_snapshot(
+            fundamentals_history, observation_date
         )
-    else:
-        history["Forward Commitment Load"] = np.nan
+        internal, _ = _ttm_ratio_of_sums(snapshot, "Operating Cash Flow")
+        cash, _ = _ttm_ratio_of_sums(snapshot, "Cash")
+        debt, _, _, _, _ = _matched_debt_pulse(fundamentals_history, snapshot)
+        rows.append(
+            {
+                "Date": pd.Timestamp(observation_date),
+                "Internal Funding Coverage": internal,
+                "Cash Reserve Coverage": cash,
+                "Debt Financing Pulse": debt,
+                # The historical ledger changes definition across vintages.
+                # Keep the current curated snapshot, but do not chart a false trend.
+                "Forward Commitment Load": np.nan,
+            }
+        )
 
+    history = pd.DataFrame(rows, columns=_HISTORY_COLUMNS)
     history["Date"] = pd.to_datetime(history["Date"], errors="coerce", format="mixed")
     return (
         history[_HISTORY_COLUMNS]
@@ -340,7 +478,6 @@ def calculate_deployment_funding_mix(
     fundamentals_history=None,
     commitments_history=None,
 ) -> dict:
-    cohort = _cohort_frame(sector_data)
     ledger = load_commitment_ledger() if commitments_df is None else commitments_df.copy()
 
     fundamentals_history = (
@@ -354,33 +491,23 @@ def calculate_deployment_funding_mix(
         else commitments_history.copy()
     )
 
-    internal_coverage, internal_count = _ratio_of_sums(
-        cohort,
-        "Operating Cash Flow",
-        "CapEx",
+    snapshot = _latest_fundamentals_snapshot(fundamentals_history)
+    internal_coverage, internal_count = _ttm_ratio_of_sums(
+        snapshot, "Operating Cash Flow"
     )
-    cash_reserve_coverage, reserve_count = _ratio_of_sums(
-        cohort,
-        "Cash",
-        "CapEx",
+    cash_reserve_coverage, reserve_count = _ttm_ratio_of_sums(snapshot, "Cash")
+    debt_financing_pulse, total_debt, prior_debt, debt_capex_total, debt_count = _matched_debt_pulse(
+        fundamentals_history, snapshot
     )
-
-    capex_total = _safe_sum(cohort.get("CapEx", pd.Series(dtype=float)))
-    total_debt = _safe_sum(cohort.get("Total Debt", pd.Series(dtype=float)))
-    aggregated_history = _aggregate_fundamentals(fundamentals_history)
-    prior_debt = _nearest_prior_year_value(
-        aggregated_history,
-        pd.Timestamp.today().normalize(),
-        "Total Debt",
-    )
-    debt_financing_pulse = (
-        _safe_ratio(total_debt - prior_debt, capex_total)
-        if pd.notna(total_debt) and pd.notna(prior_debt)
-        else np.nan
-    )
+    capex_total = _safe_sum(
+        snapshot.loc[
+            pd.to_numeric(snapshot.get("CapEx Quarters"), errors="coerce").eq(4),
+            "CapEx",
+        ]
+    ) if not snapshot.empty else np.nan
 
     forward_commitment_load, forward_commitments, commitment_count = (
-        _current_forward_commitment_load(cohort, ledger)
+        _current_forward_commitment_load(snapshot, ledger)
     )
 
     history = _build_history(fundamentals_history, commitments_history)
@@ -392,18 +519,30 @@ def calculate_deployment_funding_mix(
         "capex_total": capex_total,
         "total_debt": total_debt,
         "prior_year_total_debt": prior_debt,
+        "debt_financing_capex_total": debt_capex_total,
         "forward_commitments_total": forward_commitments,
-        "cohort_companies": int(cohort["Ticker"].nunique()) if not cohort.empty else 0,
+        "cohort_companies": int(snapshot["Ticker"].nunique()) if not snapshot.empty else 0,
         "internal_funding_companies": internal_count,
         "cash_reserve_companies": reserve_count,
+        "debt_financing_companies": debt_count,
         "commitment_companies": commitment_count,
         "history_available": bool(not history.empty),
+        "measurement_date": (
+            snapshot["Financial Period End"].max().date().isoformat()
+            if not snapshot.empty and snapshot["Financial Period End"].notna().any()
+            else None
+        ),
     }
 
+    current_date = (
+        snapshot["Date"].max()
+        if not snapshot.empty and snapshot["Date"].notna().any()
+        else pd.NaT
+    )
     current_row = pd.DataFrame(
         [
             {
-                "Date": pd.Timestamp.today().normalize(),
+                "Date": current_date,
                 "Internal Funding Coverage": internal_coverage,
                 "Cash Reserve Coverage": cash_reserve_coverage,
                 "Debt Financing Pulse": debt_financing_pulse,

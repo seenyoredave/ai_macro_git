@@ -17,6 +17,8 @@ from archive.archive_reader import (
 )
 from config import fred_indicators
 from config.debug_config import debug_print
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INDPRO_HISTORY_PATH = PROJECT_ROOT / "data" / "industrial_production_history.csv"
@@ -221,16 +223,15 @@ def _normalize_indpro_frame(frame):
     return out if not out.empty else None
 
 def _persist_indpro_history(frame):
+    if not repository_writes_enabled():
+        return
     normalized = _normalize_indpro_frame(frame)
     if normalized is None:
         return
 
     out = normalized.copy()
     out["Observation Date"] = out["Observation Date"].dt.date.astype(str)
-    INDPRO_HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    temporary = INDPRO_HISTORY_PATH.with_suffix(".csv.tmp")
-    out.to_csv(temporary, index=False)
-    temporary.replace(INDPRO_HISTORY_PATH)
+    atomic_write_csv(out, INDPRO_HISTORY_PATH)
 
 def _series_from_indpro_frame(frame):
     normalized = _normalize_indpro_frame(frame)
@@ -374,15 +375,14 @@ def _series_from_info_investment_frame(frame):
     )
 
 def _persist_info_investment_history(frame):
+    if not repository_writes_enabled():
+        return
     normalized = _normalize_info_investment_frame(frame)
     if normalized is None:
         return
     out = normalized.copy()
     out["Observation Date"] = out["Observation Date"].dt.date.astype(str)
-    INFO_INVESTMENT_HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    temporary = INFO_INVESTMENT_HISTORY_PATH.with_suffix(".csv.tmp")
-    out.to_csv(temporary, index=False)
-    temporary.replace(INFO_INVESTMENT_HISTORY_PATH)
+    atomic_write_csv(out, INFO_INVESTMENT_HISTORY_PATH)
 
 def _load_local_info_investment_series():
     if (
@@ -501,8 +501,9 @@ def _fill_failed_from_archive(data, fallback):
     return out
 
 @st.cache_data(ttl=86400)
-def load_fred():
-    archived = _latest_weekly_fred_archive()
+def load_fred(force_refresh: bool = False, refresh_token: int = 0):
+    del refresh_token
+    archived = None if force_refresh else _latest_weekly_fred_archive()
 
     if archived is not None:
         debug_print("Loading current-week FRED snapshot from fred_history.csv")

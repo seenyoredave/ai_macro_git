@@ -5,7 +5,7 @@ import streamlit as st
 
 from rendering.charts_adaptation import adaptation_history, adaptation_sector_bars
 from rendering.common import _render_tab_metric_registry
-from rendering.components import fmt_date, fmt_number, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
+from rendering.components import fmt_date, fmt_number, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
 
 def _adaptation_source_rows(adaptation_data):
     national = (adaptation_data or {}).get("national_history")
@@ -40,7 +40,7 @@ def _render_adaptation_summary(adaptation_data):
         key_prefix="adaptation-summary",
     )
 
-def render_adaptation_tab(adaptation_data):
+def render_adaptation_tab(adaptation_data, tab_read=None):
     render_tab_header(
         "Adaptation",
         "Business AI use and diffusion across U.S. industries.",
@@ -48,6 +48,7 @@ def render_adaptation_tab(adaptation_data):
     )
     render_line_break()
     _render_tab_metric_registry("adaptation")
+    render_domain_read(tab_read, label="Adaptation Read", accent="green")
     render_section("Reach", "Observed business use and expected use within the next six months.")
     _render_adaptation_summary(adaptation_data)
     with st.container(border=True):

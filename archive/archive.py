@@ -17,6 +17,7 @@ from benchmarks.benchmark_service import get_benchmark_metrics
 from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
 from config.energy_config import ENERGY_DATA_VERSION, ENERGY_SERIES
 from config.market_clock import eastern_now
+from helpers.atomic_io import atomic_write_csv, synchronized_path
 
 YF_ARCHIVE_COLUMNS = [
     "Ticker", "Company", "Price", "P/E", "Forward EV/EBIT",
@@ -26,7 +27,8 @@ YF_ARCHIVE_COLUMNS = [
     "Operating Cash Flow", "Free Cash Flow", "Net Income", "EBITDA",
     "Total Debt", "Cash", "Net Debt", "FCF Margin YoY Change",
     "Net Debt / EBITDA YoY Change", "CapEx / OCF YoY Change", "Beta",
-    "52W High", "52W Low", "1Y Return", "Price Extension 200D",
+    "52W High", "52W Low", "1Y Return", "YTD Return",
+    "YTD Start Market Cap", "YTD Year", "Price Extension 200D",
     "Momentum Acceleration", "Volatility Expansion", "Volume Activity",
     "Basket Score", "Basket Tier", "Basket Weight",
 ]
@@ -111,13 +113,14 @@ def _ordered_columns(existing, snapshot, keys):
                 ordered.append(column)
     return ordered
 
-def _atomic_write(frame, archive_file, keys):
+def _atomic_write(frame, archive_file, keys, *, lock=True):
     _validate_keys(frame, keys, archive_file, require_values=True)
-    temp_file = archive_file.with_suffix(archive_file.suffix + ".tmp")
-    frame.to_csv(temp_file, index=False)
-    check = pd.read_csv(temp_file)
-    _validate_keys(check, keys, archive_file, require_values=True)
-    temp_file.replace(archive_file)
+
+    def validate_temp(temp_file):
+        check = pd.read_csv(temp_file)
+        _validate_keys(check, keys, archive_file, require_values=True)
+
+    atomic_write_csv(frame, archive_file, lock=lock, validator=validate_temp)
 
 def write_archive_snapshot(snapshot, archive_path, key_cols=None):
     spec = archive_path if isinstance(archive_path, ArchiveSpec) else spec_for_path(archive_path)
@@ -129,22 +132,23 @@ def write_archive_snapshot(snapshot, archive_path, key_cols=None):
     archive_file = resolve_archive_path(path)
     archive_file.parent.mkdir(parents=True, exist_ok=True)
     incoming = _normalize_frame(snapshot, archive_file, keys)
-    existing = _read_existing(
-        archive_file,
-        keys,
-        reset_malformed=bool(spec and spec.reset_malformed),
-    )
 
-    existing = _remove_matching_keys(existing, incoming, keys)
+    with synchronized_path(archive_file):
+        existing = _read_existing(
+            archive_file,
+            keys,
+            reset_malformed=bool(spec and spec.reset_malformed),
+        )
+        existing = _remove_matching_keys(existing, incoming, keys)
 
-    combined = (
-        pd.concat([existing, incoming], ignore_index=True)
-        if existing is not None and not existing.empty
-        else incoming.copy()
-    )
-    combined = _normalize_frame(combined, archive_file, keys)
-    combined = combined.reindex(columns=_ordered_columns(existing, incoming, keys))
-    _atomic_write(combined, archive_file, keys)
+        combined = (
+            pd.concat([existing, incoming], ignore_index=True)
+            if existing is not None and not existing.empty
+            else incoming.copy()
+        )
+        combined = _normalize_frame(combined, archive_file, keys)
+        combined = combined.reindex(columns=_ordered_columns(existing, incoming, keys))
+        _atomic_write(combined, archive_file, keys, lock=False)
 
 def append_dataframe_history(frame, archive_path, key_cols=None):
     snapshot = frame.copy()
@@ -200,15 +204,15 @@ def append_macro_history(regime_metrics, fred_data):
         "ADI Data Center Construction": _component_value(regime_metrics, "ADI Components", "Data Center Construction"),
         "ADI Compute Supply Realization": _component_value(regime_metrics, "ADI Components", "Compute Supply Realization"),
         "ADI Power Footprint": _component_value(regime_metrics, "ADI Components", "Power Footprint"),
-        "Power Nonresidential Load": _component_value(regime_metrics, "Power Stress Components", "Nonresidential Load Pressure"),
-        "Power Grid Utilization": _component_value(regime_metrics, "Power Stress Components", "Grid Utilization Pressure"),
-        "Power Capacity Response": _component_value(regime_metrics, "Power Stress Components", "Capacity Response Gap"),
+        "Power Nonresidential Load": _component_value(regime_metrics, "Power Stress Components", "Commercial-vs-Residential Output Pressure"),
+        "Power Grid Utilization": _component_value(regime_metrics, "Power Stress Components", "Power-System Utilization Pressure"),
+        "Power Capacity Response": _component_value(regime_metrics, "Power Stress Components", "Potential-Output Response Gap"),
         "PCG Deployment Pressure": (regime_metrics.get("Power Capacity Gap Components", {}) or {}).get("deployment_pressure_score", np.nan),
         "PCG Power Response": (regime_metrics.get("Power Capacity Gap Components", {}) or {}).get("power_response_score", np.nan),
         "PCG Data Center Construction": _component_value(regime_metrics, "Power Capacity Gap Components", "Data Center Construction"),
         "PCG Capital Deployment": _component_value(regime_metrics, "Power Capacity Gap Components", "Capital Deployment"),
         "PCG Delivered Power Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Delivered Power Growth"),
-        "PCG Installed Capacity Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Installed Capacity Growth"),
+        "PCG Installed Capacity Growth": _component_value(regime_metrics, "Power Capacity Gap Components", "Sustainable Capacity Growth"),
         "Borrower Cash Flow Strain": _component_value(regime_metrics, "Borrower Strain Components", "Cash Flow Strain"),
         "Borrower Debt Capacity Strain": _component_value(
             regime_metrics,

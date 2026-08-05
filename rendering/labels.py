@@ -1,5 +1,7 @@
 import pandas as pd
 
+from config.sector_config import SECTOR_DISPLAY_NAMES
+
 def validation_label(score):
     if pd.isna(score):
         return "No Data"
@@ -58,22 +60,9 @@ def short_regime_label(score):
     return "Extended"
 
 def sector_display_name(sector, style="title"):
-    label_map = {
-        "COMPUTE": "Compute",
-        "SEMICAP_EQUIPMENT": "Semicap",
-        "CLOUD_HYPERSCALERS": "Cloud",
-        "DATA_AI_INFRASTRUCTURE": "Data Stack",
-        "DATA_CENTER_INFRASTRUCTURE": "Data Centers",
-        "POWER_GRID": "Power",
-        "ENTERPRISE_AI_SOFTWARE": "Enterprise",
-        "CYBERSECURITY_AI_TRUST": "Security",
-        "INDUSTRIAL_AUTOMATION": "Automation",
-        "ROBOTICS": "Robotics",
-        "DEFENSE_NATIONAL_SECURITY": "Defense",
-        "CONSUMER_AI": "Consumer AI",
-    }
-    label = label_map.get(
-        str(sector).upper(),
+    key = str(sector).upper()
+    label = SECTOR_DISPLAY_NAMES.get(
+        key,
         str(sector).replace("_", " ").title(),
     )
     return label.upper() if style == "upper" else label

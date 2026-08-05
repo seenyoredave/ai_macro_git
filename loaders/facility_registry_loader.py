@@ -8,6 +8,9 @@ import numpy as np
 import pandas as pd
 import requests
 
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv
+
 from loaders.data_center_inventory_loader import STATE_ABBREVIATIONS
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -284,10 +287,8 @@ def _fractracker_raw_frame(*, force_refresh: bool = False, timeout: int = 30) ->
     raw = pd.DataFrame(rows)
     if raw.empty:
         return raw
-    FRACTRACKER_PATH.parent.mkdir(parents=True, exist_ok=True)
-    temp = FRACTRACKER_PATH.with_suffix(".csv.tmp")
-    raw.to_csv(temp, index=False)
-    temp.replace(FRACTRACKER_PATH)
+    if repository_writes_enabled():
+        atomic_write_csv(raw, FRACTRACKER_PATH)
     return raw
 
 
@@ -450,6 +451,26 @@ def _token_similarity(left, right) -> float:
     return len(left_tokens & right_tokens) / len(left_tokens | right_tokens)
 
 
+KNOWN_CAMPUS_ALIASES = {
+    frozenset({"homer city energy", "homer city redevelopment"}),
+}
+KNOWN_WIDE_RADIUS_CAMPUS_NAMES = {
+    "caprock lbb 01",
+    "coreweave plano",
+    "xai colossus 2",
+}
+
+
+def _known_campus_alias(left, right) -> bool:
+    pair = frozenset(
+        {
+            _identity_token(left.get("Facility")),
+            _identity_token(right.get("Facility")),
+        }
+    )
+    return len(pair) == 2 and pair in KNOWN_CAMPUS_ALIASES
+
+
 def _haversine_km(lat1, lon1, lat2, lon2) -> float:
     values = pd.to_numeric(pd.Series([lat1, lon1, lat2, lon2]), errors="coerce")
     if values.isna().any():
@@ -515,17 +536,19 @@ def _assign_canonical_ids(observations: pd.DataFrame) -> pd.DataFrame:
             parent[root_right] = root_left
 
     buckets: dict[tuple[str, int, int], list[int]] = {}
+    bucket_degrees = 0.05
+    bucket_span = 2
     for index, row in clean.iterrows():
         state = normalize_us_state(row.get("State"))
         lat = pd.to_numeric(row.get("Latitude"), errors="coerce")
         lon = pd.to_numeric(row.get("Longitude"), errors="coerce")
         if pd.isna(lat) or pd.isna(lon):
             continue
-        lat_bucket = int(np.floor(float(lat) * 100))
-        lon_bucket = int(np.floor(float(lon) * 100))
+        lat_bucket = int(np.floor(float(lat) / bucket_degrees))
+        lon_bucket = int(np.floor(float(lon) / bucket_degrees))
         candidates = []
-        for lat_offset in range(-1, 2):
-            for lon_offset in range(-1, 2):
+        for lat_offset in range(-bucket_span, bucket_span + 1):
+            for lon_offset in range(-bucket_span, bucket_span + 1):
                 candidates.extend(buckets.get((state, lat_bucket + lat_offset, lon_bucket + lon_offset), []))
         for candidate in candidates:
             if _same_facility(row, clean.iloc[candidate]):
@@ -611,6 +634,162 @@ def build_facility_registry(
         build_facility_observations(locations, supplemental_records)
     )
 
+
+def _normalized_address(value) -> str:
+    text = _clean_token(value)
+    if text in {"", "unknown", "n a", "na", "none", "not disclosed"}:
+        return ""
+    replacements = {
+        " street ": " st ", " road ": " rd ", " avenue ": " ave ",
+        " boulevard ": " blvd ", " drive ": " dr ", " highway ": " hwy ",
+        " lane ": " ln ", " court ": " ct ", " parkway ": " pkwy ",
+    }
+    padded = f" {text} "
+    for old, new in replacements.items():
+        padded = padded.replace(old, new)
+    return " ".join(padded.split())
+
+
+def _same_campus(left: pd.Series, right: pd.Series) -> bool:
+    if normalize_us_state(left.get("State")) != normalize_us_state(right.get("State")):
+        return False
+    distance = _haversine_km(left.get("Latitude"), left.get("Longitude"), right.get("Latitude"), right.get("Longitude"))
+    if not np.isfinite(distance):
+        return False
+
+    # A small, explicit alias table handles materially important records whose
+    # published coordinates refer to different points within the same project.
+    if distance <= 50.0 and _known_campus_alias(left, right):
+        return True
+
+    left_address = _normalized_address(left.get("Address"))
+    right_address = _normalized_address(right.get("Address"))
+    if left_address and left_address == right_address and distance <= 1.0:
+        return True
+    if distance <= 0.075:
+        return True
+
+    name_score = _token_similarity(left.get("Facility"), right.get("Facility"))
+    operator_score = _token_similarity(left.get("Operator"), right.get("Operator"))
+    left_name = _identity_token(left.get("Facility"))
+    right_name = _identity_token(right.get("Facility"))
+    if distance <= 1.5 and left_name and left_name == right_name:
+        return True
+    if (
+        distance <= 10.0
+        and left_name
+        and left_name == right_name
+        and left_name in KNOWN_WIDE_RADIUS_CAMPUS_NAMES
+    ):
+        return True
+    if distance > 5.0:
+        return False
+    if distance <= 0.25 and name_score >= 0.80:
+        return True
+    if distance <= 0.75 and operator_score >= 0.90 and name_score >= 0.25:
+        return True
+    return distance <= 1.5 and name_score >= 0.82 and operator_score >= 0.72
+
+
+def _campus_status(values: pd.Series) -> str:
+    statuses = {str(value).strip() for value in values if str(value).strip()}
+    active = {
+        "Approved / permitted / under construction", "Under construction",
+        "Proposed", "Planned", "Announced",
+    }
+    if "Expanding" in statuses or ("Operational" in statuses and statuses.intersection(active)):
+        return "Expanding"
+    for status in [
+        "Operational", "Under construction", "Approved / permitted / under construction",
+        "Proposed", "Planned", "Announced", "Suspended", "Cancelled", "Blocked",
+        "Observed footprint", "Status unknown",
+    ]:
+        if status in statuses:
+            return status
+    return "Status unknown"
+
+
+def _merge_campus_group(group: pd.DataFrame) -> pd.Series:
+    ranked = group.copy()
+    ranked["_priority"] = _canonical_priority(ranked)
+    ranked = ranked.sort_values("_priority", ascending=False, kind="stable")
+    result = ranked.iloc[0].copy()
+    result["Status"] = _campus_status(group["Status"])
+    building_total = pd.to_numeric(group["Building Count"], errors="coerce").sum(min_count=1)
+    result["Building Count"] = max(int(building_total) if pd.notna(building_total) else 0, len(group))
+    for column in [
+        "Square Feet", "Published Capacity Estimate Low MW",
+        "Published Capacity Estimate MW", "Published Capacity Estimate High MW",
+        "Planned Data Center Capacity MW", "Contracted Utility Capacity MW",
+        "Energized Capacity MW", "Annual Electricity Consumption MWh",
+        "Planned Onsite Generation MW", "Property Size Acres",
+        "Water Withdrawal Gallons/Year", "Water Consumption Gallons/Year",
+    ]:
+        values = pd.to_numeric(group[column], errors="coerce").dropna()
+        if not values.empty:
+            result[column] = values.max()
+    dates = pd.to_datetime(group["Expected Service Date"], errors="coerce").dropna()
+    if not dates.empty:
+        result["Expected Service Date"] = dates.min()
+    campus_id = _stable_id("campus", *sorted(group["Canonical Facility ID"].astype(str)))
+    result["Facility ID"] = campus_id
+    result["Canonical Facility ID"] = campus_id
+    result["Duplicate Group ID"] = campus_id
+    source_ids = list(dict.fromkeys(group["Source Record ID"].replace("", np.nan).dropna().astype(str)))
+    result["Source Record ID"] = " | ".join(source_ids)
+    sources = list(dict.fromkeys(group["Source"].replace("", np.nan).dropna().astype(str)))
+    result["Source"] = " | ".join(sources)
+    result["Review Status"] = f"Campus record from {len(group)} canonical location record{'s' if len(group) != 1 else ''}"
+    return result.drop(labels=["_priority"], errors="ignore")
+
+
+def build_campus_registry(registry: pd.DataFrame | None) -> pd.DataFrame:
+    clean = _normalize_registry(registry)
+    if clean.empty:
+        return clean
+    clean = clean.reset_index(drop=True)
+    parent = list(range(len(clean)))
+
+    def find(value: int) -> int:
+        while parent[value] != value:
+            parent[value] = parent[parent[value]]
+            value = parent[value]
+        return value
+
+    def union(left: int, right: int) -> None:
+        root_left = find(left)
+        root_right = find(right)
+        if root_left != root_right:
+            parent[root_right] = root_left
+
+    buckets: dict[tuple[str, int, int], list[int]] = {}
+    # 0.25-degree cells plus a two-cell search expose the full comparison
+    # radius, including coordinate-imprecise large campuses. The match rules
+    # above remain conservative; this only fixes candidate generation.
+    bucket_degrees = 0.25
+    bucket_span = 2
+    for index, row in clean.iterrows():
+        state = normalize_us_state(row.get("State"))
+        lat = pd.to_numeric(row.get("Latitude"), errors="coerce")
+        lon = pd.to_numeric(row.get("Longitude"), errors="coerce")
+        if pd.isna(lat) or pd.isna(lon):
+            continue
+        lat_bucket = int(np.floor(float(lat) / bucket_degrees))
+        lon_bucket = int(np.floor(float(lon) / bucket_degrees))
+        candidates = []
+        for lat_offset in range(-bucket_span, bucket_span + 1):
+            for lon_offset in range(-bucket_span, bucket_span + 1):
+                candidates.extend(buckets.get((state, lat_bucket + lat_offset, lon_bucket + lon_offset), []))
+        for candidate in candidates:
+            if _same_campus(row, clean.iloc[candidate]):
+                union(index, candidate)
+        buckets.setdefault((state, lat_bucket, lon_bucket), []).append(index)
+
+    groups: dict[int, list[int]] = {}
+    for index in range(len(clean)):
+        groups.setdefault(find(index), []).append(index)
+    rows = [_merge_campus_group(clean.loc[indexes]) for indexes in groups.values()]
+    return _normalize_registry(pd.DataFrame(rows))
 
 def registry_coverage(registry: pd.DataFrame | None) -> dict:
     clean = _normalize_registry(registry)

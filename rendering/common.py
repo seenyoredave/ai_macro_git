@@ -69,6 +69,7 @@ def _metric_context(name, value):
 TAB_METRIC_REGISTRIES = {
     "macro": [
         "AI Equity Index",
+        "Buildout Leadership Rotation",
         "AI Development Intensity",
         "Speculation Gap",
         "Economic Validation Gap",
@@ -98,20 +99,20 @@ TAB_METRIC_REGISTRIES = {
         "Compute Manufacturing Capacity Utilization",
         "U.S. Compute Manufacturing Investment",
     ],
-    "infrastructure": [
-        "Data Center Construction",
-        "Computer, Electronic & Electrical Manufacturing Construction",
+    "grid_storage": [
+        "Interconnection Pipeline",
+        "Advanced-Stage Queue Share",
+        "Electric Storage Deployment",
         "Electric Power Construction",
-        "Communication Construction",
-        "Public Highway and Street Construction",
-        "Public Transportation Construction",
-        "Public Water Supply Construction",
     ],
     "water": [
+        "Freshwater Competition Context",
+        "AI Water Evidence Ladder",
         "U.S. Water Utilization Ledger",
         "Thermoelectric Cooling-Water Records",
+        "Wastewater System Investment",
     ],
-    "energy": [
+    "power": [
         "Henry Hub Natural Gas",
         "WTI Crude Oil",
         "Coal Production",
@@ -130,7 +131,23 @@ TAB_METRIC_REGISTRIES = {
         "Expected Adoption Gap",
         "Adoption Breadth",
     ],
+    "workforce": [
+        "AI-Linked Employment Footprint",
+        "Supporting Labor Demand",
+        "AI-Linked Wage Trajectory",
+    ],
+    "economic_impact": [
+        "Labor Productivity",
+        "Real Value-Added Output",
+        "Hourly Compensation",
+        "Inflation-Adjusted Realized Growth",
+        "Unit Labor Costs",
+        "Information-Processing Investment",
+    ],
     "market": [
+        "Market Leadership Concentration",
+        "Effective Firms",
+        "Retained-Universe Market Return",
         "Sector AI Equity Index",
         "Trading Pressure",
         "Forward EV/EBIT",
@@ -144,6 +161,7 @@ TAB_METRIC_REGISTRIES = {
 }
 
 def _render_tab_metric_registry(tab_key):
+    """Render the registry and its mandatory platform divider as one unit."""
     definitions = TAB_METRIC_REGISTRIES[tab_key]
     with st.expander("Metric registry", expanded=False):
         selected = st.selectbox(
@@ -153,6 +171,7 @@ def _render_tab_metric_registry(tab_key):
             label_visibility="collapsed",
         )
         render_definition(METRIC_DEFINITIONS[selected])
+    st.markdown('<div class="rm-metric-registry-divider" aria-hidden="true"></div>', unsafe_allow_html=True)
 
 def _financial_condition_source_stat(*, source_label, updated_date):
     return "Source", str(source_label), f"updated {updated_date}"

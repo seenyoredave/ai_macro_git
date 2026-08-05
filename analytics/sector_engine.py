@@ -47,10 +47,14 @@ def calc_sector_scores(normalized_df):
         str(row["Factor"]): row["Score"]
         for _, row in normalized_df.iterrows()
     }
+    # Historical point-in-time archives do not always contain a reliable
+    # forward-valuation estimate. In that case, return and breadth remain real,
+    # independent observations and are reweighted rather than discarded.
+    minimum_components = 2 if len(scores) >= 2 else len(scores)
     combined = weighted_available_score(
         scores,
         FACTOR_WEIGHTS,
-        min_components=3,
+        min_components=minimum_components,
     )
 
     if DEBUG:

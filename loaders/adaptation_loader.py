@@ -8,6 +8,9 @@ import pandas as pd
 import requests
 import streamlit as st
 
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv
+
 from config.debug_config import debug_print
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -134,16 +137,14 @@ def _ensure_expected_adoption_gap(frame: pd.DataFrame) -> pd.DataFrame:
     return output
 
 def _persist(national: pd.DataFrame, sector: pd.DataFrame) -> None:
+    if not repository_writes_enabled():
+        return
     national_out = _ensure_expected_adoption_gap(national)
     national_out["Date"] = pd.to_datetime(national_out["Date"], errors="coerce").dt.date.astype(str)
     sector_out = _ensure_expected_adoption_gap(sector)
     sector_out["Observation Date"] = pd.to_datetime(sector_out["Observation Date"], errors="coerce").dt.date.astype(str)
-    national_temp = NATIONAL_HISTORY_PATH.with_suffix(".csv.tmp")
-    sector_temp = SECTOR_SNAPSHOT_PATH.with_suffix(".csv.tmp")
-    national_out.to_csv(national_temp, index=False)
-    sector_out.to_csv(sector_temp, index=False)
-    national_temp.replace(NATIONAL_HISTORY_PATH)
-    sector_temp.replace(SECTOR_SNAPSHOT_PATH)
+    atomic_write_csv(national_out, NATIONAL_HISTORY_PATH)
+    atomic_write_csv(sector_out, SECTOR_SNAPSHOT_PATH)
 
 def _load_local() -> tuple[pd.DataFrame, pd.DataFrame]:
     national = pd.read_csv(NATIONAL_HISTORY_PATH) if NATIONAL_HISTORY_PATH.exists() else pd.DataFrame()

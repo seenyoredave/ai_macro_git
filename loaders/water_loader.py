@@ -44,6 +44,7 @@ def load_water_utilization_data() -> dict:
         "summary": summary,
         "source_manifest": manifest,
         "field_dictionary": pd.read_csv(WATER_ROOT / "field_dictionary.csv") if (WATER_ROOT / "field_dictionary.csv").exists() else pd.DataFrame(),
+        "usgs_2020_top_withdrawals": _read_csv("usgs_2020_top_withdrawals.csv"),
         "usgs_national_categories": _read_csv("usgs_2015_national_category_summary.csv"),
         "usgs_state_categories": _read_csv("usgs_2015_state_category_summary.csv"),
         "usgs_counties": _read_csv("usgs_2015_county_summary.csv.gz"),

@@ -18,7 +18,6 @@ LAYER_FILTERS = {
     "Planned / announced": "planned",
     "Capacity evidence": "capacity",
     "Power evidence": "power",
-    "Water context": "water_context",
     "Direct water evidence": "water_direct",
 }
 
@@ -63,8 +62,6 @@ def _layer_mask(frame: pd.DataFrame, layer: str) -> pd.Series:
             if field in frame.columns:
                 mask |= pd.to_numeric(frame[field], errors="coerce").gt(0)
         return mask
-    if layer == "water_context":
-        return frame.get("County Water Context Available", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
     if layer == "water_direct":
         return frame.get("Direct Water Evidence", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
     return pd.Series(True, index=frame.index)

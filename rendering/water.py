@@ -4,72 +4,211 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from rendering.charts_water import thermoelectric_water_groups, water_withdrawal_components
+from analytics.water_competition import (
+    current_top_withdrawal_profile,
+    evidence_ladder,
+    state_facility_evidence_profile,
+)
+from rendering.charts_water import (
+    thermoelectric_water_groups,
+    water_evidence_ladder,
+    water_state_evidence_profile,
+    water_top_withdrawals_2020,
+    wastewater_construction_history,
+)
 from rendering.common import _render_tab_metric_registry
-from rendering.components import fmt_number, render_line_break, render_panel_heading, render_section, render_static_table, render_statline, render_tab_header
+from rendering.components import (
+    fmt_number,
+    inject_panel_height_rules,
+    render_domain_read,
+    render_line_break,
+    render_panel_heading,
+    render_section,
+    render_statline,
+    render_tab_header,
+)
+from rendering.dataframe import arrow_safe_dataframe
+
 
 def _water_utilization_payload(water_data):
     return water_data or {}
 
-def _render_water_utilization(water_data):
+
+def _render_water_pulse(water_data):
     water = _water_utilization_payload(water_data)
-    summary = water.get("summary", {}) or {}
-    usgs = summary.get("usgs_2015", {}) or {}
-    eia = summary.get("eia_2024_thermoelectric", {}) or {}
-    national_categories = water.get("usgs_national_categories")
-    state_categories = water.get("usgs_state_categories")
-    eia_groups = water.get("eia_groups")
-    eia_plants = water.get("eia_plants")
-    counties = water.get("usgs_counties")
-
-    if not usgs:
-        st.error("U.S. water utilization data are unavailable.")
-        return
-
-    total = pd.to_numeric(usgs.get("total_withdrawal_mgd"), errors="coerce")
-    freshwater_share = pd.to_numeric(usgs.get("freshwater_share"), errors="coerce")
-    groundwater_share = pd.to_numeric(usgs.get("groundwater_share"), errors="coerce")
+    linkage = water.get("facility_context_summary", {}) or {}
+    profile = current_top_withdrawal_profile(water.get("usgs_2020_top_withdrawals"))
+    values = profile.set_index("Use Category")["Withdrawal Bgal/day"].to_dict() if not profile.empty else {}
+    quantified = int(linkage.get("quantified_withdrawal_records", 0) or 0) + int(
+        linkage.get("quantified_consumption_records", 0) or 0
+    )
     render_statline(
         [
-            ("Total withdrawal", fmt_number(total / 1000.0 if pd.notna(total) else np.nan, 1, suffix=" Bgal/day"), "USGS 2015 national account"),
-            ("Freshwater share", fmt_number(freshwater_share * 100 if pd.notna(freshwater_share) else np.nan, 1, suffix="%"), "share of total withdrawal"),
-            ("Groundwater share", fmt_number(groundwater_share * 100 if pd.notna(groundwater_share) else np.nan, 1, suffix="%"), "share of total withdrawal"),
-            ("County records", f"{int(usgs.get('county_records', 0) or 0):,}", f"{int(usgs.get('jurisdictions', 0) or 0)} jurisdictions"),
+            (
+                "Crop irrigation",
+                fmt_number(values.get("Crop irrigation"), 1, suffix=" Bgal/day"),
+                "USGS 2020 modeled withdrawal",
+            ),
+            (
+                "Thermoelectric power",
+                fmt_number(values.get("Thermoelectric power"), 1, suffix=" Bgal/day"),
+                "USGS 2020 modeled withdrawal",
+            ),
+            (
+                "Public supply",
+                fmt_number(values.get("Public supply"), 1, suffix=" Bgal/day"),
+                "USGS 2020 modeled withdrawal",
+            ),
+            (
+                "Quantified AI use",
+                f"{quantified:,}",
+                "facility withdrawal + consumption records",
+            ),
         ],
-        key_prefix="water-utilization-national-summary",
+        key_prefix="water-system-pulse",
     )
 
-    geography_options = ["United States"]
-    if isinstance(state_categories, pd.DataFrame) and not state_categories.empty and "Geography" in state_categories.columns:
-        geography_options.extend(sorted(value for value in state_categories["Geography"].dropna().astype(str).unique() if value != "United States"))
-    selected_geography = st.selectbox(
-        "Withdrawal geography",
-        geography_options,
-        key="water-utilization-geography",
-    )
-    if selected_geography == "United States":
-        selected_categories = national_categories
-    else:
-        selected_categories = state_categories.loc[state_categories["Geography"].eq(selected_geography)].copy() if isinstance(state_categories, pd.DataFrame) else pd.DataFrame()
 
-    with st.container(border=True):
-        render_panel_heading("Withdrawal by use and source", f"{selected_geography} · 2015 average daily rate")
-        st.plotly_chart(
-            water_withdrawal_components(selected_categories),
-            width="stretch",
-            config={"displayModeBar": True, "responsive": True},
-            key="water-utilization-withdrawal-components",
+def _render_competing_claims(water_data):
+    water = _water_utilization_payload(water_data)
+    profile = water.get("usgs_2020_top_withdrawals")
+    with st.container(border=True, key="water-panel-competing-claims"):
+        render_panel_heading(
+            "Who holds the largest national water claims?",
+            "Conterminous U.S. · three largest modeled withdrawal categories · 2020",
         )
-    with st.expander("County withdrawal records", expanded=False):
-        if isinstance(counties, pd.DataFrame) and not counties.empty:
-            table = counties if selected_geography == "United States" else counties.loc[counties["State"].eq(selected_geography)]
-            table = table.sort_values("Total Withdrawal Mgal/d", ascending=False, na_position="last", kind="stable")
-            render_static_table(table)
-        else:
-            st.caption("No retained county records are available.")
+        st.plotly_chart(
+            water_top_withdrawals_2020(profile),
+            width="stretch",
+            config={"displayModeBar": False, "responsive": True},
+            key="water-competing-uses-2020",
+        )
+        st.caption(
+            "This retained USGS comparison covers crop irrigation, thermoelectric power, and public supply—the three largest modeled categories. "
+            "It is a national allocation envelope, not a complete all-use account and not an estimate of data-center withdrawal."
+        )
 
-    if not eia:
+
+def _render_ai_water_exposure(water_data, infrastructure_data):
+    water = _water_utilization_payload(water_data)
+    context = water.get("facility_context")
+    if not isinstance(context, pd.DataFrame):
+        context = (infrastructure_data or {}).get("facility_registry")
+    if not isinstance(context, pd.DataFrame) or context.empty:
+        st.info("No facility records are available for water-evidence review.")
         return
+
+    summary = water.get("facility_context_summary", {}) or {}
+    state_profile = state_facility_evidence_profile(context)
+    mapped_states = int(state_profile["State"].nunique()) if not state_profile.empty else 0
+    direct_states = int(state_profile.loc[state_profile["Direct Water Evidence"].gt(0), "State"].nunique()) if not state_profile.empty else 0
+    quantified_states = int(state_profile.loc[state_profile["Quantified Use"].gt(0), "State"].nunique()) if not state_profile.empty else 0
+    render_statline(
+        [
+            ("Mapped facilities", f"{int(summary.get('facilities', 0) or 0):,}", f"across {mapped_states} states"),
+            ("Direct evidence", f"{int(summary.get('direct_water_evidence_records', 0) or 0):,}", f"across {direct_states} states"),
+            ("Quantified use", f"{int(summary.get('quantified_withdrawal_records', 0) or 0) + int(summary.get('quantified_consumption_records', 0) or 0):,}", f"across {quantified_states} states"),
+            ("Displacement finding", "Not established", "current public evidence is insufficient"),
+        ],
+        key_prefix="water-ai-evidence-pulse",
+    )
+
+    left, right = st.columns([1.2, 0.8])
+    with left:
+        with st.container(border=True, key="water-panel-state-evidence"):
+            render_panel_heading(
+                "Facility concentration & disclosure coverage",
+                "Current facility registry · mapped sites and direct water evidence by state",
+            )
+            st.plotly_chart(
+                water_state_evidence_profile(context),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="water-state-evidence-profile",
+            )
+            st.caption(
+                "This view identifies where facilities and disclosures are concentrated. It does not estimate local water demand, scarcity, causation, or displacement."
+            )
+    with right:
+        with st.container(border=True, key="water-panel-evidence-ladder"):
+            render_panel_heading(
+                "AI water evidence ladder",
+                "How far public evidence progresses from location to quantified use",
+            )
+            st.plotly_chart(
+                water_evidence_ladder(summary),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="water-evidence-ladder",
+            )
+            ladder = evidence_ladder(summary)
+            quantified = int(ladder.loc[
+                ladder["Evidence Stage"].isin(["Quantified withdrawal", "Quantified consumption"]),
+                "Facilities",
+            ].sum()) if not ladder.empty else 0
+            if quantified == 0:
+                st.caption(
+                    "No retained facility record quantifies annual withdrawal or consumption. The platform therefore does not claim statistically established effects on communities or agriculture."
+                )
+
+    with st.expander("Facility water evidence ledger", expanded=False):
+        columns = [
+            "State", "Facility", "Operator", "County", "Status",
+            "Direct Water Evidence", "Water Withdrawal Gallons/Year",
+            "Water Consumption Gallons/Year", "Cooling System", "Water Source",
+            "Water Evidence Grade", "Water Evidence Source", "Water Evidence URL",
+        ]
+        table = context[[column for column in columns if column in context.columns]].copy()
+        sort_columns = [column for column in ["State", "Direct Water Evidence", "Facility"] if column in table.columns]
+        ascending = [True, False, True][: len(sort_columns)]
+        if sort_columns:
+            table = table.sort_values(sort_columns, ascending=ascending, kind="stable", na_position="last")
+        st.caption("Scrollable table. Select any column header—including State—to sort.")
+        st.dataframe(
+            arrow_safe_dataframe(table),
+            width="stretch",
+            height=460,
+            hide_index=True,
+        )
+
+
+
+def _render_wastewater_context(infrastructure_data):
+    series = (((infrastructure_data or {}).get("series", {}) or {}).get("Public Sewage and Waste Disposal Construction", {}) or {})
+    value = pd.to_numeric(series.get("value"), errors="coerce")
+    growth = pd.to_numeric(series.get("yoy_growth"), errors="coerce")
+    date = pd.to_datetime(series.get("date"), errors="coerce", format="mixed")
+    render_statline(
+        [
+            ("Public wastewater construction", "n/a" if pd.isna(value) else f"${value / 1000.0:.1f}B", "seasonally adjusted annual rate"),
+            ("Year-over-year change", fmt_number(growth * 100.0, 1, signed=True, suffix="%"), "broad public-system investment"),
+            ("Latest observation", "n/a" if pd.isna(date) else date.strftime("%Y-%m"), "U.S. Census construction spending"),
+        ],
+        key_prefix="water-wastewater-pulse",
+    )
+    with st.container(border=True, key="water-panel-wastewater-investment"):
+        render_panel_heading("Wastewater-system investment", "Public sewage and waste-disposal construction · 2020-present")
+        st.plotly_chart(
+            wastewater_construction_history((infrastructure_data or {}).get("construction_history")),
+            width="stretch",
+            config={"displayModeBar": False, "responsive": True},
+            key="water-wastewater-construction-history",
+        )
+        st.caption(
+            "This is public-system capital spending, not wastewater volume, treatment headroom, discharge capacity, or AI-attributed investment. "
+            "Facility impacts require project- or utility-specific evidence."
+        )
+
+def _render_thermoelectric_detail(water_data):
+    water = _water_utilization_payload(water_data)
+    summary = water.get("summary", {}) or {}
+    eia = summary.get("eia_2024_thermoelectric", {}) or {}
+    eia_groups = water.get("eia_groups")
+    eia_plants = water.get("eia_plants")
+    if not eia:
+        st.info("Thermoelectric cooling-water data are unavailable.")
+        return
+
     render_statline(
         [
             ("Reported withdrawal", fmt_number(eia.get("withdrawal_bgal_day"), 2, suffix=" Bgal/day"), "annual total converted to daily average"),
@@ -77,20 +216,20 @@ def _render_water_utilization(water_data):
             ("Withdrawal coverage", f"{int(eia.get('plants_with_withdrawal', 0) or 0):,}/{int(eia.get('plants', 0) or 0):,}", "reporting plants"),
             ("Consumption coverage", f"{int(eia.get('plants_with_consumption', 0) or 0):,}/{int(eia.get('plants', 0) or 0):,}", "reporting plants"),
         ],
-        key_prefix="water-utilization-thermoelectric-summary",
+        key_prefix="water-thermoelectric-summary",
     )
     controls = st.columns(2)
     with controls[0]:
         grouping_label = st.selectbox(
             "Thermoelectric grouping",
             ["Water type", "Water source", "Cooling system"],
-            key="water-utilization-eia-grouping",
+            key="water-thermoelectric-grouping",
         )
     with controls[1]:
         metric = st.selectbox(
             "Thermoelectric measure",
             ["Withdrawal", "Consumption"],
-            key="water-utilization-eia-measure",
+            key="water-thermoelectric-measure",
         )
     grouping_map = {
         "Water type": "Water Type",
@@ -98,62 +237,79 @@ def _render_water_utilization(water_data):
         "Cooling system": "Cooling System Type",
     }
     group_field = grouping_map[grouping_label]
-    selected_groups = eia_groups.loc[eia_groups["Grouping"].eq(group_field)].copy() if isinstance(eia_groups, pd.DataFrame) and not eia_groups.empty else pd.DataFrame()
-    with st.container(border=True):
-        render_panel_heading("Thermoelectric cooling water", f"EIA 2024 · reported {metric.lower()}")
+    selected_groups = (
+        eia_groups.loc[eia_groups["Grouping"].eq(group_field)].copy()
+        if isinstance(eia_groups, pd.DataFrame) and not eia_groups.empty else pd.DataFrame()
+    )
+    with st.container(border=True, key="water-panel-thermoelectric"):
+        render_panel_heading("Thermoelectric water", f"EIA 2024 · reported {metric.lower()} by {grouping_label.lower()}")
         st.plotly_chart(
             thermoelectric_water_groups(selected_groups, metric=metric),
             width="stretch",
-            config={"displayModeBar": True, "responsive": True},
-            key="water-utilization-eia-groups",
+            config={"displayModeBar": False, "responsive": True},
+            key="water-thermoelectric-groups",
         )
     with st.expander("Thermoelectric plant records", expanded=False):
         if isinstance(eia_plants, pd.DataFrame) and not eia_plants.empty:
             metric_column = f"{metric} Bgal/day"
-            table = eia_plants.sort_values(metric_column, ascending=False, na_position="last", kind="stable") if metric_column in eia_plants.columns else eia_plants
+            sort_columns = [column for column in ["State", metric_column, "Plant Name"] if column in eia_plants.columns]
+            ascending = [True, False, True][: len(sort_columns)]
+            table = eia_plants.sort_values(sort_columns, ascending=ascending, na_position="last", kind="stable") if sort_columns else eia_plants.copy()
             columns = [
-                "Plant Name", "State", "Withdrawal Bgal/day", "Consumption Bgal/day",
+                "State", "Plant Name", "Withdrawal Bgal/day", "Consumption Bgal/day",
                 "Water Type", "Water Source", "Cooling System", "Quality Flags",
             ]
-            render_static_table(table[[column for column in columns if column in table.columns]].head(100))
+            st.caption("Scrollable table. Select any column header—including State—to sort.")
+            st.dataframe(
+                arrow_safe_dataframe(table[[column for column in columns if column in table.columns]]),
+                width="stretch",
+                height=460,
+                hide_index=True,
+            )
         else:
             st.caption("No retained plant records are available.")
 
-def _render_ai_water_linkage(water_data, infrastructure_data):
-    context = (water_data or {}).get("facility_context")
-    if not isinstance(context, pd.DataFrame):
-        context = (infrastructure_data or {}).get("facility_registry")
-    if not isinstance(context, pd.DataFrame) or context.empty:
-        st.info("No facility records are available for water-system linkage.")
-        return
-    summary = (water_data or {}).get("facility_context_summary", {}) or {}
-    render_statline(
-        [
-            ("Mapped facilities", f"{int(summary.get('facilities', len(context)) or 0):,}", "canonical registry"),
-            ("County water context", f"{int(summary.get('county_context_records', 0) or 0):,}", "matched to USGS county accounts"),
-            ("Direct water evidence", f"{int(summary.get('direct_water_evidence_records', 0) or 0):,}", "permit, utility, cooling, or quantity"),
-            ("Quantified use", f"{int(summary.get('quantified_withdrawal_records', 0) or 0):,} / {int(summary.get('quantified_consumption_records', 0) or 0):,}", "withdrawal / consumption"),
-        ],
-        key_prefix="water-ai-facility-linkage",
-    )
 
-
-
-def render_water_tab(water_data, infrastructure_data=None):
+def render_water_tab(water_data, infrastructure_data=None, tab_read=None):
+    inject_panel_height_rules({
+        "water-panel-state-evidence": 590,
+        "water-panel-evidence-ladder": 590,
+    })
     render_tab_header(
         "Water",
-        "National water use, local system context, and direct evidence of AI facility withdrawal, consumption, and cooling design.",
-        "USGS / EIA / facility registry",
+        "Competing freshwater claims, AI-facility evidence, and the conditions that could constrain communities, agriculture, and development.",
+        "USGS 2020 / EIA 2024 / Census / facility registry",
     )
     render_line_break()
     _render_tab_metric_registry("water")
+    render_domain_read(tab_read, label="Water Read", accent="blue")
+
     render_section(
-        "U.S. Water Utilization",
-        "Retained national withdrawal and thermoelectric cooling-water records by source, use, and geography.",
+        "Water system pulse",
+        "The latest retained national comparison of major water claims and the present limit of direct AI-facility evidence.",
     )
-    _render_water_utilization(water_data)
+    _render_water_pulse(water_data)
+
     render_section(
-        "AI water linkage",
-        "Data-center facilities joined to county water accounts, followed by direct facility evidence where available.",
+        "Competing claims",
+        "The three largest modeled national withdrawal categories in the current evidence window.",
     )
-    _render_ai_water_linkage(water_data, infrastructure_data or {})
+    _render_competing_claims(water_data)
+
+    render_section(
+        "AI water evidence",
+        "Where the facility footprint is concentrated, what is directly disclosed, and which conclusions the evidence does not yet support.",
+    )
+    _render_ai_water_exposure(water_data, infrastructure_data or {})
+
+    render_section(
+        "Wastewater systems",
+        "Public treatment and disposal investment is tracked as system context, without attributing spending or capacity pressure to AI absent direct evidence.",
+    )
+    _render_wastewater_context(infrastructure_data or {})
+
+    render_section(
+        "Power-sector water demand",
+        "Thermoelectric withdrawal and consumption remain a major competing claim and an indirect water channel for the AI buildout.",
+    )
+    _render_thermoelectric_detail(water_data)

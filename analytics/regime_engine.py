@@ -29,7 +29,7 @@ from analytics.power_capacity_gap import (
 
 AEI_VERSION = "3.1"
 ADI_VERSION = "1.0"
-EVG_VERSION = "2.0"
+EVG_VERSION = "3.0"
 POWER_STRESS_VERSION = "3.0"
 BORROWER_STRAIN_VERSION = "3.0"
 LENDER_STRAIN_VERSION = "3.1"
@@ -197,6 +197,7 @@ def build_regime_metrics(
     validation_result = calculate_economic_validation_gap(
         sector_data or {},
         fred_data or {},
+        deployment_result=development_result,
     )
     power_capacity_gap_result = calculate_power_capacity_gap(
         development_result,

@@ -100,8 +100,8 @@ def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
             .drop_duplicates("Date", keep="last")
         )
         trend["current"] = float(current_value)
-        trend["velocity"] = calc_velocity(native_values["Value"])
-        trend["acceleration"] = calc_acceleration(native_values["Value"])
+        trend["velocity"] = calc_velocity(native_values)
+        trend["acceleration"] = calc_acceleration(native_values)
 
     trend["history"] = history.reset_index(drop=True)
 

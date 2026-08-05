@@ -9,6 +9,8 @@ import requests
 import streamlit as st
 
 from config.debug_config import debug_print
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv, synchronized_path
 from loaders.census import clean_header as _clean_header, parse_census_month as _parse_census_month
 from config.market_clock import market_date
 
@@ -63,18 +65,14 @@ def parse_private_construction_workbook(content: bytes) -> pd.DataFrame:
     ].reset_index(drop=True)
 
 def _persist_construction_history(df: pd.DataFrame) -> None:
-    if df is None or df.empty:
+    if not repository_writes_enabled() or df is None or df.empty:
         return
 
     out = df.copy()
     out["Observation Date"] = pd.to_datetime(
         out["Observation Date"], errors="coerce"
     ).dt.date.astype(str)
-
-    CONSTRUCTION_HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    temp = CONSTRUCTION_HISTORY_PATH.with_suffix(".csv.tmp")
-    out.to_csv(temp, index=False)
-    temp.replace(CONSTRUCTION_HISTORY_PATH)
+    atomic_write_csv(out, CONSTRUCTION_HISTORY_PATH)
 
 def _load_local_construction_history() -> pd.DataFrame | None:
     if (
@@ -114,6 +112,8 @@ def _load_local_construction_history() -> pd.DataFrame | None:
     return frame if not frame.empty else None
 
 def _record_construction_availability(latest_observation_date) -> None:
+    if not repository_writes_enabled():
+        return
     observation = pd.to_datetime(latest_observation_date, errors="coerce")
     if pd.isna(observation):
         return
@@ -123,17 +123,15 @@ def _record_construction_availability(latest_observation_date) -> None:
         "Observation Date": observation.date().isoformat(),
     }])
 
-    if CONSTRUCTION_RELEASE_PATH.exists() and CONSTRUCTION_RELEASE_PATH.stat().st_size > 0:
-        existing = pd.read_csv(CONSTRUCTION_RELEASE_PATH)
-        combined = pd.concat([existing, row], ignore_index=True, sort=False)
-    else:
-        combined = row
-
-    combined = combined.drop_duplicates(subset=["Release Date"], keep="last")
-    combined = combined.sort_values("Release Date", kind="stable")
-    temp = CONSTRUCTION_RELEASE_PATH.with_suffix(".csv.tmp")
-    combined.to_csv(temp, index=False)
-    temp.replace(CONSTRUCTION_RELEASE_PATH)
+    with synchronized_path(CONSTRUCTION_RELEASE_PATH):
+        if CONSTRUCTION_RELEASE_PATH.exists() and CONSTRUCTION_RELEASE_PATH.stat().st_size > 0:
+            existing = pd.read_csv(CONSTRUCTION_RELEASE_PATH)
+            combined = pd.concat([existing, row], ignore_index=True, sort=False)
+        else:
+            combined = row
+        combined = combined.drop_duplicates(subset=["Release Date"], keep="last")
+        combined = combined.sort_values("Release Date", kind="stable")
+        atomic_write_csv(combined, CONSTRUCTION_RELEASE_PATH, lock=False)
 
 def summarize_data_center_construction(df: pd.DataFrame) -> dict:
     if df is None or df.empty:

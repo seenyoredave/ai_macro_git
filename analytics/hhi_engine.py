@@ -16,8 +16,21 @@ def calc_hhi_from_sector_data(sector_data):
         return np.nan
 
     market_caps = []
+    seen_tickers = set()
     for frame in sector_data.values():
-        market_caps.extend(_positive_market_caps(frame).tolist())
+        if frame is None or frame.empty or "Market Cap" not in frame.columns:
+            continue
+        caps = pd.to_numeric(frame["Market Cap"], errors="coerce")
+        valid = caps.notna() & np.isfinite(caps) & caps.gt(0)
+        if "Ticker" not in frame.columns:
+            market_caps.extend(caps.loc[valid].astype(float).tolist())
+            continue
+        tickers = frame["Ticker"].astype(str).str.upper().str.strip()
+        for ticker, cap in zip(tickers.loc[valid], caps.loc[valid]):
+            if not ticker or ticker == "NAN" or ticker in seen_tickers:
+                continue
+            seen_tickers.add(ticker)
+            market_caps.append(float(cap))
 
     if not market_caps:
         return np.nan

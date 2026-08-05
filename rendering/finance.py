@@ -4,16 +4,21 @@ import pandas as pd
 import streamlit as st
 
 from analytics.financial_conditions import nfci_direction, nfci_snapshot
-from analytics.trend_engine import calc_trailing_directional_pct
+from analytics.private_capital import build_private_capital_realization
+from analytics.trend_engine import calc_trailing_point_change
 from config.debt_markets_config import DEBT_MARKET_SERIES
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.charts_common import COLORS, single_history
-from rendering.charts_finance import component_bars, debt_market_history, financial_conditions_history, funding_history
+from rendering.charts_finance import (
+    component_bars,
+    debt_market_history,
+    financial_conditions_history,
+    private_capital_ledger_chart,
+    private_capital_realization_map,
+)
 from rendering.common import _financial_condition_source_stat, _render_tab_metric_registry, _value
-from rendering.components import fmt_date, fmt_number, metric_card, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
+from rendering.components import fmt_date, fmt_number, inject_panel_height_rules, metric_card, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
 from rendering.evidence_tables import _borrower_strain_component_table, _lender_strain_component_table
-
-FINANCE_UPDATE_DATE = "8.2.2026"
 
 def _funding_specs(funding_mix):
     current = (funding_mix or {}).get("current", {}) or {}
@@ -29,7 +34,7 @@ def _funding_specs(funding_mix):
             (0, 3),
             1,
             "violet",
-            "YFinance + EDGAR",
+            "SEC filings",
         ),
         (
             "finance-crc",
@@ -41,19 +46,19 @@ def _funding_specs(funding_mix):
             (0, 5),
             1,
             "blue",
-            "YFinance + EDGAR",
+            "SEC filings",
         ),
         (
             "finance-dfp",
             "Debt Financing Pulse",
             current.get("debt_financing_pulse"),
             fmt_number(current.get("debt_financing_pulse"), 2, signed=True, suffix="x"),
-            "Δ12m debt / TTM CapEx",
+            f"Matched Δ12m SEC debt / TTM CapEx · {current.get('debt_financing_companies', 0)} companies",
             series.get("debt_financing_pulse"),
             (-2, 2),
             0,
             "violet",
-            "YFinance + EDGAR",
+            "SEC filings",
         ),
         (
             "finance-fcl",
@@ -88,16 +93,6 @@ def _render_funding_section(regime_metrics):
                 years=10,
             )
 
-    history = funding_mix.get("history")
-    with st.container(border=True):
-        render_panel_heading("Funding diagnostics history", "Borrower cohort · 10-year window")
-        st.plotly_chart(
-            funding_history(history, years=10),
-            width="stretch",
-            config={"displayModeBar": True, "responsive": True},
-            key="finance-funding-diagnostics-history",
-        )
-
     current = funding_mix.get("current", {}) or {}
     with st.expander("Funding cohort totals", expanded=False):
         render_statline(
@@ -123,15 +118,15 @@ def _fmt_dollars(value):
         return f"${numeric / 1e6:.1f}M"
     return f"${numeric:,.0f}"
 
-def _strain_horizon_pct_note(trend, *, months, label):
-    pct_change = calc_trailing_directional_pct(
+def _strain_horizon_point_note(trend, *, months, label):
+    point_change = calc_trailing_point_change(
         (trend or {}).get("history"),
         months=months,
         tolerance=1e-8,
     )
-    if pd.isna(pct_change):
+    if pd.isna(point_change):
         return f"{label} change unavailable"
-    return f"{label} {pct_change:+.2f}% change"
+    return f"{label} {point_change:+.2f} points"
 
 def _strain_current_display(value):
     numeric = pd.to_numeric(value, errors="coerce")
@@ -150,26 +145,30 @@ def _render_financial_condition_product(
 ):
     with st.container(border=True):
         render_panel_heading(title, note)
+        history = (trend or {}).get("history")
+        updated_date = None
+        if isinstance(history, pd.DataFrame) and not history.empty:
+            updated_date = pd.to_datetime(history.get("Date"), errors="coerce").max()
         source_stat = _financial_condition_source_stat(
             source_label=live_sources,
-            updated_date=FINANCE_UPDATE_DATE,
+            updated_date=fmt_date(updated_date),
         )
         render_statline(
             [
                 (
                     "Current",
                     _strain_current_display(value),
-                    _strain_horizon_pct_note(trend, months=12, label="12-month"),
+                    _strain_horizon_point_note(trend, months=12, label="12-month"),
                 ),
                 (
                     "Velocity",
                     fmt_number((trend or {}).get("velocity"), 2, signed=True),
-                    _strain_horizon_pct_note(trend, months=3, label="3-month"),
+                    "90-day OLS slope · points / 30d",
                 ),
                 (
                     "Acceleration",
                     fmt_number((trend or {}).get("acceleration"), 2, signed=True),
-                    _strain_horizon_pct_note(trend, months=1, label="1-month"),
+                    "current minus prior 90-day slope",
                 ),
                 source_stat,
             ],
@@ -285,7 +284,7 @@ def _render_nfci(fred_data, nfci_history):
                 ("NFCI/ANFCI", paired_value, "headline / macro-adjusted"),
                 ("3-month change", fmt_number(change, 3, signed=True), nfci_direction(change)),
                 ("Observation", fmt_date(snapshot.get("as_of")), "weekly observation"),
-                ("Source", "Chicago Fed NFCI", f"updated {FINANCE_UPDATE_DATE}"),
+                ("Source", "Chicago Fed NFCI", f"observed {fmt_date(snapshot.get('as_of'))}"),
             ],
             key_prefix="finance-nfci-confirmation",
         )
@@ -319,23 +318,133 @@ def _private_credit_history_table(lender_strain):
     return display[columns].sort_values("Date", kind="stable")
 
 
-def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, nfci_history, debt_markets_data, dashboard_data):
+
+def _private_capital_detail_table(funds: pd.DataFrame) -> pd.DataFrame:
+    if funds is None or funds.empty:
+        return pd.DataFrame()
+    display = funds.copy()
+    display["Paid In ($M)"] = pd.to_numeric(display.get("Paid In Capital"), errors="coerce") / 1e6
+    display["Distributions ($M)"] = pd.to_numeric(display.get("Distributions"), errors="coerce") / 1e6
+    display["NAV ($M)"] = pd.to_numeric(display.get("NAV"), errors="coerce") / 1e6
+    display["DPI"] = pd.to_numeric(display.get("DPI"), errors="coerce")
+    display["RVPI"] = pd.to_numeric(display.get("RVPI"), errors="coerce")
+    display["TVPI"] = pd.to_numeric(display.get("TVPI"), errors="coerce")
+    display["Net IRR (%)"] = pd.to_numeric(display.get("Net IRR"), errors="coerce")
+    display["Source As Of"] = pd.to_datetime(display.get("Source As Of"), errors="coerce").dt.date
+    columns = [
+        "Manager", "Fund", "Vintage", "Maturity", "Exposure Tier",
+        "Paid In ($M)", "Distributions ($M)", "NAV ($M)",
+        "DPI", "RVPI", "TVPI", "Net IRR (%)", "Source As Of",
+    ]
+    return display[[column for column in columns if column in display.columns]].sort_values(
+        ["Vintage", "Manager", "Fund"], ascending=[False, True, True], kind="stable"
+    )
+
+
+def _render_private_capital_realization():
+    realization = build_private_capital_realization()
+    metrics = realization.get("metrics", {}) or {}
+    funds = realization.get("funds", pd.DataFrame())
+    metadata = realization.get("metadata", {}) or {}
+    as_of = fmt_date(realization.get("as_of"))
+
+    if not metrics or funds is None or funds.empty:
+        with st.container(border=True):
+            render_panel_heading("Private capital realization", "Public-LP cohort")
+            st.caption("Private-capital realization data are unavailable.")
+        return
+
+    left, right = st.columns([0.82, 1.38])
+    with left:
+        with st.container(border=True, key="finance-panel-realization-ledger"):
+            render_panel_heading(
+                "Realization ledger",
+                f"Mature technology / AI-adjacent vintages · as of {as_of}",
+            )
+            render_statline(
+                [
+                    ("DPI", fmt_number(metrics.get("dpi"), 2, suffix="x"), "cash returned / paid in"),
+                    ("RVPI", fmt_number(metrics.get("rvpi"), 2, suffix="x"), "remaining NAV / paid in"),
+                    ("TVPI", fmt_number(metrics.get("tvpi"), 2, suffix="x"), "distributed + residual value"),
+                    ("Realized share", fmt_number((metrics.get("realized_share") or 0) * 100, 0, suffix="%"), "share of current total value"),
+                ],
+                key_prefix="finance-private-capital-realization",
+            )
+            st.plotly_chart(
+                private_capital_ledger_chart(metrics),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="finance-private-capital-ledger",
+            )
+            st.caption(
+                f"{metrics.get('fund_count', 0)} funds across {metrics.get('manager_count', 0)} managers · "
+                f"{_fmt_dollars(metrics.get('paid_in'))} paid in · five-year-plus vintages only."
+            )
+
+    with right:
+        with st.container(border=True, key="finance-panel-realization-map"):
+            render_panel_heading(
+                "Fund realization map",
+                "Cash realization versus total value · bubble size reflects paid-in capital",
+            )
+            st.plotly_chart(
+                private_capital_realization_map(funds),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="finance-private-capital-map",
+            )
+
+    with st.expander(f"View fund, vintage, and methodology detail · {len(funds)} funds", expanded=False):
+        st.dataframe(
+            arrow_safe_dataframe(_private_capital_detail_table(funds)),
+            width="stretch",
+            hide_index=True,
+        )
+        st.markdown("**Scope and interpretation**")
+        st.caption(str(metadata.get("selection_method") or "Public-LP technology and AI-adjacent cohort."))
+        for limitation in metadata.get("important_limitations", []) or []:
+            st.caption(f"• {limitation}")
+        st.caption(
+            "Definitions follow the standard private-market relationship: TVPI = DPI + RVPI. "
+            "Source: CalSTRS Private Equity Portfolio Performance; methodology reference: ILPA Performance Template."
+        )
+
+def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, nfci_history, debt_markets_data, dashboard_data, tab_read=None):
     del sector_metrics, sector_data
+    inject_panel_height_rules({
+        "finance-panel-realization-ledger": 590,
+        "finance-panel-realization-map": 590,
+    })
     render_tab_header(
         "Finance",
-        "Funding capacity, contractual burden, borrower strain, lender strain, and broad financial conditions.",
-        "YFinance / SEC / FRED / New York Fed / Chicago Fed",
+        "How the AI economy raises capital, converts it into realized value, accesses credit, and absorbs financial stress.",
+        "SEC / CalSTRS / ILPA / FRED / New York Fed / Chicago Fed",
     )
     render_line_break()
     _render_tab_metric_registry("finance")
-    render_section("Funding profile", "Internal funding capacity, cash runway, debt formation, and forward commitments.")
-    _render_funding_section(regime_metrics)
-
-    render_section("Debt Markets", "Corporate bond-market distress across overall, investment-grade, and high-yield markets.")
-    _render_debt_markets(debt_markets_data)
+    render_domain_read(tab_read, label="Finance Read", accent="blue")
 
     render_section(
-        "Credit Conditions",
+        "Capital Funding",
+        "Internal funding capacity, cash runway, debt formation, and forward commitments.",
+    )
+    _render_funding_section(regime_metrics)
+
+    render_section(
+        "Private Capital Realization",
+        "Whether technology and AI-adjacent private-fund value is returning as cash or remaining at NAV.",
+    )
+    _render_private_capital_realization()
+
+    render_section(
+        "Credit Markets",
+        "Corporate bond distress and broad financial-condition confirmation.",
+    )
+    _render_debt_markets(debt_markets_data)
+    _render_nfci(fred_data, nfci_history)
+
+    render_section(
+        "Financial Stress",
         "Borrower balance sheets and lender credit channels.",
     )
     render_line_break()
@@ -362,4 +471,3 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
         supplemental_tables=(("Private credit history", _private_credit_history_table(lender_strain)),),
     )
 
-    _render_nfci(fred_data, nfci_history)

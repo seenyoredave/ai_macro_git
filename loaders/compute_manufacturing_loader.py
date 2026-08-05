@@ -1,36 +1,108 @@
 from __future__ import annotations
 
+from io import StringIO
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import requests
 import streamlit as st
+
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv
+
+from config.debug_config import debug_print
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 HISTORY_PATH = PROJECT_ROOT / "data" / "infrastructure" / "derived" / "compute_manufacturing_history.csv"
+M3_HISTORY_PATH = PROJECT_ROOT / "data" / "infrastructure" / "derived" / "compute_m3_history.csv"
 PROJECT_LEDGER_PATH = PROJECT_ROOT / "data" / "infrastructure" / "derived" / "compute_project_ledger.csv"
+INFO_INVESTMENT_PATH = PROJECT_ROOT / "data" / "info_processing_investment_history.csv"
 SOURCE_MANIFEST_PATH = PROJECT_ROOT / "data" / "infrastructure" / "source_manifest.csv"
 FIELD_DICTIONARY_PATH = PROJECT_ROOT / "data" / "infrastructure" / "field_dictionary.csv"
 SERIES_CONTRACT_PATH = PROJECT_ROOT / "data" / "infrastructure" / "derived" / "compute_series_contract.csv"
 SERIES_VALIDATION_PATH = PROJECT_ROOT / "data" / "infrastructure" / "derived" / "compute_series_validation.csv"
 
 OUTPUT_SERIES = {
-    "Computer and Peripheral Equipment Output": "Computer/peripheral output",
-    "Communications Equipment Output": "Communications-equipment output",
-    "Semiconductor and Electronic Component Output": "Semiconductor/component output",
+    "Computer and Peripheral Equipment Output": "IPG3341S",
+    "Communications Equipment Output": "IPG3342S",
+    "Semiconductor and Electronic Component Output": "IPG3344S",
+}
+CAPACITY_SERIES = {
+    "Computer and Peripheral Equipment Capacity": "CAPG3341S",
+    "Communications Equipment Capacity": "CAPG3342S",
+    "Semiconductor and Electronic Component Capacity": "CAPG3344S",
 }
 UTILIZATION_SERIES = {
-    "Computer and Peripheral Equipment Capacity Utilization": "Computer/peripheral utilization",
-    "Semiconductor and Electronic Component Capacity Utilization": "Semiconductor/component utilization",
+    "Computer and Peripheral Equipment Capacity Utilization": "CAPUTLG3341S",
+    "Communications Equipment Capacity Utilization": "CAPUTLG3342S",
+    "Semiconductor and Electronic Component Capacity Utilization": "CAPUTLG3344S",
 }
+M3_SERIES = {
+    "Computer and Electronic Product Shipments": "A34SVS",
+    "Computer and Electronic Product New Orders": "A34SNO",
+    "Computer and Electronic Product Inventory to Shipments": "A34SIS",
+    "Computer and Electronic Product Unfilled Orders to Shipments": "A34SUS",
+}
+
+SUPPLY_CHAIN_LAYER = {
+    "Leading-edge logic": "Logic",
+    "Logic fabrication": "Logic",
+    "Advanced memory": "Memory / HBM",
+    "Memory fabrication": "Memory / HBM",
+    "HBM and advanced packaging": "Memory / HBM",
+    "Advanced packaging": "Packaging / test",
+    "Advanced packaging and test": "Packaging / test",
+    "Foundry and advanced packaging": "Packaging / test",
+    "Optical interconnect": "Photonics / interconnect",
+    "Analog and embedded processing": "Analog / embedded",
+    "Semiconductor R&D": "R&D / pilot capacity",
+}
+
 
 def _load_csv(path: Path) -> pd.DataFrame:
     if not path.exists() or path.stat().st_size == 0:
         return pd.DataFrame()
     return pd.read_csv(path)
 
+
+def _atomic_csv(frame: pd.DataFrame, path: Path) -> None:
+    if not repository_writes_enabled():
+        return
+    atomic_write_csv(frame, path)
+
+
+def _fetch_fred_series(series: dict[str, str]) -> pd.DataFrame:
+    ids = ",".join(series.values())
+    response = requests.get(
+        f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={ids}",
+        timeout=30,
+        headers={"User-Agent": "ai-macro-compute/1.0"},
+    )
+    response.raise_for_status()
+    frame = pd.read_csv(StringIO(response.text))
+    date_column = next((column for column in ["DATE", "observation_date", "date"] if column in frame.columns), None)
+    if date_column is None:
+        raise ValueError("FRED compute response did not contain an observation date")
+    rename = {date_column: "Observation Date"}
+    rename.update({series_id: metric for metric, series_id in series.items()})
+    output = frame.rename(columns=rename)
+    for metric in series:
+        if metric not in output.columns:
+            output[metric] = np.nan
+        output[metric] = pd.to_numeric(output[metric], errors="coerce")
+    output["Observation Date"] = pd.to_datetime(output["Observation Date"], errors="coerce")
+    return (
+        output[["Observation Date", *series]]
+        .dropna(subset=["Observation Date"])
+        .sort_values("Observation Date", kind="stable")
+        .drop_duplicates("Observation Date", keep="last")
+        .reset_index(drop=True)
+    )
+
+
 def _normalize_history(frame: pd.DataFrame) -> pd.DataFrame:
-    expected = ["Observation Date", *OUTPUT_SERIES, *UTILIZATION_SERIES]
+    expected = ["Observation Date", *OUTPUT_SERIES, *CAPACITY_SERIES, *UTILIZATION_SERIES]
     if frame is None or frame.empty:
         return pd.DataFrame(columns=expected)
     output = frame.copy()
@@ -38,14 +110,73 @@ def _normalize_history(frame: pd.DataFrame) -> pd.DataFrame:
         if column not in output.columns:
             output[column] = pd.NaT if column == "Observation Date" else np.nan
     output["Observation Date"] = pd.to_datetime(output["Observation Date"], errors="coerce", format="mixed")
-    for column in [*OUTPUT_SERIES, *UTILIZATION_SERIES]:
+    for column in expected[1:]:
         output[column] = pd.to_numeric(output[column], errors="coerce")
+
+    derived_pairs = [
+        (
+            "Computer and Peripheral Equipment Output",
+            "Computer and Peripheral Equipment Capacity Utilization",
+            "Computer and Peripheral Equipment Capacity",
+        ),
+        (
+            "Semiconductor and Electronic Component Output",
+            "Semiconductor and Electronic Component Capacity Utilization",
+            "Semiconductor and Electronic Component Capacity",
+        ),
+    ]
+    for output_column, utilization_column, capacity_column in derived_pairs:
+        missing = output[capacity_column].isna()
+        utilization = output[utilization_column].where(output[utilization_column] > 0)
+        derived = output[output_column] / (utilization / 100.0)
+        output.loc[missing, capacity_column] = derived.loc[missing]
+
     return (
-        output.dropna(subset=["Observation Date"])
+        output[expected]
+        .dropna(subset=["Observation Date"])
         .sort_values("Observation Date", kind="stable")
         .drop_duplicates("Observation Date", keep="last")
         .reset_index(drop=True)
     )
+
+
+def _normalize_m3_history(frame: pd.DataFrame) -> pd.DataFrame:
+    expected = ["Observation Date", *M3_SERIES]
+    if frame is None or frame.empty:
+        return pd.DataFrame(columns=expected)
+    output = frame.copy()
+    for column in expected:
+        if column not in output.columns:
+            output[column] = pd.NaT if column == "Observation Date" else np.nan
+    output["Observation Date"] = pd.to_datetime(output["Observation Date"], errors="coerce", format="mixed")
+    for column in expected[1:]:
+        output[column] = pd.to_numeric(output[column], errors="coerce")
+    return (
+        output[expected]
+        .dropna(subset=["Observation Date"])
+        .sort_values("Observation Date", kind="stable")
+        .drop_duplicates("Observation Date", keep="last")
+        .reset_index(drop=True)
+    )
+
+
+def _normalize_info_investment(frame: pd.DataFrame) -> pd.DataFrame:
+    if frame is None or frame.empty:
+        return pd.DataFrame(columns=["Observation Date", "Info Processing Investment Level"])
+    output = frame.copy()
+    if "Observation Date" not in output.columns or "Info Processing Investment Level" not in output.columns:
+        return pd.DataFrame(columns=["Observation Date", "Info Processing Investment Level"])
+    output["Observation Date"] = pd.to_datetime(output["Observation Date"], errors="coerce", format="mixed")
+    output["Info Processing Investment Level"] = pd.to_numeric(
+        output["Info Processing Investment Level"], errors="coerce"
+    )
+    return (
+        output.dropna(subset=["Observation Date", "Info Processing Investment Level"])
+        .sort_values("Observation Date", kind="stable")
+        .drop_duplicates("Observation Date", keep="last")
+        .reset_index(drop=True)
+    )
+
 
 def _series_summary(history: pd.DataFrame, column: str) -> dict:
     if history.empty or column not in history.columns:
@@ -69,6 +200,7 @@ def _series_summary(history: pd.DataFrame, column: str) -> dict:
         "yoy_growth": yoy,
     }
 
+
 def _quality_summary(validation: pd.DataFrame) -> dict:
     if validation is None or validation.empty:
         return {
@@ -89,6 +221,7 @@ def _quality_summary(validation: pd.DataFrame) -> dict:
         "checked_on": None if checked.dropna().empty else checked.max().date().isoformat(),
     }
 
+
 def _deduplicated_portfolio_sum(projects: pd.DataFrame, value_column: str) -> float:
     if projects.empty or value_column not in projects.columns:
         return np.nan
@@ -108,6 +241,23 @@ def _deduplicated_portfolio_sum(projects: pd.DataFrame, value_column: str) -> fl
         return total
     return float(clean.groupby("Portfolio ID", dropna=False)[value_column].max().sum())
 
+
+def _normalize_projects(projects: pd.DataFrame) -> pd.DataFrame:
+    if projects is None or projects.empty:
+        return pd.DataFrame()
+    output = projects.copy()
+    if "Source Retrieval Date" in output.columns:
+        output["Source Retrieval Date"] = pd.to_datetime(output["Source Retrieval Date"], errors="coerce", format="mixed")
+    output["Supply Chain Layer"] = (
+        output.get("Component Layer", pd.Series("", index=output.index))
+        .fillna("")
+        .astype(str)
+        .map(SUPPLY_CHAIN_LAYER)
+        .fillna("Other compute supply")
+    )
+    return output.sort_values(["State", "Recipient", "Facility"], kind="stable").reset_index(drop=True)
+
+
 def _project_summary(projects: pd.DataFrame) -> dict:
     if projects.empty:
         return {
@@ -117,27 +267,11 @@ def _project_summary(projects: pd.DataFrame) -> dict:
             "expected_capex_usd_b": np.nan,
             "direct_funding_usd_b": np.nan,
             "available_loans_usd_b": np.nan,
-            "component_layers": pd.DataFrame(columns=["Component Layer", "Projects"]),
-            "ai_relevance": pd.DataFrame(columns=["AI Relevance", "Projects"]),
         }
     clean = projects.copy()
     for column in ["Expected CapEx USD B", "Direct Funding USD B", "Available Loan USD B", "Cleanroom Square Feet"]:
         if column in clean.columns:
             clean[column] = pd.to_numeric(clean[column], errors="coerce")
-    component_layers = (
-        clean.groupby("Component Layer", dropna=False)
-        .size()
-        .rename("Projects")
-        .reset_index()
-        .sort_values(["Projects", "Component Layer"], ascending=[False, True], kind="stable")
-    )
-    ai_relevance = (
-        clean.groupby("AI Relevance", dropna=False)
-        .size()
-        .rename("Projects")
-        .reset_index()
-        .sort_values(["Projects", "AI Relevance"], ascending=[False, True], kind="stable")
-    )
     return {
         "projects": int(len(clean)),
         "portfolios": int(clean["Portfolio ID"].replace("", np.nan).nunique()),
@@ -145,31 +279,70 @@ def _project_summary(projects: pd.DataFrame) -> dict:
         "expected_capex_usd_b": _deduplicated_portfolio_sum(clean, "Expected CapEx USD B"),
         "direct_funding_usd_b": _deduplicated_portfolio_sum(clean, "Direct Funding USD B"),
         "available_loans_usd_b": _deduplicated_portfolio_sum(clean, "Available Loan USD B"),
-        "component_layers": component_layers,
-        "ai_relevance": ai_relevance,
     }
 
+
 @st.cache_data(ttl=86400)
-def load_compute_manufacturing_data(refresh_token: int = 0) -> dict:
+def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
     del refresh_token
     history = _normalize_history(_load_csv(HISTORY_PATH))
-    projects = _load_csv(PROJECT_LEDGER_PATH)
-    if not projects.empty:
-        for column in ["Source Retrieval Date"]:
-            if column in projects.columns:
-                projects[column] = pd.to_datetime(projects[column], errors="coerce", format="mixed")
-        projects = projects.sort_values(["State", "Recipient", "Facility"], kind="stable").reset_index(drop=True)
+    m3_history = _normalize_m3_history(_load_csv(M3_HISTORY_PATH))
+    source_mode = "retained"
+
+    if force_refresh:
+        try:
+            refreshed = _normalize_history(_fetch_fred_series({**OUTPUT_SERIES, **CAPACITY_SERIES, **UTILIZATION_SERIES}))
+            if not refreshed.empty:
+                output = refreshed.copy()
+                output["Observation Date"] = output["Observation Date"].dt.date.astype(str)
+                output["Source"] = "Federal Reserve G.17 / FRED public CSV"
+                output["Evidence Class"] = "agency_index"
+                output["Evidence Grade"] = "A"
+                output["Resilience Grade"] = "R1"
+                _atomic_csv(output, HISTORY_PATH)
+                history = refreshed
+                source_mode = "fred_refresh"
+        except Exception as exc:
+            debug_print(f"Compute G.17 refresh failed -> {exc}")
+        try:
+            refreshed_m3 = _normalize_m3_history(_fetch_fred_series(M3_SERIES))
+            if not refreshed_m3.empty:
+                output = refreshed_m3.copy()
+                output["Observation Date"] = output["Observation Date"].dt.date.astype(str)
+                output["Source"] = "U.S. Census Bureau M3 / FRED public CSV"
+                output["Evidence Class"] = "agency_estimate"
+                output["Evidence Grade"] = "A"
+                output["Resilience Grade"] = "R1"
+                _atomic_csv(output, M3_HISTORY_PATH)
+                m3_history = refreshed_m3
+        except Exception as exc:
+            debug_print(f"Compute M3 refresh failed -> {exc}")
+
+    projects = _normalize_projects(_load_csv(PROJECT_LEDGER_PATH))
+    info_investment = _normalize_info_investment(_load_csv(INFO_INVESTMENT_PATH))
     series_contract = _load_csv(SERIES_CONTRACT_PATH)
     series_validation = _load_csv(SERIES_VALIDATION_PATH)
-    series = {column: _series_summary(history, column) for column in [*OUTPUT_SERIES, *UTILIZATION_SERIES]}
+    series = {
+        column: _series_summary(history, column)
+        for column in [*OUTPUT_SERIES, *CAPACITY_SERIES, *UTILIZATION_SERIES]
+    }
+    series["Info Processing Investment Level"] = _series_summary(
+        info_investment, "Info Processing Investment Level"
+    )
+    m3_series = {column: _series_summary(m3_history, column) for column in M3_SERIES}
+
     if not series_contract.empty and "metric" in series_contract.columns:
         contract_by_metric = series_contract.set_index("metric").to_dict(orient="index")
         for column, item in series.items():
             item.update(contract_by_metric.get(column, {}))
+
     return {
-        "source_mode": "retained",
+        "source_mode": source_mode,
         "history": history,
+        "m3_history": m3_history,
+        "info_investment_history": info_investment,
         "series": series,
+        "m3_series": m3_series,
         "projects": projects,
         "project_summary": _project_summary(projects),
         "source_manifest": _load_csv(SOURCE_MANIFEST_PATH),
@@ -178,5 +351,7 @@ def load_compute_manufacturing_data(refresh_token: int = 0) -> dict:
         "series_validation": series_validation,
         "quality_summary": _quality_summary(series_validation),
         "output_series": OUTPUT_SERIES.copy(),
+        "capacity_series": CAPACITY_SERIES.copy(),
         "utilization_series": UTILIZATION_SERIES.copy(),
+        "m3_series_contract": M3_SERIES.copy(),
     }

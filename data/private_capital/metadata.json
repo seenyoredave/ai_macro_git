@@ -1,0 +1,22 @@
+{
+  "dataset": "Public-LP technology and AI-adjacent private-capital realization cohort",
+  "source": "California State Teachers Retirement System Private Equity Portfolio Performance",
+  "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table",
+  "source_as_of": "2025-06-30",
+  "retrieved_on": "2026-08-04",
+  "source_pdf_sha256": "5348a2daff1b7a23540225dbc2fee656b375035da8408f5e76ca740814a40f85",
+  "selection_method": "Curated technology-specialist and technology-heavy venture/growth fund families with vintages 2012 or later and positive paid-in capital.",
+  "important_limitations": [
+    "This is a public-LP cohort, not a complete private-market census.",
+    "Fund-level results are not attributable solely to AI investments.",
+    "Headline realization metrics use vintages at least five years old as of the source date.",
+    "CalSTRS notes that valuation and IRR methodologies can differ and interim IRRs are not final until liquidation."
+  ],
+  "metric_definitions": {
+    "DPI": "Distributions divided by paid-in capital.",
+    "RVPI": "Remaining NAV divided by paid-in capital.",
+    "TVPI": "DPI plus RVPI.",
+    "Realized Share": "Distributions divided by distributions plus NAV."
+  },
+  "row_count": 51
+}

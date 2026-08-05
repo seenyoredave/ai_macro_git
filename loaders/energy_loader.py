@@ -24,7 +24,10 @@ from config.energy_config import (
     ENERGY_WEEKLY_CUTOFF_HOUR,
     ENERGY_WEEKLY_CUTOFF_WEEKDAY,
 )
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv
 from config.market_clock import EASTERN_TIME, eastern_now, utc_now
+from loaders.energy_market_loader import load_energy_market_data
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ENERGY_SERIES_HISTORY_PATH = PROJECT_ROOT / "data" / "energy_series_history.csv"
@@ -94,16 +97,15 @@ def _load_local_history() -> pd.DataFrame:
         return _empty_history()
 
 def _persist_local_history(frame: pd.DataFrame) -> None:
+    if not repository_writes_enabled():
+        return
     clean = _normalize_long_history(frame)
     clean = clean[clean["Series"].isin(ENERGY_REFRESH_SERIES)]
     if clean.empty:
         return
     output = clean.copy()
     output["Date"] = output["Date"].dt.date.astype(str)
-    ENERGY_SERIES_HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    temporary = ENERGY_SERIES_HISTORY_PATH.with_suffix(".csv.tmp")
-    output.to_csv(temporary, index=False)
-    temporary.replace(ENERGY_SERIES_HISTORY_PATH)
+    atomic_write_csv(output, ENERGY_SERIES_HISTORY_PATH)
 
 def _load_power_history() -> pd.DataFrame:
     if not POWER_SERIES_HISTORY_PATH.exists():
@@ -538,29 +540,56 @@ def load_energy_data(
     fred_data: dict | None = None,
     force_refresh: bool = False,
     refresh_token: int = 0,
+    force_fred_refresh: bool = False,
+    fred_refresh_token: int = 0,
+    force_market_refresh: bool = False,
+    market_refresh_token: int = 0,
     clock_token: str | None = None,
 ) -> dict:
     supply_snapshot = _load_energy_data_cached(
         force_refresh=bool(force_refresh),
         refresh_token=int(refresh_token),
+        force_fred_refresh=bool(force_fred_refresh),
+        fred_refresh_token=int(fred_refresh_token),
         clock_token=clock_token or energy_cache_token(),
     )
-    return _attach_power_series(dict(supply_snapshot), fred_data)
+    snapshot = _attach_power_series(dict(supply_snapshot), fred_data)
+    market = load_energy_market_data(
+        force_refresh=bool(force_market_refresh),
+        refresh_token=int(market_refresh_token),
+    )
+    market_report = market.pop("market_load_report", {})
+    snapshot.update(market)
+    report = snapshot.setdefault("load_report", {})
+    report["market_source_mode"] = market_report.get("source_mode")
+    report["market_returned_rows"] = market_report.get("returned_rows", {})
+    report["market_error"] = market_report.get("error")
+    report["elapsed_sec"] = float(report.get("elapsed_sec", 0.0) or 0.0) + float(market_report.get("elapsed_sec", 0.0) or 0.0)
+    return snapshot
 
 @st.cache_data(ttl=3600)
 def _load_energy_data_cached(
-    *, force_refresh: bool, refresh_token: int, clock_token: str
+    *,
+    force_refresh: bool,
+    refresh_token: int,
+    force_fred_refresh: bool,
+    fred_refresh_token: int,
+    clock_token: str,
 ) -> dict:
-    del refresh_token, clock_token
+    del refresh_token, fred_refresh_token, clock_token
     started = time_module.perf_counter()
     week_date = completed_energy_week()
     archive = load_energy_history()
     current_row = _archive_row_for_week(archive, week_date)
     latest_row = _latest_archive_row(archive)
-    decision = energy_load_decision(
-        force_refresh=force_refresh,
-        has_current_archive=current_row is not None,
-        has_any_archive=latest_row is not None,
+    decision = (
+        "manual_fred"
+        if force_fred_refresh and not force_refresh
+        else energy_load_decision(
+            force_refresh=force_refresh,
+            has_current_archive=current_row is not None,
+            has_any_archive=latest_row is not None,
+        )
     )
     local_history = _merge_histories(_load_local_history(), _history_from_archive(archive))
 
@@ -576,10 +605,10 @@ def _load_energy_data_cached(
     try:
         fresh_frames = []
         refresh_errors = []
-        for label, fetcher in (
-            ("FRED", _fetch_public_energy_history),
-            ("EIA retail prices", _fetch_retail_price_history),
-        ):
+        fetchers = [("FRED", _fetch_public_energy_history)]
+        if not force_fred_refresh or force_refresh:
+            fetchers.append(("EIA retail prices", _fetch_retail_price_history))
+        for label, fetcher in fetchers:
             try:
                 fresh_frames.append(fetcher())
             except Exception as source_exc:
@@ -592,7 +621,10 @@ def _load_energy_data_cached(
             mode = "live_with_local_fallback"
             error = "; ".join(refresh_errors)
         else:
-            mode = "live_manual" if decision == "manual_live" else "live_weekly"
+            if decision == "manual_fred":
+                mode = "fred_manual"
+            else:
+                mode = "live_manual" if decision == "manual_live" else "live_weekly"
             error = None
         return _snapshot_from_history(
             merged,
