@@ -166,7 +166,7 @@ def main() -> None:
         raise AssertionError("Power / Grid boundary is not explicit in the UI.")
 
     print(
-        "PASS  v6.5.1 Power + Grid boundary · "
+        "PASS  v6.5.2 Power + Grid boundary · "
         f"{len(visible)} visible Power charts · {len(hidden)} collapsed Power charts · "
         f"{development['headline_queue_gw']:.0f} GW active queue"
     )

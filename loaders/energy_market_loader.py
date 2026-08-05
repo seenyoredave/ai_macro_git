@@ -230,7 +230,11 @@ def _parse_generators(content):
     retirements["Expected Month"] = _number(retirements["Planned Retirement Month"])
     pipeline_columns = ["Pipeline Type", "Entity ID", "Entity Name", "Plant ID", "Plant Name", "Plant State", "County", "Balancing Authority Code", "Sector", "Generator ID", "Nameplate Capacity (MW)", "Net Summer Capacity (MW)", "Net Winter Capacity (MW)", "Technology", "Technology Group", "Energy Source Code", "Prime Mover Code", "Expected Month", "Expected Year", "Status", "Latitude", "Longitude"]
     pipeline = pd.concat([planned.reindex(columns=pipeline_columns), retirements.reindex(columns=pipeline_columns)], ignore_index=True)
-    return operating, capacity, pipeline
+    return {
+        "operating_generators": operating,
+        "capacity_snapshot": capacity,
+        "generator_pipeline": pipeline,
+    }
 
 
 def _parse_capacity_changes(additions, retirements):
@@ -447,11 +451,17 @@ def _refresh():
     def apply(label, fetch, parse):
         try:
             result = parse(fetch())
+            if result is None:
+                raise ValueError(f"{label} parser returned no data")
             if isinstance(result, dict):
                 updates = result
             else:
                 updates = {label: result}
             for name, frame in updates.items():
+                if not isinstance(frame, pd.DataFrame):
+                    raise TypeError(
+                        f"{name} parser returned {type(frame).__name__}, expected DataFrame"
+                    )
                 _write(frame, PATHS[name])
                 frames[name] = frame
                 refreshed.append(name)
@@ -461,15 +471,7 @@ def _refresh():
     apply("retail_history", lambda: _get(URLS["retail"]), _parse_retail)
     apply("generation_history", lambda: _get(URLS["generation"]), _parse_generation)
 
-    def parse_generators(content):
-        operating, capacity, pipeline = _parse_generators(content)
-        return {
-            "operating_generators": operating,
-            "capacity_snapshot": capacity,
-            "generator_pipeline": pipeline,
-        }
-
-    apply("generators", lambda: _get(URLS["generators"]), parse_generators)
+    apply("generators", lambda: _get(URLS["generators"]), _parse_generators)
     apply(
         "capacity_changes",
         lambda: (_get(URLS["capacity_additions"]), _get(URLS["capacity_retirements"])),

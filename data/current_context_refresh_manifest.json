@@ -1,7 +1,7 @@
 {
   "as_of": "2026-08-05",
   "audit_path": "/Users/Dave/Desktop/VSC/ai_macro_working/data/current_context_candidate_audit.csv",
-  "candidate_count": 392,
+  "candidate_count": 395,
   "discovery_version": "1.0",
   "domains": [
     "market",
@@ -46,7 +46,7 @@
     {
       "domain": "grid_storage",
       "error": "",
-      "item_count": 8,
+      "item_count": 9,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(transmission project OR interconnection queue OR power grid OR battery storage OR transformer shortage OR curtailment)",
@@ -82,7 +82,7 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 52,
+      "item_count": 53,
       "lookback_days": 3,
       "provider": "google_news_rss",
       "query": "(AI earnings OR AI stocks OR semiconductor earnings OR cloud earnings OR AI software guidance)",
@@ -100,7 +100,7 @@
     {
       "domain": "adaptation",
       "error": "",
-      "item_count": 68,
+      "item_count": 67,
       "lookback_days": 14,
       "provider": "google_news_rss",
       "query": "(business AI adoption OR enterprise AI use OR AI deployment survey)",
@@ -118,7 +118,7 @@
     {
       "domain": "power",
       "error": "",
-      "item_count": 46,
+      "item_count": 47,
       "lookback_days": 7,
       "provider": "google_news_rss",
       "query": "(data center electricity demand OR power generation capacity OR electricity prices OR natural gas generation)",
@@ -136,7 +136,7 @@
     {
       "domain": "finance",
       "error": "",
-      "item_count": 64,
+      "item_count": 63,
       "lookback_days": 7,
       "provider": "google_news_rss",
       "query": "(AI financing OR private equity AI OR venture capital AI OR private credit OR interest rates technology investment)",
@@ -154,7 +154,7 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 70,
+      "item_count": 71,
       "lookback_days": 14,
       "provider": "google_news_rss",
       "query": "(data center moratorium OR data center permits OR data center construction OR data center campus)",
@@ -172,7 +172,7 @@
     {
       "domain": "workforce",
       "error": "",
-      "item_count": 18,
+      "item_count": 19,
       "lookback_days": 14,
       "provider": "google_news_rss",
       "query": "(AI employment OR technology hiring OR semiconductor jobs OR data center jobs OR AI workforce wages)",
@@ -204,7 +204,7 @@
   "qualified_count": 2,
   "registry_path": "/Users/Dave/Desktop/VSC/ai_macro_working/data/weekly_context_events.csv",
   "registry_rows_added": 1,
-  "retrieved_at": "2026-08-05T08:56:56+00:00",
+  "retrieved_at": "2026-08-05T11:05:59+00:00",
   "selected": {
     "adaptation": [],
     "compute": [],

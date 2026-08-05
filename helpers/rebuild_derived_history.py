@@ -28,9 +28,6 @@ from analytics.power_engine import calculate_power_stress
 from analytics.regime_engine import calc_aei, calc_avg_sector_pressure
 from analytics.sector_engine import (
     build_sector_metrics,
-    calc_sector_scores,
-    calc_trading_pressure,
-    normalize_factor_table,
 )
 
 ARCHIVE_DIR = PROJECT_ROOT / "archive"

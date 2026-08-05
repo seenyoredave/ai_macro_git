@@ -97,7 +97,7 @@ def main() -> None:
             raise AssertionError(f"Grid & Storage lost a key evidence boundary: {phrase}")
 
     print(
-        "PASS  v6.5.1 Water + Grid correction · rotation rehomed · wastewater current through "
+        "PASS  v6.5.2 Water + Grid correction · rotation rehomed · wastewater current through "
         f"{wastewater['Observation Date'].max():%Y-%m} · {len(momentum)} rotation channels"
     )
 

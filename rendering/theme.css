@@ -125,12 +125,29 @@ div[data-testid="stTabs"] button[aria-selected="true"] {
     margin: 0;
 }
 
+.rm-subtitle-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.45rem;
+    max-width: 1000px;
+}
+
 .rm-subtitle {
     color: #aeb8c8;
     font-size: 0.98rem;
     line-height: 1.5;
-    margin-top: 0.45rem;
-    max-width: 1000px;
+}
+
+.rm-mast-version {
+    color: var(--rm-muted);
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .rm-mast-meta {

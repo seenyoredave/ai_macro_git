@@ -320,6 +320,35 @@ def _channel_score(base_scores, component_names):
     score = sum(valid[name] * weights[name] for name in component_names)
     return float(score), weights
 
+def _row_number(row, column):
+    if row is None:
+        return np.nan
+    return pd.to_numeric(row.get(column), errors="coerce")
+
+
+def _history_values(frame, column, cutoff):
+    if frame is None or frame.empty or column not in frame.columns:
+        return pd.Series(dtype=float)
+    eligible = frame
+    if pd.notna(cutoff) and "Date" in frame.columns:
+        eligible = frame.loc[frame["Date"] <= cutoff]
+    return eligible[column]
+
+
+def _normalized_score(raw, history, column, cutoff, *, higher_is_adverse, center, scale):
+    score, method, observations = _historical_or_anchored_score(
+        raw,
+        _history_values(history, column, cutoff),
+        higher_is_adverse=higher_is_adverse,
+        center=center,
+        scale=scale,
+    )
+    return score, {
+        "method": method,
+        "history_observations": observations,
+    }
+
+
 def _score_snapshot(
     bank_row=None,
     bank_capital_row=None,
@@ -332,82 +361,56 @@ def _score_snapshot(
     pe_history=None,
     observation_date=None,
 ):
-    bank_raw = (
-        pd.to_numeric(bank_row.get("Tightening Percent"), errors="coerce")
-        if bank_row is not None
-        else np.nan
-    )
-    bank_capital_raw = (
-        pd.to_numeric(
-            bank_capital_row.get("Tier 1 Capital Ratio (%)"), errors="coerce"
-        )
-        if bank_capital_row is not None
-        else np.nan
-    )
-    bdc_raw = (
-        pd.to_numeric(
-            bdc_row.get("Weighted Nonaccrual at Cost (%)"), errors="coerce"
-        )
-        if bdc_row is not None
-        else np.nan
-    )
-    pe_high_leverage = (
-        pd.to_numeric(
-            pe_row.get("High-Leverage Portfolio Share (%)"), errors="coerce"
-        )
-        if pe_row is not None
-        else np.nan
-    )
-    pe_pik = (
-        pd.to_numeric(pe_row.get("PIK Mean (%)"), errors="coerce")
-        if pe_row is not None
-        else np.nan
-    )
-
+    raw = {
+        "bank": _row_number(bank_row, "Tightening Percent"),
+        "bank_capital": _row_number(bank_capital_row, "Tier 1 Capital Ratio (%)"),
+        "bdc": _row_number(bdc_row, "Weighted Nonaccrual at Cost (%)"),
+        "pe_high_leverage": _row_number(pe_row, "High-Leverage Portfolio Share (%)"),
+        "pe_pik": _row_number(pe_row, "PIK Mean (%)"),
+    }
     cutoff = pd.to_datetime(observation_date, errors="coerce")
 
-    def history_values(frame, column):
-        if frame is None or frame.empty or column not in frame.columns:
-            return pd.Series(dtype=float)
-        eligible = frame
-        if pd.notna(cutoff) and "Date" in frame.columns:
-            eligible = frame.loc[frame["Date"] <= cutoff]
-        return eligible[column]
-
-    bank_score, bank_method, bank_history_count = _historical_or_anchored_score(
-        bank_raw,
-        history_values(bank_history, "Tightening Percent"),
+    bank_score, bank_normalization = _normalized_score(
+        raw["bank"],
+        bank_history,
+        "Tightening Percent",
+        cutoff,
         higher_is_adverse=True,
         center=0.0,
         scale=35.0,
     )
-    bank_capital_score, bank_capital_method, bank_capital_history_count = (
-        _historical_or_anchored_score(
-            bank_capital_raw,
-            history_values(bank_capital_history, "Tier 1 Capital Ratio (%)"),
-            higher_is_adverse=False,
-            center=12.5,
-            scale=4.0,
-        )
+    bank_capital_score, bank_capital_normalization = _normalized_score(
+        raw["bank_capital"],
+        bank_capital_history,
+        "Tier 1 Capital Ratio (%)",
+        cutoff,
+        higher_is_adverse=False,
+        center=12.5,
+        scale=4.0,
     )
-    bdc_score, bdc_method, bdc_history_count = _historical_or_anchored_score(
-        bdc_raw,
-        history_values(bdc_history, "Weighted Nonaccrual at Cost (%)"),
+    bdc_score, bdc_normalization = _normalized_score(
+        raw["bdc"],
+        bdc_history,
+        "Weighted Nonaccrual at Cost (%)",
+        cutoff,
         higher_is_adverse=True,
         center=2.0,
         scale=2.5,
     )
-
-    pe_high_score, pe_high_method, pe_high_history_count = _historical_or_anchored_score(
-        pe_high_leverage,
-        history_values(pe_history, "High-Leverage Portfolio Share (%)"),
+    pe_high_score, pe_high_normalization = _normalized_score(
+        raw["pe_high_leverage"],
+        pe_history,
+        "High-Leverage Portfolio Share (%)",
+        cutoff,
         higher_is_adverse=True,
         center=30.0,
         scale=12.0,
     )
-    pe_pik_score, pe_pik_method, pe_pik_history_count = _historical_or_anchored_score(
-        pe_pik,
-        history_values(pe_history, "PIK Mean (%)"),
+    pe_pik_score, pe_pik_normalization = _normalized_score(
+        raw["pe_pik"],
+        pe_history,
+        "PIK Mean (%)",
+        cutoff,
         higher_is_adverse=True,
         center=18.0,
         scale=10.0,
@@ -418,24 +421,18 @@ def _score_snapshot(
         "Bank Capital Strain": bank_capital_score,
         "Private Credit Impairment": bdc_score,
     }
-
     pe_subscores = {
         "High-Leverage Portfolio Share": pe_high_score,
         "PIK Burden": pe_pik_score,
     }
-    pe_combined = weighted_available_score(
+    base_scores["PE Portfolio Financing Strain"] = weighted_available_score(
         pe_subscores,
         PE_SUBWEIGHTS,
         min_components=2,
-    )
-    base_scores["PE Portfolio Financing Strain"] = pe_combined["score"]
+    )["score"]
 
-    bank_channel, bank_channel_weights = _channel_score(
-        base_scores, BANK_CHANNEL_COMPONENTS
-    )
-    nonbank_channel, nonbank_channel_weights = _channel_score(
-        base_scores, NONBANK_CHANNEL_COMPONENTS
-    )
+    bank_channel, _ = _channel_score(base_scores, BANK_CHANNEL_COMPONENTS)
+    nonbank_channel, _ = _channel_score(base_scores, NONBANK_CHANNEL_COMPONENTS)
     valid_components = int(
         sum(pd.notna(score) and np.isfinite(score) for score in base_scores.values())
     )
@@ -449,11 +446,7 @@ def _score_snapshot(
         if valid_components >= MIN_LENDER_COMPONENTS
         else np.nan
     )
-    normalized_weights = (
-        dict(LENDER_STRAIN_WEIGHTS)
-        if pd.notna(combined_score)
-        else {}
-    )
+    normalized_weights = dict(LENDER_STRAIN_WEIGHTS) if pd.notna(combined_score) else {}
     signed_scores = {
         name: lender_strain_to_signed(score)
         for name, score in base_scores.items()
@@ -474,34 +467,13 @@ def _score_snapshot(
         ),
         "pe_subscores": pe_subscores,
         "normalization": {
-            "Bank Credit Tightening": {
-                "method": bank_method,
-                "history_observations": bank_history_count,
-            },
-            "Bank Capital Strain": {
-                "method": bank_capital_method,
-                "history_observations": bank_capital_history_count,
-            },
-            "Private Credit Impairment": {
-                "method": bdc_method,
-                "history_observations": bdc_history_count,
-            },
-            "High-Leverage Portfolio Share": {
-                "method": pe_high_method,
-                "history_observations": pe_high_history_count,
-            },
-            "PIK Burden": {
-                "method": pe_pik_method,
-                "history_observations": pe_pik_history_count,
-            },
+            "Bank Credit Tightening": bank_normalization,
+            "Bank Capital Strain": bank_capital_normalization,
+            "Private Credit Impairment": bdc_normalization,
+            "High-Leverage Portfolio Share": pe_high_normalization,
+            "PIK Burden": pe_pik_normalization,
         },
-        "raw": {
-            "bank": bank_raw,
-            "bank_capital": bank_capital_raw,
-            "bdc": bdc_raw,
-            "pe_high_leverage": pe_high_leverage,
-            "pe_pik": pe_pik,
-        },
+        "raw": raw,
     }
 
 def build_lender_strain_history(
@@ -572,6 +544,41 @@ def _row_date(row):
         return None
     value = pd.to_datetime(row.get("Date"), errors="coerce")
     return value.date().isoformat() if pd.notna(value) else None
+
+
+def _component_payload(
+    snapshot,
+    name,
+    *,
+    raw_key,
+    row,
+    observations,
+    source,
+    source_url,
+    normalization=None,
+    secondary_raw_key=None,
+    extras=None,
+):
+    payload = {"raw": snapshot["raw"][raw_key]}
+    if secondary_raw_key:
+        payload["secondary_raw"] = snapshot["raw"][secondary_raw_key]
+    payload.update({
+        "score": snapshot["signed_scores"].get(name, np.nan),
+        "base_score": snapshot["base_scores"].get(name, np.nan),
+        "weight": LENDER_STRAIN_WEIGHTS[name],
+        "active_weight": snapshot["normalized_weights"].get(name, np.nan),
+        "normalization": (
+            snapshot["normalization"].get(name, {})
+            if normalization is None
+            else normalization
+        ),
+        "observations": int(observations),
+        "as_of": _row_date(row),
+        "source": source,
+        "source_url": source_url,
+    })
+    payload.update(extras or {})
+    return payload
 
 def calculate_lender_strain(
     fred_data=None,
@@ -658,127 +665,74 @@ def calculate_lender_strain(
         else "SEC Private Fund Statistics / Form PF"
     )
 
+    bank_url = "https://fred.stlouisfed.org/series/SUBLPDMBSXWBNQ"
+    bank_capital_url = "https://fred.stlouisfed.org/series/BOGZ1FL010000016Q"
     components = {
-        "Bank Credit Tightening": {
-            "raw": snapshot["raw"]["bank"],
-            "score": snapshot["signed_scores"].get(
-                "Bank Credit Tightening", np.nan
-            ),
-            "base_score": snapshot["base_scores"].get(
-                "Bank Credit Tightening", np.nan
-            ),
-            "weight": LENDER_STRAIN_WEIGHTS["Bank Credit Tightening"],
-            "active_weight": snapshot["normalized_weights"].get(
-                "Bank Credit Tightening", np.nan
-            ),
-            "normalization": snapshot["normalization"].get(
-                "Bank Credit Tightening", {}
-            ),
-            "observations": 1 if bank_row is not None else 0,
-            "as_of": _row_date(bank_row),
-            "source": bank_source,
-            "source_url": (
-                bank_row.get(
-                    "Source_URL",
-                    "https://fred.stlouisfed.org/series/SUBLPDMBSXWBNQ",
-                )
-                if bank_row is not None
-                else "https://fred.stlouisfed.org/series/SUBLPDMBSXWBNQ"
-            ),
-        },
-        "Bank Capital Strain": {
-            "raw": snapshot["raw"]["bank_capital"],
-            "score": snapshot["signed_scores"].get("Bank Capital Strain", np.nan),
-            "base_score": snapshot["base_scores"].get(
-                "Bank Capital Strain", np.nan
-            ),
-            "weight": LENDER_STRAIN_WEIGHTS["Bank Capital Strain"],
-            "active_weight": snapshot["normalized_weights"].get(
-                "Bank Capital Strain", np.nan
-            ),
-            "normalization": snapshot["normalization"].get(
-                "Bank Capital Strain", {}
-            ),
-            "observations": 1 if bank_capital_row is not None else 0,
-            "as_of": _row_date(bank_capital_row),
-            "source": bank_capital_source,
-            "source_url": (
-                bank_capital_row.get(
-                    "Source_URL",
-                    "https://fred.stlouisfed.org/series/BOGZ1FL010000016Q",
-                )
+        "Bank Credit Tightening": _component_payload(
+            snapshot,
+            "Bank Credit Tightening",
+            raw_key="bank",
+            row=bank_row,
+            observations=1 if bank_row is not None else 0,
+            source=bank_source,
+            source_url=bank_row.get("Source_URL", bank_url) if bank_row is not None else bank_url,
+        ),
+        "Bank Capital Strain": _component_payload(
+            snapshot,
+            "Bank Capital Strain",
+            raw_key="bank_capital",
+            row=bank_capital_row,
+            observations=1 if bank_capital_row is not None else 0,
+            source=bank_capital_source,
+            source_url=(
+                bank_capital_row.get("Source_URL", bank_capital_url)
                 if bank_capital_row is not None
-                else "https://fred.stlouisfed.org/series/BOGZ1FL010000016Q"
+                else bank_capital_url
             ),
-        },
-        "Private Credit Impairment": {
-            "raw": snapshot["raw"]["bdc"],
-            "score": snapshot["signed_scores"].get(
-                "Private Credit Impairment", np.nan
-            ),
-            "base_score": snapshot["base_scores"].get(
-                "Private Credit Impairment", np.nan
-            ),
-            "weight": LENDER_STRAIN_WEIGHTS["Private Credit Impairment"],
-            "active_weight": snapshot["normalized_weights"].get(
-                "Private Credit Impairment", np.nan
-            ),
-            "normalization": snapshot["normalization"].get(
-                "Private Credit Impairment", {}
-            ),
-            "observations": (
-                int(bdc_row.get("Observations", 0)) if bdc_row is not None else 0
-            ),
-            "as_of": _row_date(bdc_row),
-            "source": bdc_source,
-            "source_url": (
-                bdc_row.get("Source URL", "") if bdc_row is not None else ""
-            ),
-            "cohort": (
-                bdc_row.get("Cohort", "") if bdc_row is not None else ""
-            ),
-            "portfolio_cost_mm": (
-                bdc_row.get("Portfolio Cost ($mm)", np.nan) if bdc_row is not None else np.nan
-            ),
-            "metric_coverage": (bdc_row.get("Metric Coverage", {}) if bdc_row is not None else {}),
-            "nonaccrual_fair_value": (bdc_row.get("Weighted Nonaccrual at Fair Value (%)", np.nan) if bdc_row is not None else np.nan),
-            "pik_income_share": (bdc_row.get("Weighted PIK Income Share (%)", np.nan) if bdc_row is not None else np.nan),
-            "nav_change": (bdc_row.get("Weighted NAV Change (%)", np.nan) if bdc_row is not None else np.nan),
-            "net_losses_portfolio": (bdc_row.get("Weighted Net Losses / Portfolio (%)", np.nan) if bdc_row is not None else np.nan),
-            "debt_to_equity": (bdc_row.get("Weighted Debt to Equity (x)", np.nan) if bdc_row is not None else np.nan),
-            "panel_history": bdc_history.copy(),
-        },
-        "PE Portfolio Financing Strain": {
-            "raw": snapshot["raw"]["pe_high_leverage"],
-            "secondary_raw": snapshot["raw"]["pe_pik"],
-            "score": snapshot["signed_scores"].get(
-                "PE Portfolio Financing Strain", np.nan
-            ),
-            "base_score": snapshot["base_scores"].get(
-                "PE Portfolio Financing Strain", np.nan
-            ),
-            "weight": LENDER_STRAIN_WEIGHTS[
-                "PE Portfolio Financing Strain"
-            ],
-            "active_weight": snapshot["normalized_weights"].get(
-                "PE Portfolio Financing Strain", np.nan
-            ),
-            "normalization": {
+        ),
+        "Private Credit Impairment": _component_payload(
+            snapshot,
+            "Private Credit Impairment",
+            raw_key="bdc",
+            row=bdc_row,
+            observations=int(bdc_row.get("Observations", 0)) if bdc_row is not None else 0,
+            source=bdc_source,
+            source_url=bdc_row.get("Source URL", "") if bdc_row is not None else "",
+            extras={
+                "cohort": bdc_row.get("Cohort", "") if bdc_row is not None else "",
+                "portfolio_cost_mm": bdc_row.get("Portfolio Cost ($mm)", np.nan) if bdc_row is not None else np.nan,
+                "metric_coverage": bdc_row.get("Metric Coverage", {}) if bdc_row is not None else {},
+                "nonaccrual_fair_value": bdc_row.get("Weighted Nonaccrual at Fair Value (%)", np.nan) if bdc_row is not None else np.nan,
+                "pik_income_share": bdc_row.get("Weighted PIK Income Share (%)", np.nan) if bdc_row is not None else np.nan,
+                "nav_change": bdc_row.get("Weighted NAV Change (%)", np.nan) if bdc_row is not None else np.nan,
+                "net_losses_portfolio": bdc_row.get("Weighted Net Losses / Portfolio (%)", np.nan) if bdc_row is not None else np.nan,
+                "debt_to_equity": bdc_row.get("Weighted Debt to Equity (x)", np.nan) if bdc_row is not None else np.nan,
+                "panel_history": bdc_history.copy(),
+            },
+        ),
+        "PE Portfolio Financing Strain": _component_payload(
+            snapshot,
+            "PE Portfolio Financing Strain",
+            raw_key="pe_high_leverage",
+            secondary_raw_key="pe_pik",
+            row=pe_row,
+            observations=1 if pe_row is not None else 0,
+            source=pe_source,
+            source_url=pe_row.get("Source URL", "") if pe_row is not None else "",
+            normalization={
                 "High-Leverage Portfolio Share": snapshot["normalization"].get(
                     "High-Leverage Portfolio Share", {}
                 ),
                 "PIK Burden": snapshot["normalization"].get("PIK Burden", {}),
             },
-            "observations": 1 if pe_row is not None else 0,
-            "as_of": _row_date(pe_row),
-            "source": pe_source,
-            "source_url": pe_row.get("Source URL", "") if pe_row is not None else "",
-            "reported_assets_bn": (
-                pe_row.get("Reported CPC Gross Assets ($bn)", np.nan)
-                if pe_row is not None
-                else np.nan
-            ),
-        },
+            extras={
+                "reported_assets_bn": (
+                    pe_row.get("Reported CPC Gross Assets ($bn)", np.nan)
+                    if pe_row is not None
+                    else np.nan
+                ),
+            },
+        ),
     }
 
     return {

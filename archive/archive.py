@@ -171,6 +171,9 @@ def _current_metric_value(regime_metrics, metric_name, source_name):
     )
 
 def append_macro_history(regime_metrics, fred_data):
+    macro_read = regime_metrics.get("Macro Interpretation", {}) or {}
+    constraint_factors = macro_read.get("constraint_factors", []) or []
+    expansion_factors = macro_read.get("expansion_factors", []) or []
     row = {
         "Date": today_iso(),
         "AI Equity Index": _current_metric_value(regime_metrics, "AI Equity Index", "AEI Source"),
@@ -251,52 +254,33 @@ def append_macro_history(regime_metrics, fred_data):
             "Lender Strain Version", np.nan
         ),
         "Pressure Version": regime_metrics.get("Pressure Version", np.nan),
-        "Macro State": (regime_metrics.get("Macro Interpretation", {}) or {}).get("headline", ""),
-        "Macro State Summary": (regime_metrics.get("Macro Interpretation", {}) or {}).get("summary", ""),
-        "Macro Constraint Factors": " || ".join(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get(
-                "constraint_factors",
-                (regime_metrics.get("Macro Interpretation", {}) or {}).get("pressure_factors", []),
-            )
-        ),
-        "Macro Expansion Factors": " || ".join(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get(
-                "expansion_factors",
-                (regime_metrics.get("Macro Interpretation", {}) or {}).get("resilience_factors", []),
-            )
-        ),
-
-        "Macro Pressure Factors": " || ".join(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("pressure_factors", [])
-        ),
-        "Macro Resilience Factors": " || ".join(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("resilience_factors", [])
-        ),
-        "Macro Change Factors": " || ".join(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("changes", [])
-        ),
-        "Macro Metric Changes": " || ".join(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("metric_changes", [])
-        ),
+        "Macro State": macro_read.get("headline", ""),
+        "Macro State Summary": macro_read.get("summary", ""),
+        "Macro Constraint Factors": " || ".join(constraint_factors),
+        "Macro Expansion Factors": " || ".join(expansion_factors),
+        "Macro Pressure Factors": " || ".join(constraint_factors),
+        "Macro Resilience Factors": " || ".join(expansion_factors),
+        "Macro Change Factors": "",
+        "Macro Metric Changes": "",
         "Macro Weekly References": json.dumps(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("weekly_references", []),
+            macro_read.get("references", []),
             sort_keys=True,
             separators=(",", ":"),
         ),
         "Macro Weekly Context": json.dumps(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("weekly_context", {}),
+            macro_read.get("current_context", {}),
             sort_keys=True,
             separators=(",", ":"),
         ),
-        "Macro Interpretation Confidence": (regime_metrics.get("Macro Interpretation", {}) or {}).get("confidence", ""),
-        "Macro Interpretation Version": (regime_metrics.get("Macro Interpretation", {}) or {}).get("version", ""),
+        "Macro Interpretation Confidence": macro_read.get("confidence", ""),
+        "Macro Interpretation Version": macro_read.get("version", ""),
         "Macro Domain States": json.dumps(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("domains", {}),
+            macro_read.get("domains", {}),
             sort_keys=True,
             separators=(",", ":"),
         ),
         "Macro Snapshot Context": json.dumps(
-            (regime_metrics.get("Macro Interpretation", {}) or {}).get("snapshot_context", {}),
+            macro_read.get("snapshot_context", {}),
             sort_keys=True,
             separators=(",", ":"),
         ),

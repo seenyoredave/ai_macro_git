@@ -11,7 +11,6 @@ import sys
 import time
 import tomllib
 from dataclasses import dataclass
-from io import StringIO
 from pathlib import Path
 from typing import Iterable, Mapping
 

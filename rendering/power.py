@@ -24,7 +24,6 @@ from rendering.charts_energy import (
     generation_change,
     generation_mix,
     lng_capacity,
-    operating_capacity,
     planned_capacity,
     retail_price_history,
     wholesale_price_history,

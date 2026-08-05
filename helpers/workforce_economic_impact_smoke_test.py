@@ -120,7 +120,7 @@ def main() -> None:
         raise AssertionError("The new tabs are not wired into the dashboard.")
 
     print(
-        "PASS  v6.5.1 Workforce + Economic Impact · "
+        "PASS  v6.5.2 Workforce + Economic Impact · "
         f"{len(workforce['employment_history'])} employment observations · "
         f"{len(impact['productivity_history'])} realized-outcome observations"
     )

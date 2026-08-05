@@ -8,7 +8,7 @@ from analytics.energy_pulse import development_snapshot, supply_snapshot
 from rendering.charts_energy import queue_by_region, queue_by_technology
 from rendering.charts_grid_storage import grid_construction_history, storage_pipeline_by_region
 from rendering.common import _render_tab_metric_registry
-from rendering.components import fmt_date, fmt_number, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
+from rendering.components import fmt_number, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
 from rendering.dataframe import arrow_safe_dataframe
 
 

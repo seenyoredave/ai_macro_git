@@ -31,11 +31,22 @@ def fmt_date(value) -> str:
     ts = pd.to_datetime(value, errors="coerce", format="mixed")
     return "n/a" if pd.isna(ts) else ts.strftime("%Y-%m-%d")
 
-def render_masthead(title: str, subtitle: str, meta: Iterable[tuple[str, str]] | None = None) -> None:
+def render_masthead(
+    title: str,
+    subtitle: str,
+    meta: Iterable[tuple[str, str]] | None = None,
+    *,
+    version: str | None = None,
+) -> None:
     meta_html = "".join(
         f"<div><b>{html.escape(str(label))}</b> {html.escape(str(value))}</div>"
         for label, value in (meta or [])
         if value not in (None, "")
+    )
+    version_html = (
+        f'<div class="rm-mast-version">{html.escape(str(version))}</div>'
+        if version not in (None, "")
+        else ""
     )
     st.markdown(
         f"""
@@ -43,7 +54,10 @@ def render_masthead(title: str, subtitle: str, meta: Iterable[tuple[str, str]] |
             <div>
                 <div class="rm-kicker">Independent macroeconomic research</div>
                 <h1 class="rm-title">{html.escape(title)}</h1>
-                <div class="rm-subtitle">{html.escape(subtitle)}</div>
+                <div class="rm-subtitle-row">
+                    <div class="rm-subtitle">{html.escape(subtitle)}</div>
+                    {version_html}
+                </div>
             </div>
             {f'<div class="rm-mast-meta">{meta_html}</div>' if meta_html else ''}
         </div>

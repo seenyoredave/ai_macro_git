@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import time
+
 import streamlit as st
 
+from analytics.dashboard_context import DashboardContext
 from analytics.factor_engine import calc_sector_factors
 from analytics.regime_engine import build_regime_metrics
 from analytics.macro_dataframe import build_macro_dashboard_data
@@ -31,7 +34,7 @@ from loaders.workforce_loader import load_workforce_data
 from loaders.economic_impact_loader import load_economic_impact_data
 from loaders.water_loader import load_water_utilization_data
 from loaders.adaptation_loader import load_adaptation_data
-from loaders.fred_loader import load_fred
+from loaders.fred_loader import describe_fred_load, load_fred
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
 from loaders.weekly_context_loader import load_current_context, load_weekly_context
@@ -42,8 +45,8 @@ from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v6.5.1"
-APP_STATE_SCHEMA_VERSION = "48.0-v6.5.1-stability-hardening"
+APP_VERSION = "v6.5.2"
+APP_STATE_SCHEMA_VERSION = "50.0-v6.5.2-content-audit"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -153,6 +156,7 @@ def render_developer_load_report(report):
             block.get("missing_tickers")
             or block.get("today_missing_tickers")
             or block.get("recent_missing_tickers")
+            or block.get("missing_series")
             or []
         )
         fallback_symbols = block.get("archive_fallback_symbols") or []
@@ -202,7 +206,7 @@ def render_developer_load_report(report):
     st.markdown("---")
     render_source("EDGAR", report.get("edgar"))
     st.markdown("---")
-    render_source("Power", report.get("energy"))
+    render_source("FRED", report.get("fred"))
     st.markdown("---")
     render_source("NY Fed", report.get("debt_markets"))
 
@@ -285,9 +289,15 @@ if st.session_state.force_rebuild:
         build_sector_dashboard_data()
     )
 
+    fred_started = time.perf_counter()
     fred_data = load_fred(
         force_refresh=st.session_state.force_fred_refresh,
         refresh_token=st.session_state.fred_refresh_token,
+    )
+    fred_report = describe_fred_load(
+        fred_data,
+        elapsed_sec=time.perf_counter() - fred_started,
+        force_refresh=st.session_state.force_fred_refresh,
     )
     nfci_history = load_nfci_history(
         force_refresh=st.session_state.force_fred_refresh,
@@ -345,8 +355,9 @@ if st.session_state.force_rebuild:
         sector_metrics=sector_metrics,
         regime_metrics=regime_metrics,
     )
-    platform_reads = build_platform_reads(
+    read_context = DashboardContext(
         sector_data=sector_data,
+        sector_metrics=sector_metrics,
         dashboard_data=dashboard_data,
         regime_metrics=regime_metrics,
         fred_data=fred_data,
@@ -360,13 +371,21 @@ if st.session_state.force_rebuild:
         economic_impact_data=economic_impact_data,
         current_context=current_context,
     )
+    platform_reads = build_platform_reads(read_context)
     regime_metrics["Macro Interpretation"] = platform_reads["macro"]
     market_report = dict(st.session_state.get("market_universe_load_report", {}) or {})
+    market_report["fred"] = fred_report
     market_report["energy"] = energy_data.get("load_report", {})
     market_report["debt_markets"] = debt_markets_data.get("load_report", {})
     market_report["total_elapsed_sec"] = float(
         market_report.get("total_elapsed_sec", 0.0) or 0.0
-    ) + float((energy_data.get("load_report", {}) or {}).get("elapsed_sec", 0.0) or 0.0)
+    )
+    market_report["total_elapsed_sec"] += float(
+        fred_report.get("elapsed_sec", 0.0) or 0.0
+    )
+    market_report["total_elapsed_sec"] += float(
+        (energy_data.get("load_report", {}) or {}).get("elapsed_sec", 0.0) or 0.0
+    )
     market_report["total_elapsed_sec"] += float(
         (debt_markets_data.get("load_report", {}) or {}).get("elapsed_sec", 0.0) or 0.0
     )
@@ -460,17 +479,17 @@ market_universe_summary = {
 render_masthead(
     "AI Macro",
     "An AI economic research platform",
+    version=APP_VERSION,
 )
 
 if st.session_state.tier_test_module_open:
     render_basket_tier_developer_tool(sector_data)
 else:
-    render_research_dashboard(
-        build_tabs(),
-        sector_data,
-        sector_metrics,
-        fred_data,
-        regime_metrics,
+    dashboard_context = DashboardContext(
+        sector_data=sector_data,
+        sector_metrics=sector_metrics,
+        fred_data=fred_data,
+        regime_metrics=regime_metrics,
         nfci_history=nfci_history,
         energy_data=energy_data,
         debt_markets_data=debt_markets_data,
@@ -484,3 +503,4 @@ else:
         dashboard_data=dashboard_data,
         platform_reads=platform_reads,
     )
+    render_research_dashboard(build_tabs(), dashboard_context)

@@ -12,7 +12,7 @@ from rendering.labels import adoption_label, power_capacity_gap_label, speculati
 from rendering.charts_common import history_from_frame
 from rendering.charts_finance import current_gap_bars
 from rendering.charts_infrastructure import infrastructure_leadership_rotation
-from rendering.common import _fallback, _fred_value, _metric_context, _render_tab_metric_registry, _source, _value
+from rendering.common import _fallback, _fred_value, _metric_context, _render_tab_metric_registry, _value
 from rendering.components import fmt_number, metric_card, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
 from rendering.spatial import render_spatial_explorer
 

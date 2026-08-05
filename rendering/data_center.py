@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import html
-
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -19,7 +17,6 @@ from rendering.charts_data_center import (
 )
 from rendering.common import _render_tab_metric_registry
 from rendering.components import (
-    fmt_date,
     fmt_number,
     render_domain_read,
     render_line_break,

@@ -49,6 +49,7 @@ PUBLIC_SERIES = {
     "Public Highway and street": "Public Highway and Street Construction",
     "Public Transportation": "Public Transportation Construction",
     "Public Water supply": "Public Water Supply Construction",
+    "Public Sewage and waste disposal": "Public Sewage and Waste Disposal Construction",
 }
 
 def checksum(path: Path) -> str:
@@ -145,9 +146,14 @@ def validate_compute_series_contract() -> pd.DataFrame:
     missing = required - set(frame.columns)
     if missing:
         raise ValueError(f"Compute series contract changed; missing {sorted(missing)}")
-    expected_ids = {"IPG3341S", "IPG3342S", "IPG3344S", "CAPUTLG3341S", "CAPUTLG3344S"}
+    expected_ids = {
+        "IPG3341S", "IPG3342S", "IPG3344S",
+        "CAPG3341S", "CAPG3342S", "CAPG3344S",
+        "CAPUTLG3341S", "CAPUTLG3342S", "CAPUTLG3344S",
+        "A34SVS", "A34SNO", "A34SIS", "A34SUS",
+    }
     if set(frame["series_id"].astype(str)) != expected_ids:
-        raise ValueError("Compute series contract does not contain the expected G.17 series IDs")
+        raise ValueError("Compute series contract does not contain the expected G.17 and M3 series IDs")
     if frame["metric"].duplicated().any() or frame["series_id"].duplicated().any():
         raise ValueError("Compute series contract contains duplicate metric or series IDs")
     return frame
@@ -162,8 +168,16 @@ def validate_compute_series_validation(history: pd.DataFrame, contract: pd.DataF
     missing = required - set(frame.columns)
     if missing:
         raise ValueError(f"Compute latest-release validation changed; missing {sorted(missing)}")
-    if set(frame["series_id"].astype(str)) != set(contract["series_id"].astype(str)):
-        raise ValueError("Compute latest-release validation does not cover every contracted series")
+    expected_validation_ids = {
+        "IPG3341S", "IPG3342S", "IPG3344S",
+        "CAPUTLG3341S", "CAPUTLG3344S",
+    }
+    validation_ids = set(frame["series_id"].astype(str))
+    contract_ids = set(contract["series_id"].astype(str))
+    if validation_ids != expected_validation_ids:
+        raise ValueError("Compute latest-release validation does not contain the expected retained G.17 series IDs")
+    if not validation_ids.issubset(contract_ids):
+        raise ValueError("Compute latest-release validation references a series outside the compute contract")
     for _, row in frame.iterrows():
         metric = str(row["metric"])
         if metric not in history.columns:

@@ -22,12 +22,10 @@ from urllib.request import Request, urlopen
 import pandas as pd
 
 from config.current_context_policy import (
-    APPROVED_NEWS_DOMAINS,
     DOMAIN_CONTEXT_POLICY,
     DOMAIN_LIVE_RELEVANCE,
     DOMAIN_NEWS_QUERIES,
     DOMAIN_NEWS_TERMS,
-    DOMAIN_OWNER_TERMS,
     assess_source,
     materiality_score,
 )

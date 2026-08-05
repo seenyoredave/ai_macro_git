@@ -18,6 +18,7 @@ from archive.archive_reader import (
 from config import fred_indicators
 from config.debug_config import debug_print
 from config.deployment import repository_writes_enabled
+from config.market_clock import utc_now
 from helpers.atomic_io import atomic_write_csv
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -499,6 +500,62 @@ def _fill_failed_from_archive(data, fallback):
                 out[name] = fallback_payload
 
     return out
+
+
+def describe_fred_load(
+    fred_data: dict | None,
+    *,
+    elapsed_sec: float,
+    force_refresh: bool,
+) -> dict:
+    """Summarize the resolved FRED payload without altering its public shape."""
+    data = fred_data or {}
+    indicators = fred_indicators.all_indicator_names()
+    returned = []
+    missing = []
+    source_modes = set()
+    dates = []
+
+    for name in indicators:
+        payload = data.get(name, {})
+        payload = payload if isinstance(payload, dict) else {"value": payload}
+        value = pd.to_numeric(payload.get("value"), errors="coerce")
+        if pd.notna(value) and np.isfinite(value):
+            returned.append(name)
+        else:
+            missing.append(name)
+        source = str(payload.get("source") or "").strip()
+        if source:
+            source_modes.add(source)
+        date = pd.to_datetime(payload.get("date"), errors="coerce", format="mixed")
+        if pd.notna(date):
+            dates.append(date)
+
+    has_live = any("live" in source.casefold() and "failed" not in source.casefold() for source in source_modes)
+    has_retained = any(
+        token in source.casefold()
+        for source in source_modes
+        for token in ("archive", "local history", "public csv")
+    )
+    if has_live and has_retained:
+        source_mode = "live_with_retained_fallback"
+    elif has_live:
+        source_mode = "live"
+    elif returned:
+        source_mode = "retained"
+    else:
+        source_mode = "unavailable"
+
+    return {
+        "source_mode": source_mode,
+        "decision": "manual_refresh" if force_refresh else "daily_cache_or_retained",
+        "elapsed_sec": float(elapsed_sec),
+        "returned_series": len(returned),
+        "missing_series": missing,
+        "latest_complete_date": max(dates).date().isoformat() if dates else None,
+        "requested_at_utc": utc_now().isoformat(),
+        "error": "No FRED series were available" if not returned else None,
+    }
 
 @st.cache_data(ttl=86400)
 def load_fred(force_refresh: bool = False, refresh_token: int = 0):

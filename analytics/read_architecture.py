@@ -7,12 +7,12 @@ copy.  All language is generated from explicit thresholds and retained facts.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
+from analytics.dashboard_context import DashboardContext
 from analytics.energy_pulse import (
     build_power_read,
     demand_snapshot,
@@ -1010,50 +1010,51 @@ def build_macro_read(reads: dict[str, dict], current_context: dict | None = None
         "current_context_items": current_context_items,
         "recent_context": current_context_items[0]["text"] if current_context_items else "",
         "expansion_factors": expansion,
-        "resilience_factors": expansion,
         "constraint_factors": constraints,
-        "pressure_factors": constraints,
-        "changes": [],
-        "weekly_references": references,
-        "weekly_context": current_context or {},
         "current_context": current_context or {},
         "domains": {key: value.get("headline") for key, value in reads.items()},
         "snapshot_context": {key: value.get("signals", {}) for key, value in reads.items()},
-        "metric_changes": [],
     })
     return macro
 
 
 def build_platform_reads(
-    *,
-    sector_data: dict,
-    dashboard_data: dict,
-    regime_metrics: dict,
-    fred_data: dict,
-    nfci_history,
-    energy_data: dict,
-    debt_markets_data: dict,
-    infrastructure_data: dict,
-    water_data: dict,
-    adaptation_data: dict,
-    workforce_data: dict,
-    economic_impact_data: dict,
-    current_context: dict | None = None,
-    weekly_context: dict | None = None,
+    context: DashboardContext | None = None,
+    **legacy_payload,
 ) -> dict:
+    """Build all domain Reads from one assembled application context.
+
+    Keyword payloads remain accepted for compatibility with existing focused
+    smoke checks and external callers while the application itself uses the
+    typed boundary object.
+    """
+    if context is None:
+        weekly_context = legacy_payload.pop("weekly_context", None)
+        if not legacy_payload.get("current_context") and weekly_context:
+            legacy_payload["current_context"] = weekly_context
+        context = DashboardContext(**legacy_payload)
     reads = {
-        "market": build_market_read(sector_data, dashboard_data, regime_metrics),
-        "finance": build_finance_read(regime_metrics, fred_data, nfci_history, debt_markets_data),
-        "compute": build_compute_read(infrastructure_data),
-        "data_center": build_data_center_read(infrastructure_data),
-        "power": build_power_domain_read(energy_data, infrastructure_data),
-        "grid_storage": build_grid_storage_read(energy_data, infrastructure_data),
-        "water": build_water_read(water_data),
-        "adaptation": build_adaptation_read(adaptation_data),
-        "workforce": build_workforce_read(workforce_data),
-        "economic_impact": build_economic_impact_read(economic_impact_data),
+        "market": build_market_read(
+            context.sector_data,
+            context.dashboard_data or {},
+            context.regime_metrics,
+        ),
+        "finance": build_finance_read(
+            context.regime_metrics,
+            context.fred_data,
+            context.nfci_history,
+            context.debt_markets_data,
+        ),
+        "compute": build_compute_read(context.infrastructure_data),
+        "data_center": build_data_center_read(context.infrastructure_data),
+        "power": build_power_domain_read(context.energy_data, context.infrastructure_data),
+        "grid_storage": build_grid_storage_read(context.energy_data, context.infrastructure_data),
+        "water": build_water_read(context.water_data),
+        "adaptation": build_adaptation_read(context.adaptation_data),
+        "workforce": build_workforce_read(context.workforce_data),
+        "economic_impact": build_economic_impact_read(context.economic_impact_data),
     }
-    context_payload = current_context or weekly_context or {}
+    context_payload = context.current_context
     by_domain = context_payload.get("by_domain", {}) or {}
     for domain in DOMAIN_ORDER:
         reads[domain] = _attach_current_context(reads[domain], by_domain.get(domain, {}))

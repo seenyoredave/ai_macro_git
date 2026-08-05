@@ -15,7 +15,7 @@ from analytics.factor_engine import calc_sector_factors
 from analytics.market_ledger import _company_ownership, _one_year_contributions
 from config.sector_config import SECTOR_CONFIG
 from analytics.sector_engine import build_sector_metrics
-from archive.archive_reader import load_benchmark_history, load_yf_history
+from archive.archive_reader import load_yf_history
 from config.factor_config import FACTOR_DISPLAY_NAMES
 from rendering.charts_market import (
     MARKET_COLORS,

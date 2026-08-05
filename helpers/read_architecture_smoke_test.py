@@ -468,7 +468,7 @@ def main() -> None:
         raise AssertionError("Read context and references are out of order.")
 
     print(
-        "PASS  v6.5.1 read architecture · "
+        "PASS  v6.5.2 read architecture · "
         f"{len(DOMAIN_ORDER)} tab reads · {len(selected)} macro-selected domains · "
         f"headline: {macro['headline']}"
     )

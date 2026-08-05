@@ -1,3 +1,9 @@
+## v6.5.2 — Content-audit presentation cleanup
+
+- Removes Power refresh diagnostics from the developer sidebar; FRED and NY Fed retain their own source-call reporting.
+- Displays the release version at the right edge of the masthead subtitle row and advances the application version to v6.5.2.
+- Completes a repository-wide data-content audit without adding an auditing subsystem or altering retained observations.
+
 ## v6.5.1 — Power cleanup and realized-growth polish
 
 - Removes the visible **Watchpoint** row from every domain Read while retaining compact Current Context and References.
