@@ -214,6 +214,7 @@ def _load_debt_markets_cached(
     clock_token: str,
     force_refresh: bool,
     refresh_token: int,
+    allow_live: bool,
 ) -> dict:
     del clock_token, refresh_token
     started = time_module.perf_counter()
@@ -228,6 +229,19 @@ def _load_debt_markets_cached(
         and pd.notna(metadata_release)
         and metadata_release.date() >= required_release
     )
+
+    if not force_refresh and not allow_live:
+        return _snapshot(
+            local,
+            source_mode="archive_read_mode" if not local.empty else "unavailable",
+            elapsed=time_module.perf_counter() - started,
+            release_date=(
+                metadata_release.date()
+                if pd.notna(metadata_release)
+                else required_release
+            ),
+            error=None if not local.empty else "No retained NY Fed data is available",
+        )
 
     if has_current_release and not force_refresh:
         return _snapshot(
@@ -264,9 +278,12 @@ def load_debt_markets_data(
     force_refresh: bool = False,
     refresh_token: int = 0,
     clock_token: str | None = None,
+    allow_live: bool = False,
 ) -> dict:
+    live_enabled = bool(allow_live or force_refresh)
     return _load_debt_markets_cached(
-        clock_token or debt_markets_cache_token(),
+        (clock_token or debt_markets_cache_token()) if live_enabled else "retained-snapshot",
         bool(force_refresh),
         int(refresh_token),
+        live_enabled,
     )

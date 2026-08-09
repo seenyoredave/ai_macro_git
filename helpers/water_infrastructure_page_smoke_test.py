@@ -83,21 +83,22 @@ def main() -> None:
         raise AssertionError("The retired Infrastructure tab is still exposed.")
     if "2015" in water_source:
         raise AssertionError("Pre-2020 evidence is referenced on the current Water analytical surface.")
-    if "Wastewater systems" not in water_source or "wastewater_construction_history" not in water_source:
+    if "Wastewater investment" not in water_source or "wastewater_construction_history" not in water_source:
         raise AssertionError("Wastewater was not integrated into Water.")
-    if "not wastewater volume, treatment headroom, discharge capacity, or AI-attributed investment" not in water_source:
-        raise AssertionError("Wastewater context lost its attribution boundary.")
+    for phrase in ("Exposure state", "Campus water exposure dossier", "Evidence ladder", "Broader water-system context"):
+        if phrase not in water_source:
+            raise AssertionError(f"Water lost a Phase 2 analytical surface: {phrase}")
     if "height=460" not in water_source:
-        raise AssertionError("Water evidence ledgers are not explicitly scrollable.")
+        raise AssertionError("Water data tables are not explicitly scrollable.")
     if '"State"' not in water_source:
         raise AssertionError("The facility water ledger no longer exposes State for sorting.")
 
-    for phrase in ("Queue capacity measures requested interconnection", "broad electric-power construction series", "Grid and storage evidence ledger"):
+    for phrase in ("Grid delivery pathway", "Queue conversion", "Regional maturity", "Reliability and storage", "Operating duration", "Grid and storage data"):
         if phrase not in grid_source:
-            raise AssertionError(f"Grid & Storage lost a key evidence boundary: {phrase}")
+            raise AssertionError(f"Grid & Storage lost a Phase 2 analytical surface: {phrase}")
 
     print(
-        "PASS  v6.5.2 Water + Grid correction · rotation rehomed · wastewater current through "
+        "PASS  v6.9.1 Water + Grid Phase 2 · rotation rehomed · wastewater current through "
         f"{wastewater['Observation Date'].max():%Y-%m} · {len(momentum)} rotation channels"
     )
 

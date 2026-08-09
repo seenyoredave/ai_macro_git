@@ -20,10 +20,13 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
     water = dict(water_data or {})
     registry = infrastructure.get("facility_registry")
     counties = water.get("usgs_counties")
+    drought = water.get("usdm_state_drought")
     if not isinstance(registry, pd.DataFrame):
         registry = pd.DataFrame()
     if not isinstance(counties, pd.DataFrame):
         counties = pd.DataFrame()
+    if not isinstance(drought, pd.DataFrame):
+        drought = pd.DataFrame()
     registry = registry.copy()
     if registry.empty:
         water["facility_context"] = pd.DataFrame()
@@ -43,6 +46,17 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
         ]
         context = context[[column for column in keep if column in context.columns]].drop_duplicates(["_state_key", "_county_key"], keep="last")
         registry = registry.merge(context, on=["_state_key", "_county_key"], how="left")
+    if not drought.empty and "State" in drought.columns:
+        drought_context = drought.copy()
+        drought_context["_state_key"] = drought_context["State"].fillna("").astype(str).str.upper().str.strip()
+        drought_columns = [
+            "_state_key", "Snapshot Date", "D0+ Area Percent", "D1+ Area Percent",
+            "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent",
+            "Population in Drought", "Source", "Source URL",
+        ]
+        drought_context = drought_context[[column for column in drought_columns if column in drought_context.columns]].drop_duplicates("_state_key", keep="last")
+        registry = registry.merge(drought_context, on="_state_key", how="left", suffixes=("", " Drought"))
+
     registry = registry.drop(columns=["_state_key", "_county_key"], errors="ignore")
 
     direct_fields = [
@@ -71,6 +85,8 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
         "direct_water_evidence_records": int(registry["Direct Water Evidence"].sum()),
         "quantified_withdrawal_records": int(pd.to_numeric(registry.get("Water Withdrawal Gallons/Year"), errors="coerce").notna().sum()),
         "quantified_consumption_records": int(pd.to_numeric(registry.get("Water Consumption Gallons/Year"), errors="coerce").notna().sum()),
+        "drought_context_records": int(pd.to_numeric(registry.get("D1+ Area Percent"), errors="coerce").notna().sum()),
+        "severe_drought_facilities": int(pd.to_numeric(registry.get("D2+ Area Percent"), errors="coerce").fillna(0).gt(0).sum()),
     }
     return infrastructure, water
 

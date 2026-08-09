@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from io import StringIO
 import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -11,6 +12,8 @@ from fredapi import Fred
 
 from archive.archive_reader import load_fred_history
 from config.debug_config import debug_print
+from config.deployment import repository_writes_enabled
+from helpers.atomic_io import atomic_write_csv
 
 NFCI_SERIES_ID = "NFCI"
 ANFCI_SERIES_ID = "ANFCI"
@@ -21,6 +24,8 @@ ANFCI_ARCHIVE_DATE_COLUMN = "Adjusted Financial Conditions ANFCI Date"
 NFCI_PUBLIC_CSV_URL = (
     "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI,ANFCI"
 )
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+NFCI_HISTORY_PATH = PROJECT_ROOT / "data" / "finance" / "nfci_anfci_history.csv"
 
 def _optional_streamlit_secret(name: str, default=None):
     try:
@@ -85,6 +90,17 @@ def _normalize_nfci_history(frame: pd.DataFrame | None) -> pd.DataFrame:
     return out.drop_duplicates(subset=["Date"], keep="last")[columns].reset_index(drop=True)
 
 def _load_archived_nfci_history() -> pd.DataFrame:
+    if NFCI_HISTORY_PATH.exists() and NFCI_HISTORY_PATH.stat().st_size:
+        try:
+            retained = _normalize_nfci_history(pd.read_csv(NFCI_HISTORY_PATH))
+            if not retained.empty:
+                return retained
+        except Exception as exc:
+            debug_print(f"Retained NFCI/ANFCI history load failed -> {exc}")
+
+    # Backward-compatible fallback for builds that predate the dedicated
+    # historical-series contract. This archive may contain only snapshots and
+    # must never be overwritten as though it were the complete history.
     archive = load_fred_history()
     if archive is None or archive.empty or NFCI_ARCHIVE_COLUMN not in archive.columns:
         return pd.DataFrame(columns=["Date", "Value", "ANFCI"])
@@ -110,9 +126,29 @@ def _load_archived_nfci_history() -> pd.DataFrame:
     )
     return _normalize_nfci_history(frame)
 
+
+def _persist_nfci_history(frame: pd.DataFrame) -> None:
+    if not repository_writes_enabled():
+        return
+    normalized = _normalize_nfci_history(frame)
+    if normalized.empty:
+        return
+    out = normalized.copy()
+    out["Date"] = out["Date"].dt.date.astype(str)
+    atomic_write_csv(out, NFCI_HISTORY_PATH)
+
 @st.cache_data(ttl=86400)
-def load_nfci_history(force_refresh: bool = False, refresh_token: int = 0) -> pd.DataFrame:
+def load_nfci_history(
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    allow_live: bool = False,
+) -> pd.DataFrame:
     del refresh_token
+    if not force_refresh and not allow_live:
+        archived = _load_archived_nfci_history()
+        archived.attrs["source"] = "FRED Archive" if not archived.empty else "Unavailable"
+        return archived
+
     fred = _get_fred_client()
     if fred is not None:
         try:
@@ -122,6 +158,7 @@ def load_nfci_history(force_refresh: bool = False, refresh_token: int = 0) -> pd
             frame = frame.rename(columns={frame.columns[0]: "Date"})
             normalized = _normalize_nfci_history(frame)
             if not normalized.empty:
+                _persist_nfci_history(normalized)
                 normalized.attrs["source"] = "FRED Live"
                 return normalized
         except Exception as exc:
@@ -132,6 +169,7 @@ def load_nfci_history(force_refresh: bool = False, refresh_token: int = 0) -> pd
         response.raise_for_status()
         normalized = _normalize_nfci_history(pd.read_csv(StringIO(response.text)))
         if not normalized.empty:
+            _persist_nfci_history(normalized)
             normalized.attrs["source"] = "FRED Public CSV"
             return normalized
     except Exception as exc:

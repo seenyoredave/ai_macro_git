@@ -48,6 +48,7 @@ from loaders.facility_identity import (
     build_facility_observations,
     build_facility_registry,
     canonicalize_facility_observations,
+    load_facility_identity_decisions,
 )
 from loaders.campus_registry import (
     WATER_EVIDENCE_FIELDS,

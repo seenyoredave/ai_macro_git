@@ -2,15 +2,18 @@ from __future__ import annotations
 
 from io import BytesIO
 from pathlib import Path
+import re
 import time as time_module
+from urllib.parse import urljoin
 
 import numpy as np
 import pandas as pd
 import requests
 import streamlit as st
+from bs4 import BeautifulSoup
 
 from config.deployment import repository_writes_enabled
-from config.market_clock import utc_now
+from config.market_clock import market_date, utc_now
 from helpers.atomic_io import atomic_write_csv
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -36,16 +39,35 @@ PATHS = {
 URLS = {
     "retail": "https://www.eia.gov/electricity/data/eia861m/xls/sales_revenue.xlsx",
     "generation": "https://www.eia.gov/electricity/monthly/xls/table_1_01.xlsx",
-    "generators": "https://www.eia.gov/electricity/data/eia860m/xls/june_generator2026.xlsx",
     "capacity_additions": "https://www.eia.gov/electricity/monthly/xls/table_6_03.xlsx",
     "capacity_retirements": "https://www.eia.gov/electricity/monthly/xls/table_6_04.xlsx",
-    "queue": "https://eta-publications.lbl.gov/sites/default/files/2026-05/lbnl_ix_queue_data_file_thru2025.xlsx",
-    "wholesale_2025": "https://www.eia.gov/electricity/wholesale/xls/archive/ice_electric-2025final.xlsx",
-    "wholesale_2026": "https://www.eia.gov/electricity/wholesale/xls/ice_electric-2026.xlsx",
-    "gas_pipeline": "https://www.eia.gov/naturalgas/pipelines/EIA-NaturalGasPipelineProjects_May2026.xlsx",
-    "lng": "https://www.eia.gov/naturalgas/importsexports/liquefactioncapacity/U.S.liquefactioncapacity_2026_Q2.xlsx",
+    "lng": "https://www.eia.gov/naturalgas/importsexports/liquefactioncapacity/U.S.liquefactioncapacity.xlsx",
     "gas_storage": "https://www.eia.gov/naturalgas/storage/EIA-StoragePlan.xlsx",
 }
+
+EIA_860M_PAGE_URL = "https://www.eia.gov/electricity/data/eia860m/"
+EIA_NATURAL_GAS_DATA_URL = "https://www.eia.gov/naturalgas/data.php"
+LBNL_QUEUE_PAGE_URL = "https://emp.lbl.gov/queues"
+
+
+REFRESH_SCOPES = {
+    "power": {
+        "retail_history",
+        "generation_history",
+        "generators",
+        "capacity_changes",
+        "wholesale_prices",
+        "gas_pipeline",
+        "lng_projects",
+        "gas_storage_projects",
+    },
+    "grid_storage": {
+        "generators",
+        "capacity_changes",
+        "interconnection_queue",
+    },
+}
+REFRESH_SCOPES["all"] = set().union(*REFRESH_SCOPES.values())
 
 
 def _number(values):
@@ -83,6 +105,64 @@ def _get(url):
     response = requests.get(url, timeout=REQUEST_TIMEOUT, headers={"User-Agent": "ai-macro-energy/2.0"})
     response.raise_for_status()
     return response.content
+
+
+def _discover_download_url(page_url: str, pattern: str) -> str:
+    """Resolve the first matching official download exposed by a release page.
+
+    EIA and Berkeley Lab list newest releases first. Resolving the link at click
+    time keeps the manual refresh useful after monthly, quarterly, or annual
+    filenames roll forward without guessing the next filename.
+    """
+    response = requests.get(
+        page_url,
+        timeout=REQUEST_TIMEOUT,
+        headers={"User-Agent": "ai-macro-energy/2.0"},
+    )
+    response.raise_for_status()
+    matcher = re.compile(pattern, re.I)
+    soup = BeautifulSoup(response.text, "html.parser")
+    for anchor in soup.find_all("a", href=True):
+        href = str(anchor.get("href") or "").strip()
+        if matcher.search(href):
+            return urljoin(page_url, href)
+    raise ValueError(f"Official release page exposed no matching download: {page_url}")
+
+
+def _latest_generator_url() -> str:
+    return _discover_download_url(
+        EIA_860M_PAGE_URL,
+        r"/eia860m/xls/[a-z]+_generator\d{4}\.xlsx(?:$|\?)",
+    )
+
+
+def _latest_pipeline_url() -> str:
+    return _discover_download_url(
+        EIA_NATURAL_GAS_DATA_URL,
+        r"NaturalGasPipelineProjects[^/]*\.xlsx(?:$|\?)",
+    )
+
+
+def _latest_queue_url() -> str:
+    return _discover_download_url(
+        LBNL_QUEUE_PAGE_URL,
+        r"lbnl_ix_queue_data_file_thru\d{4}\.xlsx(?:$|\?)",
+    )
+
+
+def _wholesale_urls() -> list[tuple[str, int]]:
+    year = int(market_date().year)
+    prior = year - 1
+    return [
+        (
+            f"https://www.eia.gov/electricity/wholesale/xls/archive/ice_electric-{prior}final.xlsx",
+            prior,
+        ),
+        (
+            f"https://www.eia.gov/electricity/wholesale/xls/ice_electric-{year}.xlsx",
+            year,
+        ),
+    ]
 
 
 def _write(frame, path):
@@ -443,12 +523,20 @@ def _load_local():
     return {name: _read(path, dates.get(name, ())) for name, path in PATHS.items()}
 
 
-def _refresh():
+def _refresh(scope: str = "all"):
     frames = _load_local()
     errors = {}
     refreshed = []
+    resolved_urls = {}
+    selected = REFRESH_SCOPES.get(str(scope), REFRESH_SCOPES["all"])
+
+    def fetched(label: str, url: str) -> bytes:
+        resolved_urls[label] = url
+        return _get(url)
 
     def apply(label, fetch, parse):
+        if label not in selected:
+            return
         try:
             result = parse(fetch())
             if result is None:
@@ -468,20 +556,33 @@ def _refresh():
         except Exception as exc:
             errors[label] = f"{type(exc).__name__}: {exc}"
 
-    apply("retail_history", lambda: _get(URLS["retail"]), _parse_retail)
-    apply("generation_history", lambda: _get(URLS["generation"]), _parse_generation)
-
-    apply("generators", lambda: _get(URLS["generators"]), _parse_generators)
+    apply("retail_history", lambda: fetched("retail_history", URLS["retail"]), _parse_retail)
+    apply("generation_history", lambda: fetched("generation_history", URLS["generation"]), _parse_generation)
+    apply("generators", lambda: fetched("generators", _latest_generator_url()), _parse_generators)
     apply(
         "capacity_changes",
-        lambda: (_get(URLS["capacity_additions"]), _get(URLS["capacity_retirements"])),
+        lambda: (
+            fetched("capacity_additions", URLS["capacity_additions"]),
+            fetched("capacity_retirements", URLS["capacity_retirements"]),
+        ),
         lambda content: _parse_capacity_changes(content[0], content[1]),
     )
-    apply("interconnection_queue", lambda: _get(URLS["queue"]), _parse_queue)
+    apply(
+        "interconnection_queue",
+        lambda: fetched("interconnection_queue", _latest_queue_url()),
+        _parse_queue,
+    )
+
+    def fetch_wholesale():
+        payloads = []
+        for url, year in _wholesale_urls():
+            payloads.append((fetched(f"wholesale_{year}", url), year))
+        return payloads
+
     apply(
         "wholesale_prices",
-        lambda: (_get(URLS["wholesale_2025"]), _get(URLS["wholesale_2026"])),
-        lambda content: _parse_wholesale([(content[0], 2025), (content[1], 2026)]),
+        fetch_wholesale,
+        _parse_wholesale,
     )
 
     def parse_gas(content):
@@ -491,20 +592,29 @@ def _refresh():
             "gas_pipeline_canonical": _canonicalize_gas_pipeline(raw),
         }
 
-    apply("gas_pipeline", lambda: _get(URLS["gas_pipeline"]), parse_gas)
-    apply("lng_projects", lambda: _get(URLS["lng"]), _parse_lng)
-    apply("gas_storage_projects", lambda: _get(URLS["gas_storage"]), _parse_storage)
-    return _load_local(), errors, refreshed
+    apply(
+        "gas_pipeline",
+        lambda: fetched("gas_pipeline", _latest_pipeline_url()),
+        parse_gas,
+    )
+    apply("lng_projects", lambda: fetched("lng_projects", URLS["lng"]), _parse_lng)
+    apply(
+        "gas_storage_projects",
+        lambda: fetched("gas_storage_projects", URLS["gas_storage"]),
+        _parse_storage,
+    )
+    return _load_local(), errors, refreshed, resolved_urls
 
 
 @st.cache_data(ttl=3600)
-def load_energy_market_data(*, force_refresh=False, refresh_token=0):
+def load_energy_market_data(*, force_refresh=False, refresh_token=0, refresh_scope="all"):
     del refresh_token
     started = time_module.perf_counter()
     errors = {}
     refreshed = []
+    resolved_urls = {}
     if force_refresh:
-        frames, errors, refreshed = _refresh()
+        frames, errors, refreshed, resolved_urls = _refresh(refresh_scope)
         if refreshed and not errors:
             source_mode = "refreshed"
         elif refreshed:
@@ -521,6 +631,8 @@ def load_energy_market_data(*, force_refresh=False, refresh_token=0):
         "requested_at_utc": utc_now().isoformat(),
         "returned_rows": returned,
         "refreshed_datasets": refreshed,
+        "refresh_scope": str(refresh_scope),
+        "resolved_urls": resolved_urls,
         "errors": errors,
         "error": "; ".join(f"{name}: {message}" for name, message in errors.items()) or None,
     }

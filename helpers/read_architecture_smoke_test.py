@@ -1,4 +1,4 @@
-"""Regression test for the v6.5 twelve-tab read architecture."""
+"""Regression test for the v7.0.0 thirteen-tab read architecture."""
 
 from __future__ import annotations
 
@@ -28,9 +28,14 @@ class _FakeStreamlit(types.ModuleType):
 
 sys.modules.setdefault("streamlit", _FakeStreamlit())
 
-from analytics.read_architecture import DOMAIN_ORDER, build_platform_reads  # noqa: E402
+from analytics.read_architecture import (  # noqa: E402
+    DOMAIN_ORDER,
+    _attach_current_context,
+    build_platform_reads,
+)
 from analytics.spatial_context import infrastructure_attribution  # noqa: E402
 from loaders.workforce_loader import load_workforce_data  # noqa: E402
+from loaders.connectivity_loader import load_connectivity_data  # noqa: E402
 from loaders.economic_impact_loader import load_economic_impact_data  # noqa: E402
 from loaders.facility_registry_loader import (  # noqa: E402
     build_campus_registry,
@@ -118,6 +123,15 @@ def _energy_data() -> dict:
             "history": gas[["Date", "Value"]].copy(),
         }
     }
+    data["queue_outcomes_summary"] = pd.read_csv(
+        PROJECT_ROOT / "data" / "grid_storage" / "queue_outcomes_summary.csv"
+    )
+    data["reliability_reserve_margins"] = pd.read_csv(
+        PROJECT_ROOT / "data" / "grid_storage" / "nerc_2026_summer_reserve_margins.csv"
+    )
+    data["operating_generators"] = pd.read_csv(
+        PROJECT_ROOT / "data" / "energy_operating_generators.csv"
+    )
     return data
 
 
@@ -201,11 +215,16 @@ def _water_data(infrastructure_data: dict) -> dict:
     summary = json.loads(
         (PROJECT_ROOT / "data" / "water" / "derived" / "water_national_summary.json").read_text()
     )
-    registry = infrastructure_data["facility_registry"]
+    registry = infrastructure_data["facility_registry"].copy()
+    drought = pd.read_csv(PROJECT_ROOT / "data" / "water" / "derived" / "usdm_state_drought_snapshot.csv")
+    drought_columns = ["State", "D1+ Area Percent", "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent", "Snapshot Date"]
+    registry = registry.merge(drought[drought_columns], on="State", how="left")
     evidence = registry.get("Water Evidence Grade", pd.Series("", index=registry.index)).fillna("").astype(str)
     return {
         "summary": summary,
         "usgs_2020_top_withdrawals": pd.read_csv(PROJECT_ROOT / "data" / "water" / "derived" / "usgs_2020_top_withdrawals.csv"),
+        "usgs_state_categories": pd.read_csv(PROJECT_ROOT / "data" / "water" / "derived" / "usgs_2015_state_category_summary.csv"),
+        "facility_context": registry,
         "facility_context_summary": {
             "facilities": int(len(registry)),
             "state_identified_records": int(registry.get("State", pd.Series("", index=registry.index)).fillna("").astype(str).str.strip().ne("").sum()),
@@ -222,6 +241,15 @@ def _adaptation_data() -> dict:
     history = history.sort_values("Date", kind="stable")
     latest = history.iloc[-1]
     prior = history.iloc[-13] if len(history) >= 13 else history.iloc[0]
+    consumer = pd.read_csv(PROJECT_ROOT / "data" / "adoption_consumer_history.csv")
+    consumer["Date"] = pd.to_datetime(consumer["Date"], errors="coerce", format="mixed")
+    consumer["Value"] = pd.to_numeric(consumer["Value"], errors="coerce")
+
+    def latest_consumer(series: str) -> dict:
+        rows = consumer.loc[consumer["Series"].astype(str).eq(series)].sort_values("Date", kind="stable")
+        row = rows.iloc[-1]
+        return {"value": float(row["Value"]), "date": row["Date"], "series_id": row["Series ID"]}
+
     return {
         "current_use": latest["Current AI Use"],
         "expected_use": latest["Expected AI Use"],
@@ -229,11 +257,19 @@ def _adaptation_data() -> dict:
         "annual_change": latest["Current AI Use"] - prior["Current AI Use"],
         "sector_snapshot": pd.read_csv(PROJECT_ROOT / "data" / "adaptation_sector_snapshot.csv"),
         "snapshot_date": latest["Date"],
+        "consumer_history": consumer,
+        "consumer_overall": latest_consumer("Overall use"),
+        "consumer_personal": latest_consumer("Personal / outside work"),
+        "consumer_work": latest_consumer("Work use"),
+        "consumer_active": latest_consumer("Used last week"),
+        "consumer_daily": latest_consumer("Daily use"),
     }
 
 
 def main() -> None:
     infrastructure = _infrastructure_data()
+    connectivity = load_connectivity_data(infrastructure.get("campus_registry"))
+    infrastructure["connectivity"] = connectivity
     context_event = {
         "event_id": "test-context",
         "priority": 100,
@@ -270,6 +306,7 @@ def main() -> None:
         energy_data=_energy_data(),
         debt_markets_data={"series": {}},
         infrastructure_data=infrastructure,
+        connectivity_data=connectivity,
         water_data=_water_data(infrastructure),
         adaptation_data=_adaptation_data(),
         workforce_data=load_workforce_data(),
@@ -280,6 +317,13 @@ def main() -> None:
     expected = set(DOMAIN_ORDER) | {"macro"}
     if set(reads) != expected:
         raise AssertionError(f"Unexpected read surfaces: {sorted(reads)}")
+    adoption_signals = reads["adaptation"].get("signals", {})
+    for key in ("consumer_overall", "consumer_personal", "consumer_work", "consumer_active", "consumer_daily"):
+        if pd.isna(pd.to_numeric(adoption_signals.get(key), errors="coerce")):
+            raise AssertionError(f"Adoption Read is missing the retained societal signal: {key}")
+    adoption_refs = {str(item.get("source_label")) for item in reads["adaptation"].get("references", [])}
+    if not {"Real-Time Population Survey via FRED", "U.S. Census BTOS"}.issubset(adoption_refs):
+        raise AssertionError("Adoption Read should retain both RPS/FRED and Census BTOS references.")
     for domain in expected:
         read = reads[domain]
         required = {"headline", "summary", "watchpoint", "confidence", "importance", "signals", "highlights", "version"}
@@ -297,8 +341,11 @@ def main() -> None:
     water = reads["water"]
     if water["signals"].get("quantified_use_records") != 0:
         raise AssertionError("Water Read must retain the current zero quantified-use evidence boundary.")
-    if "attribution" not in water["headline"].casefold() and "evidence" not in water["headline"].casefold():
-        raise AssertionError("Water Read no longer distinguishes competition from AI attribution.")
+    for signal in ("states_with_d2_area", "published_capacity_in_25pct_d2_states_gw", "direct_evidence_share_pct"):
+        if pd.isna(pd.to_numeric(water["signals"].get(signal), errors="coerce")):
+            raise AssertionError(f"Water Read is missing the Phase 2 exposure signal: {signal}")
+    if not any(token in water["headline"].casefold() for token in ("water", "drought", "disclosure")):
+        raise AssertionError("Water Read no longer centers local exposure and disclosure.")
 
     power_read = reads["power"]
     if "advanced_share" in power_read.get("signals", {}):
@@ -307,8 +354,9 @@ def main() -> None:
         raise AssertionError("Power watchpoint crossed into Grid & Storage ownership.")
 
     grid_read = reads["grid_storage"]
-    if pd.isna(pd.to_numeric(grid_read["signals"].get("queue_gw"), errors="coerce")):
-        raise AssertionError("Grid & Storage Read is missing the interconnection pipeline.")
+    for signal in ("queue_gw", "historical_operational_pct", "median_request_to_cod_years", "lowest_extreme_margin_pct", "operating_storage_weighted_duration_hours"):
+        if pd.isna(pd.to_numeric(grid_read["signals"].get(signal), errors="coerce")):
+            raise AssertionError(f"Grid & Storage Read is missing the Phase 2 deliverability signal: {signal}")
 
     workforce_read = reads["workforce"]
     if "employment" not in workforce_read.get("signals", {}):
@@ -318,7 +366,7 @@ def main() -> None:
 
     impact_read = reads["economic_impact"]
     if not any("productivity" in str(key) or "output" in str(key) for key in impact_read.get("signals", {})):
-        raise AssertionError("Economic Impact Read is missing realized-economy signals.")
+        raise AssertionError("Economic Outcomes Read is missing realized-economy signals.")
 
     macro = reads["macro"]
     selected = macro["signals"].get("selected_domains", [])
@@ -333,12 +381,21 @@ def main() -> None:
         raise AssertionError("Macro read did not retain referenced weekly context and selected-domain sources.")
     if len(macro.get("references", [])) > 5:
         raise AssertionError("Macro references exceeded the compact inline budget.")
+    macro_reference_labels = {str(item.get("source_label") or item.get("source_name") or "") for item in macro.get("references", [])}
+    anchor_sources = {
+        str((item.get("reference_specs") or [{}])[0].get("source_label") or "")
+        for item in macro.get("evidence", [])
+        if item.get("reference_specs")
+    }
+    if not anchor_sources.issubset(macro_reference_labels):
+        raise AssertionError(f"Macro references drifted away from the displayed evidence anchors: expected {anchor_sources}, found {macro_reference_labels}")
 
     renderer_contracts = {
         "market.py": 'tab_read=platform_reads.get("market")',
         "finance.py": 'tab_read=platform_reads.get("finance")',
         "compute.py": 'tab_read=platform_reads.get("compute")',
         "data_center.py": 'tab_read=platform_reads.get("data_center")',
+        "connectivity.py": 'tab_read=platform_reads.get("connectivity")',
         "power.py": 'tab_read=platform_reads.get("power")',
         "grid_storage.py": 'tab_read=platform_reads.get("grid_storage")',
         "water.py": 'tab_read=platform_reads.get("water")',
@@ -351,24 +408,31 @@ def main() -> None:
         if contract not in dashboard_source:
             raise AssertionError(f"Dashboard does not pass the structured read to {filename}.")
     macro_source = (PROJECT_ROOT / "rendering" / "macro.py").read_text()
-    purpose_call = '_render_front_page_purpose()'
-    header_call = 'render_tab_header('
-    if purpose_call not in macro_source:
-        raise AssertionError("Front-page Purpose disclosure is missing.")
-    render_body = macro_source[macro_source.index("def render_macro_tab"): ]
-    if render_body.index(purpose_call) > render_body.index(header_call):
-        raise AssertionError("Purpose disclosure must appear above the AI Macro title and subtitle.")
+    components_source = (PROJECT_ROOT / "rendering" / "components.py").read_text()
     if 'render_section("Purpose Statement")' in macro_source or 'render_definition(METRIC_DEFINITIONS["Purpose Statement"])' in macro_source:
         raise AssertionError("Purpose Statement still appears as a permanent AI Macro section.")
-    if 'st.expander("Purpose statement", expanded=False)' not in macro_source:
+    if "_render_front_page_purpose" in macro_source or "front-page-purpose" in macro_source:
+        raise AssertionError("Purpose disclosure is still owned by the AI Macro domain.")
+    if 'st.expander("Full purpose statement", expanded=False)' not in components_source:
         raise AssertionError("Purpose disclosure must be collapsed by default.")
-    if 'class="rm-purpose-divider"' not in macro_source:
-        raise AssertionError("AI Macro is missing the divider between Purpose and the tab header.")
     theme_source = (PROJECT_ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
     app_source = (PROJECT_ROOT / "ai_macro.py").read_text()
     definitions_source = (PROJECT_ROOT / "config" / "metric_definitions.py").read_text()
-    if 'render_masthead(\n    "AI Macro",\n    "An AI economic research platform",' not in app_source:
+    approved_subtitle = (
+        "An economic research platform that traces the AI economy from capital and construction "
+        "through deployment, adoption, and economic results."
+    )
+    if approved_subtitle not in app_source:
         raise AssertionError("AI Macro brand and descriptor are not installed in the masthead.")
+    masthead_position = app_source.index("render_masthead(")
+    purpose_position = app_source.index('render_platform_purpose(METRIC_DEFINITIONS["Purpose Statement"])')
+    dashboard_position = app_source.index("render_research_dashboard(")
+    if not masthead_position < purpose_position < dashboard_position:
+        raise AssertionError("Purpose disclosure is not between the platform masthead and the domain dashboard.")
+    if "status=retained_market_snapshot_label()" not in app_source:
+        raise AssertionError("Retained market date is not attached to the masthead release line.")
+    if 'market_report["energy"]' in app_source or 'render_source("Power"' in app_source:
+        raise AssertionError("Power refresh diagnostics remain attached to the developer load report.")
     approved_purpose = (
         "AI Macro traces the AI economy from capital and construction through deployment, adoption, and economic results. "
         "Using publicly available data, it connects companies and markets with the data centers, resources, and infrastructure "
@@ -379,14 +443,12 @@ def main() -> None:
     if approved_purpose not in definitions_source:
         raise AssertionError("The approved Purpose Statement copy is not installed verbatim.")
 
-    if ".st-key-front-page-purpose details > summary" not in theme_source:
+    if ".st-key-platform-purpose details > summary" not in theme_source:
         raise AssertionError("Purpose disclosure has no dedicated summary alignment rule.")
-    if ".rm-purpose-divider" not in theme_source:
-        raise AssertionError("Purpose divider has no protected platform style.")
     if "padding-block: 0.72rem" not in theme_source or "align-items: center" not in theme_source:
         raise AssertionError("Purpose disclosure summary is missing balanced vertical padding or centering.")
-    purpose_details_rule = theme_source[theme_source.index('.st-key-front-page-purpose [data-testid="stExpanderDetails"]'):]
-    if ".st-key-front-page-purpose .rm-purpose-copy" not in purpose_details_rule:
+    purpose_details_rule = theme_source[theme_source.index('.st-key-platform-purpose [data-testid="stExpanderDetails"]'):]
+    if ".st-key-platform-purpose .rm-purpose-copy" not in purpose_details_rule:
         raise AssertionError("Expanded Purpose text is missing its dedicated centering wrapper.")
     if "min-height: 8.25rem" not in purpose_details_rule or "padding: 1.35rem 1.35rem 1.45rem 1.35rem" not in purpose_details_rule:
         raise AssertionError("Expanded Purpose text does not have balanced visible breathing room.")
@@ -394,16 +456,25 @@ def main() -> None:
         raise AssertionError("Expanded Purpose text is not vertically centered.")
 
     common_source = (PROJECT_ROOT / "rendering" / "common.py").read_text()
-    if 'class="rm-metric-registry-divider"' not in common_source:
-        raise AssertionError("The metric registry no longer owns its mandatory divider.")
-    for filename in ("macro.py", "market.py", "finance.py", "compute.py", "data_center.py", "power.py", "grid_storage.py", "water.py", "adaptation.py", "workforce.py", "economic_impact.py"):
+    if "def _render_floating_terms(" not in common_source or "st.popover(" not in common_source:
+        raise AssertionError("The shared domain-header Terms control is not installed.")
+    if "rm-metric-registry-divider" in common_source or "rm-metric-registry-divider" in theme_source:
+        raise AssertionError("The retired inline metric registry divider remains in the platform.")
+    terms_rule = theme_source[theme_source.index('div[class*="st-key-floating-terms-"] {'):].split("}", 1)[0]
+    if 'st-key-floating-terms-' not in theme_source or "justify-content: flex-end" not in terms_rule:
+        raise AssertionError("The Terms control is not aligned to the domain header edge.")
+    if "position: fixed" in terms_rule:
+        raise AssertionError("The Terms control regressed to a chart-obscuring viewport overlay.")
+    for filename in ("macro.py", "market.py", "finance.py", "compute.py", "data_center.py", "connectivity.py", "power.py", "grid_storage.py", "water.py", "adaptation.py", "workforce.py", "economic_impact.py"):
         source = (PROJECT_ROOT / "rendering" / filename).read_text()
-        if "_render_tab_metric_registry(" not in source:
-            raise AssertionError(f"{filename} does not use the shared metric-registry divider contract.")
+        if "_render_floating_terms(" not in source:
+            raise AssertionError(f"{filename} does not expose the shared floating Terms control.")
+        if "render_line_break()" in source:
+            raise AssertionError(f"{filename} still inserts the retired post-header line break.")
 
-    expected_tabs = '["AI MACRO", "MARKET", "FINANCE", "COMPUTE", "DATA CENTER", "POWER", "GRID & STORAGE", "WATER", "ADAPTATION", "WORKFORCE", "ECONOMIC IMPACT", "EVIDENCE"]'
+    expected_tabs = '["AI MACRO", "MARKET", "FINANCE", "COMPUTE", "DATA CENTERS", "CONNECTIVITY", "POWER", "GRID & STORAGE", "WATER", "ADOPTION", "WORKFORCE", "ECONOMIC OUTCOMES", "EVIDENCE"]'
     if expected_tabs not in app_source:
-        raise AssertionError("The app does not expose the approved 12-tab architecture.")
+        raise AssertionError("The app does not expose the approved 13-tab architecture.")
     if '"ENERGY"' in app_source or '"INFRASTRUCTURE"' in app_source:
         raise AssertionError("Retired Energy or Infrastructure tab labels remain visible.")
     if "macro-buildout-leadership-rotation" not in macro_source:
@@ -415,6 +486,21 @@ def main() -> None:
     market_source = (PROJECT_ROOT / "rendering" / "market.py").read_text()
     if "_render_sector_read" not in market_source:
         raise AssertionError("The sector-level read was not retained.")
+    for approved_label in ('"Who owns the universe?"', '"1 YR Return"', '"Ownership, contribution, and participation"'):
+        if approved_label not in market_source:
+            raise AssertionError(f"Approved Market label missing: {approved_label}")
+    market_render_body = market_source[market_source.index("def render_market_tab("):]
+    order_tokens = [
+        '_render_market_ledger_summary(market_ledger)',
+        'render_signal_rail(_assessment_stats',
+        '_render_market_structure(market_ledger)',
+        'render_section("Positioning"',
+        '"Sector dossier"',
+        '_render_market_constituent_ledger(selection, market_ledger)',
+    ]
+    order_positions = [market_render_body.index(token) for token in order_tokens]
+    if order_positions != sorted(order_positions):
+        raise AssertionError("Market current-state analysis no longer precedes deep structure/history.")
 
     for domain in DOMAIN_ORDER:
         domain_references = reads[domain].get("references", [])
@@ -430,6 +516,8 @@ def main() -> None:
     market_markup = build_domain_read_html(
         reads["market"], label="Market Read", accent_color="#a78bfa"
     )
+    if market_markup.count('class="rm-read-section-divider"') != 1:
+        raise AssertionError("The shared Read component must emit exactly one post-Read divider.")
     expected_order = [
         "rm-domain-read-kicker",
         "rm-domain-read-title",
@@ -447,6 +535,8 @@ def main() -> None:
         raise AssertionError("References did not retain the compact inline layout.")
     if market_markup.count("[1]") != 1 or market_markup.count("[2]") != 1:
         raise AssertionError("Market Read references are not numbered side by side.")
+    if "confidence" in market_markup.casefold():
+        raise AssertionError("Internal evidence completeness leaked into the public Read label.")
     if "<ol" in market_markup or "<li" in market_markup:
         raise AssertionError("References regressed to a stacked list.")
 
@@ -467,8 +557,24 @@ def main() -> None:
     if not (context_markup.index("Current context") < context_markup.index("References")):
         raise AssertionError("Read context and references are out of order.")
 
+    rejected_context = _attach_current_context(
+        reads["market"],
+        {
+            "events": [{
+                "display": "No qualifying development found.",
+                "verification_status": "no_match",
+                "source_url": "https://example.com/no-match",
+            }]
+        },
+    )
+    if rejected_context.get("current_context_items"):
+        raise AssertionError("A no-match placeholder leaked into a public Read.")
+
+    if selected != ["market", "data_center", "economic_impact"]:
+        raise AssertionError(f"Macro lifecycle anchors drifted: {selected}")
+
     print(
-        "PASS  v6.5.2 read architecture · "
+        "PASS  v7.0.0 read architecture · "
         f"{len(DOMAIN_ORDER)} tab reads · {len(selected)} macro-selected domains · "
         f"headline: {macro['headline']}"
     )

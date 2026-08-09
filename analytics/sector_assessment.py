@@ -6,11 +6,12 @@ import numpy as np
 import pandas as pd
 
 from config.market_clock import market_date
+from config.benchmark_config import BENCHMARK_VERSION
 
 from archive.archive_reader import load_sector_history
 
 ASSESSMENT_VERSION = "CSA_v4.0"
-PRESSURE_VERSION = "3.0"
+PRESSURE_VERSION = "4.0"
 SECTOR_MOVEMENT_LOOKBACK = 10
 RISK_COVERAGE_THRESHOLD = 0.50
 
@@ -57,6 +58,8 @@ def _current_sector_snapshot(macro_df: pd.DataFrame) -> pd.DataFrame:
     snapshot = macro_df[required].copy()
     snapshot.insert(0, "Date", market_date().isoformat())
     snapshot["Pressure Version"] = PRESSURE_VERSION
+    snapshot["AEI Version"] = "4.0"
+    snapshot["Benchmark Version"] = BENCHMARK_VERSION
 
     return snapshot
 
@@ -96,12 +99,18 @@ def _sector_history_with_current(macro_df: pd.DataFrame) -> pd.DataFrame:
 
     if history is not None and not history.empty:
         history = history.copy()
-        if "Pressure Version" not in history.columns:
+        required_contract = {
+            "Pressure Version": PRESSURE_VERSION,
+            "AEI Version": "4.0",
+            "Benchmark Version": BENCHMARK_VERSION,
+        }
+        if any(column not in history.columns for column in required_contract):
             history = history.iloc[0:0].copy()
         else:
-            history = history[
-                history["Pressure Version"].astype(str) == PRESSURE_VERSION
-            ].copy()
+            contract_mask = pd.Series(True, index=history.index)
+            for column, value in required_contract.items():
+                contract_mask &= history[column].astype(str).eq(str(value))
+            history = history.loc[contract_mask].copy()
 
     return _prepare_sector_history([history, current])
 
@@ -173,18 +182,13 @@ def calculate_sector_movement(
     lookback: int = SECTOR_MOVEMENT_LOOKBACK,
 ) -> pd.DataFrame:
     current_history = _sector_history_with_current(macro_df)
-    movement = _movement_from_history(
+    return _movement_from_history(
         current_history,
         lookback=lookback,
-        source=f"Pressure {PRESSURE_VERSION}",
-    )
-    if movement is not None and not movement.empty:
-        return movement
-
-    return _movement_from_history(
-        _prior_method_sector_history(),
-        lookback=lookback,
-        source="Prior-Method Archive Fallback",
+        source=(
+            f"AEI 4.0 / Pressure {PRESSURE_VERSION} / "
+            f"Benchmark {BENCHMARK_VERSION}"
+        ),
     )
 
 def calculate_fundamental_risk(
@@ -285,6 +289,9 @@ def select_current_sector_assessment(
         movement_lookup = movement_df.set_index("Sector")["Abs Sector Movement"]
         delta_score_lookup = movement_df.set_index("Sector")["Delta Sector Score"]
         delta_pressure_lookup = movement_df.set_index("Sector")["Delta Pressure"]
+        prior_date_lookup = movement_df.set_index("Sector")["Prior Date"]
+        latest_date_lookup = movement_df.set_index("Sector")["Latest Date"]
+        observations_lookup = movement_df.set_index("Sector")["Movement Observations Used"]
         movement_usable = usable.copy()
         movement_usable["_Abs Sector Movement"] = (
             movement_usable["Sector"].map(movement_lookup)
@@ -295,6 +302,9 @@ def select_current_sector_assessment(
         movement_usable["_Delta Pressure"] = (
             movement_usable["Sector"].map(delta_pressure_lookup)
         )
+        movement_usable["_Movement Prior Date"] = movement_usable["Sector"].map(prior_date_lookup)
+        movement_usable["_Movement Latest Date"] = movement_usable["Sector"].map(latest_date_lookup)
+        movement_usable["_Movement Observations"] = movement_usable["Sector"].map(observations_lookup)
         movement_usable = movement_usable.dropna(subset=["_Abs Sector Movement"])
 
         if not movement_usable.empty:

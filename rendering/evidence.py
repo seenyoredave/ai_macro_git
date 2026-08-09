@@ -4,10 +4,10 @@ import pandas as pd
 import streamlit as st
 
 from analytics.hhi_engine import sector_hhi_component_breakdown
-from analytics.regime_engine import AEI_VERSION, PRESSURE_VERSION
-from analytics.valuation import SECTOR_VALUATION_VERSION
+from analytics.private_capital import build_private_capital_realization
 from config.benchmark_config import QQQ_WEIGHTS_EFFECTIVE_DATE
 from config.factor_config import FACTOR_DISPLAY_NAMES
+from rendering.visual_system import render_plotly_chart
 from rendering.adaptation import _adaptation_source_rows
 from rendering.charts_common import COLORS
 from rendering.charts_finance import component_bars
@@ -16,22 +16,26 @@ from rendering.components import fmt_number, render_line_break, render_section, 
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.power import _power_source_rows
 from rendering.evidence_tables import _component_table, render_edgar_data, render_macro_data, render_sector_scoreboard
-from rendering.finance import _debt_market_source_rows
+from rendering.finance import _debt_market_source_rows, _private_capital_detail_table
+
+
+def _water_evidence_payload(water_data) -> dict:
+    """Normalize Water evidence input without importing private renderer helpers."""
+    return water_data if isinstance(water_data, dict) else {}
 from rendering.infrastructure_common import _infrastructure_source_rows
 from rendering.labels import sector_display_name
-from rendering.water import _water_utilization_payload
 
 def _status_rows(regime_metrics):
     mappings = [
-        ("AI Equity Index", "AI Equity Index", "AEI Version", "YFinance + SEC EDGAR"),
-        ("AI Development Intensity", "AI Development Intensity", "ADI Version", "YFinance + SEC EDGAR + U.S. Census Bureau + FRED"),
-        ("Economic Validation Gap", "Economic Validation Gap", "EVG Version", "ADI + SEC EDGAR + YFinance"),
-        ("Power Stress Index", "Power Stress Index", "Power Stress Version", "FRED + EIA"),
-        ("Power Capacity Gap", "Power Capacity Gap", "Power Capacity Gap Version", "FRED + EIA + U.S. Census Bureau"),
-        ("Borrower Strain", "Borrower Strain", "Borrower Strain Version", "YFinance + SEC EDGAR"),
-        ("Lender Strain", "Lender Strain", "Lender Strain Version", "FRED + SEC"),
-        ("Speculation Gap", "Speculation Gap", None, "YFinance + SEC EDGAR"),
-        ("Average Sector Pressure", "Avg Sector Pressure", "Pressure Version", "YFinance + SEC EDGAR"),
+        ("AI Equity Index", "AI Equity Index", "YFinance"),
+        ("AI Development Intensity", "AI Development Intensity", "YFinance + SEC EDGAR + U.S. Census Bureau + FRED"),
+        ("Economic Validation Gap", "Economic Validation Gap", "ADI + SEC EDGAR + YFinance"),
+        ("Power Stress Index", "Power Stress Index", "FRED + EIA"),
+        ("Power Capacity Gap", "Power Capacity Gap", "FRED + EIA + U.S. Census Bureau"),
+        ("Borrower Strain", "Borrower Strain", "YFinance + SEC EDGAR"),
+        ("Lender Strain", "Lender Strain", "FRED + SEC"),
+        ("Speculation Gap", "Speculation Gap", "YFinance + SEC EDGAR"),
+        ("Average Sector Pressure", "Avg Sector Pressure", "YFinance + SEC EDGAR"),
     ]
     signed_products = {
         "Economic Validation Gap",
@@ -42,7 +46,7 @@ def _status_rows(regime_metrics):
         "Speculation Gap",
     }
     rows = []
-    for product, value_key, version_key, source in mappings:
+    for product, value_key, source in mappings:
         rows.append(
             {
                 "Product": product,
@@ -52,7 +56,6 @@ def _status_rows(regime_metrics):
                     signed=product in signed_products,
                 ),
                 "Source": source,
-                "Version": str((regime_metrics or {}).get(version_key, "") if version_key else ""),
             }
         )
     return pd.DataFrame(rows)
@@ -94,63 +97,48 @@ def _sector_methodology_rows():
         [
             {
                 "Product": "Profitable-Cohort FWD EV/EBIT",
-                "Version": SECTOR_VALUATION_VERSION,
                 "Construction": "Σ Enterprise Value₊ ÷ Σ Forward EBIT₊",
                 "Treatment": "Ratio of sums across companies with positive forward EBIT; minimum 3 profitable companies",
                 "Interpretation": "Multiple paid for the sector's profitable operating base",
             },
             {
                 "Product": "Loss-Making EV Share",
-                "Version": SECTOR_VALUATION_VERSION,
                 "Construction": "Σ Enterprise Value₍EBIT≤0₎ ÷ Σ Enterprise Value₍valid EBIT₎",
                 "Treatment": "Loss-making companies remain visible as a separate enterprise-value share",
                 "Interpretation": "Share of sector enterprise value unsupported by positive forward operating earnings",
             },
             {
-                "Product": "Full-Sector Forward EBIT Yield",
-                "Version": f"AEI {AEI_VERSION}",
-                "Construction": "Σ Forward EBIT ÷ Σ Enterprise Value",
-                "Treatment": "Positive and negative forward EBIT are both retained",
-                "Interpretation": "AEI valuation input for the entire sector, including losses",
-            },
-            {
                 "Product": "1Y Relative Return",
-                "Version": f"AEI {AEI_VERSION}",
                 "Construction": "Equal-weight sector 1Y return − weighted benchmark 1Y return",
                 "Treatment": f"Sector constituents are equal-weighted; benchmark uses static, renormalized top-ten QQQ proxy weights effective {QQQ_WEIGHTS_EFFECTIVE_DATE}; negative values indicate sector underperformance",
                 "Interpretation": "Relative realized equity performance",
             },
             {
                 "Product": "Sector AEI",
-                "Version": AEI_VERSION,
-                "Construction": "0.40 Valuation + 0.35 1Y Relative Return + 0.25 Market Breadth",
-                "Treatment": "Normalized factor scores; all three factors required",
-                "Interpretation": "Earnings-supported, broad-based sector equity strength",
+                "Construction": "0.60 1Y Relative Return + 0.40 Market Breadth",
+                "Treatment": "Both normalized factors required; identical construction for all sectors",
+                "Interpretation": "Sustained relative strength and participation; valuation shown separately",
             },
             {
                 "Product": "Sector Basket Concentration",
-                "Version": "1.0",
                 "Construction": "100 × (Raw HHI − 1/N) ÷ (1 − 1/N)",
                 "Treatment": "Valid positive-market-cap constituents only; rankings require at least 3 firms and 60% coverage",
                 "Interpretation": "Concentration relative to an equal-weight basket with the same constituent count",
             },
             {
                 "Product": "Trading Pressure",
-                "Version": PRESSURE_VERSION,
-                "Construction": "0.25 Valuation Stretch + 0.25 Price Extension + 0.20 Momentum Acceleration + 0.15 Volatility Expansion + 0.15 Volume Activity",
-                "Treatment": "Valid components are normalized to 0–100 and available weights are renormalized",
-                "Interpretation": "Abnormal valuation and trading intensity",
+                "Construction": "0.30 Price Extension + 0.25 Momentum Acceleration + 0.25 Volatility Expansion + 0.20 Volume Activity",
+                "Treatment": "All four normalized components required; no valuation input",
+                "Interpretation": "Abnormal price and trading intensity",
             },
             {
                 "Product": "Earnings Support",
-                "Version": SECTOR_VALUATION_VERSION,
                 "Construction": "1Y Return ÷ profitable-cohort FWD EV/EBIT",
                 "Treatment": "FWD EBIT is calculated as forward revenue times current operating margin",
                 "Interpretation": "Trailing repricing relative to the profitable operating-earnings base; descriptive, not causal",
             },
             {
                 "Product": "Speculative Load",
-                "Version": SECTOR_VALUATION_VERSION,
                 "Construction": "Trading Pressure ÷ Sector AI Equity Index",
                 "Treatment": "Ratio of two bounded 0–100 composite scores; undefined when AEI is zero and sensitive when AEI is low",
                 "Interpretation": "Relative trading pressure versus the sector's current equity foundation; compare with both source indexes",
@@ -159,7 +147,7 @@ def _sector_methodology_rows():
     )
 
 def _water_evidence_summary_rows(water_data):
-    water = _water_utilization_payload(water_data or {})
+    water = _water_evidence_payload(water_data or {})
     summary = water.get("summary", {}) or {}
     usgs = summary.get("usgs_2015", {}) or {}
     eia = summary.get("eia_2024_thermoelectric", {}) or {}
@@ -179,12 +167,6 @@ def _water_evidence_summary_rows(water_data):
             ),
             "Observation period": str(eia.get("year") or ""),
             "Boundary": "Plant-level withdrawal and consumption from the 2024 thermoelectric survey.",
-        },
-        {
-            "Evidence layer": "Water source register",
-            "Coverage": f"{int(water.get('active_source_count', summary.get('active_sources', 0)) or 0)} active retained sources",
-            "Observation period": "Retained local",
-            "Boundary": f"Source health: {str(water.get('source_health') or 'unknown').replace('_', ' ')}.",
         },
         {
             "Evidence layer": "USGS reconciliation",
@@ -263,12 +245,12 @@ def _direct_project_evidence_rows(infrastructure_data):
     if isinstance(registry, pd.DataFrame) and not registry.empty:
         record_type = registry.get("Record Type", pd.Series("", index=registry.index)).fillna("").astype(str).str.casefold()
         projects = registry.loc[record_type.eq("project")].copy()
-        rows.append({"Project class": "Data-center projects", "Records": len(projects), "Evidence basis": "Canonical facility registry"})
+        rows.append({"Project class": "Data-center projects", "Records": len(projects), "Evidence basis": "Deduplicated campus records"})
         power = pd.Series(False, index=projects.index)
         for field in ["Contracted Utility Capacity MW", "Energized Capacity MW", "Planned Onsite Generation MW"]:
             if field in projects.columns:
                 power |= pd.to_numeric(projects[field], errors="coerce").gt(0)
-        rows.append({"Project class": "Data-center projects with structured power evidence", "Records": int(power.sum()), "Evidence basis": "Canonical facility registry"})
+        rows.append({"Project class": "Data-center projects with structured power evidence", "Records": int(power.sum()), "Evidence basis": "Deduplicated campus records"})
     if isinstance(compute, pd.DataFrame):
         rows.append({"Project class": "Compute-manufacturing projects", "Records": len(compute), "Evidence basis": "CHIPS project ledger"})
     return pd.DataFrame(rows)
@@ -341,7 +323,7 @@ def _render_component_evidence(regime_metrics):
         with col:
             with st.container(border=True):
                 st.markdown(f"**{title}**")
-                st.plotly_chart(
+                render_plotly_chart(
                     component_bars(
                         chart_components,
                         signed=signed,
@@ -444,65 +426,158 @@ def _render_sector_factor_pressure_data(sector_data, sector_metrics):
         )
 
 
-def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, energy_data, debt_markets_data, dashboard_data, infrastructure_data=None, water_data=None, adaptation_data=None, workforce_data=None, economic_impact_data=None):
-    render_tab_header(
-        "Evidence",
-        "Metric definitions, source records, coverage, retained evidence, and calculation methods.",
-        "Methods and provenance",
-    )
-    render_line_break()
-    render_section("Product status", "Metric readings, institutional sources, and calculation versions.", first=True)
+def _render_metric_evidence(regime_metrics):
+    render_section("Current readings", "Metric values and primary sources.", first=True)
     render_static_table(_status_rows(regime_metrics))
-
     render_section("Coverage", "Minimum-data rules and component coverage for composite products.")
     render_static_table(_coverage_rows(regime_metrics))
-
     render_section("Component evidence")
     _render_component_evidence(regime_metrics)
+    render_section("Sector construction", "Equations and aggregation rules for the sector analytical products.")
+    render_static_table(_sector_methodology_rows())
 
-    render_section(
-        "Sector scoreboard",
-        "Comparable conditions across all configured sector baskets.",
-        compact=True,
-    )
+
+def _render_market_finance_evidence(fred_data, sector_data, sector_metrics, debt_markets_data, dashboard_data):
+    render_section("Sector scoreboard", "Comparable conditions across all AI-equity sector baskets.", first=True, compact=True)
     render_sector_scoreboard((dashboard_data or {}).get("macro_df", pd.DataFrame()))
-
     render_section(
         "Factor and pressure data",
         "Underlying sector factor scores, trading-pressure components, and concentration contributors.",
         compact=True,
     )
     _render_sector_factor_pressure_data(sector_data, sector_metrics)
-
-    render_section("Source Data")
-    st.caption("Source observations used by the platform.")
+    render_section("Market and financial observations", "Retained market, filing, credit, and private-capital records.")
     render_macro_data(fred_data)
     render_edgar_data(sector_data)
-    with st.expander("Power and grid observations", expanded=False):
-        render_static_table(_power_source_rows(energy_data))
     with st.expander("Debt-market observations", expanded=False):
         render_static_table(_debt_market_source_rows(debt_markets_data))
-    with st.expander("Physical-buildout observations", expanded=False):
-        render_static_table(_infrastructure_source_rows(infrastructure_data or {}))
-    with st.expander("Adaptation observations", expanded=False):
-        render_static_table(_adaptation_source_rows(adaptation_data or {}))
-    with st.expander("Workforce observations", expanded=False):
-        render_static_table((workforce_data or {}).get("source_manifest", pd.DataFrame()))
-    with st.expander("Economic-impact observations", expanded=False):
-        render_static_table((economic_impact_data or {}).get("source_manifest", pd.DataFrame()))
+    with st.expander("Private-capital fund observations", expanded=False):
+        private_capital = build_private_capital_realization()
+        private_funds = private_capital.get("funds", pd.DataFrame())
+        private_metadata = private_capital.get("metadata", {}) or {}
+        render_static_table(
+            _private_capital_detail_table(private_funds)
+            if isinstance(private_funds, pd.DataFrame) and not private_funds.empty
+            else pd.DataFrame()
+        )
+        selection_method = str(private_metadata.get("selection_method") or "").strip()
+        if selection_method:
+            st.markdown(f"**Selection method.** {selection_method}")
+        limitations = [
+            str(item).strip()
+            for item in private_metadata.get("important_limitations", []) or []
+            if str(item).strip()
+        ]
+        if limitations:
+            st.markdown("**Limitations.**\n\n" + "\n".join(f"- {item}" for item in limitations))
 
+
+def _render_compute_data_center_evidence(infrastructure_data):
+    infrastructure = infrastructure_data or {}
+    render_section(
+        "Data-center evidence",
+        "National counts, project stages, facility locations, capacity fields, and source coverage.",
+        first=True,
+    )
+    inventory = infrastructure.get("data_center_inventory", {}) or {}
+    national_database = inventory.get("database")
+    grades, fields = _facility_coverage_tables(infrastructure)
+    with st.expander("Facility registry summary", expanded=False):
+        render_static_table(_facility_registry_summary(infrastructure))
+    with st.expander("Facility evidence grades", expanded=False):
+        render_static_table(grades)
+    with st.expander("Facility field coverage", expanded=False):
+        render_static_table(fields)
+    with st.expander("Reviewed identity decisions", expanded=False):
+        decisions = infrastructure.get("facility_identity_decisions")
+        render_static_table(decisions if isinstance(decisions, pd.DataFrame) else pd.DataFrame())
+    with st.expander("National data-center evidence database", expanded=False):
+        render_static_table(national_database if isinstance(national_database, pd.DataFrame) else pd.DataFrame())
+    with st.expander("Detailed data-center facilities", expanded=False):
+        registry = infrastructure.get("facility_registry")
+        if registry is None or not isinstance(registry, pd.DataFrame):
+            registry = infrastructure.get("locations")
+        render_static_table(registry if isinstance(registry, pd.DataFrame) else pd.DataFrame())
+    with st.expander("Active facility power records", expanded=False):
+        render_static_table(_active_facility_power_rows(infrastructure))
+
+    render_section(
+        "Physical-buildout evidence",
+        "Named projects, source definitions, and field documentation for compute, data centers, water, and construction.",
+    )
+    with st.expander("Physical-buildout observations", expanded=False):
+        render_static_table(_infrastructure_source_rows(infrastructure))
+    with st.expander("Direct project summary", expanded=False):
+        render_static_table(_direct_project_evidence_rows(infrastructure))
+    with st.expander("Physical-buildout source register", expanded=False):
+        manifest = infrastructure.get("infrastructure_source_manifest")
+        if isinstance(manifest, pd.DataFrame):
+            public_columns = [
+                "source_name", "custodian", "canonical_url", "publication_date",
+                "coverage_period", "geographic_coverage", "data_role", "evidence_grade",
+            ]
+            manifest = manifest[[column for column in public_columns if column in manifest.columns]].copy()
+        render_static_table(manifest if isinstance(manifest, pd.DataFrame) else pd.DataFrame())
+    with st.expander("Physical-buildout field dictionary", expanded=False):
+        dictionary = infrastructure.get("infrastructure_field_dictionary")
+        render_static_table(dictionary if isinstance(dictionary, pd.DataFrame) else pd.DataFrame())
+
+    render_section("Compute-manufacturing evidence", "Federal Reserve series definitions and announced manufacturing projects.")
+    compute = (infrastructure.get("compute_manufacturing", {}) or {})
+    with st.expander("G.17 series definitions", expanded=False):
+        contract = compute.get("series_contract")
+        render_static_table(contract if isinstance(contract, pd.DataFrame) else pd.DataFrame())
+    with st.expander("Compute-manufacturing project records", expanded=False):
+        projects = compute.get("projects")
+        render_static_table(projects if isinstance(projects, pd.DataFrame) else pd.DataFrame())
+
+
+def _render_connectivity_evidence(connectivity_data):
+    connectivity = connectivity_data or {}
+    render_section(
+        "Connectivity evidence",
+        "Submarine systems, landing markets, internet exchanges, public interconnection facilities, middle-mile awards, and campus proximity screens.",
+        first=True,
+    )
+    with st.expander("Connectivity source register", expanded=False):
+        render_static_table(connectivity.get("source_manifest", pd.DataFrame()))
+    with st.expander("Submarine cable-system register", expanded=False):
+        render_static_table(connectivity.get("submarine_cable_systems", pd.DataFrame()))
+    with st.expander("Selected cable-landing markets", expanded=False):
+        render_static_table(connectivity.get("cable_landing_markets", pd.DataFrame()))
+    with st.expander("Internet exchange registry", expanded=False):
+        render_static_table(connectivity.get("ixp_snapshot", pd.DataFrame()))
+    with st.expander("Interconnection-market summary", expanded=False):
+        render_static_table(connectivity.get("interconnection_market_summary", pd.DataFrame()))
+    with st.expander("Interconnection facility evidence", expanded=False):
+        facilities = connectivity.get("interconnection_facilities", pd.DataFrame())
+        if isinstance(facilities, pd.DataFrame) and not facilities.empty:
+            render_static_table(facilities)
+        else:
+            render_static_table(connectivity.get("interconnection_facility_summary", pd.DataFrame()))
+    with st.expander("Middle-mile awards", expanded=False):
+        render_static_table(connectivity.get("middle_mile_awards", pd.DataFrame()))
+    with st.expander("Campus connectivity proximity screen", expanded=False):
+        render_static_table(connectivity.get("campus_connectivity_snapshot", pd.DataFrame()))
+
+
+def _render_power_grid_evidence(energy_data, infrastructure_data):
+    energy = energy_data or {}
     render_section(
         "Power evidence",
         "Retail markets, generation, capacity development, wholesale prices, and fuel infrastructure.",
+        first=True,
     )
+    with st.expander("Power and grid observations", expanded=False):
+        render_static_table(_power_source_rows(energy))
     with st.expander("Operating capacity", expanded=False):
-        frame = (energy_data or {}).get("capacity_snapshot")
+        frame = energy.get("capacity_snapshot")
         render_static_table(frame if isinstance(frame, pd.DataFrame) else pd.DataFrame())
     with st.expander("Current-year capacity changes", expanded=False):
-        frame = (energy_data or {}).get("capacity_changes")
+        frame = energy.get("capacity_changes")
         render_static_table(frame if isinstance(frame, pd.DataFrame) else pd.DataFrame())
     with st.expander("Generator development summary", expanded=False):
-        frame = (energy_data or {}).get("generator_pipeline")
+        frame = energy.get("generator_pipeline")
         if isinstance(frame, pd.DataFrame) and not frame.empty:
             summary = frame.copy()
             summary["Expected Year"] = pd.to_numeric(summary.get("Expected Year"), errors="coerce")
@@ -512,9 +587,9 @@ def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, 
         else:
             render_static_table(pd.DataFrame())
     with st.expander("Fuel infrastructure projects", expanded=False):
-        gas = (energy_data or {}).get("gas_pipeline_canonical")
-        lng = (energy_data or {}).get("lng_projects")
-        storage = (energy_data or {}).get("gas_storage_projects")
+        gas = energy.get("gas_pipeline_canonical")
+        lng = energy.get("lng_projects")
+        storage = energy.get("gas_storage_projects")
         st.markdown("**Natural-gas pipelines**")
         render_static_table(gas if isinstance(gas, pd.DataFrame) else pd.DataFrame())
         st.markdown("**LNG liquefaction**")
@@ -522,17 +597,16 @@ def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, 
         st.markdown("**Natural-gas storage**")
         render_static_table(storage if isinstance(storage, pd.DataFrame) else pd.DataFrame())
 
-
     render_section(
         "Grid & Storage evidence",
-        "Interconnection requests, storage deployment, and the broad electric-power construction context used to assess delivery capacity.",
+        "Interconnection requests, storage deployment, and electric-power construction.",
     )
     with st.expander("Interconnection queue summary", expanded=False):
-        official = (energy_data or {}).get("interconnection_queue_summary")
+        official = energy.get("interconnection_queue_summary")
         if isinstance(official, pd.DataFrame) and not official.empty:
             st.markdown("**National active-capacity reconciliation**")
             render_static_table(official)
-        frame = (energy_data or {}).get("interconnection_queue")
+        frame = energy.get("interconnection_queue")
         if isinstance(frame, pd.DataFrame) and not frame.empty:
             st.markdown("**Submitted component capacity by region and study phase**")
             summary = frame.copy()
@@ -542,7 +616,7 @@ def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, 
         else:
             render_static_table(pd.DataFrame())
     with st.expander("Storage fleet and queue records", expanded=False):
-        capacity = (energy_data or {}).get("capacity_snapshot")
+        capacity = energy.get("capacity_snapshot")
         render_static_table(capacity if isinstance(capacity, pd.DataFrame) else pd.DataFrame())
     with st.expander("Electric-power construction chronology", expanded=False):
         construction = (infrastructure_data or {}).get("construction_history")
@@ -552,86 +626,14 @@ def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, 
         else:
             render_static_table(pd.DataFrame())
 
-    render_section(
-        "Data-center evidence",
-        "National counts, project-stage records, facility locations, capacity fields, and source coverage.",
-    )
-    inventory = (infrastructure_data or {}).get("data_center_inventory", {}) or {}
-    national_database = inventory.get("database")
-    grades, fields = _facility_coverage_tables(infrastructure_data or {})
-    with st.expander("Facility registry summary", expanded=False):
-        render_static_table(_facility_registry_summary(infrastructure_data or {}))
-    with st.expander("Facility evidence grades", expanded=False):
-        render_static_table(grades)
-    with st.expander("Facility field coverage", expanded=False):
-        render_static_table(fields)
-    with st.expander("National data-center evidence database", expanded=False):
-        render_static_table(national_database if isinstance(national_database, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Detailed data-center facilities", expanded=False):
-        registry = (infrastructure_data or {}).get("facility_registry")
-        if registry is None or not isinstance(registry, pd.DataFrame):
-            registry = (infrastructure_data or {}).get("locations")
-        render_static_table(registry if isinstance(registry, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Active facility power records", expanded=False):
-        render_static_table(_active_facility_power_rows(infrastructure_data or {}))
 
-    render_section(
-        "Physical-buildout evidence",
-        "Named project records, source contracts, and field definitions supporting Compute, Data Center, Water, and the AI Macro buildout-rotation view.",
-    )
-    with st.expander("Direct project summary", expanded=False):
-        render_static_table(_direct_project_evidence_rows(infrastructure_data or {}))
-    with st.expander("Physical-buildout source register", expanded=False):
-        manifest = (infrastructure_data or {}).get("infrastructure_source_manifest")
-        render_static_table(manifest if isinstance(manifest, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Physical-buildout field dictionary", expanded=False):
-        dictionary = (infrastructure_data or {}).get("infrastructure_field_dictionary")
-        render_static_table(dictionary if isinstance(dictionary, pd.DataFrame) else pd.DataFrame())
-
-    render_section(
-        "Compute-manufacturing evidence",
-        "Federal Reserve series contracts and attributable project records used by the Compute tab.",
-    )
-    compute = ((infrastructure_data or {}).get("compute_manufacturing", {}) or {})
-    with st.expander("G.17 series contract", expanded=False):
-        contract = compute.get("series_contract")
-        render_static_table(contract if isinstance(contract, pd.DataFrame) else pd.DataFrame())
-    with st.expander("G.17 latest-release validation", expanded=False):
-        validation = compute.get("series_validation")
-        render_static_table(validation if isinstance(validation, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Compute-manufacturing project records", expanded=False):
-        projects = compute.get("projects")
-        render_static_table(projects if isinstance(projects, pd.DataFrame) else pd.DataFrame())
-
-    render_section(
-        "Workforce evidence",
-        "Official employment, earnings, and job-openings histories used to separate worker outcomes from business adoption.",
-    )
-    with st.expander("Employment history", expanded=False):
-        render_static_table((workforce_data or {}).get("employment_history", pd.DataFrame()))
-    with st.expander("Hourly earnings history", expanded=False):
-        render_static_table((workforce_data or {}).get("earnings_history", pd.DataFrame()))
-    with st.expander("Job openings history", expanded=False):
-        render_static_table((workforce_data or {}).get("job_openings_history", pd.DataFrame()))
-    with st.expander("Workforce source register", expanded=False):
-        render_static_table((workforce_data or {}).get("source_manifest", pd.DataFrame()))
-
-    render_section(
-        "Economic Impact evidence",
-        "Official productivity, output, compensation, labor-cost, and information-investment histories used to test realized economic performance.",
-    )
-    with st.expander("Productivity and labor-cost history", expanded=False):
-        render_static_table((economic_impact_data or {}).get("productivity_history", pd.DataFrame()))
-    with st.expander("Information-processing investment history", expanded=False):
-        render_static_table((economic_impact_data or {}).get("investment_history", pd.DataFrame()))
-    with st.expander("Economic-impact source register", expanded=False):
-        render_static_table((economic_impact_data or {}).get("source_manifest", pd.DataFrame()))
-
+def _render_water_evidence(water_data, infrastructure_data):
     render_section(
         "Water evidence",
         "National withdrawal accounts, thermoelectric cooling-water records, and facility-level water context.",
+        first=True,
     )
-    water = _water_utilization_payload(water_data or {})
+    water = _water_evidence_payload(water_data or {})
     render_static_table(_water_evidence_summary_rows(water))
     with st.expander("AI facility water records", expanded=False):
         render_static_table(_facility_water_rows(water_data or {}, infrastructure_data or {}))
@@ -640,12 +642,12 @@ def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, 
         if isinstance(manifest, pd.DataFrame) and not manifest.empty:
             columns = [
                 "source_name", "custodian", "canonical_url", "persistent_identifier",
-                "coverage_period", "data_role", "evidence_grade", "resilience_grade",
-                "ingestion_status", "source_health", "retrieval_date", "parser_version",
+                "publication_date", "coverage_period", "geographic_coverage",
+                "data_role", "evidence_grade", "retrieval_date",
             ]
             render_static_table(manifest[[column for column in columns if column in manifest.columns]])
         else:
-            st.caption("No retained water-source register is available.")
+            st.caption("No water-source register is available.")
     with st.expander("Water field dictionary", expanded=False):
         field_dictionary = water.get("field_dictionary")
         render_static_table(field_dictionary if isinstance(field_dictionary, pd.DataFrame) else pd.DataFrame())
@@ -672,7 +674,87 @@ def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, 
             ]
             render_static_table(plants[[column for column in columns if column in plants.columns]])
         else:
-            st.caption("No retained thermoelectric plant records are available.")
+            st.caption("No thermoelectric plant records are available.")
 
-    render_section("Sector construction", "Equations and aggregation rules for the sector analytical products.")
-    render_static_table(_sector_methodology_rows())
+
+def _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic_impact_data):
+    render_section("Adoption evidence", "Consumer use, employer adoption, and commercialization source records.", first=True)
+    with st.expander("Adaptation observations", expanded=False):
+        render_static_table(_adaptation_source_rows(adaptation_data or {}))
+
+    render_section(
+        "Workforce evidence",
+        "Occupation exposure and official employment, earnings, demand, mobility, and separation histories.",
+    )
+    with st.expander("Occupation-level LLM task-exposure benchmark", expanded=False):
+        render_static_table((workforce_data or {}).get("occupation_exposure", pd.DataFrame()))
+    with st.expander("Employment history", expanded=False):
+        render_static_table((workforce_data or {}).get("employment_history", pd.DataFrame()))
+    with st.expander("Nominal and real hourly earnings", expanded=False):
+        view = st.radio(
+            "Earnings evidence",
+            ["Nominal", "CPI-adjusted"],
+            horizontal=True,
+            key="evidence-workforce-earnings-view",
+        )
+        frame = (workforce_data or {}).get("earnings_history" if view == "Nominal" else "real_earnings_history", pd.DataFrame())
+        render_static_table(frame)
+    with st.expander("Job openings history", expanded=False):
+        render_static_table((workforce_data or {}).get("job_openings_history", pd.DataFrame()))
+    with st.expander("JOLTS labor-flow history", expanded=False):
+        render_static_table((workforce_data or {}).get("labor_flows_history", pd.DataFrame()))
+    with st.expander("Observed workforce transmission matrix", expanded=False):
+        render_static_table((workforce_data or {}).get("transmission_matrix", pd.DataFrame()))
+    with st.expander("Workforce source register", expanded=False):
+        render_static_table((workforce_data or {}).get("source_manifest", pd.DataFrame()))
+
+    render_section(
+        "Economic Outcomes evidence",
+        "Productivity, output, real compensation, labor share, median earnings, labor costs, and information investment.",
+    )
+    with st.expander("Productivity and labor-cost history", expanded=False):
+        render_static_table((economic_impact_data or {}).get("productivity_history", pd.DataFrame()))
+    with st.expander("Productivity, real compensation, and labor-share transmission", expanded=False):
+        render_static_table((economic_impact_data or {}).get("value_transmission_history", pd.DataFrame()))
+    with st.expander("Real median weekly earnings distribution", expanded=False):
+        render_static_table((economic_impact_data or {}).get("earnings_distribution_history", pd.DataFrame()))
+    with st.expander("Information-processing investment history", expanded=False):
+        render_static_table((economic_impact_data or {}).get("investment_history", pd.DataFrame()))
+    with st.expander("Economic-outcomes source register", expanded=False):
+        render_static_table((economic_impact_data or {}).get("source_manifest", pd.DataFrame()))
+
+
+def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, energy_data, debt_markets_data, dashboard_data, infrastructure_data=None, connectivity_data=None, water_data=None, adaptation_data=None, workforce_data=None, economic_impact_data=None):
+    render_tab_header(
+        "Evidence",
+        "Definitions, source observations, methods, and measurement boundaries.",
+        "Methods and provenance",
+    )
+    render_line_break()
+    view = st.selectbox(
+        "Evidence view",
+        [
+            "Metrics",
+            "Market & finance",
+            "Compute & data centers",
+            "Connectivity",
+            "Power & grid",
+            "Water",
+            "Adoption & outcomes",
+        ],
+        key="evidence-view",
+    )
+    if view == "Metrics":
+        _render_metric_evidence(regime_metrics)
+    elif view == "Market & finance":
+        _render_market_finance_evidence(fred_data, sector_data, sector_metrics, debt_markets_data, dashboard_data)
+    elif view == "Compute & data centers":
+        _render_compute_data_center_evidence(infrastructure_data)
+    elif view == "Connectivity":
+        _render_connectivity_evidence(connectivity_data)
+    elif view == "Power & grid":
+        _render_power_grid_evidence(energy_data, infrastructure_data)
+    elif view == "Water":
+        _render_water_evidence(water_data, infrastructure_data)
+    else:
+        _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic_impact_data)

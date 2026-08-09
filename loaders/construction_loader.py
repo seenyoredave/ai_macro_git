@@ -181,7 +181,25 @@ def summarize_data_center_construction(df: pd.DataFrame) -> dict:
     }
 
 @st.cache_data(ttl=86400)
-def load_data_center_construction() -> dict:
+def load_data_center_construction(
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    allow_live: bool = False,
+) -> dict:
+    del refresh_token
+    local = _load_local_construction_history()
+    if not force_refresh and local is not None and not local.empty:
+        result = summarize_data_center_construction(local)
+        result["source"] = "Census Local History"
+        return result
+    if not force_refresh and not allow_live:
+        return {
+            "value": np.nan,
+            "date": None,
+            "yoy_growth": np.nan,
+            "share_private_nonresidential": np.nan,
+            "source": "Census Retained History Unavailable",
+        }
     try:
         response = requests.get(CENSUS_PRIVATE_SA_URL, timeout=30)
         response.raise_for_status()
@@ -192,7 +210,6 @@ def load_data_center_construction() -> dict:
         return summarize_data_center_construction(parsed)
     except Exception as exc:
         debug_print(f"Census data-center construction load failed -> {exc}")
-        local = _load_local_construction_history()
         if local is not None and not local.empty:
             result = summarize_data_center_construction(local)
             result["source"] = "Census Local History"

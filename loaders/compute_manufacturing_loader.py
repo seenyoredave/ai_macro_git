@@ -258,6 +258,56 @@ def _normalize_projects(projects: pd.DataFrame) -> pd.DataFrame:
     return output.sort_values(["State", "Recipient", "Facility"], kind="stable").reset_index(drop=True)
 
 
+
+def _critical_supply_chain_summary(projects: pd.DataFrame) -> dict:
+    """Summarize the explicitly tracked AI-critical manufacturing layers.
+
+    Project rows are retained evidence, not national production capacity.  The
+    summary therefore reports coverage and announced capital rather than an
+    invented self-sufficiency score.
+    """
+    critical_layers = [
+        "Logic",
+        "Memory / HBM",
+        "Packaging / test",
+        "Photonics / interconnect",
+    ]
+    if projects is None or projects.empty:
+        return {
+            "layers": pd.DataFrame(columns=["Supply Chain Layer", "Sites", "States", "Expected CapEx USD B", "Direct Funding USD B"]),
+            "covered_layers": 0,
+            "critical_layers": len(critical_layers),
+            "core_ai_sites": 0,
+            "core_ai_capex_usd_b": np.nan,
+        }
+    frame = projects.copy()
+    frame["Supply Chain Layer"] = frame.get("Supply Chain Layer", "Other compute supply").fillna("Other compute supply").astype(str)
+    frame["AI Relevance"] = frame.get("AI Relevance", "").fillna("").astype(str)
+    for column in ["Expected CapEx USD B", "Direct Funding USD B", "Available Loan USD B"]:
+        frame[column] = pd.to_numeric(frame.get(column), errors="coerce")
+    grouped = frame.groupby("Supply Chain Layer", as_index=False).agg(
+        Sites=("Facility", "size"),
+        States=("State", lambda values: int(pd.Series(values).replace("", np.nan).nunique())),
+        **{
+            "Expected CapEx USD B": ("Expected CapEx USD B", "sum"),
+            "Direct Funding USD B": ("Direct Funding USD B", "sum"),
+        },
+    )
+    grouped["Critical AI Layer"] = grouped["Supply Chain Layer"].isin(critical_layers)
+    ordering = {layer: index for index, layer in enumerate([*critical_layers, "Analog / embedded", "R&D / pilot capacity", "Other compute supply"])}
+    grouped["_order"] = grouped["Supply Chain Layer"].map(ordering).fillna(99)
+    grouped = grouped.sort_values(["_order", "Supply Chain Layer"], kind="stable").drop(columns="_order").reset_index(drop=True)
+    core = frame.loc[frame["AI Relevance"].str.casefold().eq("core ai")].copy()
+    covered = int(grouped.loc[grouped["Supply Chain Layer"].isin(critical_layers) & grouped["Sites"].gt(0), "Supply Chain Layer"].nunique())
+    return {
+        "layers": grouped,
+        "covered_layers": covered,
+        "critical_layers": len(critical_layers),
+        "core_ai_sites": int(len(core)),
+        "core_ai_capex_usd_b": _deduplicated_portfolio_sum(core, "Expected CapEx USD B"),
+        "boundary": "Tracked CHIPS projects show disclosed domestic commitments across critical layers; they do not measure current output, global market share, or supply-chain independence.",
+    }
+
 def _project_summary(projects: pd.DataFrame) -> dict:
     if projects.empty:
         return {
@@ -288,6 +338,8 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
     history = _normalize_history(_load_csv(HISTORY_PATH))
     m3_history = _normalize_m3_history(_load_csv(M3_HISTORY_PATH))
     source_mode = "retained"
+    refresh_errors: dict[str, str] = {}
+    refreshed_datasets: list[str] = []
 
     if force_refresh:
         try:
@@ -301,9 +353,10 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
                 output["Resilience Grade"] = "R1"
                 _atomic_csv(output, HISTORY_PATH)
                 history = refreshed
-                source_mode = "fred_refresh"
+                refreshed_datasets.append("g17")
         except Exception as exc:
             debug_print(f"Compute G.17 refresh failed -> {exc}")
+            refresh_errors["g17"] = f"{type(exc).__name__}: {exc}"
         try:
             refreshed_m3 = _normalize_m3_history(_fetch_fred_series(M3_SERIES))
             if not refreshed_m3.empty:
@@ -315,8 +368,16 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
                 output["Resilience Grade"] = "R1"
                 _atomic_csv(output, M3_HISTORY_PATH)
                 m3_history = refreshed_m3
+                refreshed_datasets.append("m3")
         except Exception as exc:
             debug_print(f"Compute M3 refresh failed -> {exc}")
+            refresh_errors["m3"] = f"{type(exc).__name__}: {exc}"
+
+        source_mode = (
+            "live_refresh" if len(refreshed_datasets) == 2 and not refresh_errors
+            else "partial_refresh" if refreshed_datasets
+            else "retained_fallback"
+        )
 
     projects = _normalize_projects(_load_csv(PROJECT_LEDGER_PATH))
     info_investment = _normalize_info_investment(_load_csv(INFO_INVESTMENT_PATH))
@@ -338,6 +399,12 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
 
     return {
         "source_mode": source_mode,
+        "load_report": {
+            "source_mode": source_mode,
+            "requested_datasets": ["g17", "m3"] if force_refresh else [],
+            "refreshed_datasets": refreshed_datasets,
+            "errors": refresh_errors,
+        },
         "history": history,
         "m3_history": m3_history,
         "info_investment_history": info_investment,
@@ -345,6 +412,7 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
         "m3_series": m3_series,
         "projects": projects,
         "project_summary": _project_summary(projects),
+        "critical_supply_chain": _critical_supply_chain_summary(projects),
         "source_manifest": _load_csv(SOURCE_MANIFEST_PATH),
         "field_dictionary": _load_csv(FIELD_DICTIONARY_PATH),
         "series_contract": series_contract,

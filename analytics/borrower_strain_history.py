@@ -76,6 +76,12 @@ FUNDAMENTAL_COLUMNS = [
     "Net Debt",
     "Financial Period End",
     "Financial Filing Date",
+    "OCF Period End",
+    "CapEx Period End",
+    "Debt Period End",
+    "Cash Period End",
+    "Debt Definition",
+    "Cash Definition",
     "Flow Method",
     "Revenue Quarters",
     "OCF Quarters",
@@ -140,9 +146,11 @@ FLOW_TAG_ALIASES: Mapping[str, Sequence[str]] = {
 }
 
 DEBT_GROUPS: Sequence[Sequence[str]] = (
+    # Prefer debt-only current/non-current concepts so finance leases are not
+    # included for some issuers and excluded for others.
     (
-        "LongTermDebtAndFinanceLeaseObligationsCurrent",
-        "LongTermDebtAndFinanceLeaseObligationsNoncurrent",
+        "DebtCurrent",
+        "DebtNoncurrent",
     ),
     (
         "LongTermDebtCurrent",
@@ -150,17 +158,23 @@ DEBT_GROUPS: Sequence[Sequence[str]] = (
         "ShortTermBorrowings",
     ),
     (
-        "DebtCurrent",
-        "DebtNoncurrent",
+        "LongTermDebtCurrent",
+        "LongTermDebtNoncurrent",
+    ),
+    ("LongTermDebt",),
+    # Some filers expose only debt-plus-finance-lease aggregates.  These are
+    # valid fallbacks, but definition matching prevents them from being mixed
+    # with a debt-only prior observation.
+    (
+        "LongTermDebtAndFinanceLeaseObligationsCurrent",
+        "LongTermDebtAndFinanceLeaseObligationsNoncurrent",
     ),
     (
-        "LongTermDebt",
-        "ShortTermBorrowings",
+        "LongTermDebtAndCapitalLeaseObligationsCurrent",
+        "LongTermDebtAndCapitalLeaseObligationsNoncurrent",
     ),
-    (
-        "LongTermDebtAndCapitalLeaseObligations",
-        "ShortTermBorrowings",
-    ),
+    ("LongTermDebtAndFinanceLeaseObligations",),
+    ("LongTermDebtAndCapitalLeaseObligations",),
 )
 
 CASH_GROUPS: Sequence[Sequence[str]] = (
@@ -479,9 +493,12 @@ def instant_group_fact(
             tag: _instant_series(companyfacts, tag, cutoff)
             for tag in group
         }
-        available = {tag: frame for tag, frame in series_by_tag.items() if not frame.empty}
-        if not available:
+        # A group is one accounting definition.  Multi-tag definitions are
+        # valid only when every required leg is present; accepting a lone
+        # current or non-current leg can manufacture a false debt change.
+        if any(frame.empty for frame in series_by_tag.values()):
             continue
+        available = series_by_tag
 
         all_ends = sorted(
             set().union(*(set(frame["end"].dropna()) for frame in available.values())),
@@ -492,17 +509,16 @@ def instant_group_fact(
             filed_dates = []
             used_tags = []
             for tag in group:
-                frame = available.get(tag)
-                if frame is None:
-                    continue
+                frame = available[tag]
                 row = frame.loc[frame["end"] == period_end]
                 if row.empty:
-                    continue
+                    values = []
+                    break
                 chosen = row.sort_values("filed", kind="stable").iloc[-1]
                 values.append(float(chosen["val"]))
                 filed_dates.append(chosen["filed"])
                 used_tags.append(tag)
-            if values:
+            if len(values) == len(group):
                 return FactValue(
                     float(sum(values)),
                     pd.Timestamp(period_end),
@@ -568,6 +584,20 @@ def build_company_snapshot(
         "Net Debt": net_debt,
         "Financial Period End": max(period_ends).date().isoformat() if period_ends else None,
         "Financial Filing Date": max(filed_dates).date().isoformat() if filed_dates else None,
+        "OCF Period End": (
+            ocf.period_end.date().isoformat() if pd.notna(ocf.period_end) else None
+        ),
+        "CapEx Period End": (
+            capex.period_end.date().isoformat() if pd.notna(capex.period_end) else None
+        ),
+        "Debt Period End": (
+            debt.period_end.date().isoformat() if pd.notna(debt.period_end) else None
+        ),
+        "Cash Period End": (
+            cash.period_end.date().isoformat() if pd.notna(cash.period_end) else None
+        ),
+        "Debt Definition": ";".join(debt.tags),
+        "Cash Definition": ";".join(cash.tags),
         "Flow Method": "; ".join(flow_methods),
         "Revenue Quarters": revenue.quarters,
         "OCF Quarters": ocf.quarters,

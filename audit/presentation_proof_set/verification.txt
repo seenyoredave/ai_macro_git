@@ -1,0 +1,67 @@
+AI Macro presentation proof-set verification
+UTC 2026-08-09T07:41:11Z
+
+===== helpers/application_import_smoke_test.py =====
+PASS  complete rendering import graph
+
+===== helpers/market_panel_smoke_test.py =====
+PASS  Market visual-system and sector-dossier smoke test · 198 ownership companies · 198 return companies · 15 sectors
+
+===== helpers/phase2_grid_water_smoke_test.py =====
+PASS  Phase 2 grid and water · 9 queue regions · 14 reserve areas · 51 drought records · 1,906 campus dossiers
+
+===== helpers/layout_rollout_contract_test.py =====
+PASS  selective layout rollout · 34 classified sections · proof-set redesign contracts intact
+
+===== helpers/layout_recovery_smoke_test.py =====
+PASS  shared layout contracts · native Plotly width ownership · dossier · outcomes bridge
+
+===== helpers/layout_spacing_smoke_test.py =====
+PASS  Platform spacing and alignment · nice-grid headroom verified · 15 paired panels covered
+
+===== helpers/read_architecture_smoke_test.py =====
+PASS  v7.0.0 read architecture · 11 tab reads · 3 macro-selected domains · headline: The AI economy is moving from buildout to the harder tests of use and value.
+
+===== helpers/read_divider_smoke_test.py =====
+Read-divider contract passed across 12 Read-bearing tabs.
+
+===== helpers/public_copy_smoke_test.py =====
+Public-copy contract passed across 12 Read-bearing tabs.
+
+===== helpers/visual_system_smoke_test.py =====
+Wrote 140 visual surfaces to data/visual_surface_inventory.csv
+PASS  v6.7 visual system · 13 domain profiles · 140 inventoried surfaces · 2 protected AI Macro signature tools
+
+===== helpers/water_infrastructure_page_smoke_test.py =====
+PASS  v6.9.1 Water + Grid Phase 2 · rotation rehomed · wastewater current through 2026-05 · 5 rotation channels
+
+===== helpers/workforce_economic_impact_smoke_test.py =====
+PASS  v6.8 Workforce + Economic Outcomes · 923 exposure occupations · 1,248 JOLTS flow observations · 76 worker-capture observations · 175 distribution observations
+
+===== helpers/startup_loader_contract_test.py =====
+PASS  retained loader graph: 5.60s
+PASS  YFinance retained coverage: 204/204
+PASS  EDGAR retained coverage: 204/204
+PASS  provider network attempts: 0
+PASS  retained file changes: 0
+REPORT audit/startup_loader/startup_loader_report.json
+
+===== helpers/integrity_gate.py =====
+PASS  SEC-equivalent funding
+PASS  Four-pillar lender strain
+PASS  Ten-year lender dynamics
+PASS  Queue reconciliation
+PASS  Manifest contracts
+PASS  Release fingerprint
+PASS  Archive identifiers
+PASS  Universal AEI backfill
+PASS  Named-campus deduplication
+PASS  9 critical integrity contracts
+
+===== helpers/browser_layout_contract.py =====
+PASS  real-browser shared layout contract · 1280px, 1600px, 1920px, 2560px, 768px
+
+===== helpers/browser_redesign_contract.py =====
+PASS  browser redesign contract · 1280px, 1600px, 1920px, 2560px, 768px
+
+NOTE: full live Streamlit browser pass not run; streamlit package unavailable in this container and package index unavailable.

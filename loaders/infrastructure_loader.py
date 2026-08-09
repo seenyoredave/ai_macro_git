@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import ExitStack
 from io import BytesIO
 import json
 from pathlib import Path
@@ -10,7 +11,7 @@ import requests
 import streamlit as st
 
 from config.deployment import repository_writes_enabled
-from helpers.atomic_io import atomic_write_csv
+from helpers.atomic_io import atomic_write_bytes, atomic_write_csv, synchronized_path
 
 from config.debug_config import debug_print
 from loaders.census import clean_header as _clean_header, parse_census_month as _parse_census_month
@@ -22,6 +23,7 @@ from loaders.facility_registry_loader import (
     build_facility_observations,
     canonicalize_facility_observations,
     load_fractracker_facility_records,
+    load_facility_identity_decisions,
     load_gigawatt_facility_records,
     registry_coverage,
     registry_stage_summary,
@@ -30,6 +32,7 @@ from loaders.facility_registry_loader import (
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CONSTRUCTION_HISTORY_PATH = PROJECT_ROOT / "data" / "infrastructure_construction_history.csv"
+DATA_CENTER_CONSTRUCTION_HISTORY_PATH = PROJECT_ROOT / "data" / "data_center_construction_history.csv"
 DATA_CENTER_LOCATIONS_PATH = PROJECT_ROOT / "data" / "data_center_locations.csv"
 
 CENSUS_PRIVATE_SA_URL = "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx"
@@ -108,15 +111,49 @@ def _normalize_construction_history(frame: pd.DataFrame | None) -> pd.DataFrame:
             output.loc[output["Observation Date"] < first_valid.min(), column] = np.nan
     return output
 
-def _persist_construction_history(frame: pd.DataFrame) -> None:
+def _persist_construction_bundle(frame: pd.DataFrame) -> None:
+    """Commit both Census histories together or restore both prior versions."""
     if not repository_writes_enabled():
         return
+    columns = [
+        "Observation Date",
+        "Data Center Construction",
+        "Private Nonresidential Construction",
+    ]
     clean = _normalize_construction_history(frame)
-    if clean.empty:
+    if clean.empty or not set(columns).issubset(clean.columns):
         return
-    output = clean.copy()
-    output["Observation Date"] = output["Observation Date"].dt.date.astype(str)
-    atomic_write_csv(output, CONSTRUCTION_HISTORY_PATH)
+
+    infrastructure = clean.copy()
+    infrastructure["Observation Date"] = infrastructure["Observation Date"].dt.date.astype(str)
+    macro = clean[columns].dropna(
+        subset=["Observation Date", "Data Center Construction"]
+    ).copy()
+    macro["Observation Date"] = macro["Observation Date"].dt.date.astype(str)
+
+    outputs = {
+        CONSTRUCTION_HISTORY_PATH: infrastructure,
+        DATA_CENTER_CONSTRUCTION_HISTORY_PATH: macro,
+    }
+    paths = sorted(outputs, key=lambda path: str(path.resolve()))
+    with ExitStack() as stack:
+        for path in paths:
+            stack.enter_context(synchronized_path(path))
+        previous = {
+            path: path.read_bytes() if path.exists() else None
+            for path in paths
+        }
+        try:
+            for path in paths:
+                atomic_write_csv(outputs[path], path, lock=False)
+        except Exception:
+            for path in paths:
+                payload = previous[path]
+                if payload is None:
+                    path.unlink(missing_ok=True)
+                else:
+                    atomic_write_bytes(payload, path, lock=False)
+            raise
 
 def _load_local_construction_history() -> pd.DataFrame:
     if not CONSTRUCTION_HISTORY_PATH.exists() or CONSTRUCTION_HISTORY_PATH.stat().st_size == 0:
@@ -232,27 +269,37 @@ def _load_live_locations() -> pd.DataFrame:
 def load_infrastructure_data(
     force_refresh: bool = False,
     refresh_token: int = 0,
+    force_construction_refresh: bool = False,
+    force_facility_refresh: bool = False,
+    force_compute_refresh: bool = False,
     force_fred_refresh: bool = False,
     fred_refresh_token: int = 0,
 ) -> dict:
-    del refresh_token
+    construction_refresh = bool(force_refresh or force_construction_refresh)
+    facility_refresh = bool(force_refresh or force_facility_refresh)
+    compute_refresh = bool(force_refresh or force_compute_refresh)
+    del force_fred_refresh, fred_refresh_token
+    refresh_errors: dict[str, str] = {}
+    refreshed_datasets: list[str] = []
 
     construction = _load_local_construction_history()
     construction_source = "Census Retained History"
-    if force_refresh:
+    if construction_refresh:
         try:
             refreshed = _load_live_construction()
             if not refreshed.empty:
                 construction = refreshed
-                _persist_construction_history(construction)
+                _persist_construction_bundle(construction)
                 construction_source = "Census Live Refresh"
+                refreshed_datasets.append("construction")
         except Exception as exc:
             debug_print(f"Infrastructure construction refresh failed -> {exc}")
+            refresh_errors["construction"] = f"{type(exc).__name__}: {exc}"
 
     locations = _load_local_locations()
     map_source = "Shared facility registry: FracTracker project tracker, Gigawatt Map footprint records, and curated primary evidence"
     map_refreshed = False
-    if force_refresh:
+    if facility_refresh:
         try:
             refreshed_locations = _load_live_locations()
             if not refreshed_locations.empty:
@@ -260,10 +307,19 @@ def load_infrastructure_data(
                 _persist_locations(locations)
                 map_source = "IM3 live footprint + FracTracker project tracker + Gigawatt Map footprint records + curated primary evidence"
                 map_refreshed = True
+                refreshed_datasets.append("im3_locations")
         except Exception as exc:
             debug_print(f"Data-center map refresh failed -> {exc}")
+            refresh_errors["im3_locations"] = f"{type(exc).__name__}: {exc}"
 
-    fractracker_records = load_fractracker_facility_records(force_refresh=force_refresh)
+    fractracker_records, fractracker_report = load_fractracker_facility_records(
+        force_refresh=facility_refresh,
+        return_report=True,
+    )
+    if facility_refresh and fractracker_report.get("source_mode") == "live_refresh":
+        refreshed_datasets.append("fractracker")
+    if fractracker_report.get("error"):
+        refresh_errors["fractracker"] = str(fractracker_report["error"])
     gigawatt_all = load_gigawatt_facility_records(verified_only=False)
     gigawatt_verified = load_gigawatt_facility_records(verified_only=True)
     supplemental = pd.concat(
@@ -278,10 +334,19 @@ def load_infrastructure_data(
     stage_summary = registry_stage_summary(registry)
     water_coverage = water_evidence_coverage(registry)
     compute_manufacturing = load_compute_manufacturing_data(
-        force_refresh=force_fred_refresh,
-        refresh_token=fred_refresh_token,
+        force_refresh=compute_refresh,
+        refresh_token=refresh_token if compute_refresh else 0,
     )
+    compute_report = dict(compute_manufacturing.get("load_report", {}) or {})
+    if compute_refresh:
+        refreshed_datasets.extend(
+            f"compute_{name}"
+            for name in compute_report.get("refreshed_datasets", [])
+        )
+        for name, message in (compute_report.get("errors", {}) or {}).items():
+            refresh_errors[f"compute_{name}"] = str(message)
     data_center_inventory = load_data_center_inventory()
+    facility_identity_decisions = load_facility_identity_decisions()
 
     series = {
         "Data Center Construction": _series_summary(construction, "Data Center Construction", denominator="Private Nonresidential Construction"),
@@ -306,15 +371,38 @@ def load_infrastructure_data(
 
     attribution = infrastructure_attribution(construction)
 
+    requested_count = int(construction_refresh) + int(compute_refresh) + (2 if facility_refresh else 0)
+    refresh_source_mode = (
+        "retained"
+        if requested_count == 0
+        else "live_refresh"
+        if len(refreshed_datasets) >= requested_count and not refresh_errors
+        else "partial_refresh"
+        if refreshed_datasets
+        else "retained_fallback"
+    )
+
     return {
-        "source_mode": "live_refresh" if "Live Refresh" in construction_source or map_refreshed else "retained",
+        "source_mode": refresh_source_mode,
         "construction_source": construction_source,
+        "refresh_report": {
+            "source_mode": refresh_source_mode,
+            "construction_requested": construction_refresh,
+            "facility_requested": facility_refresh,
+            "compute_requested": compute_refresh,
+            "map_refreshed": map_refreshed,
+            "compute_source_mode": compute_manufacturing.get("source_mode"),
+            "refreshed_datasets": refreshed_datasets,
+            "errors": refresh_errors,
+            "fractracker": fractracker_report,
+        },
         "map_source": map_source,
         "construction_history": construction,
         "locations": locations,
         "facility_registry": registry,
         "campus_registry": campus_registry,
         "facility_observations": facility_observations,
+        "facility_identity_decisions": facility_identity_decisions,
         "facility_coverage": coverage,
         "facility_stage_summary": stage_summary,
         "water_evidence_coverage": water_coverage,

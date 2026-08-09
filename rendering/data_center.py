@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from rendering.visual_system import render_plotly_chart
 from rendering.charts_data_center import (
     ACTIVE_CAMPUS_STATUSES,
     data_center_capacity_distribution,
@@ -14,18 +15,25 @@ from rendering.charts_data_center import (
     data_center_stage_profile,
     data_center_state_footprint,
     data_center_state_pipeline,
+    data_center_state_published_capacity,
 )
-from rendering.common import _render_tab_metric_registry
+from rendering.common import _render_floating_terms
+from rendering.charts_infrastructure import data_center_connectivity_state
 from rendering.components import (
     fmt_number,
     render_domain_read,
-    render_line_break,
     render_panel_heading,
     render_section,
     render_statline,
+    render_summary_row,
     render_tab_header,
 )
 from rendering.dataframe import arrow_safe_dataframe
+
+
+def _count(value) -> int:
+    numeric = pd.to_numeric(value, errors="coerce")
+    return 0 if pd.isna(numeric) else int(numeric)
 
 
 def _inject_data_center_page_theme() -> None:
@@ -50,13 +58,6 @@ def _inject_data_center_page_theme() -> None:
         div[class*="st-key-data-center-view-"] [role="radiogroup"] {
             gap: 0.35rem;
         }
-        .rm-data-center-source-note {
-            color: #8793a8;
-            font-size: 0.73rem;
-            line-height: 1.45;
-            margin: -0.15rem 0 0.75rem 0;
-        }
-        .rm-data-center-source-note b { color: #c4b5fd; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -128,8 +129,6 @@ def _campus_detail(campuses: pd.DataFrame) -> pd.DataFrame:
         "Published capacity estimate (MW)": "Published capacity estimate (MW)",
         "Planned data-center capacity (MW)": "Planned data-center capacity (MW)",
         "Expected service": "Expected service",
-        "Evidence Grade": "Evidence grade",
-        "Source": "Source",
     }
     available = [column for column in columns if column in clean.columns]
     return clean[available].rename(columns=columns).reset_index(drop=True)
@@ -166,7 +165,7 @@ def _render_pulse(inventory: dict) -> None:
     tracker = inventory.get("open_tracker_summary", {}) or {}
     render_section(
         "Data-center pulse",
-        "National scale first; stage and capacity detail come from the more tightly defined open tracker.",
+        "Operating facilities, projects in development, active pipeline sites, and published capacity.",
         first=True,
         compact=True,
     )
@@ -175,15 +174,15 @@ def _render_pulse(inventory: dict) -> None:
             (
                 "Operating footprint",
                 f"{int(broad.get('operating', 0) or 0):,}",
-                f"broad national estimate · {broad.get('observation_date', 'n/a')}",
+                str(broad.get('observation_date', 'n/a')),
             ),
             (
                 "Development footprint",
                 f"{int(broad.get('development', 0) or 0):,}",
-                f"broad national estimate · {broad.get('observation_date', 'n/a')}",
+                str(broad.get('observation_date', 'n/a')),
             ),
             (
-                "Stage-tracked pipeline",
+                "Active project pipeline",
                 f"{int(tracker.get('active_pipeline', 0) or 0):,}",
                 f"proposed through expanding · {tracker.get('observation_date', 'n/a')}",
             ),
@@ -195,171 +194,103 @@ def _render_pulse(inventory: dict) -> None:
         ],
         key_prefix="data-center-pulse",
     )
-    st.markdown(
-        '<div class="rm-data-center-source-note"><b>Coverage note.</b> The broad footprint and the stage-tracked project ledger use different source universes; they are shown together for scale, not added together.</div>',
-        unsafe_allow_html=True,
-    )
-
-
 def _render_development_profile(inventory: dict) -> None:
     stage = inventory.get("national_stage")
-    render_section(
-        "Development profile",
-        "Where projects sit in the lifecycle—and how published capacity is distributed across those stages.",
-    )
-    with st.container(border=True, key="data-center-panel-development-profile"):
-        render_panel_heading("Sites and published capacity by stage", "FracTracker open tracker")
-        st.plotly_chart(
-            data_center_stage_profile(stage, height=455),
-            width="stretch",
-            config={"displayModeBar": False, "responsive": True},
-            key="data-center-stage-profile",
-        )
+    tracker = inventory.get("open_tracker_summary", {}) or {}
+    states = inventory.get("state_stage")
+    render_section("Pipeline explorer", "The signature development view: where projects sit in the lifecycle and where the active pipeline is concentrating.")
+    render_summary_row([
+        ("Proposed", f"{int(tracker.get('proposed', 0) or 0):,}", "projects"),
+        ("Approved / construction", f"{int(tracker.get('approved_or_construction', 0) or 0):,}", "projects"),
+        ("Expanding", f"{int(tracker.get('expanding', 0) or 0):,}", "operating footprint additions"),
+        ("Operating capacity", fmt_number(pd.to_numeric(tracker.get("operating_published_mw"), errors="coerce") / 1000.0, 1, suffix=" GW"), "published estimates only"),
+    ], key_prefix="data-center-development-profile")
+    with st.container(key="full-width-layout-data-center-pipeline-explorer"):
+        with st.container(border=True, key="data-center-panel-development-profile"):
+            view = st.radio("Pipeline view", ["Lifecycle stage", "Leading state pipelines"], horizontal=True, label_visibility="collapsed", key="data-center-view-pipeline-explorer")
+            if view == "Leading state pipelines":
+                render_panel_heading("Leading state development pipelines", "Proposed, approved / construction, and expanding")
+                figure, key = data_center_state_pipeline(states, height=520), "data-center-leading-pipelines"
+            else:
+                render_panel_heading("Sites and published capacity by stage", "FracTracker open tracker")
+                figure, key = data_center_stage_profile(stage, height=520), "data-center-stage-profile"
+            render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key)
 
-
-def _render_geography(inventory: dict) -> None:
+def _render_geography(inventory: dict, campuses: pd.DataFrame, connectivity: dict | None = None) -> None:
+    del connectivity
     regions = inventory.get("regions")
     states = inventory.get("state_stage")
     top_states = inventory.get("top_states")
-
     leading_total = pd.DataFrame(top_states).sort_values("Total", ascending=False, kind="stable").head(1)
     leading_pipeline = pd.DataFrame(states).sort_values("Active Pipeline", ascending=False, kind="stable").head(1)
     region_frame = pd.DataFrame(regions)
     development_total = pd.to_numeric(region_frame.get("Development"), errors="coerce").sum(min_count=1)
-    south_development = pd.to_numeric(
-        region_frame.loc[region_frame.get("Region", "").eq("South"), "Development"], errors="coerce"
-    ).sum(min_count=1)
+    south_development = pd.to_numeric(region_frame.loc[region_frame.get("Region", "").eq("South"), "Development"], errors="coerce").sum(min_count=1)
     south_share = south_development / development_total * 100.0 if pd.notna(development_total) and development_total > 0 else np.nan
     active_states = int(pd.to_numeric(pd.DataFrame(states).get("Active Pipeline"), errors="coerce").gt(0).sum())
+    render_section("Geographic concentration", "Where the footprint is established and where the next wave is concentrating.")
+    render_summary_row([
+        ("Largest footprint", str(leading_total.iloc[0].get("State", "n/a")) if not leading_total.empty else "n/a", f"{int(leading_total.iloc[0].get('Total', 0) or 0):,} facilities" if not leading_total.empty else "n/a"),
+        ("Largest active pipeline", str(leading_pipeline.iloc[0].get("State", "n/a")) if not leading_pipeline.empty else "n/a", f"{int(leading_pipeline.iloc[0].get('Active Pipeline', 0) or 0):,} pipeline sites" if not leading_pipeline.empty else "n/a"),
+        ("South development share", fmt_number(south_share, 1, suffix="%"), "regional facility share"),
+        ("States with active pipeline", f"{active_states:,}", "projects"),
+    ], key_prefix="data-center-geography")
+    with st.container(key="full-width-layout-data-center-geography"):
+        with st.container(border=True, key="data-center-panel-geography-selected"):
+            view = st.radio("Geography view", ["National map", "Published capacity", "Regional balance"], horizontal=True, label_visibility="collapsed", key="data-center-view-geography")
+            if view == "Regional balance":
+                render_panel_heading("Regional operating and development footprint", "Pew / Data Center Map")
+                figure, chart_key = data_center_region_landscape(regions, height=520), "data-center-regional-balance"
+            elif view == "Published capacity":
+                render_panel_heading("Published development capacity by state", "Published estimates only")
+                figure, chart_key = data_center_state_published_capacity(campuses, height=540), "data-center-published-capacity"
+            else:
+                render_panel_heading("Active development footprint", "Pipeline sites by state")
+                figure, chart_key = data_center_state_footprint(states, metric="Active Pipeline", height=540), "data-center-national-map"
+            render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=chart_key)
 
-    render_section(
-        "Geographic pattern",
-        "Where the footprint is established and where the next wave is concentrating.",
-    )
-    render_statline(
-        [
-            (
-                "Largest footprint",
-                str(leading_total.iloc[0].get("State", "n/a")) if not leading_total.empty else "n/a",
-                f"{int(leading_total.iloc[0].get('Total', 0) or 0):,} broad-estimate facilities" if not leading_total.empty else "n/a",
-            ),
-            (
-                "Largest active pipeline",
-                str(leading_pipeline.iloc[0].get("State", "n/a")) if not leading_pipeline.empty else "n/a",
-                f"{int(leading_pipeline.iloc[0].get('Active Pipeline', 0) or 0):,} stage-tracked sites" if not leading_pipeline.empty else "n/a",
-            ),
-            ("South development share", fmt_number(south_share, 1, suffix="%"), "broad regional estimate"),
-            ("States with active pipeline", f"{active_states:,}", "stage-tracked projects"),
-        ],
-        key_prefix="data-center-geography",
-    )
-
-    view = st.radio(
-        "Geography view",
-        ["Leading state pipelines", "National map", "Regional balance"],
-        horizontal=True,
-        label_visibility="collapsed",
-        key="data-center-view-geography",
-    )
-    with st.container(border=True, key="data-center-panel-geography-selected"):
-        if view == "Regional balance":
-            render_panel_heading("Regional operating and development footprint", "Pew / Data Center Map")
-            figure = data_center_region_landscape(regions, height=430)
-            chart_key = "data-center-regional-balance"
-        elif view == "Leading state pipelines":
-            render_panel_heading("Leading state development pipelines", "Proposed, approved / construction, and expanding")
-            figure = data_center_state_pipeline(states, height=500)
-            chart_key = "data-center-leading-pipelines"
-        else:
-            render_panel_heading("Active development footprint", "Stage-tracked pipeline sites by state")
-            figure = data_center_state_footprint(states, metric="Active Pipeline", height=500)
-            chart_key = "data-center-national-map"
-        st.plotly_chart(
-            figure,
-            width="stretch",
-            config={"displayModeBar": False, "responsive": True},
-            key=chart_key,
-        )
-
-
-def _render_project_structure(campuses: pd.DataFrame) -> None:
+def _render_connectivity_operator_structure(connectivity: dict | None, campuses: pd.DataFrame) -> None:
+    payload = connectivity or {}
+    national = payload.get("national_summary", {}) or {}
+    coverage = payload.get("coverage", {}) or {}
     active = _active_footprint(campuses)
-    capacity = _campus_capacity(active) if not active.empty else pd.Series(dtype=float)
     operators = active.get("Operator", pd.Series("", index=active.index)).replace("", np.nan).nunique() if not active.empty else 0
-
-    render_section(
-        "Project & operator structure",
-        "High-confidence project detail: scale, largest campuses, and the operators carrying the active pipeline.",
-    )
-    render_statline(
-        [
-            ("Canonical active campuses", f"{len(active):,}", "operating + active development"),
-            ("Published capacity", fmt_number(capacity.sum(min_count=1) / 1000.0, 1, suffix=" GW"), "canonical active campuses"),
-            ("Capacity coverage", fmt_number(capacity.notna().mean() * 100.0 if len(active) else np.nan, 1, suffix="%"), "canonical active campuses"),
-            ("Active operators", f"{int(operators):,}", "reported operator names"),
-        ],
-        key_prefix="data-center-project",
-    )
-
-    view = st.radio(
-        "Project structure view",
-        ["Capacity bands", "Largest campuses", "Active operators"],
-        horizontal=True,
-        label_visibility="collapsed",
-        key="data-center-view-project-structure",
-    )
-    with st.container(border=True, key="data-center-panel-project-selected"):
-        if view == "Largest campuses":
-            render_panel_heading("Largest published campus estimates", "Canonical active-project registry")
-            figure = data_center_largest_campuses(campuses, height=500)
-            chart_key = "data-center-largest-campuses"
-        elif view == "Active operators":
+    render_section("Connectivity & operator structure", "Two structural screens: whether capacity is well connected, and which operators carry the active pipeline.")
+    render_summary_row([
+        ("Active IXPs", f"{_count(national.get('Active IXPs')):,}", "national public registry"),
+        ("Mismatch states", f"{_count(coverage.get('mismatch_states')):,}", "capacity with limited public IXP depth"),
+        ("Active campuses", f"{len(active):,}", "operating + active development"),
+        ("Active operators", f"{int(operators):,}", "reported operator names"),
+    ], key_prefix="data-center-structure")
+    left, right = st.columns(2)
+    with left:
+        with st.container(border=True, key="data-center-panel-connectivity-context"):
+            render_panel_heading("Capacity-to-connectivity screen", "Selected hubs and high-capacity outliers")
+            render_plotly_chart(data_center_connectivity_state(payload.get("state_summary"), height=470, lens="Mismatch screen"), width="stretch", config={"displayModeBar": False, "responsive": True}, key="data-center-connectivity-context-chart")
+    with right:
+        with st.container(border=True, key="data-center-panel-operator-structure"):
             render_panel_heading("Active pipeline by operator", "Campus count")
-            figure = data_center_operator_pipeline(campuses, height=500)
-            chart_key = "data-center-operator-pipeline"
-        else:
-            render_panel_heading("Published capacity distribution", "Operating versus active pipeline")
-            figure = data_center_capacity_distribution(campuses, height=450)
-            chart_key = "data-center-capacity-distribution"
-        st.plotly_chart(
-            figure,
-            width="stretch",
-            config={"displayModeBar": False, "responsive": True},
-            key=chart_key,
-        )
+            render_plotly_chart(data_center_operator_pipeline(campuses, height=470), width="stretch", config={"displayModeBar": False, "responsive": True}, key="data-center-operator-pipeline")
 
+
+def _render_data_center_ledger(campuses: pd.DataFrame) -> None:
     detail = _campus_detail(campuses)
-    with st.expander(f"View campus ledger · {len(detail):,} active campuses", expanded=False):
-        st.caption("Operating and active-development campuses; capacity fields remain blank where no estimate has been published.")
-        st.dataframe(
-            arrow_safe_dataframe(detail),
-            width="stretch",
-            hide_index=True,
-            height=480,
-        )
-    with st.expander("View operator detail", expanded=False):
-        st.dataframe(
-            arrow_safe_dataframe(_operator_detail(campuses)),
-            width="stretch",
-            hide_index=True,
-        )
-
+    with st.expander("Data-center project ledger", expanded=False):
+        view = st.radio("Ledger", ["Campuses", "Operators"], horizontal=True, key="data-center-ledger-view")
+        frame = _operator_detail(campuses) if view == "Operators" else detail
+        st.dataframe(arrow_safe_dataframe(frame), width="stretch", hide_index=True, height=480)
 
 def render_data_center_tab(infrastructure_data, tab_read=None):
     _inject_data_center_page_theme()
-    render_tab_header(
-        "Data Center",
-        "National scale, development conversion, geographic concentration, and project structure—from broad footprint to verified project detail.",
-        "Pew / FracTracker / canonical registry / primary project sources",
-    )
-    render_line_break()
-    _render_tab_metric_registry("data_center")
-    render_domain_read(tab_read, label="Data Center Read", accent="violet")
-
+    render_tab_header("Data Centers", "National scale, development conversion, geographic concentration, connectivity, and project structure.", "Pew / FracTracker / Connectivity")
+    _render_floating_terms("data_center")
+    render_domain_read(tab_read, label="Data Centers Read", domain="data_centers")
     inventory = _inventory(infrastructure_data)
     campuses = _campuses(infrastructure_data)
-
+    connectivity = (infrastructure_data or {}).get("connectivity", {}) or {}
     _render_pulse(inventory)
     _render_development_profile(inventory)
-    _render_geography(inventory)
-    _render_project_structure(campuses)
+    _render_geography(inventory, campuses, connectivity)
+    _render_connectivity_operator_structure(connectivity, campuses)
+    _render_data_center_ledger(campuses)
+

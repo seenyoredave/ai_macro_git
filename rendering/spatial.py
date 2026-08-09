@@ -5,6 +5,7 @@ import html
 import pandas as pd
 import streamlit as st
 
+from rendering.visual_system import render_plotly_chart
 from rendering.charts_data_center import FACILITY_SIZE_METRICS, data_center_map, data_center_state_detail_map, facility_map_legend_items
 from rendering.components import render_panel_heading
 from rendering.dataframe import arrow_safe_dataframe
@@ -15,9 +16,9 @@ LAYER_FILTERS = {
     "Operating projects": "operating",
     "Active pipeline": "pipeline",
     "Planned / announced": "planned",
-    "Capacity evidence": "capacity",
-    "Power evidence": "power",
-    "Direct water evidence": "water_direct",
+    "Published capacity": "capacity",
+    "Power records": "power",
+    "Water records": "water_direct",
 }
 
 
@@ -112,7 +113,7 @@ def render_spatial_explorer(
     *,
     key_prefix: str = "national-ai-landscape",
     title: str = "National AI development landscape",
-    subtitle: str = "Facility geography with linked power, water, and infrastructure evidence.",
+    subtitle: str = "Facility geography with linked capacity, power, water, and infrastructure records.",
     default_layer: str = "Known footprint",
     show_table: bool = True,
 ) -> None:
@@ -145,11 +146,12 @@ def render_spatial_explorer(
             figure = data_center_map(plotted, size_by=size_by, height=550)
         else:
             figure = data_center_state_detail_map(pd.DataFrame(), plotted, state_code=state_name, size_by=size_by, height=550)
-        st.plotly_chart(
+        render_plotly_chart(
             figure,
             width="stretch",
             config={"displayModeBar": True, "responsive": True},
             key=f"{key_prefix}-map",
+            role="map",
         )
 
     if not show_table:
@@ -158,7 +160,6 @@ def render_spatial_explorer(
         "Facility", "Operator", "State", "County", "Status", "Record Type",
         "Published Capacity Estimate MW", "Planned Data Center Capacity MW",
         "Contracted Utility Capacity MW", "Energized Capacity MW",
-        "Evidence Grade", "Evidence Type", "Source URL",
     ]
     available = [column for column in columns if column in plotted.columns]
     table = plotted[available].copy() if available else pd.DataFrame()

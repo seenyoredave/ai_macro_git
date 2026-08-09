@@ -59,6 +59,7 @@ FINANCIAL_CONDITION_COLUMNS = [
 ]
 YF_REQUIRED_COLUMNS = [
     "Date",
+    "Market Data Date",
     "Sector",
     "Ticker",
     "Company",
@@ -255,9 +256,18 @@ def _fetch_company(ticker, company):
         if history.empty:
             return None
 
+        market_data_date = pd.to_datetime(
+            history.index[-1], errors="coerce", utc=True
+        )
+
         return {
             "Ticker": ticker,
             "Company": company,
+            "Market Data Date": (
+                market_data_date.date().isoformat()
+                if pd.notna(market_data_date)
+                else None
+            ),
             "Price": _safe_market_number(fast_info, info, "last_price", "regularMarketPrice"),
             "Beta": _safe_market_number(fast_info, info, "beta"),
             "P/E": _safe_market_number(fast_info, info, "trailing_pe", "trailingPE"),
@@ -329,13 +339,18 @@ def load_yfinance(
     force_refresh=False,
     refresh_token=0,
     clock_token=None,
+    allow_live=False,
 ):
+    # Both an explicit refresh request and developer-policy authorization are
+    # required. Neither flag is sufficient on its own.
+    live_enabled = bool(allow_live and force_refresh)
     return _load_yfinance_cached(
         ticker_tuple,
         sector=sector,
         force_refresh=bool(force_refresh),
         refresh_token=int(refresh_token),
-        clock_token=clock_token or market_cache_token(),
+        clock_token=(clock_token or market_cache_token()) if live_enabled else "retained-snapshot",
+        allow_live=live_enabled,
     )
 
 @st.cache_data(ttl=900)
@@ -346,6 +361,7 @@ def _load_yfinance_cached(
     force_refresh=False,
     refresh_token=0,
     clock_token=None,
+    allow_live=False,
 ):
 
     del refresh_token, clock_token
@@ -353,6 +369,27 @@ def _load_yfinance_cached(
     tickers = dict(ticker_tuple)
     archived_today = read_yf_history_for_date(tickers, sector=sector)
     latest_archive = read_latest_yf_history(tickers, sector=sector)
+
+    # Reader startup is intentionally freshness-agnostic. A stale retained
+    # snapshot may warrant a warning, but it must never authorize a provider
+    # call. Live access is reserved for an explicit developer refresh.
+    if not (force_refresh and allow_live):
+        retained = (
+            archived_today
+            if archived_today is not None and not archived_today.empty
+            else latest_archive
+        )
+        if retained is None or retained.empty:
+            raise RuntimeError(
+                "YFinance retained history is unavailable. Use Refresh YFinance "
+                "in Developer Tools to create a snapshot."
+            )
+        return _archive_yfinance_result(
+            retained,
+            tickers,
+            source_mode="archive_read_mode",
+            decision="retained_snapshot",
+        )
     decision = yfinance_load_decision(
         force_refresh=bool(force_refresh),
         market_open=is_market_hours(),
@@ -438,8 +475,10 @@ def _load_yfinance_cached(
 @st.cache_data(ttl=900)
 def load_sector_data(tickers, sector=None):
     return {
-        "yfinance": load_yfinance(tuple(sorted(tickers.items())), sector=sector),
-        "edgar": load_edgar(tickers),
+        "yfinance": load_yfinance(
+            tuple(sorted(tickers.items())), sector=sector, allow_live=False
+        ),
+        "edgar": load_edgar(tickers, allow_live=False),
     }
 
 def load_market_universe(
@@ -450,14 +489,26 @@ def load_market_universe(
     force_edgar_refresh=False,
     edgar_refresh_token=0,
     clock_token=None,
+    allow_yfinance_live=False,
+    allow_edgar_live=False,
 ):
+    yfinance_live_enabled = bool(
+        allow_yfinance_live and force_yfinance_refresh
+    )
+    edgar_live_enabled = bool(allow_edgar_live and force_edgar_refresh)
     return _load_market_universe_cached(
         tickers,
         force_yfinance_refresh=bool(force_yfinance_refresh),
         yfinance_refresh_token=int(yfinance_refresh_token),
         force_edgar_refresh=bool(force_edgar_refresh),
         edgar_refresh_token=int(edgar_refresh_token),
-        clock_token=clock_token or market_cache_token(),
+        clock_token=(
+            clock_token or market_cache_token()
+            if yfinance_live_enabled
+            else "retained-snapshot"
+        ),
+        allow_yfinance_live=yfinance_live_enabled,
+        allow_edgar_live=edgar_live_enabled,
     )
 
 @st.cache_data(ttl=900)
@@ -469,6 +520,8 @@ def _load_market_universe_cached(
     force_edgar_refresh=False,
     edgar_refresh_token=0,
     clock_token=None,
+    allow_yfinance_live=False,
+    allow_edgar_live=False,
 ):
 
     del edgar_refresh_token
@@ -485,6 +538,7 @@ def _load_market_universe_cached(
         force_refresh=force_yfinance_refresh,
         refresh_token=yfinance_refresh_token,
         clock_token=clock_token,
+        allow_live=allow_yfinance_live,
     )
     yf_elapsed = time.perf_counter() - yf_started
 
@@ -492,6 +546,7 @@ def _load_market_universe_cached(
     raw_edgar, edgar_runtime_report = load_edgar_with_report(
         tickers,
         force_refresh=force_edgar_refresh,
+        allow_live=allow_edgar_live,
     )
     edgar_elapsed = time.perf_counter() - edgar_started
 

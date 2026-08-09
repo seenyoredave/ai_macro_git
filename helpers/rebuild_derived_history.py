@@ -29,15 +29,29 @@ from analytics.regime_engine import calc_aei, calc_avg_sector_pressure
 from analytics.sector_engine import (
     build_sector_metrics,
 )
+from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
+from config.benchmark_config import (
+    BENCHMARK_VERSION,
+    QQQ_WEIGHTS,
+    QQQ_WEIGHTS_EFFECTIVE_DATE,
+)
 
 ARCHIVE_DIR = PROJECT_ROOT / "archive"
 DATA_DIR = PROJECT_ROOT / "data"
 
-AEI_VERSION = "3.1"
+AEI_VERSION = "4.0"
 ADI_VERSION = "1.0"
 POWER_STRESS_VERSION = "3.0"
 BORROWER_STRAIN_VERSION = "3.0"
-PRESSURE_VERSION = "3.0"
+PRESSURE_VERSION = "4.0"
+
+# These are the only exchange closures that intersect the retained legacy
+# market archive.  New snapshots carry their provider observation date and do
+# not use this migration fallback.
+LEGACY_NYSE_CLOSURES = {
+    pd.Timestamp("2026-06-19"),  # Juneteenth
+    pd.Timestamp("2026-07-03"),  # Independence Day observed
+}
 
 RAW_FINANCIAL_COLUMNS = [
     "Revenue",
@@ -82,6 +96,118 @@ def _write_csv(df: pd.DataFrame, path: Path) -> None:
 
 def _as_date(value) -> pd.Timestamp:
     return pd.to_datetime(value, errors="coerce", format="mixed").normalize()
+
+
+def _previous_legacy_market_session(value) -> pd.Timestamp:
+    """Resolve a legacy fetch date to its underlying market session.
+
+    Historical rows written before ``Market Data Date`` was retained used the
+    fetch date as their key.  Only weekend/holiday rows need inference; current
+    and future rows use the provider-supplied observation date directly.
+    """
+    resolved = _as_date(value)
+    if pd.isna(resolved):
+        return pd.NaT
+    while resolved.weekday() >= 5 or resolved in LEGACY_NYSE_CLOSURES:
+        resolved -= pd.Timedelta(days=1)
+    return resolved
+
+
+def canonicalize_market_history_dates(
+    yf_history: pd.DataFrame,
+    *derived_histories: pd.DataFrame,
+) -> tuple[pd.DataFrame, ...]:
+    """Put raw and derived market histories on real market observation dates."""
+    yf = yf_history.copy()
+    original = pd.to_datetime(yf["Date"], errors="coerce", format="mixed").dt.normalize()
+    supplied_values = (
+        yf["Market Data Date"]
+        if "Market Data Date" in yf.columns
+        else pd.Series(pd.NaT, index=yf.index, dtype="datetime64[ns]")
+    )
+    supplied = pd.to_datetime(
+        supplied_values, errors="coerce", format="mixed"
+    ).dt.normalize()
+    canonical = supplied.where(supplied.notna(), original.map(_previous_legacy_market_session))
+    if canonical.isna().any():
+        raise AssertionError("Legacy market history contains an unresolved observation date")
+
+    date_map = {
+        old.date().isoformat(): new.date().isoformat()
+        for old, new in zip(original, canonical)
+    }
+    yf["Date"] = canonical.dt.date.astype(str)
+    yf["Market Data Date"] = yf["Date"]
+    yf = (
+        yf.sort_values(["Date", "Sector", "Ticker"], kind="stable")
+        .drop_duplicates(["Date", "Sector", "Ticker"], keep="last")
+        .reset_index(drop=True)
+    )
+
+    outputs: list[pd.DataFrame] = [yf]
+    for history in derived_histories:
+        frame = history.copy()
+        frame["Date"] = frame["Date"].astype(str).map(date_map).fillna(frame["Date"].astype(str))
+        keys = ["Date"]
+        if "Sector" in frame.columns:
+            keys.append("Sector")
+        if "Benchmark" in frame.columns:
+            keys.append("Benchmark")
+        frame = (
+            frame.sort_values(keys, kind="stable")
+            .drop_duplicates(keys, keep="last")
+            .reset_index(drop=True)
+        )
+        if "Market Data Date" in frame.columns:
+            frame["Market Data Date"] = frame["Date"]
+        outputs.append(frame)
+    return tuple(outputs)
+
+
+def rebuild_fixed_qqq_history(yf_history: pd.DataFrame) -> pd.DataFrame:
+    """Reconstruct one fixed-weight QQQ reference portfolio for every date.
+
+    The 204-name market archive contains GOOG but not GOOGL.  For this bounded
+    legacy reconstruction only, the GOOG class return and fundamentals proxy
+    the missing GOOGL class.  Future benchmark refreshes retain both actual
+    share classes through the benchmark loader.
+    """
+    rows = []
+    for observation_date, snapshot in yf_history.groupby("Date", sort=True):
+        by_ticker = snapshot.drop_duplicates("Ticker", keep="last").set_index("Ticker")
+        members = []
+        for ticker, weight in QQQ_WEIGHTS.items():
+            source_ticker = "GOOG" if ticker == "GOOGL" and ticker not in by_ticker.index else ticker
+            if source_ticker not in by_ticker.index:
+                raise AssertionError(
+                    f"Fixed QQQ member unavailable on {observation_date}: {ticker}"
+                )
+            member = by_ticker.loc[source_ticker].copy()
+            member["Ticker"] = ticker
+            member["Benchmark Weight"] = weight
+            members.append(member)
+        member_frame = pd.DataFrame(members)
+        metrics = normalize_benchmark_dataframe(member_frame)
+        rows.append(
+            {
+                "Date": observation_date,
+                "Benchmark": "QQQ",
+                "Forward P/E": np.nan,
+                "Avg Return": metrics.get("avg_return"),
+                "Beta": metrics.get("beta"),
+                "Member Count": metrics.get("member_count"),
+                "Benchmark Version": BENCHMARK_VERSION,
+                "Forward EV/EBIT": metrics.get("forward_ev_ebit"),
+                "Forward EBIT Yield": metrics.get("forward_ebit_yield"),
+                "Weight Effective Date": QQQ_WEIGHTS_EFFECTIVE_DATE,
+                "Member Coverage": 1.0,
+                "Return Construction": (
+                    "Fixed QQQ top-ten reference weights; legacy GOOGL class "
+                    "reconstructed from retained GOOG class return"
+                ),
+            }
+        )
+    return pd.DataFrame(rows).sort_values("Date", kind="stable").reset_index(drop=True)
 
 def _latest_available_date(dates: pd.Series, target) -> str | None:
     target_ts = _as_date(target)
@@ -454,6 +580,7 @@ def rebuild_sector_history(
         "AEI Version", "Pressure Version", "Prior Method Pressure", "Forward EV/EBIT",
         "Forward EBIT Yield", "Sector Valuation Version", "Forward EV/EBIT Coverage",
         "Forward EV/EBIT Data Coverage", "Loss-Making EV Share",
+        "Benchmark Version", "Benchmark Weight Date",
     ]
     output_columns = list(dict.fromkeys(prior_columns + required_columns))
 
@@ -490,6 +617,8 @@ def rebuild_sector_history(
                     "Forward P/E": forward_pe,
                     "Avg Return": values.get("Avg Return", np.nan),
                     "AEI Version": AEI_VERSION if pd.notna(sector_score) else pd.NA,
+                    "Benchmark Version": BENCHMARK_VERSION if pd.notna(sector_score) else pd.NA,
+                    "Benchmark Weight Date": QQQ_WEIGHTS_EFFECTIVE_DATE if pd.notna(sector_score) else pd.NA,
                     "Pressure Version": PRESSURE_VERSION if pd.notna(pressure) else pd.NA,
                     "Prior Method Pressure": pd.to_numeric(
                         prior.get("Prior Method Pressure", prior.get("Pressure", np.nan)),
@@ -524,11 +653,21 @@ def rebuild_macro_history(
     if prior_macro_history.empty:
         return prior_macro_history.copy()
 
-    output_columns = list(prior_macro_history.columns)
+    output_columns = list(
+        dict.fromkeys(
+            list(prior_macro_history.columns)
+            + ["Benchmark Version", "Benchmark Weight Date"]
+        )
+    )
     prior_by_date = prior_macro_history.set_index("Date", drop=False)
     rows = []
 
-    for target_date in sorted(prior_macro_history["Date"].astype(str).unique()):
+    raw_market_dates = set(yf_history["Date"].astype(str))
+    for target_date in sorted(
+        date_value
+        for date_value in prior_macro_history["Date"].astype(str).unique()
+        if date_value in raw_market_dates
+    ):
         prior_row = prior_by_date.loc[target_date]
         if isinstance(prior_row, pd.DataFrame):
             prior_row = prior_row.iloc[-1]
@@ -617,6 +756,8 @@ def rebuild_macro_history(
                 "Borrower Committed Burden": _component_value(borrower_strain_result, "Committed Burden"),
                 "Borrower Contingent Exposure": _component_value(borrower_strain_result, "Contingent Exposure"),
                 "AEI Version": AEI_VERSION if pd.notna(aei) else pd.NA,
+                "Benchmark Version": BENCHMARK_VERSION if pd.notna(aei) else pd.NA,
+                "Benchmark Weight Date": QQQ_WEIGHTS_EFFECTIVE_DATE if pd.notna(aei) else pd.NA,
                 "ADI Version": ADI_VERSION if pd.notna(adi) else pd.NA,
                 "EVG Version": "3.0" if pd.notna(evg) else pd.NA,
                 "Power Stress Version": POWER_STRESS_VERSION if pd.notna(power_score) else pd.NA,
@@ -646,12 +787,15 @@ def validate_rebuild(
     benchmark_raw_before: pd.DataFrame,
     benchmark_raw_after: pd.DataFrame,
 ) -> None:
-    if not yf_raw_before.equals(yf_raw_after):
-        raise AssertionError("Raw YFinance archive changed during derived-history rebuild")
+    del yf_raw_before, benchmark_raw_before
     if not edgar_raw_before.equals(edgar_raw_after):
         raise AssertionError("Raw EDGAR archive changed during derived-history rebuild")
-    if not benchmark_raw_before.equals(benchmark_raw_after):
-        raise AssertionError("Raw benchmark archive changed during derived-history rebuild")
+    if benchmark_raw_after.empty:
+        raise AssertionError("Fixed benchmark rebuild produced no history")
+    if set(benchmark_raw_after["Benchmark Version"].astype(str)) != {BENCHMARK_VERSION}:
+        raise AssertionError("Fixed benchmark history contains mixed versions")
+    if set(benchmark_raw_after["Date"].astype(str)) != set(yf_raw_after["Date"].astype(str)):
+        raise AssertionError("Fixed benchmark history is not aligned to raw market dates")
 
     if macro.empty or sector.empty:
         raise AssertionError("Rebuild produced an empty derived archive")
@@ -667,6 +811,8 @@ def validate_rebuild(
     valid_aei_versions = set(macro.loc[macro["AI Equity Index"].notna(), "AEI Version"].dropna().astype(str))
     if valid_aei_versions != {AEI_VERSION}:
         raise AssertionError(f"Mixed AEI versions remain: {valid_aei_versions}")
+    if set(macro["Benchmark Version"].dropna().astype(str)) != {BENCHMARK_VERSION}:
+        raise AssertionError("Macro history contains mixed benchmark versions")
 
 def main() -> None:
     yf_path = ARCHIVE_DIR / "yf_history.csv"
@@ -686,6 +832,13 @@ def main() -> None:
     yf_before = yf_history.copy(deep=True)
     edgar_before = edgar_history.copy(deep=True)
     benchmark_before = benchmark_history.copy(deep=True)
+
+    yf_history, prior_sector, prior_macro = canonicalize_market_history_dates(
+        yf_history,
+        prior_sector,
+        prior_macro,
+    )
+    benchmark_history = rebuild_fixed_qqq_history(yf_history)
 
     power_series, power_releases = _load_power_sources()
     construction_history, construction_calendar = _load_construction_sources()
@@ -719,6 +872,8 @@ def main() -> None:
         benchmark_history,
     )
 
+    _write_csv(yf_history, yf_path)
+    _write_csv(benchmark_history, benchmark_path)
     _write_csv(rebuilt_fred, fred_path)
     _write_csv(rebuilt_sector, sector_path)
     _write_csv(rebuilt_macro, macro_path)

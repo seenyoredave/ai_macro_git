@@ -11,6 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BANK_PATH = PROJECT_ROOT / "data" / "bank_credit_tightening_history.csv"
 DEFAULT_BANK_CAPITAL_PATH = PROJECT_ROOT / "data" / "bank_tier1_capital_history.csv"
 DEFAULT_BDC_PATH = PROJECT_ROOT / "data" / "private_credit_bdc_history.csv"
+DEFAULT_BUSINESS_DELINQUENCY_PATH = PROJECT_ROOT / "data" / "business_loan_delinquency_history.csv"
 DEFAULT_PE_PATH = PROJECT_ROOT / "data" / "private_equity_strain_history.csv"
 
 LENDER_STRAIN_WEIGHTS = {
@@ -114,6 +115,25 @@ def load_bank_capital_history(path=None):
         .drop_duplicates(subset=["Date"], keep="last")
         .reset_index(drop=True)
     )
+
+def load_business_loan_delinquency_history(path=None):
+    frame = _load_csv(
+        path or DEFAULT_BUSINESS_DELINQUENCY_PATH,
+        ["Date", "Business Loan Delinquency Rate (%)"],
+    )
+    frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce")
+    frame["Business Loan Delinquency Rate (%)"] = pd.to_numeric(
+        frame["Business Loan Delinquency Rate (%)"], errors="coerce"
+    )
+    frame = frame.dropna(
+        subset=["Date", "Business Loan Delinquency Rate (%)"]
+    )
+    return (
+        frame.sort_values("Date", kind="stable")
+        .drop_duplicates(subset=["Date"], keep="last")
+        .reset_index(drop=True)
+    )
+
 
 def load_bdc_impairment_history(path=None):
     frame = _load_csv(
@@ -355,16 +375,32 @@ def _score_snapshot(
     bdc_row=None,
     pe_row=None,
     *,
+    business_delinquency_row=None,
     bank_history=None,
     bank_capital_history=None,
     bdc_history=None,
+    business_delinquency_history=None,
     pe_history=None,
     observation_date=None,
 ):
+    direct_bdc_value = _row_number(bdc_row, "Weighted Nonaccrual at Cost (%)")
+    bridge_value = _row_number(
+        business_delinquency_row, "Business Loan Delinquency Rate (%)"
+    )
+    use_direct_bdc = pd.notna(direct_bdc_value) and np.isfinite(direct_bdc_value)
+    private_credit_mode = (
+        "Direct listed-BDC nonaccrual panel"
+        if use_direct_bdc
+        else (
+            "Federal Reserve business-loan delinquency bridge"
+            if pd.notna(bridge_value) and np.isfinite(bridge_value)
+            else "Unavailable"
+        )
+    )
     raw = {
         "bank": _row_number(bank_row, "Tightening Percent"),
         "bank_capital": _row_number(bank_capital_row, "Tier 1 Capital Ratio (%)"),
-        "bdc": _row_number(bdc_row, "Weighted Nonaccrual at Cost (%)"),
+        "private_credit": direct_bdc_value if use_direct_bdc else bridge_value,
         "pe_high_leverage": _row_number(pe_row, "High-Leverage Portfolio Share (%)"),
         "pe_pik": _row_number(pe_row, "PIK Mean (%)"),
     }
@@ -388,15 +424,30 @@ def _score_snapshot(
         center=12.5,
         scale=4.0,
     )
-    bdc_score, bdc_normalization = _normalized_score(
-        raw["bdc"],
-        bdc_history,
-        "Weighted Nonaccrual at Cost (%)",
-        cutoff,
-        higher_is_adverse=True,
-        center=2.0,
-        scale=2.5,
-    )
+    if use_direct_bdc:
+        private_credit_score, private_credit_normalization = _normalized_score(
+            raw["private_credit"],
+            bdc_history,
+            "Weighted Nonaccrual at Cost (%)",
+            cutoff,
+            higher_is_adverse=True,
+            center=2.0,
+            scale=2.5,
+        )
+    else:
+        private_credit_score, private_credit_normalization = _normalized_score(
+            raw["private_credit"],
+            business_delinquency_history,
+            "Business Loan Delinquency Rate (%)",
+            cutoff,
+            higher_is_adverse=True,
+            center=1.5,
+            scale=1.0,
+        )
+    private_credit_normalization = {
+        **private_credit_normalization,
+        "evidence_mode": private_credit_mode,
+    }
     pe_high_score, pe_high_normalization = _normalized_score(
         raw["pe_high_leverage"],
         pe_history,
@@ -419,7 +470,7 @@ def _score_snapshot(
     base_scores = {
         "Bank Credit Tightening": bank_score,
         "Bank Capital Strain": bank_capital_score,
-        "Private Credit Impairment": bdc_score,
+        "Private Credit Impairment": private_credit_score,
     }
     pe_subscores = {
         "High-Leverage Portfolio Share": pe_high_score,
@@ -469,22 +520,30 @@ def _score_snapshot(
         "normalization": {
             "Bank Credit Tightening": bank_normalization,
             "Bank Capital Strain": bank_capital_normalization,
-            "Private Credit Impairment": bdc_normalization,
+            "Private Credit Impairment": private_credit_normalization,
             "High-Leverage Portfolio Share": pe_high_normalization,
             "PIK Burden": pe_pik_normalization,
         },
         "raw": raw,
+        "private_credit_mode": private_credit_mode,
     }
 
 def build_lender_strain_history(
     bank_history,
     bank_capital_history,
     bdc_history,
+    business_delinquency_history,
     pe_history,
 ):
     date_series = [
         frame["Date"]
-        for frame in (bank_history, bank_capital_history, bdc_history, pe_history)
+        for frame in (
+            bank_history,
+            bank_capital_history,
+            bdc_history,
+            business_delinquency_history,
+            pe_history,
+        )
         if frame is not None and not frame.empty
     ]
     if not date_series:
@@ -498,15 +557,20 @@ def build_lender_strain_history(
         bank_row = _asof_row(bank_history, observation_date)
         bank_capital_row = _asof_row(bank_capital_history, observation_date)
         bdc_row = _asof_row(bdc_history, observation_date)
+        business_delinquency_row = _asof_row(
+            business_delinquency_history, observation_date
+        )
         pe_row = _asof_row(pe_history, observation_date)
         snapshot = _score_snapshot(
             bank_row,
             bank_capital_row,
             bdc_row,
             pe_row,
+            business_delinquency_row=business_delinquency_row,
             bank_history=bank_history,
             bank_capital_history=bank_capital_history,
             bdc_history=bdc_history,
+            business_delinquency_history=business_delinquency_history,
             pe_history=pe_history,
             observation_date=observation_date,
         )
@@ -531,6 +595,9 @@ def build_lender_strain_history(
                     "PE Portfolio Financing Strain", np.nan
                 ),
                 "Valid Components": snapshot["valid_components"],
+                "Private Credit Evidence": snapshot.get(
+                    "private_credit_mode", "Unavailable"
+                ),
             }
         )
 
@@ -586,6 +653,7 @@ def calculate_lender_strain(
     bank_path=None,
     bank_capital_path=None,
     bdc_path=None,
+    business_delinquency_path=None,
     pe_path=None,
 ) -> dict:
     bank_history = load_bank_tightening_history(bank_path)
@@ -611,18 +679,37 @@ def calculate_lender_strain(
     )
 
     bdc_history = load_bdc_impairment_history(bdc_path)
+    business_delinquency_history = load_business_loan_delinquency_history(
+        business_delinquency_path
+    )
+    business_delinquency_history = _with_live_observation(
+        business_delinquency_history,
+        _fred_observation(
+            fred_data,
+            "Business Loan Delinquency",
+            "Business Loan Delinquency Rate (%)",
+            "https://fred.stlouisfed.org/series/DRBLACBS",
+        ),
+    )
     pe_history = load_pe_financing_history(pe_path)
 
     history = build_lender_strain_history(
         bank_history,
         bank_capital_history,
         bdc_history,
+        business_delinquency_history,
         pe_history,
     )
 
     latest_date_candidates = [
         frame["Date"].max()
-        for frame in (bank_history, bank_capital_history, bdc_history, pe_history)
+        for frame in (
+            bank_history,
+            bank_capital_history,
+            bdc_history,
+            business_delinquency_history,
+            pe_history,
+        )
         if frame is not None and not frame.empty
     ]
     latest_date = max(latest_date_candidates) if latest_date_candidates else pd.NaT
@@ -634,15 +721,22 @@ def calculate_lender_strain(
         else None
     )
     bdc_row = _asof_row(bdc_history, latest_date) if pd.notna(latest_date) else None
+    business_delinquency_row = (
+        _asof_row(business_delinquency_history, latest_date)
+        if pd.notna(latest_date)
+        else None
+    )
     pe_row = _asof_row(pe_history, latest_date) if pd.notna(latest_date) else None
     snapshot = _score_snapshot(
         bank_row,
         bank_capital_row,
         bdc_row,
         pe_row,
+        business_delinquency_row=business_delinquency_row,
         bank_history=bank_history,
         bank_capital_history=bank_capital_history,
         bdc_history=bdc_history,
+        business_delinquency_history=business_delinquency_history,
         pe_history=pe_history,
         observation_date=latest_date,
     )
@@ -693,7 +787,7 @@ def calculate_lender_strain(
         "Private Credit Impairment": _component_payload(
             snapshot,
             "Private Credit Impairment",
-            raw_key="bdc",
+            raw_key="private_credit",
             row=bdc_row,
             observations=int(bdc_row.get("Observations", 0)) if bdc_row is not None else 0,
             source=bdc_source,
@@ -708,6 +802,8 @@ def calculate_lender_strain(
                 "net_losses_portfolio": bdc_row.get("Weighted Net Losses / Portfolio (%)", np.nan) if bdc_row is not None else np.nan,
                 "debt_to_equity": bdc_row.get("Weighted Debt to Equity (x)", np.nan) if bdc_row is not None else np.nan,
                 "panel_history": bdc_history.copy(),
+                "historical_bridge": business_delinquency_history.copy(),
+                "evidence_mode": snapshot.get("private_credit_mode", "Unavailable"),
             },
         ),
         "PE Portfolio Financing Strain": _component_payload(
@@ -745,4 +841,14 @@ def calculate_lender_strain(
         "elevated_pillars": snapshot.get("elevated_pillars", 0),
         "components": components,
         "history": history,
+        "history_contract": {
+            "display_years": 10,
+            "bridge_series": "DRBLACBS",
+            "bridge_label": "Federal Reserve business-loan delinquency",
+            "direct_panel_start": (
+                bdc_history["Date"].min().date().isoformat()
+                if not bdc_history.empty
+                else None
+            ),
+        },
     }

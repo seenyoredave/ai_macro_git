@@ -66,25 +66,9 @@ def main() -> None:
             "power-panel-gas-pipeline",
             "power-panel-lng",
         ],
-        "rendering/finance.py": [
-            "finance-panel-realization-ledger",
-            "finance-panel-realization-map",
-        ],
         "rendering/compute.py": [
-            "compute-panel-manufacturing-capacity",
-            "compute-panel-capacity-utilization",
-            "compute-panel-orders-shipments",
-            "compute-panel-backlog-inventory",
-            "compute-panel-supply-chain",
-            "compute-panel-buildout-geography",
-        ],
-        "rendering/workforce.py": [
-            "workforce-panel-employment-history",
-            "workforce-panel-employment-momentum",
-        ],
-        "rendering/economic_impact.py": [
-            "economic-impact-panel-index",
-            "economic-impact-panel-current",
+            "compute-panel-capacity-demand-selected",
+            "compute-panel-buildout-selected",
         ],
         "rendering/market.py": [
             "market-panel-ownership",
@@ -102,6 +86,27 @@ def main() -> None:
         for key in keys:
             if source.count(f'"{key}"') < 2:
                 raise AssertionError(f"{key} is not both keyed and covered by an alignment rule.")
+
+    theme = (PROJECT_ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
+    subtitle_rule = theme.split(".rm-subtitle-row", 1)[1].split("}", 1)[0]
+    if "max-width: none" not in subtitle_rule or "width: 100%" not in subtitle_rule:
+        raise AssertionError("The masthead subtitle/version row still has a fixed-width ceiling.")
+    tab_rule = theme.split('div[data-testid="stTabs"] button[role="tab"]', 1)[1].split("}", 1)[0]
+    for required in ("flex: 0 0 auto", "min-width: max-content", "white-space: nowrap"):
+        if required not in tab_rule:
+            raise AssertionError(f"Responsive tabs lost their non-collapsing contract: {required}")
+
+    card_rule = theme.split(".rm-domain-read-evidence-card", 1)[1].split("}", 1)[0]
+    for required in ("display: grid", "grid-template-rows: minmax(1.8rem, auto) auto 1fr", "align-content: start", "row-gap: 0.18rem"):
+        if required not in card_rule:
+            raise AssertionError(f"Read evidence-card spacing lost its shared contract: {required}")
+    label_rule = theme.split(".rm-domain-read-evidence-label", 1)[1].split("}", 1)[0]
+    if "min-height: 1.8rem" not in label_rule or "align-items: flex-end" not in label_rule:
+        raise AssertionError("Read evidence labels no longer reserve consistent title space.")
+    for selector in (".rm-domain-read-evidence-value", ".rm-domain-read-evidence-context"):
+        rule = theme.split(selector, 1)[1].split("}", 1)[0]
+        if "margin-top: 0" not in rule:
+            raise AssertionError(f"{selector} regained inconsistent top spacing.")
 
     print(
         "PASS  Platform spacing and alignment · nice-grid headroom verified · "

@@ -82,3 +82,45 @@ def adaptation_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int 
     figure.update_xaxes(ticksuffix="%", rangemode="tozero")
     figure = _base_layout(figure, height=height, legend=True, margin=dict(l=255, r=34, t=30, b=36))
     return add_axis_headroom(figure, axis="x", upper=0.20, lower=0.0, include_zero=True)
+
+CONSUMER_SERIES_COLORS = {
+    "Overall use": COLORS["violet"],
+    "Personal / outside work": COLORS["green"],
+    "Work use": COLORS["blue"],
+    "Used last week": COLORS["amber"],
+    "Daily use": COLORS["slate"],
+}
+
+
+def consumer_adoption_history(history: pd.DataFrame | None, *, height: int = 340):
+    required = {"Date", "Series", "Value"}
+    if history is None or not isinstance(history, pd.DataFrame) or history.empty or not required.issubset(history.columns):
+        clean = pd.DataFrame(columns=list(required))
+    else:
+        clean = history.copy()
+        clean["Date"] = pd.to_datetime(clean["Date"], errors="coerce", format="mixed")
+        clean["Value"] = pd.to_numeric(clean["Value"], errors="coerce")
+        clean = clean.dropna(subset=["Date", "Series", "Value"]).sort_values(["Series", "Date"], kind="stable")
+
+    figure = go.Figure()
+    for series in ["Overall use", "Personal / outside work", "Work use", "Used last week", "Daily use"]:
+        group = clean.loc[clean.get("Series", pd.Series("", index=clean.index)).astype(str).eq(series)]
+        if group.empty:
+            continue
+        figure.add_trace(go.Scatter(
+            x=group["Date"],
+            y=group["Value"],
+            mode="lines+markers",
+            name=series,
+            line={
+                "color": CONSUMER_SERIES_COLORS.get(series, COLORS["slate"]),
+                "width": 2.6,
+                "dash": "dash" if series == "Used last week" else "dot" if series == "Daily use" else "solid",
+            },
+            marker={"size": 6},
+            hovertemplate=f"%{{x|%Y-%m}}<br>{series}: %{{y:.1f}}%<extra></extra>",
+        ))
+    figure.update_yaxes(ticksuffix="%", rangemode="tozero", title_text="Reported use (%)")
+    figure = _base_layout(figure, height=height, legend=True, margin=dict(l=56, r=18, t=28, b=36))
+    figure.update_layout(legend={"orientation": "h", "y": 1.05, "x": 0})
+    return add_axis_headroom(figure, upper=0.18, lower=0.05, include_zero=True)

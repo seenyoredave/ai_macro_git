@@ -558,9 +558,19 @@ def describe_fred_load(
     }
 
 @st.cache_data(ttl=86400)
-def load_fred(force_refresh: bool = False, refresh_token: int = 0):
+def load_fred(
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    allow_live: bool = False,
+):
     del refresh_token
     archived = None if force_refresh else _latest_weekly_fred_archive()
+    fallback = _latest_fred_archive_fallback()
+
+    if not force_refresh and not allow_live:
+        retained = archived if archived is not None else (fallback or {})
+        debug_print("Loading retained FRED snapshot without provider calls")
+        return retained
 
     if archived is not None:
         debug_print("Loading current-week FRED snapshot from fred_history.csv")
@@ -569,7 +579,6 @@ def load_fred(force_refresh: bool = False, refresh_token: int = 0):
         return _hydrate_information_investment(archived, fred)
 
     fred = get_fred_client()
-    fallback = _latest_fred_archive_fallback()
 
     if fred is None:
         payload = _hydrate_industrial_growth(fallback or {}, fred=None)

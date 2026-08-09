@@ -313,9 +313,9 @@ def build_power_read(demand: dict, large_loads: dict, development: dict, prices:
     active_campuses = int(large_loads.get("active_campuses", 0) or 0)
     load_clause = ""
     if pd.notna(published_total_mw) and published_total_mw > 0:
-        load_clause = f" Published data-center estimates total {_fmt(published_total_mw / 1000.0)} GW."
+        load_clause = f" Published capacity estimates across data-center records total {_fmt(published_total_mw / 1000.0)} GW."
     elif active_campuses:
-        load_clause = f" The registry tracks {active_campuses:,} active data-center campuses; undisclosed capacity is excluded."
+        load_clause = f" Published records include {active_campuses:,} active data-center campuses."
 
     build_clause = "Generation-development detail is unavailable."
     if pd.notna(additions) and pd.notna(retirements):
@@ -372,9 +372,9 @@ def build_energy_read(demand: dict, large_loads: dict, development: dict, prices
             if pd.notna(published_coverage)
             else ""
         )
-        large_load_clause = f" Published data-center estimates total {_fmt(published_total_mw / 1000.0)} GW{coverage_text}."
+        large_load_clause = f" Published capacity estimates across data-center records total {_fmt(published_total_mw / 1000.0)} GW{coverage_text}."
     elif active_campuses:
-        large_load_clause = f" The registry tracks {active_campuses:,} active data-center campuses, with undisclosed capacity excluded."
+        large_load_clause = f" Published records include {active_campuses:,} active data-center campuses."
 
     build_clause = "Development-pipeline detail is unavailable."
     if pd.notna(planned_additions) and pd.notna(planned_retirements):

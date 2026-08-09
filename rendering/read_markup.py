@@ -75,6 +75,32 @@ def _context_items_html(payload: dict) -> str:
     )
 
 
+def _macro_relevance_html(payload: dict) -> str:
+    relevance = str(payload.get("relevance") or "").strip()
+    evidence = [item for item in payload.get("evidence", []) or [] if isinstance(item, dict)][:3]
+    blocks: list[str] = []
+    if relevance:
+        blocks.append(
+            '<div class="rm-domain-read-relevance"><span>Why it matters</span>'
+            f'<div>{html.escape(relevance)}</div></div>'
+        )
+    if evidence:
+        cards = []
+        for item in evidence:
+            label = str(item.get("label") or "Evidence").strip()
+            value = str(item.get("value") or "n/a").strip()
+            context = str(item.get("context") or "").strip()
+            cards.append(
+                '<div class="rm-domain-read-evidence-card">'
+                f'<div class="rm-domain-read-evidence-label">{html.escape(label)}</div>'
+                f'<div class="rm-domain-read-evidence-value">{html.escape(value)}</div>'
+                f'<div class="rm-domain-read-evidence-context">{html.escape(context)}</div>'
+                '</div>'
+            )
+        blocks.append('<div class="rm-domain-read-evidence-grid">' + ''.join(cards) + '</div>')
+    return ''.join(blocks)
+
+
 def build_domain_read_html(
     read: dict | None,
     *,
@@ -86,7 +112,6 @@ def build_domain_read_html(
     payload = read or {}
     headline = str(payload.get("headline") or "Read unavailable").strip()
     summary = str(payload.get("summary") or payload.get("body") or "").strip()
-    confidence = str(payload.get("confidence") or "limited").strip()
     domain_label = str(label or payload.get("label") or "Domain read").strip()
     references = payload.get("references") or payload.get("weekly_references") or []
 
@@ -105,12 +130,15 @@ def build_domain_read_html(
         f'<div class="rm-domain-read-copy">{html.escape(summary)}</div>'
         if summary else ""
     )
+    macro_html = _macro_relevance_html(payload) if macro else ""
     return "".join([
         f'<div class="{classes}" style="--rm-read-accent:{html.escape(accent_color, quote=True)};">',
-        f'<div class="rm-domain-read-kicker">{html.escape(domain_label)} · {html.escape(confidence)} confidence</div>',
+        f'<div class="rm-domain-read-kicker">{html.escape(domain_label)}</div>',
         f'<div class="rm-domain-read-title">{html.escape(headline)}</div>',
         summary_html,
+        macro_html,
         context_html,
         refs_html,
         "</div>",
+        '<div class="rm-read-section-divider" aria-hidden="true"></div>',
     ])

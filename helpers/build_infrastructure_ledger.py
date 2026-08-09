@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from hashlib import sha256
+from datetime import date
 from io import BytesIO
 from pathlib import Path
 import sys
@@ -14,6 +15,7 @@ import pandas as pd
 from loaders.census import clean_header, parse_census_month
 from loaders.data_center_inventory_loader import build_data_center_national_database, load_data_center_inventory
 from loaders.facility_registry_loader import normalize_us_state
+from helpers.atomic_io import atomic_write_csv
 
 RAW = ROOT / "data" / "infrastructure" / "raw"
 DERIVED = ROOT / "data" / "infrastructure" / "derived"
@@ -24,6 +26,7 @@ PRIVATE_PATH = RAW / "census" / "privsatime.xlsx"
 PUBLIC_PATH = RAW / "census" / "pubsatime.xlsx"
 GIGAWATT_PATH = RAW / "gigawattmap" / "datacenters.csv"
 COMPUTE_HISTORY = DERIVED / "compute_manufacturing_history.csv"
+COMPUTE_M3_HISTORY = DERIVED / "compute_m3_history.csv"
 COMPUTE_SERIES_CONTRACT = DERIVED / "compute_series_contract.csv"
 COMPUTE_SERIES_VALIDATION = DERIVED / "compute_series_validation.csv"
 COMPUTE_PROJECTS = DERIVED / "compute_project_ledger.csv"
@@ -136,6 +139,25 @@ def validate_compute_history() -> pd.DataFrame:
         raise ValueError("Compute history has invalid or duplicate observation dates")
     return frame
 
+def validate_compute_m3_history() -> pd.DataFrame:
+    frame = pd.read_csv(COMPUTE_M3_HISTORY)
+    required = {
+        "Observation Date",
+        "Computer and Electronic Product Shipments",
+        "Computer and Electronic Product New Orders",
+        "Computer and Electronic Product Inventory to Shipments",
+        "Computer and Electronic Product Unfilled Orders to Shipments",
+    }
+    missing = required - set(frame.columns)
+    if missing:
+        raise ValueError(f"Compute M3 history contract changed; missing {sorted(missing)}")
+    dates = pd.to_datetime(frame["Observation Date"], errors="coerce")
+    if dates.isna().any() or dates.duplicated().any():
+        raise ValueError("Compute M3 history has invalid or duplicate observation dates")
+    if (dates.max() - dates.min()).days < 3650:
+        raise ValueError("Compute M3 history does not support the ten-year display")
+    return frame
+
 def validate_compute_series_contract() -> pd.DataFrame:
     frame = pd.read_csv(COMPUTE_SERIES_CONTRACT)
     required = {
@@ -235,6 +257,7 @@ def update_manifest() -> pd.DataFrame:
         "census-vip-construction": [CONSTRUCTION_OUTPUT],
         "gigawattmap-datacenters": [GIGAWATT_VERIFIED_PROJECTS],
         "fed-g17-compute": [COMPUTE_HISTORY, COMPUTE_SERIES_CONTRACT, COMPUTE_SERIES_VALIDATION],
+        "census-m3-compute": [COMPUTE_M3_HISTORY],
         "nist-chips-projects": [COMPUTE_PROJECTS],
         "fractracker-data-center-tracker": [DATA_CENTER_DATABASE],
         "pew-data-center-census": [DATA_CENTER_DATABASE],
@@ -258,13 +281,29 @@ def update_manifest() -> pd.DataFrame:
         manifest.loc[mask, "derived_artifacts"] = ";".join(str(path.relative_to(ROOT)) for path in derived_paths)
         manifest.loc[mask, "derived_sha256"] = ";".join(checksum(path) for path in derived_paths)
 
-    manifest.to_csv(SOURCE_MANIFEST, index=False)
+    m3_mask = manifest["source_id"].astype(str).eq("census-m3-compute")
+    if COMPUTE_M3_HISTORY.exists() and m3_mask.any():
+        m3 = validate_compute_m3_history()
+        dates = pd.to_datetime(m3["Observation Date"], errors="coerce")
+        manifest.loc[m3_mask, "ingestion_status"] = "retained_manual_refresh"
+        manifest.loc[m3_mask, "notes"] = (
+            "Monthly broad-industry manufacturing-flow series retained through "
+            "the explicit desktop refresh path; not AI-specific."
+        )
+        manifest.loc[m3_mask, "coverage_period"] = (
+            f"{dates.min().date().isoformat()} to {dates.max().date().isoformat()}"
+        )
+        manifest.loc[m3_mask, "retrieval_date"] = date.today().isoformat()
+        manifest.loc[m3_mask, "source_health"] = "retained_current"
+
+    atomic_write_csv(manifest, SOURCE_MANIFEST)
     return manifest
 
 def main() -> None:
     construction = rebuild_construction()
     gigawatt = validate_gigawatt()
     history = validate_compute_history()
+    m3_history = validate_compute_m3_history()
     series_contract = validate_compute_series_contract()
     series_validation = validate_compute_series_validation(history, series_contract)
     projects = validate_compute_projects()
@@ -284,7 +323,8 @@ def main() -> None:
         f"{int((gigawatt['active_us_filter'] & gigawatt['confidence'].fillna('').astype(str).str.lower().eq('verified')).sum()):,} verified U.S. project rows active as a bounded secondary layer;",
         f"{int((gigawatt['active_us_filter'] & ~gigawatt['confidence'].fillna('').astype(str).str.lower().eq('verified')).sum()):,} footprint-only open-geospatial U.S. rows;",
         f"{len(history):,} compute observations;",
-        f"{len(series_contract):,} contracted G.17 series;",
+        f"{len(series_contract):,} contracted G.17 and M3 series;",
+        f"{len(m3_history):,} M3 observations;",
         f"{int(series_validation['comparison_status'].ne('pass_current').sum()):,} latest-release mismatches;",
         f"{len(projects):,} official compute project records;",
         f"{int(data_centers['broad_summary']['total']):,} broad-census data-center facilities;",

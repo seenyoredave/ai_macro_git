@@ -75,8 +75,6 @@ def _archetype(metrics: dict) -> str:
             return "High-pressure leadership"
         if pd.notna(breadth) and breadth >= 65 and (pd.isna(dispersion) or dispersion <= 28):
             return "Broad-based leadership"
-        if factors.get("forward_ebit_yield_discount", 0) >= 60:
-            return "Fundamentally supported leadership"
         return "Constructive leadership"
     if equity >= 48:
         if pressure >= 70 and trailing >= 0.10:
@@ -117,7 +115,7 @@ def _driver_sentence(metrics: dict, sector: str, sector_label: str, peer_metrics
     high_label = FACTOR_LABELS.get(high_name, high_name.replace("_", " "))
     low_label = FACTOR_LABELS.get(low_name, low_name.replace("_", " "))
     if high - low < 12:
-        return f"{sector_label} {prefix.lower()}, with a balanced signal across valuation, relative return, and breadth."
+        return f"{sector_label} {prefix.lower()}, with a balanced signal across relative return and breadth."
     return f"{sector_label} {prefix.lower()}, with {high_label} doing most of the work while {low_label} trails."
 
 
@@ -140,7 +138,7 @@ def _pressure_structure_sentence(metrics: dict, sector: str, peer_metrics: dict,
     multiple = _number(metrics, "Forward EV/EBIT")
     coverage = _number(metrics, "Sector Concentration Coverage")
     if pd.notna(coverage) and coverage < 0.60:
-        structure = "Structural confidence is limited by incomplete market-cap coverage."
+        structure = f"Market-cap data are available for {coverage * 100:.0f}% of included companies."
     elif pd.notna(loss_share) and loss_share >= 0.35:
         structure = f"Loss-making companies represent {loss_share * 100:.0f}% of valid enterprise value, leaving earnings support fragile."
     elif pd.notna(concentration) and concentration >= 40:
@@ -253,9 +251,9 @@ def _watchpoint(metrics: dict) -> str:
     if pd.notna(concentration) and concentration >= 40:
         return "The read is most sensitive to a reversal among the largest constituents."
     if factors and min(factors, key=factors.get) == "market_breadth" and equity >= 50:
-        return "The key question is whether breadth can catch up with the headline return signal."
-    if components and max(components, key=components.get) == "Valuation Stretch" and pressure >= 55:
-        return "The setup improves if valuation pressure eases without a loss of breadth."
+        return "Breadth now needs to catch up with the headline return signal."
+    if components and max(components, key=components.get) == "Volatility Expansion" and pressure >= 55:
+        return "The setup improves if volatility pressure eases without a loss of breadth."
     if equity < 45:
         return "A sustained improvement in relative return and breadth would be the clearest confirmation."
     return "The signal remains constructive while breadth holds and pressure stays contained."
@@ -269,6 +267,11 @@ def select_sector_weekly_event(weekly_context: dict, sector: str, tickers=None):
     }
     candidates = []
     for event in list((weekly_context or {}).get("events", []) or []):
+        verification = str(
+            event.get("verification_status") or event.get("status") or ""
+        ).strip().lower()
+        if verification == "no_match":
+            continue
         sectors = {str(value) for value in event.get("sectors", [])}
         if str(sector) not in sectors:
             continue
@@ -340,13 +343,13 @@ def build_structure_interpretation(metrics: dict) -> str:
     loss_share = _number(metrics, "Loss-Making EV Share")
     coverage = _number(metrics, "Sector Concentration Coverage")
     if pd.notna(coverage) and coverage < 0.60:
-        breadth = f"Only {coverage * 100:.0f}% of constituents have usable market-cap data, so the concentration estimate should be treated cautiously."
+        breadth = f"Market-cap data are available for {coverage * 100:.0f}% of included companies."
     elif pd.notna(concentration) and pd.notna(effective_firms):
         descriptor = "narrow leadership" if concentration >= 40 else "moderate leadership concentration" if concentration >= 15 else "relatively broad leadership"
         breadth = f"The market-cap distribution behaves like {effective_firms:.1f} effective firms, indicating {descriptor}."
     else:
-        breadth = "The available data do not support a firm conclusion about leadership breadth."
-    earnings = f" Loss-making companies represent {loss_share * 100:.1f}% of valid enterprise value." if pd.notna(loss_share) else " Loss-making enterprise-value coverage is unavailable."
+        breadth = "Leadership breadth is n/a."
+    earnings = f" Loss-making companies represent {loss_share * 100:.1f}% of valid enterprise value." if pd.notna(loss_share) else " Loss-making enterprise value is n/a."
     return breadth + earnings
 
 

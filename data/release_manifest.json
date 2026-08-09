@@ -1,0 +1,145 @@
+{
+  "benchmark_contract": {
+    "version": "4.0",
+    "weight_effective_date": "2026-08-02"
+  },
+  "files": {
+    "analytics/read_architecture.py": {
+      "bytes": 98832,
+      "sha256": "b86e53e9cf44ad7c27ebf6a83464eeeb1179421dc79855bff8114469b3dfb4f6"
+    },
+    "analytics/regime_engine.py": {
+      "bytes": 11254,
+      "sha256": "c779120091c8189e3862505ce485b81dc0638a88cb9a5de4da79cb9bfbcd69dc"
+    },
+    "analytics/trend_engine.py": {
+      "bytes": 8737,
+      "sha256": "aa295aa2f71b066525764ce2ab06535f9de4bddbe6b844859abb233162aec423"
+    },
+    "archive/benchmark_history.csv": {
+      "bytes": 4472,
+      "date_column": "Date",
+      "date_max": "2026-07-29",
+      "date_min": "2026-06-12",
+      "rows": 25,
+      "sha256": "0f8081f0fef772a6df389cd1c2005a78f4e4931d61816dd328d401ddfa4876ca"
+    },
+    "archive/edgar_history.csv": {
+      "bytes": 777650,
+      "date_column": "Date",
+      "date_max": "2026-08-07",
+      "date_min": "2026-06-14",
+      "rows": 6311,
+      "sha256": "d75f43856b0dabb385f155d6c17750313b9ee728f0212006b397b61b16d95dbc"
+    },
+    "archive/fred_history.csv": {
+      "bytes": 9893,
+      "date_column": "Date",
+      "date_max": "2026-08-07",
+      "date_min": "2026-06-14",
+      "rows": 22,
+      "sha256": "90c2ab198c6fc63e6b5a35dc771793c0b867e4f06294335a750e827a24587816"
+    },
+    "archive/macro_history.csv": {
+      "bytes": 19644,
+      "date_column": "Date",
+      "date_max": "2026-07-29",
+      "date_min": "2026-06-12",
+      "rows": 25,
+      "sha256": "3fee82f6872626d48946b223bea9e3e1952f8a2766a0e24bee6b5b2674040e25"
+    },
+    "archive/sector_history.csv": {
+      "bytes": 49364,
+      "date_column": "Date",
+      "date_max": "2026-07-29",
+      "date_min": "2026-06-12",
+      "rows": 375,
+      "sha256": "8268525cdd7166008e6f3362e614ba008902a0b9188acf3a641966f41b483712"
+    },
+    "archive/yf_history.csv": {
+      "bytes": 1880593,
+      "date_column": "Date",
+      "date_max": "2026-07-29",
+      "date_min": "2026-06-12",
+      "rows": 5100,
+      "sha256": "7c40a49d0b41b0ce2980837a259a5af0b36bf75e1f6cec6171626846697aa207"
+    },
+    "config/benchmark_config.py": {
+      "bytes": 1759,
+      "sha256": "4cee2a0e19e8e5758862d77471d8c9d02ee97350afe863663ceae10da879eb83"
+    },
+    "config/deployment.py": {
+      "bytes": 1238,
+      "sha256": "14667325d6afaf4bc3de84ecad546fe43cd35bb03d9a16b6749b1ed92d529380"
+    },
+    "config/factor_config.py": {
+      "bytes": 558,
+      "sha256": "79ef62d9fb91730a3a82cd6fc847143f70de4648ffb944412915d53ae38fad26"
+    },
+    "config/load_policy.py": {
+      "bytes": 3634,
+      "sha256": "576239b3aed139d540405ec0bcaf013f182b3f36c7eba262047b3cb27f3321e2"
+    },
+    "config/sector_config.py": {
+      "bytes": 23704,
+      "sha256": "3053dba0242a299d476f172af36d3c8b154acdd782f0f4753aa250039ba2400d"
+    },
+    "data/energy_interconnection_queue.csv": {
+      "bytes": 2356867,
+      "rows": 9181,
+      "sha256": "4df22df5bbaef4476de16e949e615ec58e7f4e3cd54d41d3fb3d8dc4fb9256ab"
+    },
+    "data/energy_interconnection_queue_summary.csv": {
+      "bytes": 1024,
+      "rows": 7,
+      "sha256": "e5f309a71d6a41e066a916f84e630798170392682bbf10729aad5f4d22a6e0be"
+    },
+    "data/facility_identity_decisions.csv": {
+      "bytes": 6091,
+      "rows": 26,
+      "sha256": "d5483331a5ea0559aa16daaf6eebd9d9d5003c2e0e045fbef0d8e02dfa0ad57d"
+    },
+    "data/infrastructure/derived/compute_m3_history.csv": {
+      "bytes": 39943,
+      "date_column": "Observation Date",
+      "date_max": "2026-06-01",
+      "date_min": "1992-01-01",
+      "rows": 414,
+      "sha256": "901b8754de6a910c63b1b0400dcc6dddbb7e12c8d9380a36eb84910dabc9a201"
+    },
+    "data/infrastructure/derived/compute_manufacturing_history.csv": {
+      "bytes": 90571,
+      "date_column": "Observation Date",
+      "date_max": "2026-06-01",
+      "date_min": "1972-01-01",
+      "rows": 654,
+      "sha256": "80457b4e92e03e2797da8816fc7d52b548ed71375c69742754aa952eb7cc518b"
+    },
+    "data/infrastructure/source_manifest.csv": {
+      "bytes": 11518,
+      "rows": 11,
+      "sha256": "7f0e1601e3af40593b36fedddcb26d3ca0e568b2eb8cc35f1ad5e08c71ffc2d6"
+    },
+    "docs/RUNTIME_DATA_CONTRACT.md": {
+      "bytes": 3403,
+      "sha256": "4c16c5f2cf51331b465e69a2637846c9988287ee93adf88f69948d7e17d1b529"
+    },
+    "loaders/snapshot_writer.py": {
+      "bytes": 5942,
+      "sha256": "0d175d25b9fa7e3e00841b3469bfcb822a6dbabc9b9f28cc1abf450478627105"
+    }
+  },
+  "generated_at_utc": "2026-08-09T03:38:13+00:00",
+  "manifest_version": "1.0",
+  "metric_versions": {
+    "adi": "1.0",
+    "aei": "4.0",
+    "borrower_strain": "3.0",
+    "economic_validation_gap": "3.0",
+    "lender_strain": "3.2",
+    "power_stress": "3.0",
+    "trading_pressure": "4.0"
+  },
+  "release_id": "01abc2ff56fc0c0574e3",
+  "scope": "Critical retained archives, analytical contracts, and identity decisions"
+}

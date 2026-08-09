@@ -181,7 +181,7 @@ def main() -> None:
     if len(assigned["market"]) != 1 or assigned["adaptation"]:
         raise AssertionError("Live event ownership did not prevent cross-tab duplication.")
 
-    # The refresh command writes a complete ten-domain manifest and candidate
+    # The refresh command writes a complete eleven-domain manifest and candidate
     # audit even when some domains legitimately return no qualifying event.
     original_discover = discovery.discover_domain
     try:
@@ -253,7 +253,7 @@ def main() -> None:
         raise AssertionError("References regressed to a stacked list.")
 
     print(
-        "PASS  Auditable Current Context · ten-domain manifest · explicit rejection reasons · "
+        "PASS  Auditable Current Context · eleven-domain manifest · explicit rejection reasons · "
         "single-owner display · legitimate no-match supported"
     )
 

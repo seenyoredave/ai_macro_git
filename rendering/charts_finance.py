@@ -175,7 +175,7 @@ def component_bars(components: dict, *, signed=False, height=285, color=None, he
         fig.update_xaxes(range=[0, limit])
     return _base_layout(fig, height=height, margin=dict(l=165, r=45, t=12, b=30))
 
-def funding_history(history: pd.DataFrame, *, years=10):
+def funding_history(history: pd.DataFrame, *, years=5):
     if history is None or not isinstance(history, pd.DataFrame) or history.empty:
         return _base_layout(go.Figure(), height=330)
 
@@ -265,7 +265,7 @@ def private_capital_ledger_chart(metrics: dict, *, height=190):
 
 
 def private_capital_realization_map(funds: pd.DataFrame, *, height=430):
-    """Map cash realization against total value for the retained fund cohort."""
+    """Map cash realization against total value for the available fund cohort."""
     fig = go.Figure()
     required = {
         "Manager", "Fund", "Vintage", "Paid In Capital", "DPI", "RVPI", "TVPI",

@@ -64,6 +64,7 @@ ENERGY_RETAIL_PRICE_SERIES = {
 
 ENERGY_POWER_SERIES = {
     "Electric Power Output": {
+        "series_id": "IPG2211S",
         "fred_name": "Electric Power Output",
         "history_column": "Electric Power Output",
         "display_name": "Electric Power Output",
@@ -74,6 +75,7 @@ ENERGY_POWER_SERIES = {
         "source": "FRED",
     },
     "Electric Power Capacity": {
+        "series_id": "CAPG2211S",
         "fred_name": "Electric Power Capacity",
         "history_column": "Electric Power Capacity",
         "display_name": "Sustainable Potential Output",
@@ -84,6 +86,7 @@ ENERGY_POWER_SERIES = {
         "source": "FRED",
     },
     "Electric Power Utilization": {
+        "series_id": "CAPUTLG2211S",
         "fred_name": "Electric Power Capacity Utilization",
         "history_column": "Electric Power Capacity Utilization",
         "display_name": "Electric Power Utilization",
@@ -95,12 +98,12 @@ ENERGY_POWER_SERIES = {
     },
 }
 
-ENERGY_REFRESH_SERIES = {**ENERGY_PUBLIC_SERIES, **ENERGY_RETAIL_PRICE_SERIES}
+ENERGY_REFRESH_SERIES = {**ENERGY_PUBLIC_SERIES, **ENERGY_RETAIL_PRICE_SERIES, **ENERGY_POWER_SERIES}
 ENERGY_SERIES = {**ENERGY_REFRESH_SERIES, **ENERGY_POWER_SERIES}
 
 ENERGY_FRED_CSV_URL = (
     "https://fred.stlouisfed.org/graph/fredgraph.csv?id="
-    + ",".join(item["series_id"] for item in ENERGY_PUBLIC_SERIES.values())
+    + ",".join(item["series_id"] for item in {**ENERGY_PUBLIC_SERIES, **ENERGY_POWER_SERIES}.values())
     + "&cosd=2015-01-01"
 )
 ENERGY_RETAIL_PRICE_XLSX_URL = (

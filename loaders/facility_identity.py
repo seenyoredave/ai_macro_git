@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from functools import lru_cache
 from typing import NamedTuple
 
 import numpy as np
@@ -10,6 +11,7 @@ from loaders.facility_registry_common import (
     DATE_COLUMNS,
     FACILITY_COLUMNS,
     NUMERIC_COLUMNS,
+    PROJECT_ROOT,
     _blank_registry,
     _clean_token,
     _known_text,
@@ -22,6 +24,7 @@ from loaders.facility_sources import load_curated_facility_records, normalize_im
 
 KNOWN_CAMPUS_ALIASES = {
     frozenset({"homer city energy", "homer city redevelopment"}),
+    frozenset({"meta hyperion richland parish", "meta rpl 10x hyperion sucre"}),
 }
 
 
@@ -30,6 +33,67 @@ KNOWN_WIDE_RADIUS_CAMPUS_NAMES = {
     "coreweave plano",
     "xai colossus 2",
 }
+
+IDENTITY_DECISIONS_PATH = PROJECT_ROOT / "data" / "facility_identity_decisions.csv"
+IDENTITY_DECISION_COLUMNS = (
+    "Source Record ID",
+    "Decision Group",
+    "Decision",
+    "Evidence URL",
+    "Decision Note",
+)
+
+
+def load_facility_identity_decisions() -> pd.DataFrame:
+    """Return the reviewed record-level identity ledger."""
+    if not IDENTITY_DECISIONS_PATH.exists() or not IDENTITY_DECISIONS_PATH.stat().st_size:
+        return pd.DataFrame(columns=IDENTITY_DECISION_COLUMNS)
+    decisions = pd.read_csv(IDENTITY_DECISIONS_PATH, dtype=str).fillna("")
+    required = {"Source Record ID", "Decision Group", "Decision"}
+    if not required.issubset(decisions.columns):
+        raise ValueError("Facility identity decision ledger schema changed")
+    return decisions
+
+
+@lru_cache(maxsize=1)
+def _identity_decision_maps() -> dict[str, dict[str, frozenset[str]]]:
+    """Return reviewed source-record-to-campus decisions.
+
+    The ledger is deliberately small. It resolves only evidence-backed campus
+    identities that a conservative spatial matcher cannot safely infer.
+    """
+    decisions = load_facility_identity_decisions()
+    if decisions.empty:
+        return {"merge": {}, "separate": {}}
+    output: dict[str, dict[str, frozenset[str]]] = {}
+    for decision in ("merge", "separate"):
+        selected = decisions.loc[decisions["Decision"].str.casefold().eq(decision)]
+        mapping: dict[str, set[str]] = {}
+        for source_id, group in zip(selected["Source Record ID"], selected["Decision Group"]):
+            source_id = str(source_id).strip()
+            group = str(group).strip()
+            if source_id and group:
+                mapping.setdefault(source_id, set()).add(group)
+        output[decision] = {
+            key: frozenset(value) for key, value in mapping.items()
+        }
+    return output
+
+
+def _identity_groups(value, decision: str) -> frozenset[str]:
+    mapping = _identity_decision_maps()[decision]
+    groups: set[str] = set()
+    for source_id in str(value or "").split("|"):
+        groups.update(mapping.get(source_id.strip(), ()))
+    return frozenset(groups)
+
+
+def _identity_decision_groups(value) -> frozenset[str]:
+    return _identity_groups(value, "merge")
+
+
+def _identity_separation_groups(value) -> frozenset[str]:
+    return _identity_groups(value, "separate")
 
 
 class _MatchRecord(NamedTuple):
@@ -41,6 +105,8 @@ class _MatchRecord(NamedTuple):
     name_tokens: frozenset[str]
     operator_tokens: frozenset[str]
     address_tokens: frozenset[str]
+    decision_groups: frozenset[str]
+    separation_groups: frozenset[str]
 
 
 def _identity_token(value) -> str:
@@ -113,6 +179,8 @@ def _prepared_match_records(frame: pd.DataFrame) -> list[_MatchRecord]:
                 name_tokens=frozenset(name.split()),
                 operator_tokens=frozenset(operator.split()),
                 address_tokens=frozenset(address.split()),
+                decision_groups=_identity_decision_groups(row.get("Source Record ID")),
+                separation_groups=_identity_separation_groups(row.get("Source Record ID")),
             )
         )
     return records

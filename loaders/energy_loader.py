@@ -32,6 +32,7 @@ from loaders.energy_market_loader import load_energy_market_data
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ENERGY_SERIES_HISTORY_PATH = PROJECT_ROOT / "data" / "energy_series_history.csv"
 POWER_SERIES_HISTORY_PATH = PROJECT_ROOT / "data" / "power_series_history.csv"
+GRID_STORAGE_ROOT = PROJECT_ROOT / "data" / "grid_storage"
 ENERGY_REQUEST_TIMEOUT = 25
 
 def completed_energy_week(now: datetime | None = None):
@@ -164,7 +165,7 @@ def _normalize_fred_csv(frame: pd.DataFrame | None) -> pd.DataFrame:
     dates = pd.to_datetime(frame[date_column], errors="coerce", format="mixed")
     rows = []
     normalized_columns = {str(column).strip().upper(): column for column in frame.columns}
-    for series_name, spec in ENERGY_PUBLIC_SERIES.items():
+    for series_name, spec in {**ENERGY_PUBLIC_SERIES, **ENERGY_POWER_SERIES}.items():
         original_column = normalized_columns.get(spec["series_id"].upper())
         if original_column is None:
             continue
@@ -505,14 +506,6 @@ def _attach_power_series(snapshot: dict, fred_data: dict | None) -> dict:
             source=str(fred_item.get("source") or "FRED archive"),
         )
 
-        current_value = pd.to_numeric(fred_item.get("value"), errors="coerce")
-        if pd.notna(current_value) and np.isfinite(current_value):
-            item["value"] = float(current_value)
-            if fred_item.get("date"):
-                parsed = pd.to_datetime(fred_item.get("date"), errors="coerce", format="mixed")
-                item["date"] = (
-                    parsed.date().isoformat() if pd.notna(parsed) else str(fred_item.get("date"))
-                )
         snapshot.setdefault("series", {})[name] = item
 
     combined_history = _merge_histories(snapshot.get("history"), power_history)
@@ -526,6 +519,24 @@ def _attach_power_series(snapshot: dict, fred_data: dict | None) -> dict:
     )
     report["latest_complete_date"] = _latest_observation_date(snapshot.get("series", {}))
     return snapshot
+
+def _read_grid_storage_table(name: str) -> pd.DataFrame:
+    path = GRID_STORAGE_ROOT / name
+    if not path.exists() or path.stat().st_size == 0:
+        return pd.DataFrame()
+    try:
+        return pd.read_csv(path)
+    except Exception as exc:
+        debug_print(f"Grid & Storage retained table load failed ({name}) -> {exc}")
+        return pd.DataFrame()
+
+
+def _attach_grid_storage_evidence(snapshot: dict) -> dict:
+    snapshot["queue_outcomes_summary"] = _read_grid_storage_table("queue_outcomes_summary.csv")
+    snapshot["reliability_reserve_margins"] = _read_grid_storage_table("nerc_2026_summer_reserve_margins.csv")
+    snapshot["grid_storage_source_manifest"] = _read_grid_storage_table("source_manifest.csv")
+    return snapshot
+
 
 def _latest_observation_date(series: dict) -> str | None:
     dates = []
@@ -544,26 +555,39 @@ def load_energy_data(
     fred_refresh_token: int = 0,
     force_market_refresh: bool = False,
     market_refresh_token: int = 0,
+    market_refresh_scope: str = "all",
     clock_token: str | None = None,
+    allow_live: bool = False,
 ) -> dict:
+    supply_live_enabled = bool(
+        allow_live
+        or force_refresh
+        or force_fred_refresh
+    )
     supply_snapshot = _load_energy_data_cached(
         force_refresh=bool(force_refresh),
         refresh_token=int(refresh_token),
         force_fred_refresh=bool(force_fred_refresh),
         fred_refresh_token=int(fred_refresh_token),
-        clock_token=clock_token or energy_cache_token(),
+        clock_token=(clock_token or energy_cache_token()) if supply_live_enabled else "retained-snapshot",
+        allow_live=supply_live_enabled,
     )
     snapshot = _attach_power_series(dict(supply_snapshot), fred_data)
     market = load_energy_market_data(
         force_refresh=bool(force_market_refresh),
         refresh_token=int(market_refresh_token),
+        refresh_scope=str(market_refresh_scope),
     )
     market_report = market.pop("market_load_report", {})
     snapshot.update(market)
+    snapshot = _attach_grid_storage_evidence(snapshot)
     report = snapshot.setdefault("load_report", {})
     report["market_source_mode"] = market_report.get("source_mode")
     report["market_returned_rows"] = market_report.get("returned_rows", {})
     report["market_error"] = market_report.get("error")
+    report["market_refresh_scope"] = market_report.get("refresh_scope")
+    report["market_refreshed_datasets"] = market_report.get("refreshed_datasets", [])
+    report["market_errors"] = market_report.get("errors", {})
     report["elapsed_sec"] = float(report.get("elapsed_sec", 0.0) or 0.0) + float(market_report.get("elapsed_sec", 0.0) or 0.0)
     return snapshot
 
@@ -575,6 +599,7 @@ def _load_energy_data_cached(
     force_fred_refresh: bool,
     fred_refresh_token: int,
     clock_token: str,
+    allow_live: bool,
 ) -> dict:
     del refresh_token, fred_refresh_token, clock_token
     started = time_module.perf_counter()
@@ -592,6 +617,32 @@ def _load_energy_data_cached(
         )
     )
     local_history = _merge_histories(_load_local_history(), _history_from_archive(archive))
+
+    if not force_refresh and not force_fred_refresh and not allow_live:
+        if current_row is not None:
+            return _snapshot_from_archive_row(
+                current_row,
+                local_history,
+                mode="archive_read_mode",
+                decision="retained_snapshot",
+                elapsed=time_module.perf_counter() - started,
+            )
+        if latest_row is not None:
+            return _snapshot_from_archive_row(
+                latest_row,
+                local_history,
+                mode="archive_read_mode",
+                decision="retained_snapshot",
+                elapsed=time_module.perf_counter() - started,
+            )
+        return _snapshot_from_history(
+            local_history,
+            source_mode="retained_local" if not local_history.empty else "unavailable",
+            snapshot_date=week_date,
+            decision="retained_snapshot",
+            elapsed=time_module.perf_counter() - started,
+            error=None if not local_history.empty else "No retained Energy data is available",
+        )
 
     if decision == "archive_current_week":
         return _snapshot_from_archive_row(

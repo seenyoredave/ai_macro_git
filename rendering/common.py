@@ -94,6 +94,14 @@ TAB_METRIC_REGISTRIES = {
         "U.S. Data Center Footprint",
         "Data Center Development Pipeline",
     ],
+    "connectivity": [
+        "U.S. Connectivity Transport Layer",
+        "Submarine Cable System Coverage",
+        "Internet Exchange Depth",
+        "Middle-Mile Expansion",
+        "Capacity-Connectivity Mismatch",
+        "Campus Connectivity Proximity",
+    ],
     "compute": [
         "Domestic Compute Manufacturing Output",
         "Compute Manufacturing Capacity Utilization",
@@ -101,12 +109,17 @@ TAB_METRIC_REGISTRIES = {
     ],
     "grid_storage": [
         "Interconnection Pipeline",
+        "Queue Conversion",
         "Advanced-Stage Queue Share",
+        "Summer Reserve Margins",
         "Electric Storage Deployment",
+        "Operating Storage Duration",
         "Electric Power Construction",
     ],
     "water": [
         "Freshwater Competition Context",
+        "State Water Exposure",
+        "Campus Water Exposure Dossier",
         "AI Water Evidence Ladder",
         "U.S. Water Utilization Ledger",
         "Thermoelectric Cooling-Water Records",
@@ -126,6 +139,11 @@ TAB_METRIC_REGISTRIES = {
         "Power Capacity Gap",
     ],
     "adaptation": [
+        "Adult Generative-AI Use",
+        "Personal Generative-AI Use",
+        "Work Generative-AI Use",
+        "Weekly Generative-AI Use",
+        "Daily Generative-AI Use",
         "Current Business AI Use",
         "Expected Business AI Use",
         "Expected Adoption Gap",
@@ -133,13 +151,21 @@ TAB_METRIC_REGISTRIES = {
     ],
     "workforce": [
         "AI-Linked Employment Footprint",
+        "LLM Task Exposure Benchmark",
         "Supporting Labor Demand",
+        "Labor-Flow Rates",
         "AI-Linked Wage Trajectory",
+        "Real Earnings Breadth",
+        "Workforce Outcomes Matrix",
     ],
     "economic_impact": [
         "Labor Productivity",
         "Real Value-Added Output",
-        "Hourly Compensation",
+        "Real Hourly Compensation",
+        "Labor Share",
+        "Productivity–Compensation Gap",
+        "Median Real Weekly Earnings",
+        "Broad Participation",
         "Inflation-Adjusted Realized Growth",
         "Unit Labor Costs",
         "Information-Processing Investment",
@@ -160,18 +186,24 @@ TAB_METRIC_REGISTRIES = {
     ],
 }
 
-def _render_tab_metric_registry(tab_key):
-    """Render the registry and its mandatory platform divider as one unit."""
+TERM_DISPLAY_NAMES = {
+    "Retained-Universe Market Return": "AI-Equity Basket Return",
+}
+
+def _render_floating_terms(tab_key):
+    """Place tab-specific definitions at the domain header's upper-right edge."""
     definitions = TAB_METRIC_REGISTRIES[tab_key]
-    with st.expander("Metric registry", expanded=False):
+    with st.popover(
+        "Terms",
+        key=f"floating-terms-{tab_key}",
+        width="content",
+        help="Definitions for this tab",
+    ):
         selected = st.selectbox(
             "Metric or analytical product",
             definitions,
             key=f"research-{tab_key}-definition",
             label_visibility="collapsed",
+            format_func=lambda name: TERM_DISPLAY_NAMES.get(name, name),
         )
         render_definition(METRIC_DEFINITIONS[selected])
-    st.markdown('<div class="rm-metric-registry-divider" aria-hidden="true"></div>', unsafe_allow_html=True)
-
-def _financial_condition_source_stat(*, source_label, updated_date):
-    return "Source", str(source_label), f"updated {updated_date}"

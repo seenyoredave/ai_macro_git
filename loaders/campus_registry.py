@@ -13,6 +13,8 @@ from loaders.facility_identity import (
     _canonical_priority,
     _haversine_km,
     _identity_token,
+    _identity_decision_groups,
+    _identity_separation_groups,
     _known_campus_alias,
     _prepared_match_records,
     _token_set_similarity,
@@ -65,6 +67,15 @@ def _same_campus(left: pd.Series, right: pd.Series) -> bool:
     distance = _haversine_km(left.get("Latitude"), left.get("Longitude"), right.get("Latitude"), right.get("Longitude"))
     if not np.isfinite(distance):
         return False
+
+    left_decisions = _identity_decision_groups(left.get("Source Record ID"))
+    right_decisions = _identity_decision_groups(right.get("Source Record ID"))
+    left_separations = _identity_separation_groups(left.get("Source Record ID"))
+    right_separations = _identity_separation_groups(right.get("Source Record ID"))
+    if left_separations.intersection(right_separations):
+        return False
+    if left_decisions.intersection(right_decisions):
+        return True
 
     # A small, explicit alias table handles materially important records whose
     # published coordinates refer to different points within the same project.
@@ -122,6 +133,12 @@ def _same_prepared_campus(left: _CampusMatchRecord, right: _CampusMatchRecord) -
     )
     if not math.isfinite(distance):
         return False
+
+    if left_facility.separation_groups.intersection(right_facility.separation_groups):
+        return False
+
+    if left_facility.decision_groups.intersection(right_facility.decision_groups):
+        return True
 
     alias_pair = frozenset({left_facility.name, right_facility.name})
     if distance <= 50.0 and len(alias_pair) == 2 and alias_pair in KNOWN_CAMPUS_ALIASES:
@@ -254,6 +271,19 @@ def build_campus_registry(registry: pd.DataFrame | None) -> pd.DataFrame:
     bucket_degrees = 0.25
     bucket_span = 2
     prepared = _prepared_campus_records(clean)
+
+    # Reviewed record-level merge decisions are authoritative and must not be
+    # defeated by a bad coordinate, state proxy, or spatial candidate bucket.
+    # The ledger remains deliberately small and evidence-backed; automatic
+    # matching below continues to use the conservative distance thresholds.
+    reviewed_groups: dict[str, list[int]] = {}
+    for index, record in enumerate(prepared):
+        for decision_group in record.facility.decision_groups:
+            reviewed_groups.setdefault(decision_group, []).append(index)
+    for indexes in reviewed_groups.values():
+        for index in indexes[1:]:
+            union(indexes[0], index)
+
     for index, row in enumerate(prepared):
         facility = row.facility
         if not math.isfinite(facility.latitude) or not math.isfinite(facility.longitude):

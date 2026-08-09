@@ -1,0 +1,5 @@
+PASS  retained startup writes nothing
+PASS  unrelated domain refresh writes no generic snapshots
+PASS  successful YFinance refresh writes only owned snapshots
+PASS  failed EDGAR refresh preserves retained dates
+PASS  successful EDGAR refresh writes only EDGAR

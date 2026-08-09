@@ -210,6 +210,7 @@ def main() -> None:
     if data_ai_event.get("display") != NO_QUALIFYING_NEWS:
         raise AssertionError("Unmapped offline sector context should use the explicit no-match status.")
     for sector in SECTOR_CONFIG:
+        event = events_by_sector[sector]
         sector_narrative = build_sector_narrative(
             compute_metrics,
             sector,
@@ -218,8 +219,11 @@ def main() -> None:
             {sector: compute_metrics},
             sector_context,
         )
-        if not sector_narrative.get("weekly_note"):
-            raise AssertionError(f"{sector} did not receive a This Week narrative row.")
+        is_no_match = str(event.get("verification_status") or event.get("status") or "").strip().lower() == "no_match"
+        if is_no_match and sector_narrative.get("weekly_note"):
+            raise AssertionError(f"{sector} exposed an internal no-match status as news.")
+        if not is_no_match and not sector_narrative.get("weekly_note"):
+            raise AssertionError(f"{sector} lost its qualifying This Week narrative row.")
 
     cloud_narrative = build_sector_narrative(
         compute_metrics,
@@ -258,8 +262,10 @@ def main() -> None:
         raise AssertionError("Structure snapshot is missing required facts.")
 
     market_source = (PROJECT_ROOT / "rendering" / "market.py").read_text()
-    if 'with st.expander(f"View constituent companies · {company_count}", expanded=False):' not in market_source:
-        raise AssertionError("Constituent company table is not collapsed by default.")
+    if 'with st.expander("Market constituents", expanded=False):' not in market_source:
+        raise AssertionError("Constituent ledger is not collapsed by default.")
+    if '_render_market_constituent_ledger(selection, market_ledger)' not in market_source:
+        raise AssertionError("Constituent ledger no longer finishes the Market workflow.")
 
     print(
         "PASS  Market visual-system and sector-dossier smoke test · "

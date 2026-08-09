@@ -10,6 +10,17 @@ import streamlit as st
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.charts_common import compact_sparkline
 from rendering.read_markup import build_domain_read_html
+from config.visual_design import domain_profile
+from rendering.visual_system import render_plotly_chart
+from rendering.layout_contracts import (
+    delivery_pathway_stage_html,
+    detail_dossier_html,
+    normalize_summary_item,
+    signal_rail_html,
+    summary_card_html,
+    summary_row_html,
+    summary_stack_html,
+)
 
 ACCENTS = {
     "violet": "#a78bfa",
@@ -37,15 +48,22 @@ def render_masthead(
     meta: Iterable[tuple[str, str]] | None = None,
     *,
     version: str | None = None,
+    status: str | None = None,
 ) -> None:
     meta_html = "".join(
         f"<div><b>{html.escape(str(label))}</b> {html.escape(str(value))}</div>"
         for label, value in (meta or [])
         if value not in (None, "")
     )
+    release_parts = [
+        html.escape(str(value))
+        for value in (version, status)
+        if value not in (None, "")
+    ]
+    release_line = '<span aria-hidden="true"> | </span>'.join(release_parts)
     version_html = (
-        f'<div class="rm-mast-version">{html.escape(str(version))}</div>'
-        if version not in (None, "")
+        f'<div class="rm-mast-version">{release_line}</div>'
+        if release_parts
         else ""
     )
     st.markdown(
@@ -65,12 +83,28 @@ def render_masthead(
         unsafe_allow_html=True,
     )
 
+
+def render_platform_purpose(statement: str) -> None:
+    with st.container(key="platform-purpose"):
+        with st.expander("Full purpose statement", expanded=False):
+            st.markdown(
+                f'<div class="rm-purpose-copy">{html.escape(str(statement).strip())}</div>',
+                unsafe_allow_html=True,
+            )
+
 def render_tab_header(title: str, subtitle: str, meta: str | None = None) -> None:
+    profile = domain_profile(title)
     meta_html = f'<div class="rm-tabmeta">{html.escape(meta)}</div>' if meta else ""
+    stage_html = ""
+    style = ""
+    if profile is not None:
+        stage_html = f'<div class="rm-tabkicker">{html.escape(profile.stage)}</div>'
+        style = f' style="--rm-tab-accent: var(--rm-{html.escape(profile.accent, quote=True)})"'
     st.markdown(
         f"""
-        <div class="rm-tabhead">
+        <div class="rm-tabhead"{style}>
             <div>
+                {stage_html}
                 <div class="rm-tabtitle">{html.escape(title)}</div>
                 <div class="rm-tabcopy">{html.escape(subtitle)}</div>
             </div>
@@ -188,7 +222,7 @@ def metric_card(
             """,
             unsafe_allow_html=True,
         )
-        st.plotly_chart(
+        render_plotly_chart(
             compact_sparkline(
                 history,
                 color=accent_color,
@@ -199,41 +233,205 @@ def metric_card(
             width="stretch",
             config={"displayModeBar": False, "responsive": True},
             key=f"{key}-sparkline",
+            role="trend",
         )
+
+def render_summary_row(
+    stats: Iterable[tuple[str, str, str | None]],
+    *,
+    key_prefix: str,
+) -> None:
+    """Render a shallow segmented stat rail above a full-width chart."""
+    items = list(stats)
+    if not items:
+        return
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_summary_row requires a non-empty key_prefix")
+    cards = []
+    for index, item in enumerate(items):
+        label, value, note, help_text = normalize_summary_item(item)
+        cards.append(
+            summary_card_html(
+                label=label,
+                value=value,
+                note=note,
+                help_text=help_text,
+                namespace=namespace,
+                index=index,
+                mode="row",
+            )
+        )
+    st.markdown(summary_row_html(cards, namespace=namespace), unsafe_allow_html=True)
+
+
+def render_compact_chart_rail(
+    *,
+    key_prefix: str,
+    chart_weight: float = 2.15,
+    summary_weight: float = 0.85,
+):
+    """Return chart and metric-rail columns inside a keyed responsive wrapper."""
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_compact_chart_rail requires a non-empty key_prefix")
+    if chart_weight <= summary_weight or summary_weight <= 0:
+        raise ValueError("compact layout requires a wider chart column and positive rail")
+    with st.container(key=f"compact-layout-{namespace}"):
+        columns = st.columns(
+            [float(chart_weight), float(summary_weight)],
+            gap="large",
+            vertical_alignment="top",
+        )
+    return columns
+
+
+def render_metric_stack(
+    stats: Iterable[tuple[str, str, str | None]],
+    *,
+    key_prefix: str,
+) -> None:
+    """Render chart-side readings in one segmented vertical sidecar."""
+    items = list(stats)
+    if not items:
+        return
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_metric_stack requires a non-empty key_prefix")
+    cards = []
+    for index, item in enumerate(items):
+        label, value, note, help_text = normalize_summary_item(item)
+        cards.append(
+            summary_card_html(
+                label=label,
+                value=value,
+                note=note,
+                help_text=help_text,
+                namespace=namespace,
+                index=index,
+                mode="rail",
+            )
+        )
+    st.markdown(
+        summary_stack_html(cards, namespace=namespace),
+        unsafe_allow_html=True,
+    )
+
+
+def render_signal_rail(
+    stats: Iterable[tuple[str, str, str | None]],
+    *,
+    key_prefix: str,
+) -> None:
+    """Render categorical cross-sectional findings without KPI-card styling."""
+    items = list(stats)
+    if not items:
+        return
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_signal_rail requires a non-empty key_prefix")
+    st.markdown(
+        signal_rail_html(items, namespace=namespace),
+        unsafe_allow_html=True,
+        width="stretch",
+    )
+
+
+
+
+def render_deliverability_screen(
+    stages: Iterable[tuple[str, str, str]],
+    *,
+    key_prefix: str,
+) -> None:
+    """Render the Grid Delivery Pathway using native Streamlit columns.
+
+    Streamlit owns the five-column desktop geometry.  CSS styles each stage but
+    does not determine whether the pathway is horizontal, avoiding the
+    shrink-wrapped markdown behavior seen in the live application.
+    """
+    items = list(stages)
+    if not items:
+        return
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_deliverability_screen requires a non-empty key_prefix")
+    if len(items) != 5:
+        raise ValueError("Grid Delivery Pathway requires exactly five stages")
+    with st.container(key=f"grid-delivery-pathway-{namespace}"):
+        columns = st.columns(5, gap="small", vertical_alignment="top")
+        for index, (column, stage) in enumerate(zip(columns, items, strict=True), start=1):
+            with column:
+                st.markdown(
+                    delivery_pathway_stage_html(stage, index=index, namespace=namespace),
+                    unsafe_allow_html=True,
+                    width="stretch",
+                )
+
+def render_detail_dossier(
+    *,
+    title: object,
+    subtitle: object | None,
+    badge: object | None,
+    headline_facts: Iterable[tuple],
+    groups: Iterable[tuple[object, Iterable[tuple]]],
+    key_prefix: str,
+) -> None:
+    """Render a cohesive record dossier instead of an undifferentiated card wall."""
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_detail_dossier requires a non-empty key_prefix")
+    normalized_groups = [(group_title, list(rows)) for group_title, rows in groups]
+    st.markdown(
+        detail_dossier_html(
+            title=title,
+            subtitle=subtitle,
+            badge=badge,
+            headline_facts=list(headline_facts),
+            groups=normalized_groups,
+            namespace=namespace,
+        ),
+        unsafe_allow_html=True,
+        width="stretch",
+    )
 
 def render_statline(
     stats: Iterable[tuple[str, str, str | None]],
     *,
     key_prefix: str,
 ) -> None:
+    """Render ordinary KPI readings through the shared segmented stat rail."""
+    render_summary_row(stats, key_prefix=key_prefix)
+
+
+def render_metric_grid(
+    stats: Iterable[tuple[str, str, str | None]],
+    *,
+    key_prefix: str,
+    columns: int = 2,
+) -> None:
     items = list(stats)
     if not items:
         return
-
-    namespace = str(key_prefix).strip().lower().replace(" ", "-")
-    if not namespace:
-        raise ValueError("render_statline requires a non-empty key_prefix")
-
-    columns = st.columns(len(items))
-    for index, (column, item) in enumerate(zip(columns, items)):
-        if len(item) == 3:
-            label, value, note = item
-            help_text = None
-        elif len(item) == 4:
-            label, value, note, help_text = item
-        else:
-            raise ValueError("render_statline items must contain 3 or 4 values")
-        key = f"statline-{namespace}-{index}"
-        with column:
-            with st.container(key=key):
-                st.markdown(f"**{str(label).upper()}**", help=help_text)
-                st.markdown(f"### {str(value)}")
-                if note:
-                    st.caption(str(note))
+    width = max(1, int(columns))
+    for row_index in range(0, len(items), width):
+        render_statline(
+            items[row_index: row_index + width],
+            key_prefix=f"{key_prefix}-row-{row_index // width}",
+        )
 
 
-def render_domain_read(read: dict | None, *, label: str | None = None, accent: str = "violet", macro: bool = False) -> None:
-    accent_color = ACCENTS.get(accent, ACCENTS["violet"])
+def render_domain_read(
+    read: dict | None,
+    *,
+    label: str | None = None,
+    domain: str | None = None,
+    accent: str | None = None,
+    macro: bool = False,
+) -> None:
+    profile = domain_profile(domain)
+    accent_name = profile.accent if profile is not None else (accent or "violet")
+    accent_color = ACCENTS.get(accent_name, ACCENTS["violet"])
     st.markdown(
         build_domain_read_html(
             read,

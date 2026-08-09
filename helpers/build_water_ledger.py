@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -20,6 +21,7 @@ from water.eia_thermoelectric import (
     plant_summary as eia_plant_summary,
 )
 from water.ledger import sha256_file
+from helpers.atomic_io import atomic_write_csv, atomic_write_json
 from water.schema import SOURCE_MANIFEST_COLUMNS, WATER_LEDGER_VERSION
 from water.usgs_2015 import (
     PARSER_VERSION as USGS_PARSER_VERSION,
@@ -38,7 +40,7 @@ DERIVED = ROOT / "data/water/derived"
 MANIFEST_PATH = ROOT / "data/water/source_manifest.csv"
 DICTIONARY_PATH = ROOT / "data/water/field_dictionary.csv"
 
-def _manifest_rows() -> list[dict]:
+def _manifest_rows(*, eia_retrieval_date: str | None = None) -> list[dict]:
     rows = [
         {
             "source_id": USGS_SOURCE_ID,
@@ -88,7 +90,7 @@ def _manifest_rows() -> list[dict]:
             "raw_sha256": sha256_file(RAW_EIA),
             "parser_version": EIA_PARSER_VERSION,
             "schema_version": WATER_LEDGER_VERSION,
-            "retrieval_date": "2026-07-31",
+            "retrieval_date": eia_retrieval_date or "2026-07-31",
             "refresh_frequency": "annual",
             "ingestion_status": "active",
             "source_health": "retained_and_validated",
@@ -159,7 +161,7 @@ def _field_dictionary() -> pd.DataFrame:
     ]
     return pd.DataFrame(rows, columns=["Field", "Layer", "Definition", "Unit or Type", "Treatment"])
 
-def build() -> None:
+def build(*, quiet: bool = False, eia_retrieval_date: str | None = None) -> dict:
     DERIVED.mkdir(parents=True, exist_ok=True)
     if not RAW_USGS.exists() or not RAW_EIA.exists():
         raise FileNotFoundError("Retained USGS and EIA raw snapshots are required")
@@ -183,7 +185,7 @@ def build() -> None:
 
     summary = {
         "ledger_version": WATER_LEDGER_VERSION,
-        "generated_at": "2026-07-31",
+        "generated_at": date.today().isoformat(),
         "source_mode": "retained_local",
         "usgs_2015": usgs_national_summary(usgs_raw),
         "eia_2024_thermoelectric": eia_national_summary(eia_raw),
@@ -196,23 +198,25 @@ def build() -> None:
         },
     }
 
-    observations.to_csv(DERIVED / "water_observations.csv.gz", index=False, compression="gzip")
-    usgs_county.to_csv(DERIVED / "usgs_2015_county_summary.csv.gz", index=False, compression="gzip")
-    usgs_national_categories.to_csv(DERIVED / "usgs_2015_national_category_summary.csv", index=False)
-    usgs_state_categories.to_csv(DERIVED / "usgs_2015_state_category_summary.csv", index=False)
-    usgs_reconciliation.to_csv(DERIVED / "usgs_2015_reconciliation.csv.gz", index=False, compression="gzip")
-    eia_plants.to_csv(DERIVED / "eia_2024_thermoelectric_plant_summary.csv.gz", index=False, compression="gzip")
-    eia_groups.to_csv(DERIVED / "eia_2024_thermoelectric_group_summary.csv", index=False)
-    (DERIVED / "water_national_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    atomic_write_csv(observations, DERIVED / "water_observations.csv.gz", compression="gzip")
+    atomic_write_csv(usgs_county, DERIVED / "usgs_2015_county_summary.csv.gz", compression="gzip")
+    atomic_write_csv(usgs_national_categories, DERIVED / "usgs_2015_national_category_summary.csv")
+    atomic_write_csv(usgs_state_categories, DERIVED / "usgs_2015_state_category_summary.csv")
+    atomic_write_csv(usgs_reconciliation, DERIVED / "usgs_2015_reconciliation.csv.gz", compression="gzip")
+    atomic_write_csv(eia_plants, DERIVED / "eia_2024_thermoelectric_plant_summary.csv.gz", compression="gzip")
+    atomic_write_csv(eia_groups, DERIVED / "eia_2024_thermoelectric_group_summary.csv")
+    atomic_write_json(summary, DERIVED / "water_national_summary.json")
 
-    manifest = pd.DataFrame(_manifest_rows())
+    manifest = pd.DataFrame(_manifest_rows(eia_retrieval_date=eia_retrieval_date))
     for column in SOURCE_MANIFEST_COLUMNS:
         if column not in manifest.columns:
             manifest[column] = ""
-    manifest[SOURCE_MANIFEST_COLUMNS].to_csv(MANIFEST_PATH, index=False)
-    _field_dictionary().to_csv(DICTIONARY_PATH, index=False)
+    atomic_write_csv(manifest[SOURCE_MANIFEST_COLUMNS], MANIFEST_PATH)
+    atomic_write_csv(_field_dictionary(), DICTIONARY_PATH)
 
-    print(json.dumps(summary, indent=2))
+    if not quiet:
+        print(json.dumps(summary, indent=2))
+    return summary
 
 if __name__ == "__main__":
     build()

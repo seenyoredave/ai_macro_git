@@ -16,11 +16,10 @@ from factors.factor_normalization import normalize_factor
 from factors.factor_weights import FACTOR_WEIGHTS
 
 PRESSURE_WEIGHTS = {
-    "Valuation Stretch": 0.25,
-    "Price Extension": 0.25,
-    "Momentum Acceleration": 0.20,
-    "Volatility Expansion": 0.15,
-    "Volume Activity": 0.15,
+    "Price Extension": 0.30,
+    "Momentum Acceleration": 0.25,
+    "Volatility Expansion": 0.25,
+    "Volume Activity": 0.20,
 }
 
 def normalize_factor_table(factor_df):
@@ -47,14 +46,10 @@ def calc_sector_scores(normalized_df):
         str(row["Factor"]): row["Score"]
         for _, row in normalized_df.iterrows()
     }
-    # Historical point-in-time archives do not always contain a reliable
-    # forward-valuation estimate. In that case, return and breadth remain real,
-    # independent observations and are reweighted rather than discarded.
-    minimum_components = 2 if len(scores) >= 2 else len(scores)
     combined = weighted_available_score(
         scores,
         FACTOR_WEIGHTS,
-        min_components=minimum_components,
+        min_components=len(FACTOR_WEIGHTS),
     )
 
     if DEBUG:
@@ -87,9 +82,6 @@ def _factor_raw(factor_df, factor_name):
 
 def calc_trading_pressure(yf_df, factor_df=None):
     raw = {
-        "Valuation Stretch": _factor_raw(
-            factor_df, "forward_ebit_yield_discount"
-        ),
         "Price Extension": _median_numeric(yf_df, "Price Extension 200D"),
         "Momentum Acceleration": _median_numeric(yf_df, "Momentum Acceleration"),
         "Volatility Expansion": _median_numeric(yf_df, "Volatility Expansion"),
@@ -97,7 +89,6 @@ def calc_trading_pressure(yf_df, factor_df=None):
     }
 
     scores = {
-        "Valuation Stretch": tanh_score(raw["Valuation Stretch"], center=0.0, scale=0.04),
         "Price Extension": tanh_score(raw["Price Extension"], center=0.0, scale=0.20),
         "Momentum Acceleration": tanh_score(raw["Momentum Acceleration"], center=0.0, scale=0.15),
         "Volatility Expansion": tanh_score(raw["Volatility Expansion"], center=0.0, scale=0.60),
@@ -107,7 +98,7 @@ def calc_trading_pressure(yf_df, factor_df=None):
     combined = weighted_available_score(
         scores,
         PRESSURE_WEIGHTS,
-        min_components=3,
+        min_components=len(PRESSURE_WEIGHTS),
     )
 
     rows = []

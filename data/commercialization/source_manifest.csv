@@ -1,0 +1,6 @@
+Provider,Source URL,Parser Key,Status,Expected Metrics,Refresh Contract,Latest Discovery,Boundary
+OpenAI,https://openai.com/index/accelerating-the-next-phase-ai/,openai_scale,active,3,fixed_page_validation,No,Company-reported metrics; private-company definitions are not independently standardized.
+OpenAI,https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/,openai_economics,active,2,fixed_page_validation,No,Company-reported ARR and compute figures.
+Microsoft,https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast,microsoft_ai_arr,active,2,fixed_page_validation,No,AI-business ARR is company-defined.
+Alphabet,https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx,alphabet_q2,active,3,fixed_page_validation,No,"Cloud metrics are AI-influenced, not pure AI revenue."
+Alphabet,https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx,alphabet_q4,active,4,fixed_page_validation,No,"Company-reported usage, seats, capex, and serving-cost figures."

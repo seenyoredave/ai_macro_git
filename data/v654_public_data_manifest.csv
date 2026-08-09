@@ -1,0 +1,3 @@
+Evidence Layer,Primary Source,Frequency / Coverage,Retained File,Interpretation Boundary
+Consumer and worker generative-AI adoption,"Real-Time Population Survey via FRED; Bick, Blandin, and Deming","Quarterly, 2025 Q2–2026 Q2",adoption_consumer_history.csv,"Measures reported overall, personal, work, prior-week, and daily use. Does not measure paid conversion, provider share, consumer revenue, or realized value."
+Workforce purchasing-power normalization,BLS Consumer Price Index via retained FRED history,"Monthly, aligned to each earnings observation",economic_impact_cpi_history.csv,"Deflates nominal hourly earnings to the purchasing power of the latest CPI observation not later than the latest retained earnings month; does not attribute wage changes to AI."

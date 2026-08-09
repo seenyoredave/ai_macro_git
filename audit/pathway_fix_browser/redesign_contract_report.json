@@ -1,0 +1,871 @@
+{
+  "scope": "pure HTML/CSS deliverability, dossier, and value-bridge primitives",
+  "passed": true,
+  "results": [
+    {
+      "viewport": 1280,
+      "deliverability": {
+        "x": 55.390625,
+        "y": 112,
+        "width": 1169.21875,
+        "height": 145.59375,
+        "right": 1224.609375,
+        "bottom": 257.59375
+      },
+      "deliverabilityWrapper": {
+        "x": 55.390625,
+        "y": 112,
+        "width": 1169.21875,
+        "height": 145.59375,
+        "right": 1224.609375,
+        "bottom": 257.59375
+      },
+      "deliverabilityPanel": {
+        "x": 38.390625,
+        "y": 67,
+        "width": 1203.21875,
+        "height": 207.59375,
+        "right": 1241.609375,
+        "bottom": 274.59375
+      },
+      "deliveryRects": [
+        {
+          "x": 55.390625,
+          "y": 112,
+          "width": 226.796875,
+          "height": 145.59375,
+          "right": 282.1875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 290.984375,
+          "y": 112,
+          "width": 226.8125,
+          "height": 145.59375,
+          "right": 517.796875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 526.59375,
+          "y": 112,
+          "width": 226.796875,
+          "height": 145.59375,
+          "right": 753.390625,
+          "bottom": 257.59375
+        },
+        {
+          "x": 762.1875,
+          "y": 112,
+          "width": 226.8125,
+          "height": 145.59375,
+          "right": 989,
+          "bottom": 257.59375
+        },
+        {
+          "x": 997.796875,
+          "y": 112,
+          "width": 226.796875,
+          "height": 145.59375,
+          "right": 1224.59375,
+          "bottom": 257.59375
+        }
+      ],
+      "dossier": {
+        "x": 55.390625,
+        "y": 351.59375,
+        "width": 1169.21875,
+        "height": 459.9375,
+        "right": 1224.609375,
+        "bottom": 811.53125
+      },
+      "bridge": {
+        "x": 55.390625,
+        "y": 877.53125,
+        "width": 1169.21875,
+        "height": 216.09375,
+        "right": 1224.609375,
+        "bottom": 1093.625
+      },
+      "groupRects": [
+        {
+          "x": 56.390625,
+          "y": 527.171875,
+          "width": 583.609375,
+          "height": 283.359375,
+          "right": 640,
+          "bottom": 810.53125
+        },
+        {
+          "x": 640,
+          "y": 527.171875,
+          "width": 583.609375,
+          "height": 283.359375,
+          "right": 1223.609375,
+          "bottom": 810.53125
+        }
+      ],
+      "layerRects": [
+        {
+          "x": 56.390625,
+          "y": 943.53125,
+          "width": 318.328125,
+          "height": 149.09375,
+          "right": 374.71875,
+          "bottom": 1092.625
+        },
+        {
+          "x": 374.71875,
+          "y": 943.53125,
+          "width": 325.40625,
+          "height": 149.09375,
+          "right": 700.125,
+          "bottom": 1092.625
+        },
+        {
+          "x": 700.125,
+          "y": 943.53125,
+          "width": 523.484375,
+          "height": 149.09375,
+          "right": 1223.609375,
+          "bottom": 1092.625
+        }
+      ],
+      "facts": [
+        {
+          "x": 56.390625,
+          "y": 432.078125,
+          "width": 389.0625,
+          "height": 94.09375,
+          "right": 445.453125,
+          "bottom": 526.171875
+        },
+        {
+          "x": 445.453125,
+          "y": 432.078125,
+          "width": 389.078125,
+          "height": 94.09375,
+          "right": 834.53125,
+          "bottom": 526.171875
+        },
+        {
+          "x": 834.53125,
+          "y": 432.078125,
+          "width": 389.0625,
+          "height": 94.09375,
+          "right": 1223.59375,
+          "bottom": 526.171875
+        }
+      ],
+      "insideViewport": true,
+      "noOverflow": true,
+      "stageContentFits": true,
+      "deliverabilityWide": true,
+      "wrapperFills": true,
+      "deliverabilityStacked": false,
+      "dossierColumns": true,
+      "bridgeHorizontal": true,
+      "bridgeVertical": false,
+      "checks": {
+        "inside_viewport": true,
+        "no_overflow": true,
+        "deliverability_layout": true,
+        "streamlit_wrapper_fill": true,
+        "dossier_responsive": true,
+        "bridge_layout": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 1600,
+      "deliverability": {
+        "x": 65,
+        "y": 112,
+        "width": 1470,
+        "height": 145.59375,
+        "right": 1535,
+        "bottom": 257.59375
+      },
+      "deliverabilityWrapper": {
+        "x": 65,
+        "y": 112,
+        "width": 1470,
+        "height": 145.59375,
+        "right": 1535,
+        "bottom": 257.59375
+      },
+      "deliverabilityPanel": {
+        "x": 48,
+        "y": 67,
+        "width": 1504,
+        "height": 207.59375,
+        "right": 1552,
+        "bottom": 274.59375
+      },
+      "deliveryRects": [
+        {
+          "x": 65,
+          "y": 112,
+          "width": 286.953125,
+          "height": 145.59375,
+          "right": 351.953125,
+          "bottom": 257.59375
+        },
+        {
+          "x": 360.75,
+          "y": 112,
+          "width": 286.96875,
+          "height": 145.59375,
+          "right": 647.71875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 656.515625,
+          "y": 112,
+          "width": 286.953125,
+          "height": 145.59375,
+          "right": 943.46875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 952.265625,
+          "y": 112,
+          "width": 286.96875,
+          "height": 145.59375,
+          "right": 1239.234375,
+          "bottom": 257.59375
+        },
+        {
+          "x": 1248.03125,
+          "y": 112,
+          "width": 286.953125,
+          "height": 145.59375,
+          "right": 1534.984375,
+          "bottom": 257.59375
+        }
+      ],
+      "dossier": {
+        "x": 65,
+        "y": 351.59375,
+        "width": 1470,
+        "height": 467.15625,
+        "right": 1535,
+        "bottom": 818.75
+      },
+      "bridge": {
+        "x": 65,
+        "y": 884.75,
+        "width": 1470,
+        "height": 216.09375,
+        "right": 1535,
+        "bottom": 1100.84375
+      },
+      "groupRects": [
+        {
+          "x": 66,
+          "y": 534.390625,
+          "width": 734,
+          "height": 283.359375,
+          "right": 800,
+          "bottom": 817.75
+        },
+        {
+          "x": 800,
+          "y": 534.390625,
+          "width": 734,
+          "height": 283.359375,
+          "right": 1534,
+          "bottom": 817.75
+        }
+      ],
+      "layerRects": [
+        {
+          "x": 66,
+          "y": 950.75,
+          "width": 400.359375,
+          "height": 149.09375,
+          "right": 466.359375,
+          "bottom": 1099.84375
+        },
+        {
+          "x": 466.359375,
+          "y": 950.75,
+          "width": 409.25,
+          "height": 149.09375,
+          "right": 875.609375,
+          "bottom": 1099.84375
+        },
+        {
+          "x": 875.609375,
+          "y": 950.75,
+          "width": 658.390625,
+          "height": 149.09375,
+          "right": 1534,
+          "bottom": 1099.84375
+        }
+      ],
+      "facts": [
+        {
+          "x": 66,
+          "y": 436.40625,
+          "width": 489.328125,
+          "height": 96.984375,
+          "right": 555.328125,
+          "bottom": 533.390625
+        },
+        {
+          "x": 555.328125,
+          "y": 436.40625,
+          "width": 489.328125,
+          "height": 96.984375,
+          "right": 1044.65625,
+          "bottom": 533.390625
+        },
+        {
+          "x": 1044.65625,
+          "y": 436.40625,
+          "width": 489.34375,
+          "height": 96.984375,
+          "right": 1534,
+          "bottom": 533.390625
+        }
+      ],
+      "insideViewport": true,
+      "noOverflow": true,
+      "stageContentFits": true,
+      "deliverabilityWide": true,
+      "wrapperFills": true,
+      "deliverabilityStacked": false,
+      "dossierColumns": true,
+      "bridgeHorizontal": true,
+      "bridgeVertical": false,
+      "checks": {
+        "inside_viewport": true,
+        "no_overflow": true,
+        "deliverability_layout": true,
+        "streamlit_wrapper_fill": true,
+        "dossier_responsive": true,
+        "bridge_layout": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 1920,
+      "deliverability": {
+        "x": 65,
+        "y": 112,
+        "width": 1790,
+        "height": 145.59375,
+        "right": 1855,
+        "bottom": 257.59375
+      },
+      "deliverabilityWrapper": {
+        "x": 65,
+        "y": 112,
+        "width": 1790,
+        "height": 145.59375,
+        "right": 1855,
+        "bottom": 257.59375
+      },
+      "deliverabilityPanel": {
+        "x": 48,
+        "y": 67,
+        "width": 1824,
+        "height": 207.59375,
+        "right": 1872,
+        "bottom": 274.59375
+      },
+      "deliveryRects": [
+        {
+          "x": 65,
+          "y": 112,
+          "width": 350.953125,
+          "height": 145.59375,
+          "right": 415.953125,
+          "bottom": 257.59375
+        },
+        {
+          "x": 424.75,
+          "y": 112,
+          "width": 350.96875,
+          "height": 145.59375,
+          "right": 775.71875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 784.515625,
+          "y": 112,
+          "width": 350.953125,
+          "height": 145.59375,
+          "right": 1135.46875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 1144.265625,
+          "y": 112,
+          "width": 350.96875,
+          "height": 145.59375,
+          "right": 1495.234375,
+          "bottom": 257.59375
+        },
+        {
+          "x": 1504.03125,
+          "y": 112,
+          "width": 350.953125,
+          "height": 145.59375,
+          "right": 1854.984375,
+          "bottom": 257.59375
+        }
+      ],
+      "dossier": {
+        "x": 65,
+        "y": 351.59375,
+        "width": 1790,
+        "height": 467.15625,
+        "right": 1855,
+        "bottom": 818.75
+      },
+      "bridge": {
+        "x": 65,
+        "y": 884.75,
+        "width": 1790,
+        "height": 216.09375,
+        "right": 1855,
+        "bottom": 1100.84375
+      },
+      "groupRects": [
+        {
+          "x": 66,
+          "y": 534.390625,
+          "width": 894,
+          "height": 283.359375,
+          "right": 960,
+          "bottom": 817.75
+        },
+        {
+          "x": 960,
+          "y": 534.390625,
+          "width": 894,
+          "height": 283.359375,
+          "right": 1854,
+          "bottom": 817.75
+        }
+      ],
+      "layerRects": [
+        {
+          "x": 66,
+          "y": 950.75,
+          "width": 487.625,
+          "height": 149.09375,
+          "right": 553.625,
+          "bottom": 1099.84375
+        },
+        {
+          "x": 553.625,
+          "y": 950.75,
+          "width": 498.46875,
+          "height": 149.09375,
+          "right": 1052.09375,
+          "bottom": 1099.84375
+        },
+        {
+          "x": 1052.09375,
+          "y": 950.75,
+          "width": 801.90625,
+          "height": 149.09375,
+          "right": 1854,
+          "bottom": 1099.84375
+        }
+      ],
+      "facts": [
+        {
+          "x": 66,
+          "y": 436.40625,
+          "width": 596,
+          "height": 96.984375,
+          "right": 662,
+          "bottom": 533.390625
+        },
+        {
+          "x": 662,
+          "y": 436.40625,
+          "width": 596,
+          "height": 96.984375,
+          "right": 1258,
+          "bottom": 533.390625
+        },
+        {
+          "x": 1258,
+          "y": 436.40625,
+          "width": 596,
+          "height": 96.984375,
+          "right": 1854,
+          "bottom": 533.390625
+        }
+      ],
+      "insideViewport": true,
+      "noOverflow": true,
+      "stageContentFits": true,
+      "deliverabilityWide": true,
+      "wrapperFills": true,
+      "deliverabilityStacked": false,
+      "dossierColumns": true,
+      "bridgeHorizontal": true,
+      "bridgeVertical": false,
+      "checks": {
+        "inside_viewport": true,
+        "no_overflow": true,
+        "deliverability_layout": true,
+        "streamlit_wrapper_fill": true,
+        "dossier_responsive": true,
+        "bridge_layout": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 2560,
+      "deliverability": {
+        "x": 65,
+        "y": 112,
+        "width": 2430,
+        "height": 145.59375,
+        "right": 2495,
+        "bottom": 257.59375
+      },
+      "deliverabilityWrapper": {
+        "x": 65,
+        "y": 112,
+        "width": 2430,
+        "height": 145.59375,
+        "right": 2495,
+        "bottom": 257.59375
+      },
+      "deliverabilityPanel": {
+        "x": 48,
+        "y": 67,
+        "width": 2464,
+        "height": 207.59375,
+        "right": 2512,
+        "bottom": 274.59375
+      },
+      "deliveryRects": [
+        {
+          "x": 65,
+          "y": 112,
+          "width": 478.953125,
+          "height": 145.59375,
+          "right": 543.953125,
+          "bottom": 257.59375
+        },
+        {
+          "x": 552.75,
+          "y": 112,
+          "width": 478.96875,
+          "height": 145.59375,
+          "right": 1031.71875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 1040.515625,
+          "y": 112,
+          "width": 478.953125,
+          "height": 145.59375,
+          "right": 1519.46875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 1528.265625,
+          "y": 112,
+          "width": 478.96875,
+          "height": 145.59375,
+          "right": 2007.234375,
+          "bottom": 257.59375
+        },
+        {
+          "x": 2016.03125,
+          "y": 112,
+          "width": 478.953125,
+          "height": 145.59375,
+          "right": 2494.984375,
+          "bottom": 257.59375
+        }
+      ],
+      "dossier": {
+        "x": 65,
+        "y": 351.59375,
+        "width": 2430,
+        "height": 467.15625,
+        "right": 2495,
+        "bottom": 818.75
+      },
+      "bridge": {
+        "x": 65,
+        "y": 884.75,
+        "width": 2430,
+        "height": 216.09375,
+        "right": 2495,
+        "bottom": 1100.84375
+      },
+      "groupRects": [
+        {
+          "x": 66,
+          "y": 534.390625,
+          "width": 1214,
+          "height": 283.359375,
+          "right": 1280,
+          "bottom": 817.75
+        },
+        {
+          "x": 1280,
+          "y": 534.390625,
+          "width": 1214,
+          "height": 283.359375,
+          "right": 2494,
+          "bottom": 817.75
+        }
+      ],
+      "layerRects": [
+        {
+          "x": 66,
+          "y": 950.75,
+          "width": 662.171875,
+          "height": 149.09375,
+          "right": 728.171875,
+          "bottom": 1099.84375
+        },
+        {
+          "x": 728.171875,
+          "y": 950.75,
+          "width": 676.90625,
+          "height": 149.09375,
+          "right": 1405.078125,
+          "bottom": 1099.84375
+        },
+        {
+          "x": 1405.078125,
+          "y": 950.75,
+          "width": 1088.921875,
+          "height": 149.09375,
+          "right": 2494,
+          "bottom": 1099.84375
+        }
+      ],
+      "facts": [
+        {
+          "x": 66,
+          "y": 436.40625,
+          "width": 809.328125,
+          "height": 96.984375,
+          "right": 875.328125,
+          "bottom": 533.390625
+        },
+        {
+          "x": 875.328125,
+          "y": 436.40625,
+          "width": 809.328125,
+          "height": 96.984375,
+          "right": 1684.65625,
+          "bottom": 533.390625
+        },
+        {
+          "x": 1684.65625,
+          "y": 436.40625,
+          "width": 809.328125,
+          "height": 96.984375,
+          "right": 2493.984375,
+          "bottom": 533.390625
+        }
+      ],
+      "insideViewport": true,
+      "noOverflow": true,
+      "stageContentFits": true,
+      "deliverabilityWide": true,
+      "wrapperFills": true,
+      "deliverabilityStacked": false,
+      "dossierColumns": true,
+      "bridgeHorizontal": true,
+      "bridgeVertical": false,
+      "checks": {
+        "inside_viewport": true,
+        "no_overflow": true,
+        "deliverability_layout": true,
+        "streamlit_wrapper_fill": true,
+        "dossier_responsive": true,
+        "bridge_layout": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 768,
+      "deliverability": {
+        "x": 40.03125,
+        "y": 112,
+        "width": 687.9375,
+        "height": 454.375,
+        "right": 727.96875,
+        "bottom": 566.375
+      },
+      "deliverabilityWrapper": {
+        "x": 40.03125,
+        "y": 112,
+        "width": 687.9375,
+        "height": 454.375,
+        "right": 727.96875,
+        "bottom": 566.375
+      },
+      "deliverabilityPanel": {
+        "x": 23.03125,
+        "y": 67,
+        "width": 721.9375,
+        "height": 516.375,
+        "right": 744.96875,
+        "bottom": 583.375
+      },
+      "deliveryRects": [
+        {
+          "x": 40.03125,
+          "y": 112,
+          "width": 339.5625,
+          "height": 145.59375,
+          "right": 379.59375,
+          "bottom": 257.59375
+        },
+        {
+          "x": 388.390625,
+          "y": 112,
+          "width": 339.578125,
+          "height": 145.59375,
+          "right": 727.96875,
+          "bottom": 257.59375
+        },
+        {
+          "x": 40.03125,
+          "y": 266.390625,
+          "width": 339.5625,
+          "height": 145.59375,
+          "right": 379.59375,
+          "bottom": 411.984375
+        },
+        {
+          "x": 388.390625,
+          "y": 266.390625,
+          "width": 339.578125,
+          "height": 145.59375,
+          "right": 727.96875,
+          "bottom": 411.984375
+        },
+        {
+          "x": 40.03125,
+          "y": 420.78125,
+          "width": 339.5625,
+          "height": 145.59375,
+          "right": 379.59375,
+          "bottom": 566.375
+        }
+      ],
+      "dossier": {
+        "x": 40.03125,
+        "y": 660.375,
+        "width": 687.9375,
+        "height": 966,
+        "right": 727.96875,
+        "bottom": 1626.375
+      },
+      "bridge": {
+        "x": 40.03125,
+        "y": 1692.375,
+        "width": 687.9375,
+        "height": 216.09375,
+        "right": 727.96875,
+        "bottom": 1908.46875
+      },
+      "groupRects": [
+        {
+          "x": 41.03125,
+          "y": 1057.65625,
+          "width": 685.9375,
+          "height": 283.359375,
+          "right": 726.96875,
+          "bottom": 1341.015625
+        },
+        {
+          "x": 41.03125,
+          "y": 1341.015625,
+          "width": 685.9375,
+          "height": 284.359375,
+          "right": 726.96875,
+          "bottom": 1625.375
+        }
+      ],
+      "layerRects": [
+        {
+          "x": 41.03125,
+          "y": 1758.375,
+          "width": 187.0625,
+          "height": 149.09375,
+          "right": 228.09375,
+          "bottom": 1907.46875
+        },
+        {
+          "x": 228.09375,
+          "y": 1758.375,
+          "width": 191.234375,
+          "height": 149.09375,
+          "right": 419.328125,
+          "bottom": 1907.46875
+        },
+        {
+          "x": 419.328125,
+          "y": 1758.375,
+          "width": 307.640625,
+          "height": 149.09375,
+          "right": 726.96875,
+          "bottom": 1907.46875
+        }
+      ],
+      "facts": [
+        {
+          "x": 41.03125,
+          "y": 787.75,
+          "width": 685.9375,
+          "height": 88.96875,
+          "right": 726.96875,
+          "bottom": 876.71875
+        },
+        {
+          "x": 41.03125,
+          "y": 876.71875,
+          "width": 685.9375,
+          "height": 89.96875,
+          "right": 726.96875,
+          "bottom": 966.6875
+        },
+        {
+          "x": 41.03125,
+          "y": 966.6875,
+          "width": 685.9375,
+          "height": 89.96875,
+          "right": 726.96875,
+          "bottom": 1056.65625
+        }
+      ],
+      "insideViewport": true,
+      "noOverflow": true,
+      "stageContentFits": true,
+      "deliverabilityWide": false,
+      "wrapperFills": true,
+      "deliverabilityStacked": true,
+      "dossierColumns": false,
+      "bridgeHorizontal": true,
+      "bridgeVertical": false,
+      "checks": {
+        "inside_viewport": true,
+        "no_overflow": true,
+        "deliverability_layout": true,
+        "streamlit_wrapper_fill": true,
+        "dossier_responsive": true,
+        "bridge_layout": true
+      },
+      "passed": true
+    }
+  ]
+}

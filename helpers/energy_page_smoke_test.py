@@ -44,6 +44,7 @@ class _FakeStreamlit(types.ModuleType):
     def caption(self, *args, **kwargs): return None
     def info(self, *args, **kwargs): return None
     def error(self, *args, **kwargs): return None
+    def dataframe(self, *args, **kwargs): return None
     def columns(self, spec, *args, **kwargs):
         count = int(spec) if isinstance(spec, int) else len(spec)
         return [_Block(self) for _ in range(count)]
@@ -66,6 +67,7 @@ from rendering.power import (  # noqa: E402
     _render_buildout,
     _render_demand,
     _render_power_pulse,
+    _render_power_ledger,
     _render_prices,
     _render_supply,
 )
@@ -133,13 +135,14 @@ def main() -> None:
     _render_supply(power)
     _render_buildout(power)
     _render_prices(power, power_data)
+    _render_power_ledger(power, power_data)
     visible = [item for item in FAKE_ST.charts if not item["hidden"]]
     hidden = [item for item in FAKE_ST.charts if item["hidden"]]
     if len(visible) != 4:
         raise AssertionError(f"Power should have four default-visible charts, found {len(visible)}")
     if FAKE_ST.radio_options.get("power-view-supply") != ["Generation mix", "Generation momentum", "Fleet changes"]:
         raise AssertionError("Power supply selector changed unexpectedly.")
-    if FAKE_ST.radio_options.get("power-view-prices") != ["Retail prices", "Wholesale hubs"]:
+    if FAKE_ST.radio_options.get("power-view-prices") != ["Retail prices", "Wholesale hubs", "Fuel infrastructure"]:
         raise AssertionError("Power price selector changed unexpectedly.")
     if any(item["traces"] == 0 for item in visible):
         raise AssertionError("A default-visible Power chart is empty.")
@@ -162,8 +165,9 @@ def main() -> None:
     power_source = (PROJECT_ROOT / "rendering" / "power.py").read_text(encoding="utf-8")
     if "Queue by technology" in power_source or "Queue by region" in power_source:
         raise AssertionError("Queue views remain on Power.")
-    if "Interconnection progression and electric storage now live in Grid & Storage" not in power_source:
-        raise AssertionError("Power / Grid boundary is not explicit in the UI.")
+    grid_source = (PROJECT_ROOT / "rendering" / "grid_storage.py").read_text(encoding="utf-8")
+    if "Generation buildout" not in power_source or "Queue conversion" not in grid_source:
+        raise AssertionError("Power and Grid & Storage no longer retain distinct analytical surfaces.")
 
     print(
         "PASS  v6.5.2 Power + Grid boundary · "

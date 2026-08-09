@@ -14,6 +14,7 @@ from analytics.regime_engine import (
     LENDER_STRAIN_VERSION,
     POWER_STRESS_VERSION,
 )
+from config.benchmark_config import BENCHMARK_VERSION
 from analytics.trend_engine import (
     calc_acceleration,
     calc_metric_trend,
@@ -23,7 +24,33 @@ from analytics.trend_engine import (
 from archive.archive_reader import load_macro_history
 from config.debug_config import DEBUG, debug_print
 
-AEI_HISTORY_START = pd.Timestamp("2026-06-14")
+ADI_COMPONENT_COLUMNS = (
+    "ADI Capital Deployment",
+    "ADI Data Center Construction",
+    "ADI Compute Supply Realization",
+    "ADI Power Footprint",
+)
+POWER_STRESS_COMPONENT_COLUMNS = (
+    "Power Nonresidential Load",
+    "Power Grid Utilization",
+    "Power Capacity Response",
+)
+
+def _latest_component_contract(history, component_columns):
+    """Retain rows computed from the same available component set as the latest row."""
+    if history is None or history.empty:
+        return history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
+    if any(column not in history.columns for column in component_columns):
+        return history.iloc[0:0].copy()
+
+    working = history.copy()
+    masks = working.loc[:, list(component_columns)].notna().astype(int).astype(str).agg("".join, axis=1)
+    dated = pd.to_datetime(working.get("Date"), errors="coerce", format="mixed")
+    valid = dated.notna()
+    if not valid.any():
+        return working.iloc[0:0].copy()
+    latest_index = dated.loc[valid].idxmax()
+    return working.loc[masks == masks.loc[latest_index]].copy()
 
 def _append_current_metric_observation(
     history,
@@ -56,17 +83,31 @@ def _append_current_metric_observation(
     return working
 
 def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
+    compatible = (
+        macro_history.loc[
+            macro_history.get(
+                "Benchmark Version",
+                pd.Series(index=macro_history.index, dtype=object),
+            ).astype(str).eq(str(BENCHMARK_VERSION))
+        ].copy()
+        if macro_history is not None and not macro_history.empty
+        else pd.DataFrame()
+    )
     trend = calc_metric_trend(
-        macro_history,
+        compatible,
         "AI Equity Index",
         version_column="AEI Version",
         required_version=AEI_VERSION,
+        required_filters={"Benchmark Version": BENCHMARK_VERSION},
     )
 
-    history = metric_series(macro_history, "AI Equity Index")
-    if not history.empty:
-        history = history.loc[history["Date"] >= AEI_HISTORY_START].copy()
-
+    history = metric_series(
+        compatible,
+        "AI Equity Index",
+        version_column="AEI Version",
+        required_version=AEI_VERSION,
+        required_filters={"Benchmark Version": BENCHMARK_VERSION},
+    )
     current_value = pd.to_numeric(current_value, errors="coerce")
     current_date = pd.Timestamp.today().normalize()
     if pd.notna(current_value) and np.isfinite(current_value):
@@ -81,14 +122,11 @@ def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
         )
 
         native_values = metric_series(
-            macro_history.loc[
-                macro_history.get("AEI Version", pd.Series(index=macro_history.index, dtype=object))
-                .astype(str)
-                .eq(str(AEI_VERSION))
-            ].copy()
-            if macro_history is not None and not macro_history.empty
-            else pd.DataFrame(),
+            compatible,
             "AI Equity Index",
+            version_column="AEI Version",
+            required_version=AEI_VERSION,
+            required_filters={"Benchmark Version": BENCHMARK_VERSION},
         )
         native_values = (
             current_row.copy()
@@ -109,8 +147,7 @@ def _build_version_aware_aei_trend(macro_history, current_value=np.nan):
     trend.setdefault("revision_label", None)
     trend.setdefault(
         "history_note",
-        "Chart history includes AEI 2.0 observations for continuity; "
-        "current velocity and acceleration use AEI 3.1 observations only.",
+        "All retained observations use the universal AEI 4.0 construction.",
     )
 
     return trend
@@ -156,6 +193,14 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
     macro_history = load_macro_history()
     regime_metrics = regime_metrics or {}
     signed_power_history = normalize_power_stress_history(macro_history)
+    compatible_adi_history = _latest_component_contract(
+        macro_history,
+        ADI_COMPONENT_COLUMNS,
+    )
+    compatible_power_history = _latest_component_contract(
+        signed_power_history,
+        POWER_STRESS_COMPONENT_COLUMNS,
+    )
     signed_capital_history = normalize_borrower_strain_history(
         combine_borrower_strain_history(macro_history)
     )
@@ -183,16 +228,20 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             regime_metrics.get("AI Equity Index", np.nan),
         ),
         "adi_trend": calc_metric_trend(
-            macro_history,
+            compatible_adi_history,
             "AI Development Intensity",
             version_column="ADI Version",
             required_version=ADI_VERSION,
+            distinct_observations=True,
+            repeat_tolerance=1e-8,
         ),
         "power_stress_trend": calc_metric_trend(
-            signed_power_history,
+            compatible_power_history,
             "Power Stress Index",
             version_column="Power Stress Version",
             required_version=POWER_STRESS_VERSION,
+            distinct_observations=True,
+            repeat_tolerance=1e-8,
         ),
         "concentration_trend": calc_metric_trend(
             macro_history,
@@ -205,6 +254,9 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
             required_version=BORROWER_STRAIN_VERSION,
             distinct_observations=True,
             repeat_tolerance=1e-8,
+            dynamics_window_days=365,
+            dynamics_min_observations=3,
+            dynamics_min_span_days=120,
         ),
         "lender_strain_trend": calc_metric_trend(
             native_lender_strain_history,
@@ -219,12 +271,23 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
                 if "Lender Strain Version" in native_lender_strain_history.columns
                 else None
             ),
+            distinct_observations=True,
+            repeat_tolerance=1e-8,
+            dynamics_window_days=365,
+            dynamics_min_observations=3,
+            dynamics_min_span_days=120,
         ),
         "speculation_gap_trend": calc_metric_trend(
             macro_history,
             "Speculation Gap",
             version_column="AEI Version",
             required_version=AEI_VERSION,
+            required_filters={
+                "Benchmark Version": BENCHMARK_VERSION,
+                "ADI Version": ADI_VERSION,
+            },
+            distinct_observations=True,
+            repeat_tolerance=1e-8,
         ),
     }
 

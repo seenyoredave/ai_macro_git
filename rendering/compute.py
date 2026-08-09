@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from rendering.visual_system import render_plotly_chart
 from rendering.charts_infrastructure import (
     compute_capacity_utilization_history,
     compute_info_processing_investment_history,
@@ -12,17 +13,21 @@ from rendering.charts_infrastructure import (
     compute_manufacturing_output_history,
     compute_project_layer_sites,
     compute_project_state_sites,
+    compute_critical_supply_chain,
 )
-from rendering.common import _render_tab_metric_registry
+from rendering.common import _render_floating_terms
+from rendering.commercialization import filtered_ledger, metric_value
 from rendering.components import (
     inject_panel_height_rules,
     fmt_date,
     fmt_number,
+    render_compact_chart_rail,
     render_domain_read,
-    render_line_break,
+    render_metric_stack,
     render_panel_heading,
     render_section,
     render_statline,
+    render_summary_row,
     render_tab_header,
 )
 from rendering.dataframe import arrow_safe_dataframe
@@ -63,114 +68,55 @@ def _render_manufacturing_output(infrastructure_data):
     communications = _series_item(infrastructure_data, "Communications Equipment Output")
     semiconductors = _series_item(infrastructure_data, "Semiconductor and Electronic Component Output")
 
-    render_section(
-        "Manufacturing output",
-        "Domestic production across computers, communications equipment, and semiconductor components.",
-        first=True,
-    )
-    render_statline(
-        [
-            ("Computers / peripherals", _index_value(computers), _growth_detail(computers)),
-            ("Communications equipment", _index_value(communications), _growth_detail(communications)),
-            ("Semiconductors / components", _index_value(semiconductors), _growth_detail(semiconductors)),
-        ],
-        key_prefix="compute-output",
-    )
-    with st.container(border=True):
-        render_panel_heading("Compute-manufacturing output", "Federal Reserve G.17 · 2017=100")
-        st.plotly_chart(
-            compute_manufacturing_output_history(history, height=350, years=10),
-            width="stretch",
-            config={"displayModeBar": True, "responsive": True},
-            key="compute-output-history",
-        )
-
+    render_section("Manufacturing trajectory", "Domestic production across computers, communications equipment, and semiconductor components.", first=True)
+    render_summary_row([
+        ("Computers / peripherals", _index_value(computers), _growth_detail(computers)),
+        ("Communications equipment", _index_value(communications), _growth_detail(communications)),
+        ("Semiconductors / components", _index_value(semiconductors), _growth_detail(semiconductors)),
+    ], key_prefix="compute-output")
+    with st.container(key="full-width-layout-compute-manufacturing-hero"):
+        with st.container(border=True, key="compute-panel-output-history"):
+            render_panel_heading("Compute-manufacturing output", "Federal Reserve G.17 · 2017=100 · ten-year history")
+            render_plotly_chart(compute_manufacturing_output_history(history, height=500, years=10), width="stretch", config={"displayModeBar": True, "responsive": True}, key="compute-output-history")
 
 def _render_capacity_and_demand(infrastructure_data):
     compute = _compute_data(infrastructure_data)
     history = compute.get("history")
     info_history = compute.get("info_investment_history")
     m3_history = compute.get("m3_history")
-    computer_utilization = _series_item(
-        infrastructure_data, "Computer and Peripheral Equipment Capacity Utilization"
-    )
-    semiconductor_utilization = _series_item(
-        infrastructure_data, "Semiconductor and Electronic Component Capacity Utilization"
-    )
+    computer_utilization = _series_item(infrastructure_data, "Computer and Peripheral Equipment Capacity Utilization")
+    semiconductor_utilization = _series_item(infrastructure_data, "Semiconductor and Electronic Component Capacity Utilization")
     investment = _series_item(infrastructure_data, "Info Processing Investment Level")
 
-    render_section("Capacity and demand", "Manufacturing capacity, operating rates, and information-processing investment.")
-    render_statline(
-        [
-            (
-                "Computer utilization",
-                _index_value(computer_utilization, suffix="%"),
-                fmt_date(computer_utilization.get("date")),
-            ),
-            (
-                "Semiconductor utilization",
-                _index_value(semiconductor_utilization, suffix="%"),
-                fmt_date(semiconductor_utilization.get("date")),
-            ),
-            (
-                "Information-processing investment",
-                "$" + fmt_number(pd.to_numeric(investment.get("value"), errors="coerce") / 1000.0, 2, suffix="T"),
-                _growth_detail(investment),
-            ),
-        ],
-        key_prefix="compute-capacity-demand",
-    )
-
-    columns = st.columns(2)
-    with columns[0]:
-        with st.container(border=True, key="compute-panel-manufacturing-capacity"):
-            render_panel_heading("Manufacturing capacity", "Federal Reserve G.17 · 2017=100")
-            st.plotly_chart(
-                compute_manufacturing_capacity_history(history, height=325, years=10),
-                width="stretch",
-                config={"displayModeBar": True, "responsive": True},
-                key="compute-capacity-history",
-            )
-    with columns[1]:
-        with st.container(border=True, key="compute-panel-capacity-utilization"):
-            render_panel_heading("Capacity utilization", "Federal Reserve G.17 · percent")
-            st.plotly_chart(
-                compute_capacity_utilization_history(history, height=325, years=10),
-                width="stretch",
-                config={"displayModeBar": True, "responsive": True},
-                key="compute-utilization-history",
-            )
-
+    render_section("Capacity and demand", "Manufacturing capacity, operating rates, orders, backlogs, and information-processing investment.")
+    render_summary_row([
+        ("Computer utilization", _index_value(computer_utilization, suffix="%"), fmt_date(computer_utilization.get("date"))),
+        ("Semiconductor utilization", _index_value(semiconductor_utilization, suffix="%"), fmt_date(semiconductor_utilization.get("date"))),
+        ("Information-processing investment", "$" + fmt_number(pd.to_numeric(investment.get("value"), errors="coerce") / 1000.0, 2, suffix="T"), _growth_detail(investment)),
+    ], key_prefix="compute-capacity-demand")
+    views = ["Capacity utilization", "Manufacturing capacity"]
     if isinstance(m3_history, pd.DataFrame) and not m3_history.empty:
-        columns = st.columns(2)
-        with columns[0]:
-            with st.container(border=True, key="compute-panel-orders-shipments"):
+        views.extend(["Orders and shipments", "Backlog and inventory"])
+    views.append("Information-processing investment")
+    with st.container(key="full-width-layout-compute-capacity-demand"):
+        with st.container(border=True, key="compute-panel-capacity-demand-selected"):
+            view = st.radio("Capacity and demand view", views, horizontal=True, label_visibility="collapsed", key="compute-view-capacity-demand")
+            if view == "Manufacturing capacity":
+                render_panel_heading("Manufacturing capacity", "Federal Reserve G.17 · 2017=100")
+                figure, chart_key = compute_manufacturing_capacity_history(history, height=430, years=10), "compute-capacity-history"
+            elif view == "Orders and shipments":
                 render_panel_heading("Orders and shipments", "Census M3 · monthly value")
-                st.plotly_chart(
-                    compute_m3_orders_shipments(m3_history, height=325, years=10),
-                    width="stretch",
-                    config={"displayModeBar": True, "responsive": True},
-                    key="compute-orders-shipments",
-                )
-        with columns[1]:
-            with st.container(border=True, key="compute-panel-backlog-inventory"):
+                figure, chart_key = compute_m3_orders_shipments(m3_history, height=430, years=10), "compute-orders-shipments"
+            elif view == "Backlog and inventory":
                 render_panel_heading("Backlog and inventory", "Census M3 · monthly ratios")
-                st.plotly_chart(
-                    compute_m3_backlog_inventory(m3_history, height=325, years=10),
-                    width="stretch",
-                    config={"displayModeBar": True, "responsive": True},
-                    key="compute-backlog-inventory",
-                )
-
-    with st.container(border=True):
-        render_panel_heading("Information-processing investment", "BEA · real private fixed investment")
-        st.plotly_chart(
-            compute_info_processing_investment_history(info_history, height=330, years=10),
-            width="stretch",
-            config={"displayModeBar": True, "responsive": True},
-            key="compute-info-investment",
-        )
-
+                figure, chart_key = compute_m3_backlog_inventory(m3_history, height=430, years=10), "compute-backlog-inventory"
+            elif view == "Information-processing investment":
+                render_panel_heading("Information-processing investment", "BEA · real private fixed investment")
+                figure, chart_key = compute_info_processing_investment_history(info_history, height=430, years=10), "compute-info-investment"
+            else:
+                render_panel_heading("Capacity utilization", "Federal Reserve G.17 · percent")
+                figure, chart_key = compute_capacity_utilization_history(history, height=430, years=10), "compute-utilization-history"
+            render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=chart_key)
 
 def _project_detail(projects: pd.DataFrame) -> pd.DataFrame:
     if projects is None or not isinstance(projects, pd.DataFrame) or projects.empty:
@@ -187,11 +133,19 @@ def _project_detail(projects: pd.DataFrame) -> pd.DataFrame:
         "Expected CapEx USD B",
         "Direct Funding USD B",
         "Available Loan USD B",
-        "Source URL",
     ]
     fields = [field for field in fields if field in projects.columns]
     return projects[fields].reset_index(drop=True)
 
+
+def _render_critical_supply_chain(infrastructure_data):
+    compute = _compute_data(infrastructure_data)
+    critical = compute.get("critical_supply_chain", {}) or {}
+    render_section("Critical supply-chain structure", "The domestic production layers most directly tied to AI compute: logic, HBM, advanced packaging, and optical interconnect.")
+    with st.container(key="full-width-layout-compute-critical-supply-chain"):
+        with st.container(border=True, key="compute-panel-critical-supply-chain"):
+            render_panel_heading("Critical AI supply-chain layers", "Logic, HBM, packaging, and optical interconnect")
+            render_plotly_chart(compute_critical_supply_chain(critical.get("layers"), height=470), width="stretch", config={"displayModeBar": True, "responsive": True}, key="compute-critical-supply-chain")
 
 def _render_domestic_buildout(infrastructure_data):
     compute = _compute_data(infrastructure_data)
@@ -199,76 +153,63 @@ def _render_domestic_buildout(infrastructure_data):
     summary = compute.get("project_summary", {}) or {}
     if not isinstance(projects, pd.DataFrame):
         projects = pd.DataFrame()
+    render_section("Domestic buildout", "Announced manufacturing projects, production layers, geography, and public-private investment.")
+    render_summary_row([
+        ("Manufacturing sites", f"{int(summary.get('projects', 0) or 0):,}", "announced projects"),
+        ("States", f"{int(summary.get('states', 0) or 0):,}", f"{int(summary.get('portfolios', 0) or 0):,} portfolios"),
+        ("Expected investment", "$" + fmt_number(summary.get("expected_capex_usd_b"), 1, suffix="B"), "announced capital spending"),
+        ("Direct awards", "$" + fmt_number(summary.get("direct_funding_usd_b"), 1, suffix="B"), "federal incentives"),
+    ], key_prefix="compute-buildout")
+    with st.container(key="full-width-layout-compute-domestic-buildout"):
+        with st.container(border=True, key="compute-panel-buildout-selected"):
+            view = st.radio("Domestic buildout view", ["Project footprint", "Buildout geography"], horizontal=True, label_visibility="collapsed", key="compute-view-domestic-buildout")
+            if view == "Buildout geography":
+                render_panel_heading("Buildout geography", "Announced manufacturing sites")
+                figure, chart_key = compute_project_state_sites(projects, height=470), "compute-state-sites"
+            else:
+                render_panel_heading("Project footprint by production layer", "Announced manufacturing sites")
+                figure, chart_key = compute_project_layer_sites(projects, height=470), "compute-layer-sites"
+            render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=chart_key)
 
-    render_section("Domestic buildout", "Manufacturing sites, supply-chain coverage, and public-private investment.")
-    render_statline(
-        [
-            ("Manufacturing sites", f"{int(summary.get('projects', 0) or 0):,}", "tracked facilities"),
-            ("States", f"{int(summary.get('states', 0) or 0):,}", f"{int(summary.get('portfolios', 0) or 0):,} portfolios"),
-            (
-                "Expected investment",
-                "$" + fmt_number(summary.get("expected_capex_usd_b"), 1, suffix="B"),
-                "announced capital spending",
-            ),
-            (
-                "Direct awards",
-                "$" + fmt_number(summary.get("direct_funding_usd_b"), 1, suffix="B"),
-                "federal incentives",
-            ),
-        ],
-        key_prefix="compute-buildout",
-    )
+def _render_serving_economics(commercialization_data):
+    openai_compute = metric_value(commercialization_data, "OpenAI", "Available compute")
+    openai_arr = metric_value(commercialization_data, "OpenAI", "Annualized revenue run rate")
+    microsoft_arr = metric_value(commercialization_data, "Microsoft", "Annual revenue run rate")
+    alphabet_efficiency = metric_value(commercialization_data, "Alphabet", "Serving unit-cost reduction")
+    if all(pd.isna(value) for value in [openai_compute, openai_arr, microsoft_arr, alphabet_efficiency]):
+        return
+    render_section("Serving economics", "Validation band linking deployed compute with revenue scale and the cost of serving demand.")
+    render_summary_row([
+        ("Available compute", fmt_number(openai_compute, 1, suffix=" GW"), "OpenAI · company reported"),
+        ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "2025 disclosed floor"),
+        ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), "provider-defined AI business"),
+        ("Serving unit cost", fmt_number(alphabet_efficiency, 0, suffix="% lower"), "Alphabet · during 2025"),
+    ], key_prefix="compute-serving-economics")
 
-    columns = st.columns(2)
-    with columns[0]:
-        with st.container(border=True, key="compute-panel-supply-chain"):
-            render_panel_heading("Supply-chain coverage", "Tracked manufacturing sites")
-            st.plotly_chart(
-                compute_project_layer_sites(projects, height=360),
-                width="stretch",
-                config={"displayModeBar": True, "responsive": True},
-                key="compute-layer-sites",
-            )
-    with columns[1]:
-        with st.container(border=True, key="compute-panel-buildout-geography"):
-            render_panel_heading("Buildout geography", "Tracked manufacturing sites")
-            st.plotly_chart(
-                compute_project_state_sites(projects, height=360),
-                width="stretch",
-                config={"displayModeBar": True, "responsive": True},
-                key="compute-state-sites",
-            )
+def _render_compute_ledger(infrastructure_data, commercialization_data):
+    projects = _compute_data(infrastructure_data).get("projects")
+    with st.expander("Compute data", expanded=False):
+        view = st.radio("Ledger", ["Manufacturing projects", "Serving-economics disclosures"], horizontal=True, key="compute-ledger-view")
+        if view == "Serving-economics disclosures":
+            frame = filtered_ledger(commercialization_data, pillars=["Compute economics", "Revenue realization", "Cost pressure"])
+        else:
+            frame = _project_detail(projects if isinstance(projects, pd.DataFrame) else pd.DataFrame())
+        st.dataframe(arrow_safe_dataframe(frame), width="stretch", hide_index=True, height=440)
 
-    with st.expander("Compute project ledger", expanded=False):
-        st.dataframe(
-            arrow_safe_dataframe(_project_detail(projects)),
-            width="stretch",
-            hide_index=True,
-        )
-
-
-def render_compute_tab(infrastructure_data, tab_read=None):
-    inject_panel_height_rules({
-        "compute-panel-manufacturing-capacity": 405,
-        "compute-panel-capacity-utilization": 405,
-        "compute-panel-orders-shipments": 405,
-        "compute-panel-backlog-inventory": 405,
-        "compute-panel-supply-chain": 440,
-        "compute-panel-buildout-geography": 440,
-    })
+def render_compute_tab(infrastructure_data, commercialization_data=None, tab_read=None):
+    inject_panel_height_rules({"compute-panel-capacity-demand-selected": 470, "compute-panel-buildout-selected": 500})
     compute = _compute_data(infrastructure_data)
-    sources = ["Federal Reserve", "BEA", "NIST CHIPS"]
+    sources = ["Federal Reserve", "BEA", "NIST CHIPS", "company disclosures"]
     m3_history = compute.get("m3_history")
     if isinstance(m3_history, pd.DataFrame) and not m3_history.empty:
         sources.insert(1, "Census")
-    render_tab_header(
-        "Compute",
-        "Domestic compute manufacturing, capacity, demand, and production buildout.",
-        " / ".join(sources),
-    )
-    render_line_break()
-    _render_tab_metric_registry("compute")
-    render_domain_read(tab_read, label="Compute Read", accent="blue")
+    render_tab_header("Compute", "Domestic compute manufacturing, capacity, demand, serving economics, and production buildout.", " / ".join(sources))
+    _render_floating_terms("compute")
+    render_domain_read(tab_read, label="Compute Read", domain="compute")
     _render_manufacturing_output(infrastructure_data)
     _render_capacity_and_demand(infrastructure_data)
+    _render_serving_economics(commercialization_data)
+    _render_critical_supply_chain(infrastructure_data)
     _render_domestic_buildout(infrastructure_data)
+    _render_compute_ledger(infrastructure_data, commercialization_data)
+

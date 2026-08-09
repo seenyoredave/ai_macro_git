@@ -193,18 +193,46 @@ def _fractracker_raw_frame(*, force_refresh: bool = False, timeout: int = 30) ->
     return raw
 
 
-def load_fractracker_facility_records(*, force_refresh: bool = False) -> pd.DataFrame:
+def load_fractracker_facility_records(
+    *,
+    force_refresh: bool = False,
+    return_report: bool = False,
+) -> pd.DataFrame | tuple[pd.DataFrame, dict]:
+    source_mode = "retained"
+    error = None
+
+    def finish(frame: pd.DataFrame):
+        report = {
+            "source_mode": source_mode,
+            "requested": bool(force_refresh),
+            "returned_rows": int(len(frame)),
+            "error": error,
+        }
+        return (frame, report) if return_report else frame
+
     try:
         raw = _fractracker_raw_frame(force_refresh=force_refresh)
-    except Exception:
+        if force_refresh:
+            source_mode = "live_refresh"
+    except Exception as exc:
+        error = f"{type(exc).__name__}: {exc}"
+        source_mode = "retained_fallback"
         if not FRACTRACKER_PATH.exists() or not FRACTRACKER_PATH.stat().st_size:
-            return _blank_registry()
+            return finish(_blank_registry())
         try:
             raw = pd.read_csv(FRACTRACKER_PATH)
-        except Exception:
-            return _blank_registry()
+        except Exception as fallback_exc:
+            error = f"{error}; fallback {type(fallback_exc).__name__}: {fallback_exc}"
+            return finish(_blank_registry())
+    if raw.empty and force_refresh and FRACTRACKER_PATH.exists() and FRACTRACKER_PATH.stat().st_size:
+        error = "ValueError: live source returned no records"
+        source_mode = "retained_fallback"
+        try:
+            raw = pd.read_csv(FRACTRACKER_PATH)
+        except Exception as fallback_exc:
+            error = f"{error}; fallback {type(fallback_exc).__name__}: {fallback_exc}"
     if raw.empty:
-        return _blank_registry()
+        return finish(_blank_registry())
 
     aliases = {
         "OBJECTID": ("OBJECTID", "objectid", "fid"),
@@ -330,4 +358,4 @@ def load_fractracker_facility_records(*, force_refresh: bool = False) -> pd.Data
     other = column("other_info").fillna("").astype(str)
     information = column("information_source").fillna("").astype(str)
     output["Notes"] = [" ".join(item for item in [a.strip(), b.strip()] if item) for a, b in zip(other, information)]
-    return _normalize_registry(output.dropna(subset=["Latitude", "Longitude"]))
+    return finish(_normalize_registry(output.dropna(subset=["Latitude", "Longitude"])))

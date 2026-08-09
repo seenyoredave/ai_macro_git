@@ -113,7 +113,10 @@ def state_competition_exposure(
 
     county_context = facilities.get("County Water Context Available")
     if county_context is None:
-        county_context = pd.to_numeric(facilities.get("Total Withdrawal Mgal/d"), errors="coerce").notna()
+        total_withdrawal = facilities.get("Total Withdrawal Mgal/d")
+        if total_withdrawal is None:
+            total_withdrawal = pd.Series(np.nan, index=facilities.index)
+        county_context = pd.to_numeric(total_withdrawal, errors="coerce").notna()
     direct = facilities.get("Direct Water Evidence")
     if direct is None:
         direct = pd.Series(False, index=facilities.index)
@@ -229,3 +232,74 @@ def state_facility_evidence_profile(facility_context: pd.DataFrame | None) -> pd
         out["Quantified Use"] / out["Mapped Facilities"].where(out["Mapped Facilities"].gt(0))
     )
     return out.sort_values(["Mapped Facilities", "State"], ascending=[False, True], kind="stable").reset_index(drop=True)
+
+
+def state_water_exposure_profile(
+    facility_context: pd.DataFrame | None,
+    state_categories: pd.DataFrame | None = None,
+) -> pd.DataFrame:
+    """Combine campus footprint, drought area, disclosure, and freshwater allocation by state."""
+    if facility_context is None or not isinstance(facility_context, pd.DataFrame) or facility_context.empty:
+        return pd.DataFrame()
+    frame = facility_context.copy()
+    frame["State"] = frame.get("State", "").fillna("").astype(str).str.upper().str.strip()
+    frame = frame.loc[frame["State"].ne("")].copy()
+    published = pd.to_numeric(frame.get("Published Capacity Estimate MW"), errors="coerce")
+    planned = pd.to_numeric(frame.get("Planned Data Center Capacity MW"), errors="coerce")
+    frame["Published MW"] = published.combine_first(planned)
+    frame["D1+ Area Percent"] = pd.to_numeric(frame.get("D1+ Area Percent"), errors="coerce")
+    frame["D2+ Area Percent"] = pd.to_numeric(frame.get("D2+ Area Percent"), errors="coerce")
+    direct = frame.get("Direct Water Evidence", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
+    frame["_direct"] = direct
+    grouped = frame.groupby("State", dropna=False)
+    out = grouped.agg(
+        Facilities=("State", "size"),
+        Published_MW=("Published MW", lambda values: values.sum(min_count=1)),
+        Direct_Evidence=("_direct", "sum"),
+        D1_Area_Percent=("D1+ Area Percent", "max"),
+        D2_Area_Percent=("D2+ Area Percent", "max"),
+    ).reset_index().rename(columns={
+        "Published_MW": "Published Capacity MW",
+        "Direct_Evidence": "Direct Water Evidence",
+        "D1_Area_Percent": "D1+ Area Percent",
+        "D2_Area_Percent": "D2+ Area Percent",
+    })
+    out["Direct Evidence Coverage Percent"] = out["Direct Water Evidence"] / out["Facilities"].where(out["Facilities"].gt(0)) * 100.0
+    allocation = state_competition_exposure(frame, state_categories)
+    if not allocation.empty:
+        keep = ["State", "Community + Agriculture Share", "Agriculture Share", "Household & Public Share", "Thermoelectric Share"]
+        out = out.merge(allocation[[c for c in keep if c in allocation.columns]], on="State", how="left")
+    out["Exposure Tier"] = np.select(
+        [out["D2+ Area Percent"].fillna(0).ge(25), out["D1+ Area Percent"].fillna(0).ge(25)],
+        ["Severe drought overlap", "Drought overlap"],
+        default="Limited current drought overlap",
+    )
+    return out.sort_values(["D2+ Area Percent", "Published Capacity MW"], ascending=[False, False], kind="stable").reset_index(drop=True)
+
+
+def campus_water_dossier(facility_context: pd.DataFrame | None) -> pd.DataFrame:
+    if facility_context is None or not isinstance(facility_context, pd.DataFrame) or facility_context.empty:
+        return pd.DataFrame()
+    frame = facility_context.copy()
+    keep = [
+        "Facility ID", "Facility", "Operator", "State", "County", "Status",
+        "Published Capacity Estimate MW", "Planned Data Center Capacity MW", "Cooling System", "Water Source",
+        "Reclaimed Water Use", "Direct Water Evidence", "Water Evidence Grade",
+        "Water Withdrawal Gallons/Year", "Water Consumption Gallons/Year",
+        "D1+ Area Percent", "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent",
+        "Snapshot Date", "Freshwater Withdrawal Mgal/d", "Total Withdrawal Mgal/d",
+        "Water Evidence Source", "Water Evidence URL",
+    ]
+    out = frame[[column for column in keep if column in frame.columns]].copy()
+    published = pd.to_numeric(out.get("Published Capacity Estimate MW"), errors="coerce")
+    planned = pd.to_numeric(out.get("Planned Data Center Capacity MW"), errors="coerce")
+    out["Published Capacity MW"] = published.combine_first(planned)
+    out["D1+ Area Percent"] = pd.to_numeric(out.get("D1+ Area Percent"), errors="coerce")
+    out["D2+ Area Percent"] = pd.to_numeric(out.get("D2+ Area Percent"), errors="coerce")
+    out["Direct Water Evidence"] = out.get("Direct Water Evidence", False).fillna(False).astype(bool)
+    out["Exposure Tier"] = np.select(
+        [out["D2+ Area Percent"].fillna(0).ge(25), out["D1+ Area Percent"].fillna(0).ge(25)],
+        ["Severe drought overlap", "Drought overlap"],
+        default="Limited current drought overlap",
+    )
+    return out.sort_values(["D2+ Area Percent", "Published Capacity MW"], ascending=[False, False], kind="stable").reset_index(drop=True)

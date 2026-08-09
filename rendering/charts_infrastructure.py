@@ -580,3 +580,187 @@ def wider_system_profile(history: pd.DataFrame | None, *, mode: str = "Indexed h
     fig.update_xaxes(title="Construction spending · $B SAAR", tickprefix="$", ticksuffix="B")
     fig = _infra_layout(fig, height=height, margin=dict(l=128, r=56, t=28, b=48))
     return add_axis_headroom(fig, axis="x", upper=0.18, lower=0.0, include_zero=True)
+
+
+def compute_critical_supply_chain(layers: pd.DataFrame | None, *, height: int = 390):
+    """Show the available AI-critical manufacturing layers without implying full national coverage."""
+    frame = layers.copy() if isinstance(layers, pd.DataFrame) else pd.DataFrame()
+    figure = go.Figure()
+    if not frame.empty:
+        layer_col = next((column for column in ["Supply Chain Layer", "Layer"] if column in frame.columns), None)
+        site_col = next((column for column in ["Sites", "Projects"] if column in frame.columns), None)
+        if layer_col and site_col:
+            frame[site_col] = pd.to_numeric(frame[site_col], errors="coerce")
+            capex_col = next((column for column in ["Expected CapEx USD B", "Expected CapEx (USD B)"] if column in frame.columns), None)
+            funding_col = next((column for column in ["Direct Funding USD B", "Direct Funding (USD B)"] if column in frame.columns), None)
+            if capex_col:
+                frame[capex_col] = pd.to_numeric(frame[capex_col], errors="coerce")
+            if funding_col:
+                frame[funding_col] = pd.to_numeric(frame[funding_col], errors="coerce")
+            frame = frame.dropna(subset=[site_col]).sort_values(site_col, ascending=True, kind="stable")
+            custom = np.stack(
+                [
+                    pd.to_numeric(frame.get(capex_col, pd.Series(np.nan, index=frame.index)), errors="coerce"),
+                    pd.to_numeric(frame.get(funding_col, pd.Series(np.nan, index=frame.index)), errors="coerce"),
+                    frame.get("States", pd.Series("", index=frame.index)).fillna("").astype(str),
+                ],
+                axis=-1,
+            )
+            figure.add_trace(
+                go.Bar(
+                    x=frame[site_col],
+                    y=frame[layer_col],
+                    orientation="h",
+                    marker={"color": COLORS["violet"]},
+                    text=[f"{int(value):,}" for value in frame[site_col]],
+                    textposition="outside",
+                    cliponaxis=False,
+                    customdata=custom,
+                    hovertemplate=(
+                        "%{y}<br>Announced sites: %{x:,.0f}"
+                        "<br>Announced capex: $%{customdata[0]:,.1f}B"
+                        "<br>Direct awards: $%{customdata[1]:,.1f}B"
+                        "<br>States: %{customdata[2]}<extra></extra>"
+                    ),
+                    showlegend=False,
+                )
+            )
+    figure.update_xaxes(title="Announced manufacturing sites", dtick=1)
+    figure.update_yaxes(title="")
+    figure = _base_layout(figure, height=height, legend=False, margin=dict(l=126, r=55, t=22, b=46))
+    return add_axis_headroom(figure, axis="x", upper=0.24, lower=0.0, include_zero=True)
+
+
+
+def _select_connectivity_states(
+    state_summary: pd.DataFrame | None,
+    *,
+    lens: str = "Mismatch screen",
+    limit: int = 16,
+) -> pd.DataFrame:
+    """Select a balanced connectivity comparison without hiding mismatches.
+
+    The default is a screening view, not a synthetic bandwidth score. It keeps
+    high-capacity/low-depth states visible beside large connectivity hubs.
+    """
+    frame = state_summary.copy() if isinstance(state_summary, pd.DataFrame) else pd.DataFrame()
+    required = {"State", "Reported Memberships", "Published Development MW"}
+    if frame.empty or not required.issubset(frame.columns):
+        return pd.DataFrame()
+    frame["State"] = frame["State"].fillna("").astype(str).str.strip().str.upper()
+    frame = frame.loc[frame["State"].str.fullmatch(r"[A-Z]{2,3}", na=False)].copy()
+    for column in ["Reported Memberships", "Published Development MW", "IXPs", "Published Campuses", "Mismatch Priority"]:
+        frame[column] = pd.to_numeric(frame.get(column), errors="coerce")
+    frame["Reported Memberships"] = frame["Reported Memberships"].fillna(0)
+    frame["Published Development MW"] = frame["Published Development MW"].fillna(0)
+    frame["Mismatch Priority"] = frame["Mismatch Priority"].fillna(
+        np.log1p(frame["Published Development MW"].clip(lower=0))
+        / np.log1p(frame["Reported Memberships"].clip(lower=0) + 2)
+    )
+    flag = frame.get("Capacity-Connectivity Flag", pd.Series("No mismatch flag", index=frame.index)).astype(str)
+    frame["Flagged mismatch"] = flag.ne("No mismatch flag")
+
+    if lens == "Connectivity depth":
+        selected = frame.sort_values(["Reported Memberships", "Published Development MW"], ascending=False, kind="stable").head(limit)
+    elif lens == "Published capacity":
+        selected = frame.sort_values(["Published Development MW", "Reported Memberships"], ascending=False, kind="stable").head(limit)
+    else:
+        # Reserve explicit space for three views of the system: mismatch risk,
+        # published buildout scale, and established interconnection depth.
+        # Quotas keep a long tail of zero-membership states from crowding every
+        # major hub out of the default chart.
+        mismatch_quota = max(4, limit // 3)
+        capacity_quota = max(4, limit // 3)
+        depth_quota = max(4, limit - mismatch_quota - capacity_quota)
+        flagged = (
+            frame.loc[frame["Flagged mismatch"] & frame["Published Development MW"].ge(1000)]
+            .sort_values(["Mismatch Priority", "Published Development MW"], ascending=False, kind="stable")
+            .head(mismatch_quota)
+        )
+        remaining = frame.loc[~frame["State"].isin(flagged["State"])].copy()
+        capacity = (
+            remaining.sort_values(["Published Development MW", "Reported Memberships"], ascending=False, kind="stable")
+            .head(capacity_quota)
+        )
+        remaining = remaining.loc[~remaining["State"].isin(capacity["State"])].copy()
+        depth = (
+            remaining.sort_values(["Reported Memberships", "Published Development MW"], ascending=False, kind="stable")
+            .head(depth_quota)
+        )
+        selected = pd.concat([flagged, capacity, depth], ignore_index=True, sort=False).drop_duplicates("State", keep="first")
+        if len(selected) < limit:
+            fill = frame.loc[~frame["State"].isin(selected["State"])].sort_values(
+                ["Reported Memberships", "Published Development MW"], ascending=False, kind="stable"
+            ).head(limit - len(selected))
+            selected = pd.concat([selected, fill], ignore_index=True, sort=False)
+    return selected.sort_values(["Reported Memberships", "Published Development MW"], ascending=True, kind="stable").reset_index(drop=True)
+
+
+def data_center_connectivity_state(
+    state_summary: pd.DataFrame | None,
+    *,
+    height: int = 520,
+    limit: int = 16,
+    lens: str = "Mismatch screen",
+):
+    """Compare public interconnection depth with published development capacity."""
+    frame = _select_connectivity_states(state_summary, lens=lens, limit=limit)
+    figure = go.Figure()
+    if not frame.empty:
+        custom = np.stack(
+            [
+                frame["IXPs"].fillna(0),
+                frame["Published Development MW"].fillna(0) / 1000.0,
+                frame["Published Campuses"].fillna(0),
+                frame.get("Capacity-Connectivity Flag", pd.Series("No mismatch flag", index=frame.index)).astype(str),
+            ],
+            axis=-1,
+        )
+        figure.add_trace(
+            go.Bar(
+                x=frame["Reported Memberships"],
+                y=frame["State"],
+                orientation="h",
+                name="Reported IXP memberships",
+                marker={"color": COLORS["blue"]},
+                customdata=custom,
+                hovertemplate=(
+                    "%{y}<br>Reported IXP memberships: %{x:,.0f}"
+                    "<br>Active IXPs: %{customdata[0]:,.0f}"
+                    "<br>Published development: %{customdata[1]:,.1f} GW"
+                    "<br>Capacity-bearing campuses: %{customdata[2]:,.0f}"
+                    "<br>Screen: %{customdata[3]}<extra></extra>"
+                ),
+            )
+        )
+        capacity = frame["Published Development MW"] / 1000.0
+        capacity_mask = capacity.gt(0)
+        if capacity_mask.any():
+            figure.add_trace(
+                go.Scatter(
+                    x=capacity.loc[capacity_mask],
+                    y=frame.loc[capacity_mask, "State"],
+                    xaxis="x2",
+                    mode="markers",
+                    name="Published development",
+                    marker={"color": COLORS["amber"], "size": 9, "symbol": "diamond"},
+                    customdata=frame.loc[capacity_mask, "Published Campuses"].fillna(0),
+                    hovertemplate=(
+                        "%{y}<br>Published development: %{x:,.1f} GW"
+                        "<br>Capacity-bearing campuses: %{customdata:,.0f}<extra></extra>"
+                    ),
+                )
+            )
+    figure.update_layout(
+        xaxis={"title": "Reported IXP memberships", "rangemode": "tozero"},
+        xaxis2={
+            "title": "Published development capacity · GW",
+            "overlaying": "x",
+            "side": "top",
+            "showgrid": False,
+            "rangemode": "tozero",
+        },
+        legend={"orientation": "h", "y": 1.17, "x": 0, "yanchor": "bottom"},
+    )
+    figure.update_yaxes(title="")
+    return _base_layout(figure, height=height, legend=True, margin=dict(l=58, r=30, t=92, b=52))

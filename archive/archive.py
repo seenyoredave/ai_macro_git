@@ -14,13 +14,17 @@ from archive.archive_reader import (
 )
 from archive.schemas import ARCHIVE_SPECS, ArchiveSpec, spec_for_path
 from benchmarks.benchmark_service import get_benchmark_metrics
-from config.benchmark_config import ACTIVE_BENCHMARKS, BENCHMARK_VERSION
+from config.benchmark_config import (
+    ACTIVE_BENCHMARKS,
+    BENCHMARK_VERSION,
+    QQQ_WEIGHTS_EFFECTIVE_DATE,
+)
 from config.energy_config import ENERGY_DATA_VERSION, ENERGY_SERIES
 from config.market_clock import eastern_now
 from helpers.atomic_io import atomic_write_csv, synchronized_path
 
 YF_ARCHIVE_COLUMNS = [
-    "Ticker", "Company", "Price", "P/E", "Forward EV/EBIT",
+    "Ticker", "Company", "Market Data Date", "Price", "P/E", "Forward EV/EBIT",
     "Market Cap", "Enterprise Value", "Revenue", "Forward Revenue",
     "Operating Income", "Operating Margin", "Forward EBIT",
     "Revenue Growth", "CapEx", "CapEx Growth",
@@ -150,9 +154,15 @@ def write_archive_snapshot(snapshot, archive_path, key_cols=None):
         combined = combined.reindex(columns=_ordered_columns(existing, incoming, keys))
         _atomic_write(combined, archive_file, keys, lock=False)
 
-def append_dataframe_history(frame, archive_path, key_cols=None):
+def append_dataframe_history(
+    frame,
+    archive_path,
+    key_cols=None,
+    *,
+    observation_date=None,
+):
     snapshot = frame.copy()
-    snapshot.insert(0, "Date", today_iso())
+    snapshot.insert(0, "Date", str(observation_date or today_iso()))
     write_archive_snapshot(snapshot, archive_path, key_cols=key_cols)
 
 def _component_value(regime_metrics, group_key, component_name, field="score"):
@@ -170,12 +180,19 @@ def _current_metric_value(regime_metrics, metric_name, source_name):
         regime_metrics.get(metric_name, np.nan),
     )
 
-def append_macro_history(regime_metrics, fred_data):
+def append_macro_history(
+    regime_metrics,
+    fred_data,
+    *,
+    observation_date,
+    market_data_date,
+):
     macro_read = regime_metrics.get("Macro Interpretation", {}) or {}
     constraint_factors = macro_read.get("constraint_factors", []) or []
     expansion_factors = macro_read.get("expansion_factors", []) or []
     row = {
-        "Date": today_iso(),
+        "Date": str(observation_date),
+        "Market Data Date": str(market_data_date),
         "AI Equity Index": _current_metric_value(regime_metrics, "AI Equity Index", "AEI Source"),
         "AI Development Intensity": _current_metric_value(regime_metrics, "AI Development Intensity", "ADI Source"),
         "Speculation Gap": (
@@ -245,6 +262,8 @@ def append_macro_history(regime_metrics, fred_data):
             "PE Portfolio Financing Strain",
         ),
         "AEI Version": regime_metrics.get("AEI Version", np.nan),
+        "Benchmark Version": BENCHMARK_VERSION,
+        "Benchmark Weight Date": QQQ_WEIGHTS_EFFECTIVE_DATE,
         "ADI Version": regime_metrics.get("ADI Version", np.nan),
         "EVG Version": regime_metrics.get("EVG Version", np.nan),
         "Power Stress Version": regime_metrics.get("Power Stress Version", np.nan),
@@ -291,10 +310,10 @@ def append_macro_history(regime_metrics, fred_data):
     }
     write_archive_snapshot(pd.DataFrame([row]), ARCHIVE_SPECS["macro"])
 
-def append_sector_history(sector_metrics):
+def append_sector_history(sector_metrics, *, observation_date):
     rows = [
         {
-            "Date": today_iso(),
+            "Date": str(observation_date),
             "Sector": sector,
             "Sector Score": metrics.get("Sector Score"),
             "Pressure": metrics.get("Sector Pressure"),
@@ -305,21 +324,23 @@ def append_sector_history(sector_metrics):
             "Loss-Making EV Share": metrics.get("Loss-Making EV Share"),
             "Forward EBIT Yield": metrics.get("Forward EBIT Yield"),
             "Avg Return": metrics.get("Avg Return"),
-            "AEI Version": "3.1",
-            "Pressure Version": "3.0",
+            "AEI Version": "4.0",
+            "Benchmark Version": BENCHMARK_VERSION,
+            "Benchmark Weight Date": QQQ_WEIGHTS_EFFECTIVE_DATE,
+            "Pressure Version": "4.0",
         }
         for sector, metrics in sector_metrics.items()
     ]
     if rows:
         write_archive_snapshot(pd.DataFrame(rows), ARCHIVE_SPECS["sector"])
 
-def append_benchmark_history(metrics_by_benchmark=None):
+def append_benchmark_history(metrics_by_benchmark=None, *, observation_date=None):
     supplied = metrics_by_benchmark or {}
     rows = []
     for benchmark in ACTIVE_BENCHMARKS:
         metrics = supplied.get(benchmark) or get_benchmark_metrics(benchmark)
         rows.append({
-            "Date": today_iso(),
+            "Date": str(observation_date or today_iso()),
             "Benchmark": benchmark,
             "Forward EV/EBIT": metrics.get("forward_ev_ebit"),
             "Forward EBIT Yield": metrics.get("forward_ebit_yield"),
@@ -327,11 +348,14 @@ def append_benchmark_history(metrics_by_benchmark=None):
             "Beta": metrics.get("beta"),
             "Member Count": metrics.get("member_count"),
             "Benchmark Version": BENCHMARK_VERSION,
+            "Weight Effective Date": QQQ_WEIGHTS_EFFECTIVE_DATE,
+            "Member Coverage": 1.0 if metrics.get("member_count") == 10 else np.nan,
+            "Return Construction": "Fixed QQQ top-ten reference weights",
         })
     if rows:
         write_archive_snapshot(pd.DataFrame(rows), ARCHIVE_SPECS["benchmark"])
 
-def append_yf_history(sector_data):
+def append_yf_history(sector_data, *, observation_date):
     rows = []
     for sector, frame in sector_data.items():
         if frame is None or frame.empty:
@@ -346,6 +370,7 @@ def append_yf_history(sector_data):
             pd.concat(rows, ignore_index=True),
             ARCHIVE_SPECS["yf"],
             key_cols=ARCHIVE_KEYS["yf"],
+            observation_date=observation_date,
         )
 
 def append_edgar_history(edgar_snapshot):

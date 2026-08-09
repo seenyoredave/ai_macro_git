@@ -3,16 +3,37 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
-from rendering.charts_workforce import current_momentum, indexed_history, level_history
-from rendering.common import _render_tab_metric_registry
-from rendering.components import fmt_date, fmt_number, inject_panel_height_rules, render_domain_read, render_line_break, render_panel_heading, render_section, render_statline, render_tab_header
+from rendering.visual_system import render_plotly_chart
+from rendering.charts_workforce import (
+    current_momentum,
+    earnings_history,
+    indexed_history,
+    labor_flow_history,
+    level_history,
+    occupation_exposure_by_group,
+    workforce_outcomes_matrix,
+)
+from rendering.common import _render_floating_terms
+from rendering.components import (
+    fmt_date,
+    fmt_number,
+    inject_panel_height_rules,
+    render_domain_read,
+    render_panel_heading,
+    render_section,
+    render_statline,
+    render_tab_header,
+)
 from rendering.dataframe import arrow_safe_dataframe
 
 
-def _row(frame: pd.DataFrame, series: str) -> dict:
+def _row(frame: pd.DataFrame, series: str, metric: str | None = None) -> dict:
     if frame is None or not isinstance(frame, pd.DataFrame) or frame.empty:
         return {}
-    rows = frame.loc[frame.get("Series", pd.Series("", index=frame.index)).astype(str).eq(series)]
+    mask = frame.get("Series", pd.Series("", index=frame.index)).astype(str).eq(series)
+    if metric is not None and "Metric" in frame.columns:
+        mask &= frame["Metric"].astype(str).eq(metric)
+    rows = frame.loc[mask]
     return rows.iloc[-1].to_dict() if not rows.empty else {}
 
 
@@ -21,67 +42,89 @@ def _yoy_text(row: dict) -> str:
     return fmt_number(value * 100.0, 1, signed=True, suffix="%")
 
 
+def _render_signature(data: dict) -> None:
+    render_section("Observed workforce outcomes", "The signature matrix: employment and real-earnings outcomes across the production and deployment channels most directly tied to the AI economy.", first=True)
+    with st.container(key="full-width-layout-workforce-outcomes-matrix"):
+        with st.container(border=True, key="workforce-panel-outcomes-matrix"):
+            render_panel_heading("Observed workforce transmission", "Raw latest values in cells · color = position within each measure's 2020-present history")
+            render_plotly_chart(workforce_outcomes_matrix(data.get("transmission_matrix"), height=560), width="stretch", config={"displayModeBar": False, "responsive": True}, key="workforce-outcomes-matrix")
+
 def _render_pulse(data: dict) -> None:
-    latest = data.get("employment_latest", pd.DataFrame())
-    openings = data.get("job_openings_latest", pd.DataFrame())
-    systems = _row(latest, "Computer systems design")
-    infra = _row(latest, "Computing infrastructure")
-    semis = _row(latest, "Semiconductor manufacturing")
-    information_openings = _row(openings, "Information")
-    render_section("Workforce pulse", "Employment momentum in directly relevant industries and the broader labor-demand environment.", first=True, compact=True)
+    matrix = data.get("transmission_matrix", pd.DataFrame())
+    positive_jobs = int((pd.to_numeric(matrix.get("Employment YoY"), errors="coerce") > 0).sum()) if isinstance(matrix, pd.DataFrame) else 0
+    positive_real = int((pd.to_numeric(matrix.get("Real earnings YoY"), errors="coerce") > 0).sum()) if isinstance(matrix, pd.DataFrame) else 0
+    information_hires = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Hires rate")
+    information_layoffs = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Layoffs and discharges rate")
+    render_section(
+        "Workforce transmission pulse",
+        "Breadth of observed employment and purchasing-power gains, plus current labor-flow conditions in the information market.",
+        compact=True,
+    )
     render_statline([
-        ("Computer systems design", _yoy_text(systems), f"{fmt_number(systems.get('Value'), 1, suffix='K jobs')} · {fmt_date(systems.get('Date'))}"),
-        ("Computing infrastructure", _yoy_text(infra), f"{fmt_number(infra.get('Value'), 1, suffix='K jobs')} · {fmt_date(infra.get('Date'))}"),
-        ("Semiconductor manufacturing", _yoy_text(semis), f"{fmt_number(semis.get('Value'), 1, suffix='K jobs')} · {fmt_date(semis.get('Date'))}"),
-        ("Information openings", fmt_number(information_openings.get("Value"), 0, suffix="K"), f"{_yoy_text(information_openings)} YoY · {fmt_date(information_openings.get('Date'))}"),
+        ("Employment breadth", f"{positive_jobs}/4", "direct production and deployment channels growing YoY"),
+        ("Real-earnings breadth", f"{positive_real}/4", "direct channels with purchasing-power gains YoY"),
+        ("Information hires", fmt_number(information_hires.get("Value"), 1, suffix="%"), f"monthly hires rate · {fmt_date(information_hires.get('Date'))}"),
+        ("Information layoffs", fmt_number(information_layoffs.get("Value"), 1, suffix="%"), f"layoffs/discharges rate · {fmt_date(information_layoffs.get('Date'))}"),
     ], key_prefix="workforce-pulse")
 
 
+def _render_workforce_channels(data: dict) -> None:
+    render_section("Workforce channels", "Employment, labor-flow, compensation, and theoretical exposure are coordinated in one analytical workbench.")
+    with st.container(key="full-width-layout-workforce-channels"):
+        with st.container(border=True, key="workforce-panel-channel-workbench"):
+            view = st.radio("Channel", ["Employment", "Labor flows", "Compensation", "Exposure benchmark"], horizontal=True, label_visibility="collapsed", key="workforce-channel-view")
+            if view == "Labor flows":
+                measure = st.radio("Labor-flow measure", ["Job openings level", "Job openings rate", "Hires rate", "Quits rate", "Layoffs and discharges rate"], horizontal=True, index=1, label_visibility="collapsed", key="workforce-flow-view")
+                if measure == "Job openings level":
+                    render_panel_heading("Job openings by supporting labor market", "Thousands of openings")
+                    figure, key = level_history(data.get("job_openings_history"), value_suffix="K"), "workforce-labor-flow-job-openings-level"
+                else:
+                    render_panel_heading(measure, "Percent of industry employment")
+                    figure, key = labor_flow_history(data.get("labor_flows_history"), measure), f"workforce-labor-flow-{measure.casefold().replace(' ', '-')}"
+            elif view == "Compensation":
+                basis = st.radio("Earnings basis", ["Inflation-adjusted", "Nominal"], horizontal=True, index=0, label_visibility="collapsed", key="workforce-earnings-basis")
+                cpi_history = data.get("cpi_history"); earnings_history_frame = data.get("earnings_history"); cpi_date = None
+                if isinstance(cpi_history, pd.DataFrame) and not cpi_history.empty:
+                    cpi_dates = pd.to_datetime(cpi_history.get("Date"), errors="coerce", format="mixed")
+                    earnings_end = pd.to_datetime(earnings_history_frame.get("Date"), errors="coerce", format="mixed").max() if isinstance(earnings_history_frame, pd.DataFrame) and not earnings_history_frame.empty else None
+                    eligible = cpi_dates.loc[cpi_dates <= earnings_end] if pd.notna(earnings_end) else cpi_dates
+                    cpi_date = eligible.max()
+                subtitle = "BLS CES · nominal dollars per hour" if basis == "Nominal" else f"BLS CES · purchasing power in {fmt_date(cpi_date)} CPI dollars"
+                subtitle += " · dashed = U.S. total private"
+                render_panel_heading("Average hourly earnings", subtitle)
+                figure, key = earnings_history(data.get("earnings_history"), cpi_history, inflation_adjusted=basis == "Inflation-adjusted"), f"workforce-earnings-history-{basis.casefold().replace('-', '_')}"
+            elif view == "Exposure benchmark":
+                render_panel_heading("Theoretical LLM task exposure", "2023 research benchmark · unweighted occupation medians")
+                figure, key = occupation_exposure_by_group(data.get("occupation_exposure_by_group"), height=500), "workforce-exposure-by-group"
+            else:
+                employment_view = st.radio("Employment view", ["Trajectory", "Current momentum"], horizontal=True, label_visibility="collapsed", key="workforce-employment-view")
+                if employment_view == "Current momentum":
+                    render_panel_heading("Current employment momentum", "Year over year"); figure, key = current_momentum(data.get("employment_latest"), height=480), "workforce-employment-momentum"
+                else:
+                    render_panel_heading("Employment trajectory", "January 2020 = 100"); figure, key = indexed_history(data.get("employment_history"), height=480), "workforce-employment-history"
+            render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key)
+
+
+def _render_workforce_ledger(data: dict) -> None:
+    datasets = {
+        "Employment": data.get("employment_history"),
+        "Hourly earnings": data.get("earnings_history"),
+        "Labor flows": data.get("labor_flows_history"),
+        "Job openings": data.get("job_openings_history"),
+        "Occupation exposure": data.get("occupation_exposure"),
+        "Inflation": data.get("cpi_history"),
+    }
+    with st.expander("Workforce data", expanded=False):
+        view = st.radio("Ledger", list(datasets), horizontal=True, key="workforce-ledger-view")
+        st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", height=440, hide_index=True)
+
 def render_workforce_tab(workforce_data: dict, tab_read=None) -> None:
-    inject_panel_height_rules({
-        "workforce-panel-employment-history": 505,
-        "workforce-panel-employment-momentum": 505,
-    })
-    render_tab_header(
-        "Workforce",
-        "Employment, compensation, and labor demand across the industries building, operating, and applying AI.",
-        "U.S. Bureau of Labor Statistics",
-    )
-    render_line_break()
-    _render_tab_metric_registry("workforce")
-    render_domain_read(tab_read, label="Workforce Read", accent="blue")
+    inject_panel_height_rules({})
+    render_tab_header("Workforce", "How AI-related investment and adoption are transmitted through employment, labor demand, mobility, separations, and worker purchasing power.", "U.S. Bureau of Labor Statistics")
+    _render_floating_terms("workforce")
+    render_domain_read(tab_read, label="Workforce Read", domain="workforce")
+    _render_signature(workforce_data)
     _render_pulse(workforce_data)
+    _render_workforce_channels(workforce_data)
+    _render_workforce_ledger(workforce_data)
 
-    render_section("Labor footprint", "How employment has moved since 2020 across four directly relevant production and deployment channels.")
-    left, right = st.columns([1.55, 0.85])
-    with left:
-        with st.container(border=True, key="workforce-panel-employment-history"):
-            render_panel_heading("Employment trajectory", "January 2020 = 100")
-            st.plotly_chart(indexed_history(workforce_data.get("employment_history")), width="stretch", config={"displayModeBar": False, "responsive": True}, key="workforce-employment-history")
-    with right:
-        with st.container(border=True, key="workforce-panel-employment-momentum"):
-            render_panel_heading("Current employment momentum", "Year over year")
-            st.plotly_chart(current_momentum(workforce_data.get("employment_latest")), width="stretch", config={"displayModeBar": False, "responsive": True}, key="workforce-employment-momentum")
-    st.caption("These industries are tightly connected to the AI production and deployment stack. Their employment changes are observed labor-market outcomes, not a count of jobs caused by AI.")
-
-    render_section("Labor demand", "Job openings in the broader labor markets that supply technology, manufacturing, construction, and business-service workers.")
-    with st.container(border=True, key="workforce-panel-openings"):
-        render_panel_heading("Job openings by supporting labor market", "Thousands of openings")
-        st.plotly_chart(level_history(workforce_data.get("job_openings_history"), value_suffix="K"), width="stretch", config={"displayModeBar": False, "responsive": True}, key="workforce-job-openings")
-    st.caption("JOLTS industry categories are broader than AI. They measure the hiring environment in which AI-related employers compete for labor; they do not isolate AI-specific vacancies.")
-
-    render_section("Compensation", "Hourly-earnings trajectories in the same directly relevant industries.")
-    with st.container(border=True, key="workforce-panel-earnings"):
-        render_panel_heading("Average hourly earnings", "BLS Current Employment Statistics")
-        st.plotly_chart(level_history(workforce_data.get("earnings_history"), value_suffix="", value_prefix="$"), width="stretch", config={"displayModeBar": False, "responsive": True}, key="workforce-earnings-history")
-        st.caption("Nominal dollars per hour. Wage growth can reflect labor scarcity, composition changes, inflation, and bargaining conditions; the chart does not assign those movements to AI alone.")
-
-    with st.expander("Workforce evidence ledger", expanded=False):
-        view = st.radio("Ledger", ["Employment", "Hourly earnings", "Job openings", "Sources"], horizontal=True, key="workforce-ledger-view")
-        frame = {
-            "Employment": workforce_data.get("employment_history"),
-            "Hourly earnings": workforce_data.get("earnings_history"),
-            "Job openings": workforce_data.get("job_openings_history"),
-            "Sources": workforce_data.get("source_manifest"),
-        }.get(view)
-        st.dataframe(arrow_safe_dataframe(frame), width="stretch", height=420, hide_index=True)

@@ -1,0 +1,2039 @@
+{
+  "generated_at_utc": "2026-08-09T02:40:16.637089+00:00",
+  "project_version": "v6.9.1 recovery proof",
+  "compile": {
+    "files": 582,
+    "passed": true,
+    "failures": []
+  },
+  "tests": [
+    {
+      "name": "application_import_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.144,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": false,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  complete rendering import graph",
+      "stderr_tail": ""
+    },
+    {
+      "name": "connectivity_domain_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 3.734,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Connectivity domain \u00b7 115 cables \u00b7 34 landing markets \u00b7 168 IXPs \u00b7 39 middle-mile awards \u00b7 4 default analytical charts",
+      "stderr_tail": ""
+    },
+    {
+      "name": "current_context_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.105,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Auditable Current Context \u00b7 eleven-domain manifest \u00b7 explicit rejection reasons \u00b7 single-owner display \u00b7 legitimate no-match supported",
+      "stderr_tail": ""
+    },
+    {
+      "name": "data_center_page_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 3.581,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": false,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Data Center calm-hierarchy smoke test \u00b7 3 visible charts \u00b7 41 canonical active campuses \u00b7 894 stage-tracked pipeline sites",
+      "stderr_tail": ""
+    },
+    {
+      "name": "domain_refresh_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.066,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Water annual-release gate\nPASS  Sidebar domain routing\nPASS  6 selective domain-refresh contracts",
+      "stderr_tail": ""
+    },
+    {
+      "name": "energy_page_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 2.945,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  v6.5.2 Power + Grid boundary \u00b7 4 visible Power charts \u00b7 3 collapsed Power charts \u00b7 2061 GW active queue",
+      "stderr_tail": ""
+    },
+    {
+      "name": "finance_private_capital_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.326,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Finance private-capital realization \u00b7 51 funds \u00b7 31 mature \u00b7 DPI 1.18x \u00b7 TVPI 2.16x",
+      "stderr_tail": ""
+    },
+    {
+      "name": "finance_strain_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.657,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Borrower dynamics\nPASS  Finance summary layout\nPASS  3 Finance strain contracts",
+      "stderr_tail": ""
+    },
+    {
+      "name": "layout_recovery_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 0.08,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  shared layout contracts \u00b7 compact rails \u00b7 full-width exception \u00b7 dossier \u00b7 outcomes pathway",
+      "stderr_tail": ""
+    },
+    {
+      "name": "layout_rollout_render_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 7.533,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": false,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  rollout render smoke \u00b7 3 Compute charts \u00b7 3 Adoption charts \u00b7 4 Economic Outcomes charts",
+      "stderr_tail": ""
+    },
+    {
+      "name": "layout_spacing_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.605,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Platform spacing and alignment \u00b7 nice-grid headroom verified \u00b7 16 paired panels covered",
+      "stderr_tail": ""
+    },
+    {
+      "name": "market_panel_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.786,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Market visual-system and sector-dossier smoke test \u00b7 198 ownership companies \u00b7 198 return companies \u00b7 15 sectors",
+      "stderr_tail": ""
+    },
+    {
+      "name": "phase1_value_transmission_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.086,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  v6.8 Phase 1 value transmission \u00b7 Workforce: Theoretical exposure is broad, while observed labor demand has softened. \u00b7 Economic Outcomes: Aggregate productivity is improving faster than worker capture.",
+      "stderr_tail": ""
+    },
+    {
+      "name": "phase2_grid_water_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 9.042,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Phase 2 grid and water \u00b7 9 queue regions \u00b7 14 reserve areas \u00b7 51 drought records \u00b7 1,906 campus dossiers",
+      "stderr_tail": ""
+    },
+    {
+      "name": "public_copy_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 0.751,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "Public-copy contract passed across 12 Read-bearing tabs.",
+      "stderr_tail": ""
+    },
+    {
+      "name": "read_architecture_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 3.894,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  v7.0.0 read architecture \u00b7 11 tab reads \u00b7 3 macro-selected domains \u00b7 headline: The AI economy is moving from buildout to the harder tests of use and value.",
+      "stderr_tail": ""
+    },
+    {
+      "name": "read_divider_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 0.072,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "Read-divider contract passed across 12 Read-bearing tabs.",
+      "stderr_tail": ""
+    },
+    {
+      "name": "snapshot_writer_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 0.779,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": false,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  successful YFinance refresh writes only owned snapshots\nPASS  failed EDGAR refresh preserves retained dates\nPASS  successful EDGAR refresh writes only EDGAR",
+      "stderr_tail": ""
+    },
+    {
+      "name": "stack_completion_fidelity_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 0.903,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  Macro reference alignment\nPASS  Refresh ownership\nPASS  7 stack-completion fidelity contracts",
+      "stderr_tail": ""
+    },
+    {
+      "name": "startup_loader_contract_test",
+      "passed": true,
+      "elapsed_seconds": 9.155,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  provider network attempts: 0\nPASS  retained file changes: 0\nREPORT audit/startup_loader/startup_loader_report.json",
+      "stderr_tail": ""
+    },
+    {
+      "name": "visual_system_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 2.084,
+      "returncode": 0,
+      "fake_streamlit": false,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "Wrote 135 visual surfaces to data/visual_surface_inventory.csv\nPASS  v6.7 visual system \u00b7 13 domain profiles \u00b7 135 inventoried surfaces \u00b7 2 protected AI Macro signature tools",
+      "stderr_tail": ""
+    },
+    {
+      "name": "water_infrastructure_page_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.067,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  v6.9.1 Water + Grid Phase 2 \u00b7 rotation rehomed \u00b7 wastewater current through 2026-05 \u00b7 5 rotation channels",
+      "stderr_tail": ""
+    },
+    {
+      "name": "workforce_economic_impact_smoke_test",
+      "passed": true,
+      "elapsed_seconds": 1.511,
+      "returncode": 0,
+      "fake_streamlit": true,
+      "source_inspection": true,
+      "browser_runtime": false,
+      "stdout_tail": "PASS  v6.8 Workforce + Economic Outcomes \u00b7 923 exposure occupations \u00b7 1,248 JOLTS flow observations \u00b7 76 worker-capture observations \u00b7 175 distribution observations",
+      "stderr_tail": ""
+    }
+  ],
+  "runtime": {
+    "streamlit_available": false,
+    "declared_version": "1.59.2",
+    "full_app_browser_validation": "blocked in this audit environment"
+  },
+  "series_contracts": [
+    {
+      "label": "Finance NFCI ten-year confirmation",
+      "file": "data/finance/nfci_anfci_history.csv",
+      "value_column": "Value",
+      "date_column": "Date",
+      "valid_observations": 2900,
+      "earliest": "1971-01-08",
+      "latest": "2026-07-31",
+      "span_days": 20293,
+      "checks": {
+        "valid_observations_at_least_500": true,
+        "span_days_at_least_3560": true
+      },
+      "passed": true
+    },
+    {
+      "label": "Finance ANFCI ten-year confirmation",
+      "file": "data/finance/nfci_anfci_history.csv",
+      "value_column": "ANFCI",
+      "date_column": "Date",
+      "valid_observations": 2900,
+      "earliest": "1971-01-08",
+      "latest": "2026-07-31",
+      "span_days": 20293,
+      "checks": {
+        "valid_observations_at_least_500": true,
+        "span_days_at_least_3560": true
+      },
+      "passed": true
+    },
+    {
+      "label": "Corporate bond distress history",
+      "file": "data/debt_markets_history.csv",
+      "value_column": "Corporate Bond Market Distress",
+      "date_column": "Date",
+      "valid_observations": 1125,
+      "earliest": "2005-01-07",
+      "latest": "2026-07-24",
+      "span_days": 7868,
+      "checks": {
+        "valid_observations_at_least_500": true,
+        "span_days_at_least_3560": true
+      },
+      "passed": true
+    },
+    {
+      "label": "Borrower strain ten-year view",
+      "file": "data/borrower_strain_history.csv",
+      "value_column": "Borrower Strain",
+      "date_column": "Date",
+      "valid_observations": 17,
+      "earliest": "2014-12-31",
+      "latest": "2026-06-13",
+      "span_days": 4182,
+      "checks": {
+        "valid_observations_at_least_10": true,
+        "span_days_at_least_3560": true
+      },
+      "passed": true
+    },
+    {
+      "label": "Private-equity lender-strain view",
+      "file": "data/private_equity_strain_history.csv",
+      "value_column": "PIK Mean (%)",
+      "date_column": "Date",
+      "valid_observations": 12,
+      "earliest": "2013-12-31",
+      "latest": "2024-12-31",
+      "span_days": 4018,
+      "checks": {
+        "valid_observations_at_least_10": true,
+        "span_days_at_least_3560": true
+      },
+      "passed": true
+    },
+    {
+      "label": "Bank capital lender-strain view",
+      "file": "data/bank_tier1_capital_history.csv",
+      "value_column": "Tier 1 Capital Ratio (%)",
+      "date_column": "Date",
+      "valid_observations": 65,
+      "earliest": "2009-10-01",
+      "latest": "2025-10-01",
+      "span_days": 5844,
+      "checks": {
+        "valid_observations_at_least_40": true,
+        "span_days_at_least_3560": true
+      },
+      "passed": true
+    },
+    {
+      "label": "Retained market archive (informational)",
+      "file": "archive/yf_history.csv",
+      "value_column": "Price",
+      "date_column": "Date",
+      "valid_observations": 5100,
+      "earliest": "2026-06-12",
+      "latest": "2026-07-29",
+      "span_days": 47,
+      "checks": {},
+      "passed": null
+    },
+    {
+      "label": "Power-series retained history",
+      "file": "data/power_series_history.csv",
+      "value_column": "Electric Power Output",
+      "date_column": "Observation Date",
+      "valid_observations": 138,
+      "earliest": "2015-01-01",
+      "latest": "2026-06-01",
+      "span_days": 4169,
+      "checks": {
+        "valid_observations_at_least_100": true
+      },
+      "passed": true
+    }
+  ],
+  "startup_static": {
+    "application_builds_load_policy": true,
+    "public_mode_defaults_to_read_only": true,
+    "public_refresh_requests_return_retained_policy": true,
+    "repository_writes_require_developer_mode": true,
+    "snapshot_writes_require_explicit_refresh": true,
+    "eager_dashboard_render": true,
+    "loader_refresh_append_calls": [
+      {
+        "name": "load_market_universe",
+        "line": 174
+      },
+      {
+        "name": "load_fred",
+        "line": 417
+      },
+      {
+        "name": "load_nfci_history",
+        "line": 427
+      },
+      {
+        "name": "load_energy_data",
+        "line": 438
+      },
+      {
+        "name": "load_debt_markets_data",
+        "line": 452
+      },
+      {
+        "name": "load_infrastructure_data",
+        "line": 457
+      },
+      {
+        "name": "load_connectivity_data",
+        "line": 463
+      },
+      {
+        "name": "load_data_center_construction",
+        "line": 471
+      },
+      {
+        "name": "load_fred_history",
+        "line": 476
+      },
+      {
+        "name": "load_macro_history",
+        "line": 477
+      },
+      {
+        "name": "load_water_utilization_data",
+        "line": 486
+      },
+      {
+        "name": "load_adaptation_data",
+        "line": 491
+      },
+      {
+        "name": "load_workforce_data",
+        "line": 496
+      },
+      {
+        "name": "load_economic_impact_data",
+        "line": 500
+      },
+      {
+        "name": "load_commercialization_data",
+        "line": 509
+      },
+      {
+        "name": "refresh_current_context_once_daily",
+        "line": 514
+      },
+      {
+        "name": "load_current_context",
+        "line": 525
+      },
+      {
+        "name": "load_weekly_context",
+        "line": 531
+      }
+    ]
+  },
+  "data_inventory": [
+    {
+      "file": "archive/benchmark_history.csv",
+      "rows": 25,
+      "columns": 12,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-06-12",
+          "latest": "2026-07-29",
+          "valid_dates": 25
+        },
+        {
+          "column": "Weight Effective Date",
+          "earliest": "2026-08-02",
+          "latest": "2026-08-02",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "archive/edgar_history.csv",
+      "rows": 6311,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-06-14",
+          "latest": "2026-08-07",
+          "valid_dates": 31
+        }
+      ]
+    },
+    {
+      "file": "archive/energy_history.csv",
+      "rows": 1,
+      "columns": 29,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-07-24",
+          "latest": "2026-07-24",
+          "valid_dates": 1
+        },
+        {
+          "column": "Natural Gas Price Date",
+          "earliest": "2026-07-24",
+          "latest": "2026-07-24",
+          "valid_dates": 1
+        },
+        {
+          "column": "WTI Crude Oil Date",
+          "earliest": "2026-07-24",
+          "latest": "2026-07-24",
+          "valid_dates": 1
+        },
+        {
+          "column": "Coal Production Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Renewable Power Output Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-04-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Electric Power Output Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Electric Power Capacity Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Electric Power Utilization Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Commercial Electricity Price Date",
+          "earliest": "2026-05-01",
+          "latest": "2026-05-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Industrial Electricity Price Date",
+          "earliest": "2026-05-01",
+          "latest": "2026-05-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "archive/fred_history.csv",
+      "rows": 22,
+      "columns": 54,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-06-14",
+          "latest": "2026-08-07",
+          "valid_dates": 22
+        },
+        {
+          "column": "Fed Funds Rate Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-07-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "10Y Treasury Yield Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-07-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "2Y Treasury Yield Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-07-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "CPI Date",
+          "earliest": "2026-05-01",
+          "latest": "2026-06-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "Unemployment Rate Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-07-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "PPI Date",
+          "earliest": "2026-05-01",
+          "latest": "2026-06-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "Industrial Production Date",
+          "earliest": "2026-05-01",
+          "latest": "2026-06-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "Consumer Sentiment Date",
+          "earliest": "2026-05-01",
+          "latest": "2026-06-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "Financial Conditions NFCI Date",
+          "earliest": "2026-07-03",
+          "latest": "2026-07-31",
+          "valid_dates": 4
+        },
+        {
+          "column": "Info Processing Investment Growth Date",
+          "earliest": "2026-01-01",
+          "latest": "2026-01-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Commercial Electricity Sales Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Residential Electricity Sales Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Commercial Electricity Sales YoY Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Residential Electricity Sales YoY Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Capacity Utilization Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Output Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Output YoY Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Capacity Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Capacity YoY Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Power Release Date",
+          "earliest": "2026-05-15",
+          "latest": "2026-07-17",
+          "valid_dates": 3
+        },
+        {
+          "column": "Industrial Production YoY Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Info Processing Investment Level Date",
+          "earliest": "2026-01-01",
+          "latest": "2026-04-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "Business Loan Tightening Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-07-23",
+          "valid_dates": 3
+        },
+        {
+          "column": "Bank Tier 1 Capital Ratio Date",
+          "earliest": "2025-10-01",
+          "latest": "2026-07-23",
+          "valid_dates": 2
+        },
+        {
+          "column": "Info Processing Investment YoY Date",
+          "earliest": "2026-01-01",
+          "latest": "2026-04-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "Adjusted Financial Conditions ANFCI Date",
+          "earliest": "2026-07-24",
+          "latest": "2026-07-31",
+          "valid_dates": 2
+        },
+        {
+          "column": "Business Loan Delinquency Date",
+          "earliest": "2026-01-01",
+          "latest": "2026-01-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "archive/macro_history.csv",
+      "rows": 25,
+      "columns": 85,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-06-12",
+          "latest": "2026-07-29",
+          "valid_dates": 25
+        },
+        {
+          "column": "Market Data Date",
+          "earliest": "2026-06-12",
+          "latest": "2026-07-29",
+          "valid_dates": 25
+        },
+        {
+          "column": "Construction Observation Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-05-01",
+          "valid_dates": 2
+        },
+        {
+          "column": "Construction Release Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-07-29",
+          "valid_dates": 4
+        },
+        {
+          "column": "Commercial Electricity Sales Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Residential Electricity Sales Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Commercial Electricity Sales YoY Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Residential Electricity Sales YoY Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Capacity Utilization Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Output Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Output YoY Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Capacity Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Electric Power Capacity YoY Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "Power Release Date",
+          "earliest": "2026-05-15",
+          "latest": "2026-07-17",
+          "valid_dates": 3
+        },
+        {
+          "column": "Benchmark Weight Date",
+          "earliest": "2026-08-02",
+          "latest": "2026-08-02",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "archive/sector_history.csv",
+      "rows": 375,
+      "columns": 17,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-06-12",
+          "latest": "2026-07-29",
+          "valid_dates": 25
+        },
+        {
+          "column": "Benchmark Weight Date",
+          "earliest": "2026-08-02",
+          "latest": "2026-08-02",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "archive/yf_history.csv",
+      "rows": 5100,
+      "columns": 40,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-06-12",
+          "latest": "2026-07-29",
+          "valid_dates": 25
+        },
+        {
+          "column": "Market Data Date",
+          "earliest": "2026-06-12",
+          "latest": "2026-07-29",
+          "valid_dates": 25
+        }
+      ]
+    },
+    {
+      "file": "data/adaptation_national_history.csv",
+      "rows": 18,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2025-12-04",
+          "latest": "2026-07-30",
+          "valid_dates": 18
+        }
+      ]
+    },
+    {
+      "file": "data/adaptation_sector_snapshot.csv",
+      "rows": 21,
+      "columns": 8,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-07-30",
+          "latest": "2026-07-30",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/adoption_consumer_history.csv",
+      "rows": 25,
+      "columns": 9,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2025-04-01",
+          "latest": "2026-04-01",
+          "valid_dates": 5
+        }
+      ]
+    },
+    {
+      "file": "data/bank_credit_tightening_history.csv",
+      "rows": 54,
+      "columns": 5,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2013-01-01",
+          "latest": "2026-04-01",
+          "valid_dates": 54
+        }
+      ]
+    },
+    {
+      "file": "data/bank_tier1_capital_history.csv",
+      "rows": 65,
+      "columns": 5,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2009-10-01",
+          "latest": "2025-10-01",
+          "valid_dates": 65
+        }
+      ]
+    },
+    {
+      "file": "data/borrower_strain_backfill_review.csv",
+      "rows": 17,
+      "columns": 27,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2014-12-31",
+          "latest": "2026-06-13",
+          "valid_dates": 17
+        },
+        {
+          "column": "Latest Financial Filing Date",
+          "earliest": "2014-12-19",
+          "latest": "2026-05-20",
+          "valid_dates": 17
+        },
+        {
+          "column": "Latest Commitment Filing Date",
+          "earliest": "2014-09-15",
+          "latest": "2026-05-11",
+          "valid_dates": 17
+        }
+      ]
+    },
+    {
+      "file": "data/borrower_strain_fundamentals_history.csv",
+      "rows": 170,
+      "columns": 19,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2014-12-31",
+          "latest": "2026-06-13",
+          "valid_dates": 17
+        },
+        {
+          "column": "Financial Filing Date",
+          "earliest": "2014-10-23",
+          "latest": "2026-05-20",
+          "valid_dates": 130
+        }
+      ]
+    },
+    {
+      "file": "data/borrower_strain_history.csv",
+      "rows": 17,
+      "columns": 27,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2014-12-31",
+          "latest": "2026-06-13",
+          "valid_dates": 17
+        },
+        {
+          "column": "Latest Financial Filing Date",
+          "earliest": "2014-12-19",
+          "latest": "2026-05-20",
+          "valid_dates": 17
+        },
+        {
+          "column": "Latest Commitment Filing Date",
+          "earliest": "2014-09-15",
+          "latest": "2026-05-11",
+          "valid_dates": 17
+        }
+      ]
+    },
+    {
+      "file": "data/business_loan_delinquency_history.csv",
+      "rows": 53,
+      "columns": 6,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2013-01-01",
+          "latest": "2026-01-01",
+          "valid_dates": 53
+        }
+      ]
+    },
+    {
+      "file": "data/capital_commitments.csv",
+      "rows": 10,
+      "columns": 8,
+      "date_columns": [
+        {
+          "column": "As Of Date",
+          "earliest": "2025-06-30",
+          "latest": "2026-05-31",
+          "valid_dates": 7
+        },
+        {
+          "column": "Filing Date",
+          "earliest": "2025-07-30",
+          "latest": "2026-06-22",
+          "valid_dates": 8
+        }
+      ]
+    },
+    {
+      "file": "data/capital_commitments_history.csv",
+      "rows": 112,
+      "columns": 10,
+      "date_columns": [
+        {
+          "column": "As Of Date",
+          "earliest": "2013-12-28",
+          "latest": "2026-03-31",
+          "valid_dates": 63
+        },
+        {
+          "column": "Filing Date",
+          "earliest": "2014-01-31",
+          "latest": "2026-05-11",
+          "valid_dates": 102
+        }
+      ]
+    },
+    {
+      "file": "data/capital_commitments_review.csv",
+      "rows": 382,
+      "columns": 18,
+      "date_columns": [
+        {
+          "column": "As Of Date",
+          "earliest": "2013-12-28",
+          "latest": "2026-04-26",
+          "valid_dates": 73
+        },
+        {
+          "column": "Filing Date",
+          "earliest": "2014-01-31",
+          "latest": "2026-05-20",
+          "valid_dates": 117
+        }
+      ]
+    },
+    {
+      "file": "data/capital_commitments_review_summary.csv",
+      "rows": 10,
+      "columns": 6,
+      "date_columns": []
+    },
+    {
+      "file": "data/commercialization/commercialization_ledger.csv",
+      "rows": 19,
+      "columns": 14,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2025-12-31",
+          "latest": "2026-06-30",
+          "valid_dates": 5
+        }
+      ]
+    },
+    {
+      "file": "data/commercialization/source_manifest.csv",
+      "rows": 5,
+      "columns": 8,
+      "date_columns": []
+    },
+    {
+      "file": "data/connectivity/cable_landing_markets.csv",
+      "rows": 34,
+      "columns": 13,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-05",
+          "latest": "2026-08-05",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/gateway_ledger.csv",
+      "rows": 10,
+      "columns": 10,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-01",
+          "latest": "2026-08-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/interconnection_facility_summary.csv",
+      "rows": 1,
+      "columns": 8,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-05",
+          "latest": "2026-08-05",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/interconnection_market_summary.csv",
+      "rows": 96,
+      "columns": 10,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-05",
+          "latest": "2026-08-05",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/ixp_snapshot.csv",
+      "rows": 168,
+      "columns": 12,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-01",
+          "latest": "2026-08-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/middle_mile_awards.csv",
+      "rows": 39,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-05",
+          "latest": "2026-08-05",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/middle_mile_summary.csv",
+      "rows": 1,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-07-08",
+          "latest": "2026-07-08",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/national_summary.csv",
+      "rows": 1,
+      "columns": 17,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-01",
+          "latest": "2026-08-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/connectivity/source_manifest.csv",
+      "rows": 8,
+      "columns": 8,
+      "date_columns": []
+    },
+    {
+      "file": "data/connectivity/submarine_cable_systems.csv",
+      "rows": 115,
+      "columns": 9,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-08-05",
+          "latest": "2026-08-05",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/construction_release_calendar.csv",
+      "rows": 4,
+      "columns": 2,
+      "date_columns": [
+        {
+          "column": "Release Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-07-29",
+          "valid_dates": 4
+        },
+        {
+          "column": "Observation Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-05-01",
+          "valid_dates": 2
+        }
+      ]
+    },
+    {
+      "file": "data/current_context_candidate_audit.csv",
+      "rows": 438,
+      "columns": 24,
+      "date_columns": []
+    },
+    {
+      "file": "data/data_center_construction_history.csv",
+      "rows": 149,
+      "columns": 3,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2014-01-01",
+          "latest": "2026-05-01",
+          "valid_dates": 149
+        }
+      ]
+    },
+    {
+      "file": "data/debt_financing_observations.csv",
+      "rows": 43,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Filing Date",
+          "earliest": "2020-10-27",
+          "latest": "2026-05-20",
+          "valid_dates": 40
+        }
+      ]
+    },
+    {
+      "file": "data/debt_markets_history.csv",
+      "rows": 1125,
+      "columns": 4,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2005-01-07",
+          "latest": "2026-07-24",
+          "valid_dates": 1125
+        }
+      ]
+    },
+    {
+      "file": "data/economic_impact_cpi_history.csv",
+      "rows": 77,
+      "columns": 2,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2020-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 77
+        }
+      ]
+    },
+    {
+      "file": "data/economic_impact_productivity_history.csv",
+      "rows": 383,
+      "columns": 9,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2020-01-01",
+          "latest": "2026-04-01",
+          "valid_dates": 26
+        }
+      ]
+    },
+    {
+      "file": "data/economic_value_transmission_history.csv",
+      "rows": 76,
+      "columns": 8,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2020-01-01",
+          "latest": "2026-04-01",
+          "valid_dates": 26
+        }
+      ]
+    },
+    {
+      "file": "data/energy_capacity_changes_2026.csv",
+      "rows": 303,
+      "columns": 16,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2026-01-01",
+          "latest": "2026-05-01",
+          "valid_dates": 5
+        }
+      ]
+    },
+    {
+      "file": "data/energy_capacity_snapshot.csv",
+      "rows": 10,
+      "columns": 6,
+      "date_columns": []
+    },
+    {
+      "file": "data/energy_generation_history.csv",
+      "rows": 273,
+      "columns": 4,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2016-12-31",
+          "latest": "2026-05-01",
+          "valid_dates": 39
+        }
+      ]
+    },
+    {
+      "file": "data/energy_generator_pipeline.csv",
+      "rows": 2769,
+      "columns": 22,
+      "date_columns": []
+    },
+    {
+      "file": "data/energy_interconnection_queue.csv",
+      "rows": 9181,
+      "columns": 29,
+      "date_columns": []
+    },
+    {
+      "file": "data/energy_interconnection_queue_summary.csv",
+      "rows": 7,
+      "columns": 6,
+      "date_columns": []
+    },
+    {
+      "file": "data/energy_lng_projects.csv",
+      "rows": 48,
+      "columns": 27,
+      "date_columns": [
+        {
+          "column": "In-service Date",
+          "earliest": "2016-02-01",
+          "latest": "2031-01-01",
+          "valid_dates": 27
+        },
+        {
+          "column": "Commercial Service Date",
+          "earliest": "2016-05-01",
+          "latest": "2023-10-01",
+          "valid_dates": 19
+        }
+      ]
+    },
+    {
+      "file": "data/energy_natural_gas_pipeline_canonical.csv",
+      "rows": 140,
+      "columns": 26,
+      "date_columns": [
+        {
+          "column": "Last Updated Date",
+          "earliest": "2024-01-30",
+          "latest": "2026-05-01",
+          "valid_dates": 35
+        },
+        {
+          "column": "Year In Service Date",
+          "earliest": "1970-01-01",
+          "latest": "1970-01-01",
+          "valid_dates": 6
+        }
+      ]
+    },
+    {
+      "file": "data/energy_natural_gas_pipeline_projects.csv",
+      "rows": 142,
+      "columns": 25,
+      "date_columns": [
+        {
+          "column": "Last Updated Date",
+          "earliest": "2024-01-30",
+          "latest": "2026-05-01",
+          "valid_dates": 36
+        },
+        {
+          "column": "Year In Service Date",
+          "earliest": "1970-01-01",
+          "latest": "1970-01-01",
+          "valid_dates": 6
+        }
+      ]
+    },
+    {
+      "file": "data/energy_natural_gas_storage_projects.csv",
+      "rows": 9,
+      "columns": 13,
+      "date_columns": []
+    },
+    {
+      "file": "data/energy_operating_generators.csv",
+      "rows": 28195,
+      "columns": 24,
+      "date_columns": []
+    },
+    {
+      "file": "data/energy_retail_market_history.csv",
+      "rows": 35620,
+      "columns": 8,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2015-01-01",
+          "latest": "2026-05-01",
+          "valid_dates": 137
+        }
+      ]
+    },
+    {
+      "file": "data/energy_series_history.csv",
+      "rows": 78,
+      "columns": 3,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2024-01-01",
+          "latest": "2026-07-24",
+          "valid_dates": 35
+        }
+      ]
+    },
+    {
+      "file": "data/energy_wholesale_prices.csv",
+      "rows": 1972,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "Trade Date",
+          "earliest": "2024-12-26",
+          "latest": "2026-07-21",
+          "valid_dates": 366
+        }
+      ]
+    },
+    {
+      "file": "data/facility_identity_decisions.csv",
+      "rows": 26,
+      "columns": 5,
+      "date_columns": []
+    },
+    {
+      "file": "data/facility_registry_seed.csv",
+      "rows": 3,
+      "columns": 37,
+      "date_columns": [
+        {
+          "column": "Status Date",
+          "earliest": "2025-11-14",
+          "latest": "2026-07-21",
+          "valid_dates": 3
+        },
+        {
+          "column": "Water Evidence Date",
+          "earliest": "2026-04-09",
+          "latest": "2026-07-21",
+          "valid_dates": 2
+        },
+        {
+          "column": "Source Date",
+          "earliest": "2025-11-14",
+          "latest": "2026-07-21",
+          "valid_dates": 3
+        }
+      ]
+    },
+    {
+      "file": "data/finance/nfci_anfci_history.csv",
+      "rows": 2900,
+      "columns": 3,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "1971-01-08",
+          "latest": "2026-07-31",
+          "valid_dates": 2900
+        }
+      ]
+    },
+    {
+      "file": "data/grid_storage/nerc_2026_summer_reserve_margins.csv",
+      "rows": 14,
+      "columns": 9,
+      "date_columns": [
+        {
+          "column": "Publication Date",
+          "earliest": "2026-05-19",
+          "latest": "2026-05-19",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/grid_storage/queue_outcomes_summary.csv",
+      "rows": 1,
+      "columns": 15,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2025-12-31",
+          "latest": "2025-12-31",
+          "valid_dates": 1
+        },
+        {
+          "column": "Publication Date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/grid_storage/source_manifest.csv",
+      "rows": 2,
+      "columns": 13,
+      "date_columns": [
+        {
+          "column": "publication_date",
+          "earliest": "2026-05-19",
+          "latest": "2026-06-01",
+          "valid_dates": 2
+        }
+      ]
+    },
+    {
+      "file": "data/household_earnings_distribution_history.csv",
+      "rows": 175,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2020-01-01",
+          "latest": "2026-04-01",
+          "valid_dates": 25
+        }
+      ]
+    },
+    {
+      "file": "data/industrial_production_history.csv",
+      "rows": 1290,
+      "columns": 2,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "1919-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1290
+        }
+      ]
+    },
+    {
+      "file": "data/info_processing_investment_history.csv",
+      "rows": 78,
+      "columns": 2,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2007-01-01",
+          "latest": "2026-04-01",
+          "valid_dates": 78
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/derived/compute_m3_history.csv",
+      "rows": 414,
+      "columns": 9,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "1992-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 414
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/derived/compute_manufacturing_history.csv",
+      "rows": 654,
+      "columns": 14,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "1972-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 654
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/derived/compute_project_ledger.csv",
+      "rows": 17,
+      "columns": 26,
+      "date_columns": [
+        {
+          "column": "Source Retrieval Date",
+          "earliest": "2026-07-31",
+          "latest": "2026-07-31",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/derived/compute_series_contract.csv",
+      "rows": 13,
+      "columns": 11,
+      "date_columns": []
+    },
+    {
+      "file": "data/infrastructure/derived/compute_series_validation.csv",
+      "rows": 5,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "official_latest_observation_date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "retained_latest_observation_date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/derived/data_center_national_database.csv",
+      "rows": 471,
+      "columns": 10,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-02-19",
+          "latest": "2026-06-03",
+          "valid_dates": 3
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/derived/gigawatt_verified_us_projects.csv",
+      "rows": 38,
+      "columns": 19,
+      "date_columns": []
+    },
+    {
+      "file": "data/infrastructure/field_dictionary.csv",
+      "rows": 33,
+      "columns": 5,
+      "date_columns": []
+    },
+    {
+      "file": "data/infrastructure/raw/federal_reserve/g17_compute_latest_observations_2026-07-17.csv",
+      "rows": 5,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "observation_date",
+          "earliest": "2026-06-01",
+          "latest": "2026-06-01",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/raw/fractracker/data_center_facilities_latest.csv",
+      "rows": 1479,
+      "columns": 44,
+      "date_columns": []
+    },
+    {
+      "file": "data/infrastructure/raw/fractracker/us_national_stage_2026-06-03.csv",
+      "rows": 6,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-06-03",
+          "latest": "2026-06-03",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/raw/fractracker/us_state_stage_2026-03-26.csv",
+      "rows": 50,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-03-26",
+          "latest": "2026-03-26",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/raw/gigawattmap/datacenters.csv",
+      "rows": 4254,
+      "columns": 25,
+      "date_columns": []
+    },
+    {
+      "file": "data/infrastructure/raw/pew/us_region_stage_2026-02-19.csv",
+      "rows": 4,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-02-19",
+          "latest": "2026-02-19",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/raw/pew/us_top15_state_stage_2026-02-19.csv",
+      "rows": 15,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2026-02-19",
+          "latest": "2026-02-19",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure/source_manifest.csv",
+      "rows": 11,
+      "columns": 29,
+      "date_columns": [
+        {
+          "column": "publication_date",
+          "earliest": "2025-06-06",
+          "latest": "2026-04-13",
+          "valid_dates": 3
+        }
+      ]
+    },
+    {
+      "file": "data/infrastructure_construction_history.csv",
+      "rows": 401,
+      "columns": 11,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "1993-01-01",
+          "latest": "2026-05-01",
+          "valid_dates": 401
+        }
+      ]
+    },
+    {
+      "file": "data/layout_rollout_manifest.csv",
+      "rows": 37,
+      "columns": 6,
+      "date_columns": []
+    },
+    {
+      "file": "data/power_release_calendar.csv",
+      "rows": 3,
+      "columns": 3,
+      "date_columns": [
+        {
+          "column": "Release Date",
+          "earliest": "2026-05-15",
+          "latest": "2026-07-17",
+          "valid_dates": 3
+        },
+        {
+          "column": "Sales Observation Date",
+          "earliest": "2026-02-01",
+          "latest": "2026-04-01",
+          "valid_dates": 3
+        },
+        {
+          "column": "System Observation Date",
+          "earliest": "2026-04-01",
+          "latest": "2026-06-01",
+          "valid_dates": 3
+        }
+      ]
+    },
+    {
+      "file": "data/power_series_history.csv",
+      "rows": 138,
+      "columns": 6,
+      "date_columns": [
+        {
+          "column": "Observation Date",
+          "earliest": "2015-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 138
+        }
+      ]
+    },
+    {
+      "file": "data/private_capital/fund_performance.csv",
+      "rows": 51,
+      "columns": 13,
+      "date_columns": []
+    },
+    {
+      "file": "data/private_credit_bdc_history.csv",
+      "rows": 10,
+      "columns": 12,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2025-12-31",
+          "latest": "2026-03-31",
+          "valid_dates": 2
+        }
+      ]
+    },
+    {
+      "file": "data/private_equity_strain_history.csv",
+      "rows": 12,
+      "columns": 9,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2013-12-31",
+          "latest": "2024-12-31",
+          "valid_dates": 12
+        }
+      ]
+    },
+    {
+      "file": "data/v650_public_data_manifest.csv",
+      "rows": 4,
+      "columns": 5,
+      "date_columns": []
+    },
+    {
+      "file": "data/v651_public_data_manifest.csv",
+      "rows": 7,
+      "columns": 5,
+      "date_columns": []
+    },
+    {
+      "file": "data/v654_public_data_manifest.csv",
+      "rows": 2,
+      "columns": 5,
+      "date_columns": []
+    },
+    {
+      "file": "data/v680_public_data_manifest.csv",
+      "rows": 4,
+      "columns": 5,
+      "date_columns": []
+    },
+    {
+      "file": "data/visual_surface_inventory.csv",
+      "rows": 135,
+      "columns": 9,
+      "date_columns": []
+    },
+    {
+      "file": "data/water/derived/eia_2024_thermoelectric_group_summary.csv",
+      "rows": 66,
+      "columns": 8,
+      "date_columns": []
+    },
+    {
+      "file": "data/water/derived/usdm_state_drought_snapshot.csv",
+      "rows": 51,
+      "columns": 14,
+      "date_columns": [
+        {
+          "column": "Snapshot Date",
+          "earliest": "2026-07-07",
+          "latest": "2026-07-07",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/water/derived/usgs_2015_national_category_summary.csv",
+      "rows": 8,
+      "columns": 9,
+      "date_columns": []
+    },
+    {
+      "file": "data/water/derived/usgs_2015_state_category_summary.csv",
+      "rows": 424,
+      "columns": 9,
+      "date_columns": []
+    },
+    {
+      "file": "data/water/derived/usgs_2020_top_withdrawals.csv",
+      "rows": 3,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Observation Year",
+          "earliest": "1970-01-01",
+          "latest": "1970-01-01",
+          "valid_dates": 1
+        },
+        {
+          "column": "Publication Date",
+          "earliest": "2025-04-04",
+          "latest": "2025-04-04",
+          "valid_dates": 1
+        }
+      ]
+    },
+    {
+      "file": "data/water/field_dictionary.csv",
+      "rows": 19,
+      "columns": 5,
+      "date_columns": []
+    },
+    {
+      "file": "data/water/source_manifest.csv",
+      "rows": 12,
+      "columns": 25,
+      "date_columns": [
+        {
+          "column": "publication_date",
+          "earliest": "2018-06-19",
+          "latest": "2026-07-09",
+          "valid_dates": 3
+        }
+      ]
+    },
+    {
+      "file": "data/weekly_context_events.csv",
+      "rows": 13,
+      "columns": 28,
+      "date_columns": []
+    },
+    {
+      "file": "data/workforce_ces_history.csv",
+      "rows": 697,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2020-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 78
+        }
+      ]
+    },
+    {
+      "file": "data/workforce_job_openings_history.csv",
+      "rows": 312,
+      "columns": 7,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2020-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 78
+        }
+      ]
+    },
+    {
+      "file": "data/workforce_labor_flows_history.csv",
+      "rows": 1248,
+      "columns": 8,
+      "date_columns": [
+        {
+          "column": "Date",
+          "earliest": "2020-01-01",
+          "latest": "2026-06-01",
+          "valid_dates": 78
+        }
+      ]
+    },
+    {
+      "file": "data/workforce_llm_exposure_snapshot.csv",
+      "rows": 923,
+      "columns": 14,
+      "date_columns": []
+    }
+  ]
+}

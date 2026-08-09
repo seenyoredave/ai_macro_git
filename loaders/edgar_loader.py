@@ -156,7 +156,7 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
     }
 
 
-def load_edgar_with_report(tickers, force_refresh=False):
+def load_edgar_with_report(tickers, force_refresh=False, allow_live=False):
     expected = _expected_ticker_set(tickers)
 
     recent_rows = read_recent_edgar_archive(
@@ -178,22 +178,48 @@ def load_edgar_with_report(tickers, force_refresh=False):
         if _is_usable_edgar_row(payload)
     }
 
-    tickers_to_fetch = sorted(expected if force_refresh else expected - usable_recent)
+    # EDGAR is a desktop-only explicit refresh. Public startup and ordinary
+    # developer rebuilds always consume retained facts.
+    if not (force_refresh and allow_live):
+        # Use the newest retained row for every ticker. Freshness is reported
+        # separately; it is never a reason to contact EDGAR during startup.
+        retained_data = dict(archive_fallback_data)
+        retained_data.update(recent_data)
+        edgar_data = {}
+        missing_retained = []
+        for ticker_upper in sorted(expected):
+            payload = retained_data.get(ticker_upper)
+            if payload is None:
+                missing_retained.append(ticker_upper)
+                payload = _empty_edgar_payload(
+                    "No retained EDGAR payload",
+                    source="Retained Missing",
+                )
+            edgar_data[ticker_upper] = payload
 
-    edgar_data = {} if force_refresh else {
-        ticker: recent_data[ticker]
-        for ticker in sorted(usable_recent)
-        if ticker in recent_data
-    }
+        report = describe_edgar_freshness_status(tickers)
+        report.update({
+            "source_mode": "archive_read_mode",
+            "refresh_trigger": "retained_snapshot",
+            "archive_recent_tickers_used": int(sum(t in recent_data for t in expected)),
+            "retained_tickers_used": int(len(expected) - len(missing_retained)),
+            "missing_tickers": missing_retained,
+            "live_needed_tickers": [],
+            "live_attempted_tickers": [],
+            "live_succeeded_tickers": [],
+            "live_failed_tickers": [],
+            "live_rejected_quality_tickers": [],
+        })
+        return edgar_data, report
+
+    tickers_to_fetch = sorted(expected)
+
+    edgar_data = {}
 
     report = describe_edgar_freshness_status(tickers)
     report.update({
-        "source_mode": (
-            "manual_live" if force_refresh
-            else "archive_recent" if not tickers_to_fetch
-            else "partial_live"
-        ),
-        "refresh_trigger": "manual" if force_refresh else "automatic",
+        "source_mode": "manual_live",
+        "refresh_trigger": "manual",
         "archive_recent_tickers_used": int(len(edgar_data)),
         "live_needed_tickers": tickers_to_fetch,
         "live_attempted_tickers": [],
@@ -201,13 +227,6 @@ def load_edgar_with_report(tickers, force_refresh=False):
         "live_failed_tickers": [],
         "live_rejected_quality_tickers": [],
     })
-
-    if not tickers_to_fetch:
-        debug_print(
-            f"Loading EDGAR rows from recent archive window "
-            f"({EDGAR_FRESHNESS_DAYS} days)."
-        )
-        return edgar_data, report
 
     try:
         ticker_cik_map = load_ticker_cik_map()
@@ -258,8 +277,8 @@ def load_edgar_with_report(tickers, force_refresh=False):
     return edgar_data, report
 
 
-def load_edgar(tickers):
-    edgar_data, _ = load_edgar_with_report(tickers)
+def load_edgar(tickers, *, allow_live=False):
+    edgar_data, _ = load_edgar_with_report(tickers, allow_live=allow_live)
     return edgar_data
 
 

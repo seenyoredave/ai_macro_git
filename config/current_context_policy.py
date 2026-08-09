@@ -126,6 +126,7 @@ DOMAIN_CONTEXT_POLICY = {
     "finance": {"lookback_days": 7, "minimum_score": 106.0, "cadence": "several_per_week"},
     "compute": {"lookback_days": 10, "minimum_score": 106.0, "cadence": "several_per_week"},
     "data_center": {"lookback_days": 14, "minimum_score": 106.0, "cadence": "event_driven"},
+    "connectivity": {"lookback_days": 14, "minimum_score": 106.0, "cadence": "event_driven"},
     "power": {"lookback_days": 7, "minimum_score": 106.0, "cadence": "several_per_week"},
     "grid_storage": {"lookback_days": 10, "minimum_score": 106.0, "cadence": "event_driven"},
     "water": {"lookback_days": 14, "minimum_score": 106.0, "cadence": "event_driven"},
@@ -142,6 +143,7 @@ DOMAIN_OWNER_TERMS = {
     "finance": ("federal reserve", "interest rate", "credit", "debt", "financing", "funding", "private equity", "venture"),
     "compute": ("semiconductor", "chip", "gpu", "foundry", "fab", "photonics", "advanced packaging"),
     "data_center": ("data center", "datacenter", "campus", "permit", "moratorium", "audit"),
+    "connectivity": ("submarine cable", "cable landing", "internet exchange", "peering", "interconnection facility", "middle mile", "fiber backbone", "route diversity"),
     "power": ("electricity demand", "generation", "power plant", "capacity addition", "retail electricity", "natural gas"),
     "grid_storage": ("transmission", "interconnection", "substation", "transformer", "grid", "curtailment", "battery storage"),
     "water": ("water", "wastewater", "river", "reservoir", "drought", "aquifer", "withdrawal", "cooling"),
@@ -151,7 +153,7 @@ DOMAIN_OWNER_TERMS = {
 }
 
 DOMAIN_CONTEXT_FALLBACK = {
-    domain: "No material domain-specific development met the platform's evidence threshold this period."
+    domain: "No material development was identified for this period."
     for domain in DOMAIN_CONTEXT_POLICY
 }
 
@@ -160,6 +162,7 @@ DOMAIN_NEWS_QUERIES = {
     "finance": '(AI financing OR private equity AI OR venture capital AI OR private credit OR interest rates technology investment)',
     "compute": '(AI chips OR semiconductor manufacturing OR chip export controls OR semiconductor fab OR GPU supply)',
     "data_center": '(data center moratorium OR data center permits OR data center construction OR data center campus)',
+    "connectivity": '(submarine cable OR cable landing station OR internet exchange OR peering facility OR middle mile fiber OR long-haul fiber backbone)',
     "power": '(data center electricity demand OR power generation capacity OR electricity prices OR natural gas generation)',
     "grid_storage": '(transmission project OR interconnection queue OR power grid OR battery storage OR transformer shortage OR curtailment)',
     "water": '(data center water OR wastewater infrastructure OR industrial water permit OR drought water supply)',
@@ -173,6 +176,7 @@ DOMAIN_NEWS_TERMS = {
     "finance": ("financing", "funding", "private equity", "venture", "credit", "rates", "debt", "distribution"),
     "compute": ("chip", "semiconductor", "gpu", "fab", "export", "foundry", "manufacturing"),
     "data_center": ("data center", "datacenter", "campus", "permit", "moratorium", "audit"),
+    "connectivity": ("submarine cable", "cable landing", "internet exchange", "peering", "interconnection facility", "middle mile", "fiber backbone", "route diversity"),
     "power": ("electricity", "generation", "power plant", "capacity", "retail price", "natural gas"),
     "grid_storage": ("grid", "transmission", "interconnection", "curtailment", "storage", "transformer", "substation"),
     "water": ("water", "wastewater", "drought", "aquifer", "cooling", "withdrawal", "reuse", "permit"),

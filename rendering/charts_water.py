@@ -10,6 +10,7 @@ from analytics.water_competition import (
     evidence_ladder,
     state_competition_exposure,
     state_facility_evidence_profile,
+    state_water_exposure_profile,
 )
 from rendering.charts_common import COLORS, _base_layout, add_axis_headroom, add_stacked_axis_headroom
 
@@ -218,7 +219,7 @@ def thermoelectric_water_groups(group_frame, *, metric="Withdrawal", height=360)
 
 
 def water_top_withdrawals_2020(frame: pd.DataFrame | None, *, height: int = 390):
-    """Show the latest retained national comparison of the top three water uses."""
+    """Show the latest available national comparison of the top three water uses."""
     profile = current_top_withdrawal_profile(frame)
     fig = go.Figure()
     if not profile.empty:
@@ -243,7 +244,7 @@ def water_top_withdrawals_2020(frame: pd.DataFrame | None, *, height: int = 390)
             ], axis=-1),
             hovertemplate=(
                 "%{y}<br>Withdrawal: %{x:,.1f} Bgal/day"
-                "<br>Share of retained top-three total: %{customdata[0]:.1f}%"
+                "<br>Share of selected top-three total: %{customdata[0]:.1f}%"
                 "<br>Observation year: %{customdata[1]:.0f}<extra></extra>"
             ),
         ))
@@ -330,3 +331,67 @@ def wastewater_construction_history(history: pd.DataFrame | None, *, height: int
     fig.update_yaxes(tickprefix="$", ticksuffix="B")
     fig = _water_layout(fig, height=height, margin=dict(l=54, r=22, t=24, b=40))
     return add_axis_headroom(fig, upper=0.12, lower=0.05)
+
+
+def water_drought_exposure(facility_context: pd.DataFrame | None, state_categories: pd.DataFrame | None = None, *, height: int = 470, top_n: int = 16):
+    frame = state_water_exposure_profile(facility_context, state_categories)
+    fig = go.Figure()
+    if not frame.empty:
+        selection = frame.loc[frame["Facilities"].gt(0)].copy()
+        selection = selection.sort_values(["D2+ Area Percent", "Published Capacity MW"], ascending=False, kind="stable").head(top_n)
+        selection = selection.sort_values("D2+ Area Percent", ascending=True, kind="stable")
+        fig.add_trace(go.Bar(
+            x=selection["D1+ Area Percent"], y=selection["State"], orientation="h",
+            name="D1+ area", marker_color=WATER_COLORS["secondary"],
+            customdata=np.stack([
+                selection["D2+ Area Percent"].fillna(0),
+                selection["Facilities"].fillna(0),
+                selection["Published Capacity MW"].fillna(0),
+                selection["Direct Evidence Coverage Percent"].fillna(0),
+            ], axis=-1),
+            hovertemplate=("%{y}<br>D1+ area: %{x:.1f}%"
+                           "<br>D2+ area: %{customdata[0]:.1f}%"
+                           "<br>Facilities: %{customdata[1]:,.0f}"
+                           "<br>Published capacity: %{customdata[2]:,.0f} MW"
+                           "<br>Direct-evidence coverage: %{customdata[3]:.1f}%<extra></extra>"),
+        ))
+        fig.add_trace(go.Scatter(
+            x=selection["D2+ Area Percent"], y=selection["State"], mode="markers", name="D2+ area",
+            marker={"size": 10, "color": WATER_COLORS["primary"], "line": {"width": 1, "color": "rgba(248,250,252,0.7)"}},
+            hovertemplate="%{y}<br>D2+ area: %{x:.1f}%<extra></extra>",
+        ))
+    fig.update_xaxes(title="Share of state area in drought", ticksuffix="%", range=[0, 105])
+    fig.update_yaxes(title="")
+    fig = _water_layout(fig, height=height, legend=True, margin=dict(l=55, r=30, t=70, b=48))
+    fig.update_layout(legend={"orientation":"h", "y":1.13, "x":0, "yanchor":"bottom"})
+    return fig
+
+
+def water_capacity_disclosure_scatter(facility_context: pd.DataFrame | None, state_categories: pd.DataFrame | None = None, *, height: int = 430):
+    frame = state_water_exposure_profile(facility_context, state_categories)
+    fig = go.Figure()
+    if not frame.empty:
+        fig.add_trace(go.Scatter(
+            x=frame["Published Capacity MW"], y=frame["Direct Evidence Coverage Percent"],
+            mode="markers+text", text=frame["State"], textposition="top center",
+            marker={
+                "size": np.clip(7 + np.sqrt(frame["Facilities"].fillna(0)) * 2.5, 8, 24),
+                "color": frame["D2+ Area Percent"].fillna(0),
+                "colorscale": "Purples", "showscale": True,
+                "colorbar": {"title": "D2+ area", "ticksuffix": "%"},
+                "line": {"width": 0.8, "color": "rgba(248,250,252,0.55)"},
+            },
+            customdata=np.stack([
+                frame["Facilities"].fillna(0),
+                frame["D1+ Area Percent"].fillna(0),
+                frame["D2+ Area Percent"].fillna(0),
+            ], axis=-1),
+            hovertemplate=("%{text}<br>Published capacity: %{x:,.0f} MW"
+                           "<br>Direct-evidence coverage: %{y:.1f}%"
+                           "<br>Facilities: %{customdata[0]:,.0f}"
+                           "<br>D1+ area: %{customdata[1]:.1f}%"
+                           "<br>D2+ area: %{customdata[2]:.1f}%<extra></extra>"),
+        ))
+    fig.update_xaxes(title="Published data-center capacity", ticksuffix=" MW")
+    fig.update_yaxes(title="Direct water-evidence coverage", ticksuffix="%", range=[-5, 105])
+    return _water_layout(fig, height=height, margin=dict(l=64, r=80, t=30, b=55))

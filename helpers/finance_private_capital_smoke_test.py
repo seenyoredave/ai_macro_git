@@ -53,16 +53,23 @@ def main() -> None:
         raise AssertionError("Fund map left the cool Finance palette.")
 
     finance_source = (PROJECT_ROOT / "rendering" / "finance.py").read_text()
+    finance_render = finance_source.split("def render_finance_tab", 1)[1]
     section_positions = [
-        finance_source.index('"Capital Funding"'),
-        finance_source.index('"Private Capital Realization"'),
-        finance_source.index('"Credit Markets"'),
-        finance_source.index('"Financial Stress"'),
+        finance_render.index('"Funding capacity"'),
+        finance_render.index('"Private capital realization"'),
+        finance_render.index('"Credit conditions"'),
+        finance_render.index('"Financial strain"'),
     ]
     if section_positions != sorted(section_positions):
         raise AssertionError("Finance capital-lifecycle sections are out of order.")
-    if 'expanded=False' not in finance_source or 'View fund, vintage, and methodology detail' not in finance_source:
-        raise AssertionError("Private-capital detail is not collapsed by default.")
+    if finance_source.count('st.expander(') != 1 or 'Finance data' not in finance_source:
+        raise AssertionError("Finance detail is not consolidated into one bottom ledger.")
+    if 'methodology detail' in finance_source.casefold():
+        raise AssertionError("Methodology commentary leaked back into the Finance presentation.")
+    if 'key="finance-view-stress-detail"' not in finance_source:
+        raise AssertionError("Borrower/lender stress detail is no longer consolidated behind one selector.")
+    if finance_source.count('_render_financial_condition_detail(') != 3:
+        raise AssertionError("Finance should define one stress-detail renderer and call it for two selectable channels.")
 
     print(
         "PASS  Finance private-capital realization · "

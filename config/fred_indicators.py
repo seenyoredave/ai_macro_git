@@ -12,6 +12,7 @@ FRED_INDICATORS = {
     "Info Processing Investment Level": "A679RX1Q020SBEA",
     "Business Loan Tightening": "SUBLPDMBSXWBNQ",
     "Bank Tier 1 Capital Ratio": "BOGZ1FL010000016Q",
+    "Business Loan Delinquency": "DRBLACBS",
 
     "Commercial Electricity Sales": "IPN22112CS",
     "Residential Electricity Sales": "IPN22112RS",

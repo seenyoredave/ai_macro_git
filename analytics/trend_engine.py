@@ -15,6 +15,7 @@ def metric_series(
     *,
     version_column=None,
     required_version=None,
+    required_filters=None,
 ):
     if df is None or df.empty:
         return pd.DataFrame(columns=["Date", "Value"])
@@ -26,6 +27,13 @@ def metric_series(
             return pd.DataFrame(columns=["Date", "Value"])
         working = working[
             working[version_column].astype(str) == str(required_version)
+        ].copy()
+
+    for column, required_value in (required_filters or {}).items():
+        if column not in working.columns:
+            return pd.DataFrame(columns=["Date", "Value"])
+        working = working[
+            working[column].astype(str) == str(required_value)
         ].copy()
 
     candidates = METRIC_ALIASES.get(metric_col, [metric_col])
@@ -98,12 +106,29 @@ def _calendar_slope(
     return float(slope_per_day * 30.4375)
 
 
-def calc_velocity(series_df, *, window_days=90):
+def calc_velocity(
+    series_df,
+    *,
+    window_days=90,
+    min_observations=3,
+    min_span_days=30,
+):
     """Trailing OLS slope in index points per average month."""
-    return _calendar_slope(series_df, window_days=window_days)
+    return _calendar_slope(
+        series_df,
+        window_days=window_days,
+        min_observations=min_observations,
+        min_span_days=min_span_days,
+    )
 
 
-def calc_acceleration(series_df, *, window_days=90):
+def calc_acceleration(
+    series_df,
+    *,
+    window_days=90,
+    min_observations=3,
+    min_span_days=30,
+):
     """Change between the current and immediately prior calendar-window slopes."""
     if series_df is None or not isinstance(series_df, pd.DataFrame) or series_df.empty:
         return np.nan
@@ -112,8 +137,20 @@ def calc_acceleration(series_df, *, window_days=90):
         return np.nan
     current_end = dates.max()
     prior_end = current_end - pd.Timedelta(days=int(window_days))
-    current = _calendar_slope(series_df, end_date=current_end, window_days=window_days)
-    prior = _calendar_slope(series_df, end_date=prior_end, window_days=window_days)
+    current = _calendar_slope(
+        series_df,
+        end_date=current_end,
+        window_days=window_days,
+        min_observations=min_observations,
+        min_span_days=min_span_days,
+    )
+    prior = _calendar_slope(
+        series_df,
+        end_date=prior_end,
+        window_days=window_days,
+        min_observations=min_observations,
+        min_span_days=min_span_days,
+    )
     return float(current - prior) if pd.notna(current) and pd.notna(prior) else np.nan
 
 def calc_trailing_directional_pct(series_df, *, months, tolerance=1e-9):
@@ -180,8 +217,12 @@ def calc_metric_trend(
     *,
     version_column=None,
     required_version=None,
+    required_filters=None,
     distinct_observations=False,
     repeat_tolerance=1e-9,
+    dynamics_window_days=90,
+    dynamics_min_observations=3,
+    dynamics_min_span_days=30,
 ):
     del group_cols
     series_df = metric_series(
@@ -190,6 +231,7 @@ def calc_metric_trend(
         date_col=date_col,
         version_column=version_column,
         required_version=required_version,
+        required_filters=required_filters,
     )
 
     if series_df.empty:
@@ -208,8 +250,18 @@ def calc_metric_trend(
     )
     return {
         "current": float(series_df["Value"].iloc[-1]),
-        "velocity": calc_velocity(dynamics_df),
-        "acceleration": calc_acceleration(dynamics_df),
+        "velocity": calc_velocity(
+            dynamics_df,
+            window_days=dynamics_window_days,
+            min_observations=dynamics_min_observations,
+            min_span_days=dynamics_min_span_days,
+        ),
+        "acceleration": calc_acceleration(
+            dynamics_df,
+            window_days=dynamics_window_days,
+            min_observations=dynamics_min_observations,
+            min_span_days=dynamics_min_span_days,
+        ),
         "history": series_df,
         "dynamics_observations": int(len(dynamics_df)),
     }

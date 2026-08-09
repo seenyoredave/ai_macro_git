@@ -1,0 +1,53 @@
+Domain,Section,Layout Mode,Metric Presentation,Renderer Key,Notes
+Compute,Manufacturing trajectory,full_width,summary_row,full-width-layout-compute-manufacturing-hero,Signature manufacturing-output history leads the domain.
+Compute,Capacity and demand,workbench,summary_row,full-width-layout-compute-capacity-demand,One selectable capacity/demand canvas with current readings above.
+Compute,Serving economics,summary_row,summary_row,compute-serving-economics,Company disclosures act as a validation band rather than a separate card wall.
+Compute,Critical supply-chain structure,full_width,none,full-width-layout-compute-critical-supply-chain,AI-critical production layers receive a dedicated structural view.
+Compute,Domestic buildout,workbench,summary_row,full-width-layout-compute-domestic-buildout,Project footprint and geography share one selectable canvas.
+Data Centers,Data-center pulse,summary_row,summary_row,data-center-pulse,Shallow current-state rail.
+Data Centers,Pipeline explorer,workbench,summary_row,full-width-layout-data-center-pipeline-explorer,Lifecycle stage is the hero with state pipeline as an alternate view.
+Data Centers,Geographic concentration,workbench,summary_row,full-width-layout-data-center-geography,Map-led geography with capacity and regional alternates.
+Data Centers,Connectivity & operator structure,paired_view,summary_row,data-center-structure,Mismatch screen and operator pipeline are coordinated structural views.
+Data Centers,Project ledger,ledger,selectable_context,data-center-ledger-view,One bottom ledger selects campus or operator detail.
+Connectivity,National transport pulse,summary_row,summary_row,connectivity-pulse,Shallow state rail.
+Connectivity,Gateway map,workbench,summary_row,full-width-layout-connectivity-gateway-map,Gateway map is the signature canvas with pipeline/region alternates.
+Connectivity,Interconnection depth,workbench,summary_row,full-width-layout-connectivity-interconnection,Metric selector lives inside a full-width ranking canvas.
+Connectivity,Terrestrial expansion,full_width,summary_row,full-width-layout-connectivity-middle-mile,Awards and reach precede one full-width construction view.
+Connectivity,Compute versus transport,workbench,summary_row,full-width-layout-connectivity-compute-transport,Mismatch and proximity share one canvas.
+Connectivity,Connectivity data,ledger,selectable_context,connectivity-ledger-view,One bottom ledger replaces six fragmented registers.
+Finance,Funding capacity,instrument_board,instrument_board,finance-funding-instrument-board,Four genuine indexed funding conditions share one deliberate board.
+Finance,Commercial realization,summary_row,summary_row,finance-commercial-realization,Revenue/backlog/margin disclosures form a horizontal validation band.
+Finance,Private capital realization,full_width,summary_row,full-width-layout-finance-private-capital,Protected fund realization map remains the primary visual.
+Finance,Credit conditions,full_width,instrument_board,finance-debt-market-history,Debt distress instruments and NFCI confirmation.
+Finance,Financial strain,paired_view,summary_row,finance-view-stress-detail,"Borrower/lender summaries pair, then one selected detail channel."
+Finance,Finance data,ledger,selectable_context,finance-ledger-view,One bottom ledger consolidates disclosures and component detail.
+Power,Power pulse,summary_row,summary_row,power-pulse,Demand/buildout/price state rail.
+Power,Demand & large loads,paired_view,summary_row,power-panel-demand-history,Demand history paired with meaningful large-load concentration object.
+Power,Supply response,workbench,summary_row,full-width-layout-power-generation-supply,Generation mix/momentum/fleet changes share one full-width canvas.
+Power,Generation buildout,full_width,summary_row,full-width-layout-power-generation-buildout,Planned additions and retirements use a single dominant chart.
+Power,Price & fuel consequences,workbench,summary_row,full-width-layout-power-prices,Retail/wholesale/fuel infrastructure are coordinated alternate views.
+Power,Power data,ledger,selectable_context,power-ledger-view,One bottom data ledger.
+Grid & Storage,Grid delivery pathway,structured_pathway,five_stage_screen,grid-storage-deliverability,"Horizontal-first causal screen for queue scale, maturity, reliability, storage, and investment."
+Grid & Storage,Queue conversion,full_width,summary_row,full-width-layout-grid-storage-queue-conversion,Signature conversion funnel.
+Grid & Storage,Reliability and storage,paired_view,summary_row,grid-storage-resilience-pair,Coordinated reserve-margin and storage-duration views.
+Grid & Storage,Regional maturity,full_width,summary_row,full-width-layout-grid-storage-regional-maturity,Subordinate regional structure.
+Grid & Storage,Delivery investment,full_width,summary_row,full-width-layout-grid-storage-investment,Construction response closes the sequence.
+Water,Exposure state,full_width,summary_row,full-width-layout-water-state-exposure,Direct data-center exposure leads.
+Water,Campus water exposure dossier,structured_record,grouped_definition_rows,water-campus-dossier,Selected-campus dossier remains the investigative hero.
+Water,Evidence ladder,full_width,summary_row,full-width-layout-water-evidence,Direct evidence depth and coverage.
+Water,Broader water-system context,workbench,selectable_context,water-system-workbench,"National, thermoelectric, and wastewater context share one subordinate workbench."
+Adoption,Diffusion state,summary_row,summary_row,adoption-diffusion-state,One current-state rail spanning people and businesses.
+Adoption,People & business trajectory,workbench,summary_row,full-width-layout-adoption-trajectory,People/business histories share one active canvas.
+Adoption,Paid-adoption validation,summary_row,summary_row,adoption-paid,Provider disclosures validate conversion to paid use.
+Adoption,Industry breadth,full_width,none,full-width-layout-adoption-industry-breadth,Structural ranking closes the public analysis.
+Adoption,Adoption data,ledger,selectable_context,adoption-ledger-view,One bottom ledger.
+Workforce,Observed workforce outcomes,full_width,none,full-width-layout-workforce-outcomes-matrix,Outcomes Matrix is the signature hero.
+Workforce,Workforce transmission pulse,summary_row,summary_row,workforce-pulse,Current breadth and labor-flow readings.
+Workforce,Workforce channels,workbench,selectable_context,full-width-layout-workforce-channels,"Employment, labor flows, compensation, and exposure share one coordinated workbench."
+Workforce,Workforce data,ledger,selectable_context,workforce-ledger-view,One bottom ledger.
+Economic Outcomes,Value realization bridge,structured_pathway,three_layer_bridge,economic-outcomes-value-bridge,Protected commercial-to-production-to-distribution bridge.
+Economic Outcomes,National outcome history,full_width,summary_row,full-width-layout-economic-realized-history,National outcomes history immediately follows the bridge.
+Economic Outcomes,Distribution of gains,paired_view,summary_row,economic-impact-distribution,Worker capture and broad participation are paired.
+Economic Outcomes,Investment validation,full_width,none,full-width-layout-economic-investment-validation,Investment history remains a full-width validation view.
+Economic Outcomes,Production economy,summary_row,summary_row,economic-impact-production,Production context closes the analytical page.
+Economic Outcomes,Economic-outcomes data,ledger,selectable_context,economic-impact-ledger-view,One bottom ledger consolidates underlying records.

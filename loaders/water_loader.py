@@ -8,6 +8,7 @@ import streamlit as st
 
 from config.debug_config import debug_print
 from water.sources import load_source_manifest
+from water.refresh import refresh_water_sources
 
 ROOT = Path(__file__).resolve().parents[1]
 WATER_ROOT = ROOT / "data/water"
@@ -24,7 +25,9 @@ def _read_csv(name: str, **kwargs) -> pd.DataFrame:
         return pd.DataFrame()
 
 @st.cache_data(show_spinner=False)
-def load_water_utilization_data() -> dict:
+def load_water_utilization_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
+    del refresh_token
+    refresh_report = refresh_water_sources() if force_refresh else {}
     summary_path = DERIVED / "water_national_summary.json"
     try:
         summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {}
@@ -39,7 +42,8 @@ def load_water_utilization_data() -> dict:
         source_health = "degraded"
 
     return {
-        "source_mode": "retained_local",
+        "source_mode": str(refresh_report.get("source_mode") or "retained_local"),
+        "refresh_report": refresh_report,
         "source_health": source_health,
         "summary": summary,
         "source_manifest": manifest,
@@ -51,6 +55,7 @@ def load_water_utilization_data() -> dict:
         "usgs_reconciliation": _read_csv("usgs_2015_reconciliation.csv.gz"),
         "eia_plants": _read_csv("eia_2024_thermoelectric_plant_summary.csv.gz"),
         "eia_groups": _read_csv("eia_2024_thermoelectric_group_summary.csv"),
+        "usdm_state_drought": _read_csv("usdm_state_drought_snapshot.csv"),
         "observation_count": int(summary.get("observation_rows", 0) or 0),
         "active_source_count": int(summary.get("active_sources", 0) or 0),
     }

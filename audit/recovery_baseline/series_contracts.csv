@@ -1,0 +1,9 @@
+label,file,value_column,date_column,valid_observations,earliest,latest,span_days,checks,passed
+Finance NFCI ten-year confirmation,data/finance/nfci_anfci_history.csv,Value,Date,2900,1971-01-08,2026-07-31,20293,"{""valid_observations_at_least_500"": true, ""span_days_at_least_3560"": true}",True
+Finance ANFCI ten-year confirmation,data/finance/nfci_anfci_history.csv,ANFCI,Date,2900,1971-01-08,2026-07-31,20293,"{""valid_observations_at_least_500"": true, ""span_days_at_least_3560"": true}",True
+Corporate bond distress history,data/debt_markets_history.csv,Corporate Bond Market Distress,Date,1125,2005-01-07,2026-07-24,7868,"{""valid_observations_at_least_500"": true, ""span_days_at_least_3560"": true}",True
+Borrower strain ten-year view,data/borrower_strain_history.csv,Borrower Strain,Date,17,2014-12-31,2026-06-13,4182,"{""valid_observations_at_least_10"": true, ""span_days_at_least_3560"": true}",True
+Private-equity lender-strain view,data/private_equity_strain_history.csv,PIK Mean (%),Date,12,2013-12-31,2024-12-31,4018,"{""valid_observations_at_least_10"": true, ""span_days_at_least_3560"": true}",True
+Bank capital lender-strain view,data/bank_tier1_capital_history.csv,Tier 1 Capital Ratio (%),Date,65,2009-10-01,2025-10-01,5844,"{""valid_observations_at_least_40"": true, ""span_days_at_least_3560"": true}",True
+Retained market archive (informational),archive/yf_history.csv,Price,Date,5100,2026-06-12,2026-07-29,47,{},
+Power-series retained history,data/power_series_history.csv,Electric Power Output,Observation Date,138,2015-01-01,2026-06-01,4169,"{""valid_observations_at_least_100"": true}",True

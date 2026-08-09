@@ -10,6 +10,7 @@ def load_benchmark(
     force_refresh: bool = False,
     refresh_token: int = 0,
     clock_token: str | None = None,
+    allow_live: bool = False,
 ):
     if name not in BENCHMARK_UNIVERSES:
         raise ValueError(f"Unknown benchmark: {name}")
@@ -23,6 +24,7 @@ def load_benchmark(
         force_refresh=bool(force_refresh),
         refresh_token=int(refresh_token),
         clock_token=clock_token,
+        allow_live=bool(allow_live or force_refresh),
     ).copy()
     weights = BENCHMARK_WEIGHTS.get(name)
     if not weights:

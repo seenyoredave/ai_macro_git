@@ -135,10 +135,16 @@ def _lender_strain_component_table(lender_strain_result):
                 payload.get("portfolio_cost_mm", np.nan), errors="coerce"
             )
             observations = payload.get("observations", "")
-            measure = (
-                f"BDC non-accruals at cost: {fmt_decimal(raw)}%; "
-                f"{observations} lenders; portfolio cost {fmt_dollars(portfolio_cost * 1e6)}"
-            )
+            evidence_mode = str(payload.get("evidence_mode", "")).strip()
+            if evidence_mode.startswith("Direct listed-BDC"):
+                measure = (
+                    f"BDC non-accruals at cost: {fmt_decimal(raw)}%; "
+                    f"{observations} lenders; portfolio cost {fmt_dollars(portfolio_cost * 1e6)}"
+                )
+            else:
+                measure = f"Business-loan delinquency bridge: {fmt_decimal(raw)}%"
+            if evidence_mode:
+                measure += f"; current evidence: {evidence_mode}"
         else:
             reported_assets = pd.to_numeric(
                 payload.get("reported_assets_bn", np.nan), errors="coerce"
@@ -236,7 +242,6 @@ def render_macro_data(fred_data):
 
     with st.expander("FRED Data", expanded=False):
         st.dataframe(arrow_safe_dataframe(pd.DataFrame(rows)), width="stretch", hide_index=True)
-        st.caption("Market data cache: 1 hour | FRED cache: 24 hours")
 
 def render_edgar_data(sector_data):
     if not sector_data:

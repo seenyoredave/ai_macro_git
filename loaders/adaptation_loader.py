@@ -12,10 +12,12 @@ from config.deployment import repository_writes_enabled
 from helpers.atomic_io import atomic_write_csv
 
 from config.debug_config import debug_print
+from loaders.official_series_refresh import refresh_templated_history
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 NATIONAL_HISTORY_PATH = PROJECT_ROOT / "data" / "adaptation_national_history.csv"
 SECTOR_SNAPSHOT_PATH = PROJECT_ROOT / "data" / "adaptation_sector_snapshot.csv"
+CONSUMER_HISTORY_PATH = PROJECT_ROOT / "data" / "adoption_consumer_history.csv"
 BTOS_NATIONAL_URL = "https://www.census.gov/hfp/btos/downloads/National.xlsx"
 BTOS_SECTOR_URL = "https://www.census.gov/hfp/btos/downloads/Sector.xlsx"
 
@@ -104,7 +106,14 @@ def parse_btos_sector_workbook(content: bytes) -> pd.DataFrame:
         raise ValueError("BTOS sector workbook contains no cycle columns")
     latest = max(cycles, key=int)
     rows = []
-    for sector_code in estimates["Sector"].dropna().astype(str).unique():
+    observed_codes = {
+        str(value).strip()
+        for value in estimates["Sector"].dropna()
+        if str(value).strip() in NAICS_SECTORS
+    }
+    for sector_code in NAICS_SECTORS:
+        if sector_code not in observed_codes:
+            continue
         payload = {"Sector Code": sector_code, "Sector": NAICS_SECTORS.get(sector_code, sector_code)}
         for question, metric in [(7, "Current AI Use"), (24, "Expected AI Use")]:
             selector = (
@@ -169,9 +178,41 @@ def _load_local() -> tuple[pd.DataFrame, pd.DataFrame]:
     sector = _ensure_expected_adoption_gap(sector)
     return national, sector
 
-def _summarize(national: pd.DataFrame, sector: pd.DataFrame, *, source: str) -> dict:
+
+def _load_consumer_history() -> pd.DataFrame:
+    if not CONSUMER_HISTORY_PATH.exists() or CONSUMER_HISTORY_PATH.stat().st_size == 0:
+        return pd.DataFrame(columns=["Date", "Series", "Value", "Series ID", "Unit", "Frequency", "Population", "Source", "Retrieved"])
+    try:
+        frame = pd.read_csv(CONSUMER_HISTORY_PATH)
+    except Exception as exc:
+        debug_print(f"Consumer adoption history load failed -> {exc}")
+        return pd.DataFrame(columns=["Date", "Series", "Value", "Series ID", "Unit", "Frequency", "Population", "Source", "Retrieved"])
+    frame["Date"] = pd.to_datetime(frame.get("Date"), errors="coerce", format="mixed")
+    frame["Value"] = pd.to_numeric(frame.get("Value"), errors="coerce")
+    return frame.dropna(subset=["Date", "Series", "Value"]).sort_values(["Series", "Date"], kind="stable").reset_index(drop=True)
+
+def _consumer_latest(history: pd.DataFrame, series: str) -> dict:
+    if history is None or history.empty:
+        return {"value": np.nan, "date": None, "series_id": ""}
+    rows = history.loc[history.get("Series", pd.Series("", index=history.index)).astype(str).eq(series)]
+    if rows.empty:
+        return {"value": np.nan, "date": None, "series_id": ""}
+    latest = rows.sort_values("Date", kind="stable").iloc[-1]
+    return {
+        "value": float(latest["Value"]),
+        "date": pd.Timestamp(latest["Date"]),
+        "series_id": str(latest.get("Series ID", "")),
+    }
+
+def _summarize(national: pd.DataFrame, sector: pd.DataFrame, *, source: str, consumer: pd.DataFrame | None = None) -> dict:
     national = _ensure_expected_adoption_gap(national)
     sector = _ensure_expected_adoption_gap(sector)
+    consumer = consumer.copy() if isinstance(consumer, pd.DataFrame) else pd.DataFrame()
+    consumer_overall = _consumer_latest(consumer, "Overall use")
+    consumer_personal = _consumer_latest(consumer, "Personal / outside work")
+    consumer_work = _consumer_latest(consumer, "Work use")
+    consumer_active = _consumer_latest(consumer, "Used last week")
+    consumer_daily = _consumer_latest(consumer, "Daily use")
     if national.empty:
         return {
             "source_mode": "unavailable",
@@ -183,6 +224,12 @@ def _summarize(national: pd.DataFrame, sector: pd.DataFrame, *, source: str) -> 
             "expected_use": np.nan,
             "expected_adoption_gap": np.nan,
             "annual_change": np.nan,
+            "consumer_history": consumer,
+            "consumer_overall": consumer_overall,
+            "consumer_personal": consumer_personal,
+            "consumer_work": consumer_work,
+            "consumer_active": consumer_active,
+            "consumer_daily": consumer_daily,
         }
     latest = national.iloc[-1]
     latest_date = pd.Timestamp(latest["Date"])
@@ -202,15 +249,52 @@ def _summarize(national: pd.DataFrame, sector: pd.DataFrame, *, source: str) -> 
         "current_use_se": pd.to_numeric(latest.get("Current AI Use SE"), errors="coerce"),
         "expected_use_se": pd.to_numeric(latest.get("Expected AI Use SE"), errors="coerce"),
         "annual_change": annual_change,
+        "consumer_history": consumer,
+        "consumer_overall": consumer_overall,
+        "consumer_personal": consumer_personal,
+        "consumer_work": consumer_work,
+        "consumer_active": consumer_active,
+        "consumer_daily": consumer_daily,
     }
 
 @st.cache_data(ttl=43200)
-def load_adaptation_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_adaptation_data(
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    allow_live: bool = False,
+) -> dict:
     del refresh_token
     local_national, local_sector = _load_local()
-    if not force_refresh and not local_national.empty:
-        return _summarize(local_national, local_sector, source="Census BTOS Local History")
+    consumer_history = _load_consumer_history()
+    reports = {}
+    if not force_refresh and not allow_live:
+        payload = _summarize(
+            local_national,
+            local_sector,
+            source="Census BTOS Local History",
+            consumer=consumer_history,
+        )
+        payload["source_mode"] = "retained_official" if not local_national.empty else "unavailable"
+        payload["load_report"] = {
+            "source_mode": payload["source_mode"],
+            "datasets": {},
+        }
+        return payload
 
+    try:
+        consumer_history, reports["consumer"] = refresh_templated_history(
+            CONSUMER_HISTORY_PATH,
+            start_date="2025-01-01",
+            required_columns=("Series", "Unit", "Frequency", "Population", "Source"),
+        )
+    except Exception as exc:
+        reports["consumer"] = {
+            "source_mode": "retained_fallback",
+            "errors": {"consumer": f"{type(exc).__name__}: {exc}"},
+        }
+
+    source = "Census BTOS Local History"
+    national, sector = local_national, local_sector
     try:
         national_response = requests.get(BTOS_NATIONAL_URL, timeout=45)
         national_response.raise_for_status()
@@ -219,7 +303,21 @@ def load_adaptation_data(force_refresh: bool = False, refresh_token: int = 0) ->
         national = parse_btos_national_workbook(national_response.content)
         sector = parse_btos_sector_workbook(sector_response.content)
         _persist(national, sector)
-        return _summarize(national, sector, source="Census BTOS Live")
+        source = "Census BTOS Live"
+        reports["business"] = {"source_mode": "live_refresh", "errors": {}}
     except Exception as exc:
-        debug_print(f"BTOS adaptation refresh failed -> {exc}")
-        return _summarize(local_national, local_sector, source="Census BTOS Local History")
+        debug_print(f"BTOS adoption refresh failed -> {exc}")
+        reports["business"] = {
+            "source_mode": "retained_fallback",
+            "errors": {"btos": f"{type(exc).__name__}: {exc}"},
+        }
+
+    payload = _summarize(national, sector, source=source, consumer=consumer_history)
+    modes = [str(report.get("source_mode", "")) for report in reports.values()]
+    payload["source_mode"] = (
+        "live_refresh" if modes and all(mode == "live_refresh" for mode in modes)
+        else "partial_refresh" if any(mode in {"live_refresh", "partial_refresh"} for mode in modes)
+        else "retained_fallback"
+    )
+    payload["load_report"] = {"source_mode": payload["source_mode"], "datasets": reports}
+    return payload

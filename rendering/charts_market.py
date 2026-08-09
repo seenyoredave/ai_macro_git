@@ -508,11 +508,10 @@ def sector_signal_anatomy_chart(
         factors = factors.sort_values(["__order", "Factor"], kind="stable")
 
     pressure_order = {
-        "Valuation Stretch": 0,
-        "Price Extension": 1,
-        "Momentum Acceleration": 2,
-        "Volatility Expansion": 3,
-        "Volume Activity": 4,
+        "Price Extension": 0,
+        "Momentum Acceleration": 1,
+        "Volatility Expansion": 2,
+        "Volume Activity": 3,
     }
     if not pressure.empty:
         pressure["Score"] = pd.to_numeric(pressure.get("Score"), errors="coerce")
@@ -695,7 +694,7 @@ def pressure_component_chart(components: pd.DataFrame):
         return _market_layout(go.Figure(), height=285)
     frame = components.copy()
     frame["Score"] = pd.to_numeric(frame.get("Score"), errors="coerce")
-    order_map = {"Valuation Stretch": 0, "Price Extension": 1, "Momentum Acceleration": 2, "Volatility Expansion": 3, "Volume Activity": 4}
+    order_map = {"Price Extension": 0, "Momentum Acceleration": 1, "Volatility Expansion": 2, "Volume Activity": 3}
     if "Component" in frame.columns:
         frame["__order"] = frame["Component"].map(lambda value: order_map.get(str(value), 99))
     frame = frame.dropna(subset=["Score"]).sort_values("__order", kind="stable")

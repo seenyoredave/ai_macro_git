@@ -478,6 +478,99 @@ def data_center_state_pipeline(states: pd.DataFrame | None, *, top_n: int = 15, 
     fig = _base_layout(fig, height=height, legend=True, margin=dict(l=116, r=34, t=30, b=50))
     return add_stacked_axis_headroom(fig, upper=0.20, lower=0.0, include_zero=True)
 
+
+def data_center_state_published_capacity(
+    campuses: pd.DataFrame | None,
+    *,
+    top_n: int = 15,
+    height: int = 430,
+):
+    """Rank active-development states by disclosed campus capacity.
+
+    This intentionally uses only ``Published Capacity Estimate MW``. Missing
+    capacity remains missing, and operating campuses are excluded so the view
+    stays comparable with the active-development pipeline chart beside it.
+    """
+    stage_order = ["Proposed / announced", "Approved / construction", "Expanding"]
+    status_to_stage = {
+        "Proposed": "Proposed / announced",
+        "Planned": "Proposed / announced",
+        "Announced": "Proposed / announced",
+        "Approved / permitted / under construction": "Approved / construction",
+        "Under construction": "Approved / construction",
+        "Expanding": "Expanding",
+    }
+
+    if campuses is None or not isinstance(campuses, pd.DataFrame) or campuses.empty:
+        clean = pd.DataFrame(columns=["State", *stage_order, "Published capacity GW"])
+    else:
+        clean = campuses.copy()
+        clean["State"] = clean.get(
+            "State", pd.Series("", index=clean.index)
+        ).fillna("").astype(str).str.strip()
+        clean["Stage"] = clean.get(
+            "Status", pd.Series("", index=clean.index)
+        ).map(status_to_stage)
+        clean["Published capacity GW"] = (
+            pd.to_numeric(
+                clean.get(
+                    "Published Capacity Estimate MW",
+                    pd.Series(np.nan, index=clean.index),
+                ),
+                errors="coerce",
+            )
+            / 1000.0
+        )
+        clean = clean.loc[
+            clean["State"].ne("")
+            & clean["Stage"].notna()
+            & clean["Published capacity GW"].gt(0)
+        ]
+
+        if clean.empty:
+            clean = pd.DataFrame(columns=["State", *stage_order, "Published capacity GW"])
+        else:
+            grouped = (
+                clean.groupby(["State", "Stage"], as_index=False)["Published capacity GW"]
+                .sum(min_count=1)
+                .pivot(index="State", columns="Stage", values="Published capacity GW")
+                .fillna(0.0)
+            )
+            grouped = grouped.reindex(columns=stage_order, fill_value=0.0)
+            grouped["Published capacity GW"] = grouped[stage_order].sum(axis=1)
+            clean = (
+                grouped.nlargest(top_n, "Published capacity GW")
+                .sort_values("Published capacity GW", ascending=True, kind="stable")
+                .reset_index()
+            )
+
+    colors = {
+        "Proposed / announced": DATA_CENTER_COLORS["proposed"],
+        "Approved / construction": DATA_CENTER_COLORS["construction"],
+        "Expanding": DATA_CENTER_COLORS["expanding"],
+    }
+    fig = go.Figure()
+    for column in stage_order:
+        if clean.empty:
+            continue
+        fig.add_trace(go.Bar(
+            y=clean["State"],
+            x=clean[column],
+            orientation="h",
+            name=column,
+            marker={"color": colors[column]},
+            customdata=clean[["Published capacity GW"]],
+            hovertemplate=(
+                f"%{{y}}<br>{column}: %{{x:,.2f}} GW"
+                "<br>Total published development capacity: %{customdata[0]:,.2f} GW"
+                "<extra></extra>"
+            ),
+        ))
+    fig.update_layout(barmode="stack")
+    fig.update_xaxes(title="Published capacity estimate (GW)")
+    fig = _base_layout(fig, height=height, legend=True, margin=dict(l=116, r=34, t=30, b=50))
+    return add_stacked_axis_headroom(fig, upper=0.20, lower=0.0, include_zero=True)
+
 def data_center_state_footprint(states: pd.DataFrame | None, *, metric: str = "Total", height: int = 500):
     allowed = {
         "Total": ("Total", "Facilities"),

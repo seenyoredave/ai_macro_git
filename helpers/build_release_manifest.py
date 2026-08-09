@@ -1,0 +1,137 @@
+"""Build one compact fingerprint for a publication-ready retained-data release."""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+import pandas as pd
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from analytics.regime_engine import (  # noqa: E402
+    AEI_VERSION,
+    ADI_VERSION,
+    BORROWER_STRAIN_VERSION,
+    EVG_VERSION,
+    LENDER_STRAIN_VERSION,
+    POWER_STRESS_VERSION,
+    PRESSURE_VERSION,
+)
+from config.benchmark_config import (  # noqa: E402
+    BENCHMARK_VERSION,
+    QQQ_WEIGHTS_EFFECTIVE_DATE,
+)
+from helpers.atomic_io import atomic_write_json  # noqa: E402
+
+OUTPUT = PROJECT_ROOT / "data" / "release_manifest.json"
+RELEASE_FILES = (
+    "config/sector_config.py",
+    "config/factor_config.py",
+    "config/benchmark_config.py",
+    "config/deployment.py",
+    "config/load_policy.py",
+    "analytics/regime_engine.py",
+    "analytics/trend_engine.py",
+    "analytics/read_architecture.py",
+    "loaders/snapshot_writer.py",
+    "docs/RUNTIME_DATA_CONTRACT.md",
+    "archive/yf_history.csv",
+    "archive/benchmark_history.csv",
+    "archive/sector_history.csv",
+    "archive/macro_history.csv",
+    "archive/edgar_history.csv",
+    "archive/fred_history.csv",
+    "data/facility_identity_decisions.csv",
+    "data/infrastructure/source_manifest.csv",
+    "data/infrastructure/derived/compute_manufacturing_history.csv",
+    "data/infrastructure/derived/compute_m3_history.csv",
+    "data/energy_interconnection_queue.csv",
+    "data/energy_interconnection_queue_summary.csv",
+)
+DATE_COLUMNS = (
+    "Date",
+    "Market Data Date",
+    "Observation Date",
+    "Period End",
+    "Filed",
+    "Retrieved",
+)
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _csv_metadata(path: Path) -> dict:
+    frame = pd.read_csv(path, low_memory=False)
+    metadata: dict[str, object] = {"rows": int(len(frame))}
+    for column in DATE_COLUMNS:
+        if column not in frame.columns:
+            continue
+        dates = pd.to_datetime(frame[column], errors="coerce", format="mixed").dropna()
+        if dates.empty:
+            continue
+        metadata.update(
+            {
+                "date_column": column,
+                "date_min": dates.min().date().isoformat(),
+                "date_max": dates.max().date().isoformat(),
+            }
+        )
+        break
+    return metadata
+
+
+def build_manifest() -> dict:
+    files: dict[str, dict] = {}
+    for relative in RELEASE_FILES:
+        path = PROJECT_ROOT / relative
+        if not path.exists():
+            raise FileNotFoundError(f"Release input is missing: {relative}")
+        item = {"sha256": _sha256(path), "bytes": int(path.stat().st_size)}
+        if path.suffix.casefold() == ".csv":
+            item.update(_csv_metadata(path))
+        files[relative] = item
+
+    release_material = "\n".join(
+        f"{relative}:{item['sha256']}" for relative, item in sorted(files.items())
+    )
+    release_id = hashlib.sha256(release_material.encode("utf-8")).hexdigest()[:20]
+    return {
+        "manifest_version": "1.0",
+        "release_id": release_id,
+        "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "scope": "Critical retained archives, analytical contracts, and identity decisions",
+        "benchmark_contract": {
+            "version": BENCHMARK_VERSION,
+            "weight_effective_date": QQQ_WEIGHTS_EFFECTIVE_DATE,
+        },
+        "metric_versions": {
+            "aei": AEI_VERSION,
+            "adi": ADI_VERSION,
+            "economic_validation_gap": EVG_VERSION,
+            "power_stress": POWER_STRESS_VERSION,
+            "borrower_strain": BORROWER_STRAIN_VERSION,
+            "lender_strain": LENDER_STRAIN_VERSION,
+            "trading_pressure": PRESSURE_VERSION,
+        },
+        "files": files,
+    }
+
+
+def main() -> None:
+    manifest = build_manifest()
+    atomic_write_json(manifest, OUTPUT)
+    print(
+        f"Wrote release {manifest['release_id']} with "
+        f"{len(manifest['files'])} critical files."
+    )
+
+
+if __name__ == "__main__":
+    main()

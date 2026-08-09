@@ -27,13 +27,13 @@ from analytics.power_capacity_gap import (
     calculate_power_capacity_gap,
 )
 
-AEI_VERSION = "3.1"
+AEI_VERSION = "4.0"
 ADI_VERSION = "1.0"
 EVG_VERSION = "3.0"
 POWER_STRESS_VERSION = "3.0"
 BORROWER_STRAIN_VERSION = "3.0"
-LENDER_STRAIN_VERSION = "3.1"
-PRESSURE_VERSION = "3.0"
+LENDER_STRAIN_VERSION = "3.2"
+PRESSURE_VERSION = "4.0"
 
 def calc_aei(sector_metrics):
     if not sector_metrics:

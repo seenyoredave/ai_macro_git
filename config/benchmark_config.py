@@ -63,4 +63,7 @@ BENCHMARK_UNIVERSES = {
 }
 BENCHMARK_WEIGHTS = {"QQQ": QQQ_WEIGHTS}
 ACTIVE_BENCHMARKS = ("QQQ",)
-BENCHMARK_VERSION = "3.0"
+# Version 4.0 is the fixed-reference construction used for every retained
+# historical and future AEI observation.  The weights remain deliberately
+# static; the version changes only when the member/weight contract changes.
+BENCHMARK_VERSION = "4.0"
