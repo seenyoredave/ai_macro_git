@@ -69,38 +69,38 @@ def _archetype(metrics: dict) -> str:
     breadth = factors.get("market_breadth", np.nan)
     dispersion = np.ptp(list(factors.values())) if len(factors) >= 2 else np.nan
     if pd.isna(equity) or pd.isna(pressure):
-        return "Signal unresolved"
+        return "Insufficient data"
     if equity >= 65:
         if pressure >= 70:
-            return "High-pressure leadership"
+            return "Strong returns, heavy trading pressure"
         if pd.notna(breadth) and breadth >= 65 and (pd.isna(dispersion) or dispersion <= 28):
-            return "Broad-based leadership"
-        return "Constructive leadership"
+            return "Strong and broad"
+        return "Strong, but not broad"
     if equity >= 48:
         if pressure >= 70 and trailing >= 0.10:
-            return "Speculative momentum"
+            return "Strong returns, high trading pressure"
         if pressure < 50 and trailing >= 0.10:
-            return "Constructive advance"
+            return "Strong returns, contained pressure"
         if trailing < -0.10:
-            return "Fading leadership"
-        return "Uneven strength"
+            return "Recent weakness"
+        return "Mixed"
     if equity >= 32:
         if trailing >= 0.20 and pressure >= 60:
-            return "Fragile rebound"
+            return "Rebound with high trading pressure"
         if trailing >= 0.10 and pressure < 55:
-            return "Early recovery"
+            return "Early improvement"
         if pressure >= 65:
-            return "Pressure without support"
+            return "High trading pressure, weak sector score"
         if trailing < -0.10:
-            return "Underpowered and weakening"
-        return "Mixed footing"
+            return "Weak and falling"
+        return "Mixed"
     if pressure >= 60:
-        return "Crowded without confirmation"
+        return "High trading pressure, weak returns"
     if trailing >= 0.10:
-        return "Narrow rebound"
+        return "Narrow improvement"
     if trailing < -0.10:
-        return "Low-pressure weakness"
-    return "Underpowered"
+        return "Weak returns, low trading pressure"
+    return "Weak"
 
 
 def _driver_sentence(metrics: dict, sector: str, sector_label: str, peer_metrics: dict) -> str:
@@ -115,7 +115,7 @@ def _driver_sentence(metrics: dict, sector: str, sector_label: str, peer_metrics
     high_label = FACTOR_LABELS.get(high_name, high_name.replace("_", " "))
     low_label = FACTOR_LABELS.get(low_name, low_name.replace("_", " "))
     if high - low < 12:
-        return f"{sector_label} {prefix.lower()}, with a balanced signal across relative return and breadth."
+        return f"{sector_label} {prefix.lower()}, with relative return and breadth telling a similar story."
     return f"{sector_label} {prefix.lower()}, with {high_label} doing most of the work while {low_label} trails."
 
 
@@ -131,7 +131,7 @@ def _pressure_structure_sentence(metrics: dict, sector: str, peer_metrics: dict,
         top_name, top_value = ordered[0]
         median = float(np.median(list(components.values())))
         if top_value - median >= 9:
-            pressure_text += f", with {top_name.lower()} the clearest driver"
+            pressure_text += f", with {top_name.lower()} the largest contributor"
     pressure_text += "."
     loss_share = _number(metrics, "Loss-Making EV Share")
     concentration = _number(metrics, "Sector Basket Concentration")
@@ -140,7 +140,7 @@ def _pressure_structure_sentence(metrics: dict, sector: str, peer_metrics: dict,
     if pd.notna(coverage) and coverage < 0.60:
         structure = f"Market-cap data are available for {coverage * 100:.0f}% of included companies."
     elif pd.notna(loss_share) and loss_share >= 0.35:
-        structure = f"Loss-making companies represent {loss_share * 100:.0f}% of valid enterprise value, leaving earnings support fragile."
+        structure = f"Loss-making companies represent {loss_share * 100:.0f}% of valid enterprise value, so the sector depends heavily on companies that are not yet profitable."
     elif pd.notna(concentration) and concentration >= 40:
         structure = "Leadership is narrow enough that a small group of constituents can dominate the result."
     elif pd.notna(multiple) and multiple >= 40:
@@ -201,7 +201,7 @@ def company_contribution_shoutout(companies: pd.DataFrame):
             and up["Abs Share"] + down["Abs Share"] >= 0.60
         ):
             return {
-                "text": f"On a market-cap-weighted basis, {_company_label(up)} is the clearest positive contributor, while {_company_label(down)} has been a meaningful offset.",
+                "text": f"On a market-cap-weighted basis, {_company_label(up)} is the clearest positive contributor, while {_company_label(down)} offsets part of that gain.",
                 "tickers": [str(up["Ticker"]), str(down["Ticker"])],
                 "role": "offset",
             }
@@ -247,16 +247,16 @@ def _watchpoint(metrics: dict) -> str:
     equity = _number(metrics, "Sector Score")
     pressure = _number(metrics, "Sector Pressure")
     if pd.notna(loss_share) and loss_share >= 0.35:
-        return "Durability now depends on profitable participation broadening."
+        return "The sector looks healthier if more of the gains come from profitable companies."
     if pd.notna(concentration) and concentration >= 40:
-        return "The read is most sensitive to a reversal among the largest constituents."
+        return "A reversal in the largest constituents would change the sector result quickly."
     if factors and min(factors, key=factors.get) == "market_breadth" and equity >= 50:
-        return "Breadth now needs to catch up with the headline return signal."
+        return "More companies need to participate in the gains."
     if components and max(components, key=components.get) == "Volatility Expansion" and pressure >= 55:
-        return "The setup improves if volatility pressure eases without a loss of breadth."
+        return "The picture improves if volatility falls while participation holds."
     if equity < 45:
-        return "A sustained improvement in relative return and breadth would be the clearest confirmation."
-    return "The signal remains constructive while breadth holds and pressure stays contained."
+        return "The sector needs better relative returns and broader participation."
+    return "The sector remains in good shape if participation holds and trading pressure stays contained."
 
 
 def select_sector_weekly_event(weekly_context: dict, sector: str, tickers=None):

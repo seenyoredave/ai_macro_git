@@ -1,0 +1,46 @@
+===== helpers/public_copy_smoke_test.py =====
+Public-copy contract passed across 12 Read-bearing tabs.
+===== helpers/read_architecture_smoke_test.py =====
+PASS  v7.1.0 read architecture · 11 tab reads · 3 macro-selected domains · headline: AI infrastructure and use are expanding; broad economic gains remain less clear.
+===== helpers/read_divider_smoke_test.py =====
+Read-divider contract passed across 12 Read-bearing tabs.
+===== helpers/layout_rollout_contract_test.py =====
+PASS  full-platform layout rollout · 52 classified sections · no repeated chart-sidecar factory default
+===== helpers/layout_rollout_render_smoke_test.py =====
+PASS  rollout render smoke · 4 Compute charts · 2 Adoption charts · 4 Economic Outcomes charts
+===== helpers/layout_recovery_smoke_test.py =====
+PASS  shared layout contracts · native Plotly width ownership · dossier · outcomes bridge
+===== helpers/application_import_smoke_test.py =====
+PASS  complete rendering import graph
+===== helpers/phase2_grid_water_smoke_test.py =====
+PASS  Phase 2 grid and water · 9 queue regions · 14 reserve areas · 51 drought records · 1,906 campus dossiers
+===== helpers/workforce_economic_impact_smoke_test.py =====
+PASS  v6.8 Workforce + Economic Outcomes · 923 exposure occupations · 1,248 JOLTS flow observations · 76 worker-capture observations · 175 distribution observations
+===== helpers/startup_loader_contract_test.py =====
+PASS  retained loader graph: 5.85s
+PASS  YFinance retained coverage: 204/204
+PASS  EDGAR retained coverage: 204/204
+PASS  provider network attempts: 0
+PASS  retained file changes: 0
+REPORT audit/startup_loader/startup_loader_report.json
+===== helpers/snapshot_writer_smoke_test.py =====
+PASS  retained startup writes nothing
+PASS  unrelated domain refresh writes no generic snapshots
+PASS  successful YFinance refresh writes only owned snapshots
+PASS  failed EDGAR refresh preserves retained dates
+PASS  successful EDGAR refresh writes only EDGAR
+===== helpers/integrity_gate.py =====
+PASS  SEC-equivalent funding
+PASS  Four-pillar lender strain
+PASS  Ten-year lender dynamics
+PASS  Queue reconciliation
+PASS  Manifest contracts
+PASS  Release fingerprint
+PASS  Archive identifiers
+PASS  Universal AEI backfill
+PASS  Named-campus deduplication
+PASS  9 critical integrity contracts
+===== helpers/browser_redesign_contract.py =====
+PASS  browser redesign contract · 1280px, 1600px, 1920px, 2560px, 768px
+===== helpers/browser_layout_contract.py =====
+PASS  real-browser shared layout contract · 1280px, 1600px, 1920px, 2560px, 768px

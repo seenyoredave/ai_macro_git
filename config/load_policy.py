@@ -80,6 +80,7 @@ def build_load_policy(
     force_fred_refresh: bool = False,
     force_nyfed_refresh: bool = False,
     refresh_domain: str | None = None,
+    refresh_domains: Iterable[str] | None = None,
 ) -> LoadPolicy:
     """Build the policy from explicit developer controls only.
 
@@ -102,6 +103,9 @@ def build_load_policy(
         sources.add(RefreshSource.FRED)
     if force_nyfed_refresh:
         sources.add(RefreshSource.NYFED)
+    domain_requests = set(refresh_domains or ())
     if refresh_domain:
-        sources.add(RefreshSource(str(refresh_domain)))
+        domain_requests.add(refresh_domain)
+    for domain in domain_requests:
+        sources.add(RefreshSource(str(domain)))
     return LoadPolicy.refresh(sources) if sources else LoadPolicy.retained()

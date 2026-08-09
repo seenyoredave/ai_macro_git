@@ -70,7 +70,7 @@ def render_masthead(
         f"""
         <div class="rm-masthead">
             <div>
-                <div class="rm-kicker">Independent macroeconomic research</div>
+                <div class="rm-kicker">Research on the U.S. AI economy</div>
                 <h1 class="rm-title">{html.escape(title)}</h1>
                 <div class="rm-subtitle-row">
                     <div class="rm-subtitle">{html.escape(subtitle)}</div>
@@ -86,7 +86,7 @@ def render_masthead(
 
 def render_platform_purpose(statement: str) -> None:
     with st.container(key="platform-purpose"):
-        with st.expander("Full purpose statement", expanded=False):
+        with st.expander("About this platform", expanded=False):
             st.markdown(
                 f'<div class="rm-purpose-copy">{html.escape(str(statement).strip())}</div>',
                 unsafe_allow_html=True,
@@ -344,10 +344,10 @@ def render_deliverability_screen(
     *,
     key_prefix: str,
 ) -> None:
-    """Render the Grid Delivery Pathway using native Streamlit columns.
+    """Render the grid connection summary using native Streamlit columns.
 
     Streamlit owns the five-column desktop geometry.  CSS styles each stage but
-    does not determine whether the pathway is horizontal, avoiding the
+    does not determine horizontal placement, avoiding the
     shrink-wrapped markdown behavior seen in the live application.
     """
     items = list(stages)
@@ -357,7 +357,7 @@ def render_deliverability_screen(
     if not namespace:
         raise ValueError("render_deliverability_screen requires a non-empty key_prefix")
     if len(items) != 5:
-        raise ValueError("Grid Delivery Pathway requires exactly five stages")
+        raise ValueError("Grid connection summary requires exactly five stages")
     with st.container(key=f"grid-delivery-pathway-{namespace}"):
         columns = st.columns(5, gap="small", vertical_alignment="top")
         for index, (column, stage) in enumerate(zip(columns, items, strict=True), start=1):

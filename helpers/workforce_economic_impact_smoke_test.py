@@ -162,18 +162,18 @@ def main() -> int:
     read_source = (PROJECT_ROOT / "analytics" / "read_architecture.py").read_text(encoding="utf-8")
 
     for phrase in (
-        "Observed workforce outcomes",
-        "Theoretical LLM task exposure",
-        "Observed workforce transmission",
-        "Workforce channels",
+        "Employment and real pay",
+        "Tasks potentially exposed to LLMs",
+        "Employment and real-pay outcomes",
+        "Employment, hiring, pay, and task exposure",
         "Workforce data",
     ):
         require(phrase in workforce_source, f"Workforce lost a Phase 1 boundary or surface: {phrase}")
     for phrase in (
         "value_realization_bridge_html",
-        "Productivity versus worker capture",
-        "Distribution of gains",
-        "Commercial scale, production response, and distribution to workers",
+        "Productivity versus worker compensation",
+        "Worker outcomes",
+        "From AI revenue to economic results",
         "Real median weekly earnings",
         "Economic-outcomes data",
     ):
@@ -181,11 +181,11 @@ def main() -> int:
     for phrase in (
         "Occupation-level LLM task-exposure benchmark",
         "JOLTS labor-flow history",
-        "Productivity, real compensation, and labor-share transmission",
+        "Productivity, real compensation, and labor share",
         "Real median weekly earnings distribution",
     ):
         require(phrase in evidence_source, f"Evidence does not expose a Phase 1 retained layer: {phrase}")
-    require("broad value capture still trails" in read_source, "AI Macro did not adopt the worker-capture framing.")
+    require("worker compensation" in read_source and "household earnings" in read_source, "AI Macro lost the worker-and-household interpretation.")
     for forbidden in ("AI caused these layoffs", "AI eliminated", "automation forecast"):
         require(forbidden.casefold() not in (workforce_source + impact_source).casefold(), f"Phase 1 crossed its causal boundary: {forbidden}")
 

@@ -65,14 +65,14 @@ def _fallback_read(context: dict) -> dict:
     direct = int(summary.get("direct_water_evidence_records", 0) or 0)
     severe = int(summary.get("severe_drought_facilities", 0) or 0)
     if facilities and direct / max(facilities, 1) < 0.1:
-        headline = "Local water exposure is visible; facility disclosure remains sparse."
+        headline = "Water risk is local, and facility disclosure is sparse."
     elif severe:
         headline = "Data-center development overlaps active drought in several states."
     else:
         headline = "Water exposure varies sharply by place and cooling design."
     body = (
-        f"The dataset includes {facilities:,} facilities, including {direct:,} with direct water evidence. "
-        f"{severe:,} facilities sit in states reporting severe-drought area in July 2026."
+        f"Only {direct:,} of {facilities:,} mapped facilities have direct water evidence, so a national total would hide more than it explains. "
+        f"{severe:,} facilities are in states reporting severe-drought area in July 2026; site-level supply, cooling design, and local rules determine the actual constraint."
     )
     return {"headline": headline, "body": body, "confidence": "moderate" if facilities else "limited"}
 
@@ -99,8 +99,8 @@ def _render_state_exposure(context: dict) -> None:
     facilities = context["facilities"]
     water = context["water"]
     render_section(
-        "Exposure state",
-        "Where data-center capacity overlaps current drought and how much facility-level water evidence is visible.",
+        "Current water exposure",
+        "Published data-center capacity, drought exposure, and facility-level water disclosure by state.",
         first=True,
     )
     render_statline(_state_exposure_stats(context), key_prefix="water-exposure-state")
@@ -130,9 +130,9 @@ def _render_state_exposure(context: dict) -> None:
 
 def _render_campus_dossier(context: dict) -> None:
     dossier = context["dossier"]
-    render_section("Campus water exposure dossier", "A campus-level record of development status, local exposure, and the strength of public water evidence.")
+    render_section("Campus water profile", "A campus-level view of project status, local drought exposure, cooling, water source, and available disclosure.")
     if dossier.empty:
-        st.info("No facility records are available for the campus dossier.")
+        st.info("No facility records are available for the campus profile.")
         return
 
     state_series = dossier.get("State", pd.Series("", index=dossier.index, dtype=str)).fillna("").astype(str).str.strip()
@@ -225,14 +225,14 @@ def _render_disclosure(context: dict) -> None:
     facilities = context["facilities"]
     summary = context["summary"]
     render_section(
-        "Evidence ladder",
-        "How quickly the evidence thins from mapped location to direct, quantified facility-level water use.",
+        "Water disclosure coverage",
+        "Facility records by disclosure level, from mapped location to quantified water use.",
     )
     render_statline(_disclosure_stats(context), key_prefix="water-evidence-state")
     with st.container(border=True, key="full-width-layout-water-evidence"):
         view = st.radio(
             "Disclosure view",
-            ["Evidence ladder", "State coverage"],
+            ["Water disclosure coverage", "State coverage"],
             horizontal=True,
             label_visibility="collapsed",
             key="water-disclosure-view",
@@ -242,7 +242,7 @@ def _render_disclosure(context: dict) -> None:
             figure = water_state_evidence_profile(facilities, height=450)
             chart_key = "water-state-evidence-profile"
         else:
-            render_panel_heading("AI water evidence ladder", "Facility records")
+            render_panel_heading("Water disclosure coverage", "Facility records")
             figure = water_evidence_ladder(summary, height=450)
             chart_key = "water-evidence-ladder"
         render_plotly_chart(
@@ -298,12 +298,12 @@ def _render_system_context_workbench(context: dict, infrastructure_data: dict) -
         views.append("Thermoelectric system")
     views.append("Wastewater investment")
     render_section(
-        "Broader water-system context",
-        "Reference context sits behind the facility evidence rather than competing with it for top-of-page attention.",
+        "Other water demand and infrastructure",
+        "National water use, thermoelectric demand, and wastewater investment provide context for the site-level records above.",
     )
     with st.container(border=True, key="water-system-workbench"):
         view = st.radio(
-            "Context view",
+            "Comparison view",
             views,
             horizontal=True,
             label_visibility="collapsed",
@@ -343,11 +343,11 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
     context = _context(water_data, infrastructure_data)
     render_tab_header(
         "Water",
-        "Local water exposure, cooling evidence, drought conditions, competing demand, and public-system investment.",
+        "Data-center water exposure, cooling and water-source records, drought conditions, competing demand, and wastewater investment.",
         "USGS / NOAA-NCEI / EIA / U.S. Census Bureau",
     )
     _render_floating_terms("water")
-    render_domain_read(tab_read or _fallback_read(context), label="Water Read", domain="water")
+    render_domain_read(tab_read or _fallback_read(context), label="Read", domain="water")
     _render_state_exposure(context)
     _render_campus_dossier(context)
     _render_disclosure(context)
@@ -356,12 +356,12 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
     with st.expander("Water data", expanded=False):
         view = st.radio(
             "Ledger",
-            ["Campus dossier", "State exposure", "Drought snapshot", "Facility records", "Thermoelectric plants"],
+            ["Campus profile", "State exposure", "Drought snapshot", "Facility records", "Thermoelectric plants"],
             horizontal=True,
             key="water-ledger-view",
         )
         frames = {
-            "Campus dossier": context.get("dossier"),
+            "Campus profile": context.get("dossier"),
             "State exposure": context.get("state_profile"),
             "Drought snapshot": context.get("water", {}).get("usdm_state_drought"),
             "Facility records": context.get("facilities"),

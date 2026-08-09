@@ -6,7 +6,11 @@ import re
 
 import pandas as pd
 
-from config.current_context_policy import DOMAIN_CONTEXT_FALLBACK, assess_source
+from config.current_context_policy import (
+    DOMAIN_CONTEXT_FALLBACK,
+    assess_source,
+    recent_development_copy_issues,
+)
 from config.sector_config import SECTOR_CONFIG
 from loaders.current_context_news import (
     _bool,
@@ -165,6 +169,8 @@ def _curated_events(frame: pd.DataFrame, current: pd.Timestamp) -> list[dict]:
             continue
         fact = _clean_sentence(row.get("verified_fact"))
         relevance = _clean_sentence(row.get("platform_relevance"))
+        if recent_development_copy_issues(f"{fact} {relevance}"):
+            continue
         source_name = " ".join(str(row.get("source_name") or "").split()).strip()
         source_label = " ".join(str(row.get("source_label") or source_name).split()).strip()
         if not fact or not source_name or not source_label:

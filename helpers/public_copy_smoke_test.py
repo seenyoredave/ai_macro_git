@@ -67,9 +67,30 @@ BANNED_PRESENTATION_COMMENTARY = {
     "counterweight",
     "source register",
     "evidence ledger",
+    # Decorative analytical jargon that previously leaked into headings and labels.
+    "outcomes pulse",
+    "workforce transmission",
+    "diffusion state",
+    "paid-adoption validation",
+    "commercial realization",
+    "signature view",
+    "signature matrix",
+    "analytical workbench",
+    "signal anatomy",
+    "campus water exposure dossier",
+    "ai water evidence ladder",
+    "grid delivery pathway",
+    "grid delivery conditions",
+    "five linked conditions determine",
+    "two coordinated operating views",
+    "national ai development landscape",
+    "platform synthesis",
+    "methods and provenance",
+    "realized outcomes",
+    "use and diffusion",
 }
 
-SENTENCE_START_WHETHER = re.compile(r"(?:^|[.!?]\s+)whether\b", re.IGNORECASE)
+SENTENCE_START_5W1H = re.compile(r"(?:^|[.!?]\s+)(?:who|what|when|where|why|how|whether)\b", re.IGNORECASE)
 
 READ_RENDERERS = [
     "macro.py",
@@ -135,8 +156,8 @@ def main() -> None:
             for phrase in BANNED_PUBLIC_PHRASES:
                 if phrase in lowered:
                     violations.append(f"{path.relative_to(ROOT)}:{lineno}: {phrase}")
-            if SENTENCE_START_WHETHER.search(text.strip()):
-                violations.append(f"{path.relative_to(ROOT)}:{lineno}: sentence starts with Whether")
+            if SENTENCE_START_5W1H.search(text.strip()):
+                violations.append(f"{path.relative_to(ROOT)}:{lineno}: sentence starts with a 5W/H interrogative")
 
     presentation_paths = [RENDERING / filename for filename in READ_RENDERERS] + [
         RENDERING / "read_markup.py",
@@ -160,8 +181,12 @@ def main() -> None:
                 item.value for item in ast.walk(node)
                 if isinstance(item, ast.Constant) and isinstance(item.value, str)
             )
-            if SENTENCE_START_WHETHER.search(text.strip()):
-                violations.append(f"{path.name}:{node.lineno}: sentence starts with Whether")
+            if SENTENCE_START_5W1H.search(text.strip()):
+                violations.append(f"{path.name}:{node.lineno}: sentence starts with a 5W/H interrogative")
+            if call_name(node) in {"render_section", "render_panel_heading", "render_tab_header"} and node.args:
+                title = node.args[0]
+                if isinstance(title, ast.Constant) and isinstance(title.value, str) and "?" in title.value:
+                    violations.append(f"{path.name}:{node.lineno}: question-form heading: {title.value}")
 
     require(not violations, "Developer-facing public copy found:\n" + "\n".join(sorted(set(violations))))
 

@@ -729,7 +729,7 @@ def data_center_connectivity_state(
                     "<br>Active IXPs: %{customdata[0]:,.0f}"
                     "<br>Published development: %{customdata[1]:,.1f} GW"
                     "<br>Capacity-bearing campuses: %{customdata[2]:,.0f}"
-                    "<br>Screen: %{customdata[3]}<extra></extra>"
+                    "<br>Gap flag: %{customdata[3]}<extra></extra>"
                 ),
             )
         )

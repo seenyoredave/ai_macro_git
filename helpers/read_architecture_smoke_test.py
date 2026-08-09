@@ -1,9 +1,10 @@
-"""Regression test for the v7.0.0 thirteen-tab read architecture."""
+"""Regression test for the v7.1.0 thirteen-tab read architecture."""
 
 from __future__ import annotations
 
 from pathlib import Path
 import json
+import re
 import sys
 import types
 
@@ -37,6 +38,7 @@ from analytics.spatial_context import infrastructure_attribution  # noqa: E402
 from loaders.workforce_loader import load_workforce_data  # noqa: E402
 from loaders.connectivity_loader import load_connectivity_data  # noqa: E402
 from loaders.economic_impact_loader import load_economic_impact_data  # noqa: E402
+from rendering.snapshot_status import market_snapshot_label  # noqa: E402
 from loaders.facility_registry_loader import (  # noqa: E402
     build_campus_registry,
     canonicalize_facility_observations,
@@ -337,6 +339,10 @@ def main() -> None:
             raise AssertionError(f"{domain} summary exceeds its {summary_limit}-word budget")
         if len(str(read["watchpoint"]).split()) > 30:
             raise AssertionError(f"{domain} watchpoint is too long")
+        interrogative_start = re.compile(r"(?:^|[.!?]\s+)(?:who|what|when|where|why|how|whether)\b", re.IGNORECASE)
+        for field in ("headline", "summary"):
+            if interrogative_start.search(str(read[field]).strip()):
+                raise AssertionError(f"{domain} {field} starts a sentence with a 5W/H interrogative: {read[field]}")
 
     water = reads["water"]
     if water["signals"].get("quantified_use_records") != 0:
@@ -381,6 +387,8 @@ def main() -> None:
         raise AssertionError("Macro read did not retain referenced weekly context and selected-domain sources.")
     if len(macro.get("references", [])) > 5:
         raise AssertionError("Macro references exceeded the compact inline budget.")
+    if "relevance" in macro:
+        raise AssertionError("The retired Why-it-matters macro layer returned to the Read payload.")
     macro_reference_labels = {str(item.get("source_label") or item.get("source_name") or "") for item in macro.get("references", [])}
     anchor_sources = {
         str((item.get("reference_specs") or [{}])[0].get("source_label") or "")
@@ -413,14 +421,13 @@ def main() -> None:
         raise AssertionError("Purpose Statement still appears as a permanent AI Macro section.")
     if "_render_front_page_purpose" in macro_source or "front-page-purpose" in macro_source:
         raise AssertionError("Purpose disclosure is still owned by the AI Macro domain.")
-    if 'st.expander("Full purpose statement", expanded=False)' not in components_source:
+    if 'st.expander("About this platform", expanded=False)' not in components_source:
         raise AssertionError("Purpose disclosure must be collapsed by default.")
     theme_source = (PROJECT_ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
     app_source = (PROJECT_ROOT / "ai_macro.py").read_text()
     definitions_source = (PROJECT_ROOT / "config" / "metric_definitions.py").read_text()
     approved_subtitle = (
-        "An economic research platform that traces the AI economy from capital and construction "
-        "through deployment, adoption, and economic results."
+        "Research on AI investment, infrastructure, adoption, and economic outcomes in the United States."
     )
     if approved_subtitle not in app_source:
         raise AssertionError("AI Macro brand and descriptor are not installed in the masthead.")
@@ -429,16 +436,26 @@ def main() -> None:
     dashboard_position = app_source.index("render_research_dashboard(")
     if not masthead_position < purpose_position < dashboard_position:
         raise AssertionError("Purpose disclosure is not between the platform masthead and the domain dashboard.")
-    if "status=retained_market_snapshot_label()" not in app_source:
-        raise AssertionError("Retained market date is not attached to the masthead release line.")
+    if 'st.session_state.market_snapshot_frame = raw_universe_data.get("yfinance")' not in app_source:
+        raise AssertionError("Loaded market data is not persisted across Streamlit reruns.")
+    if 'status=market_snapshot_label(st.session_state.get("market_snapshot_frame"))' not in app_source:
+        raise AssertionError("Masthead market date does not read from rerun-safe session state.")
+    if 'status=market_snapshot_label(raw_universe_data.get("yfinance"))' in app_source:
+        raise AssertionError("Masthead still depends on rebuild-local raw_universe_data and will fail on rerun.")
+    loaded_market = pd.DataFrame({
+        "Market Data Date": ["2026-08-07"] * 203 + ["2026-07-29"],
+        "Date": ["2026-08-07"] * 204,
+    })
+    if market_snapshot_label(loaded_market) != "Market data 8.7.2026":
+        raise AssertionError("Masthead market date does not follow the loaded market dataset.")
     if 'market_report["energy"]' in app_source or 'render_source("Power"' in app_source:
         raise AssertionError("Power refresh diagnostics remain attached to the developer load report.")
     approved_purpose = (
-        "AI Macro traces the AI economy from capital and construction through deployment, adoption, and economic results. "
-        "Using publicly available data, it connects companies and markets with the data centers, resources, and infrastructure "
-        "behind the buildout—and examines how that buildout is reshaping the broader U.S. economy. Its central questions are "
-        "whether rising investment and capacity are producing durable use, broad participation, and realized value—and how the "
-        "resulting gains, costs, and risks are distributed across investors, businesses, workers, communities, and regions."
+        "AI Macro follows the U.S. AI economy from financing and construction through deployment, use, and economic results. "
+        "It uses public data to connect companies and markets with the data centers, power, grid, water, and network infrastructure "
+        "behind the expansion. The platform asks three basic questions: what is being built, who is using and paying for it, and "
+        "whether the gains are showing up in productivity, wages, household income, and other parts of the economy. It also tracks "
+        "where the costs and constraints are appearing."
     )
     if approved_purpose not in definitions_source:
         raise AssertionError("The approved Purpose Statement copy is not installed verbatim.")
@@ -486,7 +503,7 @@ def main() -> None:
     market_source = (PROJECT_ROOT / "rendering" / "market.py").read_text()
     if "_render_sector_read" not in market_source:
         raise AssertionError("The sector-level read was not retained.")
-    for approved_label in ('"Who owns the universe?"', '"1 YR Return"', '"Ownership, contribution, and participation"'):
+    for approved_label in ('"Market value concentration"', '"One-year return contribution"', '"Ownership and participation"'):
         if approved_label not in market_source:
             raise AssertionError(f"Approved Market label missing: {approved_label}")
     market_render_body = market_source[market_source.index("def render_market_tab("):]
@@ -494,8 +511,8 @@ def main() -> None:
         '_render_market_ledger_summary(market_ledger)',
         'render_signal_rail(_assessment_stats',
         '_render_market_structure(market_ledger)',
-        'render_section("Positioning"',
-        '"Sector dossier"',
+        'render_section("Sector valuations and trading"',
+        '"Sector profile"',
         '_render_market_constituent_ledger(selection, market_ledger)',
     ]
     order_positions = [market_render_body.index(token) for token in order_tokens]
@@ -537,6 +554,11 @@ def main() -> None:
         raise AssertionError("Market Read references are not numbered side by side.")
     if "confidence" in market_markup.casefold():
         raise AssertionError("Internal evidence completeness leaked into the public Read label.")
+    macro_markup = build_domain_read_html(
+        reads["macro"], label="Read", accent_color="#60a5fa", macro=True
+    )
+    if "What it means" in macro_markup or "Why it matters" in macro_markup or "rm-domain-read-relevance" in macro_markup:
+        raise AssertionError("The retired Why-it-matters macro layer returned to visible Read markup.")
     if "<ol" in market_markup or "<li" in market_markup:
         raise AssertionError("References regressed to a stacked list.")
 
@@ -544,7 +566,7 @@ def main() -> None:
         {
             **reads["market"],
             "current_context_items": [{
-                "text": "Current context.",
+                "text": "Recent developments.",
                 "reference_number": 1,
                 "source_url": "https://example.com/source",
             }],
@@ -554,7 +576,7 @@ def main() -> None:
     )
     if "Watchpoint" in context_markup:
         raise AssertionError("Watchpoint leaked into the Current Context rendering path.")
-    if not (context_markup.index("Current context") < context_markup.index("References")):
+    if not (context_markup.index("Recent developments") < context_markup.index("References")):
         raise AssertionError("Read context and references are out of order.")
 
     rejected_context = _attach_current_context(
@@ -574,7 +596,7 @@ def main() -> None:
         raise AssertionError(f"Macro lifecycle anchors drifted: {selected}")
 
     print(
-        "PASS  v7.0.0 read architecture · "
+        "PASS  v7.1.0 read architecture · "
         f"{len(DOMAIN_ORDER)} tab reads · {len(selected)} macro-selected domains · "
         f"headline: {macro['headline']}"
     )

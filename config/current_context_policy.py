@@ -10,6 +10,7 @@ automated path.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from urllib.parse import urlparse
 
 
@@ -319,3 +320,49 @@ def materiality_score(text: str) -> float:
     haystack = " ".join(str(text or "").split()).casefold()
     matches = sum(1 for term in MATERIAL_EVENT_TERMS if term in haystack)
     return min(24.0, matches * 6.0)
+
+
+RECENT_DEVELOPMENTS_ACRONYMS = {
+    "PUCT": "Public Utility Commission of Texas",
+    "ERCOT": "Electric Reliability Council of Texas",
+    "FERC": "Federal Energy Regulatory Commission",
+    "NERC": "North American Electric Reliability Corporation",
+    "MISO": "Midcontinent Independent System Operator",
+    "CAISO": "California Independent System Operator",
+    "SPP": "Southwest Power Pool",
+}
+
+_BARE_OFFICE_FIRST_REFERENCE = re.compile(
+    r"(?:^|[.!?]\s+|:\s+)(?:the\s+)?"
+    r"(?:Governor|Mayor|Senator|Representative|Secretary|Commissioner|President)\b",
+    flags=re.IGNORECASE,
+)
+
+
+def recent_development_copy_issues(text: object) -> list[str]:
+    """Return first-reference context problems in Recent Developments copy.
+
+    Recent Developments must stand on its own for a national reader.  Public
+    officials need jurisdiction and full identity on first reference, and
+    specialized regional institutions must be expanded before shorthand is used.
+    """
+
+    value = " ".join(str(text or "").split()).strip()
+    if not value:
+        return []
+
+    issues: list[str] = []
+    if _BARE_OFFICE_FIRST_REFERENCE.search(value):
+        issues.append(
+            "public official lacks jurisdiction/full first-reference context"
+        )
+
+    lowered = value.casefold()
+    for acronym, expansion in RECENT_DEVELOPMENTS_ACRONYMS.items():
+        match = re.search(rf"\b{re.escape(acronym)}\b", value)
+        if not match:
+            continue
+        if expansion.casefold() not in lowered[: match.end()]:
+            issues.append(f"{acronym} is not expanded on first reference")
+
+    return issues

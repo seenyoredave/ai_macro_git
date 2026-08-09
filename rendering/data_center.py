@@ -164,7 +164,7 @@ def _render_pulse(inventory: dict) -> None:
     broad = inventory.get("broad_summary", {}) or {}
     tracker = inventory.get("open_tracker_summary", {}) or {}
     render_section(
-        "Data-center pulse",
+        "Current data-center footprint",
         "Operating facilities, projects in development, active pipeline sites, and published capacity.",
         first=True,
         compact=True,
@@ -198,7 +198,7 @@ def _render_development_profile(inventory: dict) -> None:
     stage = inventory.get("national_stage")
     tracker = inventory.get("open_tracker_summary", {}) or {}
     states = inventory.get("state_stage")
-    render_section("Pipeline explorer", "The signature development view: where projects sit in the lifecycle and where the active pipeline is concentrating.")
+    render_section("Development pipeline", "Tracked projects by development stage, state, and published capacity.")
     render_summary_row([
         ("Proposed", f"{int(tracker.get('proposed', 0) or 0):,}", "projects"),
         ("Approved / construction", f"{int(tracker.get('approved_or_construction', 0) or 0):,}", "projects"),
@@ -207,7 +207,7 @@ def _render_development_profile(inventory: dict) -> None:
     ], key_prefix="data-center-development-profile")
     with st.container(key="full-width-layout-data-center-pipeline-explorer"):
         with st.container(border=True, key="data-center-panel-development-profile"):
-            view = st.radio("Pipeline view", ["Lifecycle stage", "Leading state pipelines"], horizontal=True, label_visibility="collapsed", key="data-center-view-pipeline-explorer")
+            view = st.radio("Development view", ["Lifecycle stage", "Leading state pipelines"], horizontal=True, label_visibility="collapsed", key="data-center-view-pipeline-explorer")
             if view == "Leading state pipelines":
                 render_panel_heading("Leading state development pipelines", "Proposed, approved / construction, and expanding")
                 figure, key = data_center_state_pipeline(states, height=520), "data-center-leading-pipelines"
@@ -228,7 +228,7 @@ def _render_geography(inventory: dict, campuses: pd.DataFrame, connectivity: dic
     south_development = pd.to_numeric(region_frame.loc[region_frame.get("Region", "").eq("South"), "Development"], errors="coerce").sum(min_count=1)
     south_share = south_development / development_total * 100.0 if pd.notna(development_total) and development_total > 0 else np.nan
     active_states = int(pd.to_numeric(pd.DataFrame(states).get("Active Pipeline"), errors="coerce").gt(0).sum())
-    render_section("Geographic concentration", "Where the footprint is established and where the next wave is concentrating.")
+    render_section("Data-center geography", "Operating and planned facilities by state and published capacity.")
     render_summary_row([
         ("Largest footprint", str(leading_total.iloc[0].get("State", "n/a")) if not leading_total.empty else "n/a", f"{int(leading_total.iloc[0].get('Total', 0) or 0):,} facilities" if not leading_total.empty else "n/a"),
         ("Largest active pipeline", str(leading_pipeline.iloc[0].get("State", "n/a")) if not leading_pipeline.empty else "n/a", f"{int(leading_pipeline.iloc[0].get('Active Pipeline', 0) or 0):,} pipeline sites" if not leading_pipeline.empty else "n/a"),
@@ -255,7 +255,7 @@ def _render_connectivity_operator_structure(connectivity: dict | None, campuses:
     coverage = payload.get("coverage", {}) or {}
     active = _active_footprint(campuses)
     operators = active.get("Operator", pd.Series("", index=active.index)).replace("", np.nan).nunique() if not active.empty else 0
-    render_section("Connectivity & operator structure", "Two structural screens: whether capacity is well connected, and which operators carry the active pipeline.")
+    render_section("Connectivity and operators", "Published data-center capacity, network depth, and active pipeline by operator.")
     render_summary_row([
         ("Active IXPs", f"{_count(national.get('Active IXPs')):,}", "national public registry"),
         ("Mismatch states", f"{_count(coverage.get('mismatch_states')):,}", "capacity with limited public IXP depth"),
@@ -265,7 +265,7 @@ def _render_connectivity_operator_structure(connectivity: dict | None, campuses:
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="data-center-panel-connectivity-context"):
-            render_panel_heading("Capacity-to-connectivity screen", "Selected hubs and high-capacity outliers")
+            render_panel_heading("Data-center capacity and network depth", "Selected hubs and high-capacity outliers")
             render_plotly_chart(data_center_connectivity_state(payload.get("state_summary"), height=470, lens="Mismatch screen"), width="stretch", config={"displayModeBar": False, "responsive": True}, key="data-center-connectivity-context-chart")
     with right:
         with st.container(border=True, key="data-center-panel-operator-structure"):
@@ -275,16 +275,16 @@ def _render_connectivity_operator_structure(connectivity: dict | None, campuses:
 
 def _render_data_center_ledger(campuses: pd.DataFrame) -> None:
     detail = _campus_detail(campuses)
-    with st.expander("Data-center project ledger", expanded=False):
+    with st.expander("Data-center project data", expanded=False):
         view = st.radio("Ledger", ["Campuses", "Operators"], horizontal=True, key="data-center-ledger-view")
         frame = _operator_detail(campuses) if view == "Operators" else detail
         st.dataframe(arrow_safe_dataframe(frame), width="stretch", hide_index=True, height=480)
 
 def render_data_center_tab(infrastructure_data, tab_read=None):
     _inject_data_center_page_theme()
-    render_tab_header("Data Centers", "National scale, development conversion, geographic concentration, connectivity, and project structure.", "Pew / FracTracker / Connectivity")
+    render_tab_header("Data Centers", "Operating and planned U.S. data centers, published capacity, geography, network access, and project status.", "Pew / FracTracker / Connectivity")
     _render_floating_terms("data_center")
-    render_domain_read(tab_read, label="Data Centers Read", domain="data_centers")
+    render_domain_read(tab_read, label="Read", domain="data_centers")
     inventory = _inventory(infrastructure_data)
     campuses = _campuses(infrastructure_data)
     connectivity = (infrastructure_data or {}).get("connectivity", {}) or {}

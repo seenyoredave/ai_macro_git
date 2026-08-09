@@ -188,6 +188,13 @@ TAB_METRIC_REGISTRIES = {
 
 TERM_DISPLAY_NAMES = {
     "Retained-Universe Market Return": "AI-Equity Basket Return",
+    "Earnings Support": "Returns versus profitable-company earnings",
+    "Speculative Load": "Trading pressure relative to sector strength",
+    "Debt Financing Pulse": "Debt change / CapEx",
+    "Campus Water Exposure Dossier": "Campus Water Profile",
+    "AI Water Evidence Ladder": "Water Disclosure Coverage",
+    "AI-Linked Wage Trajectory": "Real Pay in AI-Linked Industries",
+    "Inflation-Adjusted Realized Growth": "Inflation-Adjusted Growth",
 }
 
 def _render_floating_terms(tab_key):

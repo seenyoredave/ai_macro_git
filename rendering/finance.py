@@ -54,14 +54,14 @@ def _funding_specs(funding_mix):
     return [
         (
             "finance-ifc",
-            "Internal Funding Coverage",
+            "Internal cash flow / CapEx",
             current.get("internal_funding_coverage"),
             fmt_number(current.get("internal_funding_coverage"), 2, suffix="x"),
             f"OCF / CapEx · {current.get('internal_funding_companies', 0)} companies",
             _funding_card_history(
                 funding_mix,
                 "internal_funding_coverage",
-                "Internal Funding Coverage",
+                "Internal cash flow / CapEx",
             ),
             (0, 3),
             1,
@@ -70,7 +70,7 @@ def _funding_specs(funding_mix):
         ),
         (
             "finance-crc",
-            "Cash Reserve Runway",
+            "Cash reserve coverage",
             current.get("cash_reserve_coverage_years"),
             fmt_number(current.get("cash_reserve_coverage_years"), 2, suffix="y"),
             f"Cash / TTM CapEx · {current.get('cash_reserve_companies', 0)} companies",
@@ -86,14 +86,14 @@ def _funding_specs(funding_mix):
         ),
         (
             "finance-dfp",
-            "Debt Financing Pulse",
+            "Debt change / CapEx",
             current.get("debt_financing_pulse"),
             fmt_number(current.get("debt_financing_pulse"), 2, signed=True, suffix="x"),
             f"Definition-matched Δ12m SEC debt / TTM CapEx · {current.get('debt_financing_companies', 0)} companies",
             _funding_card_history(
                 funding_mix,
                 "debt_financing_pulse",
-                "Debt Financing Pulse",
+                "Debt change / CapEx",
             ),
             (-2, 2),
             0,
@@ -102,14 +102,14 @@ def _funding_specs(funding_mix):
         ),
         (
             "finance-fcl",
-            "Forward Commitment Load",
+            "Future commitments / CapEx",
             current.get("forward_commitment_load"),
             fmt_number(current.get("forward_commitment_load"), 2, suffix="x"),
             f"Forward commitments / TTM CapEx · {current.get('commitment_companies', 0)} companies",
             _funding_card_history(
                 funding_mix,
                 "forward_commitment_load",
-                "Forward Commitment Load",
+                "Future commitments / CapEx",
             ),
             (0, 5),
             1,
@@ -123,8 +123,8 @@ def _render_funding_section(regime_metrics):
     current = funding_mix.get("current", {}) or {}
     with st.container(border=True, key="finance-funding-instrument-board"):
         render_panel_heading(
-            "Funding-capacity instrument board",
-            "Indexed conditions with history, reference points, and a common deployment-funding frame",
+            "Current funding capacity",
+            "Cash flow, cash reserves, debt changes, and future commitments relative to current capital spending",
         )
         for col, spec in zip(st.columns(4), _funding_specs(funding_mix)):
             key, label, value, value_text, context, history, scale, reference, accent, source = spec
@@ -337,7 +337,7 @@ def _render_nfci(fred_data, nfci_history):
     change = snapshot.get("three_month_change")
     paired_value = f"{fmt_number(value, 3, signed=True)} / {fmt_number(anfci_value, 3, signed=True)}"
     with st.container(border=True):
-        render_panel_heading("Financial Conditions Confirmation")
+        render_panel_heading("Broad financial conditions")
         render_statline(
             [
                 ("NFCI/ANFCI", paired_value, "headline / macro-adjusted"),
@@ -429,8 +429,8 @@ def _render_private_capital_realization():
 
     if not metrics or funds is None or funds.empty:
         with st.container(border=True):
-            render_panel_heading("Private capital realization", "Public-LP cohort")
-            st.caption("Private-capital realization data are unavailable.")
+            render_panel_heading("Private-market cash returns", "Public pension fund records")
+            st.caption("Private-fund cash-return data are unavailable.")
         return
 
     with st.container(key="full-width-layout-finance-private-capital"):
@@ -439,14 +439,14 @@ def _render_private_capital_realization():
                 ("DPI", fmt_number(metrics.get("dpi"), 2, suffix="x"), "cash returned / paid in"),
                 ("RVPI", fmt_number(metrics.get("rvpi"), 2, suffix="x"), "remaining NAV / paid in"),
                 ("TVPI", fmt_number(metrics.get("tvpi"), 2, suffix="x"), "distributed + residual value"),
-                ("Realized share", fmt_number((metrics.get("realized_share") or 0) * 100, 0, suffix="%"), "share of current total value"),
+                ("Cash-returned share", fmt_number((metrics.get("realized_share") or 0) * 100, 0, suffix="%"), "share of current total value"),
             ],
             key_prefix="finance-private-capital-realization",
         )
         with st.container(border=True, key="finance-panel-realization-map"):
             render_panel_heading(
-                "Fund realization map",
-                "Cash realization versus total value · bubble size reflects paid-in capital",
+                "Cash returned versus remaining fund value",
+                "Cash returned versus remaining value · bubble size reflects paid-in capital",
             )
             render_plotly_chart(
                 private_capital_realization_map(funds),
@@ -469,7 +469,7 @@ def _render_commercial_realization(commercialization_data):
         return
 
     render_section(
-        "Commercial realization",
+        "Reported AI revenue and demand",
         "AI-related revenue, backlog, and operating scale from primary company disclosures.",
     )
     render_summary_row(
@@ -484,16 +484,16 @@ def _render_commercial_realization(commercialization_data):
 
 def _render_finance_ledger(commercialization_data, debt_markets_data, borrower_strain, lender_strain):
     realization = build_private_capital_realization()
-    options = ["Commercial disclosures", "Private-capital funds", "Debt-market readings", "Borrower-strain components", "Lender-strain components"]
+    options = ["Commercial disclosures", "Private-fund records", "Debt-market readings", "Borrower stress components", "Lender stress components"]
     with st.expander("Finance data", expanded=False):
         view = st.radio("Ledger", options, horizontal=True, key="finance-ledger-view")
-        if view == "Private-capital funds":
+        if view == "Private-fund records":
             frame = _private_capital_detail_table(realization.get("funds", pd.DataFrame()))
         elif view == "Debt-market readings":
             frame = _debt_market_source_rows(debt_markets_data)
-        elif view == "Borrower-strain components":
+        elif view == "Borrower stress components":
             frame = _borrower_strain_component_table(borrower_strain)
-        elif view == "Lender-strain components":
+        elif view == "Lender stress components":
             frame = _lender_strain_component_table(lender_strain)
         else:
             frame = filtered_ledger(commercialization_data, pillars=["Revenue realization", "Cost pressure", "Capital burden"])
@@ -504,35 +504,35 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
     inject_panel_height_rules({})
     render_tab_header(
         "Finance",
-        "How the AI economy raises capital, converts it into realized value, accesses credit, and absorbs financial stress.",
+        "Funding capacity, reported AI revenue and demand, private-market cash returns, credit conditions, and balance-sheet stress.",
         "SEC / company disclosures / CalSTRS / ILPA / FRED / New York Fed / Chicago Fed",
     )
     _render_floating_terms("finance")
-    render_domain_read(tab_read, label="Finance Read", domain="finance")
+    render_domain_read(tab_read, label="Read", domain="finance")
 
     render_section(
         "Funding capacity",
-        "Internal funding capacity, cash runway, debt formation, and forward commitments.",
+        "Internal funding capacity, cash reserves, debt formation, and future commitments.",
         first=True,
     )
     _render_funding_section(regime_metrics)
     _render_commercial_realization(commercialization_data)
 
     render_section(
-        "Private capital realization",
+        "Private-market cash returns",
         "Cash distributions and remaining NAV across technology and AI-adjacent private funds.",
     )
     _render_private_capital_realization()
 
     render_section(
         "Credit conditions",
-        "Corporate-bond distress and broad financial-condition confirmation.",
+        "Corporate-bond stress and the Chicago Fed financial-conditions indexes.",
     )
     _render_debt_markets(debt_markets_data)
     _render_nfci(fred_data, nfci_history)
 
     render_section(
-        "Financial strain",
+        "Borrower and lender stress",
         "Borrower balance sheets and lender credit channels.",
     )
     trends = (dashboard_data or {}).get("trends", {}) or {}

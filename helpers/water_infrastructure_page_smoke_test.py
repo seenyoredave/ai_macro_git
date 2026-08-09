@@ -85,7 +85,7 @@ def main() -> None:
         raise AssertionError("Pre-2020 evidence is referenced on the current Water analytical surface.")
     if "Wastewater investment" not in water_source or "wastewater_construction_history" not in water_source:
         raise AssertionError("Wastewater was not integrated into Water.")
-    for phrase in ("Exposure state", "Campus water exposure dossier", "Evidence ladder", "Broader water-system context"):
+    for phrase in ("Current water exposure", "Campus water profile", "Water disclosure coverage", "Other water demand and infrastructure"):
         if phrase not in water_source:
             raise AssertionError(f"Water lost a Phase 2 analytical surface: {phrase}")
     if "height=460" not in water_source:
@@ -93,7 +93,7 @@ def main() -> None:
     if '"State"' not in water_source:
         raise AssertionError("The facility water ledger no longer exposes State for sorting.")
 
-    for phrase in ("Grid delivery pathway", "Queue conversion", "Regional maturity", "Reliability and storage", "Operating duration", "Grid and storage data"):
+    for phrase in ("Grid connection conditions", "Queue outcomes", "Regional queue conditions", "Reliability and storage", "Operating duration", "Grid and storage data"):
         if phrase not in grid_source:
             raise AssertionError(f"Grid & Storage lost a Phase 2 analytical surface: {phrase}")
 

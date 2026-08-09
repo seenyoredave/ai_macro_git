@@ -56,9 +56,9 @@ def main() -> None:
     finance_render = finance_source.split("def render_finance_tab", 1)[1]
     section_positions = [
         finance_render.index('"Funding capacity"'),
-        finance_render.index('"Private capital realization"'),
+        finance_render.index('"Private-market cash returns"'),
         finance_render.index('"Credit conditions"'),
-        finance_render.index('"Financial strain"'),
+        finance_render.index('"Borrower and lender stress"'),
     ]
     if section_positions != sorted(section_positions):
         raise AssertionError("Finance capital-lifecycle sections are out of order.")

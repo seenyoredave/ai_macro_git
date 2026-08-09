@@ -262,7 +262,7 @@ def main() -> None:
         raise AssertionError("Structure snapshot is missing required facts.")
 
     market_source = (PROJECT_ROOT / "rendering" / "market.py").read_text()
-    if 'with st.expander("Market constituents", expanded=False):' not in market_source:
+    if 'with st.expander("Company records", expanded=False):' not in market_source:
         raise AssertionError("Constituent ledger is not collapsed by default.")
     if '_render_market_constituent_ledger(selection, market_ledger)' not in market_source:
         raise AssertionError("Constituent ledger no longer finishes the Market workflow.")

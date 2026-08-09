@@ -355,23 +355,63 @@ def append_benchmark_history(metrics_by_benchmark=None, *, observation_date=None
     if rows:
         write_archive_snapshot(pd.DataFrame(rows), ARCHIVE_SPECS["benchmark"])
 
-def append_yf_history(sector_data, *, observation_date):
-    rows = []
-    for sector, frame in sector_data.items():
-        if frame is None or frame.empty:
-            continue
-        available = [column for column in YF_ARCHIVE_COLUMNS if column in frame.columns]
-        snapshot = frame[available].copy()
-        snapshot.insert(0, "Sector", sector)
-        rows.append(snapshot)
+def build_yf_archive_snapshot(raw_yfinance, sector_data):
+    """Build the retained YFinance snapshot from provider rows, not resolved fields.
 
-    if rows:
-        append_dataframe_history(
-            pd.concat(rows, ignore_index=True),
-            ARCHIVE_SPECS["yf"],
-            key_cols=ARCHIVE_KEYS["yf"],
-            observation_date=observation_date,
-        )
+    ``sector_data`` is used only for sector and basket metadata. Fundamental
+    values in the retained YFinance archive must come from the resolved
+    YFinance provider frame itself; otherwise EDGAR-priority fields from the
+    analytical sector frame can leak into ``yf_history.csv``.
+    """
+    if raw_yfinance is None or not isinstance(raw_yfinance, pd.DataFrame) or raw_yfinance.empty:
+        return pd.DataFrame(columns=["Sector", *YF_ARCHIVE_COLUMNS])
+
+    raw = raw_yfinance.copy()
+    if "Ticker" not in raw.columns:
+        return pd.DataFrame(columns=["Sector", *YF_ARCHIVE_COLUMNS])
+    raw["Ticker"] = raw["Ticker"].astype(str).str.upper().str.strip()
+
+    metadata_rows = []
+    for sector, frame in (sector_data or {}).items():
+        if frame is None or not isinstance(frame, pd.DataFrame) or frame.empty or "Ticker" not in frame.columns:
+            continue
+        available = [
+            column
+            for column in ("Ticker", "Basket Score", "Basket Tier", "Basket Weight")
+            if column in frame.columns
+        ]
+        meta = frame[available].copy()
+        meta["Ticker"] = meta["Ticker"].astype(str).str.upper().str.strip()
+        meta["Sector"] = sector
+        metadata_rows.append(meta)
+
+    if not metadata_rows:
+        return pd.DataFrame(columns=["Sector", *YF_ARCHIVE_COLUMNS])
+
+    metadata = (
+        pd.concat(metadata_rows, ignore_index=True)
+        .drop_duplicates(subset=["Ticker"], keep="last")
+    )
+    metadata_columns = ["Sector", "Basket Score", "Basket Tier", "Basket Weight"]
+    raw = raw.drop(columns=[column for column in metadata_columns if column in raw.columns], errors="ignore")
+    snapshot = raw.merge(metadata, on="Ticker", how="left", validate="one_to_one")
+    ordered = ["Sector", *YF_ARCHIVE_COLUMNS]
+    for column in ordered:
+        if column not in snapshot.columns:
+            snapshot[column] = np.nan
+    return snapshot[ordered].copy()
+
+
+def append_yf_history(raw_yfinance, sector_data, *, observation_date):
+    snapshot = build_yf_archive_snapshot(raw_yfinance, sector_data)
+    if snapshot.empty:
+        return
+    append_dataframe_history(
+        snapshot,
+        ARCHIVE_SPECS["yf"],
+        key_cols=ARCHIVE_KEYS["yf"],
+        observation_date=observation_date,
+    )
 
 def append_edgar_history(edgar_snapshot):
     if edgar_snapshot is None or edgar_snapshot.empty:

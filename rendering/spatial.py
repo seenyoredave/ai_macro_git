@@ -112,13 +112,15 @@ def render_spatial_explorer(
     infrastructure_data: dict | None,
     *,
     key_prefix: str = "national-ai-landscape",
-    title: str = "National AI development landscape",
-    subtitle: str = "Facility geography with linked capacity, power, water, and infrastructure records.",
+    title: str = "Project locations",
+    subtitle: str = "Facility geography with published capacity, power, water, and infrastructure records.",
     default_layer: str = "Known footprint",
     show_table: bool = True,
+    show_heading: bool = True,
 ) -> None:
     registry = _registry(infrastructure_data)
-    render_panel_heading(title, subtitle)
+    if show_heading:
+        render_panel_heading(title, subtitle)
     if registry.empty:
         st.info("No mapped facility records are available.")
         return

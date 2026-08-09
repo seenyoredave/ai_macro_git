@@ -87,8 +87,8 @@ def build_fixture() -> str:
     return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
 <style>{theme}\n{fixture_css}</style></head><body><main>
 <h1>AI Macro redesign contract</h1>
-<section class='proof-panel' data-proof='deliverability'><div class='proof-title'>Grid Delivery Pathway</div><div class='proof-native-columns'>{deliverability}</div></section>
-<section class='proof-panel' data-proof='dossier'><div class='proof-title'>Campus water exposure dossier</div>{dossier}</section>
+<section class='proof-panel' data-proof='deliverability'><div class='proof-title'>Grid Connection Conditions</div><div class='proof-native-columns'>{deliverability}</div></section>
+<section class='proof-panel' data-proof='dossier'><div class='proof-title'>Campus water profile</div>{dossier}</section>
 <section class='proof-panel' data-proof='bridge'>{bridge}</section>
 </main></body></html>"""
 

@@ -502,6 +502,15 @@ def _fill_failed_from_archive(data, fallback):
     return out
 
 
+def latest_fred_archive_date() -> str | None:
+    """Return the date on which the newest retained FRED snapshot was saved."""
+    history = load_fred_history()
+    if history is None or history.empty or "Date" not in history.columns:
+        return None
+    dates = pd.to_datetime(history["Date"], errors="coerce", format="mixed").dropna()
+    return dates.max().date().isoformat() if not dates.empty else None
+
+
 def describe_fred_load(
     fred_data: dict | None,
     *,
@@ -552,7 +561,8 @@ def describe_fred_load(
         "elapsed_sec": float(elapsed_sec),
         "returned_series": len(returned),
         "missing_series": missing,
-        "latest_complete_date": max(dates).date().isoformat() if dates else None,
+        "latest_complete_date": latest_fred_archive_date(),
+        "latest_data_date": max(dates).date().isoformat() if dates else None,
         "requested_at_utc": utc_now().isoformat(),
         "error": "No FRED series were available" if not returned else None,
     }

@@ -102,7 +102,7 @@ def _render_paid_adoption(commercialization_data):
     gemini_enterprise = metric_value(commercialization_data, "Alphabet", "Paid seats")
     if all(pd.isna(value) for value in [chatgpt_subscribers, subscriber_share, openai_business, gemini_enterprise]):
         return
-    render_section("Paid-adoption validation", "Provider disclosures showing which observed diffusion has converted into paid consumer and enterprise use.")
+    render_section("Paid use", "Provider disclosures on paid consumer and enterprise use.")
     render_summary_row([
         ("ChatGPT subscribers", fmt_number(chatgpt_subscribers, 0, suffix="M+"), "consumer subscriptions"),
         ("Subscriber share", fmt_number(subscriber_share, 1, suffix="%"), "rough share of weekly users"),
@@ -122,34 +122,34 @@ def _render_adoption_ledger(adaptation_data, commercialization_data):
         st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", hide_index=True, height=440)
 
 def render_adaptation_tab(adaptation_data, commercialization_data=None, tab_read=None):
-    render_tab_header("Adoption", "How AI use is spreading across personal life, work, and U.S. businesses.", "RPS / U.S. Census BTOS / primary provider disclosures")
+    render_tab_header("Adoption", "Personal AI use, business adoption, paid use, and industry differences.", "RPS / U.S. Census BTOS / primary provider disclosures")
     _render_floating_terms("adaptation")
-    render_domain_read(tab_read, label="Adoption Read", domain="adoption")
+    render_domain_read(tab_read, label="Read", domain="adoption")
 
-    render_section("Diffusion state", "One current-state rail spanning people and businesses before the reader enters the trajectory.", first=True, compact=True)
+    render_section("Current use", "Current personal and business use, shown together before the longer history.", first=True, compact=True)
     societal = _societal_metrics(adaptation_data)
     business = _business_metrics(adaptation_data)
     render_summary_row([societal[0], societal[2], business[0], business[2]], key_prefix="adoption-diffusion-state")
 
-    render_section("People & business trajectory", "A unified diffusion canvas: direct survey evidence for people or observed business deployment, one view at a time.")
+    render_section("Use over time", "Survey estimates of personal use or business use over time, one view at a time.")
     with st.container(key="full-width-layout-adoption-trajectory"):
         with st.container(border=True, key="adoption-panel-trajectory"):
-            view = st.radio("Trajectory view", ["People", "Business"], horizontal=True, label_visibility="collapsed", key="adoption-trajectory-view")
+            view = st.radio("Use view", ["People", "Business"], horizontal=True, label_visibility="collapsed", key="adoption-trajectory-view")
             if view == "Business":
-                render_panel_heading("Business adoption trajectory", "Census BTOS / employer businesses / 95% confidence intervals")
+                render_panel_heading("Business AI use over time", "Census BTOS / employer businesses / 95% confidence intervals")
                 figure, key = adaptation_history((adaptation_data or {}).get("national_history")), "adaptation-national-history"
                 render_summary_row(_business_metrics(adaptation_data), key_prefix="adoption-business-summary")
             else:
-                render_panel_heading("Consumer reach and engagement", "Real-Time Population Survey · quarterly · adults age 18–64")
+                render_panel_heading("Personal AI use over time", "Real-Time Population Survey · quarterly · adults age 18–64")
                 figure, key = consumer_adoption_history((adaptation_data or {}).get("consumer_history")), "adoption-consumer-history"
                 render_summary_row(_societal_metrics(adaptation_data), key_prefix="adoption-societal-summary")
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=key)
 
     _render_paid_adoption(commercialization_data)
-    render_section("Industry breadth", "How current and expected business use are distributed across major industries.")
+    render_section("AI use by industry", "Current and expected AI use across major U.S. industries.")
     with st.container(key="full-width-layout-adoption-industry-breadth"):
         with st.container(border=True, key="adoption-panel-industry-breadth"):
-            render_panel_heading("Industry diffusion", "Latest published observation / 95% confidence intervals")
+            render_panel_heading("AI use by industry", "Latest published observation / 95% confidence intervals")
             render_plotly_chart(adaptation_sector_bars((adaptation_data or {}).get("sector_snapshot")), width="stretch", config={"displayModeBar": True, "responsive": True}, key="adaptation-sector-breadth")
     _render_adoption_ledger(adaptation_data, commercialization_data)
 

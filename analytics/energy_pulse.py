@@ -296,44 +296,34 @@ def build_power_read(demand: dict, large_loads: dict, development: dict, prices:
     net_build = _numeric(development.get("planned_net_gw"))
 
     if pd.notna(demand_growth) and demand_growth >= 2.5 and pd.notna(net_build) and net_build <= 0:
-        headline = "Demand is accelerating while the planned generation balance is weak."
+        headline = "Electricity demand is rising faster than planned generation."
     elif pd.notna(demand_growth) and demand_growth >= 1.0 and pd.notna(net_build) and net_build > 0:
-        headline = "Demand is rising into a positive but uneven generation buildout."
+        headline = "Electricity demand is rising and planned generation additions exceed retirements."
     elif pd.notna(demand_growth) and demand_growth < 0:
-        headline = "Demand has softened while generation development continues."
+        headline = "Electricity demand has softened while planned generation continues."
     else:
-        headline = "Power demand, supply, and prices are sending mixed signals."
+        headline = "Power demand and planned supply do not point clearly in one direction."
 
-    demand_clause = "Electricity-demand growth is unavailable."
+    parts = []
     if pd.notna(demand_growth):
-        commercial = f", with commercial demand at {_fmt(commercial_growth, signed=True)}%" if pd.notna(commercial_growth) else ""
-        demand_clause = f"U.S. electricity sales are {_fmt(demand_growth, signed=True)}% over the trailing year{commercial}."
-
-    published_total_mw = _numeric(large_loads.get("published_total_mw"))
-    active_campuses = int(large_loads.get("active_campuses", 0) or 0)
-    load_clause = ""
-    if pd.notna(published_total_mw) and published_total_mw > 0:
-        load_clause = f" Published capacity estimates across data-center records total {_fmt(published_total_mw / 1000.0)} GW."
-    elif active_campuses:
-        load_clause = f" Published records include {active_campuses:,} active data-center campuses."
-
-    build_clause = "Generation-development detail is unavailable."
+        if pd.notna(commercial_growth):
+            parts.append(f"U.S. electricity sales are {_fmt(demand_growth, signed=True)}% over the trailing year and commercial demand is {_fmt(commercial_growth, signed=True)}%. Commercial demand is a useful large-load indicator but includes many non-AI customers.")
+        else:
+            parts.append(f"U.S. electricity sales are {_fmt(demand_growth, signed=True)}% over the trailing year.")
     if pd.notna(additions) and pd.notna(retirements):
-        build_clause = (
-            f"The {int(development.get('current_year', pd.Timestamp.now().year))}–{int(development.get('end_year', 2030))} generation pipeline shows "
-            f"{_fmt(additions)} GW of additions against {_fmt(retirements)} GW of retirements, a net {_fmt(net_build, signed=True)} GW."
-        )
-
-    price_clause = ""
+        parts.append(f"Planned generation additions total {_fmt(additions)} GW through {int(development.get('end_year', 2030))}, versus {_fmt(retirements)} GW of retirements. The useful supply depends on project timing and location.")
+    published_total_mw = _numeric(large_loads.get("published_total_mw"))
+    if pd.notna(published_total_mw) and published_total_mw > 0:
+        parts.append("Published data-center capacity is not the same as metered electricity demand.")
     if pd.notna(price_growth):
         direction = "up" if price_growth >= 0 else "down"
-        price_clause = f" Retail electricity prices are {direction} {_fmt(abs(price_growth))}% year over year."
+        parts.append(f"Retail electricity prices are {direction} {_fmt(abs(price_growth))}% year over year.")
 
     valid = sum(pd.notna(value) for value in [demand_growth, price_growth, additions, retirements])
     confidence = "high" if valid >= 4 else "moderate" if valid >= 2 else "limited"
     return {
         "headline": headline,
-        "body": f"{demand_clause}{load_clause} {build_clause}{price_clause}".replace("  ", " ").strip(),
+        "body": " ".join(parts).strip() or "Current power readings are unavailable.",
         "confidence": confidence,
     }
 

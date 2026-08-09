@@ -86,15 +86,16 @@ def _fallback_read(context: dict) -> dict:
     advanced = pd.to_numeric(development.get("advanced_share"), errors="coerce")
     median_years = pd.to_numeric(context.get("queue_outcome", {}).get("Median Request to COD Years"), errors="coerce")
     if pd.notna(active) and pd.notna(advanced) and advanced < 30:
-        headline = "The connection pipeline is large, but most capacity remains early-stage."
+        headline = "The interconnection queue is huge, but most projects are still early-stage."
     elif pd.notna(active):
-        headline = "Grid conversion is lagging project demand."
+        headline = "Proposed grid projects are taking too long to become operating capacity."
     else:
         headline = "No current grid-delivery reading is available."
     body = (
-        f"The active pipeline totals {fmt_number(active, 0, suffix=' GW')}; "
-        f"{fmt_number(advanced, 1, suffix='%')} has reached executed-agreement or construction stages. "
-        f"Projects completed in 2025 spent more than {fmt_number(median_years, 0, suffix=' years')} between request and commercial operation."
+        f"Only {fmt_number(advanced, 1, suffix='%')} of the {fmt_number(active, 0, suffix=' GW')} active queue "
+        "has reached executed-agreement or construction stages, so queue size should not be read as near-term supply. "
+        f"Projects completed in 2025 took more than {fmt_number(median_years, 0, suffix=' years')} from request to commercial operation, "
+        "making conversion time the central constraint."
     )
     return {"headline": headline, "body": body, "confidence": "high" if pd.notna(active) and pd.notna(advanced) else "moderate"}
 
@@ -153,8 +154,8 @@ def _render_deliverability_screen(context: dict) -> None:
     duration_summary = context.get("storage_duration_summary", {}) or {}
     investment = _investment_snapshot(context)
     render_section(
-        "Grid delivery pathway",
-        "Five linked conditions determine whether requested capacity becomes usable infrastructure.",
+        "Grid connection conditions",
+        "Queue size, project progress, reserve margins, battery duration, and grid construction spending.",
         first=True,
     )
     render_deliverability_screen(
@@ -163,7 +164,7 @@ def _render_deliverability_screen(context: dict) -> None:
             ("Project maturity", fmt_number(development.get("advanced_share"), 1, suffix="%"), "executed IA or construction"),
             ("Reliability", f"{reliability['under_five']:,} areas", "below 5% in the extreme summer case"),
             ("Storage duration", fmt_number(duration_summary.get("weighted_duration_hours"), 1, suffix=" hours"), "weighted operating battery duration"),
-            ("Delivery investment", "n/a" if pd.isna(investment["value"]) else f"${investment['value'] / 1000.0:.1f}B", "electric-power construction annual rate"),
+            ("Grid construction spending", "n/a" if pd.isna(investment["value"]) else f"${investment['value'] / 1000.0:.1f}B", "electric-power construction annual rate"),
         ],
         key_prefix="grid-storage-deliverability",
     )
@@ -172,8 +173,8 @@ def _render_deliverability_screen(context: dict) -> None:
 def _render_queue_conversion(context: dict) -> None:
     outcome = context.get("queue_outcome", {})
     render_section(
-        "Queue conversion",
-        "The signature test: how much submitted capacity advances, how long conversion takes, and where projects exit the process.",
+        "Queue outcomes",
+        "Historical completion, withdrawal, and cancellation rates, plus time to connection.",
     )
     render_statline(_queue_conversion_stats(context), key_prefix="grid-storage-queue-conversion")
     with st.container(border=True, key="full-width-layout-grid-storage-queue-conversion"):
@@ -194,7 +195,7 @@ def _render_reliability_storage(context: dict) -> None:
     reliability = _reliability_snapshot(context)
     render_section(
         "Reliability and storage",
-        "Two coordinated operating views: seasonal reserve stress and the duration profile of storage available to absorb it.",
+        "Summer reserve margins and operating battery duration.",
     )
     render_statline(
         [
@@ -245,8 +246,8 @@ def _render_queue_regions(context: dict) -> None:
     development = context["development"]
     regions = context.get("queue_regions")
     render_section(
-        "Regional maturity",
-        "Where the queue is largest, oldest, and furthest from its stated target year.",
+        "Regional queue conditions",
+        "Queue size, median age, and target-year status by region.",
     )
     render_statline(_regional_stats(context), key_prefix="grid-storage-regional-state")
     with st.container(border=True, key="full-width-layout-grid-storage-regional-maturity"):
@@ -280,8 +281,8 @@ def _render_queue_regions(context: dict) -> None:
 def _render_investment(context: dict) -> None:
     investment = _investment_snapshot(context)
     render_section(
-        "Delivery investment",
-        "The spending response required to turn interconnection demand into physical grid capacity.",
+        "Grid construction spending",
+        "U.S. electric-power construction spending.",
     )
     render_statline(
         [
@@ -305,11 +306,11 @@ def render_grid_storage_tab(energy_data: dict, infrastructure_data: dict, tab_re
     context = _context(energy_data, infrastructure_data)
     render_tab_header(
         "Grid & Storage",
-        "Grid access, queue maturity, seasonal reliability, and storage available to support large-load growth.",
+        "Interconnection queues, project progress, reliability, storage duration, and grid construction spending.",
         "Berkeley Lab / NERC / EIA / U.S. Census Bureau",
     )
     _render_floating_terms("grid_storage")
-    render_domain_read(tab_read or _fallback_read(context), label="Grid & Storage Read", domain="grid_storage")
+    render_domain_read(tab_read or _fallback_read(context), label="Read", domain="grid_storage")
     _render_deliverability_screen(context)
     _render_queue_conversion(context)
     _render_reliability_storage(context)
@@ -319,14 +320,14 @@ def render_grid_storage_tab(energy_data: dict, infrastructure_data: dict, tab_re
     with st.expander("Grid and storage data", expanded=False):
         ledger_view = st.radio(
             "Ledger",
-            ["Interconnection requests", "Queue outcomes", "Regional maturity", "Reserve margins", "Operating storage"],
+            ["Interconnection requests", "Queue outcomes", "Queue conditions by region", "Reserve margins", "Operating storage"],
             horizontal=True,
             key="grid-storage-ledger-view",
         )
         frames = {
             "Interconnection requests": context.get("development", {}).get("active_queue"),
             "Queue outcomes": context.get("queue_outcomes"),
-            "Regional maturity": context.get("queue_regions"),
+            "Queue conditions by region": context.get("queue_regions"),
             "Reserve margins": context.get("reserve_margins"),
             "Operating storage": context.get("storage_duration"),
         }

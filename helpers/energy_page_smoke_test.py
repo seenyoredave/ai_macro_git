@@ -140,7 +140,7 @@ def main() -> None:
     hidden = [item for item in FAKE_ST.charts if item["hidden"]]
     if len(visible) != 4:
         raise AssertionError(f"Power should have four default-visible charts, found {len(visible)}")
-    if FAKE_ST.radio_options.get("power-view-supply") != ["Generation mix", "Generation momentum", "Fleet changes"]:
+    if FAKE_ST.radio_options.get("power-view-supply") != ["Generation mix", "Generation change", "Fleet changes"]:
         raise AssertionError("Power supply selector changed unexpectedly.")
     if FAKE_ST.radio_options.get("power-view-prices") != ["Retail prices", "Wholesale hubs", "Fuel infrastructure"]:
         raise AssertionError("Power price selector changed unexpectedly.")
@@ -166,7 +166,7 @@ def main() -> None:
     if "Queue by technology" in power_source or "Queue by region" in power_source:
         raise AssertionError("Queue views remain on Power.")
     grid_source = (PROJECT_ROOT / "rendering" / "grid_storage.py").read_text(encoding="utf-8")
-    if "Generation buildout" not in power_source or "Queue conversion" not in grid_source:
+    if "Planned generation" not in power_source or "Queue outcomes" not in grid_source:
         raise AssertionError("Power and Grid & Storage no longer retain distinct analytical surfaces.")
 
     print(

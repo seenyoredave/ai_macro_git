@@ -20,6 +20,7 @@ from archive.archive import (
     append_sector_history,
     append_yf_history,
 )
+from archive.archive_reader import today_iso
 from config.deployment import repository_writes_enabled
 from config.load_policy import LoadPolicy, RefreshSource
 from loaders.edgar_loader import build_edgar_archive_snapshot
@@ -32,6 +33,32 @@ def _live_mode(value: object) -> bool:
     rejected = ("fallback", "retained", "archive", "unavailable", "failed")
     return any(token in mode for token in ("live", "refresh", "manual")) and not any(
         token in mode for token in rejected
+    )
+
+
+def _yfinance_live_refresh_succeeded(report: dict) -> bool:
+    """Return True when every configured ticker returned a live row.
+
+    Individual YFinance fields can be unavailable on an otherwise successful
+    ticker refresh. The loader resolves those cells from the previous retained
+    snapshot and reports them as field backfills. Field-level backfills do not
+    block persistence; row-level fallbacks and missing tickers do.
+    """
+    payload = report or {}
+    mode = str(payload.get("source_mode") or "").strip().casefold()
+    try:
+        expected = int(payload.get("expected_tickers") or 0)
+        live = int(payload.get("live_tickers") or 0)
+        fallback_rows = int(payload.get("archive_fallback_tickers") or 0)
+    except (TypeError, ValueError):
+        return False
+    missing = payload.get("missing_tickers") or []
+    return (
+        mode.startswith("live")
+        and expected > 0
+        and live == expected
+        and fallback_rows == 0
+        and not missing
     )
 
 
@@ -73,6 +100,7 @@ def persist_refresh_snapshots(
         "status": "skipped",
         "policy": policy.describe(),
         "written": [],
+        "retained_by_loader": [],
         "errors": {},
     }
     if archive_suspended:
@@ -86,6 +114,7 @@ def persist_refresh_snapshots(
         return report
 
     written: list[str] = report["written"]
+    retained_by_loader: list[str] = report["retained_by_loader"]
     errors: dict[str, str] = report["errors"]
 
     def run(label: str, function: Callable[[], object]) -> bool:
@@ -98,10 +127,12 @@ def persist_refresh_snapshots(
             return False
 
     market_report = dict(raw_universe_data.get("_load_report", {}) or {})
+    snapshot_date = today_iso()
+    report["snapshot_date"] = snapshot_date
 
     if policy.allows_live(RefreshSource.YFINANCE):
-        yf_mode = (market_report.get("yfinance", {}) or {}).get("source_mode")
-        if _live_mode(yf_mode):
+        yf_report = dict(market_report.get("yfinance", {}) or {})
+        if _yfinance_live_refresh_succeeded(yf_report):
             market_observation_date = _market_observation_date(raw_universe_data)
             if not market_observation_date:
                 errors["yfinance"] = (
@@ -110,8 +141,9 @@ def persist_refresh_snapshots(
             elif run(
                 "yfinance",
                 lambda: append_yf_history(
+                    raw_universe_data.get("yfinance"),
                     sector_data,
-                    observation_date=market_observation_date,
+                    observation_date=snapshot_date,
                 ),
             ):
                 if _live_mode(benchmark_metrics.get("source_mode")):
@@ -138,6 +170,20 @@ def persist_refresh_snapshots(
                         market_data_date=market_observation_date,
                     ),
                 )
+        else:
+            mode = str(yf_report.get("source_mode") or "unknown")
+            live = int(yf_report.get("live_tickers") or 0)
+            expected = int(yf_report.get("expected_tickers") or 0)
+            fallback_rows = int(yf_report.get("archive_fallback_tickers") or 0)
+            fallback_fields = int(yf_report.get("archive_field_backfills") or 0)
+            missing = len(yf_report.get("missing_tickers") or [])
+            errors["yfinance"] = (
+                "YFinance refresh did not return a complete live ticker universe; "
+                "the retained archive was not advanced. "
+                f"Mode={mode}, live={live}/{expected}, "
+                f"fallback rows={fallback_rows}, missing rows={missing}, "
+                f"retained field fills={fallback_fields}."
+            )
 
     if policy.allows_live(RefreshSource.EDGAR):
         edgar_report = dict(market_report.get("edgar", {}) or {})
@@ -157,6 +203,15 @@ def persist_refresh_snapshots(
     ):
         run("fred", lambda: append_fred_history(fred_data))
 
+    debt_report = dict(debt_markets_data.get("load_report", {}) or {})
+    if policy.allows_live(RefreshSource.NYFED) and _live_mode(
+        debt_report.get("source_mode")
+    ):
+        # The NY Fed loader persists its retained history atomically before it
+        # returns a live result, so record that successful write here even
+        # though this generic snapshot writer did not perform it.
+        retained_by_loader.append("nyfed")
+
     energy_report = dict(energy_data.get("load_report", {}) or {})
     energy_live = _live_mode(energy_report.get("source_mode")) or _live_mode(
         energy_report.get("market_source_mode")
@@ -172,5 +227,7 @@ def persist_refresh_snapshots(
     if energy_authorized and energy_live:
         run("energy", lambda: append_energy_history(energy_data))
 
-    report["status"] = "written" if written else "no_successful_live_sources"
+    report["status"] = (
+        "written" if written or retained_by_loader else "no_successful_live_sources"
+    )
     return report

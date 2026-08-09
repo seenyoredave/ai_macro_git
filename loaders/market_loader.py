@@ -139,6 +139,7 @@ def describe_yf_archive_status(tickers, sector=None):
         "today_missing_tickers": sorted(expected),
         "today_complete": False,
         "latest_complete_date": None,
+        "latest_data_date": None,
     }
 
     if history is None or history.empty or not {"Date", "Ticker"}.issubset(history.columns):
@@ -163,6 +164,12 @@ def describe_yf_archive_status(tickers, sector=None):
         dates = pd.to_datetime(latest["Date"], errors="coerce", format="mixed").dropna()
         if not dates.empty:
             status["latest_complete_date"] = dates.max().date().isoformat()
+        if "Market Data Date" in latest.columns:
+            market_dates = pd.to_datetime(
+                latest["Market Data Date"], errors="coerce", format="mixed"
+            ).dropna()
+            if not market_dates.empty:
+                status["latest_data_date"] = market_dates.max().date().isoformat()
 
     return status
 

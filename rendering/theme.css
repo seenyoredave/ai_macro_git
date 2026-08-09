@@ -880,25 +880,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     }
 }
 
-/* v6.6 macro synthesis: prose first, supporting evidence second. */
-.rm-domain-read-relevance {
-    border-top: 1px solid rgba(148, 163, 184, 0.14);
-    display: grid;
-    grid-template-columns: 7.4rem minmax(0, 1fr);
-    gap: 0.7rem;
-    margin-top: 0.68rem;
-    padding-top: 0.62rem;
-    color: #aeb9c8;
-    font-size: 0.79rem;
-    line-height: 1.48;
-}
-.rm-domain-read-relevance > span {
-    color: var(--rm-read-accent);
-    font-size: 0.61rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
+/* AI Macro Read: prose first, compact evidence second. */
 .rm-domain-read-evidence-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -940,10 +922,6 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     margin-top: 0;
 }
 @media (max-width: 720px) {
-    .rm-domain-read-relevance {
-        grid-template-columns: 1fr;
-        gap: 0.2rem;
-    }
     .rm-domain-read-evidence-grid {
         grid-template-columns: 1fr;
     }
@@ -1594,7 +1572,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
 }
 
 
-/* Runtime Grid Delivery Pathway: horizontal geometry is owned by native Streamlit columns. */
+/* Runtime grid connection summary: horizontal geometry is owned by native Streamlit columns. */
 .rm-deliverability-stage-card {
     background: linear-gradient(105deg, rgba(22, 26, 34, 0.94), rgba(20, 26, 37, 0.76));
     border: 1px solid rgba(148, 163, 184, 0.18);

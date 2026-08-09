@@ -180,6 +180,11 @@ div[data-testid="stTabs"] button[role="tab"] span {
     white-space: nowrap;
 }
 
+.rm-mast-version span {
+    color: rgba(148, 163, 184, 0.62);
+    padding: 0 0.18rem;
+}
+
 .rm-mast-meta {
     color: var(--rm-muted);
     font-size: 0.75rem;
@@ -283,15 +288,6 @@ div[data-testid="stTabs"] button[role="tab"] span {
     line-height: 1.45;
     margin-top: 0.18rem;
     max-width: 980px;
-}
-
-div[class*="st-key-statline-"] {
-    border: 1px solid rgba(148, 163, 184, 0.17) !important;
-    border-top: 3px solid rgba(96, 165, 250, 0.85) !important;
-    border-radius: 14px !important;
-    background: rgba(17, 24, 39, 0.82) !important;
-    padding: 0.2rem 0.85rem 0.45rem 0.85rem !important;
-    min-height: 128px;
 }
 
 .rm-state-head {
@@ -656,29 +652,29 @@ hr {
     margin: 0 0.1rem;
 }
 
-/* Tab-specific glossary: always reachable, never part of the scroll path. */
+/* Tab-specific glossary: aligned with the domain header, outside chart space. */
 div[class*="st-key-floating-terms-"] {
-    position: fixed !important;
-    top: 46%;
-    right: 0 !important;
-    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    margin: -0.7rem 0 0.85rem auto;
+    position: relative;
+    z-index: 20;
     width: max-content !important;
 }
 
 div[class*="st-key-floating-terms-"] [data-testid="stPopover"] > button,
 div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button {
-    min-height: 2.45rem;
-    padding: 0.48rem 0.72rem;
+    min-height: 2.2rem;
+    padding: 0.4rem 0.68rem;
     border: 1px solid rgba(167, 139, 250, 0.42);
-    border-right: 0;
-    border-radius: 11px 0 0 11px;
-    background: rgba(15, 23, 42, 0.96);
+    border-radius: 9px;
+    background: rgba(15, 23, 42, 0.84);
     color: #e5e7eb;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    box-shadow: 0 8px 24px rgba(2, 6, 23, 0.34);
+    box-shadow: none;
 }
 
 div[class*="st-key-floating-terms-"] [data-testid="stPopover"] > button:hover,
@@ -689,8 +685,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
 
 @media (max-width: 700px) {
     div[class*="st-key-floating-terms-"] {
-        top: auto;
-        bottom: 0.85rem;
+        margin: -0.25rem 0 0.85rem auto;
     }
 
     div[class*="st-key-floating-terms-"] [data-testid="stPopover"] > button,
@@ -713,7 +708,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
 }
 .rm-domain-read.macro {
     padding: 1rem 1.1rem 1.02rem 1.1rem;
-    background: linear-gradient(90deg, rgba(124, 58, 237, 0.12), rgba(17, 24, 39, 0.72));
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.12), rgba(17, 24, 39, 0.72));
 }
 .rm-read-section-divider {
     width: 100%;
@@ -822,46 +817,39 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     text-decoration: underline;
 }
 
-/* Front-page purpose disclosure: quiet framing above the AI Macro header. */
-.st-key-front-page-purpose {
-    margin: 0;
+/* Platform-level purpose disclosure below the masthead. */
+.st-key-platform-purpose {
+    margin: -0.15rem 0 1rem;
 }
-.rm-purpose-divider {
-    width: 100%;
-    height: 1px;
-    background: rgba(167, 139, 250, 0.24);
-    margin: 0.78rem 0 1rem 0;
-    clear: both;
-}
-.st-key-front-page-purpose .stExpander {
+.st-key-platform-purpose .stExpander {
     background: rgba(15, 23, 42, 0.34) !important;
-    border-color: rgba(167, 139, 250, 0.20) !important;
+    border-color: rgba(96, 165, 250, 0.20) !important;
 }
-.st-key-front-page-purpose details > summary {
+.st-key-platform-purpose details > summary {
     min-height: 3.25rem !important;
     padding-block: 0.72rem !important;
     align-items: center !important;
     box-sizing: border-box !important;
 }
-.st-key-front-page-purpose details summary p {
+.st-key-platform-purpose details summary p {
     margin: 0 !important;
     line-height: 1.15 !important;
-    color: #c4b5fd !important;
+    color: #93c5fd !important;
     font-size: 0.72rem !important;
     font-weight: 760 !important;
     letter-spacing: 0.065em !important;
     text-transform: uppercase !important;
 }
-.st-key-front-page-purpose [data-testid="stExpanderDetails"] {
+.st-key-platform-purpose [data-testid="stExpanderDetails"] {
     color: #cbd5e1;
     padding: 0 !important;
     box-sizing: border-box !important;
 }
-.st-key-front-page-purpose [data-testid="stExpanderDetails"] > div {
+.st-key-platform-purpose [data-testid="stExpanderDetails"] > div {
     width: 100%;
     padding: 0 !important;
 }
-.st-key-front-page-purpose .rm-purpose-copy {
+.st-key-platform-purpose .rm-purpose-copy {
     min-height: 8.25rem;
     display: flex;
     align-items: center;
@@ -873,7 +861,17 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     width: 100%;
 }
 @media (max-width: 720px) {
-    .st-key-front-page-purpose .rm-purpose-copy {
+    .rm-subtitle-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+    .rm-mast-version {
+        margin-left: 0;
+        text-align: left;
+        white-space: normal;
+    }
+    .st-key-platform-purpose .rm-purpose-copy {
         min-height: auto;
         padding: 1.15rem 1rem 1.25rem 1rem;
     }
@@ -884,27 +882,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     }
 }
 
-/* v6.6 macro synthesis: prose first, supporting evidence second. */
-.rm-domain-read-relevance,
-.rm-domain-read-counterweight {
-    border-top: 1px solid rgba(148, 163, 184, 0.14);
-    display: grid;
-    grid-template-columns: 7.4rem minmax(0, 1fr);
-    gap: 0.7rem;
-    margin-top: 0.68rem;
-    padding-top: 0.62rem;
-    color: #aeb9c8;
-    font-size: 0.79rem;
-    line-height: 1.48;
-}
-.rm-domain-read-relevance > span,
-.rm-domain-read-counterweight > span {
-    color: var(--rm-read-accent);
-    font-size: 0.61rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
+/* AI Macro Read: prose first, compact evidence second. */
 .rm-domain-read-evidence-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -946,11 +924,6 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     margin-top: 0;
 }
 @media (max-width: 720px) {
-    .rm-domain-read-relevance,
-    .rm-domain-read-counterweight {
-        grid-template-columns: 1fr;
-        gap: 0.2rem;
-    }
     .rm-domain-read-evidence-grid {
         grid-template-columns: 1fr;
     }
@@ -1044,29 +1017,53 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
 }
 
 
-/* Recovery proof: only two analytical layout contracts. */
+/* Segmented stat rail: one analytical strip, not a row of floating bubbles. */
 .rm-summary-row {
+    background: rgba(17, 24, 39, 0.72);
+    border: 1px solid rgba(148, 163, 184, 0.17);
+    border-top: 3px solid rgba(96, 165, 250, 0.84);
+    border-radius: 8px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-    gap: 0.66rem;
+    gap: 0;
     width: 100%;
     margin-bottom: 0.72rem;
+    overflow: hidden;
 }
 .rm-summary-card {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    border: 1px solid rgba(148, 163, 184, 0.17);
-    border-top: 3px solid rgba(96, 165, 250, 0.84);
-    border-radius: 13px;
-    background: rgba(17, 24, 39, 0.82);
-    padding: 0.72rem 0.86rem 0.82rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .rm-summary-card--row {
-    min-height: 106px;
+    min-height: 94px;
+    padding: 0.78rem 1rem 0.88rem;
+}
+.rm-summary-card--row + .rm-summary-card--row {
+    border-left: 1px solid rgba(148, 163, 184, 0.15);
 }
 .rm-summary-card--rail {
-    margin-bottom: 0.66rem;
+    min-height: 0;
+    padding: 0.78rem 0.9rem 0.88rem;
+}
+.rm-summary-card--rail + .rm-summary-card--rail {
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+.rm-summary-stack {
+    background: rgba(17, 24, 39, 0.72);
+    border: 1px solid rgba(148, 163, 184, 0.19);
+    border-top: 3px solid rgba(96, 165, 250, 0.84);
+    border-radius: 8px;
+    display: grid;
+    grid-template-rows: repeat(var(--rm-card-count), minmax(0, 1fr));
+    gap: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+    height: 100%;
+    overflow: hidden;
 }
 .rm-summary-label,
 .rm-summary-value,
@@ -1076,6 +1073,46 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     min-width: 0;
     overflow-wrap: anywhere;
     white-space: normal;
+}
+
+/* Market signal rail: categorical findings with one shared baseline. */
+.rm-signal-rail {
+    background: linear-gradient(90deg, rgba(20, 27, 43, 0.88), rgba(14, 21, 35, 0.72));
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    border-top: 2px solid rgba(167, 139, 250, 0.68);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    margin-bottom: 0.72rem;
+    width: 100%;
+}
+.rm-signal-item {
+    min-width: 0;
+    padding: 0.86rem 1rem 0.92rem;
+}
+.rm-signal-item + .rm-signal-item {
+    border-left: 1px solid rgba(148, 163, 184, 0.15);
+}
+.rm-signal-label {
+    color: #aab4c5;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.075em;
+    line-height: 1.25;
+}
+.rm-signal-value {
+    color: #f3f6fb;
+    font-size: clamp(1rem, 1.42vw, 1.34rem);
+    font-weight: 740;
+    line-height: 1.18;
+    margin-top: 0.48rem;
+    overflow-wrap: anywhere;
+}
+.rm-signal-note {
+    color: #8f9aad;
+    font-size: 0.69rem;
+    line-height: 1.4;
+    margin-top: 0.45rem;
+    overflow-wrap: anywhere;
 }
 .rm-summary-label {
     color: #aab4c5;
@@ -1100,8 +1137,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     color: #8f9aad;
     font-size: 0.70rem;
     line-height: 1.36;
-    margin-top: 0.28rem;
-    padding-bottom: 0.08rem;
+    margin-top: 0.32rem;
 }
 [data-testid="stColumn"] {
     min-width: 0 !important;
@@ -1111,23 +1147,51 @@ div[class*="st-key-full-width-layout-"] {
     max-width: none !important;
     width: 100% !important;
 }
-div[class*="st-key-full-width-layout-"] [data-testid="stPlotlyChart"],
-div[class*="st-key-full-width-layout-"] [data-testid="stPlotlyChart"] > div,
-div[class*="st-key-full-width-layout-"] .js-plotly-plot,
-div[class*="st-key-full-width-layout-"] .plot-container,
-div[class*="st-key-full-width-layout-"] .svg-container {
-    box-sizing: border-box !important;
-    max-width: none !important;
-    width: 100% !important;
-}
+/* Streamlit's width="stretch" contract measures stFullScreenFrame and passes
+   that width into Plotly. Do not size stElementContainer, stFullScreenFrame,
+   stPlotlyChart, or Plotly's internal wrappers here; doing so creates a second
+   geometry owner and can strand a chart at Plotly's 700 px fallback. */
 div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
-    align-items: flex-start;
+    align-items: stretch;
+}
+div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+    display: flex;
+    flex-direction: column;
+}
+div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] > [data-testid="stVerticalBlock"],
+div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] > div {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child [data-testid="stVerticalBlock"],
+div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child [data-testid="stElementContainer"],
+div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child [data-testid="stMarkdown"],
+div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child [data-testid="stMarkdownContainer"] {
+    align-items: stretch;
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-start !important;
+    min-height: 0;
+    width: 100%;
 }
 @media (max-width: 900px) {
+    .rm-summary-row,
+    .rm-signal-rail {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .rm-summary-card--row:nth-child(odd),
+    .rm-signal-item:nth-child(odd) {
+        border-left: 0;
+    }
+    .rm-summary-card--row:nth-child(n + 3),
+    .rm-signal-item:nth-child(n + 3) {
+        border-top: 1px solid rgba(148, 163, 184, 0.15);
+    }
     .rm-summary-card--row {
         min-height: 0;
     }
     div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
+        align-items: flex-start;
         flex-wrap: wrap !important;
     }
     div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
@@ -1142,6 +1206,440 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
     div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
         order: 1;
     }
+    .rm-summary-stack {
+        grid-template-rows: none;
+        grid-auto-rows: auto;
+        height: auto;
+    }
+}
+@media (max-width: 560px) {
+    .rm-summary-row,
+    .rm-signal-rail {
+        grid-template-columns: 1fr;
+    }
+    .rm-summary-card--row + .rm-summary-card--row,
+    .rm-signal-item + .rm-signal-item {
+        border-left: 0;
+        border-top: 1px solid rgba(148, 163, 184, 0.15);
+    }
+}
+
+/* Economic Outcomes: value bridge, then the national history. */
+div[class*="st-key-economic-outcomes-value-bridge"] {
+    margin-bottom: 0.8rem;
+}
+div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
+    margin-top: 0.35rem;
+}
+
+/* Cohesive record dossier: one identity-led analytical object, not a KPI wall. */
+.rm-dossier {
+    background: rgba(17, 24, 39, 0.76);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 100%;
+}
+.rm-dossier-header {
+    align-items: flex-start;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    display: flex;
+    gap: 1.25rem;
+    justify-content: space-between;
+    padding: 1.15rem 1.25rem 1rem;
+}
+.rm-dossier-title {
+    color: #f3f6fb;
+    font-size: clamp(1.05rem, 1.4vw, 1.35rem);
+    font-weight: 760;
+    letter-spacing: -0.018em;
+    line-height: 1.18;
+}
+.rm-dossier-subtitle {
+    color: #94a3b8;
+    font-size: 0.77rem;
+    line-height: 1.45;
+    margin-top: 0.32rem;
+}
+.rm-dossier-badge {
+    background: rgba(96, 165, 250, 0.10);
+    border: 1px solid rgba(96, 165, 250, 0.42);
+    border-radius: 999px;
+    color: #bfdbfe;
+    flex: 0 0 auto;
+    font-size: 0.68rem;
+    font-weight: 760;
+    letter-spacing: 0.055em;
+    line-height: 1;
+    padding: 0.48rem 0.68rem;
+    text-transform: uppercase;
+}
+.rm-dossier-facts {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(var(--rm-dossier-fact-count, 3), minmax(0, 1fr));
+}
+.rm-dossier-fact {
+    min-width: 0;
+    padding: 0.92rem 1.25rem 1rem;
+}
+.rm-dossier-fact + .rm-dossier-fact {
+    border-left: 1px solid rgba(148, 163, 184, 0.14);
+}
+.rm-dossier-fact-label {
+    color: #8f9aad;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.075em;
+    line-height: 1.25;
+}
+.rm-dossier-fact-value {
+    color: #f3f6fb;
+    font-size: clamp(1.08rem, 1.7vw, 1.52rem);
+    font-weight: 760;
+    letter-spacing: -0.018em;
+    line-height: 1.14;
+    margin-top: 0.34rem;
+    overflow-wrap: anywhere;
+}
+.rm-dossier-fact-note {
+    color: #8f9aad;
+    font-size: 0.69rem;
+    line-height: 1.38;
+    margin-top: 0.32rem;
+}
+.rm-dossier-groups {
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.rm-dossier-group {
+    min-width: 0;
+    padding: 1.05rem 1.25rem 1.2rem;
+}
+.rm-dossier-group + .rm-dossier-group {
+    border-left: 1px solid rgba(148, 163, 184, 0.14);
+}
+.rm-dossier-group h4 {
+    color: #cbd5e1;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.065em;
+    line-height: 1.25;
+    margin: 0 0 0.55rem;
+    text-transform: uppercase;
+}
+.rm-dossier-group dl { margin: 0; }
+.rm-dossier-row {
+    align-items: start;
+    border-top: 1px solid rgba(148, 163, 184, 0.11);
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(7.5rem, 0.72fr) minmax(0, 1.28fr);
+    padding: 0.66rem 0;
+}
+.rm-dossier-row:first-child { border-top: 0; }
+.rm-dossier-row dt {
+    color: #8f9aad;
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+.rm-dossier-row dd { margin: 0; min-width: 0; text-align: right; }
+.rm-dossier-row-value {
+    color: #e5e7eb;
+    font-size: 0.78rem;
+    font-weight: 680;
+    line-height: 1.36;
+    overflow-wrap: anywhere;
+}
+.rm-dossier-row-note {
+    color: #778397;
+    font-size: 0.66rem;
+    line-height: 1.36;
+    margin-top: 0.18rem;
+}
+@media (max-width: 900px) {
+    .rm-dossier-header { align-items: stretch; flex-direction: column; }
+    .rm-dossier-badge { align-self: flex-start; }
+    .rm-dossier-facts { grid-template-columns: 1fr; }
+    .rm-dossier-fact + .rm-dossier-fact { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.14); }
+    .rm-dossier-groups { grid-template-columns: 1fr; }
+    .rm-dossier-group + .rm-dossier-group { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.14); }
+}
+
+/* Economic Outcomes bridge: three economic layers, one continuous object. */
+.rm-value-bridge {
+    background: linear-gradient(105deg, rgba(15, 23, 42, 0.90), rgba(13, 25, 39, 0.78));
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-top: 2px solid rgba(52, 211, 153, 0.72);
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 100%;
+}
+.rm-value-bridge-header {
+    align-items: baseline;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+    display: flex !important;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.82rem 1.05rem 0.78rem;
+}
+.rm-value-bridge-title {
+    color: #f3f6fb;
+    font-size: 0.94rem;
+    font-weight: 760;
+    line-height: 1.25;
+}
+.rm-value-bridge-subtitle,
+.rm-value-bridge-period,
+.rm-value-bridge-note {
+    color: #8490a4;
+    font-size: 0.68rem;
+    line-height: 1.42;
+}
+.rm-value-bridge-subtitle { margin-top: 0.2rem; }
+.rm-value-bridge-period { flex: 0 0 auto; text-align: right; }
+.rm-value-bridge-track {
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.90fr) minmax(0, 0.92fr) minmax(0, 1.48fr) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+.rm-value-bridge-layer {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 1rem 1.08rem 1.08rem;
+    position: relative;
+}
+.rm-value-bridge-layer + .rm-value-bridge-layer {
+    border-left: 1px solid rgba(148, 163, 184, 0.14);
+}
+.rm-value-bridge-layer:not(:last-child)::after {
+    align-items: center;
+    background: #111827;
+    border: 1px solid rgba(52, 211, 153, 0.30);
+    border-radius: 3px;
+    color: #6ee7b7;
+    content: "\203A";
+    display: flex;
+    font-size: 1rem;
+    font-weight: 700;
+    height: 1.45rem;
+    justify-content: center;
+    position: absolute;
+    right: -0.66rem;
+    top: calc(50% - 0.72rem);
+    width: 1.3rem;
+    z-index: 2;
+}
+.rm-value-bridge-kicker,
+.rm-value-bridge-reading > div {
+    color: #8f9aad;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.075em;
+    line-height: 1.28;
+    text-transform: uppercase;
+}
+.rm-value-bridge-primary {
+    color: #f3f6fb;
+    font-size: clamp(1.05rem, 1.45vw, 1.38rem);
+    font-weight: 760;
+    letter-spacing: -0.016em;
+    line-height: 1.2;
+    margin-top: 0.52rem;
+    overflow-wrap: anywhere;
+}
+.rm-value-bridge-note { margin-top: 0.38rem; }
+.rm-value-bridge-readings {
+    display: grid !important;
+    gap: 0.58rem 1.2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    margin-top: 0.54rem;
+}
+.rm-value-bridge-reading {
+    border-top: 1px solid rgba(148, 163, 184, 0.13);
+    min-width: 0;
+    padding-top: 0.48rem;
+}
+.rm-value-bridge-reading strong {
+    color: #e5edf7;
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 730;
+    line-height: 1.25;
+    margin-top: 0.18rem;
+}
+@media (max-width: 760px) {
+    .rm-value-bridge-header { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
+    .rm-value-bridge-period { text-align: left; }
+    .rm-value-bridge-track { grid-template-columns: 1fr !important; }
+    .rm-value-bridge-layer + .rm-value-bridge-layer { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.14); }
+    .rm-value-bridge-layer:not(:last-child)::after { bottom: -0.72rem; left: calc(50% - 0.65rem); right: auto; top: auto; transform: rotate(90deg); }
+}
+
+/* v6.10 presentation proof set: editorial hierarchy before repeated panel furniture. */
+.rm-summary-row[data-rm-summary-row^="market-"],
+.rm-summary-row[data-rm-summary-row^="sector-"],
+.rm-summary-stack[data-rm-summary-stack^="market-"] {
+    border-top-color: rgba(167, 139, 250, 0.84);
+}
+.rm-summary-row[data-rm-summary-row^="grid-storage-"],
+.rm-summary-row[data-rm-summary-row^="water-"],
+.rm-summary-stack[data-rm-summary-stack^="grid-storage-"],
+.rm-summary-stack[data-rm-summary-stack^="water-"] {
+    border-top-color: rgba(251, 191, 36, 0.82);
+}
+
+/* Grid & Storage: one causal screen spanning scale, maturity, reliability, storage, and investment. */
+.rm-deliverability-screen {
+    background: linear-gradient(105deg, rgba(22, 26, 34, 0.94), rgba(20, 26, 37, 0.76));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-top: 2px solid rgba(251, 191, 36, 0.76);
+    border-radius: 8px;
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    list-style: none;
+    margin: 0 0 0.95rem;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+}
+.rm-deliverability-stage {
+    display: grid;
+    gap: 0.62rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    min-width: 0;
+    padding: 0.92rem 0.9rem 0.98rem;
+    position: relative;
+}
+.rm-deliverability-stage + .rm-deliverability-stage {
+    border-left: 1px solid rgba(148, 163, 184, 0.14);
+}
+.rm-deliverability-stage:not(:last-child)::after {
+    color: rgba(251, 191, 36, 0.82);
+    content: "›";
+    font-size: 1.1rem;
+    font-weight: 800;
+    position: absolute;
+    right: -0.34rem;
+    top: calc(50% - 0.7rem);
+    z-index: 2;
+}
+.rm-deliverability-index {
+    color: rgba(251, 191, 36, 0.76);
+    font-size: 0.62rem;
+    font-weight: 850;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    padding-top: 0.1rem;
+}
+.rm-deliverability-label {
+    color: #9aa6b8;
+    font-size: 0.61rem;
+    font-weight: 820;
+    letter-spacing: 0.075em;
+    line-height: 1.25;
+}
+.rm-deliverability-value {
+    color: #f3f6fb;
+    font-size: clamp(0.98rem, 1.3vw, 1.24rem);
+    font-weight: 760;
+    letter-spacing: -0.015em;
+    line-height: 1.18;
+    margin-top: 0.34rem;
+    overflow-wrap: anywhere;
+}
+.rm-deliverability-note {
+    color: #8390a3;
+    font-size: 0.67rem;
+    line-height: 1.38;
+    margin-top: 0.28rem;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 1050px) {
+    .rm-deliverability-screen { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rm-deliverability-stage + .rm-deliverability-stage { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.12); }
+    .rm-deliverability-stage:nth-child(even) { border-left: 1px solid rgba(148, 163, 184, 0.12); }
+    .rm-deliverability-stage::after { display: none; }
+}
+@media (max-width: 620px) {
+    .rm-deliverability-screen { grid-template-columns: 1fr; }
+    .rm-deliverability-stage:nth-child(even) { border-left: 0; }
+}
+
+
+/* Runtime grid connection summary: horizontal geometry is owned by native Streamlit columns. */
+.rm-deliverability-stage-card {
+    background: linear-gradient(105deg, rgba(22, 26, 34, 0.94), rgba(20, 26, 37, 0.76));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-top: 2px solid rgba(251, 191, 36, 0.76);
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: grid;
+    gap: 0.62rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    height: 100%;
+    min-height: 9.1rem;
+    min-width: 0;
+    padding: 0.92rem 0.9rem 0.98rem;
+    width: 100%;
+}
+div[class*="st-key-grid-delivery-pathway-"] {
+    width: 100% !important;
+    max-width: none !important;
+}
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stHorizontalBlock"] {
+    align-items: stretch !important;
+    width: 100% !important;
+}
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stColumn"] {
+    min-width: 0 !important;
+}
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stMarkdown"],
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stMarkdownContainer"] {
+    height: 100%;
+    width: 100% !important;
+}
+
+/* Proof-set chapter hierarchy: passive grouping recedes; analytical objects retain borders. */
+div[class*="st-key-market-structure-signature"],
+div[class*="st-key-grid-storage-resilience-pair"],
+div[class*="st-key-water-system-workbench"] {
+    margin-bottom: 0.35rem;
+}
+
+
+/* v6.10 full-platform editorial rollout: space-efficiency contract. */
+div[data-testid="stElementContainer"]:has(.rm-deliverability-screen),
+div[data-testid="stElementContainer"]:has(.rm-signal-rail),
+div[data-testid="stElementContainer"]:has(.rm-dossier),
+div[data-testid="stElementContainer"]:has(.rm-value-bridge),
+div[data-testid="stMarkdown"]:has(.rm-deliverability-screen),
+div[data-testid="stMarkdown"]:has(.rm-signal-rail),
+div[data-testid="stMarkdown"]:has(.rm-dossier),
+div[data-testid="stMarkdown"]:has(.rm-value-bridge) {
+    width: 100% !important;
+    max-width: none !important;
+    flex: 1 1 100% !important;
+}
+.rm-deliverability-screen {
+    min-width: 100% !important;
+    box-sizing: border-box;
+}
+/* Briefing objects are horizontal-first; narrow stacking is reserved for actual small screens. */
+@media (min-width: 1051px) {
+    .rm-deliverability-screen { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+}
+/* Passive full-width chapters should not create card-shaped empty rooms. */
+div[class*="st-key-full-width-layout-"] {
+    width: 100% !important;
+    max-width: none !important;
 }
 
 
@@ -1151,6 +1649,8 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
     .proof-copy { color: #94a3b8; margin-bottom: 0.8rem; }
     [data-testid="stHorizontalBlock"] { display: flex; gap: 1.5rem; width: 100%; }
     [data-testid="stColumn"] { min-width: 0; }
+    [data-testid="stVerticalBlock"] { width: 100%; }
+    [data-testid="stElementContainer"], [data-testid="stMarkdown"], [data-testid="stMarkdownContainer"] { width: 100%; }
     .compact-row > [data-role="chart-column"] { flex: 2.15 1 0; }
     .compact-row > [data-role="rail-column"] { flex: 0.85 1 0; }
     [data-testid="stVerticalBlockBorderWrapper"] { border: 1px solid rgba(148,163,184,.17); border-radius: 14px; padding: 1rem; width: 100%; }
@@ -1164,7 +1664,7 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
 <div class="st-key-full-width-layout-data-center-geography" data-proof="full-width">
   <div class="proof-title">Full-width analytical section</div>
   <div class="proof-copy">Metric bubbles above; chart consumes the available content width.</div>
-  <div class="rm-summary-row" data-rm-summary-row="full-width-proof"><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-0"><div class="rm-summary-label">LARGEST ACTIVE PIPELINE</div><div class="rm-summary-value">Virginia</div><div class="rm-summary-note">143 stage-tracked sites</div></article><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-1"><div class="rm-summary-label">CAPACITY IN DROUGHT-EXPOSED REGIONS</div><div class="rm-summary-value">87,450 MW</div><div class="rm-summary-note">published campus capacity</div></article><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-2"><div class="rm-summary-label">DIRECT EVIDENCE COVERAGE</div><div class="rm-summary-value">7.8%</div><div class="rm-summary-note">mapped facilities with direct water evidence</div></article><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-3"><div class="rm-summary-label">LONG CONNECTIVITY DISCLOSURE LABEL</div><div class="rm-summary-value">Operator-disclosed campus connectivity</div><div class="rm-summary-note">Text must wrap without clipping or touching the card edge</div></article></div>
+  <div class="rm-summary-row rm-summary-row--4" data-rm-summary-row="full-width-proof"><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-0"><div class="rm-summary-label">LARGEST ACTIVE PIPELINE</div><div class="rm-summary-value">Virginia</div><div class="rm-summary-note">143 stage-tracked sites</div></article><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-1"><div class="rm-summary-label">CAPACITY IN DROUGHT-EXPOSED REGIONS</div><div class="rm-summary-value">87,450 MW</div><div class="rm-summary-note">published campus capacity</div></article><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-2"><div class="rm-summary-label">DIRECT EVIDENCE COVERAGE</div><div class="rm-summary-value">7.8%</div><div class="rm-summary-note">mapped facilities with direct water evidence</div></article><article class="rm-summary-card rm-summary-card--row" data-rm-card="full-width-proof-3"><div class="rm-summary-label">LONG CONNECTIVITY DISCLOSURE LABEL</div><div class="rm-summary-value">Operator-disclosed campus connectivity</div><div class="rm-summary-note">Text must wrap without clipping or touching the card edge</div></article></div>
   <div data-testid="stVerticalBlockBorderWrapper">
     <div data-testid="stPlotlyChart" data-role="full-chart"><div class="chart-grid"></div></div>
   </div>
@@ -1174,9 +1674,9 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
   <div class="proof-copy">Chart left; one vertical metric rail right. On narrow screens, bubbles move above the chart.</div>
   <div data-testid="stHorizontalBlock" class="compact-row">
     <div data-testid="stColumn" data-role="chart-column">
-      <div data-testid="stVerticalBlockBorderWrapper"><div data-testid="stPlotlyChart" data-role="compact-chart"><div class="chart-grid"></div></div></div>
+      <div data-testid="stVerticalBlock"><div data-testid="stVerticalBlockBorderWrapper" data-role="compact-panel"><div data-testid="stPlotlyChart" data-role="compact-chart"><div class="chart-grid"></div></div></div></div>
     </div>
-    <div data-testid="stColumn" data-role="rail-column"><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-0"><div class="rm-summary-label">LARGEST ACTIVE PIPELINE</div><div class="rm-summary-value">Virginia</div><div class="rm-summary-note">143 stage-tracked sites</div></article><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-1"><div class="rm-summary-label">CAPACITY IN DROUGHT-EXPOSED REGIONS</div><div class="rm-summary-value">87,450 MW</div><div class="rm-summary-note">published campus capacity</div></article><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-2"><div class="rm-summary-label">DIRECT EVIDENCE COVERAGE</div><div class="rm-summary-value">7.8%</div><div class="rm-summary-note">mapped facilities with direct water evidence</div></article><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-3"><div class="rm-summary-label">LONG CONNECTIVITY DISCLOSURE LABEL</div><div class="rm-summary-value">Operator-disclosed campus connectivity</div><div class="rm-summary-note">Text must wrap without clipping or touching the card edge</div></article></div>
+    <div data-testid="stColumn" data-role="rail-column"><div data-testid="stVerticalBlock"><div data-testid="stElementContainer"><div data-testid="stMarkdown"><div data-testid="stMarkdownContainer"><div class="rm-summary-stack" data-rm-summary-stack="compact-proof" style="--rm-card-count:4"><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-0"><div class="rm-summary-label">LARGEST ACTIVE PIPELINE</div><div class="rm-summary-value">Virginia</div><div class="rm-summary-note">143 stage-tracked sites</div></article><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-1"><div class="rm-summary-label">CAPACITY IN DROUGHT-EXPOSED REGIONS</div><div class="rm-summary-value">87,450 MW</div><div class="rm-summary-note">published campus capacity</div></article><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-2"><div class="rm-summary-label">DIRECT EVIDENCE COVERAGE</div><div class="rm-summary-value">7.8%</div><div class="rm-summary-note">mapped facilities with direct water evidence</div></article><article class="rm-summary-card rm-summary-card--rail" data-rm-card="compact-proof-3"><div class="rm-summary-label">LONG CONNECTIVITY DISCLOSURE LABEL</div><div class="rm-summary-value">Operator-disclosed campus connectivity</div><div class="rm-summary-note">Text must wrap without clipping or touching the card edge</div></article></div></div></div></div></div></div>
   </div>
 </div>
 </main></body></html>

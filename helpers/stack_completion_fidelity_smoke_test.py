@@ -48,11 +48,15 @@ def _check(condition, message):
 def check_purpose_beacon() -> None:
     statement = " ".join(METRIC_DEFINITIONS["Purpose Statement"].split())
     readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
-    match = re.search(r"## Purpose\s+(.*?)\s+## Dashboard", readme, flags=re.S)
-    _check(match is not None, "README purpose statement is missing.")
-    readme_statement = " ".join(match.group(1).split())
-    _check(statement == readme_statement, "README and in-app purpose statements have drifted.")
-    for phrase in ("durable use", "broad participation", "realized value", "costs, and risks are distributed"):
+    _check(readme.startswith("# AI Macro\n"), "README no longer opens with the project name.")
+    _check("Streamlit research platform" in readme, "README no longer identifies the project as a Streamlit research platform.")
+    _check("U.S. AI economy" in readme, "README no longer states the project's economic scope.")
+    _check("Reader mode" in readme and "Developer mode" in readme, "README no longer states the actual Reader/Developer access model.")
+    _check(len(readme.splitlines()) <= 40, "README has grown beyond the brief repository-overview contract.")
+    _check("## v" not in readme and "review build" not in readme.casefold(), "README has drifted back into release-note copy.")
+    for forbidden in ("contributors", "contributing", "pull request", "pip install", "streamlit run"):
+        _check(forbidden not in readme.casefold(), f"README has drifted into contributor/setup language: {forbidden}")
+    for phrase in ("what is being built", "who is using and paying for it", "productivity, wages, household income", "costs and constraints"):
         _check(phrase in statement, f"Purpose beacon lost the phrase: {phrase}")
 
 
@@ -168,7 +172,8 @@ def check_refresh_ownership() -> None:
         "EDGAR refresh still leaks into unrelated commercialization web fetches.",
     )
     _check(
-        "commercialization_refresh = refresh_domain in {" in app,
+        'commercialization_domains = {"compute", "adoption", "economic_outcomes"}' in app
+        and "commercialization_refresh = bool(refresh_domains & commercialization_domains)" in app,
         "Commercialization refresh is not owned by explicit domain controls.",
     )
     _check('"connectivity": "Connectivity"' in app, "Connectivity is missing from the domain refresh router.")

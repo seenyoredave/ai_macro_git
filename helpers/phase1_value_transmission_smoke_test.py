@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import sys
 import types
 
@@ -45,13 +46,17 @@ def require(condition: bool, message: str) -> None:
 def main() -> int:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    require('APP_VERSION = "v6.9.1"' in app, "Application version is not v6.9.1.")
     require(
-        'APP_STATE_SCHEMA_VERSION = "64.0-v6.9.1-retained-loader-policy"' in app,
-        "State schema does not include the retained-loader policy rebuild.",
+        re.search(r'APP_VERSION = "v\d+\.\d+\.\d+"', app) is not None,
+        "Application version is missing or not semantic-versioned.",
     )
-    require(READ_ARCHITECTURE_VERSION == "7.0.0", "Read architecture version does not match the v7.0.0 evidence-language contract.")
-    require(readme.startswith("## v6.9.1 — Phase 2 application import repair"), "README does not lead with the v6.9.1 import repair.")
+    require(
+        'APP_STATE_SCHEMA_VERSION = "64.0-retained-loader-policy"' in app,
+        "State schema lost the retained-loader policy contract.",
+    )
+    require(READ_ARCHITECTURE_VERSION == "7.1.0", "Read architecture version does not match the v7.1.0 evidence-language contract.")
+    require(readme.startswith("# AI Macro\n"), "README no longer opens with the project overview.")
+    require("## v" not in readme and "review build" not in readme.casefold(), "README has drifted back into release-note copy.")
 
     workforce_tool = signature_tool("workforce_outcomes_matrix")
     outcomes_tool = signature_tool("realized_value_transmission")
@@ -63,7 +68,7 @@ def main() -> int:
     workforce_read = build_workforce_read(workforce_data)
     outcomes_read = build_economic_impact_read(outcomes_data, commercialization_data=None)
     require(workforce_read.get("confidence") in {"moderate", "high"}, "Workforce Read confidence is unexpectedly low.")
-    require("Theoretical exposure" in str(workforce_read.get("headline")), "Workforce Read does not distinguish theoretical exposure from observed outcomes.")
+    require("do not measure jobs actually lost or automated" in str(workforce_read.get("summary")), "Workforce Read does not distinguish potential task exposure from observed outcomes.")
     require("occupation_exposure_count" in (workforce_read.get("signals") or {}), "Workforce Read lost its exposure signal.")
     require("productivity" in str(outcomes_read.get("headline")).casefold(), "Economic Outcomes Read no longer centers the productivity-to-capture test.")
     for signal in ("productivity_real_comp_gap", "labor_share_since_2020", "median_real_earnings_growth", "group_growth_spread_ppts"):
@@ -84,7 +89,7 @@ def main() -> int:
             "median_real_earnings_growth": 0.8,
         }},
     })
-    require(macro_headline == "The AI buildout is gaining commercial scale, while broad value capture still trails.", "AI Macro overstates economic confirmation after Phase 1.")
+    require(macro_headline == "AI use and provider revenue are growing, but worker gains still lag productivity.", "AI Macro overstates economic confirmation after Phase 1.")
 
     workforce_loader_source = (ROOT / "loaders" / "workforce_loader.py").read_text(encoding="utf-8")
     outcomes_loader_source = (ROOT / "loaders" / "economic_impact_loader.py").read_text(encoding="utf-8")

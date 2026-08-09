@@ -240,8 +240,24 @@ def check_sidebar_contract() -> None:
             raise AssertionError(f"Domain refresh label is missing: {label}")
     if "force_energy_market_refresh" in source:
         raise AssertionError("The retired global energy refresh flag returned.")
-    if 'st.markdown("**Refresh financials**")' not in source or 'st.markdown("**Refresh domains**")' not in source:
-        raise AssertionError("Financial and domain refresh controls are not separated.")
+    if 'st.markdown("**Refresh data sources**")' not in source or 'st.markdown("**Refresh domains**")' not in source:
+        raise AssertionError("Source and domain refresh controls are not separated.")
+    if '"Refresh All Sources"' not in source:
+        raise AssertionError("Refresh All Sources control is missing.")
+    if 'on_click=request_all_source_refreshes' not in source:
+        raise AssertionError("Refresh All Sources is not armed through a pre-rerun callback.")
+    if 'on_click=request_source_refresh' not in source or 'args=("yfinance",)' not in source:
+        raise AssertionError("YFinance refresh is not armed through a pre-rerun callback.")
+    if source.rfind('render_developer_load_report(st.session_state.get("market_universe_load_report"))') < source.find('if st.session_state.force_rebuild:'):
+        raise AssertionError("Developer load report renders before the rebuild completes.")
+    if 'if st.button("Refresh YFinance"' in source:
+        raise AssertionError("YFinance refresh reverted to the fragile nested-button rerun pattern.")
+    if 'st.button("Refresh All Domains"' not in source:
+        raise AssertionError("Refresh All Domains control is missing.")
+    if "Rebuild and cache clearing stay offline" in source:
+        raise AssertionError("Retired developer-tool instruction returned.")
+    if 'or load_policy.allows_live(RefreshSource.GRID_STORAGE)' not in source:
+        raise AssertionError("Grid & Storage refresh is not authorized through the load policy.")
     if 'st.caption("Evidence updates with the source domains above.")' not in source:
         raise AssertionError("Evidence refresh ownership is not explained.")
 

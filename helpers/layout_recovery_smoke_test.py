@@ -62,7 +62,7 @@ def main() -> None:
     pathway_markup = "".join(pathway_stages)
     for required in ('class="rm-deliverability-stage-card"', 'data-rm-delivery-stage="grid-proof-1"', "QUEUE SCALE", "DELIVERY INVESTMENT"):
         if required not in pathway_markup:
-            raise AssertionError(f"Grid Delivery Pathway stage markup lost required contract: {required}")
+            raise AssertionError(f"Grid connection summary stage markup lost required contract: {required}")
 
     dossier = detail_dossier_html(
         title="Campus <A>",
@@ -87,7 +87,7 @@ def main() -> None:
         ],
         namespace="proof-bridge",
     )
-    for required in ('class="rm-value-bridge"', 'data-rm-value-bridge="proof-bridge"', "Worker and household distribution"):
+    for required in ('class="rm-value-bridge"', 'data-rm-value-bridge="proof-bridge"', "Worker outcomes"):
         if required not in bridge:
             raise AssertionError(f"Value bridge markup lost required contract: {required}")
 
@@ -161,7 +161,7 @@ def main() -> None:
     components = (ROOT / "rendering" / "components.py").read_text(encoding="utf-8")
     for required in ('st.columns(5, gap="small", vertical_alignment="top")', 'key=f"grid-delivery-pathway-{namespace}"'):
         if required not in components:
-            raise AssertionError(f"Grid Delivery Pathway lost native Streamlit horizontal geometry: {required}")
+            raise AssertionError(f"Grid connection summary lost native Streamlit horizontal geometry: {required}")
     if "render_compact_chart_rail(" in grid or "render_metric_stack(" in grid:
         raise AssertionError("Grid regressed to the repeated chart-plus-sidecar layout.")
 

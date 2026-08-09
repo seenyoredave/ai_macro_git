@@ -37,7 +37,7 @@ def main() -> None:
     for renderer, label in {
         "finance.py": "Finance data",
         "compute.py": "Compute data",
-        "data_center.py": "Data-center project ledger",
+        "data_center.py": "Data-center project data",
         "connectivity.py": "Connectivity data",
         "power.py": "Power data",
         "adaptation.py": "Adoption data",
@@ -77,13 +77,13 @@ def main() -> None:
     ):
         require(key in sources["power.py"], f"Power lost {key}.")
 
-    require("render_deliverability_screen(" in sources["grid_storage.py"], "Grid Delivery Pathway is missing.")
+    require("render_deliverability_screen(" in sources["grid_storage.py"], "Grid connection summary is missing.")
     require("grid-storage-resilience-pair" in sources["grid_storage.py"], "Grid paired reliability/storage view is missing.")
     require("render_detail_dossier(" in sources["water.py"], "Water dossier redesign is missing.")
     require("water-system-workbench" in sources["water.py"], "Water context workbench is missing.")
 
     require("full-width-layout-adoption-trajectory" in sources["adaptation.py"], "Adoption unified trajectory is missing.")
-    require('view = st.radio("Trajectory view", ["People", "Business"]' in sources["adaptation.py"], "Adoption People/Business selector is missing.")
+    require('view = st.radio("Use view", ["People", "Business"]' in sources["adaptation.py"], "Adoption People/Business selector is missing.")
 
     require("full-width-layout-workforce-outcomes-matrix" in sources["workforce.py"], "Workforce Outcomes Matrix is not the hero.")
     require("full-width-layout-workforce-channels" in sources["workforce.py"], "Workforce channel workbench is missing.")
@@ -96,8 +96,8 @@ def main() -> None:
     css = (ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
     components = (ROOT / "rendering" / "components.py").read_text(encoding="utf-8")
     require("v6.10 full-platform editorial rollout: space-efficiency contract" in css, "Space-efficiency CSS contract is missing.")
-    require('st.columns(5, gap="small", vertical_alignment="top")' in components, "Grid Delivery Pathway is not using five native Streamlit columns.")
-    require('grid-delivery-pathway-' in components and '.rm-deliverability-stage-card' in css, "Grid Delivery Pathway runtime styling contract is missing.")
+    require('st.columns(5, gap="small", vertical_alignment="top")' in components, "Grid connection summary is not using five native Streamlit columns.")
+    require('grid-delivery-pathway-' in components and '.rm-deliverability-stage-card' in css, "Grid connection summary runtime styling contract is missing.")
 
     print(f"PASS  full-platform layout rollout · {len(manifest)} classified sections · no repeated chart-sidecar factory default")
 

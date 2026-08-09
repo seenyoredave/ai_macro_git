@@ -881,25 +881,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     }
 }
 
-/* v6.6 macro synthesis: prose first, supporting evidence second. */
-.rm-domain-read-relevance {
-    border-top: 1px solid rgba(148, 163, 184, 0.14);
-    display: grid;
-    grid-template-columns: 7.4rem minmax(0, 1fr);
-    gap: 0.7rem;
-    margin-top: 0.68rem;
-    padding-top: 0.62rem;
-    color: #aeb9c8;
-    font-size: 0.79rem;
-    line-height: 1.48;
-}
-.rm-domain-read-relevance > span {
-    color: var(--rm-read-accent);
-    font-size: 0.61rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
+/* AI Macro Read: prose first, compact evidence second. */
 .rm-domain-read-evidence-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -941,10 +923,6 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     margin-top: 0;
 }
 @media (max-width: 720px) {
-    .rm-domain-read-relevance {
-        grid-template-columns: 1fr;
-        gap: 0.2rem;
-    }
     .rm-domain-read-evidence-grid {
         grid-template-columns: 1fr;
     }
@@ -1045,7 +1023,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     border-top: 3px solid rgba(96, 165, 250, 0.84);
     border-radius: 8px;
     display: grid;
-    grid-template-columns: repeat(var(--rm-card-count), minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
     gap: 0;
     width: 100%;
     margin-bottom: 0.72rem;
@@ -1083,6 +1061,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     gap: 0;
     min-height: 0;
     flex: 1 1 auto;
+    height: 100%;
     overflow: hidden;
 }
 .rm-summary-label,
@@ -1101,7 +1080,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     border-bottom: 1px solid rgba(148, 163, 184, 0.18);
     border-top: 2px solid rgba(167, 139, 250, 0.68);
     display: grid;
-    grid-template-columns: repeat(var(--rm-signal-count), minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
     margin-bottom: 0.72rem;
     width: 100%;
 }
@@ -1167,15 +1146,10 @@ div[class*="st-key-full-width-layout-"] {
     max-width: none !important;
     width: 100% !important;
 }
-div[class*="st-key-full-width-layout-"] [data-testid="stPlotlyChart"],
-div[class*="st-key-full-width-layout-"] [data-testid="stPlotlyChart"] > div,
-div[class*="st-key-full-width-layout-"] .js-plotly-plot,
-div[class*="st-key-full-width-layout-"] .plot-container,
-div[class*="st-key-full-width-layout-"] .svg-container {
-    box-sizing: border-box !important;
-    max-width: none !important;
-    width: 100% !important;
-}
+/* Streamlit's width="stretch" contract measures stFullScreenFrame and passes
+   that width into Plotly. Do not size stElementContainer, stFullScreenFrame,
+   stPlotlyChart, or Plotly's internal wrappers here; doing so creates a second
+   geometry owner and can strand a chart at Plotly's 700 px fallback. */
 div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
     align-items: stretch;
 }
@@ -1192,8 +1166,10 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-t
 div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child [data-testid="stElementContainer"],
 div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child [data-testid="stMarkdown"],
 div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child [data-testid="stMarkdownContainer"] {
+    align-items: stretch;
     display: flex;
     flex: 1 1 auto;
+    justify-content: flex-start !important;
     min-height: 0;
     width: 100%;
 }
@@ -1232,6 +1208,7 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-t
     .rm-summary-stack {
         grid-template-rows: none;
         grid-auto-rows: auto;
+        height: auto;
     }
 }
 @media (max-width: 560px) {
@@ -1244,6 +1221,14 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-t
         border-left: 0;
         border-top: 1px solid rgba(148, 163, 184, 0.15);
     }
+}
+
+/* Economic Outcomes: value bridge, then the national history. */
+div[class*="st-key-economic-outcomes-value-bridge"] {
+    margin-bottom: 0.8rem;
+}
+div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
+    margin-top: 0.35rem;
 }
 
 /* Cohesive record dossier: one identity-led analytical object, not a KPI wall. */
@@ -1383,67 +1368,277 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-t
     .rm-dossier-group + .rm-dossier-group { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.14); }
 }
 
-/* Economic Outcomes transmission sequence. */
-.rm-transmission-pathway {
+/* Economic Outcomes bridge: three economic layers, one continuous object. */
+.rm-value-bridge {
+    background: linear-gradient(105deg, rgba(15, 23, 42, 0.90), rgba(13, 25, 39, 0.78));
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-top: 2px solid rgba(52, 211, 153, 0.72);
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 100%;
+}
+.rm-value-bridge-header {
+    align-items: baseline;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+    display: flex !important;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.82rem 1.05rem 0.78rem;
+}
+.rm-value-bridge-title {
+    color: #f3f6fb;
+    font-size: 0.94rem;
+    font-weight: 760;
+    line-height: 1.25;
+}
+.rm-value-bridge-subtitle,
+.rm-value-bridge-period,
+.rm-value-bridge-note {
+    color: #8490a4;
+    font-size: 0.68rem;
+    line-height: 1.42;
+}
+.rm-value-bridge-subtitle { margin-top: 0.2rem; }
+.rm-value-bridge-period { flex: 0 0 auto; text-align: right; }
+.rm-value-bridge-track {
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.90fr) minmax(0, 0.92fr) minmax(0, 1.48fr) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+.rm-value-bridge-layer {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 1rem 1.08rem 1.08rem;
+    position: relative;
+}
+.rm-value-bridge-layer + .rm-value-bridge-layer {
+    border-left: 1px solid rgba(148, 163, 184, 0.14);
+}
+.rm-value-bridge-layer:not(:last-child)::after {
+    align-items: center;
+    background: #111827;
+    border: 1px solid rgba(52, 211, 153, 0.30);
+    border-radius: 3px;
+    color: #6ee7b7;
+    content: "\203A";
+    display: flex;
+    font-size: 1rem;
+    font-weight: 700;
+    height: 1.45rem;
+    justify-content: center;
+    position: absolute;
+    right: -0.66rem;
+    top: calc(50% - 0.72rem);
+    width: 1.3rem;
+    z-index: 2;
+}
+.rm-value-bridge-kicker,
+.rm-value-bridge-reading > div {
+    color: #8f9aad;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.075em;
+    line-height: 1.28;
+    text-transform: uppercase;
+}
+.rm-value-bridge-primary {
+    color: #f3f6fb;
+    font-size: clamp(1.05rem, 1.45vw, 1.38rem);
+    font-weight: 760;
+    letter-spacing: -0.016em;
+    line-height: 1.2;
+    margin-top: 0.52rem;
+    overflow-wrap: anywhere;
+}
+.rm-value-bridge-note { margin-top: 0.38rem; }
+.rm-value-bridge-readings {
+    display: grid !important;
+    gap: 0.58rem 1.2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    margin-top: 0.54rem;
+}
+.rm-value-bridge-reading {
+    border-top: 1px solid rgba(148, 163, 184, 0.13);
+    min-width: 0;
+    padding-top: 0.48rem;
+}
+.rm-value-bridge-reading strong {
+    color: #e5edf7;
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 730;
+    line-height: 1.25;
+    margin-top: 0.18rem;
+}
+@media (max-width: 760px) {
+    .rm-value-bridge-header { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
+    .rm-value-bridge-period { text-align: left; }
+    .rm-value-bridge-track { grid-template-columns: 1fr !important; }
+    .rm-value-bridge-layer + .rm-value-bridge-layer { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.14); }
+    .rm-value-bridge-layer:not(:last-child)::after { bottom: -0.72rem; left: calc(50% - 0.65rem); right: auto; top: auto; transform: rotate(90deg); }
+}
+
+/* v6.10 presentation proof set: editorial hierarchy before repeated panel furniture. */
+.rm-summary-row[data-rm-summary-row^="market-"],
+.rm-summary-row[data-rm-summary-row^="sector-"],
+.rm-summary-stack[data-rm-summary-stack^="market-"] {
+    border-top-color: rgba(167, 139, 250, 0.84);
+}
+.rm-summary-row[data-rm-summary-row^="grid-storage-"],
+.rm-summary-row[data-rm-summary-row^="water-"],
+.rm-summary-stack[data-rm-summary-stack^="grid-storage-"],
+.rm-summary-stack[data-rm-summary-stack^="water-"] {
+    border-top-color: rgba(251, 191, 36, 0.82);
+}
+
+/* Grid & Storage: one causal screen spanning scale, maturity, reliability, storage, and investment. */
+.rm-deliverability-screen {
+    background: linear-gradient(105deg, rgba(22, 26, 34, 0.94), rgba(20, 26, 37, 0.76));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-top: 2px solid rgba(251, 191, 36, 0.76);
+    border-radius: 8px;
     display: grid;
+    gap: 0;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     list-style: none;
-    margin: 0;
-    padding: 0.25rem 0 0;
+    margin: 0 0 0.95rem;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
 }
-.rm-transmission-stage {
-    align-content: start;
+.rm-deliverability-stage {
     display: grid;
-    gap: 0.68rem;
-    grid-template-rows: 2rem minmax(0, 1fr);
+    gap: 0.62rem;
+    grid-template-columns: auto minmax(0, 1fr);
     min-width: 0;
-    padding: 0.95rem 1rem 1.05rem;
+    padding: 0.92rem 0.9rem 0.98rem;
+    position: relative;
 }
-.rm-transmission-stage + .rm-transmission-stage { border-left: 1px solid rgba(148, 163, 184, 0.14); }
-.rm-transmission-index {
-    align-items: center;
-    background: rgba(129, 140, 248, 0.10);
-    border: 1px solid rgba(129, 140, 248, 0.28);
-    border-radius: 999px;
-    color: #c4b5fd;
-    display: flex;
-    font-size: 0.67rem;
+.rm-deliverability-stage + .rm-deliverability-stage {
+    border-left: 1px solid rgba(148, 163, 184, 0.14);
+}
+.rm-deliverability-stage:not(:last-child)::after {
+    color: rgba(251, 191, 36, 0.82);
+    content: "›";
+    font-size: 1.1rem;
     font-weight: 800;
-    height: 2rem;
-    justify-content: center;
-    width: 2rem;
+    position: absolute;
+    right: -0.34rem;
+    top: calc(50% - 0.7rem);
+    z-index: 2;
 }
-.rm-transmission-copy { min-width: 0; }
-.rm-transmission-label {
+.rm-deliverability-index {
+    color: rgba(251, 191, 36, 0.76);
+    font-size: 0.62rem;
+    font-weight: 850;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    padding-top: 0.1rem;
+}
+.rm-deliverability-label {
+    color: #9aa6b8;
+    font-size: 0.61rem;
+    font-weight: 820;
+    letter-spacing: 0.075em;
+    line-height: 1.25;
+}
+.rm-deliverability-value {
     color: #f3f6fb;
-    font-size: 0.84rem;
+    font-size: clamp(0.98rem, 1.3vw, 1.24rem);
     font-weight: 760;
-    line-height: 1.3;
-}
-.rm-transmission-reading {
-    color: #dbe3ef;
-    font-size: 0.79rem;
-    font-weight: 650;
-    line-height: 1.38;
+    letter-spacing: -0.015em;
+    line-height: 1.18;
     margin-top: 0.34rem;
+    overflow-wrap: anywhere;
 }
-.rm-transmission-note {
-    color: #8490a4;
-    font-size: 0.69rem;
-    line-height: 1.42;
-    margin-top: 0.22rem;
+.rm-deliverability-note {
+    color: #8390a3;
+    font-size: 0.67rem;
+    line-height: 1.38;
+    margin-top: 0.28rem;
+    overflow-wrap: anywhere;
 }
-@media (max-width: 900px) {
-    .rm-transmission-pathway { grid-template-columns: 1fr; }
-    .rm-transmission-stage {
-        align-items: start;
-        grid-template-columns: 2.2rem minmax(0, 1fr);
-        grid-template-rows: none;
-    }
-    .rm-transmission-stage + .rm-transmission-stage {
-        border-left: 0;
-        border-top: 1px solid rgba(148, 163, 184, 0.14);
-    }
+@media (max-width: 1050px) {
+    .rm-deliverability-screen { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rm-deliverability-stage + .rm-deliverability-stage { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.12); }
+    .rm-deliverability-stage:nth-child(even) { border-left: 1px solid rgba(148, 163, 184, 0.12); }
+    .rm-deliverability-stage::after { display: none; }
+}
+@media (max-width: 620px) {
+    .rm-deliverability-screen { grid-template-columns: 1fr; }
+    .rm-deliverability-stage:nth-child(even) { border-left: 0; }
+}
+
+
+/* Runtime grid connection summary: horizontal geometry is owned by native Streamlit columns. */
+.rm-deliverability-stage-card {
+    background: linear-gradient(105deg, rgba(22, 26, 34, 0.94), rgba(20, 26, 37, 0.76));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-top: 2px solid rgba(251, 191, 36, 0.76);
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: grid;
+    gap: 0.62rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    height: 100%;
+    min-height: 9.1rem;
+    min-width: 0;
+    padding: 0.92rem 0.9rem 0.98rem;
+    width: 100%;
+}
+div[class*="st-key-grid-delivery-pathway-"] {
+    width: 100% !important;
+    max-width: none !important;
+}
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stHorizontalBlock"] {
+    align-items: stretch !important;
+    width: 100% !important;
+}
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stColumn"] {
+    min-width: 0 !important;
+}
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stMarkdown"],
+div[class*="st-key-grid-delivery-pathway-"] div[data-testid="stMarkdownContainer"] {
+    height: 100%;
+    width: 100% !important;
+}
+
+/* Proof-set chapter hierarchy: passive grouping recedes; analytical objects retain borders. */
+div[class*="st-key-market-structure-signature"],
+div[class*="st-key-grid-storage-resilience-pair"],
+div[class*="st-key-water-system-workbench"] {
+    margin-bottom: 0.35rem;
+}
+
+
+/* v6.10 full-platform editorial rollout: space-efficiency contract. */
+div[data-testid="stElementContainer"]:has(.rm-deliverability-screen),
+div[data-testid="stElementContainer"]:has(.rm-signal-rail),
+div[data-testid="stElementContainer"]:has(.rm-dossier),
+div[data-testid="stElementContainer"]:has(.rm-value-bridge),
+div[data-testid="stMarkdown"]:has(.rm-deliverability-screen),
+div[data-testid="stMarkdown"]:has(.rm-signal-rail),
+div[data-testid="stMarkdown"]:has(.rm-dossier),
+div[data-testid="stMarkdown"]:has(.rm-value-bridge) {
+    width: 100% !important;
+    max-width: none !important;
+    flex: 1 1 100% !important;
+}
+.rm-deliverability-screen {
+    min-width: 100% !important;
+    box-sizing: border-box;
+}
+/* Briefing objects are horizontal-first; narrow stacking is reserved for actual small screens. */
+@media (min-width: 1051px) {
+    .rm-deliverability-screen { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+}
+/* Passive full-width chapters should not create card-shaped empty rooms. */
+div[class*="st-key-full-width-layout-"] {
+    width: 100% !important;
+    max-width: none !important;
 }
 
 
@@ -1453,8 +1648,13 @@ div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] > [data-t
     h1 { font-size:1.25rem; margin:0 0 1.25rem; }
     .proof-panel { border:1px solid rgba(148,163,184,.18); border-radius:12px; margin-bottom:2rem; padding:1rem; }
     .proof-title { color:#f3f6fb; font-size:.9rem; font-weight:760; margin-bottom:.75rem; }
+    .streamlit-fit-probe { width:fit-content; max-width:100%; }
+    .proof-native-columns { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.55rem; width:100%; }
+    @media (max-width:1050px) { .proof-native-columns { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:620px) { .proof-native-columns { grid-template-columns:1fr; } }
     </style></head><body><main>
 <h1>AI Macro redesign contract</h1>
-<section class='proof-panel' data-proof='dossier'><div class='proof-title'>Campus water exposure dossier</div><article class="rm-dossier" data-rm-dossier="water-campus-proof"><header class="rm-dossier-header"><div class="rm-dossier-identity"><div class="rm-dossier-title">Equinix Ashburn DC1</div><div class="rm-dossier-subtitle">Equinix · Loudoun County, Virginia</div></div><div class="rm-dossier-badge">Observed footprint</div></header><div class="rm-dossier-facts"><div class="rm-dossier-fact"><div class="rm-dossier-fact-label">PUBLISHED CAPACITY</div><div class="rm-dossier-fact-value">Not published</div><div class="rm-dossier-fact-note">public campus estimate</div></div><div class="rm-dossier-fact"><div class="rm-dossier-fact-label">CURRENT D2+ OVERLAP</div><div class="rm-dossier-fact-value">12.4%</div><div class="rm-dossier-fact-note">moderate current overlap</div></div><div class="rm-dossier-fact"><div class="rm-dossier-fact-label">EVIDENCE GRADE</div><div class="rm-dossier-fact-value">Partial</div><div class="rm-dossier-fact-note">facility-level water disclosure</div></div></div><div class="rm-dossier-groups"><section class="rm-dossier-group"><h4>Physical exposure</h4><dl><div class="rm-dossier-row"><dt>D1+ area</dt><dd><div class="rm-dossier-row-value">34.8%</div><div class="rm-dossier-row-note">2026-07 drought snapshot</div></dd></div><div class="rm-dossier-row"><dt>D2+ area</dt><dd><div class="rm-dossier-row-value">12.4%</div><div class="rm-dossier-row-note">2026-07 drought snapshot</div></dd></div><div class="rm-dossier-row"><dt>Cooling system</dt><dd><div class="rm-dossier-row-value">Not disclosed</div><div class="rm-dossier-row-note">facility evidence</div></dd></div><div class="rm-dossier-row"><dt>Water source</dt><dd><div class="rm-dossier-row-value">Municipal supply</div><div class="rm-dossier-row-note">operator disclosure</div></dd></div></dl></section><section class="rm-dossier-group"><h4>Evidence and disclosure</h4><dl><div class="rm-dossier-row"><dt>Quantified use</dt><dd><div class="rm-dossier-row-value">No</div><div class="rm-dossier-row-note">annual withdrawal or consumption</div></dd></div><div class="rm-dossier-row"><dt>Withdrawal</dt><dd><div class="rm-dossier-row-value">n/a</div><div class="rm-dossier-row-note">published facility record</div></dd></div><div class="rm-dossier-row"><dt>Consumption</dt><dd><div class="rm-dossier-row-value">n/a</div><div class="rm-dossier-row-note">published facility record</div></dd></div><div class="rm-dossier-row"><dt>Evidence status</dt><dd><div class="rm-dossier-row-value">Facility-level source identified</div><div class="rm-dossier-row-note">public record</div></dd></div></dl></section></div></article></section>
-<section class='proof-panel' data-proof='transmission'><div class='proof-title'>From provider revenue to broad economic value</div><ol class="rm-transmission-pathway" data-rm-transmission="economic-outcomes-proof"><li class="rm-transmission-stage"><div class="rm-transmission-index">01</div><div class="rm-transmission-copy"><div class="rm-transmission-label">Commercial demand</div><div class="rm-transmission-reading">$13B Microsoft · $10B+ OpenAI ARR</div><div class="rm-transmission-note">Annualized revenue disclosures</div></div></li><li class="rm-transmission-stage"><div class="rm-transmission-index">02</div><div class="rm-transmission-copy"><div class="rm-transmission-label">Productivity &amp; output</div><div class="rm-transmission-reading">Productivity +7.2% since 2020</div><div class="rm-transmission-note">Nonfarm-business productivity</div></div></li><li class="rm-transmission-stage"><div class="rm-transmission-index">03</div><div class="rm-transmission-copy"><div class="rm-transmission-label">Worker capture</div><div class="rm-transmission-reading">Real compensation +3.1% · labor share -1.4%</div><div class="rm-transmission-note">Productivity–compensation gap: 4.1 points</div></div></li><li class="rm-transmission-stage"><div class="rm-transmission-index">04</div><div class="rm-transmission-copy"><div class="rm-transmission-label">Median worker earnings</div><div class="rm-transmission-reading">Median real weekly earnings +2.8%</div><div class="rm-transmission-note">Full-time wage and salary workers</div></div></li><li class="rm-transmission-stage"><div class="rm-transmission-index">05</div><div class="rm-transmission-copy"><div class="rm-transmission-label">Broad participation</div><div class="rm-transmission-reading">4.6-point group growth spread</div><div class="rm-transmission-note">Fastest versus slowest reported group</div></div></li></ol></section>
+<section class='proof-panel' data-proof='deliverability'><div class='proof-title'>Grid Connection Conditions</div><div class='proof-native-columns'><div class="rm-deliverability-stage-card" data-rm-delivery-stage="grid-storage-proof-1"><div class="rm-deliverability-index">01</div><div class="rm-deliverability-copy"><div class="rm-deliverability-label">QUEUE SCALE</div><div class="rm-deliverability-value">2,600 GW</div><div class="rm-deliverability-note">active generation and storage requests</div></div></div><div class="rm-deliverability-stage-card" data-rm-delivery-stage="grid-storage-proof-2"><div class="rm-deliverability-index">02</div><div class="rm-deliverability-copy"><div class="rm-deliverability-label">PROJECT MATURITY</div><div class="rm-deliverability-value">18.5%</div><div class="rm-deliverability-note">executed IA or construction</div></div></div><div class="rm-deliverability-stage-card" data-rm-delivery-stage="grid-storage-proof-3"><div class="rm-deliverability-index">03</div><div class="rm-deliverability-copy"><div class="rm-deliverability-label">RELIABILITY</div><div class="rm-deliverability-value">7 areas</div><div class="rm-deliverability-note">below 5% extreme summer margin</div></div></div><div class="rm-deliverability-stage-card" data-rm-delivery-stage="grid-storage-proof-4"><div class="rm-deliverability-index">04</div><div class="rm-deliverability-copy"><div class="rm-deliverability-label">STORAGE DURATION</div><div class="rm-deliverability-value">3.8 hours</div><div class="rm-deliverability-note">weighted operating battery duration</div></div></div><div class="rm-deliverability-stage-card" data-rm-delivery-stage="grid-storage-proof-5"><div class="rm-deliverability-index">05</div><div class="rm-deliverability-copy"><div class="rm-deliverability-label">DELIVERY INVESTMENT</div><div class="rm-deliverability-value">$142B</div><div class="rm-deliverability-note">electric-power construction annual rate</div></div></div></div></section>
+<section class='proof-panel' data-proof='dossier'><div class='proof-title'>Campus water profile</div><article class="rm-dossier" data-rm-dossier="water-campus-proof"><header class="rm-dossier-header"><div class="rm-dossier-identity"><div class="rm-dossier-title">Equinix Ashburn DC1</div><div class="rm-dossier-subtitle">Equinix · Loudoun County, Virginia</div></div><div class="rm-dossier-badge">Observed footprint</div></header><div class="rm-dossier-facts"><div class="rm-dossier-fact"><div class="rm-dossier-fact-label">PUBLISHED CAPACITY</div><div class="rm-dossier-fact-value">Not published</div><div class="rm-dossier-fact-note">public campus estimate</div></div><div class="rm-dossier-fact"><div class="rm-dossier-fact-label">CURRENT D2+ OVERLAP</div><div class="rm-dossier-fact-value">12.4%</div><div class="rm-dossier-fact-note">moderate current overlap</div></div><div class="rm-dossier-fact"><div class="rm-dossier-fact-label">EVIDENCE GRADE</div><div class="rm-dossier-fact-value">Partial</div><div class="rm-dossier-fact-note">facility-level water disclosure</div></div></div><div class="rm-dossier-groups"><section class="rm-dossier-group"><h4>Physical exposure</h4><dl><div class="rm-dossier-row"><dt>D1+ area</dt><dd><div class="rm-dossier-row-value">34.8%</div><div class="rm-dossier-row-note">2026-07 drought snapshot</div></dd></div><div class="rm-dossier-row"><dt>D2+ area</dt><dd><div class="rm-dossier-row-value">12.4%</div><div class="rm-dossier-row-note">2026-07 drought snapshot</div></dd></div><div class="rm-dossier-row"><dt>Cooling system</dt><dd><div class="rm-dossier-row-value">Not disclosed</div><div class="rm-dossier-row-note">facility evidence</div></dd></div><div class="rm-dossier-row"><dt>Water source</dt><dd><div class="rm-dossier-row-value">Municipal supply</div><div class="rm-dossier-row-note">operator disclosure</div></dd></div></dl></section><section class="rm-dossier-group"><h4>Evidence and disclosure</h4><dl><div class="rm-dossier-row"><dt>Quantified use</dt><dd><div class="rm-dossier-row-value">No</div><div class="rm-dossier-row-note">annual withdrawal or consumption</div></dd></div><div class="rm-dossier-row"><dt>Withdrawal</dt><dd><div class="rm-dossier-row-value">n/a</div><div class="rm-dossier-row-note">published facility record</div></dd></div><div class="rm-dossier-row"><dt>Consumption</dt><dd><div class="rm-dossier-row-value">n/a</div><div class="rm-dossier-row-note">published facility record</div></dd></div><div class="rm-dossier-row"><dt>Evidence status</dt><dd><div class="rm-dossier-row-value">Facility-level source identified</div><div class="rm-dossier-row-note">public record</div></dd></div></dl></section></div></article></section>
+<section class='proof-panel' data-proof='bridge'><article class="rm-value-bridge" data-rm-value-bridge="economic-outcomes-proof"><header class="rm-value-bridge-header"><div><div class="rm-value-bridge-title">From AI revenue to broader economic gains</div><div class="rm-value-bridge-subtitle">Provider revenue, production response, and distribution to workers</div></div><div class="rm-value-bridge-period">2020 to latest observation</div></header><div class="rm-value-bridge-track"><section class="rm-value-bridge-layer rm-value-bridge-layer--commercial"><div class="rm-value-bridge-kicker">Provider revenue</div><div class="rm-value-bridge-primary">$37B Microsoft · $20B+ OpenAI ARR</div><div class="rm-value-bridge-note">Annualized provider revenue disclosures</div></section><section class="rm-value-bridge-layer rm-value-bridge-layer--production"><div class="rm-value-bridge-kicker">Productivity</div><div class="rm-value-bridge-primary">Productivity +14.1% since 2020</div><div class="rm-value-bridge-note">Nonfarm-business productivity</div></section><section class="rm-value-bridge-layer rm-value-bridge-layer--distribution"><div class="rm-value-bridge-kicker">Worker outcomes</div><div class="rm-value-bridge-readings"><div class="rm-value-bridge-reading"><div>REAL COMPENSATION</div><strong>+4.5%</strong></div><div class="rm-value-bridge-reading"><div>LABOR SHARE</div><strong>-8.4%</strong></div><div class="rm-value-bridge-reading"><div>MEDIAN EARNINGS</div><strong>-0.9%</strong></div><div class="rm-value-bridge-reading"><div>GROUP SPREAD</div><strong>3.3 pts</strong></div></div></section></div></article></section>
 </main></body></html>

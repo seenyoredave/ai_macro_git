@@ -299,7 +299,7 @@ def _render_power_pulse(context: dict) -> None:
         large_context = "active campuses"
 
     render_section(
-        "Power pulse",
+        "Current power conditions",
         "Demand growth, disclosed large loads, planned generation, and prices.",
         first=True,
         compact=True,
@@ -373,7 +373,7 @@ def _render_demand(context: dict) -> None:
     demand = context["demand"]
     large = context["large_loads"]
     through = _latest_date(retail)
-    render_section("Demand & large loads", "The national demand trend paired with where disclosed data-center load is concentrating.")
+    render_section("Electricity demand and large loads", "U.S. electricity demand by customer class and published data-center load.")
     render_summary_row([
         ("Customer accounts", fmt_number(demand.get("customers_m"), 1, suffix="M"), through),
         ("Active campuses", f"{int(large.get('active_campuses', 0) or 0):,}", f"{int(large.get('operating_campuses', 0) or 0):,} operating"),
@@ -394,7 +394,7 @@ def _render_demand(context: dict) -> None:
 
 def _render_supply(context: dict) -> None:
     generation = context["generation"]; capacity = context["capacity"]; changes = context["changes"]; supply = context["supply"]; through = _latest_date(generation)
-    render_section("Supply response", "What is producing U.S. electricity, how generation is changing, and which technologies are entering or leaving the fleet.")
+    render_section("Electricity supply", "Generation mix, output changes, and fleet additions and retirements.")
     render_summary_row([
         ("Natural gas share", fmt_number(supply.get("gas_share"), 1, suffix="%"), "rolling 12 months"),
         ("Nuclear share", fmt_number(supply.get("nuclear_share"), 1, suffix="%"), "rolling 12 months"),
@@ -403,9 +403,9 @@ def _render_supply(context: dict) -> None:
     ], key_prefix="power-supply")
     with st.container(key="full-width-layout-power-generation-supply"):
         with st.container(border=True, key="power-panel-supply-selected"):
-            view = st.radio("Supply view", ["Generation mix", "Generation momentum", "Fleet changes"], horizontal=True, label_visibility="collapsed", key="power-view-supply")
-            if view == "Generation momentum":
-                render_panel_heading("Generation momentum", "Rolling 12-month change by source"); figure, chart_key = generation_change(generation, height=490), "power-generation-change"
+            view = st.radio("Supply view", ["Generation mix", "Generation change", "Fleet changes"], horizontal=True, label_visibility="collapsed", key="power-view-supply")
+            if view == "Generation change":
+                render_panel_heading("Generation change", "Rolling 12-month change by source"); figure, chart_key = generation_change(generation, height=490), "power-generation-change"
             elif view == "Fleet changes":
                 render_panel_heading("Current fleet changes", "Capacity additions and retirements through the latest EIA release"); figure, chart_key = capacity_changes(changes, height=490), "power-capacity-changes"
             else:
@@ -414,7 +414,7 @@ def _render_supply(context: dict) -> None:
 
 def _render_buildout(context: dict) -> None:
     development = context["development"]
-    render_section("Generation buildout", "Planned generating-capacity additions and retirements; interconnection and storage progression live in Grid & Storage.")
+    render_section("Planned generation", "Planned generation additions and retirements. Interconnection queues and storage are covered in Grid & Storage.")
     render_summary_row([
         ("Planned additions", fmt_number(development.get("planned_additions_gw"), 1, suffix=" GW"), f"{development.get('current_year')}–{development.get('end_year')}"),
         ("Planned retirements", fmt_number(development.get("planned_retirements_gw"), 1, suffix=" GW"), f"{development.get('current_year')}–{development.get('end_year')}"),
@@ -486,7 +486,7 @@ def _render_fuel_infrastructure(power_data) -> None:
 
 def _render_prices(context: dict, power_data) -> None:
     retail = context["retail"]; wholesale = context["wholesale"]; prices = context["prices"]; through = _latest_date(retail)
-    render_section("Price & fuel consequences", "Retail and wholesale power prices, with fuel-delivery infrastructure available as a coordinated alternate view.")
+    render_section("Power prices and fuel infrastructure", "Retail and wholesale electricity prices, with major fuel-infrastructure projects available as an alternate view.")
     render_summary_row([
         ("Residential", fmt_number(prices.get("residential"), 2, suffix="¢/kWh"), through),
         ("Commercial", fmt_number(prices.get("commercial"), 2, suffix="¢/kWh"), through),
@@ -526,10 +526,10 @@ def render_power_tab(fred_data, regime_metrics, power_data, dashboard_data, infr
     del fred_data, regime_metrics, dashboard_data
     _inject_power_page_theme()
     inject_panel_height_rules({"power-panel-demand-history": 520, "power-panel-large-load-profile": 520, "power-panel-gas-pipeline": 455, "power-panel-lng": 455})
-    render_tab_header("Power", "How electricity demand is changing, what is producing it, what generation is scheduled to arrive, and what power costs.", "EIA / FRED / facility registry")
+    render_tab_header("Power", "Electricity demand, generation, planned capacity, prices, and major fuel infrastructure.", "EIA / FRED / facility registry")
     _render_floating_terms("power")
     context = _power_context(power_data, infrastructure_data or {})
-    render_domain_read(tab_read or context.get("read"), label="Power Read", domain="power")
+    render_domain_read(tab_read or context.get("read"), label="Read", domain="power")
     _render_power_pulse(context)
     _render_demand(context)
     _render_supply(context)

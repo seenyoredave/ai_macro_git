@@ -27,6 +27,7 @@ from config.current_context_policy import (
     DOMAIN_NEWS_QUERIES,
     DOMAIN_NEWS_TERMS,
     assess_source,
+    recent_development_copy_issues,
     materiality_score,
 )
 from helpers.atomic_io import atomic_write_csv, atomic_write_json, synchronized_path
@@ -217,9 +218,11 @@ def evaluate_item(item: dict, *, domain: str, current: pd.Timestamp, provider: s
             reason = "below domain score threshold"
         elif not _valid_https_url(article_url):
             reason = "missing traceable HTTPS article URL"
+        elif recent_development_copy_issues(title):
+            reason = "headline lacks formal first-reference context"
         else:
             decision = "accepted"
-            reason = "cleared source, relevance, materiality, freshness, and score gates"
+            reason = "cleared source, relevance, materiality, freshness, score, and first-reference context gates"
 
     audit = {
         "audit_version": DISCOVERY_VERSION,

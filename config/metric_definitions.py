@@ -1,7 +1,7 @@
 """Plain-language definitions for the dashboard's actual analytical products."""
 
 ADI_HELP = """
-Measures observable AI capital deployment, physical construction, compute-supply realization, and power demand.
+Measures observable AI capital spending, physical construction, compute-supply growth, and power demand.
 
 AI Development Intensity = 0.25(Capital Deployment) + 0.25(Data-Center Construction) + 0.25(Compute Supply) + 0.25(Power Footprint)
 
@@ -34,7 +34,7 @@ Speculation Gap = AI Equity Index - AI Development Intensity
 """,
 
     "Economic Validation Gap": """
-Compares observable AI deployment with realized downstream operating validation.
+Compares observable AI deployment with revenue growth and changes in free-cash-flow margins.
 
 Deployment Score = AI Development Intensity
 
@@ -42,9 +42,9 @@ Validation Score = 0.65(normalized aggregate revenue growth) + 0.35(normalized r
 
 Economic Validation Gap = Deployment Score - Validation Score
 
-Validation covers the selected cloud-hyperscaler and enterprise-AI-software cohorts. Revenue growth uses ratio-of-sums aggregation; cash-margin change is revenue weighted. Both validation legs use fixed tanh transforms and year-over-year inputs.
+The operating-results score covers the selected cloud-hyperscaler and enterprise-AI-software cohorts. Revenue growth uses ratio-of-sums aggregation; cash-margin change is revenue weighted. Both inputs use fixed tanh transforms and year-over-year values.
 
-**Interpretation:** Positive values indicate observable deployment is running ahead of downstream revenue and cash-margin validation. Negative values indicate those operating outcomes are keeping pace with or exceeding deployment. It is not an AI productivity estimate or a causal return-on-investment measure. Scale: -100 to +100.
+**Interpretation:** Positive values mean the deployment score is ahead of the revenue and cash-margin score. Negative values mean those operating results are keeping pace with or exceeding deployment. This is not an AI productivity estimate or a causal return-on-investment measure. Scale: -100 to +100.
 """,
 
     "AI-Industrial Growth Gap": """
@@ -199,7 +199,7 @@ The numerator and denominator use each company's latest available fiscal period;
 """,
 
     "Debt Financing Pulse": """
-Debt Financing Pulse = Σ(Definition-Matched SEC Debt at t − Definition-Matched SEC Debt at comparable t−4q) ÷ Σ SEC Trailing-Twelve-Month CapEx at t
+Debt change / CapEx = Σ(Definition-Matched SEC Debt at t − Definition-Matched SEC Debt at comparable t−4q) ÷ Σ SEC Trailing-Twelve-Month CapEx at t
 
 Only companies with the same issuer debt definition in both periods, a complete current/non-current concept group, period ends within 62 days of TTM CapEx, and four-quarter CapEx are included. Vendor and SEC debt taxonomies are never mixed. The five-year sparkline requires at least two eligible issuers at each observation; its matched membership can expand as reviewed history becomes available. **Interpretation:** Positive values indicate reported debt expanded relative to trailing capital spending for the matched cohort. Negative values indicate net debt reduction. AI-project use of proceeds is not identified.
 """,
@@ -429,7 +429,7 @@ Federal middle-mile awards, disclosed route miles, geography, endpoints, funding
     "Capacity-Connectivity Mismatch": """
 States with large published data-center pipelines and limited public exchange, landing, facility, or middle-mile evidence.
 
-**Use:** A transport-readiness screen for deeper site research.
+**Use:** Flags places where data-center growth appears large relative to visible network infrastructure and warrants deeper site research.
 """,
 
     "Campus Connectivity Proximity": """
@@ -516,7 +516,7 @@ Share of U.S. adults age 18–64 reporting generative-AI use for work, personal 
 
 **Source:** Real-Time Population Survey via FRED, series `RPSGENAIUSAGESHAREALL`.
 
-**Interpretation:** This is a nationally representative quarterly survey estimate of reported use. It measures reach, not frequency, spending, paid conversion, provider market share, or realized economic value.
+**Interpretation:** This is a nationally representative quarterly survey estimate of reported use. It measures reach, not frequency, spending, paid conversion, provider market share, or broader economic results.
 """,
 
     "Personal Generative-AI Use": """
@@ -524,7 +524,7 @@ Share of U.S. adults age 18–64 reporting generative-AI use outside work for pe
 
 **Source:** Real-Time Population Survey via FRED, series `RPSGENAIUSAGESHARENONWORK`.
 
-**Interpretation:** Primary direct measure of consumer diffusion. **Breakouts unavailable:** free versus paid use and provider.
+**Interpretation:** Direct measure of reported personal AI use. **Breakouts unavailable:** free versus paid use and provider.
 """,
 
     "Work Generative-AI Use": """
@@ -580,7 +580,7 @@ Compares current and expected AI use across major U.S. industries.
 """,
 
     "Purpose Statement": """
-AI Macro traces the AI economy from capital and construction through deployment, adoption, and economic results. Using publicly available data, it connects companies and markets with the data centers, resources, and infrastructure behind the buildout—and examines how that buildout is reshaping the broader U.S. economy. Its central questions are whether rising investment and capacity are producing durable use, broad participation, and realized value—and how the resulting gains, costs, and risks are distributed across investors, businesses, workers, communities, and regions.
+AI Macro follows the U.S. AI economy from financing and construction through deployment, use, and economic results. It uses public data to connect companies and markets with the data centers, power, grid, water, and network infrastructure behind the expansion. The platform asks three basic questions: what is being built, who is using and paying for it, and whether the gains are showing up in productivity, wages, household income, and other parts of the economy. It also tracks where the costs and constraints are appearing.
 """,
 
     "Interconnection Pipeline": """
@@ -652,7 +652,7 @@ Tracks BLS JOLTS job openings, hires, quits, and layoffs-and-discharges rates in
     "Labor-Flow Rates": """
 BLS JOLTS job openings, hires, quits, and layoffs-and-discharges expressed as rates within each broad labor market.
 
-**Interpretation:** Openings indicate unmet demand; hires show realized recruitment; quits signal worker mobility; layoffs and discharges show employer-initiated separation pressure. The industries are broader than AI, with no causal attribution.
+**Interpretation:** Openings indicate unmet demand; hires show actual recruitment; quits signal worker mobility; layoffs and discharges show employer-initiated separation pressure. The industries are broader than AI, with no causal attribution.
 """,
 
     "AI-Linked Wage Trajectory": """
@@ -676,7 +676,7 @@ Places observed employment growth and CPI-adjusted earnings growth beside JOLTS 
     "Labor Productivity": """
 BLS nonfarm-business and manufacturing output-per-hour measures.
 
-**Interpretation:** Productivity is a realized economic outcome and a validation test for the investment cycle. Quarterly movements are not attributed to AI without causal evidence.
+**Interpretation:** Productivity is an observed economic outcome and one test of whether a large investment cycle is producing more output per hour. Quarterly movements are not attributed to AI without causal evidence.
 """,
 
     "Real Value-Added Output": """
@@ -732,13 +732,13 @@ The Economic Outcomes comparison keeps BLS labor productivity and real output in
     "Unit Labor Costs": """
 BLS labor compensation required to produce one unit of output.
 
-**Interpretation:** Growth can reflect compensation rising faster than productivity. It is a realized production-cost measure, not a market valuation or stock-price signal.
+**Interpretation:** Growth can reflect compensation rising faster than productivity. It is a production-cost measure, not a market valuation or stock-price signal.
 """,
 
     "Information-Processing Investment": """
 BEA investment in information-processing equipment and software, published through FRED.
 
-**Interpretation:** This is broader than AI investment. It supplies a consistent capital-formation benchmark for comparing investment growth with realized output and productivity.
+**Interpretation:** This is broader than AI investment. It supplies a consistent capital-spending benchmark for comparing investment growth with output and productivity.
 """,
 
     "Wastewater System Investment": """

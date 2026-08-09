@@ -173,6 +173,7 @@ def _snapshot(
     source_mode: str,
     elapsed: float,
     release_date: date,
+    archive_snapshot_date: str | None = None,
     error: str | None = None,
 ) -> dict:
     latest_date = history["Date"].max() if not history.empty else None
@@ -199,7 +200,8 @@ def _snapshot(
                 bool(np.isfinite(pd.to_numeric(payload["value"], errors="coerce")))
                 for payload in series.values()
             )),
-            "latest_complete_date": (
+            "latest_complete_date": archive_snapshot_date,
+            "latest_data_date": (
                 latest_date.date().isoformat() if pd.notna(latest_date) else None
             ),
             "decision": "manual_refresh" if source_mode == "live_manual" else source_mode,
@@ -220,6 +222,10 @@ def _load_debt_markets_cached(
     started = time_module.perf_counter()
     local = _load_local_history()
     metadata = _load_metadata()
+    retrieved_at = pd.to_datetime(metadata.get("retrieved_at_utc"), errors="coerce")
+    retained_snapshot_date = (
+        retrieved_at.date().isoformat() if pd.notna(retrieved_at) else None
+    )
     required_release = completed_debt_market_release()
     metadata_release = pd.to_datetime(
         metadata.get("release_date"), errors="coerce"
@@ -240,6 +246,7 @@ def _load_debt_markets_cached(
                 if pd.notna(metadata_release)
                 else required_release
             ),
+            archive_snapshot_date=retained_snapshot_date,
             error=None if not local.empty else "No retained NY Fed data is available",
         )
 
@@ -249,6 +256,7 @@ def _load_debt_markets_cached(
             source_mode="archive_current_release",
             elapsed=time_module.perf_counter() - started,
             release_date=required_release,
+            archive_snapshot_date=retained_snapshot_date,
         )
 
     try:
@@ -262,6 +270,7 @@ def _load_debt_markets_cached(
             source_mode="live_manual" if force_refresh else "live",
             elapsed=time_module.perf_counter() - started,
             release_date=required_release,
+            archive_snapshot_date=eastern_now().date().isoformat(),
         )
     except Exception as exc:
         debug_print(f"Debt-markets live load failed -> {exc}")
@@ -270,6 +279,7 @@ def _load_debt_markets_cached(
             source_mode="archive_fallback" if not local.empty else "unavailable",
             elapsed=time_module.perf_counter() - started,
             release_date=required_release,
+            archive_snapshot_date=retained_snapshot_date,
             error=str(exc),
         )
 

@@ -189,9 +189,9 @@ def main() -> None:
         raise AssertionError(f"Connectivity default chart set changed: {sorted(rendered)}")
     if any(item["traces"] == 0 for item in FAKE_ST.charts):
         raise AssertionError(f"A default Connectivity chart is empty: {FAKE_ST.charts}")
-    if FAKE_ST.radios.get("connectivity-view-submarine") != ["Gateway map", "Cable pipeline", "Landing regions"]:
+    if FAKE_ST.radios.get("connectivity-view-submarine") != ["Submarine cable gateways", "Cable pipeline", "Landing regions"]:
         raise AssertionError("Submarine gateway tool selector is missing or reordered.")
-    if FAKE_ST.radios.get("connectivity-compute-transport-view") != ["State mismatch", "Campus proximity"]:
+    if FAKE_ST.radios.get("connectivity-compute-transport-view") != ["State comparison", "Campus proximity"]:
         raise AssertionError("Compute-versus-transport selector is missing or reordered.")
     source = (PROJECT_ROOT / "rendering" / "connectivity.py").read_text(encoding="utf-8")
     if "render_compact_chart_rail(" in source or "render_metric_stack(" in source:

@@ -53,17 +53,17 @@ def main() -> None:
     # that section's own top border. The universal Read divider is the single line.
     checks = [
         ("rendering/macro.py", "Regime board", "_render_primary_macro_cards"),
-        ("rendering/market.py", "Market state", "render_statline"),
+        ("rendering/market.py", "Current market conditions", "render_statline"),
         ("rendering/finance.py", "Funding capacity", "_render_funding_section"),
-        ("rendering/compute.py", "Manufacturing trajectory", "render_summary_row"),
-        ("rendering/data_center.py", "Data-center pulse", "render_statline"),
-        ("rendering/connectivity.py", "National transport pulse", "facility_count"),
-        ("rendering/power.py", "Power pulse", "render_statline"),
-        ("rendering/grid_storage.py", "Grid delivery pathway", "render_deliverability_screen"),
-        ("rendering/water.py", "Exposure state", "render_statline"),
-        ("rendering/adaptation.py", "Diffusion state", "societal ="),
-        ("rendering/workforce.py", "Observed workforce outcomes", "with st.container"),
-        ("rendering/economic_impact.py", "Outcomes pulse", "render_summary_row"),
+        ("rendering/compute.py", "Manufacturing output", "render_summary_row"),
+        ("rendering/data_center.py", "Current data-center footprint", "render_statline"),
+        ("rendering/connectivity.py", "Current network footprint", "facility_count"),
+        ("rendering/power.py", "Current power conditions", "render_statline"),
+        ("rendering/grid_storage.py", "Grid connection conditions", "render_deliverability_screen"),
+        ("rendering/water.py", "Current water exposure", "render_statline"),
+        ("rendering/adaptation.py", "Current use", "societal ="),
+        ("rendering/workforce.py", "Employment and real pay", "with st.container"),
+        ("rendering/economic_impact.py", "From AI revenue to economic results", "render_summary_row"),
     ]
     for relative_path, title, endpoint in checks:
         source = (ROOT / relative_path).read_text(encoding="utf-8")

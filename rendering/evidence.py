@@ -86,7 +86,7 @@ def _coverage_rows(regime_metrics):
         [
             {"Product": "Internal Funding Coverage", "Valid Components": _display_text(current.get("internal_funding_companies", "")), "Required Universe": "company cohort", "Coverage": "cohort coverage"},
             {"Product": "Cash Reserve Runway", "Valid Components": _display_text(current.get("cash_reserve_companies", "")), "Required Universe": "company cohort", "Coverage": "cohort coverage"},
-            {"Product": "Debt Financing Pulse", "Valid Components": _display_text(current.get("debt_financing_companies", "")), "Required Universe": "matched SEC company periods", "Coverage": "matched-period coverage"},
+            {"Product": "Debt change / CapEx", "Valid Components": _display_text(current.get("debt_financing_companies", "")), "Required Universe": "matched SEC company periods", "Coverage": "matched-period coverage"},
             {"Product": "Forward Commitment Load", "Valid Components": _display_text(current.get("commitment_companies", "")), "Required Universe": "commitment ledger", "Coverage": "ledger coverage"},
         ]
     )
@@ -132,13 +132,13 @@ def _sector_methodology_rows():
                 "Interpretation": "Abnormal price and trading intensity",
             },
             {
-                "Product": "Earnings Support",
+                "Product": "Returns versus profitable-company earnings",
                 "Construction": "1Y Return ÷ profitable-cohort FWD EV/EBIT",
                 "Treatment": "FWD EBIT is calculated as forward revenue times current operating margin",
                 "Interpretation": "Trailing repricing relative to the profitable operating-earnings base; descriptive, not causal",
             },
             {
-                "Product": "Speculative Load",
+                "Product": "Trading pressure relative to sector strength",
                 "Construction": "Trading Pressure ÷ Sector AI Equity Index",
                 "Treatment": "Ratio of two bounded 0–100 composite scores; undefined when AEI is zero and sensitive when AEI is low",
                 "Interpretation": "Relative trading pressure versus the sector's current equity foundation; compare with both source indexes",
@@ -310,7 +310,7 @@ def _render_component_evidence(regime_metrics):
 
     groups = [
         ("evidence-adi-components", "ADI pillars", adi_result.get("components", {}), False, COLORS["violet"]),
-        ("evidence-validation-components", "Economic validation legs", validation_result.get("components", {}), False, COLORS["blue"]),
+        ("evidence-validation-components", "Economic Validation Gap components", validation_result.get("components", {}), False, COLORS["blue"]),
         ("evidence-power-stress-components", "Power-stress components", power_result.get("components", {}), True, COLORS["violet"]),
     ]
     for col, (chart_key, title, components, signed, color) in zip(st.columns(3), groups):
@@ -502,14 +502,14 @@ def _render_compute_data_center_evidence(infrastructure_data):
         render_static_table(_active_facility_power_rows(infrastructure))
 
     render_section(
-        "Physical-buildout evidence",
+        "Construction and infrastructure evidence",
         "Named projects, source definitions, and field documentation for compute, data centers, water, and construction.",
     )
-    with st.expander("Physical-buildout observations", expanded=False):
+    with st.expander("Construction and infrastructure observations", expanded=False):
         render_static_table(_infrastructure_source_rows(infrastructure))
     with st.expander("Direct project summary", expanded=False):
         render_static_table(_direct_project_evidence_rows(infrastructure))
-    with st.expander("Physical-buildout source register", expanded=False):
+    with st.expander("Construction and infrastructure source register", expanded=False):
         manifest = infrastructure.get("infrastructure_source_manifest")
         if isinstance(manifest, pd.DataFrame):
             public_columns = [
@@ -518,7 +518,7 @@ def _render_compute_data_center_evidence(infrastructure_data):
             ]
             manifest = manifest[[column for column in public_columns if column in manifest.columns]].copy()
         render_static_table(manifest if isinstance(manifest, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Physical-buildout field dictionary", expanded=False):
+    with st.expander("Construction and infrastructure field dictionary", expanded=False):
         dictionary = infrastructure.get("infrastructure_field_dictionary")
         render_static_table(dictionary if isinstance(dictionary, pd.DataFrame) else pd.DataFrame())
 
@@ -557,7 +557,7 @@ def _render_connectivity_evidence(connectivity_data):
             render_static_table(connectivity.get("interconnection_facility_summary", pd.DataFrame()))
     with st.expander("Middle-mile awards", expanded=False):
         render_static_table(connectivity.get("middle_mile_awards", pd.DataFrame()))
-    with st.expander("Campus connectivity proximity screen", expanded=False):
+    with st.expander("Campus proximity to network infrastructure", expanded=False):
         render_static_table(connectivity.get("campus_connectivity_snapshot", pd.DataFrame()))
 
 
@@ -703,7 +703,7 @@ def _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic
         render_static_table((workforce_data or {}).get("job_openings_history", pd.DataFrame()))
     with st.expander("JOLTS labor-flow history", expanded=False):
         render_static_table((workforce_data or {}).get("labor_flows_history", pd.DataFrame()))
-    with st.expander("Observed workforce transmission matrix", expanded=False):
+    with st.expander("Observed workforce outcomes", expanded=False):
         render_static_table((workforce_data or {}).get("transmission_matrix", pd.DataFrame()))
     with st.expander("Workforce source register", expanded=False):
         render_static_table((workforce_data or {}).get("source_manifest", pd.DataFrame()))
@@ -714,7 +714,7 @@ def _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic
     )
     with st.expander("Productivity and labor-cost history", expanded=False):
         render_static_table((economic_impact_data or {}).get("productivity_history", pd.DataFrame()))
-    with st.expander("Productivity, real compensation, and labor-share transmission", expanded=False):
+    with st.expander("Productivity, real compensation, and labor share", expanded=False):
         render_static_table((economic_impact_data or {}).get("value_transmission_history", pd.DataFrame()))
     with st.expander("Real median weekly earnings distribution", expanded=False):
         render_static_table((economic_impact_data or {}).get("earnings_distribution_history", pd.DataFrame()))
@@ -727,8 +727,8 @@ def _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic
 def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, energy_data, debt_markets_data, dashboard_data, infrastructure_data=None, connectivity_data=None, water_data=None, adaptation_data=None, workforce_data=None, economic_impact_data=None):
     render_tab_header(
         "Evidence",
-        "Definitions, source observations, methods, and measurement boundaries.",
-        "Methods and provenance",
+        "Definitions, methods, source records, and the limits of the data.",
+        "Methods and sources",
     )
     render_line_break()
     view = st.selectbox(

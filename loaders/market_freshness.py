@@ -67,6 +67,8 @@ def merge_live_with_archive(
     missing = sorted(expected - returned)
 
     field_backfills = 0
+    field_backfill_details = []
+    field_backfill_columns = {}
     shared = live_tickers & archive_tickers
     if shared:
         live_lookup = live.set_index("Ticker")
@@ -78,17 +80,24 @@ def merge_live_with_archive(
             and column in live_lookup.columns
             and column in archive_lookup.columns
         ]
-        for ticker in shared:
+        for ticker in sorted(shared):
             for column in comparable:
                 live_value = live_lookup.at[ticker, column]
                 archive_value = archive_lookup.at[ticker, column]
                 if pd.isna(live_value) and pd.notna(archive_value):
                     field_backfills += 1
+                    field_backfill_details.append(f"{ticker}: {column}")
+                    field_backfill_columns[column] = int(field_backfill_columns.get(column, 0)) + 1
 
+    # A complete live refresh is defined by row coverage, not by every optional
+    # provider field being populated. YFinance regularly omits individual
+    # fundamentals even when the ticker itself refreshed successfully. Those
+    # cells are resolved from the previous retained snapshot and are reported
+    # separately; they do not turn a 204/204 live universe into a failed refresh.
     if not live_tickers and returned:
         source_mode = "archive_fallback"
-    elif archive_row_fallback or field_backfills:
-        source_mode = "live_with_archive_fallback"
+    elif archive_row_fallback:
+        source_mode = "live_with_archive_row_fallback"
     elif live_tickers:
         source_mode = "live_complete"
     else:
@@ -101,6 +110,8 @@ def merge_live_with_archive(
         "archive_fallback_tickers": len(archive_row_fallback),
         "archive_fallback_symbols": archive_row_fallback,
         "archive_field_backfills": int(field_backfills),
+        "archive_field_backfill_details": field_backfill_details,
+        "archive_field_backfill_columns": dict(sorted(field_backfill_columns.items())),
         "missing_tickers": missing,
         "returned_tickers": len(returned),
     }

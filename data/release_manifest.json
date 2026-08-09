@@ -5,8 +5,8 @@
   },
   "files": {
     "analytics/read_architecture.py": {
-      "bytes": 98832,
-      "sha256": "b86e53e9cf44ad7c27ebf6a83464eeeb1179421dc79855bff8114469b3dfb4f6"
+      "bytes": 100864,
+      "sha256": "3e9c5fc8f62af649f00ed831f8998db646a2202d26d30c01de238847e333044e"
     },
     "analytics/regime_engine.py": {
       "bytes": 11254,
@@ -25,20 +25,20 @@
       "sha256": "0f8081f0fef772a6df389cd1c2005a78f4e4931d61816dd328d401ddfa4876ca"
     },
     "archive/edgar_history.csv": {
-      "bytes": 777650,
+      "bytes": 801419,
       "date_column": "Date",
-      "date_max": "2026-08-07",
+      "date_max": "2026-08-09",
       "date_min": "2026-06-14",
-      "rows": 6311,
-      "sha256": "d75f43856b0dabb385f155d6c17750313b9ee728f0212006b397b61b16d95dbc"
+      "rows": 6502,
+      "sha256": "8ad4a7f5872d7acf07b41364cfa8878898fc98ac8295bb1aad6a93b7fdcc7a1c"
     },
     "archive/fred_history.csv": {
-      "bytes": 9893,
+      "bytes": 10685,
       "date_column": "Date",
-      "date_max": "2026-08-07",
+      "date_max": "2026-08-09",
       "date_min": "2026-06-14",
-      "rows": 22,
-      "sha256": "90c2ab198c6fc63e6b5a35dc771793c0b867e4f06294335a750e827a24587816"
+      "rows": 23,
+      "sha256": "f6c86e104c29dd4535abdb39f733d1c5783f80f69529cd85e8c08d0027447190"
     },
     "archive/macro_history.csv": {
       "bytes": 19644,
@@ -77,8 +77,8 @@
       "sha256": "79ef62d9fb91730a3a82cd6fc847143f70de4648ffb944412915d53ae38fad26"
     },
     "config/load_policy.py": {
-      "bytes": 3634,
-      "sha256": "576239b3aed139d540405ec0bcaf013f182b3f36c7eba262047b3cb27f3321e2"
+      "bytes": 3804,
+      "sha256": "9aed804601f3fa8df0993871669253c15be08ecba7e242410b44d589cd541dba"
     },
     "config/sector_config.py": {
       "bytes": 23704,
@@ -121,15 +121,15 @@
       "sha256": "7f0e1601e3af40593b36fedddcb26d3ca0e568b2eb8cc35f1ad5e08c71ffc2d6"
     },
     "docs/RUNTIME_DATA_CONTRACT.md": {
-      "bytes": 3403,
-      "sha256": "4c16c5f2cf51331b465e69a2637846c9988287ee93adf88f69948d7e17d1b529"
+      "bytes": 4566,
+      "sha256": "df0f29a1d51186700f8b4b2b8f71f1822e00500b13c21c423e1b9ed532678950"
     },
     "loaders/snapshot_writer.py": {
-      "bytes": 5942,
-      "sha256": "0d175d25b9fa7e3e00841b3469bfcb822a6dbabc9b9f28cc1abf450478627105"
+      "bytes": 8517,
+      "sha256": "2674aba48b69907bbc9b6e62160325e83a30043a10e6a2a45c4865a5ac2c56a3"
     }
   },
-  "generated_at_utc": "2026-08-09T03:38:13+00:00",
+  "generated_at_utc": "2026-08-09T11:59:04+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -140,6 +140,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "01abc2ff56fc0c0574e3",
+  "release_id": "9a36a953b1d6b65fb10f",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }

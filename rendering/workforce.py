@@ -43,10 +43,10 @@ def _yoy_text(row: dict) -> str:
 
 
 def _render_signature(data: dict) -> None:
-    render_section("Observed workforce outcomes", "The signature matrix: employment and real-earnings outcomes across the production and deployment channels most directly tied to the AI economy.", first=True)
+    render_section("Employment and real pay", "Employment and inflation-adjusted pay across industries directly involved in AI production and infrastructure.", first=True)
     with st.container(key="full-width-layout-workforce-outcomes-matrix"):
         with st.container(border=True, key="workforce-panel-outcomes-matrix"):
-            render_panel_heading("Observed workforce transmission", "Raw latest values in cells · color = position within each measure's 2020-present history")
+            render_panel_heading("Employment and real-pay outcomes", "Latest values in cells · color shows where each measure sits within its 2020-present range")
             render_plotly_chart(workforce_outcomes_matrix(data.get("transmission_matrix"), height=560), width="stretch", config={"displayModeBar": False, "responsive": True}, key="workforce-outcomes-matrix")
 
 def _render_pulse(data: dict) -> None:
@@ -56,8 +56,8 @@ def _render_pulse(data: dict) -> None:
     information_hires = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Hires rate")
     information_layoffs = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Layoffs and discharges rate")
     render_section(
-        "Workforce transmission pulse",
-        "Breadth of observed employment and purchasing-power gains, plus current labor-flow conditions in the information market.",
+        "Current labor-market conditions",
+        "Current employment, real pay, openings, hiring, quits, and layoffs across covered industries.",
         compact=True,
     )
     render_statline([
@@ -69,7 +69,7 @@ def _render_pulse(data: dict) -> None:
 
 
 def _render_workforce_channels(data: dict) -> None:
-    render_section("Workforce channels", "Employment, labor-flow, compensation, and theoretical exposure are coordinated in one analytical workbench.")
+    render_section("Employment, hiring, pay, and task exposure", "Views of employment, labor flows, pay, and research estimates of task exposure.")
     with st.container(key="full-width-layout-workforce-channels"):
         with st.container(border=True, key="workforce-panel-channel-workbench"):
             view = st.radio("Channel", ["Employment", "Labor flows", "Compensation", "Exposure benchmark"], horizontal=True, label_visibility="collapsed", key="workforce-channel-view")
@@ -94,14 +94,14 @@ def _render_workforce_channels(data: dict) -> None:
                 render_panel_heading("Average hourly earnings", subtitle)
                 figure, key = earnings_history(data.get("earnings_history"), cpi_history, inflation_adjusted=basis == "Inflation-adjusted"), f"workforce-earnings-history-{basis.casefold().replace('-', '_')}"
             elif view == "Exposure benchmark":
-                render_panel_heading("Theoretical LLM task exposure", "2023 research benchmark · unweighted occupation medians")
+                render_panel_heading("Tasks potentially exposed to LLMs", "2023 research benchmark · unweighted occupation medians")
                 figure, key = occupation_exposure_by_group(data.get("occupation_exposure_by_group"), height=500), "workforce-exposure-by-group"
             else:
-                employment_view = st.radio("Employment view", ["Trajectory", "Current momentum"], horizontal=True, label_visibility="collapsed", key="workforce-employment-view")
-                if employment_view == "Current momentum":
-                    render_panel_heading("Current employment momentum", "Year over year"); figure, key = current_momentum(data.get("employment_latest"), height=480), "workforce-employment-momentum"
+                employment_view = st.radio("Employment view", ["History", "Current change"], horizontal=True, label_visibility="collapsed", key="workforce-employment-view")
+                if employment_view == "Current change":
+                    render_panel_heading("Current employment change", "Year over year"); figure, key = current_momentum(data.get("employment_latest"), height=480), "workforce-employment-momentum"
                 else:
-                    render_panel_heading("Employment trajectory", "January 2020 = 100"); figure, key = indexed_history(data.get("employment_history"), height=480), "workforce-employment-history"
+                    render_panel_heading("Employment history", "January 2020 = 100"); figure, key = indexed_history(data.get("employment_history"), height=480), "workforce-employment-history"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key)
 
 
@@ -120,9 +120,9 @@ def _render_workforce_ledger(data: dict) -> None:
 
 def render_workforce_tab(workforce_data: dict, tab_read=None) -> None:
     inject_panel_height_rules({})
-    render_tab_header("Workforce", "How AI-related investment and adoption are transmitted through employment, labor demand, mobility, separations, and worker purchasing power.", "U.S. Bureau of Labor Statistics")
+    render_tab_header("Workforce", "Employment, hiring, separations, real pay, and task exposure in industries tied to AI production and deployment.", "U.S. Bureau of Labor Statistics")
     _render_floating_terms("workforce")
-    render_domain_read(tab_read, label="Workforce Read", domain="workforce")
+    render_domain_read(tab_read, label="Read", domain="workforce")
     _render_signature(workforce_data)
     _render_pulse(workforce_data)
     _render_workforce_channels(workforce_data)

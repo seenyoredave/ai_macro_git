@@ -69,36 +69,29 @@ def _context_items_html(payload: dict) -> str:
     joined = '<span class="rm-domain-read-context-separator">•</span>'.join(rendered)
     return (
         '<div class="rm-domain-read-context-row rm-domain-read-recent">'
-        '<span>Current context</span>'
+        '<span>Recent developments</span>'
         f'<div class="rm-domain-read-context-items">{joined}</div>'
         '</div>'
     )
 
 
-def _macro_relevance_html(payload: dict) -> str:
-    relevance = str(payload.get("relevance") or "").strip()
+def _macro_evidence_html(payload: dict) -> str:
     evidence = [item for item in payload.get("evidence", []) or [] if isinstance(item, dict)][:3]
-    blocks: list[str] = []
-    if relevance:
-        blocks.append(
-            '<div class="rm-domain-read-relevance"><span>Why it matters</span>'
-            f'<div>{html.escape(relevance)}</div></div>'
+    if not evidence:
+        return ""
+    cards = []
+    for item in evidence:
+        label = str(item.get("label") or "Evidence").strip()
+        value = str(item.get("value") or "n/a").strip()
+        context = str(item.get("context") or "").strip()
+        cards.append(
+            '<div class="rm-domain-read-evidence-card">'
+            f'<div class="rm-domain-read-evidence-label">{html.escape(label)}</div>'
+            f'<div class="rm-domain-read-evidence-value">{html.escape(value)}</div>'
+            f'<div class="rm-domain-read-evidence-context">{html.escape(context)}</div>'
+            '</div>'
         )
-    if evidence:
-        cards = []
-        for item in evidence:
-            label = str(item.get("label") or "Evidence").strip()
-            value = str(item.get("value") or "n/a").strip()
-            context = str(item.get("context") or "").strip()
-            cards.append(
-                '<div class="rm-domain-read-evidence-card">'
-                f'<div class="rm-domain-read-evidence-label">{html.escape(label)}</div>'
-                f'<div class="rm-domain-read-evidence-value">{html.escape(value)}</div>'
-                f'<div class="rm-domain-read-evidence-context">{html.escape(context)}</div>'
-                '</div>'
-            )
-        blocks.append('<div class="rm-domain-read-evidence-grid">' + ''.join(cards) + '</div>')
-    return ''.join(blocks)
+    return '<div class="rm-domain-read-evidence-grid">' + ''.join(cards) + '</div>'
 
 
 def build_domain_read_html(
@@ -112,7 +105,7 @@ def build_domain_read_html(
     payload = read or {}
     headline = str(payload.get("headline") or "Read unavailable").strip()
     summary = str(payload.get("summary") or payload.get("body") or "").strip()
-    domain_label = str(label or payload.get("label") or "Domain read").strip()
+    domain_label = str(label or payload.get("label") or "Read").strip()
     references = payload.get("references") or payload.get("weekly_references") or []
 
     context_html = _context_items_html(payload)
@@ -130,7 +123,7 @@ def build_domain_read_html(
         f'<div class="rm-domain-read-copy">{html.escape(summary)}</div>'
         if summary else ""
     )
-    macro_html = _macro_relevance_html(payload) if macro else ""
+    macro_html = _macro_evidence_html(payload) if macro else ""
     return "".join([
         f'<div class="{classes}" style="--rm-read-accent:{html.escape(accent_color, quote=True)};">',
         f'<div class="rm-domain-read-kicker">{html.escape(domain_label)}</div>',

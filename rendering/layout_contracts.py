@@ -164,7 +164,7 @@ def delivery_pathway_stage_html(
     index: int,
     namespace: str,
 ) -> str:
-    """Build one Grid Delivery Pathway stage for placement in a native Streamlit column."""
+    """Build one grid-delivery condition stage for placement in a native Streamlit column."""
     if len(stage) != 3:
         raise ValueError("delivery pathway stages must contain label, value, and note")
     if index < 1:
@@ -309,24 +309,24 @@ def value_realization_bridge_html(
         f'<article class="rm-value-bridge" data-rm-value-bridge="{clean_namespace}">'
         '<header class="rm-value-bridge-header">'
         '<div>'
-        '<div class="rm-value-bridge-title">Value realization bridge</div>'
-        '<div class="rm-value-bridge-subtitle">Commercial scale, production response, and distribution to workers</div>'
+        '<div class="rm-value-bridge-title">From AI revenue to broader economic gains</div>'
+        '<div class="rm-value-bridge-subtitle">Provider revenue, production response, and distribution to workers</div>'
         '</div>'
         '<div class="rm-value-bridge-period">2020 to latest observation</div>'
         '</header>'
         '<div class="rm-value-bridge-track">'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--commercial">'
-        '<div class="rm-value-bridge-kicker">Commercial scale</div>'
+        '<div class="rm-value-bridge-kicker">Provider revenue</div>'
         f'<div class="rm-value-bridge-primary">{html.escape(str(commercial_value))}</div>'
         '<div class="rm-value-bridge-note">Annualized provider revenue disclosures</div>'
         '</section>'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--production">'
-        '<div class="rm-value-bridge-kicker">Production response</div>'
+        '<div class="rm-value-bridge-kicker">Productivity</div>'
         f'<div class="rm-value-bridge-primary">{html.escape(str(production_value))}</div>'
         '<div class="rm-value-bridge-note">Nonfarm-business productivity</div>'
         '</section>'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--distribution">'
-        '<div class="rm-value-bridge-kicker">Worker and household distribution</div>'
+        '<div class="rm-value-bridge-kicker">Worker outcomes</div>'
         f'<div class="rm-value-bridge-readings">{"".join(distribution_html)}</div>'
         '</section>'
         '</div>'

@@ -118,7 +118,7 @@ def require(condition: bool, message: str) -> None:
 
 
 def main() -> None:
-    require(READ_ARCHITECTURE_VERSION == "7.0.0", "Phase 2 Read architecture version drifted.")
+    require(READ_ARCHITECTURE_VERSION == "7.1.0", "Phase 2 Read architecture version drifted.")
 
     energy = load_energy_data()
     infrastructure = load_infrastructure_data()
@@ -189,7 +189,7 @@ def main() -> None:
     grid_source = (ROOT / "rendering" / "grid_storage.py").read_text(encoding="utf-8")
     water_source = (ROOT / "rendering" / "water.py").read_text(encoding="utf-8")
     connectivity_source = (ROOT / "rendering" / "connectivity.py").read_text(encoding="utf-8")
-    require("render_deliverability_screen(" in grid_source, "Grid Delivery Pathway is missing.")
+    require("render_deliverability_screen(" in grid_source, "Grid connection summary is missing.")
     require("grid-storage-resilience-pair" in grid_source, "Grid reliability/storage paired view is missing.")
     require("render_compact_chart_rail(" not in grid_source and "render_metric_stack(" not in grid_source, "Grid retained the repeated chart-plus-sidecar factory default.")
     require("water-system-workbench" in water_source, "Water background-context workbench is missing.")

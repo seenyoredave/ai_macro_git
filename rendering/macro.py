@@ -111,7 +111,7 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
     }
 
     with st.container(border=True):
-        render_panel_heading("Current divergence")
+        render_panel_heading("Buildout and outcome gaps")
         chart_col, measures_col = st.columns([1.05, 1.25])
         with chart_col:
             render_plotly_chart(
@@ -158,16 +158,16 @@ def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, das
     del sector_metrics, sector_data
     render_tab_header(
         "AI Macro",
-        "Market, physical buildout, power, adoption, workforce, and economic-outcome signals across the AI economy.",
+        "Markets, construction, infrastructure constraints, adoption, and economic results across the AI economy.",
         "YFinance / SEC / FRED / Census / EIA",
     )
     _render_floating_terms("macro")
-    render_domain_read(tab_read or (regime_metrics or {}).get("Macro Interpretation"), label="AI Macro Read", domain="macro", macro=True)
-    render_section("Regime board", "Top-level indicators with historical context.", first=True)
+    render_domain_read(tab_read or (regime_metrics or {}).get("Macro Interpretation"), label="Read", domain="macro", macro=True)
+    render_section("Regime board", "Current top-level indicators and their recent history.", first=True)
     _render_primary_macro_cards(regime_metrics, dashboard_data["trends"], adaptation_data)
-    render_section("Buildout leadership", "Where construction momentum is rotating across data centers, compute manufacturing, power, communications, and water systems.")
+    render_section("Buildout leadership", "Construction growth across data centers, manufacturing, power, communications, and water systems.")
     _render_buildout_rotation(infrastructure_data)
-    render_section("Gap Measures", "AI development relative to equity, industrial, economic-validation, and power-capacity benchmarks.")
+    render_section("Buildout versus outcomes", "AI investment and construction compared with market, industrial, economic, and power measures.")
     _render_gap_measures(regime_metrics, fred_data, dashboard_data)
-    render_section("National landscape", "Facility geography with linked capacity, power, water, and infrastructure records.")
-    render_spatial_explorer(infrastructure_data, key_prefix="macro-national-landscape")
+    render_section("Project locations", "Major AI infrastructure projects with published capacity, power, water, and supporting-infrastructure records.")
+    render_spatial_explorer(infrastructure_data, key_prefix="macro-national-landscape", show_heading=False)

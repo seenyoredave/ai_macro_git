@@ -182,8 +182,8 @@ def campus_distance_distribution(frame: pd.DataFrame, *, height: int = 390) -> g
         x=counts.index.astype(str),
         y=counts.values,
         marker={"color": COLORS["violet"]},
-        hovertemplate="%{x} miles<br>%{y:,.0f} screened campuses<extra></extra>",
+        hovertemplate="%{x} miles<br>%{y:,.0f} campuses compared<extra></extra>",
     ))
     fig.update_xaxes(title="Great-circle distance to nearest selected landing market · miles")
-    fig.update_yaxes(title="Screened campuses", rangemode="tozero")
+    fig.update_yaxes(title="Campuses compared", rangemode="tozero")
     return _layout(fig, height=height)

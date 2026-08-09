@@ -12,7 +12,11 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from config.current_context_policy import DOMAIN_CONTEXT_POLICY, assess_source
+from config.current_context_policy import (
+    DOMAIN_CONTEXT_POLICY,
+    assess_source,
+    recent_development_copy_issues,
+)
 import loaders.current_context_discovery as discovery
 from loaders.current_context_discovery import evaluate_item
 from loaders.weekly_context_loader import (
@@ -109,6 +113,14 @@ def main() -> None:
             raise AssertionError("The Texas audit does not separate announcement from pending implementation.")
         if not str(texas_event.get("source_url", "")).startswith("https://gov.texas.gov/"):
             raise AssertionError("The Texas audit is not grounded in its official referenced source.")
+        if recent_development_copy_issues(texas_event.get("display", "")):
+            raise AssertionError("The Texas audit lacks formal first-reference context.")
+        if "Texas Governor Greg Abbott" not in str(texas_event.get("display", "")):
+            raise AssertionError("The Texas audit lost jurisdiction and full-name context.")
+        if "Public Utility Commission of Texas (PUCT)" not in str(texas_event.get("display", "")):
+            raise AssertionError("PUCT is not expanded on first reference.")
+        if "Electric Reliability Council of Texas (ERCOT)" not in str(texas_event.get("display", "")):
+            raise AssertionError("ERCOT is not expanded on first reference.")
         for domain in ("power", "grid_storage", "water"):
             if any(event.get("event_id") == texas_event["event_id"] for event in context["by_domain"][domain]["events"]):
                 raise AssertionError(f"The Texas event leaked into the {domain} read.")
@@ -212,6 +224,13 @@ def main() -> None:
     finally:
         discovery.discover_domain = original_discover
 
+    if recent_development_copy_issues("Governor Abbott directed ERCOT to review the queue") == []:
+        raise AssertionError("Recent Developments accepted ambiguous official/regional shorthand.")
+    if recent_development_copy_issues(
+        "Texas Governor Greg Abbott directed the Electric Reliability Council of Texas (ERCOT) to review the queue"
+    ):
+        raise AssertionError("Recent Developments rejected properly contextualized first references.")
+
     if DOMAIN_CONTEXT_POLICY["market"]["cadence"] != "weekday" or DOMAIN_CONTEXT_POLICY["market"]["lookback_days"] > 3:
         raise AssertionError("Market Current Context is not tuned to weekday information cadence.")
 
@@ -245,7 +264,7 @@ def main() -> None:
     markup = build_domain_read_html(read, label="Market Read", accent_color="#a78bfa")
     if "Watchpoint" in markup:
         raise AssertionError("Watchpoint leaked back into the visible Read component.")
-    if not (markup.index("Current context") < markup.index("References")):
+    if not (markup.index("Recent developments") < markup.index("References")):
         raise AssertionError("Current Context did not retain the compact read order.")
     if market_context["references"] and ('<a class="rm-domain-read-context-citation"' not in markup or "[1]" not in markup):
         raise AssertionError("Current Context is missing its inline source citation.")

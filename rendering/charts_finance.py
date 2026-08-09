@@ -180,10 +180,10 @@ def funding_history(history: pd.DataFrame, *, years=5):
         return _base_layout(go.Figure(), height=330)
 
     specs = [
-        ("Internal Funding Coverage", "Internal Funding Coverage", COLORS["violet"]),
-        ("Cash Reserve Coverage", "Cash Reserve Runway", COLORS["blue"]),
-        ("Debt Financing Pulse", "Debt Financing Pulse", "#8b5cf6"),
-        ("Forward Commitment Load", "Forward Commitment Load", COLORS["slate"]),
+        ("Internal Funding Coverage", "Internal cash flow / CapEx", COLORS["violet"]),
+        ("Cash Reserve Coverage", "Cash reserve coverage", COLORS["blue"]),
+        ("Debt Financing Pulse", "Debt change / CapEx", "#8b5cf6"),
+        ("Forward Commitment Load", "Future commitments / CapEx", COLORS["slate"]),
     ]
     frame = history.copy()
     frame["Date"] = pd.to_datetime(frame.get("Date"), errors="coerce", format="mixed")
@@ -222,7 +222,7 @@ def private_capital_ledger_chart(metrics: dict, *, height=190):
     fig = go.Figure()
     if pd.isna(dpi) or pd.isna(rvpi):
         fig.add_annotation(
-            text="Private-capital realization data unavailable.",
+            text="Private-fund cash-return data unavailable.",
             x=0.5, y=0.5, xref="paper", yref="paper", showarrow=False,
             font={"color": COLORS["slate"], "size": 12},
         )
@@ -273,7 +273,7 @@ def private_capital_realization_map(funds: pd.DataFrame, *, height=430):
     }
     if funds is None or funds.empty or not required.issubset(funds.columns):
         fig.add_annotation(
-            text="Private-capital realization data unavailable.",
+            text="Private-fund cash-return data unavailable.",
             x=0.5, y=0.5, xref="paper", yref="paper", showarrow=False,
             font={"color": COLORS["slate"], "size": 12},
         )

@@ -229,6 +229,50 @@ def _assert_policy_contract() -> LoadPolicy:
         ]
         if unauthorized:
             raise AssertionError(f"YFinance refresh leaked authorization: {unauthorized}")
+
+        all_sources = build_load_policy(
+            force_yfinance_refresh=True,
+            force_edgar_refresh=True,
+            force_fred_refresh=True,
+            force_nyfed_refresh=True,
+        )
+        expected_sources = {
+            RefreshSource.YFINANCE,
+            RefreshSource.EDGAR,
+            RefreshSource.FRED,
+            RefreshSource.NYFED,
+        }
+        if {source for source in RefreshSource if all_sources.allows_live(source)} != expected_sources:
+            raise AssertionError(f"All-source refresh authorization changed: {all_sources.describe()}")
+
+        all_domains = build_load_policy(
+            refresh_domains={
+                "current_context",
+                "compute",
+                "data_centers",
+                "connectivity",
+                "power",
+                "grid_storage",
+                "water",
+                "adoption",
+                "workforce",
+                "economic_outcomes",
+            }
+        )
+        expected_domains = {
+            RefreshSource.CURRENT_CONTEXT,
+            RefreshSource.COMPUTE,
+            RefreshSource.DATA_CENTERS,
+            RefreshSource.CONNECTIVITY,
+            RefreshSource.POWER,
+            RefreshSource.GRID_STORAGE,
+            RefreshSource.WATER,
+            RefreshSource.ADOPTION,
+            RefreshSource.WORKFORCE,
+            RefreshSource.ECONOMIC_OUTCOMES,
+        }
+        if {source for source in RefreshSource if all_domains.allows_live(source)} != expected_domains:
+            raise AssertionError(f"All-domain refresh authorization changed: {all_domains.describe()}")
     finally:
         if prior_mode is None:
             os.environ.pop("AI_MACRO_MODE", None)
@@ -247,6 +291,8 @@ def _assert_application_routing() -> None:
         "persist_refresh_snapshots(",
         "if load_policy.allows_live(RefreshSource.CURRENT_CONTEXT):",
         "Rebuild from retained data",
+        "Refresh All Sources",
+        "Refresh All Domains",
     )
     missing = [token for token in required if token not in source]
     if missing:
