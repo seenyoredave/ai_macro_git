@@ -265,7 +265,13 @@ def check_archive_wiring():
 
 
 def check_universal_aei_backfill():
-    """Protect the one-formula, full-universe market-history contract."""
+    """Protect the one-formula, full-universe market-history contract.
+
+    ``yf_history.Date`` is the retained snapshot-save date.  Analytical market
+    history is keyed to ``Market Data Date`` so weekend/manual refreshes remain
+    valid while every derived sector, benchmark, and macro observation still
+    reconciles to a real trading date.
+    """
     from config.factor_config import DEFAULT_FACTORS, FACTOR_CONFIG
     from config.benchmark_config import (
         BENCHMARK_VERSION,
@@ -303,20 +309,25 @@ def check_universal_aei_backfill():
     _check(len(configured) == EXPECTED_TICKER_COUNT, "Configured ticker count changed")
     _check(len(SECTOR_CONFIG) == EXPECTED_SECTOR_COUNT, "Configured sector count changed")
 
-    yf["Date"] = pd.to_datetime(yf["Date"], errors="coerce").dt.normalize()
-    _check(yf["Date"].notna().all(), "Raw market history contains an invalid date")
+    yf["Snapshot Date"] = pd.to_datetime(yf["Date"], errors="coerce").dt.normalize()
+    yf["Market Data Date"] = pd.to_datetime(
+        yf.get("Market Data Date"), errors="coerce"
+    ).dt.normalize()
+    _check(yf["Snapshot Date"].notna().all(), "Raw market history contains an invalid snapshot date")
+    _check(yf["Market Data Date"].notna().all(), "Raw market history contains an invalid market observation date")
     _check(
-        yf["Date"].dt.weekday.lt(5).all(),
-        "Raw market history contains a weekend observation date",
+        yf["Market Data Date"].dt.weekday.lt(5).all(),
+        "Raw market history contains a weekend Market Data Date",
     )
     _check(
-        not set(pd.to_datetime(["2026-06-19", "2026-07-03"])).intersection(set(yf["Date"])),
-        "Raw market history contains a demonstrated NYSE holiday misdate",
+        not set(pd.to_datetime(["2026-06-19", "2026-07-03"])).intersection(set(yf["Market Data Date"])),
+        "Raw market history contains a demonstrated NYSE holiday Market Data Date",
     )
     _check(
-        not yf.duplicated(["Date", "Sector", "Ticker"]).any(),
-        "Raw market history contains duplicate security observations",
+        not yf.duplicated(["Snapshot Date", "Sector", "Ticker"]).any(),
+        "Raw market history contains duplicate security rows within a retained snapshot",
     )
+
     required_market_columns = (
         "1Y Return",
         "Price Extension 200D",
@@ -330,16 +341,46 @@ def check_universal_aei_backfill():
             np.isfinite(values).all(),
             f"Raw market history has incomplete {column} backfill",
         )
-    for observation_date, rows in yf.groupby("Date", sort=False):
+
+    for snapshot_date, rows in yf.groupby("Snapshot Date", sort=False):
         observed = set(zip(rows["Sector"], rows["Ticker"]))
         _check(
             len(rows) == EXPECTED_TICKER_COUNT and observed == configured,
-            f"Raw market membership is incomplete on {observation_date.date()}",
+            f"Raw market membership is incomplete in retained snapshot {snapshot_date.date()}",
+        )
+        market_dates = rows["Market Data Date"].dropna().unique()
+        _check(
+            len(market_dates) == 1,
+            f"Retained market snapshot {snapshot_date.date()} mixes provider observation dates",
         )
 
-    raw_dates = set(yf["Date"])
+    # Multiple retained snapshots may legitimately point to the same trading
+    # date (for example a weekend manual refresh).  Derived histories use one
+    # observation per Market Data Date, so retain the latest saved snapshot for
+    # each provider observation date when recalculating the analytical record.
+    latest_snapshot_by_market_date = (
+        yf.groupby("Market Data Date", sort=False)["Snapshot Date"].max().to_dict()
+    )
+    analytical_yf = pd.concat(
+        [
+            yf.loc[
+                yf["Market Data Date"].eq(market_date)
+                & yf["Snapshot Date"].eq(snapshot_date)
+            ].copy()
+            for market_date, snapshot_date in latest_snapshot_by_market_date.items()
+        ],
+        ignore_index=True,
+    )
+    for market_date, rows in analytical_yf.groupby("Market Data Date", sort=False):
+        observed = set(zip(rows["Sector"], rows["Ticker"]))
+        _check(
+            len(rows) == EXPECTED_TICKER_COUNT and observed == configured,
+            f"Analytical market membership is incomplete on {market_date.date()}",
+        )
+
+    raw_dates = set(analytical_yf["Market Data Date"])
     sector["Date"] = pd.to_datetime(sector["Date"], errors="coerce").dt.normalize()
-    _check(set(sector["Date"]) == raw_dates, "Sector history is not date-aligned to raw market history")
+    _check(set(sector["Date"]) == raw_dates, "Sector history is not aligned to Market Data Date")
     _check(
         sector.groupby("Date")["Sector"].nunique().eq(EXPECTED_SECTOR_COUNT).all(),
         "Sector history is incomplete on at least one market date",
@@ -363,7 +404,7 @@ def check_universal_aei_backfill():
     benchmark["Date"] = pd.to_datetime(benchmark["Date"], errors="coerce").dt.normalize()
     benchmark["Avg Return"] = pd.to_numeric(benchmark["Avg Return"], errors="coerce")
     benchmark = benchmark.dropna(subset=["Date", "Avg Return"]).sort_values("Date")
-    _check(set(benchmark["Date"]) == raw_dates, "QQQ history is not aligned to market dates")
+    _check(set(benchmark["Date"]) == raw_dates, "QQQ history is not aligned to Market Data Date")
     _check(
         set(benchmark["Benchmark Version"].astype(str)) == {str(BENCHMARK_VERSION)},
         "QQQ history contains mixed benchmark versions",
@@ -373,10 +414,12 @@ def check_universal_aei_backfill():
         == {str(QQQ_WEIGHTS_EFFECTIVE_DATE)},
         "QQQ history contains mixed weight contracts",
     )
-    for observation_date, market_rows in yf.groupby("Date", sort=False):
+    for observation_date, market_rows in analytical_yf.groupby("Market Data Date", sort=False):
         by_ticker = market_rows.groupby("Ticker", sort=False)["1Y Return"].first()
-        # The retained 204-name archive contains Alphabet Class C but not Class
-        # A. This documented legacy alias is limited to fixed-reference history.
+        # The retained 204-name universe contains Alphabet Class C but not Class
+        # A. The fixed-reference contract therefore maps the GOOGL weight to the
+        # retained GOOG Class C return so every benchmark row is reproducible
+        # from yf_history.csv.
         if "GOOGL" not in by_ticker.index and "GOOG" in by_ticker.index:
             by_ticker.loc["GOOGL"] = by_ticker.loc["GOOG"]
         expected_benchmark = sum(
@@ -390,6 +433,7 @@ def check_universal_aei_backfill():
             np.isclose(archived_benchmark, expected_benchmark, atol=1e-12),
             f"QQQ fixed reference does not recalculate: {observation_date.date()}",
         )
+
     retained = sector.set_index(["Date", "Sector"])
     expected_sector_scores: dict[pd.Timestamp, list[float]] = {}
     expected_pressures: dict[pd.Timestamp, list[float]] = {}
@@ -399,7 +443,7 @@ def check_universal_aei_backfill():
         ("Volatility Expansion", 0.60, 0.25),
         ("Volume Activity", 0.75, 0.20),
     )
-    for (observation_date, sector_name), rows in yf.groupby(["Date", "Sector"], sort=False):
+    for (observation_date, sector_name), rows in analytical_yf.groupby(["Market Data Date", "Sector"], sort=False):
         benchmark_rows = benchmark.loc[benchmark["Date"].le(observation_date)]
         _check(not benchmark_rows.empty, f"QQQ benchmark unavailable on {observation_date.date()}")
         benchmark_return = float(benchmark_rows.iloc[-1]["Avg Return"])
@@ -431,8 +475,8 @@ def check_universal_aei_backfill():
     market_dates = pd.to_datetime(
         macro["Market Data Date"], errors="coerce"
     ).dt.normalize()
-    _check(set(macro["Date"]) == raw_dates, "Macro history contains a non-market observation date")
-    _check(market_dates.equals(macro["Date"]), "Macro rows are not owned by their market snapshot date")
+    _check(set(macro["Date"]) == raw_dates, "Macro history is not aligned to Market Data Date")
+    _check(market_dates.equals(macro["Date"]), "Macro rows are not owned by their market observation date")
     _check(
         set(pd.to_numeric(macro["AEI Version"], errors="coerce")) == {4.0}
         and set(pd.to_numeric(macro["Pressure Version"], errors="coerce")) == {4.0},
@@ -463,7 +507,6 @@ def check_universal_aei_backfill():
             ),
             f"Macro pressure does not reconcile to sector history: {observation_date.date()}",
         )
-
 
 def check_named_campus_deduplication():
     # The loader imports requests for optional refreshes; no network is used here.

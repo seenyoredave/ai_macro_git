@@ -6,11 +6,13 @@ from archive.archive_reader import load_benchmark_history, rows_for_date
 from benchmarks.benchmark_normalization import normalize_benchmark_dataframe
 from config.benchmark_config import (
     ACTIVE_BENCHMARKS,
+    BENCHMARK_UNIVERSES,
     BENCHMARK_VERSION,
+    BENCHMARK_WEIGHTS,
     QQQ_WEIGHTS_EFFECTIVE_DATE,
 )
 from config.debug_config import debug_print
-from config.market_clock import is_market_hours, market_cache_token
+from config.market_clock import market_cache_token
 from loaders.benchmark_loader import load_benchmark
 
 _REQUIRED_ARCHIVE_COLUMNS = {
@@ -24,8 +26,12 @@ _REQUIRED_ARCHIVE_COLUMNS = {
     "Benchmark Version",
 }
 
+
 def _metrics_from_archive_row(row):
     archive_date = pd.to_datetime(row.get("Date"), errors="coerce")
+    market_data_date = pd.to_datetime(
+        row.get("Market Data Date", row.get("Date")), errors="coerce"
+    )
     return {
         "forward_ev_ebit": row.get("Forward EV/EBIT", np.nan),
         "forward_ebit_yield": row.get("Forward EBIT Yield", np.nan),
@@ -40,7 +46,13 @@ def _metrics_from_archive_row(row):
         "archive_date": (
             archive_date.date().isoformat() if pd.notna(archive_date) else None
         ),
+        "market_data_date": (
+            market_data_date.date().isoformat()
+            if pd.notna(market_data_date)
+            else None
+        ),
     }
+
 
 def get_archived_benchmark_metrics(benchmark: str, *, current_only: bool = True):
     try:
@@ -77,6 +89,89 @@ def get_archived_benchmark_metrics(benchmark: str, *, current_only: bool = True)
 
     return _metrics_from_archive_row(eligible.iloc[-1])
 
+
+def _single_market_data_date(frame: pd.DataFrame) -> str:
+    if not isinstance(frame, pd.DataFrame) or frame.empty or "Market Data Date" not in frame.columns:
+        raise ValueError("Benchmark input has no Market Data Date")
+    dates = pd.to_datetime(
+        frame["Market Data Date"], errors="coerce", format="mixed"
+    ).dt.date.dropna()
+    unique = sorted(set(dates))
+    if len(unique) != 1:
+        raise ValueError(f"Benchmark members do not share one market date: {unique}")
+    return unique[0].isoformat()
+
+
+def get_benchmark_metrics_from_market_frame(benchmark: str, market_frame: pd.DataFrame) -> dict:
+    """Build the fixed benchmark directly from the resolved market universe.
+
+    This keeps the sector reference on the exact same provider observation date
+    as the 204-name YFinance universe.  The retained market universe contains
+    GOOG but not GOOGL, so the documented fixed-reference contract uses the
+    retained GOOG Class C return for the GOOGL Class A weight as well.  That
+    makes every benchmark observation reproducible from ``yf_history.csv``.
+    """
+    if benchmark not in ACTIVE_BENCHMARKS:
+        raise ValueError(f"Benchmark {benchmark} is configured but not active")
+    if not isinstance(market_frame, pd.DataFrame) or market_frame.empty:
+        raise ValueError("Resolved market frame is unavailable for benchmark construction")
+    if "Ticker" not in market_frame.columns:
+        raise ValueError("Resolved market frame has no Ticker column")
+
+    members = BENCHMARK_UNIVERSES[benchmark]
+    weights = BENCHMARK_WEIGHTS.get(benchmark)
+    if not weights:
+        raise ValueError(f"Active benchmark {benchmark} has no configured weights")
+
+    frame = market_frame.copy()
+    frame["Ticker"] = frame["Ticker"].astype(str).str.upper().str.strip()
+    frame = frame.drop_duplicates(subset=["Ticker"], keep="last").set_index("Ticker")
+
+    rows = []
+    aliases = {}
+    for ticker in members:
+        source_ticker = ticker
+        if source_ticker not in frame.index and ticker == "GOOGL" and "GOOG" in frame.index:
+            source_ticker = "GOOG"
+            aliases[ticker] = source_ticker
+        if source_ticker not in frame.index:
+            raise ValueError(f"Fixed benchmark member unavailable in market universe: {ticker}")
+        row = frame.loc[source_ticker].copy()
+        row["Ticker"] = ticker
+        row["Benchmark Weight"] = float(weights[ticker])
+        rows.append(row)
+
+    benchmark_frame = pd.DataFrame(rows).reset_index(drop=True)
+    market_data_date = _single_market_data_date(benchmark_frame)
+    normalized = normalize_benchmark_dataframe(benchmark_frame)
+    normalized.update(
+        {
+            "version": BENCHMARK_VERSION,
+            "weight_effective_date": QQQ_WEIGHTS_EFFECTIVE_DATE,
+            "market_data_date": market_data_date,
+            "member_count": int(len(benchmark_frame)),
+            "member_aliases": aliases,
+        }
+    )
+
+    load_report = dict(getattr(market_frame, "attrs", {}).get("load_report", {}) or {})
+    raw_mode = str(load_report.get("source_mode") or "").strip().casefold()
+    live_complete = (
+        raw_mode.startswith("live")
+        and int(load_report.get("archive_fallback_tickers") or 0) == 0
+        and not (load_report.get("missing_tickers") or [])
+    )
+    normalized["source_mode"] = (
+        "live_market_universe" if live_complete else "retained_market_universe"
+    )
+    normalized["live_tickers"] = len(benchmark_frame) if live_complete else 0
+    normalized["expected_tickers"] = len(members)
+    normalized["archive_fallback_tickers"] = 0 if live_complete else len(benchmark_frame)
+    normalized["missing_tickers"] = []
+    normalized["archive_field_backfills"] = int(load_report.get("archive_field_backfills") or 0)
+    return normalized
+
+
 def get_benchmark_metrics(
     benchmark: str,
     *,
@@ -97,6 +192,7 @@ def get_benchmark_metrics(
         allow_live=live_enabled,
     )
 
+
 @st.cache_data(ttl=900)
 def _get_benchmark_metrics_cached(
     benchmark: str,
@@ -106,7 +202,6 @@ def _get_benchmark_metrics_cached(
     clock_token: str | None = None,
     allow_live: bool = False,
 ):
-
     current_archive = get_archived_benchmark_metrics(benchmark, current_only=True)
     latest_archive = get_archived_benchmark_metrics(benchmark, current_only=False)
 
@@ -124,16 +219,10 @@ def _get_benchmark_metrics_cached(
             "in Developer Tools to create a snapshot."
         )
 
-    if not is_market_hours():
-        if latest_archive is not None:
-            debug_print(f"Market closed; loading latest weighted benchmark archive: {benchmark}")
-            latest_archive["source_mode"] = "archive_market_closed"
-            return latest_archive
-        raise RuntimeError(
-            f"{benchmark} benchmark archive is unavailable outside regular market hours. "
-            "Use Refresh YFinance to request a manual live pull."
-        )
-
+    # Explicit developer refreshes are real refreshes even outside regular
+    # trading hours.  This path remains for bounded tooling/tests; the main app
+    # now constructs QQQ from the same resolved 204-name YFinance frame so the
+    # reference and sector universe cannot land on different market dates.
     try:
         trigger = "manual" if force_refresh else "automatic_daily"
         debug_print(f"Pulling current weighted benchmark ({trigger}): {benchmark}")
@@ -147,10 +236,12 @@ def _get_benchmark_metrics_cached(
         if frame is None or frame.empty:
             raise ValueError(f"{benchmark} benchmark pull returned an empty DataFrame")
 
+        market_data_date = _single_market_data_date(frame)
         normalized = normalize_benchmark_dataframe(frame)
         normalized["version"] = BENCHMARK_VERSION
         normalized["source_mode"] = "live"
         normalized["refresh_trigger"] = trigger
+        normalized["market_data_date"] = market_data_date
         return normalized
     except Exception as exc:
         if latest_archive is not None:

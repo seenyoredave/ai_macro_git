@@ -216,7 +216,15 @@ def main() -> None:
             "archive_field_backfills": 0,
             "missing_tickers": [],
         }
-        yfinance_payloads["benchmark_metrics"] = {"source_mode": "live"}
+        yfinance_payloads["benchmark_metrics"] = {
+            "source_mode": "live_market_universe",
+            "market_data_date": "2026-08-07",
+            "member_count": 10,
+            "expected_tickers": 10,
+            "live_tickers": 10,
+            "archive_fallback_tickers": 0,
+            "missing_tickers": [],
+        }
         yfinance = snapshot_writer.persist_refresh_snapshots(
             policy=LoadPolicy.refresh([RefreshSource.YFINANCE]),
             archive_suspended=False,
@@ -265,7 +273,15 @@ def main() -> None:
             "archive_field_backfills": 21,
             "missing_tickers": [],
         }
-        field_fill_payloads["benchmark_metrics"] = {"source_mode": "live"}
+        field_fill_payloads["benchmark_metrics"] = {
+            "source_mode": "live_market_universe",
+            "market_data_date": "2026-08-07",
+            "member_count": 10,
+            "expected_tickers": 10,
+            "live_tickers": 10,
+            "archive_fallback_tickers": 0,
+            "missing_tickers": [],
+        }
         field_fill_yfinance = snapshot_writer.persist_refresh_snapshots(
             policy=LoadPolicy.refresh([RefreshSource.YFINANCE]),
             archive_suspended=False,
@@ -282,6 +298,81 @@ def main() -> None:
                 "Complete YFinance refresh with field fills was not retained: "
                 f"calls={calls}, report={field_fill_yfinance}"
             )
+
+        # A complete ticker count is not enough if one live row carries a
+        # different market observation date. Mixed market dates are not a
+        # complete retained snapshot and must not advance any owned history.
+        calls.clear()
+        mixed_date_payloads = _payloads()
+        mixed_date_payloads["raw_universe_data"]["yfinance"] = pd.DataFrame({
+            "Ticker": ["A", "B", "C", "D"],
+            "Market Data Date": ["2026-08-07", "2026-08-07", "2026-08-07", "2026-08-06"],
+        })
+        mixed_date_payloads["raw_universe_data"]["_load_report"]["yfinance"] = {
+            "source_mode": "live_complete",
+            "expected_tickers": 4,
+            "live_tickers": 4,
+            "archive_fallback_tickers": 0,
+            "archive_field_backfills": 0,
+            "missing_tickers": [],
+        }
+        mixed_date_payloads["benchmark_metrics"] = {
+            "source_mode": "live_market_universe",
+            "market_data_date": "2026-08-07",
+            "member_count": 10,
+            "expected_tickers": 10,
+            "live_tickers": 10,
+            "archive_fallback_tickers": 0,
+            "missing_tickers": [],
+        }
+        mixed_date = snapshot_writer.persist_refresh_snapshots(
+            policy=LoadPolicy.refresh([RefreshSource.YFINANCE]),
+            archive_suspended=False,
+            **mixed_date_payloads,
+        )
+        if calls or mixed_date.get("status") != "no_successful_live_sources":
+            raise AssertionError(
+                "Mixed YFinance market dates advanced retained history: "
+                f"calls={calls}, report={mixed_date}"
+            )
+        if "Market Data Date" not in str((mixed_date.get("errors") or {}).get("yfinance", "")):
+            raise AssertionError(f"Mixed YFinance market dates were not explained: {mixed_date}")
+
+        # The market universe and fixed QQQ reference are one analytical
+        # transaction. A complete YFinance pull must not advance any owned
+        # histories when the benchmark points to a different market date.
+        calls.clear()
+        mismatch_payloads = _payloads()
+        mismatch_payloads["raw_universe_data"]["_load_report"]["yfinance"] = {
+            "source_mode": "live_complete",
+            "expected_tickers": 4,
+            "live_tickers": 4,
+            "archive_fallback_tickers": 0,
+            "archive_field_backfills": 0,
+            "missing_tickers": [],
+        }
+        mismatch_payloads["benchmark_metrics"] = {
+            "source_mode": "live_market_universe",
+            "market_data_date": "2026-07-29",
+            "member_count": 10,
+            "expected_tickers": 10,
+            "live_tickers": 10,
+            "archive_fallback_tickers": 0,
+            "missing_tickers": [],
+        }
+        mismatch = snapshot_writer.persist_refresh_snapshots(
+            policy=LoadPolicy.refresh([RefreshSource.YFINANCE]),
+            archive_suspended=False,
+            **mismatch_payloads,
+        )
+        if calls or mismatch.get("status") != "no_successful_live_sources":
+            raise AssertionError(
+                "Mismatched QQQ market date advanced YFinance-owned histories: "
+                f"calls={calls}, report={mismatch}"
+            )
+        benchmark_error = str((mismatch.get("errors") or {}).get("benchmark", ""))
+        if "same complete live market snapshot" not in benchmark_error:
+            raise AssertionError(f"QQQ/YFinance mismatch was not explained: {mismatch}")
 
         # A retained ticker-row fallback is different: the live universe itself
         # is incomplete, so it must not advance the retained archive.
@@ -385,6 +476,8 @@ def main() -> None:
     print("PASS  successful YFinance refresh writes only owned snapshots")
     print("PASS  YFinance archive Date records refresh date separately from market observation date")
     print("PASS  complete YFinance live rows may retain individual field fills")
+    print("PASS  mixed YFinance market dates block all owned history writes")
+    print("PASS  mismatched QQQ market date blocks all YFinance-owned history writes")
     print("PASS  YFinance archive-only fallback is not re-dated")
     print("PASS  successful NY Fed refresh reports its loader-owned retained write")
     print("PASS  failed EDGAR refresh preserves retained dates")

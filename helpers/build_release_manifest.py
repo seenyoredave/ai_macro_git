@@ -35,6 +35,8 @@ RELEASE_FILES = (
     "config/benchmark_config.py",
     "config/deployment.py",
     "config/load_policy.py",
+    "benchmarks/benchmark_service.py",
+    "archive/archive.py",
     "analytics/regime_engine.py",
     "analytics/trend_engine.py",
     "analytics/read_architecture.py",

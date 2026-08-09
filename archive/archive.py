@@ -339,6 +339,10 @@ def append_benchmark_history(metrics_by_benchmark=None, *, observation_date=None
     rows = []
     for benchmark in ACTIVE_BENCHMARKS:
         metrics = supplied.get(benchmark) or get_benchmark_metrics(benchmark)
+        aliases = metrics.get("member_aliases") or {}
+        construction = "Fixed QQQ top-ten reference weights"
+        if aliases.get("GOOGL") == "GOOG":
+            construction += "; GOOGL weight uses retained GOOG Class C return"
         rows.append({
             "Date": str(observation_date or today_iso()),
             "Benchmark": benchmark,
@@ -350,7 +354,7 @@ def append_benchmark_history(metrics_by_benchmark=None, *, observation_date=None
             "Benchmark Version": BENCHMARK_VERSION,
             "Weight Effective Date": QQQ_WEIGHTS_EFFECTIVE_DATE,
             "Member Coverage": 1.0 if metrics.get("member_count") == 10 else np.nan,
-            "Return Construction": "Fixed QQQ top-ten reference weights",
+            "Return Construction": construction,
         })
     if rows:
         write_archive_snapshot(pd.DataFrame(rows), ARCHIVE_SPECS["benchmark"])

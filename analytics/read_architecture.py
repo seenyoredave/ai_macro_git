@@ -34,7 +34,7 @@ from analytics.water_competition import (
     state_water_exposure_profile,
 )
 
-READ_ARCHITECTURE_VERSION = "7.1.0"
+READ_ARCHITECTURE_VERSION = "7.2.0"
 DOMAIN_ORDER = (
     "market",
     "finance",
@@ -309,7 +309,7 @@ def build_market_read(sector_data: dict, dashboard_data: dict, regime_metrics: d
     if pd.notna(breadth) and pd.notna(top10):
         if top10 >= 0.55:
             summary_parts.append(
-                f"The top ten companies hold {top10 * 100:.0f}% of covered market value while {breadth * 100:.0f}% of companies have positive one-year returns, so headline strength is more concentrated than the company count suggests"
+                f"{breadth * 100:.0f}% of covered companies have positive one-year returns, but the top ten still hold {top10 * 100:.0f}% of covered market value. Participation is broad enough to matter, while the largest firms still dominate the market's weight"
             )
         else:
             summary_parts.append(
@@ -318,7 +318,7 @@ def build_market_read(sector_data: dict, dashboard_data: dict, regime_metrics: d
     elif pd.notna(breadth):
         summary_parts.append(f"{breadth * 100:.0f}% of covered companies have positive one-year returns, which is the clearest measure of how far the gains extend beyond the leaders")
     if crowded_sectors:
-        summary_parts.append(f"{crowded_sectors} sectors also show elevated trading pressure, so some of the strongest price moves are occurring where positioning already looks stretched")
+        summary_parts.append(f"{crowded_sectors} sectors also show elevated trading pressure, which means recent price moves are unusually sharp or active in parts of the market")
     elif strong_sectors:
         summary_parts.append(f"{strong_sectors} sectors clear the strong-equity threshold without any sector crossing the high-pressure threshold")
     summary = _sentence(*summary_parts) if summary_parts else "The available market measures do not point clearly in one direction."
@@ -387,7 +387,7 @@ def build_finance_read(regime_metrics: dict, fred_data: dict, nfci_history, debt
     elif pd.notna(internal) and internal >= 1 and pd.notna(commitments) and commitments >= 2:
         headline = "Current CapEx is covered by cash flow, but future commitments are much larger."
     elif pd.notna(dpi) and dpi >= 1 and pd.notna(internal) and internal >= 1:
-        headline = "Current spending looks fundable, and mature private funds have returned capital."
+        headline = "Internal cash flow covers spending, and mature private funds have returned capital."
     elif pd.notna(dpi) and dpi < 0.5 and pd.notna(rvpi) and rvpi >= 1:
         headline = "Most of the value in the observed private funds is still on the books rather than returned in cash."
     elif pd.notna(nfci_value) and nfci_value < 0 and pd.notna(borrower) and borrower < 20 and pd.notna(lender) and lender < 20:
@@ -400,9 +400,9 @@ def build_finance_read(regime_metrics: dict, fred_data: dict, nfci_history, debt
     summary_parts = []
     if pd.notna(internal):
         if pd.notna(commitments) and commitments >= 2:
-            summary_parts.append(f"Internal cash flow covers {internal:.2f}x current CapEx, but forward commitments equal {commitments:.2f}x current spending; the larger financing risk is therefore future execution, not today's CapEx bill")
+            summary_parts.append(f"Current CapEx is not the immediate funding problem: internal cash flow covers {internal:.2f}x current spending. Forward commitments equal {commitments:.2f}x current CapEx, so the financing question shifts to how comfortably those future obligations can be absorbed")
         else:
-            summary_parts.append(f"Internal cash flow covers {internal:.2f}x current CapEx, so the covered firms are not relying primarily on new external financing for today's spending")
+            summary_parts.append(f"Internal cash flow covers {internal:.2f}x current CapEx. The covered firms therefore appear able to fund today's spending mainly from operations rather than new external financing")
     if pd.notna(dpi) and pd.notna(rvpi):
         summary_parts.append(f"The mature public-pension technology funds have returned {dpi:.2f}x paid-in capital and still carry {rvpi:.2f}x at NAV, which separates cash already distributed from value that still depends on future exits or marks")
     if pd.notna(nfci_value) and pd.notna(borrower) and pd.notna(lender):
@@ -542,42 +542,126 @@ def build_data_center_read(infrastructure_data: dict) -> dict:
     tracker = inventory.get("open_tracker_summary", {}) or {}
     campuses = _active_campuses(infrastructure_data)
 
-    operating = int(broad.get("operating", 0) or 0)
-    development = int(broad.get("development", 0) or 0)
+    status = (
+        campuses.get("Status", pd.Series("", index=campuses.index))
+        .fillna("")
+        .astype(str)
+        .str.casefold()
+        if not campuses.empty
+        else pd.Series(dtype=str)
+    )
+    operating_mask = status.eq("operational")
+    development_mask = status.isin(
+        {
+            "under construction",
+            "approved / permitted / under construction",
+            "announced",
+            "planned",
+            "proposed",
+            "expanding",
+        }
+    )
+
+    registry_operating = int(operating_mask.sum()) if len(status) else 0
+    registry_development = int(development_mask.sum()) if len(status) else 0
+    operating = int(broad.get("operating", 0) or 0) or registry_operating
+    development = int(broad.get("development", 0) or 0) or registry_development
     ratio = _num(broad.get("development_to_operating"))
-    tracked_pipeline = int(tracker.get("active_pipeline", 0) or 0)
-    pipeline_capacity_gw = _num(tracker.get("active_pipeline_published_mw")) / 1000.0
-    operating_capacity_gw = _num(tracker.get("operating_published_mw")) / 1000.0
+    if pd.isna(ratio) and operating:
+        ratio = development / operating
 
-    canonical_capacity = pd.to_numeric(campuses.get("Planned Data Center Capacity MW"), errors="coerce") if not campuses.empty else pd.Series(dtype=float)
-    canonical_published = pd.to_numeric(campuses.get("Published Capacity Estimate MW"), errors="coerce") if not campuses.empty else pd.Series(dtype=float)
-    canonical_combined = canonical_capacity.combine_first(canonical_published).where(lambda x: x > 0) if not campuses.empty else pd.Series(dtype=float)
+    canonical_capacity = (
+        pd.to_numeric(campuses.get("Planned Data Center Capacity MW"), errors="coerce")
+        if not campuses.empty
+        else pd.Series(dtype=float)
+    )
+    canonical_published = (
+        pd.to_numeric(campuses.get("Published Capacity Estimate MW"), errors="coerce")
+        if not campuses.empty
+        else pd.Series(dtype=float)
+    )
+    canonical_combined = (
+        canonical_capacity.combine_first(canonical_published).where(lambda x: x > 0)
+        if not campuses.empty
+        else pd.Series(dtype=float)
+    )
     canonical_coverage = float(canonical_combined.notna().mean()) if len(campuses) else np.nan
+    registry_pipeline_capacity_gw = (
+        _num(canonical_combined.loc[development_mask].sum(min_count=1) / 1000.0)
+        if len(canonical_combined)
+        else np.nan
+    )
+    registry_operating_capacity_gw = (
+        _num(canonical_combined.loc[operating_mask].sum(min_count=1) / 1000.0)
+        if len(canonical_combined)
+        else np.nan
+    )
 
-    if pd.notna(ratio) and ratio >= 0.75:
-        headline = "The development pipeline is nearing the size of the operating data-center base."
-    elif pd.notna(ratio) and ratio >= 0.40:
-        headline = "A large second wave of data centers is moving through development."
+    tracked_pipeline = int(tracker.get("active_pipeline", 0) or 0) or registry_development
+    pipeline_capacity_gw = _num(tracker.get("active_pipeline_published_mw")) / 1000.0
+    if pd.isna(pipeline_capacity_gw):
+        pipeline_capacity_gw = registry_pipeline_capacity_gw
+    operating_capacity_gw = _num(tracker.get("operating_published_mw")) / 1000.0
+    if pd.isna(operating_capacity_gw):
+        operating_capacity_gw = registry_operating_capacity_gw
+
+    if pd.notna(ratio) and ratio >= 0.60:
+        headline = "The development pipeline is large relative to operating sites in the registry."
+    elif pd.notna(ratio) and ratio >= 0.35:
+        headline = "The data-center development pipeline is large enough to materially expand the current footprint."
     elif operating:
-        headline = "Operating data centers still far outnumber projects in development."
+        headline = "Operating sites still outnumber projects moving through development."
+    elif not campuses.empty:
+        headline = "The project registry shows active development, but it is not a national census."
     else:
-        headline = "National data-center totals are unavailable."
+        headline = "Current data-center project records are unavailable."
 
     summary_parts = []
     if operating or development:
-        summary_parts.append(f"The national inventory counts {operating:,} operating facilities and {development:,} in development; at this scale, power, permitting, network access, and water increasingly determine how much of the pipeline actually opens")
-    if tracked_pipeline and pd.notna(pipeline_capacity_gw):
-        capacity_text = f"Published project records show {pipeline_capacity_gw:.1f} GW across {tracked_pipeline:,} active pipeline sites"
+        summary_parts.append(
+            f"The available records include {operating:,} operating sites and {development:,} in development. "
+            "These counts are useful for comparing project stages, not for estimating the total U.S. data-center fleet"
+        )
+    if pd.notna(pipeline_capacity_gw):
         if pd.notna(operating_capacity_gw):
-            capacity_text += f", compared with {operating_capacity_gw:.1f} GW across operating sites with published values"
-        summary_parts.append(capacity_text + ". Published MW is a project estimate, not energized load, and many facilities do not disclose capacity")
+            summary_parts.append(
+                f"Sites with published capacity show about {pipeline_capacity_gw:.1f} GW in development versus "
+                f"{operating_capacity_gw:.1f} GW operating. The comparison points to a large potential expansion, "
+                "but published MW is not the same as energized load"
+            )
+        else:
+            summary_parts.append(
+                f"Active development records carry about {pipeline_capacity_gw:.1f} GW of published capacity. "
+                "That figure describes disclosed project scale, not electricity already in service"
+            )
+    if operating or development:
+        summary_parts.append(
+            "The main uncertainty is execution: power availability, interconnection, permitting, network access, "
+            "and local water conditions determine which projects open and on what schedule"
+        )
     summary = _sentence(*summary_parts)
-    watchpoint = "Watch how many proposed and approved projects actually reach operation, and whether power, network, water, or permitting constraints delay them."
-    valid = sum([bool(operating or development), pd.notna(ratio), bool(tracked_pipeline), pd.notna(pipeline_capacity_gw), pd.notna(canonical_coverage)])
-    importance = min(90, (ratio * 45 if pd.notna(ratio) else 0) + (min(pipeline_capacity_gw / 8.0, 35) if pd.notna(pipeline_capacity_gw) else 0))
+    watchpoint = "Track movement from announcement and construction into operation, along with the infrastructure commitments needed to support those sites."
+    valid = sum(
+        [
+            bool(operating or development),
+            pd.notna(ratio),
+            bool(tracked_pipeline),
+            pd.notna(pipeline_capacity_gw),
+            pd.notna(canonical_coverage),
+        ]
+    )
+    importance = min(
+        90,
+        (ratio * 45 if pd.notna(ratio) else 0)
+        + (min(pipeline_capacity_gw / 8.0, 35) if pd.notna(pipeline_capacity_gw) else 0),
+    )
     return _read(
-        "data_center", headline, summary, watchpoint,
-        confidence=_confidence(valid, 5), importance=importance,
+        "data_center",
+        headline,
+        summary,
+        watchpoint,
+        confidence=_confidence(valid, 5),
+        importance=importance,
         signals={
             "broad_operating": operating,
             "broad_development": development,
@@ -587,13 +671,18 @@ def build_data_center_read(infrastructure_data: dict) -> dict:
             "tracked_operating_capacity_gw": operating_capacity_gw,
             "canonical_capacity_coverage": canonical_coverage,
         },
-        highlights=[{
-            "score": 68 + min(20, ratio * 20 if pd.notna(ratio) else 0),
-            "kind": "physical",
-            "text": f"The U.S. footprint includes {development:,} facilities in development, while active project records carry {pipeline_capacity_gw:.1f} GW of published capacity." if development and pd.notna(pipeline_capacity_gw) else headline,
-        }],
+        highlights=[
+            {
+                "score": 68 + min(20, ratio * 20 if pd.notna(ratio) else 0),
+                "kind": "physical",
+                "text": (
+                    f"The project records show {development:,} development sites and about {pipeline_capacity_gw:.1f} GW of published development capacity."
+                    if development and pd.notna(pipeline_capacity_gw)
+                    else headline
+                ),
+            }
+        ],
     )
-
 
 def build_connectivity_read(connectivity_data: dict, infrastructure_data: dict | None = None) -> dict:
     payload = connectivity_data or ((infrastructure_data or {}).get("connectivity", {}) or {})
@@ -625,7 +714,7 @@ def build_connectivity_read(connectivity_data: dict, infrastructure_data: dict |
 
     summary_parts = []
     if pd.notna(mismatch_states):
-        summary_parts.append(f"{mismatch_states:.0f} states with published data-center development have limited visible interconnection depth, so the constraint is increasingly local network depth rather than the national existence of fiber or cable systems")
+        summary_parts.append(f"{mismatch_states:.0f} states with published data-center development have limited visible interconnection depth. The weak point is increasingly local access to networks, not the existence of national fiber and cable systems")
     if pd.notna(middle_mile_miles) and pd.notna(catalog_systems):
         summary_parts.append(f"More than {middle_mile_miles:,.0f} federally supported middle-mile fiber miles and {catalog_systems:.0f} U.S.-connected cable entries expand reach, but those totals do not show how much usable capacity is available at a specific campus")
     if pd.notna(active_ixps) and pd.notna(centers_with_ixp) and pd.notna(centers_total):
@@ -957,7 +1046,7 @@ def build_workforce_read(workforce_data: dict) -> dict:
     summary_parts = []
     if pd.notna(occupation_count) and pd.notna(median_software_exposure):
         summary_parts.append("Task-exposure estimates describe work that AI could affect; they do not measure jobs actually lost or automated")
-    summary_parts.append(f"Employment is growing in {positive_jobs} of 4 tracked channels, while inflation-adjusted hourly pay is rising in {positive_real} of 4; job growth without real-pay gains is a weaker worker outcome")
+    summary_parts.append(f"Employment is growing in {positive_jobs} of 4 tracked channels, while inflation-adjusted hourly pay is rising in {positive_real} of 4. Employment and real pay therefore are not moving together across the AI-linked labor channels")
     if pd.notna(strongest_growth) and pd.notna(weakest_growth):
         summary_parts.append(f"Employment ranges from {strongest_name} at {strongest_growth:+.1f}% year over year to {weakest_name} at {weakest_growth:+.1f}%, so the labor effect is not uniform across AI-linked industries")
     summary_text = _sentence(*summary_parts)
@@ -1021,7 +1110,7 @@ def build_economic_impact_read(economic_impact_data: dict, commercialization_dat
     if pd.notna(productivity) and pd.notna(output):
         summary_parts.append(f"Nonfarm-business productivity is {productivity:+.1f}% and real output is {output:+.1f}% year over year; these are economy-wide outcomes and do not identify AI as the cause")
     if all(pd.notna(v) for v in [productivity_since, real_comp_since, capture_gap]):
-        summary_parts.append(f"Since 2020, productivity has risen {productivity_since:+.1f}% versus {real_comp_since:+.1f}% real hourly compensation, leaving a {capture_gap:.1f}-point gap; worker compensation is therefore a separate test from productivity itself")
+        summary_parts.append(f"Since 2020, productivity has risen {productivity_since:+.1f}% versus {real_comp_since:+.1f}% real hourly compensation, leaving a {capture_gap:.1f}-point gap. Higher productivity is therefore not enough on its own to show that workers are sharing proportionately in the gains")
     if pd.notna(labor_share_since) and pd.notna(median_earnings):
         summary_parts.append(f"Labor share and median real weekly earnings show whether gains extend beyond aggregate output to workers and households, rather than remaining concentrated in profits or asset values")
     if pd.notna(microsoft_ai_arr) and pd.notna(openai_arr):
@@ -1196,7 +1285,7 @@ def build_adaptation_read(adaptation_data: dict, commercialization_data: dict | 
 
     summary_parts = []
     if all(pd.notna(v) for v in [consumer_overall, consumer_personal, consumer_work]):
-        summary_parts.append(f"Any-purpose use among adults age 18–64 is {consumer_overall:.1f}%, showing broad reach, but reach alone says little about frequency, payment, or whether AI is changing how work gets done")
+        summary_parts.append(f"AI has broad consumer reach: {consumer_overall:.1f}% of adults age 18–64 report some use. That does not tell us how often they use it, whether they pay for it, or how much it changes actual work")
     if all(pd.notna(v) for v in [current, expected, gap]):
         summary_parts.append(f"Current business use is {current:.1f}% versus {expected:.1f}% expected within six months; the {gap:.1f}-point gap is stated intent, so it should not be counted as deployment until firms report actual use")
     if pd.notna(chatgpt_subscribers) and pd.notna(paying_business_users):

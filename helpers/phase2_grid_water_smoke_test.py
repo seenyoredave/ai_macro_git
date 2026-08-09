@@ -118,7 +118,7 @@ def require(condition: bool, message: str) -> None:
 
 
 def main() -> None:
-    require(READ_ARCHITECTURE_VERSION == "7.1.0", "Phase 2 Read architecture version drifted.")
+    require(READ_ARCHITECTURE_VERSION == "7.2.0", "Phase 2 Read architecture version drifted.")
 
     energy = load_energy_data()
     infrastructure = load_infrastructure_data()

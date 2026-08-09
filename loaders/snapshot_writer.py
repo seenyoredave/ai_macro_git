@@ -62,6 +62,30 @@ def _yfinance_live_refresh_succeeded(report: dict) -> bool:
     )
 
 
+
+
+def _benchmark_matches_market_refresh(benchmark_metrics: dict, market_data_date: str) -> bool:
+    payload = benchmark_metrics or {}
+    mode = str(payload.get("source_mode") or "").strip().casefold()
+    try:
+        expected = int(payload.get("expected_tickers") or payload.get("member_count") or 0)
+        live = int(payload.get("live_tickers") or 0)
+        fallback_rows = int(payload.get("archive_fallback_tickers") or 0)
+        members = int(payload.get("member_count") or 0)
+    except (TypeError, ValueError):
+        return False
+    missing = payload.get("missing_tickers") or []
+    benchmark_date = str(payload.get("market_data_date") or "").strip()
+    return (
+        mode == "live_market_universe"
+        and expected > 0
+        and members == expected
+        and live == expected
+        and fallback_rows == 0
+        and not missing
+        and benchmark_date == str(market_data_date)
+    )
+
 def _market_observation_date(raw_universe_data: dict) -> str | None:
     frame = raw_universe_data.get("yfinance")
     if not isinstance(frame, pd.DataFrame) or frame.empty:
@@ -70,14 +94,16 @@ def _market_observation_date(raw_universe_data: dict) -> str | None:
         return None
     dates = pd.to_datetime(
         frame["Market Data Date"], errors="coerce", format="mixed"
-    ).dt.date.dropna()
-    if dates.empty:
+    ).dt.date
+    # A retained market snapshot represents one completed provider observation
+    # date. Every live ticker row must therefore carry the same valid market
+    # date; a dominant-date heuristic can hide one or more stale ticker rows.
+    if dates.isna().any() or len(dates) != len(frame):
         return None
-    counts = dates.value_counts()
-    dominant = counts.index[0]
-    if int(counts.iloc[0]) < max(1, int(len(frame) * 0.95)):
+    unique = sorted(set(dates.tolist()))
+    if len(unique) != 1:
         return None
-    return dominant.isoformat()
+    return unique[0].isoformat()
 
 
 def persist_refresh_snapshots(
@@ -138,6 +164,14 @@ def persist_refresh_snapshots(
                 errors["yfinance"] = (
                     "Live market rows do not share a valid dominant Market Data Date"
                 )
+            elif not _benchmark_matches_market_refresh(benchmark_metrics, market_observation_date):
+                errors["benchmark"] = (
+                    "The QQQ reference did not reconcile to the same complete live market "
+                    f"snapshot. Market data date={market_observation_date}; "
+                    f"benchmark mode={benchmark_metrics.get('source_mode')}; "
+                    f"benchmark data date={benchmark_metrics.get('market_data_date')}. "
+                    "No YFinance-owned retained histories were advanced."
+                )
             elif run(
                 "yfinance",
                 lambda: append_yf_history(
@@ -146,14 +180,13 @@ def persist_refresh_snapshots(
                     observation_date=snapshot_date,
                 ),
             ):
-                if _live_mode(benchmark_metrics.get("source_mode")):
-                    run(
-                        "benchmark",
-                        lambda: append_benchmark_history(
-                            {"QQQ": benchmark_metrics},
-                            observation_date=market_observation_date,
-                        ),
-                    )
+                run(
+                    "benchmark",
+                    lambda: append_benchmark_history(
+                        {"QQQ": benchmark_metrics},
+                        observation_date=market_observation_date,
+                    ),
+                )
                 run(
                     "sector",
                     lambda: append_sector_history(

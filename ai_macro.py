@@ -46,7 +46,7 @@ from analytics.macro_dataframe import build_macro_dashboard_data
 from analytics.read_architecture import build_platform_reads
 from analytics.sector_engine import build_sector_metrics
 from archive.archive_reader import load_fred_history, load_macro_history
-from benchmarks.benchmark_service import get_benchmark_metrics
+from benchmarks.benchmark_service import get_benchmark_metrics_from_market_frame
 from config.deployment import developer_mode
 from config.load_policy import LoadPolicy, RefreshSource, build_load_policy
 from config.market_clock import market_date, utc_now
@@ -76,7 +76,7 @@ from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v6.10.4"
+APP_VERSION = "v6.10.5"
 APP_STATE_SCHEMA_VERSION = "64.0-retained-loader-policy"
 
 DOMAIN_REFRESH_LABELS = {
@@ -260,12 +260,22 @@ def build_sector_dashboard_data(load_policy: LoadPolicy):
         allow_edgar_live=load_policy.allows_live(RefreshSource.EDGAR),
     )
     st.session_state.market_universe_load_report = raw_universe_data.get("_load_report", {})
-    benchmark_metrics = get_benchmark_metrics(
+    benchmark_started = time.perf_counter()
+    benchmark_metrics = get_benchmark_metrics_from_market_frame(
         "QQQ",
-        force_refresh=st.session_state.force_yfinance_refresh,
-        refresh_token=st.session_state.yfinance_refresh_token,
-        allow_live=load_policy.allows_live(RefreshSource.YFINANCE),
+        raw_universe_data.get("yfinance"),
     )
+    benchmark_report = {
+        "source_mode": benchmark_metrics.get("source_mode"),
+        "elapsed_sec": time.perf_counter() - benchmark_started,
+        "returned_tickers": benchmark_metrics.get("member_count", 0),
+        "live_tickers": benchmark_metrics.get("live_tickers", 0),
+        "archive_fallback_tickers": benchmark_metrics.get("archive_fallback_tickers", 0),
+        "missing_tickers": benchmark_metrics.get("missing_tickers", []),
+        "latest_data_date": benchmark_metrics.get("market_data_date"),
+        "member_aliases": benchmark_metrics.get("member_aliases", {}),
+    }
+    st.session_state.market_universe_load_report.setdefault("benchmark", {}).update(benchmark_report)
 
     for sector, cfg in SECTOR_CONFIG.items():
         df = get_sector_data(
@@ -400,6 +410,19 @@ def render_developer_load_report(report):
 
     st.caption(f"Total load: {fmt_seconds(report.get('total_elapsed_sec'))}")
     render_source("YFinance", report.get("yfinance"))
+    benchmark_block = dict(report.get("benchmark") or {})
+    if benchmark_block:
+        st.markdown("**QQQ reference**")
+        st.write(f"Mode: `{benchmark_block.get('source_mode', 'unknown')}`")
+        st.write(f"Returned: `{benchmark_block.get('returned_tickers', 0)}` members")
+        if benchmark_block.get("latest_data_date"):
+            st.write(f"Data through: `{benchmark_block.get('latest_data_date')}`")
+        aliases = benchmark_block.get("member_aliases") or {}
+        if aliases:
+            alias_text = ", ".join(f"{target} from {source}" for target, source in sorted(aliases.items()))
+            st.caption(f"Retained-universe class mapping: {alias_text}")
+        if benchmark_block.get("live_error"):
+            st.error(f"Benchmark refresh failed: {benchmark_block.get('live_error')}")
     st.markdown("---")
     render_source("EDGAR", report.get("edgar"))
     st.markdown("---")

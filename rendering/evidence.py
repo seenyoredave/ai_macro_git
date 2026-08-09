@@ -724,13 +724,149 @@ def _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic
         render_static_table((economic_impact_data or {}).get("source_manifest", pd.DataFrame()))
 
 
-def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, energy_data, debt_markets_data, dashboard_data, infrastructure_data=None, connectivity_data=None, water_data=None, adaptation_data=None, workforce_data=None, economic_impact_data=None):
+
+
+_EVIDENCE_LOOKUP = {
+    "market": {
+        "label": "Market",
+        "definition": "Equity performance, participation, concentration, and trading pressure across the configured 204-company AI market universe; not the entire stock market.",
+        "datasets": "archive/yf_history.csv · archive/sector_history.csv",
+        "detail_view": "Market & finance",
+    },
+    "finance": {
+        "label": "Finance",
+        "definition": "Funding capacity, credit conditions, borrower and lender stress, and cash realization in the covered company and fund records.",
+        "datasets": "archive/yf_history.csv · archive/edgar_history.csv · archive/fred_history.csv · NY Fed retained series · private-capital fund records",
+        "detail_view": "Market & finance",
+    },
+    "compute": {
+        "label": "Compute",
+        "definition": "U.S. compute-manufacturing output, utilization, investment, and announced production projects; project announcements are not operating capacity.",
+        "datasets": "compute manufacturing history · compute project ledger · construction history",
+        "detail_view": "Compute & data centers",
+    },
+    "data_center": {
+        "label": "Data Centers",
+        "definition": "Project stages, campus locations, and published capacity from the project registry; the registry is evidence of development activity, not a census of the national fleet.",
+        "datasets": "facility registry · campus registry · data-center project records · facility identity decisions",
+        "detail_view": "Compute & data centers",
+    },
+    "connectivity": {
+        "label": "Connectivity",
+        "definition": "Public evidence of network reach and interconnection depth, including cables, IXPs, facilities, middle-mile awards, and campus proximity; private routes are not fully observed.",
+        "datasets": "connectivity source register · cable systems · IXP registry · interconnection facilities · middle-mile awards",
+        "detail_view": "Connectivity",
+    },
+    "power": {
+        "label": "Power",
+        "definition": "Electricity demand, operating and planned generation, prices, and large-load context; published data-center MW is not metered electricity demand.",
+        "datasets": "EIA retained power records · FRED series · generator pipeline · data-center campus records",
+        "detail_view": "Power & grid",
+    },
+    "grid_storage": {
+        "label": "Grid & Storage",
+        "definition": "Interconnection progress, historical queue outcomes, reserve margins, storage duration, and grid construction; queued capacity is not connected capacity.",
+        "datasets": "Berkeley Lab queue records · NERC reserve margins · EIA storage records · electric-power construction history",
+        "detail_view": "Power & grid",
+    },
+    "water": {
+        "label": "Water",
+        "definition": "Regional water exposure and facility-level disclosure. State and national water totals provide context but cannot establish supply at a specific campus.",
+        "datasets": "USGS water-use records · drought snapshot · EIA thermoelectric records · facility water evidence",
+        "detail_view": "Water",
+    },
+    "adaptation": {
+        "label": "Adoption",
+        "definition": "Reported consumer use and business adoption. Expected future use is intent, not completed deployment, and provider users are not a national adoption rate.",
+        "datasets": "consumer-use history · Census BTOS business adoption · commercialization disclosures",
+        "detail_view": "Adoption & outcomes",
+    },
+    "workforce": {
+        "label": "Workforce",
+        "definition": "Observed employment, real pay, openings, hires, quits, layoffs, and a separate task-exposure benchmark. Exposure is not observed displacement.",
+        "datasets": "occupation exposure benchmark · BLS CES · BLS JOLTS · workforce outcomes matrix",
+        "detail_view": "Adoption & outcomes",
+    },
+    "economic_impact": {
+        "label": "Economic Outcomes",
+        "definition": "Economy-wide productivity, output, compensation, labor share, earnings, and investment. These outcomes do not identify AI as the sole cause.",
+        "datasets": "BLS productivity and compensation · CPS earnings · BEA investment · FRED · provider commercialization disclosures",
+        "detail_view": "Adoption & outcomes",
+    },
+}
+
+
+def _sync_evidence_detail_view() -> None:
+    selected = st.session_state.get("evidence-lookup-domain")
+    spec = _EVIDENCE_LOOKUP.get(selected)
+    if spec:
+        st.session_state["evidence-view"] = spec["detail_view"]
+
+
+def _render_evidence_lookup(platform_reads: dict | None) -> None:
+    reads = platform_reads or {}
+    options = list(_EVIDENCE_LOOKUP)
+    if "evidence-view" not in st.session_state:
+        st.session_state["evidence-view"] = _EVIDENCE_LOOKUP[options[0]]["detail_view"]
+    selected = st.selectbox(
+        "Find evidence for",
+        options,
+        format_func=lambda key: _EVIDENCE_LOOKUP[key]["label"],
+        key="evidence-lookup-domain",
+        on_change=_sync_evidence_detail_view,
+    )
+    spec = _EVIDENCE_LOOKUP[selected]
+    read = dict(reads.get(selected) or {})
+    references = [
+        dict(item)
+        for item in read.get("references", []) or []
+        if isinstance(item, dict) and str(item.get("source_label") or item.get("source_name") or "").strip()
+    ]
+    source_labels = [
+        str(item.get("source_label") or item.get("source_name") or "").strip()
+        for item in references
+    ]
+    source_text = " · ".join(source_labels[:5])
+    if len(source_labels) > 5:
+        source_text += f" · +{len(source_labels) - 5} more"
+
+    claim = str(read.get("headline") or "Current domain claim is unavailable.").strip()
+    table = pd.DataFrame(
+        [
+            {"Step": "Claim", "Record": claim},
+            {"Step": "Definition / boundary", "Record": spec["definition"]},
+            {"Step": "Dataset", "Record": spec["datasets"]},
+            {"Step": "Primary sources", "Record": source_text or "See the detailed source register below."},
+        ]
+    )
+    render_static_table(table)
+    st.caption(f"Detailed records below: {spec['detail_view']}")
+
+    linked = []
+    for item in references[:5]:
+        label = str(item.get("source_label") or item.get("source_name") or "").strip()
+        url = str(item.get("source_url") or "").strip()
+        if label and url:
+            linked.append(f"[{label}]({url})")
+    if linked:
+        st.markdown("Sources: " + " · ".join(linked))
+
+
+def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, energy_data, debt_markets_data, dashboard_data, infrastructure_data=None, connectivity_data=None, water_data=None, adaptation_data=None, workforce_data=None, economic_impact_data=None, platform_reads=None):
     render_tab_header(
         "Evidence",
         "Definitions, methods, source records, and the limits of the data.",
         "Methods and sources",
     )
     render_line_break()
+    render_section(
+        "Find the evidence",
+        "Start with a current claim, then trace its definition, dataset, and primary sources.",
+        first=True,
+        compact=True,
+    )
+    _render_evidence_lookup(platform_reads)
+    render_section("Detailed records", "Open the underlying methods, source registers, and observations.", compact=True)
     view = st.selectbox(
         "Evidence view",
         [

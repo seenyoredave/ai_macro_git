@@ -311,7 +311,7 @@ def build_power_read(demand: dict, large_loads: dict, development: dict, prices:
         else:
             parts.append(f"U.S. electricity sales are {_fmt(demand_growth, signed=True)}% over the trailing year.")
     if pd.notna(additions) and pd.notna(retirements):
-        parts.append(f"Planned generation additions total {_fmt(additions)} GW through {int(development.get('end_year', 2030))}, versus {_fmt(retirements)} GW of retirements. The useful supply depends on project timing and location.")
+        parts.append(f"Planned generation additions total {_fmt(additions)} GW through {int(development.get('end_year', 2030))}, versus {_fmt(retirements)} GW of retirements. The amount that reaches customers depends on which projects are built, where, and when.")
     published_total_mw = _numeric(large_loads.get("published_total_mw"))
     if pd.notna(published_total_mw) and published_total_mw > 0:
         parts.append("Published data-center capacity is not the same as metered electricity demand.")

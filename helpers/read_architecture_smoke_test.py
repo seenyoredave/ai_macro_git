@@ -1,4 +1,4 @@
-"""Regression test for the v7.1.0 thirteen-tab read architecture."""
+"""Regression test for the v7.2.0 thirteen-tab read architecture."""
 
 from __future__ import annotations
 
@@ -353,6 +353,14 @@ def main() -> None:
     if not any(token in water["headline"].casefold() for token in ("water", "drought", "disclosure")):
         raise AssertionError("Water Read no longer centers local exposure and disclosure.")
 
+    data_center_read = reads["data_center"]
+    if not str(data_center_read.get("summary") or "").strip():
+        raise AssertionError("Data Centers Read regressed to an empty statistical fallback.")
+    if "not for estimating the total U.S. data-center fleet" not in data_center_read.get("summary", ""):
+        raise AssertionError("Data Centers Read lost the project-registry versus national-census boundary.")
+    if not int(data_center_read.get("signals", {}).get("broad_operating") or 0) or not int(data_center_read.get("signals", {}).get("broad_development") or 0):
+        raise AssertionError("Data Centers Read is not interpreting the available operating/development records.")
+
     power_read = reads["power"]
     if "advanced_share" in power_read.get("signals", {}):
         raise AssertionError("Power Read retained the Grid & Storage queue-maturity signal.")
@@ -500,6 +508,19 @@ def main() -> None:
     evidence_source = (PROJECT_ROOT / "rendering" / "evidence.py").read_text()
     if "render_domain_read" in evidence_source:
         raise AssertionError("Evidence should remain a provenance surface, not a narrative-read surface.")
+    for token in (
+        "def _render_evidence_lookup(",
+        '"Find evidence for"',
+        '"Definition / boundary"',
+        '"Primary sources"',
+        "def _sync_evidence_detail_view(",
+        "on_change=_sync_evidence_detail_view",
+    ):
+        if token not in evidence_source:
+            raise AssertionError(f"Evidence claim-to-source navigation is missing: {token}")
+    dashboard_source = (PROJECT_ROOT / "rendering" / "dashboard.py").read_text()
+    if "platform_reads=platform_reads" not in dashboard_source:
+        raise AssertionError("Evidence does not receive the current domain Reads for claim tracing.")
     market_source = (PROJECT_ROOT / "rendering" / "market.py").read_text()
     if "_render_sector_read" not in market_source:
         raise AssertionError("The sector-level read was not retained.")
@@ -596,7 +617,7 @@ def main() -> None:
         raise AssertionError(f"Macro lifecycle anchors drifted: {selected}")
 
     print(
-        "PASS  v7.1.0 read architecture · "
+        "PASS  v7.2.0 read architecture · "
         f"{len(DOMAIN_ORDER)} tab reads · {len(selected)} macro-selected domains · "
         f"headline: {macro['headline']}"
     )

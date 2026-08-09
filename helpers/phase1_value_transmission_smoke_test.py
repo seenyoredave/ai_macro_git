@@ -54,7 +54,7 @@ def main() -> int:
         'APP_STATE_SCHEMA_VERSION = "64.0-retained-loader-policy"' in app,
         "State schema lost the retained-loader policy contract.",
     )
-    require(READ_ARCHITECTURE_VERSION == "7.1.0", "Read architecture version does not match the v7.1.0 evidence-language contract.")
+    require(READ_ARCHITECTURE_VERSION == "7.2.0", "Read architecture version does not match the v7.2.0 evidence-language contract.")
     require(readme.startswith("# AI Macro\n"), "README no longer opens with the project overview.")
     require("## v" not in readme and "review build" not in readme.casefold(), "README has drifted back into release-note copy.")
 

@@ -144,4 +144,5 @@ def render_research_dashboard(tabs, context: DashboardContext):
                 context.adaptation_data,
                 context.workforce_data,
                 context.economic_impact_data,
+                platform_reads=platform_reads,
             )

@@ -117,9 +117,17 @@ def canonicalize_market_history_dates(
     yf_history: pd.DataFrame,
     *derived_histories: pd.DataFrame,
 ) -> tuple[pd.DataFrame, ...]:
-    """Put raw and derived market histories on real market observation dates."""
+    """Preserve retained snapshot dates while repairing provider observation dates.
+
+    ``yf_history.Date`` is the date the snapshot was saved.  ``Market Data Date``
+    is the trading-session date that owns the analytical observation.  Legacy
+    rows that predate the explicit provider-date field are repaired from their
+    snapshot date, but current snapshot dates are never rewritten.
+    """
     yf = yf_history.copy()
-    original = pd.to_datetime(yf["Date"], errors="coerce", format="mixed").dt.normalize()
+    snapshot_dates = pd.to_datetime(
+        yf["Date"], errors="coerce", format="mixed"
+    ).dt.normalize()
     supplied_values = (
         yf["Market Data Date"]
         if "Market Data Date" in yf.columns
@@ -128,22 +136,27 @@ def canonicalize_market_history_dates(
     supplied = pd.to_datetime(
         supplied_values, errors="coerce", format="mixed"
     ).dt.normalize()
-    canonical = supplied.where(supplied.notna(), original.map(_previous_legacy_market_session))
-    if canonical.isna().any():
-        raise AssertionError("Legacy market history contains an unresolved observation date")
+    market_dates = supplied.where(
+        supplied.notna(), snapshot_dates.map(_previous_legacy_market_session)
+    )
+    if snapshot_dates.isna().any() or market_dates.isna().any():
+        raise AssertionError("Market history contains an unresolved snapshot or observation date")
 
-    date_map = {
-        old.date().isoformat(): new.date().isoformat()
-        for old, new in zip(original, canonical)
-    }
-    yf["Date"] = canonical.dt.date.astype(str)
-    yf["Market Data Date"] = yf["Date"]
+    yf["Date"] = snapshot_dates.dt.date.astype(str)
+    yf["Market Data Date"] = market_dates.dt.date.astype(str)
     yf = (
         yf.sort_values(["Date", "Sector", "Ticker"], kind="stable")
         .drop_duplicates(["Date", "Sector", "Ticker"], keep="last")
         .reset_index(drop=True)
     )
 
+    # Older derived archives may have inherited a weekend/holiday fetch date.
+    # Map only those known snapshot-date keys to their provider observation date.
+    date_map = {
+        old.date().isoformat(): new.date().isoformat()
+        for old, new in zip(snapshot_dates, market_dates)
+        if pd.notna(old) and pd.notna(new)
+    }
     outputs: list[pd.DataFrame] = [yf]
     for history in derived_histories:
         frame = history.copy()
@@ -163,24 +176,30 @@ def canonicalize_market_history_dates(
         outputs.append(frame)
     return tuple(outputs)
 
-
 def rebuild_fixed_qqq_history(yf_history: pd.DataFrame) -> pd.DataFrame:
-    """Reconstruct one fixed-weight QQQ reference portfolio for every date.
-
-    The 204-name market archive contains GOOG but not GOOGL.  For this bounded
-    legacy reconstruction only, the GOOG class return and fundamentals proxy
-    the missing GOOGL class.  Future benchmark refreshes retain both actual
-    share classes through the benchmark loader.
-    """
+    """Reconstruct the fixed QQQ reference on each Market Data Date."""
     rows = []
-    for observation_date, snapshot in yf_history.groupby("Date", sort=True):
+    market_dates = pd.to_datetime(
+        yf_history.get("Market Data Date"), errors="coerce", format="mixed"
+    ).dt.normalize()
+    snapshot_dates = pd.to_datetime(
+        yf_history.get("Date"), errors="coerce", format="mixed"
+    ).dt.normalize()
+    frame = yf_history.copy()
+    frame["_market_date"] = market_dates
+    frame["_snapshot_date"] = snapshot_dates
+    for observation_date, candidates in frame.groupby("_market_date", sort=True):
+        if pd.isna(observation_date):
+            continue
+        latest_snapshot = candidates["_snapshot_date"].max()
+        snapshot = candidates.loc[candidates["_snapshot_date"].eq(latest_snapshot)].copy()
         by_ticker = snapshot.drop_duplicates("Ticker", keep="last").set_index("Ticker")
         members = []
         for ticker, weight in QQQ_WEIGHTS.items():
             source_ticker = "GOOG" if ticker == "GOOGL" and ticker not in by_ticker.index else ticker
             if source_ticker not in by_ticker.index:
                 raise AssertionError(
-                    f"Fixed QQQ member unavailable on {observation_date}: {ticker}"
+                    f"Fixed QQQ member unavailable on {observation_date.date().isoformat()}: {ticker}"
                 )
             member = by_ticker.loc[source_ticker].copy()
             member["Ticker"] = ticker
@@ -190,7 +209,7 @@ def rebuild_fixed_qqq_history(yf_history: pd.DataFrame) -> pd.DataFrame:
         metrics = normalize_benchmark_dataframe(member_frame)
         rows.append(
             {
-                "Date": observation_date,
+                "Date": observation_date.date().isoformat(),
                 "Benchmark": "QQQ",
                 "Forward P/E": np.nan,
                 "Avg Return": metrics.get("avg_return"),
@@ -202,8 +221,7 @@ def rebuild_fixed_qqq_history(yf_history: pd.DataFrame) -> pd.DataFrame:
                 "Weight Effective Date": QQQ_WEIGHTS_EFFECTIVE_DATE,
                 "Member Coverage": 1.0,
                 "Return Construction": (
-                    "Fixed QQQ top-ten reference weights; legacy GOOGL class "
-                    "reconstructed from retained GOOG class return"
+                    "Fixed QQQ top-ten reference weights; GOOGL weight uses retained GOOG Class C return"
                 ),
             }
         )
@@ -259,11 +277,17 @@ def _sector_data_as_of(
     edgar_history: pd.DataFrame,
     target_date,
 ) -> tuple[dict[str, pd.DataFrame], str | None]:
-    market_date = _latest_available_date(yf_history["Date"], target_date)
+    market_column = "Market Data Date" if "Market Data Date" in yf_history.columns else "Date"
+    market_date = _latest_available_date(yf_history[market_column], target_date)
     if market_date is None:
         return {}, None
 
-    rows = yf_history.loc[yf_history["Date"].astype(str) == market_date].copy()
+    candidates = yf_history.loc[yf_history[market_column].astype(str) == market_date].copy()
+    if candidates.empty:
+        return {}, None
+    snapshot_dates = pd.to_datetime(candidates["Date"], errors="coerce", format="mixed")
+    latest_snapshot = snapshot_dates.max()
+    rows = candidates.loc[snapshot_dates.eq(latest_snapshot)].copy()
     edgar_rows = _latest_rows_as_of(edgar_history, target_date, ["Ticker"])
     rows = _overlay_edgar(rows, edgar_rows)
 
@@ -330,7 +354,7 @@ def _sector_metrics_for_date(
     if not sector_data or market_date is None:
         return {}, {}, market_date
 
-    original_rows = yf_history.loc[yf_history["Date"].astype(str) == market_date]
+    original_rows = yf_history.loc[yf_history.get("Market Data Date", yf_history["Date"]).astype(str) == market_date]
     original_sectors = list(dict.fromkeys(original_rows["Sector"].astype(str).tolist()))
     benchmark = _benchmark_as_of(benchmark_history, market_date)
 
@@ -590,7 +614,7 @@ def rebuild_sector_history(
             prior_lookup[(str(prior_row.get("Date")), str(prior_row.get("Sector")))] = prior_row.to_dict()
 
     rows = []
-    for target_date in sorted(yf_history["Date"].astype(str).unique()):
+    for target_date in sorted(yf_history.get("Market Data Date", yf_history["Date"]).astype(str).unique()):
         metrics, sector_data, market_date = _sector_metrics_for_date(
             yf_history,
             edgar_history,
@@ -662,7 +686,7 @@ def rebuild_macro_history(
     prior_by_date = prior_macro_history.set_index("Date", drop=False)
     rows = []
 
-    raw_market_dates = set(yf_history["Date"].astype(str))
+    raw_market_dates = set(yf_history.get("Market Data Date", yf_history["Date"]).astype(str))
     for target_date in sorted(
         date_value
         for date_value in prior_macro_history["Date"].astype(str).unique()
@@ -794,8 +818,9 @@ def validate_rebuild(
         raise AssertionError("Fixed benchmark rebuild produced no history")
     if set(benchmark_raw_after["Benchmark Version"].astype(str)) != {BENCHMARK_VERSION}:
         raise AssertionError("Fixed benchmark history contains mixed versions")
-    if set(benchmark_raw_after["Date"].astype(str)) != set(yf_raw_after["Date"].astype(str)):
-        raise AssertionError("Fixed benchmark history is not aligned to raw market dates")
+    market_dates = set(yf_raw_after.get("Market Data Date", yf_raw_after["Date"]).astype(str))
+    if set(benchmark_raw_after["Date"].astype(str)) != market_dates:
+        raise AssertionError("Fixed benchmark history is not aligned to Market Data Date")
 
     if macro.empty or sector.empty:
         raise AssertionError("Rebuild produced an empty derived archive")
