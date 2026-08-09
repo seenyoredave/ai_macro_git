@@ -56,8 +56,14 @@ def check_purpose_beacon() -> None:
     _check("## v" not in readme and "review build" not in readme.casefold(), "README has drifted back into release-note copy.")
     for forbidden in ("contributors", "contributing", "pull request", "pip install", "streamlit run"):
         _check(forbidden not in readme.casefold(), f"README has drifted into contributor/setup language: {forbidden}")
-    for phrase in ("what is being built", "who is using and paying for it", "productivity, wages, household income", "costs and constraints"):
-        _check(phrase in statement, f"Purpose beacon lost the phrase: {phrase}")
+    approved_purpose = (
+        "AI Macro traces the AI economy from capital and construction through deployment, adoption, and economic results. "
+        "Using publicly available data, it connects companies and markets with the data centers, resources, and infrastructure behind "
+        "the buildout—and examines how that buildout is reshaping the broader U.S. economy. Its central questions are whether rising "
+        "investment and capacity are producing durable use, broad participation, and realized value—and how the resulting gains, costs, "
+        "and risks are distributed across investors, businesses, workers, communities, and regions."
+    )
+    _check(statement == approved_purpose, "Protected Purpose Statement copy has changed.")
 
 
 def check_connectivity_selection() -> None:

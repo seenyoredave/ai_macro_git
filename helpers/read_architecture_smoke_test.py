@@ -435,7 +435,7 @@ def main() -> None:
     app_source = (PROJECT_ROOT / "ai_macro.py").read_text()
     definitions_source = (PROJECT_ROOT / "config" / "metric_definitions.py").read_text()
     approved_subtitle = (
-        "Research on AI investment, infrastructure, adoption, and economic outcomes in the United States."
+        "An economic research platform focused on the evolution of the AI economy."
     )
     if approved_subtitle not in app_source:
         raise AssertionError("AI Macro brand and descriptor are not installed in the masthead.")
@@ -459,11 +459,11 @@ def main() -> None:
     if 'market_report["energy"]' in app_source or 'render_source("Power"' in app_source:
         raise AssertionError("Power refresh diagnostics remain attached to the developer load report.")
     approved_purpose = (
-        "AI Macro follows the U.S. AI economy from financing and construction through deployment, use, and economic results. "
-        "It uses public data to connect companies and markets with the data centers, power, grid, water, and network infrastructure "
-        "behind the expansion. The platform asks three basic questions: what is being built, who is using and paying for it, and "
-        "whether the gains are showing up in productivity, wages, household income, and other parts of the economy. It also tracks "
-        "where the costs and constraints are appearing."
+        "AI Macro traces the AI economy from capital and construction through deployment, adoption, and economic results. "
+        "Using publicly available data, it connects companies and markets with the data centers, resources, and infrastructure behind "
+        "the buildout—and examines how that buildout is reshaping the broader U.S. economy. Its central questions are whether rising "
+        "investment and capacity are producing durable use, broad participation, and realized value—and how the resulting gains, costs, "
+        "and risks are distributed across investors, businesses, workers, communities, and regions."
     )
     if approved_purpose not in definitions_source:
         raise AssertionError("The approved Purpose Statement copy is not installed verbatim.")

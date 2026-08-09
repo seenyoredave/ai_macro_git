@@ -76,7 +76,7 @@ from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v6.10.5"
+APP_VERSION = "v6.10.7"
 APP_STATE_SCHEMA_VERSION = "64.0-retained-loader-policy"
 
 DOMAIN_REFRESH_LABELS = {
@@ -873,7 +873,7 @@ market_universe_summary = {
 
 render_masthead(
     "AI Macro",
-    "Research on AI investment, infrastructure, adoption, and economic outcomes in the United States.",
+    "An economic research platform focused on the evolution of the AI economy.",
     version=APP_VERSION,
     status=market_snapshot_label(st.session_state.get("market_snapshot_frame")),
 )

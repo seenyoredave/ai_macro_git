@@ -580,7 +580,7 @@ Compares current and expected AI use across major U.S. industries.
 """,
 
     "Purpose Statement": """
-AI Macro follows the U.S. AI economy from financing and construction through deployment, use, and economic results. It uses public data to connect companies and markets with the data centers, power, grid, water, and network infrastructure behind the expansion. The platform asks three basic questions: what is being built, who is using and paying for it, and whether the gains are showing up in productivity, wages, household income, and other parts of the economy. It also tracks where the costs and constraints are appearing.
+AI Macro traces the AI economy from capital and construction through deployment, adoption, and economic results. Using publicly available data, it connects companies and markets with the data centers, resources, and infrastructure behind the buildout—and examines how that buildout is reshaping the broader U.S. economy. Its central questions are whether rising investment and capacity are producing durable use, broad participation, and realized value—and how the resulting gains, costs, and risks are distributed across investors, businesses, workers, communities, and regions.
 """,
 
     "Interconnection Pipeline": """
