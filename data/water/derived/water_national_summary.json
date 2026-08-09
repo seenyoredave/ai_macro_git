@@ -1,39 +1,39 @@
 {
-  "active_sources": 2,
-  "eia_2024_thermoelectric": {
-    "consumption_bgal_day": 2.559680884931507,
-    "consumption_exceeds_withdrawal_records": 51,
-    "consumption_million_gallons": 934283.523,
-    "flagged_records": 56,
-    "negative_consumption_records": 5,
-    "plants": 744,
-    "plants_with_consumption": 611,
-    "plants_with_withdrawal": 651,
-    "records": 12988,
-    "withdrawal_bgal_day": 124.61096676438356,
-    "withdrawal_million_gallons": 45483002.869,
-    "year": 2024
-  },
-  "generated_at": "2026-08-09",
   "ledger_version": "1.0",
+  "generated_at": "2026-07-31",
+  "source_mode": "retained_local",
+  "usgs_2015": {
+    "year": 2015,
+    "county_records": 3223,
+    "jurisdictions": 53,
+    "total_withdrawal_mgd": 321672.07,
+    "freshwater_withdrawal_mgd": 280688.86,
+    "saline_withdrawal_mgd": 40983.21000000001,
+    "groundwater_withdrawal_mgd": 84651.72,
+    "surface_water_withdrawal_mgd": 237020.35000000003,
+    "partial_consumptive_use_mgd": 77497.12,
+    "freshwater_share": 0.8725931971650507,
+    "groundwater_share": 0.26316154834331745
+  },
+  "eia_2024_thermoelectric": {
+    "year": 2024,
+    "records": 12988,
+    "plants": 744,
+    "plants_with_withdrawal": 651,
+    "plants_with_consumption": 611,
+    "withdrawal_million_gallons": 45483002.869,
+    "consumption_million_gallons": 934283.523,
+    "withdrawal_bgal_day": 124.61096676438356,
+    "consumption_bgal_day": 2.559680884931507,
+    "flagged_records": 56,
+    "consumption_exceeds_withdrawal_records": 51,
+    "negative_consumption_records": 5
+  },
   "observation_rows": 111433,
+  "active_sources": 2,
   "reconciliation": {
     "usgs_county_records": 3223,
     "usgs_county_records_reconciled": 3223,
     "usgs_max_absolute_residual_mgd": 4.547473508864641e-13
-  },
-  "source_mode": "retained_local",
-  "usgs_2015": {
-    "county_records": 3223,
-    "freshwater_share": 0.8725931971650507,
-    "freshwater_withdrawal_mgd": 280688.86,
-    "groundwater_share": 0.26316154834331745,
-    "groundwater_withdrawal_mgd": 84651.72,
-    "jurisdictions": 53,
-    "partial_consumptive_use_mgd": 77497.12,
-    "saline_withdrawal_mgd": 40983.21000000001,
-    "surface_water_withdrawal_mgd": 237020.35000000003,
-    "total_withdrawal_mgd": 321672.07,
-    "year": 2015
   }
 }

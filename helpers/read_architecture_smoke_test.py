@@ -434,6 +434,17 @@ def main() -> None:
     theme_source = (PROJECT_ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
     app_source = (PROJECT_ROOT / "ai_macro.py").read_text()
     definitions_source = (PROJECT_ROOT / "config" / "metric_definitions.py").read_text()
+    evidence_source = (PROJECT_ROOT / "rendering" / "evidence.py").read_text(encoding="utf-8")
+    for required in (
+        "AI Macro is built around evidence, not allegiance.",
+        "Social media is excluded from the research pipeline.",
+        "Corroboration means independent evidence, not repeated publication.",
+        "No source is owed agreement.",
+    ):
+        if required not in evidence_source:
+            raise AssertionError("Evidence standards statement is incomplete.")
+    if 'st.expander("Evidence standards", expanded=False)' not in evidence_source:
+        raise AssertionError("Evidence standards must lead the Evidence tab in a collapsed disclosure.")
     approved_subtitle = (
         "An economic research platform focused on the evolution of the AI economy."
     )

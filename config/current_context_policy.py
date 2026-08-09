@@ -23,6 +23,51 @@ class SourceAssessment:
     reason: str
 
 
+
+# Social media is excluded from the research pipeline entirely.  These sources
+# are not eligible for discovery, corroboration, evidence, or citation even
+# when the account belongs to an otherwise authoritative institution.
+SOCIAL_MEDIA_SOURCE_NAMES = {
+    "reddit",
+    "x",
+    "twitter",
+    "facebook",
+    "instagram",
+    "threads",
+    "tiktok",
+    "linkedin",
+    "youtube",
+    "bluesky",
+    "mastodon",
+    "truth social",
+    "telegram",
+    "discord",
+    "snapchat",
+}
+
+SOCIAL_MEDIA_DOMAINS = {
+    "reddit.com",
+    "redd.it",
+    "x.com",
+    "twitter.com",
+    "facebook.com",
+    "fb.com",
+    "instagram.com",
+    "threads.net",
+    "tiktok.com",
+    "linkedin.com",
+    "youtube.com",
+    "youtu.be",
+    "bsky.app",
+    "mastodon.social",
+    "truthsocial.com",
+    "t.me",
+    "telegram.me",
+    "discord.com",
+    "discord.gg",
+    "snapchat.com",
+}
+
 # Hard exclusions requested for the automated product surface.
 BLOCKED_SOURCE_NAMES = {
     "fox news",
@@ -267,6 +312,18 @@ def assess_source(source_name: str, source_url: str = "", article_url: str = "")
     """Classify whether a source is eligible for unattended display."""
     name = " ".join(str(source_name or "").split()).casefold()
     hosts = [_host(source_url), _host(article_url)]
+
+    if name in SOCIAL_MEDIA_SOURCE_NAMES or any(
+        any(_domain_matches(host, domain) for domain in SOCIAL_MEDIA_DOMAINS)
+        for host in hosts if host
+    ):
+        return SourceAssessment(
+            "blocked_social",
+            0.0,
+            False,
+            "none",
+            "social media is excluded from discovery, corroboration, evidence, and citation",
+        )
 
     if name in BLOCKED_SOURCE_NAMES or any(
         any(_domain_matches(host, domain) for domain in BLOCKED_DOMAINS)

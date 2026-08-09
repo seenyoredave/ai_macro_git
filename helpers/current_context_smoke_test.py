@@ -237,6 +237,16 @@ def main() -> None:
     for blocked in ("Fox News", "MSNBC", "HuffPost"):
         if assess_source(blocked, f"https://{blocked.replace(' ', '').lower()}.com").auto_eligible:
             raise AssertionError(f"Blocked source became eligible: {blocked}")
+    for social_name, social_url in (
+        ("Reddit", "https://www.reddit.com/r/investing"),
+        ("X", "https://x.com/example/status/1"),
+        ("Facebook", "https://www.facebook.com/example"),
+        ("YouTube", "https://www.youtube.com/watch?v=example"),
+        ("LinkedIn", "https://www.linkedin.com/posts/example"),
+    ):
+        social = assess_source(social_name, social_url)
+        if social.auto_eligible or social.tier != "blocked_social":
+            raise AssertionError(f"Social-media source escaped the hard exclusion: {social_name}")
     if assess_source("The New York Times", "https://www.nytimes.com").auto_eligible:
         raise AssertionError("The manual-review source path became unattendedly eligible.")
     for approved, url in (

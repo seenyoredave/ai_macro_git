@@ -25,6 +25,27 @@ def _water_evidence_payload(water_data) -> dict:
 from rendering.infrastructure_common import _infrastructure_source_rows
 from rendering.labels import sector_display_name
 
+
+EVIDENCE_STANDARDS = """
+**AI Macro is built around evidence, not allegiance.**
+
+The platform uses public records, regulatory filings, official datasets, company disclosures, and selected business reporting to study the AI economy. Sources are evaluated for what they establish, not for their reputation, popularity, ideology, or institutional status.
+
+Secondary aggregators and specialist publications may be used to discover relevant developments, but they do not establish facts merely by reporting them. Material claims are traced whenever practical to primary records or independently verified through approved reporting.
+
+**Social media is excluded from the research pipeline.** Posts, threads, comments, and other user-generated social content are not used for discovery, corroboration, evidence, or citation. Popularity, repetition, and virality do not establish factual reliability.
+
+For consequential claims, AI Macro seeks evidence that could qualify, contradict, or narrow the initial interpretation. A source that identifies useful evidence is not owed agreement with its conclusions.
+
+Political and regulatory developments are included when they have a concrete economic or operational consequence. The platform preserves the identity of the acting institution or official, the nature of the action, and its legal or procedural status. Statements, requests, proposals, directives, orders, rules, and enacted law are not treated as interchangeable.
+
+**Corroboration means independent evidence, not repeated publication.** Multiple stories derived from the same filing, wire report, press release, or other upstream source do not count as independent confirmation.
+
+Data and news serve different roles. Retained datasets provide the analytical foundation. Recent developments provide limited current context and should influence interpretation only when they materially change, explain, reinforce, or complicate the evidence.
+
+**No source is owed agreement.**
+""".strip()
+
 def _status_rows(regime_metrics):
     mappings = [
         ("AI Equity Index", "AI Equity Index", "YFinance"),
@@ -859,6 +880,8 @@ def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, 
         "Methods and sources",
     )
     render_line_break()
+    with st.expander("Evidence standards", expanded=False):
+        st.markdown(EVIDENCE_STANDARDS)
     render_section(
         "Find the evidence",
         "Start with a current claim, then trace its definition, dataset, and primary sources.",
