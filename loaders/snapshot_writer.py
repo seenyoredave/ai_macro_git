@@ -24,6 +24,7 @@ from archive.archive_reader import today_iso
 from config.deployment import repository_writes_enabled
 from config.load_policy import LoadPolicy, RefreshSource
 from loaders.edgar_loader import build_edgar_archive_snapshot
+from loaders.borrower_finance_refresh import refresh_borrower_finance_derivatives
 
 
 def _live_mode(value: object) -> bool:
@@ -119,6 +120,7 @@ def persist_refresh_snapshots(
     raw_universe_data: dict,
     energy_data: dict,
     debt_markets_data: dict,
+    edgar_refresh_token: int = 0,
 ) -> dict:
     """Persist only snapshots backed by successful authorized live work."""
 
@@ -221,7 +223,7 @@ def persist_refresh_snapshots(
     if policy.allows_live(RefreshSource.EDGAR):
         edgar_report = dict(market_report.get("edgar", {}) or {})
         if edgar_report.get("live_succeeded_tickers"):
-            run(
+            edgar_written = run(
                 "edgar",
                 lambda: append_edgar_history(
                     build_edgar_archive_snapshot(
@@ -230,6 +232,24 @@ def persist_refresh_snapshots(
                     )
                 ),
             )
+            if edgar_written:
+                try:
+                    finance_report = refresh_borrower_finance_derivatives(
+                        refresh_token=int(edgar_refresh_token),
+                        observation_date=snapshot_date,
+                    )
+                    report["finance_derivatives"] = finance_report
+                    if finance_report.get("status") == "written":
+                        written.append("finance_fundamentals")
+                    else:
+                        errors["finance_fundamentals"] = (
+                            "EDGAR refreshed, but the 10-company Finance derivative cohort "
+                            "was incomplete and retained derivatives were not advanced."
+                        )
+                    for key, message in (finance_report.get("errors") or {}).items():
+                        errors[f"finance:{key}"] = str(message)
+                except Exception as exc:
+                    errors["finance_fundamentals"] = f"{type(exc).__name__}: {exc}"
 
     if policy.allows_live(RefreshSource.FRED) and _live_mode(
         fred_report.get("source_mode")

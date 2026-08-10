@@ -52,7 +52,7 @@ def _inject_market_page_theme() -> None:
         .rm-sector-read {
             border: 1px solid rgba(167, 139, 250, 0.22);
             border-left: 3px solid #a78bfa;
-            border-radius: 0 13px 13px 0;
+            border-radius: 0;
             background: linear-gradient(90deg, rgba(124, 58, 237, 0.12), rgba(17, 24, 39, 0.64));
             padding: 0.82rem 1rem 0.86rem 1rem;
             margin: 0.15rem 0 0.95rem 0;
@@ -105,7 +105,7 @@ def _inject_market_page_theme() -> None:
         }
         .rm-sector-structure-item {
             border: 1px solid rgba(148, 163, 184, 0.13);
-            border-radius: 10px;
+            border-radius: 0;
             background: rgba(15, 23, 42, 0.50);
             padding: 0.62rem 0.68rem;
             min-height: 67px;
@@ -379,14 +379,14 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df, weekly_context=
     return {"sector": selected, "frame": df, "company_count": company_count}
 
 
-def _market_ledger_stats(ledger):
+def _market_ledger_stats(ledger, valuation_context=None):
     metrics = (ledger or {}).get("metrics", {}) or {}
     company_count = int(metrics.get("company_count", 0) or 0)
     return_count = int(metrics.get("return_count", 0) or 0)
     positive_count = int(round(
         float(metrics.get("positive_breadth", 0.0) or 0.0) * return_count
     ))
-    return [
+    stats = [
         (
             "Top 6 Share",
             fmt_number(pd.to_numeric(metrics.get("top_6_share"), errors="coerce") * 100.0, 1, suffix="%"),
@@ -411,6 +411,16 @@ def _market_ledger_stats(ledger):
             f"{positive_count} of {return_count} companies",
         ),
     ]
+    valuation = valuation_context or {}
+    cape = pd.to_numeric(valuation.get("cape"), errors="coerce")
+    peak = pd.to_numeric(valuation.get("historical_peak"), errors="coerce")
+    if pd.notna(cape):
+        peak_text = f"Dec 1999 peak {fmt_number(peak, 1)}×" if pd.notna(peak) else "Long-run valuation context"
+        as_of = pd.to_datetime(valuation.get("as_of_date"), errors="coerce")
+        if pd.notna(as_of):
+            peak_text += f" · as of {as_of.strftime('%b %d, %Y').replace(' 0', ' ')}"
+        stats.append(("Shiller CAPE", fmt_number(cape, 1, suffix="×"), peak_text))
+    return stats
 
 
 def _history_label(metadata):
@@ -435,7 +445,7 @@ def _one_year_return_label(metadata):
     return f"{coverage} · as of {as_of_date}" if as_of_date else coverage
 
 
-def _render_market_ledger_summary(ledger):
+def _render_market_ledger_summary(ledger, valuation_context=None):
     metrics = (ledger or {}).get("metrics", {}) or {}
     company_count = int(metrics.get("company_count", 0) or 0)
     sector_count = int(metrics.get("sector_count", 0) or 0)
@@ -449,7 +459,7 @@ def _render_market_ledger_summary(ledger):
         ),
         first=True,
     )
-    render_statline(_market_ledger_stats(ledger), key_prefix="market-ledger")
+    render_statline(_market_ledger_stats(ledger, valuation_context), key_prefix="market-ledger")
 
 
 def _render_market_structure(ledger):
@@ -554,7 +564,7 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
     )
     _render_floating_terms("market")
     render_domain_read(tab_read, label="Read", domain="market")
-    _render_market_ledger_summary(market_ledger)
+    _render_market_ledger_summary(market_ledger, (market_universe_summary or {}).get("valuation_context"))
     render_signal_rail(_assessment_stats(macro_df, sector_data), key_prefix="sector-cross-state")
     _render_market_structure(market_ledger)
 

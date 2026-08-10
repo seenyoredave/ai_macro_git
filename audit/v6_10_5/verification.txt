@@ -1,0 +1,25 @@
+AI Macro v6.10.5 verification
+Date: 2026-08-09
+
+Scope
+- QQQ fixed reference now comes from the same resolved YFinance market frame used by sector calculations.
+- YFinance-owned histories advance only when the 204-name live universe has one Market Data Date and QQQ matches it.
+- Integrity checks treat yf_history.Date as the retained snapshot date and Market Data Date as the market observation date.
+- Data Centers Read now interprets available project/campus records instead of falling back to an empty national-total message.
+- Evidence adds current claim -> definition/boundary -> dataset -> primary-source navigation and opens the matching detailed-record category.
+
+Retained-data repair
+- Owner-supplied yf_history.csv is unchanged: snapshot 2026-08-09, 204 tickers, Market Data Date 2026-08-07.
+- Added the missing 2026-08-07 QQQ reference by deterministic reconstruction from that retained market snapshot.
+- Recomputed 2026-08-07 sector AEI/pressure rows and macro AEI/pressure/speculation-gap fields against the aligned QQQ reference.
+- Latest corrected AI Equity Index: 39.60468657525489.
+- Latest corrected Avg Sector Pressure: 57.528591663690726.
+
+Checks
+- All bounded smoke/contract tests pass.
+- Retained startup: YFinance 204/204, EDGAR 204/204, zero provider network attempts, zero retained-file changes.
+- Integrity gate: 9/9 PASS after release-manifest regeneration.
+- Browser layout and redesign contracts pass at 768, 1280, 1600, 1920, and 2560 px.
+
+Limitation
+- This container cannot execute the owner's actual live Yahoo provider request or launch the full declared Streamlit runtime. The YFinance transaction is tested at the exact post-fetch/persistence contract level; the next owner-triggered live refresh remains the live-environment check.

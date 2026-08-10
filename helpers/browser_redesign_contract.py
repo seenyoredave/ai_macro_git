@@ -77,7 +77,7 @@ def build_fixture() -> str:
     html, body { margin:0; min-height:100%; background:#090e1a; color:#e5e7eb; font-family:Arial,sans-serif; }
     main { margin:0 auto; max-width:none; padding:1.5rem clamp(1rem, 3vw, 3rem) 4rem; width:100%; }
     h1 { font-size:1.25rem; margin:0 0 1.25rem; }
-    .proof-panel { border:1px solid rgba(148,163,184,.18); border-radius:12px; margin-bottom:2rem; padding:1rem; }
+    .proof-panel { border:1px solid rgba(148,163,184,.18); border-radius:0; margin-bottom:2rem; padding:1rem; }
     .proof-title { color:#f3f6fb; font-size:.9rem; font-weight:760; margin-bottom:.75rem; }
     .streamlit-fit-probe { width:fit-content; max-width:100%; }
     .proof-native-columns { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.55rem; width:100%; }

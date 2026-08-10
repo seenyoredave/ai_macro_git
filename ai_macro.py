@@ -3,6 +3,14 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 import time
+import warnings
+
+warnings.filterwarnings(
+    "ignore",
+    message="Cannot parse header or footer so it will be ignored",
+    category=UserWarning,
+    module=r"openpyxl\.worksheet\.header_footer",
+)
 
 # Streamlit can execute this script inside a process that has already imported
 # an unrelated third-party package named ``archive``.  Put the application root
@@ -65,6 +73,7 @@ from loaders.adaptation_loader import load_adaptation_data
 from loaders.commercialization_loader import load_commercialization_data
 from loaders.fred_loader import describe_fred_load, latest_fred_archive_date, load_fred
 from loaders.market_loader import describe_edgar_archive_status, describe_yf_archive_status, load_market_universe
+from loaders.market_valuation_loader import load_market_valuation_context
 from loaders.nfci_loader import load_nfci_history
 from loaders.snapshot_writer import persist_refresh_snapshots
 from loaders.weekly_context_loader import load_current_context, load_weekly_context
@@ -76,7 +85,7 @@ from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v6.10.8"
+APP_VERSION = "v6.10.12"
 APP_STATE_SCHEMA_VERSION = "64.0-retained-loader-policy"
 
 DOMAIN_REFRESH_LABELS = {
@@ -438,6 +447,23 @@ def render_developer_load_report(report):
         st.markdown("**Retained data writes**")
         st.write(f"Status: `{write_report.get('status', 'unknown')}`")
         st.write(f"Saved: `{', '.join(saved) if saved else 'none'}`")
+        finance_derivatives = dict(write_report.get("finance_derivatives") or {})
+        if finance_derivatives:
+            st.markdown("**Finance derivatives**")
+            fundamental_count = int(finance_derivatives.get("fundamental_companies") or 0)
+            debt_count = int(finance_derivatives.get("debt_companies") or 0)
+            debt_target = int(finance_derivatives.get("debt_target_companies") or 0)
+            st.write(f"SEC fundamentals: `{fundamental_count}/10` companies")
+            st.write(f"Definition-matched debt: `{debt_count}/{debt_target or 0}` companies")
+            updated = finance_derivatives.get("debt_updated_tickers") or []
+            reviewed = finance_derivatives.get("debt_reviewed_tickers") or []
+            unresolved = finance_derivatives.get("debt_unresolved_tickers") or []
+            if updated:
+                st.caption(f"Debt updated automatically ({len(updated)}): {', '.join(updated)}")
+            if reviewed:
+                st.caption(f"Debt filing-reviewed fallback ({len(reviewed)}): {', '.join(reviewed)}")
+            if unresolved:
+                st.warning(f"Debt unresolved ({len(unresolved)}): {', '.join(unresolved)}")
         if write_report.get("reason"):
             st.caption(f"Reason: {write_report.get('reason')}")
         for label, message in (write_report.get("errors") or {}).items():
@@ -777,6 +803,7 @@ if st.session_state.force_rebuild:
         raw_universe_data=raw_universe_data,
         energy_data=energy_data,
         debt_markets_data=debt_markets_data,
+        edgar_refresh_token=st.session_state.edgar_refresh_token,
     )
 
     # Report archive status after persistence, not the pre-refresh status captured
@@ -869,6 +896,7 @@ market_universe_summary = {
     "configured_sectors": len(SECTOR_CONFIG),
     "loaded_tickers": int(len(loaded_tickers)),
     "configured_tickers": int(len(configured_tickers)),
+    "valuation_context": load_market_valuation_context(),
 }
 
 render_masthead(

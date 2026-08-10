@@ -35,6 +35,14 @@ def main() -> int:
     require("macro-buildout-leadership-rotation" in macro_source, "Buildout Leadership Rotation renderer is missing.")
     require('key=f"{key_prefix}-map"' in spatial_source, "National landscape map renderer is missing.")
     require('key_prefix="macro-national-landscape"' in macro_source, "AI Macro no longer owns the national landscape map.")
+    require(
+        'render_panel_heading("Buildout leadership rotation"' not in macro_source,
+        "AI Macro restored the redundant Buildout Leadership Rotation inner title.",
+    )
+    require(
+        'render_panel_heading("Buildout and outcome gaps"' not in macro_source,
+        "AI Macro restored the redundant Buildout and Outcome Gaps inner title.",
+    )
 
     direct_plotly = []
     for path in (ROOT / "rendering").glob("*.py"):
@@ -120,6 +128,8 @@ def main() -> int:
     css = (ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
     for token in ("--rm-space-1", "--rm-radius-panel", ".rm-tabkicker", ".rm-visually-hidden"):
         require(token in css, f"Missing visual-system CSS token: {token}")
+    require("--rm-radius-panel: 0px" in css, "Platform panels regained rounded corners.")
+    require("--rm-radius-control: 0px" in css, "Platform controls regained rounded corners.")
 
     subprocess.run([sys.executable, str(ROOT / "helpers" / "build_visual_inventory.py")], check=True, cwd=ROOT)
     inventory = pd.read_csv(ROOT / "data" / "visual_surface_inventory.csv")

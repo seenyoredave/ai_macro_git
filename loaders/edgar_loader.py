@@ -83,7 +83,7 @@ def _empty_edgar_payload(status, *, source="Failed"):
     }
 
 
-def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_data):
+def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_data, *, refresh_token=0):
     edgar_data = {}
     attempted = []
     succeeded = []
@@ -98,7 +98,7 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
             if not cik:
                 raise ValueError(f"No CIK found for ticker {ticker_upper}")
 
-            company_facts = fetch_company_facts(cik)
+            company_facts = fetch_company_facts(cik, refresh_token=int(refresh_token))
             metrics = extract_company_metrics(company_facts)
             live_payload = {
                 "Revenue": metrics["Revenue"],
@@ -156,7 +156,7 @@ def _fetch_live_edgar_subset(tickers_to_fetch, ticker_cik_map, archive_fallback_
     }
 
 
-def load_edgar_with_report(tickers, force_refresh=False, allow_live=False):
+def load_edgar_with_report(tickers, force_refresh=False, allow_live=False, refresh_token=0):
     expected = _expected_ticker_set(tickers)
 
     recent_rows = read_recent_edgar_archive(
@@ -250,6 +250,7 @@ def load_edgar_with_report(tickers, force_refresh=False, allow_live=False):
         tickers_to_fetch,
         ticker_cik_map,
         archive_fallback_data,
+        refresh_token=int(refresh_token),
     )
     edgar_data.update(live_data)
     report.update(live_report)

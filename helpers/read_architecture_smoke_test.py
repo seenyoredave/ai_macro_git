@@ -540,7 +540,7 @@ def main() -> None:
             raise AssertionError(f"Approved Market label missing: {approved_label}")
     market_render_body = market_source[market_source.index("def render_market_tab("):]
     order_tokens = [
-        '_render_market_ledger_summary(market_ledger)',
+        '_render_market_ledger_summary(market_ledger, (market_universe_summary or {}).get("valuation_context"))',
         'render_signal_rail(_assessment_stats',
         '_render_market_structure(market_ledger)',
         'render_section("Sector valuations and trading"',

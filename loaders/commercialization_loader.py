@@ -202,7 +202,7 @@ def load_commercialization_data(*, force_refresh: bool = False, refresh_token: i
     if force_refresh:
         values, errors, parser_reports = _refresh_values(manifest)
         if values and not ledger.empty:
-            indexed = ledger.set_index(KEY_COLUMNS)
+            indexed = ledger.set_index(KEY_COLUMNS).sort_index()
             unknown_keys = [key for key in values if key not in indexed.index]
             if unknown_keys:
                 errors["ledger_contract"] = "Parsed metrics are missing from the retained ledger: " + "; ".join(key[-1] for key in unknown_keys)

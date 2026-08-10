@@ -162,7 +162,7 @@ def _inject_power_page_theme() -> None:
         .rm-power-read {
             border: 1px solid rgba(52, 211, 153, 0.18);
             border-left: 3px solid #34d399;
-            border-radius: 0 13px 13px 0;
+            border-radius: 0;
             background: linear-gradient(90deg, rgba(5, 150, 105, 0.10), rgba(17, 24, 39, 0.61));
             padding: 0.82rem 1rem 0.88rem 1rem;
             margin: 0.18rem 0 1.05rem 0;
@@ -198,7 +198,7 @@ def _inject_power_page_theme() -> None:
         }
         .rm-power-load-metric {
             border: 1px solid rgba(148, 163, 184, 0.13);
-            border-radius: 10px;
+            border-radius: 0;
             background: rgba(15, 23, 42, 0.46);
             padding: 0.58rem 0.62rem;
         }

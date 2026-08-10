@@ -1,0 +1,990 @@
+{
+  "scope": "shared HTML/CSS primitives; not full Streamlit application",
+  "viewports": [
+    1280,
+    1600,
+    1920,
+    2560,
+    768
+  ],
+  "passed": true,
+  "results": [
+    {
+      "viewport": 1280,
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 1366.234375,
+        "bottom": 1366.234375,
+        "right": 1280
+      },
+      "fullWrapper": {
+        "x": 28.15625,
+        "y": 95.875,
+        "width": 1223.6875,
+        "height": 641.96875,
+        "bottom": 737.84375,
+        "right": 1251.84375
+      },
+      "fullChart": {
+        "x": 45.15625,
+        "y": 310.84375,
+        "width": 1189.6875,
+        "height": 410,
+        "bottom": 720.84375,
+        "right": 1234.84375
+      },
+      "summaryRow": {
+        "x": 28.15625,
+        "y": 152.265625,
+        "width": 1223.6875,
+        "height": 130.0625,
+        "bottom": 282.328125,
+        "right": 1251.84375
+      },
+      "compactWrapper": {
+        "x": 28.15625,
+        "y": 769.84375,
+        "width": 1223.6875,
+        "height": 500.390625,
+        "bottom": 1270.234375,
+        "right": 1251.84375
+      },
+      "compactChartColumn": {
+        "x": 28.15625,
+        "y": 826.234375,
+        "width": 859.78125,
+        "height": 444,
+        "bottom": 1270.234375,
+        "right": 887.9375
+      },
+      "railColumn": {
+        "x": 911.9375,
+        "y": 826.234375,
+        "width": 339.90625,
+        "height": 444,
+        "bottom": 1270.234375,
+        "right": 1251.84375
+      },
+      "compactPanel": {
+        "x": 28.15625,
+        "y": 826.234375,
+        "width": 859.78125,
+        "height": 444,
+        "bottom": 1270.234375,
+        "right": 887.9375
+      },
+      "summaryStack": {
+        "x": 911.9375,
+        "y": 826.234375,
+        "width": 339.90625,
+        "height": 444,
+        "bottom": 1270.234375,
+        "right": 1251.84375
+      },
+      "compactChart": {
+        "x": 45.15625,
+        "y": 843.234375,
+        "width": 825.78125,
+        "height": 410,
+        "bottom": 1253.234375,
+        "right": 870.9375
+      },
+      "cards": [
+        {
+          "id": "full-width-proof-0",
+          "mode": "row",
+          "scrollHeight": 126,
+          "clientHeight": 126,
+          "scrollWidth": 305,
+          "clientWidth": 305,
+          "height": 126.0625,
+          "noteBottomGap": 51.921875,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-1",
+          "mode": "row",
+          "scrollHeight": 126,
+          "clientHeight": 126,
+          "scrollWidth": 304,
+          "clientWidth": 304,
+          "height": 126.0625,
+          "noteBottomGap": 51.921875,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-2",
+          "mode": "row",
+          "scrollHeight": 126,
+          "clientHeight": 126,
+          "scrollWidth": 304,
+          "clientWidth": 304,
+          "height": 126.0625,
+          "noteBottomGap": 51.921875,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-3",
+          "mode": "row",
+          "scrollHeight": 126,
+          "clientHeight": 126,
+          "scrollWidth": 304,
+          "clientWidth": 304,
+          "height": 126.0625,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-0",
+          "mode": "rail",
+          "scrollHeight": 110,
+          "clientHeight": 110,
+          "scrollWidth": 338,
+          "clientWidth": 338,
+          "height": 110,
+          "noteBottomGap": 40.234375,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-1",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 338,
+          "clientWidth": 338,
+          "height": 110,
+          "noteBottomGap": 39.234375,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-2",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 338,
+          "clientWidth": 338,
+          "height": 110,
+          "noteBottomGap": 39.234375,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-3",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 338,
+          "clientWidth": 338,
+          "height": 110,
+          "noteBottomGap": 39.234375,
+          "childrenInside": true
+        }
+      ],
+      "derived": {
+        "full_chart_ratio": 0.9722151284539557,
+        "compact_chart_share": 0.7166710080750195,
+        "compact_column_height_delta": 0,
+        "panel_stack_height_delta": 0,
+        "rail_card_height_range": 0,
+        "minimum_note_bottom_gap": 39.234375
+      },
+      "checks": {
+        "full_chart_at_least_90pct": true,
+        "no_card_vertical_overflow": true,
+        "no_card_horizontal_overflow": true,
+        "card_children_inside": true,
+        "summary_row_fits_wrapper": true,
+        "rail_footnote_bottom_padding": true,
+        "chart_wider_than_rail": true,
+        "chart_share_65_to_75pct": true,
+        "rail_is_right_of_chart": true,
+        "compact_columns_match_height": true,
+        "panel_and_stack_match_height": true,
+        "rail_cards_even_height": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 1600,
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 1359.78125,
+        "bottom": 1359.78125,
+        "right": 1600
+      },
+      "fullWrapper": {
+        "x": 35.1875,
+        "y": 95.875,
+        "width": 1529.625,
+        "height": 635.515625,
+        "bottom": 731.390625,
+        "right": 1564.8125
+      },
+      "fullChart": {
+        "x": 52.1875,
+        "y": 304.390625,
+        "width": 1495.625,
+        "height": 410,
+        "bottom": 714.390625,
+        "right": 1547.8125
+      },
+      "summaryRow": {
+        "x": 35.1875,
+        "y": 152.265625,
+        "width": 1529.625,
+        "height": 123.609375,
+        "bottom": 275.875,
+        "right": 1564.8125
+      },
+      "compactWrapper": {
+        "x": 35.1875,
+        "y": 763.390625,
+        "width": 1529.625,
+        "height": 500.390625,
+        "bottom": 1263.78125,
+        "right": 1564.8125
+      },
+      "compactChartColumn": {
+        "x": 35.1875,
+        "y": 819.78125,
+        "width": 1079.03125,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1114.21875
+      },
+      "railColumn": {
+        "x": 1138.21875,
+        "y": 819.78125,
+        "width": 426.59375,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1564.8125
+      },
+      "compactPanel": {
+        "x": 35.1875,
+        "y": 819.78125,
+        "width": 1079.03125,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1114.21875
+      },
+      "summaryStack": {
+        "x": 1138.21875,
+        "y": 819.78125,
+        "width": 426.59375,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1564.8125
+      },
+      "compactChart": {
+        "x": 52.1875,
+        "y": 836.78125,
+        "width": 1045.03125,
+        "height": 410,
+        "bottom": 1246.78125,
+        "right": 1097.21875
+      },
+      "cards": [
+        {
+          "id": "full-width-proof-0",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 382,
+          "clientWidth": 382,
+          "height": 119.609375,
+          "noteBottomGap": 41.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-1",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 381,
+          "clientWidth": 381,
+          "height": 119.609375,
+          "noteBottomGap": 41.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-2",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 381,
+          "clientWidth": 381,
+          "height": 119.609375,
+          "noteBottomGap": 41.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-3",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 381,
+          "clientWidth": 381,
+          "height": 119.609375,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-0",
+          "mode": "rail",
+          "scrollHeight": 110,
+          "clientHeight": 110,
+          "scrollWidth": 425,
+          "clientWidth": 425,
+          "height": 110,
+          "noteBottomGap": 36.234375,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-1",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 425,
+          "clientWidth": 425,
+          "height": 110,
+          "noteBottomGap": 35.234375,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-2",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 425,
+          "clientWidth": 425,
+          "height": 110,
+          "noteBottomGap": 35.234375,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-3",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 425,
+          "clientWidth": 425,
+          "height": 110,
+          "noteBottomGap": 35.234375,
+          "childrenInside": true
+        }
+      ],
+      "derived": {
+        "full_chart_ratio": 0.9777723298194002,
+        "compact_chart_share": 0.7166666666666667,
+        "compact_column_height_delta": 0,
+        "panel_stack_height_delta": 0,
+        "rail_card_height_range": 0,
+        "minimum_note_bottom_gap": 35.234375
+      },
+      "checks": {
+        "full_chart_at_least_90pct": true,
+        "no_card_vertical_overflow": true,
+        "no_card_horizontal_overflow": true,
+        "card_children_inside": true,
+        "summary_row_fits_wrapper": true,
+        "rail_footnote_bottom_padding": true,
+        "chart_wider_than_rail": true,
+        "chart_share_65_to_75pct": true,
+        "rail_is_right_of_chart": true,
+        "compact_columns_match_height": true,
+        "panel_and_stack_match_height": true,
+        "rail_cards_even_height": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 1920,
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1359.78125,
+        "bottom": 1359.78125,
+        "right": 1920
+      },
+      "fullWrapper": {
+        "x": 42.234375,
+        "y": 95.875,
+        "width": 1835.53125,
+        "height": 635.515625,
+        "bottom": 731.390625,
+        "right": 1877.765625
+      },
+      "fullChart": {
+        "x": 59.234375,
+        "y": 304.390625,
+        "width": 1801.53125,
+        "height": 410,
+        "bottom": 714.390625,
+        "right": 1860.765625
+      },
+      "summaryRow": {
+        "x": 42.234375,
+        "y": 152.265625,
+        "width": 1835.53125,
+        "height": 123.609375,
+        "bottom": 275.875,
+        "right": 1877.765625
+      },
+      "compactWrapper": {
+        "x": 42.234375,
+        "y": 763.390625,
+        "width": 1835.53125,
+        "height": 500.390625,
+        "bottom": 1263.78125,
+        "right": 1877.765625
+      },
+      "compactChartColumn": {
+        "x": 42.234375,
+        "y": 819.78125,
+        "width": 1298.265625,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1340.5
+      },
+      "railColumn": {
+        "x": 1364.5,
+        "y": 819.78125,
+        "width": 513.265625,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1877.765625
+      },
+      "compactPanel": {
+        "x": 42.234375,
+        "y": 819.78125,
+        "width": 1298.265625,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1340.5
+      },
+      "summaryStack": {
+        "x": 1364.5,
+        "y": 819.78125,
+        "width": 513.265625,
+        "height": 444,
+        "bottom": 1263.78125,
+        "right": 1877.765625
+      },
+      "compactChart": {
+        "x": 59.234375,
+        "y": 836.78125,
+        "width": 1264.265625,
+        "height": 410,
+        "bottom": 1246.78125,
+        "right": 1323.5
+      },
+      "cards": [
+        {
+          "id": "full-width-proof-0",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 458,
+          "clientWidth": 458,
+          "height": 119.609375,
+          "noteBottomGap": 41.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-1",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 457,
+          "clientWidth": 457,
+          "height": 119.609375,
+          "noteBottomGap": 41.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-2",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 457,
+          "clientWidth": 457,
+          "height": 119.609375,
+          "noteBottomGap": 41.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-3",
+          "mode": "row",
+          "scrollHeight": 120,
+          "clientHeight": 120,
+          "scrollWidth": 457,
+          "clientWidth": 457,
+          "height": 119.609375,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-0",
+          "mode": "rail",
+          "scrollHeight": 110,
+          "clientHeight": 110,
+          "scrollWidth": 511,
+          "clientWidth": 511,
+          "height": 110,
+          "noteBottomGap": 35.125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-1",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 511,
+          "clientWidth": 511,
+          "height": 110,
+          "noteBottomGap": 34.125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-2",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 511,
+          "clientWidth": 511,
+          "height": 110,
+          "noteBottomGap": 34.125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-3",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 511,
+          "clientWidth": 511,
+          "height": 110,
+          "noteBottomGap": 34.125,
+          "childrenInside": true
+        }
+      ],
+      "derived": {
+        "full_chart_ratio": 0.9814767523026372,
+        "compact_chart_share": 0.7166675291966396,
+        "compact_column_height_delta": 0,
+        "panel_stack_height_delta": 0,
+        "rail_card_height_range": 0,
+        "minimum_note_bottom_gap": 34.125
+      },
+      "checks": {
+        "full_chart_at_least_90pct": true,
+        "no_card_vertical_overflow": true,
+        "no_card_horizontal_overflow": true,
+        "card_children_inside": true,
+        "summary_row_fits_wrapper": true,
+        "rail_footnote_bottom_padding": true,
+        "chart_wider_than_rail": true,
+        "chart_share_65_to_75pct": true,
+        "rail_is_right_of_chart": true,
+        "compact_columns_match_height": true,
+        "panel_and_stack_match_height": true,
+        "rail_cards_even_height": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 2560,
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 2560,
+        "height": 1334.171875,
+        "bottom": 1334.171875,
+        "right": 2560
+      },
+      "fullWrapper": {
+        "x": 44,
+        "y": 95.875,
+        "width": 2472,
+        "height": 609.90625,
+        "bottom": 705.78125,
+        "right": 2516
+      },
+      "fullChart": {
+        "x": 61,
+        "y": 278.78125,
+        "width": 2438,
+        "height": 410,
+        "bottom": 688.78125,
+        "right": 2499
+      },
+      "summaryRow": {
+        "x": 44,
+        "y": 152.265625,
+        "width": 2472,
+        "height": 98,
+        "bottom": 250.265625,
+        "right": 2516
+      },
+      "compactWrapper": {
+        "x": 44,
+        "y": 737.78125,
+        "width": 2472,
+        "height": 500.390625,
+        "bottom": 1238.171875,
+        "right": 2516
+      },
+      "compactChartColumn": {
+        "x": 44,
+        "y": 794.171875,
+        "width": 1754.40625,
+        "height": 444,
+        "bottom": 1238.171875,
+        "right": 1798.40625
+      },
+      "railColumn": {
+        "x": 1822.40625,
+        "y": 794.171875,
+        "width": 693.59375,
+        "height": 444,
+        "bottom": 1238.171875,
+        "right": 2516
+      },
+      "compactPanel": {
+        "x": 44,
+        "y": 794.171875,
+        "width": 1754.40625,
+        "height": 444,
+        "bottom": 1238.171875,
+        "right": 1798.40625
+      },
+      "summaryStack": {
+        "x": 1822.40625,
+        "y": 794.171875,
+        "width": 693.59375,
+        "height": 444,
+        "bottom": 1238.171875,
+        "right": 2516
+      },
+      "compactChart": {
+        "x": 61,
+        "y": 811.171875,
+        "width": 1720.40625,
+        "height": 410,
+        "bottom": 1221.171875,
+        "right": 1781.40625
+      },
+      "cards": [
+        {
+          "id": "full-width-proof-0",
+          "mode": "row",
+          "scrollHeight": 94,
+          "clientHeight": 94,
+          "scrollWidth": 618,
+          "clientWidth": 618,
+          "height": 94,
+          "noteBottomGap": 15.46875,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-1",
+          "mode": "row",
+          "scrollHeight": 94,
+          "clientHeight": 94,
+          "scrollWidth": 617,
+          "clientWidth": 617,
+          "height": 94,
+          "noteBottomGap": 15.46875,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-2",
+          "mode": "row",
+          "scrollHeight": 94,
+          "clientHeight": 94,
+          "scrollWidth": 617,
+          "clientWidth": 617,
+          "height": 94,
+          "noteBottomGap": 15.46875,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-3",
+          "mode": "row",
+          "scrollHeight": 94,
+          "clientHeight": 94,
+          "scrollWidth": 617,
+          "clientWidth": 617,
+          "height": 94,
+          "noteBottomGap": 15.46875,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-0",
+          "mode": "rail",
+          "scrollHeight": 110,
+          "clientHeight": 110,
+          "scrollWidth": 692,
+          "clientWidth": 692,
+          "height": 110,
+          "noteBottomGap": 35.125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-1",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 692,
+          "clientWidth": 692,
+          "height": 110,
+          "noteBottomGap": 34.125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-2",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 692,
+          "clientWidth": 692,
+          "height": 110,
+          "noteBottomGap": 34.125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-3",
+          "mode": "rail",
+          "scrollHeight": 109,
+          "clientHeight": 109,
+          "scrollWidth": 692,
+          "clientWidth": 692,
+          "height": 110,
+          "noteBottomGap": 34.125,
+          "childrenInside": true
+        }
+      ],
+      "derived": {
+        "full_chart_ratio": 0.9862459546925566,
+        "compact_chart_share": 0.7166692197712419,
+        "compact_column_height_delta": 0,
+        "panel_stack_height_delta": 0,
+        "rail_card_height_range": 0,
+        "minimum_note_bottom_gap": 34.125
+      },
+      "checks": {
+        "full_chart_at_least_90pct": true,
+        "no_card_vertical_overflow": true,
+        "no_card_horizontal_overflow": true,
+        "card_children_inside": true,
+        "summary_row_fits_wrapper": true,
+        "rail_footnote_bottom_padding": true,
+        "chart_wider_than_rail": true,
+        "chart_share_65_to_75pct": true,
+        "rail_is_right_of_chart": true,
+        "compact_columns_match_height": true,
+        "panel_and_stack_match_height": true,
+        "rail_cards_even_height": true
+      },
+      "passed": true
+    },
+    {
+      "viewport": 768,
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 768,
+        "height": 1778.140625,
+        "bottom": 1778.140625,
+        "right": 768
+      },
+      "fullWrapper": {
+        "x": 16.890625,
+        "y": 95.875,
+        "width": 734.21875,
+        "height": 687.5,
+        "bottom": 783.375,
+        "right": 751.109375
+      },
+      "fullChart": {
+        "x": 33.890625,
+        "y": 356.375,
+        "width": 700.21875,
+        "height": 410,
+        "bottom": 766.375,
+        "right": 734.109375
+      },
+      "summaryRow": {
+        "x": 16.890625,
+        "y": 152.265625,
+        "width": 734.21875,
+        "height": 175.59375,
+        "bottom": 327.859375,
+        "right": 751.109375
+      },
+      "compactWrapper": {
+        "x": 16.890625,
+        "y": 815.375,
+        "width": 734.21875,
+        "height": 866.765625,
+        "bottom": 1682.140625,
+        "right": 751.109375
+      },
+      "compactChartColumn": {
+        "x": 16.890625,
+        "y": 1238.140625,
+        "width": 734.21875,
+        "height": 444,
+        "bottom": 1682.140625,
+        "right": 751.109375
+      },
+      "railColumn": {
+        "x": 16.890625,
+        "y": 871.765625,
+        "width": 734.21875,
+        "height": 342.375,
+        "bottom": 1214.140625,
+        "right": 751.109375
+      },
+      "compactPanel": {
+        "x": 16.890625,
+        "y": 1238.140625,
+        "width": 734.21875,
+        "height": 444,
+        "bottom": 1682.140625,
+        "right": 751.109375
+      },
+      "summaryStack": {
+        "x": 16.890625,
+        "y": 871.765625,
+        "width": 734.21875,
+        "height": 342.375,
+        "bottom": 1214.140625,
+        "right": 751.109375
+      },
+      "compactChart": {
+        "x": 33.890625,
+        "y": 1255.140625,
+        "width": 700.21875,
+        "height": 410,
+        "bottom": 1665.140625,
+        "right": 734.109375
+      },
+      "cards": [
+        {
+          "id": "full-width-proof-0",
+          "mode": "row",
+          "scrollHeight": 85,
+          "clientHeight": 85,
+          "scrollWidth": 366,
+          "clientWidth": 366,
+          "height": 85.296875,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-1",
+          "mode": "row",
+          "scrollHeight": 85,
+          "clientHeight": 85,
+          "scrollWidth": 365,
+          "clientWidth": 365,
+          "height": 85.296875,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-2",
+          "mode": "row",
+          "scrollHeight": 85,
+          "clientHeight": 85,
+          "scrollWidth": 366,
+          "clientWidth": 366,
+          "height": 86.296875,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "full-width-proof-3",
+          "mode": "row",
+          "scrollHeight": 85,
+          "clientHeight": 85,
+          "scrollWidth": 365,
+          "clientWidth": 365,
+          "height": 86.296875,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-0",
+          "mode": "rail",
+          "scrollHeight": 84,
+          "clientHeight": 84,
+          "scrollWidth": 732,
+          "clientWidth": 732,
+          "height": 83.84375,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-1",
+          "mode": "rail",
+          "scrollHeight": 84,
+          "clientHeight": 84,
+          "scrollWidth": 732,
+          "clientWidth": 732,
+          "height": 84.84375,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-2",
+          "mode": "rail",
+          "scrollHeight": 84,
+          "clientHeight": 84,
+          "scrollWidth": 732,
+          "clientWidth": 732,
+          "height": 84.84375,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        },
+        {
+          "id": "compact-proof-3",
+          "mode": "rail",
+          "scrollHeight": 84,
+          "clientHeight": 84,
+          "scrollWidth": 732,
+          "clientWidth": 732,
+          "height": 84.84375,
+          "noteBottomGap": 14.078125,
+          "childrenInside": true
+        }
+      ],
+      "derived": {
+        "full_chart_ratio": 0.9536922749521175,
+        "compact_chart_share": 0.5,
+        "compact_column_height_delta": 101.625,
+        "panel_stack_height_delta": 101.625,
+        "rail_card_height_range": 1.0,
+        "minimum_note_bottom_gap": 14.078125
+      },
+      "checks": {
+        "full_chart_at_least_90pct": true,
+        "no_card_vertical_overflow": true,
+        "no_card_horizontal_overflow": true,
+        "card_children_inside": true,
+        "summary_row_fits_wrapper": true,
+        "rail_footnote_bottom_padding": true,
+        "rail_above_chart": true,
+        "chart_collapses_full_width": true,
+        "rail_collapses_full_width": true
+      },
+      "passed": true
+    }
+  ]
+}

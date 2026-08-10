@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import sys
 
 import numpy as np
@@ -16,6 +17,13 @@ from loaders.data_center_inventory_loader import load_data_center_inventory  # n
 from rendering.charts_common import add_axis_headroom, add_stacked_axis_headroom  # noqa: E402
 from rendering.charts_data_center import data_center_stage_profile  # noqa: E402
 from rendering.charts_energy import electricity_demand_history  # noqa: E402
+
+
+def _css_rule(css: str, selector: str) -> str:
+    match = re.search(rf"{re.escape(selector)}\s*\{{([^}}]*)\}}", css, flags=re.MULTILINE)
+    if not match:
+        raise AssertionError(f"CSS surface is missing: {selector}")
+    return match.group(1)
 
 
 def _assert_reference_clearance(figure, *, axis: str, maximum: float, label: str) -> None:
@@ -95,6 +103,21 @@ def main() -> None:
     for required in ("flex: 0 0 auto", "min-width: max-content", "white-space: nowrap"):
         if required not in tab_rule:
             raise AssertionError(f"Responsive tabs lost their non-collapsing contract: {required}")
+
+    for token in ("--rm-radius-control: 0px", "--rm-radius-panel: 0px"):
+        if token not in theme:
+            raise AssertionError(f"Global square-edge visual token regressed: {token}")
+    square_surfaces = (
+        ".rm-card", ".rm-stat", ".rm-panel", ".rm-definition", ".rm-table-wrap",
+        '[data-testid="stDataFrame"]', ".stExpander", ".rm-map-key", ".rm-domain-read",
+        ".rm-domain-read-evidence-card", ".rm-summary-row", ".rm-summary-stack",
+        ".rm-dossier", ".rm-dossier-badge", ".rm-value-bridge", ".rm-deliverability-screen",
+        ".rm-deliverability-stage-card",
+    )
+    for selector in square_surfaces:
+        rule = _css_rule(theme, selector)
+        if "border-radius: 0" not in rule:
+            raise AssertionError(f"Rounded presentation surface returned: {selector}")
 
     card_rule = theme.split(".rm-domain-read-evidence-card", 1)[1].split("}", 1)[0]
     for required in ("display: grid", "grid-template-rows: minmax(1.8rem, auto) auto 1fr", "align-content: start", "row-gap: 0.18rem"):

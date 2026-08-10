@@ -531,8 +531,6 @@ def _load_market_universe_cached(
     allow_edgar_live=False,
 ):
 
-    del edgar_refresh_token
-
     load_started = time.perf_counter()
     expected_count = len(tickers)
     yf_archive_status = describe_yf_archive_status(tickers, sector=None)
@@ -554,6 +552,7 @@ def _load_market_universe_cached(
         tickers,
         force_refresh=force_edgar_refresh,
         allow_live=allow_edgar_live,
+        refresh_token=edgar_refresh_token,
     )
     edgar_elapsed = time.perf_counter() - edgar_started
 

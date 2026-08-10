@@ -192,7 +192,7 @@ def metric_card(
         .st-key-{key} {{
             border: 1px solid rgba(148, 163, 184, 0.17) !important;
             border-top: 3px solid {accent_color} !important;
-            border-radius: 14px !important;
+            border-radius: 0 !important;
             background: rgba(17, 24, 39, 0.82) !important;
             padding: 0.9rem 1rem 0.35rem 1rem !important;
             min-height: 245px;

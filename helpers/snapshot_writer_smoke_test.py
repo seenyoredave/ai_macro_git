@@ -165,6 +165,7 @@ def main() -> None:
             "append_yf_history",
             "build_edgar_archive_snapshot",
             "today_iso",
+            "refresh_borrower_finance_derivatives",
         )
     }
     try:
@@ -184,6 +185,12 @@ def main() -> None:
                 call_kwargs[_name] = dict(kwargs)
             setattr(snapshot_writer, name, recorder)
         snapshot_writer.build_edgar_archive_snapshot = lambda *args, **kwargs: {}
+        snapshot_writer.refresh_borrower_finance_derivatives = lambda **kwargs: {
+            "status": "written",
+            "fundamental_companies": 10,
+            "debt_companies": 8,
+            "errors": {},
+        }
 
         retained = snapshot_writer.persist_refresh_snapshots(
             policy=LoadPolicy.retained(),
@@ -467,6 +474,8 @@ def main() -> None:
             )
         if successful_edgar.get("status") != "written":
             raise AssertionError(f"EDGAR write report changed: {successful_edgar}")
+        if "finance_fundamentals" not in (successful_edgar.get("written") or []):
+            raise AssertionError(f"EDGAR refresh did not advance Finance derivatives: {successful_edgar}")
     finally:
         for name, value in originals.items():
             setattr(snapshot_writer, name, value)
@@ -481,7 +490,7 @@ def main() -> None:
     print("PASS  YFinance archive-only fallback is not re-dated")
     print("PASS  successful NY Fed refresh reports its loader-owned retained write")
     print("PASS  failed EDGAR refresh preserves retained dates")
-    print("PASS  successful EDGAR refresh writes only EDGAR")
+    print("PASS  successful EDGAR refresh advances EDGAR + Finance derivatives")
 
 
 if __name__ == "__main__":

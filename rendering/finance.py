@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from analytics.capital_commitments import load_commitment_components
 from analytics.financial_conditions import nfci_direction, nfci_snapshot
 from analytics.private_capital import build_private_capital_realization
 from analytics.trend_engine import calc_trailing_point_change
@@ -142,11 +143,12 @@ def _render_funding_section(regime_metrics):
                     reference=reference,
                     years=5,
                 )
+        debt_count = int(current.get("debt_financing_companies", 0) or 0)
         render_summary_row(
             [
                 ("TTM CapEx", _fmt_dollars(current.get("capex_total")), f"{current.get('cohort_companies', 0)} cohort companies"),
-                ("Total debt", _fmt_dollars(current.get("total_debt")), "current aggregate"),
-                ("Prior-year debt", _fmt_dollars(current.get("prior_year_total_debt")), "comparison base"),
+                ("Total debt", _fmt_dollars(current.get("total_debt")), f"{debt_count} matched companies"),
+                ("Prior-year debt", _fmt_dollars(current.get("prior_year_total_debt")), f"{debt_count} matched companies · comparison base"),
                 ("Forward commitments", _fmt_dollars(current.get("forward_commitments_total")), "filing-backed ledger"),
             ],
             key_prefix="finance-funding-cohort-totals",
@@ -484,10 +486,23 @@ def _render_commercial_realization(commercialization_data):
 
 def _render_finance_ledger(commercialization_data, debt_markets_data, borrower_strain, lender_strain):
     realization = build_private_capital_realization()
-    options = ["Commercial disclosures", "Private-fund records", "Debt-market readings", "Borrower stress components", "Lender stress components"]
+    options = ["Commercial disclosures", "Forward commitment records", "Private-fund records", "Debt-market readings", "Borrower stress components", "Lender stress components"]
     with st.expander("Finance data", expanded=False):
         view = st.radio("Ledger", options, horizontal=True, key="finance-ledger-view")
-        if view == "Private-fund records":
+        if view == "Forward commitment records":
+            frame = load_commitment_components()[
+                [
+                    "Ticker",
+                    "Category",
+                    "Value",
+                    "As Of Date",
+                    "Filing Date",
+                    "Scope",
+                    "Carried Forward",
+                    "Source URL",
+                ]
+            ].copy()
+        elif view == "Private-fund records":
             frame = _private_capital_detail_table(realization.get("funds", pd.DataFrame()))
         elif view == "Debt-market readings":
             frame = _debt_market_source_rows(debt_markets_data)

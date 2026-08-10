@@ -246,18 +246,27 @@ def _matched_debt_pulse(
         ].copy()
         if company_observations.empty:
             continue
-        current_debt = company_observations.sort_values(
-            ["Period End", "Filing Date"], kind="stable"
-        ).iloc[-1]
+        # Select the debt observation that is aligned to the CapEx period, not
+        # merely the newest debt row in the ledger. A filing-reviewed debt row
+        # can advance before the TTM fundamentals snapshot does; choosing the
+        # newest row first would incorrectly drop an otherwise valid borrower.
+        company_observations["CapEx Distance"] = (
+            company_observations["Period End"] - capex_period_end
+        ).abs()
+        aligned = company_observations.loc[
+            company_observations["CapEx Distance"].le(pd.Timedelta(days=tolerance_days))
+        ].copy()
+        if aligned.empty:
+            continue
+        current_debt = aligned.sort_values(
+            ["CapEx Distance", "Period End", "Filing Date"],
+            ascending=[True, False, False],
+            kind="stable",
+        ).iloc[0]
         period_end = current_debt["Period End"]
         debt = current_debt["Debt"]
         debt_definition = str(current_debt["Definition"]).strip()
-        if (
-            pd.isna(period_end)
-            or abs(period_end - capex_period_end) > pd.Timedelta(days=tolerance_days)
-            or pd.isna(debt)
-            or not debt_definition
-        ):
+        if pd.isna(period_end) or pd.isna(debt) or not debt_definition:
             continue
         target = period_end - pd.DateOffset(years=1)
         candidates = company_observations[
@@ -629,6 +638,40 @@ def calculate_deployment_funding_mix(
                         [
                             {
                                 "Date": commitment_current_date,
+                                "Forward Commitment Load": forward_commitment_load,
+                            }
+                        ]
+                    ),
+                ],
+                ignore_index=True,
+                sort=False,
+            )
+
+    # If the latest SEC fundamentals snapshot is later than the filing that
+    # completed the current commitment ledger, the current commitment numerator
+    # was already knowable on the later financial observation date. Carry the
+    # current numerator forward to that date so the sparkline endpoint uses the
+    # same denominator and evidence set as the headline card.
+    if (
+        pd.notna(current_date)
+        and pd.notna(commitment_current_date)
+        and current_date >= commitment_current_date
+    ):
+        current_commitment_mask = pd.to_datetime(
+            history_with_current.get("Date"), errors="coerce", format="mixed"
+        ).eq(current_date)
+        if current_commitment_mask.any():
+            history_with_current.loc[
+                current_commitment_mask, "Forward Commitment Load"
+            ] = forward_commitment_load
+        else:
+            history_with_current = pd.concat(
+                [
+                    history_with_current,
+                    pd.DataFrame(
+                        [
+                            {
+                                "Date": current_date,
                                 "Forward Commitment Load": forward_commitment_load,
                             }
                         ]

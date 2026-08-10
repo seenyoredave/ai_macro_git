@@ -57,7 +57,7 @@ def build_fixture() -> str:
     [data-testid="stElementContainer"], [data-testid="stMarkdown"], [data-testid="stMarkdownContainer"] { width: 100%; }
     .compact-row > [data-role="chart-column"] { flex: 2.15 1 0; }
     .compact-row > [data-role="rail-column"] { flex: 0.85 1 0; }
-    [data-testid="stVerticalBlockBorderWrapper"] { border: 1px solid rgba(148,163,184,.17); border-radius: 14px; padding: 1rem; width: 100%; }
+    [data-testid="stVerticalBlockBorderWrapper"] { border: 1px solid rgba(148,163,184,.17); border-radius: 0; padding: 1rem; width: 100%; }
     [data-testid="stPlotlyChart"] { width: 100%; min-height: 410px; background: linear-gradient(135deg, rgba(96,165,250,.14), rgba(167,139,250,.08)); border: 1px dashed rgba(96,165,250,.42); display: grid; place-items: center; color: #cbd5e1; }
     .chart-grid { width: 88%; height: 70%; background-image: linear-gradient(rgba(148,163,184,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.12) 1px, transparent 1px); background-size: 10% 20%; position: relative; }
     .chart-grid::after { content: "responsive Plotly surface"; position: absolute; inset: 0; display: grid; place-items: center; }

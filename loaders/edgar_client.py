@@ -70,7 +70,11 @@ def load_ticker_cik_map():
 
 
 @st.cache_data(ttl=86400)
-def fetch_company_facts(cik):
+def fetch_company_facts(cik, refresh_token: int = 0):
+    # refresh_token is intentionally unused in the request body; it is part of
+    # Streamlit's cache key so an explicit EDGAR refresh cannot reuse a stale
+    # Companyfacts payload from earlier in the 24-hour cache window.
+    del refresh_token
     url = SEC_COMPANY_FACTS_URL.format(cik=cik)
     response = requests.get(url, headers=sec_headers(), timeout=30)
     response.raise_for_status()

@@ -110,7 +110,12 @@ def refresh_templated_history(
 
     retained_ids = retained[series_id_column].fillna("").astype(str).str.strip()
     fallback = retained.loc[~retained_ids.isin(successful)].copy()
-    combined = pd.concat([fallback, *refreshed_frames], ignore_index=True, sort=False)
+    concat_parts = [frame for frame in [fallback, *refreshed_frames] if frame is not None and not frame.empty]
+    combined = (
+        pd.concat(concat_parts, ignore_index=True, sort=False)
+        if concat_parts
+        else retained.iloc[0:0].copy()
+    )
     combined[date_column] = pd.to_datetime(combined[date_column], errors="coerce", format="mixed")
     combined[value_column] = pd.to_numeric(combined[value_column], errors="coerce")
     combined = (

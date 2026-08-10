@@ -21,8 +21,8 @@
     --rm-space-3: 0.75rem;
     --rm-space-4: 1rem;
     --rm-space-5: 1.35rem;
-    --rm-radius-control: 10px;
-    --rm-radius-panel: 14px;
+    --rm-radius-control: 0px;
+    --rm-radius-panel: 0px;
     --rm-panel-pad-x: 1rem;
     --rm-panel-pad-y: 0.9rem;
     --rm-control-height: 2.55rem;
@@ -369,7 +369,7 @@ div[data-testid="stTabs"] button[role="tab"] span {
 
 .rm-card {
     border: 1px solid var(--rm-border);
-    border-radius: 14px;
+    border-radius: 0;
     background: rgba(17, 24, 39, 0.82);
     padding: 0.95rem 1rem 0.75rem 1rem;
     min-height: 178px;
@@ -460,7 +460,7 @@ div[data-testid="stTabs"] button[role="tab"] span {
 
 .rm-stat {
     border: 1px solid var(--rm-border);
-    border-radius: 12px;
+    border-radius: 0;
     background: rgba(15, 23, 42, 0.68);
     padding: 0.75rem 0.85rem;
 }
@@ -488,7 +488,7 @@ div[data-testid="stTabs"] button[role="tab"] span {
 
 .rm-panel {
     border: 1px solid var(--rm-border);
-    border-radius: 15px;
+    border-radius: 0;
     background: rgba(17, 24, 39, 0.70);
     padding: 1rem 1rem 0.7rem 1rem;
     margin-bottom: 0.9rem;
@@ -517,7 +517,7 @@ div[data-testid="stTabs"] button[role="tab"] span {
 .rm-definition {
     border-left: 3px solid var(--rm-violet);
     background: rgba(17, 24, 39, 0.68);
-    border-radius: 0 12px 12px 0;
+    border-radius: 0;
     padding: 0.9rem 1rem;
     color: #cbd5e1;
     line-height: 1.5;
@@ -526,7 +526,7 @@ div[data-testid="stTabs"] button[role="tab"] span {
 .rm-table-wrap {
     overflow-x: auto;
     border: 1px solid var(--rm-border);
-    border-radius: 12px;
+    border-radius: 0;
     background: rgba(15, 23, 42, 0.58);
 }
 
@@ -567,13 +567,13 @@ div[data-testid="stTabs"] button[role="tab"] span {
 
 [data-testid="stDataFrame"] {
     border: 1px solid var(--rm-border);
-    border-radius: 12px;
+    border-radius: 0;
     overflow: hidden;
 }
 
 .stExpander {
     border: 1px solid var(--rm-border) !important;
-    border-radius: 12px !important;
+    border-radius: 0 !important;
     background: rgba(15, 23, 42, 0.55) !important;
 }
 
@@ -602,7 +602,7 @@ hr {
     margin: 0.55rem 0 0.55rem 0;
     padding: 0.62rem 0.78rem;
     border: 1px solid rgba(148, 163, 184, 0.17);
-    border-radius: 12px;
+    border-radius: 0;
     background: rgba(17, 24, 39, 0.72);
 }
 
@@ -665,7 +665,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button {
     min-height: 2.2rem;
     padding: 0.4rem 0.68rem;
     border: 1px solid rgba(167, 139, 250, 0.42);
-    border-radius: 9px;
+    border-radius: 0;
     background: rgba(15, 23, 42, 0.84);
     color: #e5e7eb;
     font-size: 0.72rem;
@@ -699,7 +699,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     --rm-read-accent: #a78bfa;
     border: 1px solid rgba(148, 163, 184, 0.17);
     border-left: 3px solid var(--rm-read-accent);
-    border-radius: 0 13px 13px 0;
+    border-radius: 0;
     background: linear-gradient(90deg, rgba(30, 41, 59, 0.76), rgba(17, 24, 39, 0.66));
     padding: 0.82rem 1rem 0.86rem 1rem;
     margin: 0.15rem 0 0.58rem 0;
@@ -889,7 +889,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
 }
 .rm-domain-read-evidence-card {
     border: 1px solid rgba(148, 163, 184, 0.15);
-    border-radius: 10px;
+    border-radius: 0;
     background: rgba(15, 23, 42, 0.42);
     display: grid;
     grid-template-rows: minmax(1.8rem, auto) auto 1fr;
@@ -947,8 +947,15 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
 
 
 [data-testid="stPlotlyChart"] {
-    border-radius: calc(var(--rm-radius-panel) - 3px);
+    border-radius: 0;
     overflow: hidden;
+}
+
+[data-testid="stButton"] button,
+[data-testid="stDownloadButton"] button,
+[data-testid="stLinkButton"] a,
+[data-testid="stFormSubmitButton"] button {
+    border-radius: var(--rm-radius-control) !important;
 }
 
 [data-testid="stSelectbox"],
@@ -1020,7 +1027,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     background: rgba(17, 24, 39, 0.72);
     border: 1px solid rgba(148, 163, 184, 0.17);
     border-top: 3px solid rgba(96, 165, 250, 0.84);
-    border-radius: 8px;
+    border-radius: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
     gap: 0;
@@ -1054,7 +1061,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     background: rgba(17, 24, 39, 0.72);
     border: 1px solid rgba(148, 163, 184, 0.19);
     border-top: 3px solid rgba(96, 165, 250, 0.84);
-    border-radius: 8px;
+    border-radius: 0;
     display: grid;
     grid-template-rows: repeat(var(--rm-card-count), minmax(0, 1fr));
     gap: 0;
@@ -1071,6 +1078,13 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     min-width: 0;
     overflow-wrap: anywhere;
     white-space: normal;
+}
+
+/* Market current-conditions proof: the quantitative and categorical rails
+   are one squared editorial system, not mixed rounded/square furniture. */
+.rm-summary-row[data-rm-summary-row="market-ledger"],
+.rm-signal-rail[data-rm-signal-rail="sector-cross-state"] {
+    border-radius: 0;
 }
 
 /* Market signal rail: categorical findings with one shared baseline. */
@@ -1234,7 +1248,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
 .rm-dossier {
     background: rgba(17, 24, 39, 0.76);
     border: 1px solid rgba(148, 163, 184, 0.22);
-    border-radius: 12px;
+    border-radius: 0;
     box-sizing: border-box;
     overflow: hidden;
     width: 100%;
@@ -1263,7 +1277,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
 .rm-dossier-badge {
     background: rgba(96, 165, 250, 0.10);
     border: 1px solid rgba(96, 165, 250, 0.42);
-    border-radius: 999px;
+    border-radius: 0;
     color: #bfdbfe;
     flex: 0 0 auto;
     font-size: 0.68rem;
@@ -1372,7 +1386,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
     background: linear-gradient(105deg, rgba(15, 23, 42, 0.90), rgba(13, 25, 39, 0.78));
     border: 1px solid rgba(148, 163, 184, 0.22);
     border-top: 2px solid rgba(52, 211, 153, 0.72);
-    border-radius: 10px;
+    border-radius: 0;
     box-sizing: border-box;
     overflow: hidden;
     width: 100%;
@@ -1420,7 +1434,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
     align-items: center;
     background: #111827;
     border: 1px solid rgba(52, 211, 153, 0.30);
-    border-radius: 3px;
+    border-radius: 0;
     color: #6ee7b7;
     content: "\203A";
     display: flex;
@@ -1498,7 +1512,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
     background: linear-gradient(105deg, rgba(22, 26, 34, 0.94), rgba(20, 26, 37, 0.76));
     border: 1px solid rgba(148, 163, 184, 0.18);
     border-top: 2px solid rgba(251, 191, 36, 0.76);
-    border-radius: 8px;
+    border-radius: 0;
     display: grid;
     gap: 0;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1577,7 +1591,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
     background: linear-gradient(105deg, rgba(22, 26, 34, 0.94), rgba(20, 26, 37, 0.76));
     border: 1px solid rgba(148, 163, 184, 0.18);
     border-top: 2px solid rgba(251, 191, 36, 0.76);
-    border-radius: 8px;
+    border-radius: 0;
     box-sizing: border-box;
     display: grid;
     gap: 0.62rem;

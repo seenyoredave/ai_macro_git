@@ -4,7 +4,6 @@ import pandas as pd
 import streamlit as st
 
 from analytics.gaps import industrial_growth_gap
-from analytics.infrastructure_cycle import current_buildout_momentum
 from rendering.visual_system import render_plotly_chart
 from rendering.labels import adoption_label, power_capacity_gap_label, speculation_label, validation_label
 from rendering.charts_common import history_from_frame
@@ -111,7 +110,6 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
     }
 
     with st.container(border=True):
-        render_panel_heading("Buildout and outcome gaps")
         chart_col, measures_col = st.columns([1.05, 1.25])
         with chart_col:
             render_plotly_chart(
@@ -139,13 +137,7 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
 
 def _render_buildout_rotation(infrastructure_data):
     history = (infrastructure_data or {}).get("construction_history")
-    current = current_buildout_momentum(history)
-    leader = current.iloc[0] if isinstance(current, pd.DataFrame) and not current.empty else None
-    meta = "Quarterly year-over-year construction growth"
-    if leader is not None:
-        meta = f"Current leader: {leader['Series']} · {float(leader['YoY Growth']) * 100:+.1f}% YoY"
     with st.container(border=True, key="macro-panel-buildout-rotation"):
-        render_panel_heading("Buildout leadership rotation", meta)
         render_plotly_chart(
             infrastructure_leadership_rotation(history),
             width="stretch",

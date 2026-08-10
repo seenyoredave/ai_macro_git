@@ -6,6 +6,10 @@ import numpy as np
 import pandas as pd
 
 from analytics.scoring import tanh_score, weighted_available_score
+from analytics.capital_commitments import (
+    DEFAULT_COMPONENTS_PATH,
+    build_current_commitment_ledger,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_COMMITMENTS_PATH = PROJECT_ROOT / "data" / "capital_commitments.csv"
@@ -90,8 +94,16 @@ def _normalize_commitment_ledger(df, *, as_of_date=None) -> pd.DataFrame:
     )
 
 def load_commitment_ledger(path=None, *, as_of_date=None) -> pd.DataFrame:
-    ledger_path = Path(path) if path is not None else DEFAULT_COMMITMENTS_PATH
+    # The component ledger is authoritative for the current snapshot.
+    # capital_commitments.csv remains a generated compatibility artifact for
+    # review/export and older helpers. Explicit paths still load row ledgers.
+    if path is None and DEFAULT_COMPONENTS_PATH.exists():
+        return _normalize_commitment_ledger(
+            build_current_commitment_ledger(as_of_date=as_of_date),
+            as_of_date=as_of_date,
+        )
 
+    ledger_path = Path(path) if path is not None else DEFAULT_COMMITMENTS_PATH
     if not ledger_path.exists() or ledger_path.stat().st_size == 0:
         return pd.DataFrame(columns=REQUIRED_LEDGER_COLUMNS)
 
