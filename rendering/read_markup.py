@@ -5,6 +5,19 @@ from __future__ import annotations
 import html
 from typing import Any
 
+from config.visual_design import domain_profile
+
+
+
+def domain_read_label(domain: str | None, label: str | None = None) -> str:
+    """Return the canonical Reader-facing label for a domain Read."""
+    profile = domain_profile(domain)
+    requested = str(label or "").strip()
+    if requested and requested.casefold() != "read":
+        return requested
+    if profile is not None:
+        return f"{profile.title} Read"
+    return requested or "Read"
 
 def _reference_links(references: list[dict[str, Any]], *, limit: int = 6) -> str:
     links: list[str] = []
@@ -62,15 +75,14 @@ def _context_items_html(payload: dict) -> str:
             else:
                 citation = f' <span class="rm-domain-read-context-citation">{label}</span>'
         rendered.append(
-            f'<span class="rm-domain-read-context-item">{html.escape(text)}{citation}</span>'
+            f'<div class="rm-domain-read-context-item">{html.escape(text)}{citation}</div>'
         )
     if not rendered:
         return ""
-    joined = '<span class="rm-domain-read-context-separator">•</span>'.join(rendered)
     return (
         '<div class="rm-domain-read-context-row rm-domain-read-recent">'
-        '<span>Recent developments</span>'
-        f'<div class="rm-domain-read-context-items">{joined}</div>'
+        '<div class="rm-domain-read-context-heading">Recent developments</div>'
+        f'<div class="rm-domain-read-context-items">{"".join(rendered)}</div>'
         '</div>'
     )
 

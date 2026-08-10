@@ -521,9 +521,13 @@ def main() -> None:
         raise AssertionError("Evidence should remain a provenance surface, not a narrative-read surface.")
     for token in (
         "def _render_evidence_lookup(",
+        "def _evidence_lineage_rows(",
         '"Find evidence for"',
+        '"Search this evidence path"',
+        '"Evidence layer"',
         '"Definition / boundary"',
         '"Primary sources"',
+        '"Current Context snapshot:',
         "def _sync_evidence_detail_view(",
         "on_change=_sync_evidence_detail_view",
     ):

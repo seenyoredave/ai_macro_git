@@ -824,11 +824,85 @@ def _sync_evidence_detail_view() -> None:
         st.session_state["evidence-view"] = spec["detail_view"]
 
 
+def _source_role_label(reference: dict, event: dict | None = None) -> str:
+    role = str((event or {}).get("evidence_role") or reference.get("evidence_role") or "").strip().casefold()
+    source_type = str((event or {}).get("source_type") or "").strip().casefold()
+    if role == "official_statement" or source_type == "official_statement":
+        return "Primary record"
+    if role == "company_statement" or source_type == "company_statement":
+        return "Company statement"
+    if role in {"secondary", "journalism"}:
+        return "Approved reporting"
+    return "Analytical source"
+
+
+def _evidence_lineage_rows(selected: str, read: dict, spec: dict) -> list[dict]:
+    references = [
+        dict(item)
+        for item in read.get("references", []) or []
+        if isinstance(item, dict) and str(item.get("source_label") or item.get("source_name") or "").strip()
+    ]
+    static_refs = [item for item in references if not str(item.get("event_id") or "").strip()]
+    static_sources = " · ".join(
+        str(item.get("source_label") or item.get("source_name") or "").strip()
+        for item in static_refs[:6]
+    )
+    rows = [{
+        "Claim / evidence": str(read.get("headline") or "Current domain claim is unavailable.").strip(),
+        "Layer": "Retained analytical",
+        "Source": static_sources or "Detailed retained source register",
+        "Provenance": f"{spec['datasets']} · boundary: {spec['definition']}",
+        "source_url": "",
+    }]
+
+    context_payload = read.get("current_context", {}) if isinstance(read.get("current_context"), dict) else {}
+    event_by_id = {
+        str(event.get("event_id") or ""): dict(event)
+        for event in context_payload.get("events", []) or []
+        if isinstance(event, dict) and str(event.get("event_id") or "").strip()
+    }
+    reference_by_number = {
+        int(item.get("reference_number")): item
+        for item in references
+        if str(item.get("reference_number") or "").isdigit()
+    }
+    for item in read.get("current_context_items", []) or []:
+        if not isinstance(item, dict):
+            continue
+        event = event_by_id.get(str(item.get("event_id") or ""), {})
+        try:
+            number = int(item.get("reference_number"))
+        except (TypeError, ValueError):
+            number = 0
+        reference = reference_by_number.get(number, {})
+        source = str(reference.get("source_label") or reference.get("source_name") or event.get("source_label") or event.get("source_name") or "Source").strip()
+        provider = str(event.get("discovery_provider") or "").strip()
+        discovered_via = str(event.get("discovered_via") or "").strip()
+        verification = str(event.get("verification_status") or item.get("status") or "").replace("_", " ").strip()
+        if discovered_via:
+            provenance = f"Discovered via {discovered_via}; evidence established by {source}"
+        elif provider == "primary_feed":
+            provenance = f"Direct primary-source discovery; {verification or 'primary'}"
+        elif provider:
+            provenance = f"Independently retrieved via {provider.replace('_', ' ')}; {verification or 'qualified'}"
+        else:
+            provenance = verification or "Retained qualified Current Context record"
+        rows.append({
+            "Claim / evidence": str(item.get("text") or "").strip(),
+            "Layer": _source_role_label(reference, event),
+            "Source": source,
+            "Provenance": provenance,
+            "source_url": str(reference.get("source_url") or event.get("source_url") or "").strip(),
+        })
+    return rows
+
+
 def _render_evidence_lookup(platform_reads: dict | None) -> None:
     reads = platform_reads or {}
     options = list(_EVIDENCE_LOOKUP)
     if "evidence-view" not in st.session_state:
         st.session_state["evidence-view"] = _EVIDENCE_LOOKUP[options[0]]["detail_view"]
+
     selected = st.selectbox(
         "Find evidence for",
         options,
@@ -838,39 +912,60 @@ def _render_evidence_lookup(platform_reads: dict | None) -> None:
     )
     spec = _EVIDENCE_LOOKUP[selected]
     read = dict(reads.get(selected) or {})
-    references = [
-        dict(item)
-        for item in read.get("references", []) or []
-        if isinstance(item, dict) and str(item.get("source_label") or item.get("source_name") or "").strip()
-    ]
-    source_labels = [
-        str(item.get("source_label") or item.get("source_name") or "").strip()
-        for item in references
-    ]
-    source_text = " · ".join(source_labels[:5])
-    if len(source_labels) > 5:
-        source_text += f" · +{len(source_labels) - 5} more"
+    rows = _evidence_lineage_rows(selected, read, spec)
 
-    claim = str(read.get("headline") or "Current domain claim is unavailable.").strip()
-    table = pd.DataFrame(
-        [
-            {"Step": "Claim", "Record": claim},
-            {"Step": "Definition / boundary", "Record": spec["definition"]},
-            {"Step": "Dataset", "Record": spec["datasets"]},
-            {"Step": "Primary sources", "Record": source_text or "See the detailed source register below."},
-        ]
-    )
-    render_static_table(table)
-    st.caption(f"Detailed records below: {spec['detail_view']}")
+    render_static_table(pd.DataFrame([
+        {"Step": "Definition / boundary", "Record": spec["definition"]},
+        {"Step": "Dataset", "Record": spec["datasets"]},
+        {"Step": "Primary sources", "Record": "Trace the current claim and recent-context evidence in the lineage below, then open the detailed source register."},
+    ]))
+
+    control_a, control_b = st.columns([2, 1])
+    with control_a:
+        query = st.text_input(
+            "Search this evidence path",
+            placeholder="claim, source, dataset, or provenance",
+            key="evidence-lineage-search",
+        ).strip().casefold()
+    with control_b:
+        layers = ["All layers", "Retained analytical", "Primary record", "Company statement", "Approved reporting", "Analytical source"]
+        layer = st.selectbox("Evidence layer", layers, key="evidence-lineage-layer")
+
+    filtered = []
+    for row in rows:
+        haystack = " ".join(str(row.get(key) or "") for key in ("Claim / evidence", "Layer", "Source", "Provenance")).casefold()
+        if query and query not in haystack:
+            continue
+        if layer != "All layers" and str(row.get("Layer") or "") != layer:
+            continue
+        filtered.append(row)
+
+    display = pd.DataFrame([
+        {key: row.get(key, "") for key in ("Claim / evidence", "Layer", "Source", "Provenance")}
+        for row in filtered
+    ])
+    if display.empty:
+        st.caption("No evidence-path records match the current search and layer filter.")
+    else:
+        render_static_table(display)
+
+    snapshot_id = str(read.get("context_snapshot_id") or "").strip()
+    if snapshot_id:
+        st.caption(f"Current Context snapshot: {snapshot_id} · Detailed records below: {spec['detail_view']}")
+    else:
+        st.caption(f"Detailed records below: {spec['detail_view']}")
 
     linked = []
-    for item in references[:5]:
-        label = str(item.get("source_label") or item.get("source_name") or "").strip()
-        url = str(item.get("source_url") or "").strip()
-        if label and url:
+    seen = set()
+    for row in filtered:
+        label = str(row.get("Source") or "").strip()
+        url = str(row.get("source_url") or "").strip()
+        key = (label, url)
+        if label and url.startswith("https://") and key not in seen:
+            seen.add(key)
             linked.append(f"[{label}]({url})")
     if linked:
-        st.markdown("Sources: " + " · ".join(linked))
+        st.markdown("Evidence links: " + " · ".join(linked[:6]))
 
 
 def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, energy_data, debt_markets_data, dashboard_data, infrastructure_data=None, connectivity_data=None, water_data=None, adaptation_data=None, workforce_data=None, economic_impact_data=None, platform_reads=None):

@@ -9,7 +9,7 @@ import streamlit as st
 
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.charts_common import compact_sparkline
-from rendering.read_markup import build_domain_read_html
+from rendering.read_markup import build_domain_read_html, domain_read_label
 from config.visual_design import domain_profile
 from rendering.visual_system import render_plotly_chart
 from rendering.layout_contracts import (
@@ -435,7 +435,7 @@ def render_domain_read(
     st.markdown(
         build_domain_read_html(
             read,
-            label=label,
+            label=domain_read_label(domain, label),
             accent_color=accent_color,
             macro=macro,
         ),

@@ -739,15 +739,18 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     margin-top: 0.26rem;
     max-width: 1160px;
 }
-.rm-domain-read-context-row {
+.rm-domain-read-context-row,
+.rm-domain-read-refs {
     border-top: 1px solid rgba(148, 163, 184, 0.14);
+    padding-top: 0.52rem;
+}
+.rm-domain-read-context-row {
     color: #9eabba;
     font-size: 0.76rem;
     line-height: 1.45;
     margin-top: 0.58rem;
-    padding-top: 0.52rem;
 }
-.rm-domain-read-context-row > span,
+.rm-domain-read-context-heading,
 .rm-domain-read-refs > span {
     color: var(--rm-read-accent);
     font-size: 0.61rem;
@@ -757,32 +760,27 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     text-transform: uppercase;
 }
 .rm-domain-read-recent {
-    display: flex;
-    align-items: baseline;
-    gap: 0.22rem;
+    display: block;
 }
-.rm-domain-read-recent > span {
-    flex: 0 0 auto;
+.rm-domain-read-context-heading {
+    display: block;
+    margin: 0 0 0.28rem 0;
 }
 .rm-domain-read-context-items {
-    display: inline-flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.22rem 0.42rem;
+    display: grid;
+    gap: 0.28rem;
     min-width: 0;
+    max-width: 1160px;
 }
 .rm-domain-read-context-item {
     color: #9eabba !important;
     font-size: 0.76rem !important;
     font-weight: 400 !important;
     letter-spacing: normal !important;
+    display: block;
+    line-height: 1.5 !important;
     margin: 0 !important;
     text-transform: none !important;
-}
-.rm-domain-read-context-separator {
-    color: rgba(148, 163, 184, 0.56) !important;
-    font-size: 0.68rem !important;
-    margin: 0 0.08rem !important;
 }
 .rm-domain-read-context-citation {
     color: #9fb4d0 !important;
@@ -802,7 +800,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     color: #7f8a9a;
     font-size: 0.69rem;
     line-height: 1.42;
-    margin-top: 0.42rem;
+    margin-top: 0.52rem;
 }
 .rm-domain-read-refs a,
 .rm-domain-read-reference-text {
@@ -872,11 +870,6 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     .st-key-platform-purpose .rm-purpose-copy {
         min-height: auto;
         padding: 1.15rem 1rem 1.25rem 1rem;
-    }
-    .rm-domain-read-recent {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0.18rem;
     }
 }
 

@@ -41,6 +41,30 @@ def main() -> None:
     )
     require(".rm-read-section-divider" in theme, "Read divider has no shared visual-system style.")
     require("background: var(--rm-border);" in theme, "Read divider no longer uses the platform border token.")
+    require(
+        ".rm-domain-read-context-row,\n.rm-domain-read-refs" in theme,
+        "Recent developments and References no longer share the internal divider contract.",
+    )
+    require(
+        "border-top: 1px solid rgba(148, 163, 184, 0.14);" in theme,
+        "Read internal section divider is missing or no longer thin.",
+    )
+    require(
+        'class="rm-domain-read-context-heading">Recent developments</div>' in markup,
+        "Recent developments no longer renders as its own block heading.",
+    )
+    require(
+        ".rm-domain-read-recent {\n    display: block;" in theme,
+        "Recent developments row is no longer stacked beneath its heading.",
+    )
+    require(
+        ".rm-domain-read-context-items {\n    display: grid;" in theme,
+        "Recent developments body no longer uses the stacked body layout.",
+    )
+    require(
+        "max-width: 1160px;" in theme,
+        "Recent developments body no longer shares the Read body width contract.",
+    )
 
     for label, relative_path in READ_RENDERERS.items():
         source = (ROOT / relative_path).read_text(encoding="utf-8")

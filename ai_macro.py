@@ -48,10 +48,10 @@ if _loaded_archive is not None and not _archive_package_is_local(_loaded_archive
 import streamlit as st
 
 from analytics.dashboard_context import DashboardContext
+from analytics.context_read_snapshot import build_context_read_pair
 from analytics.factor_engine import calc_sector_factors
 from analytics.regime_engine import build_regime_metrics
 from analytics.macro_dataframe import build_macro_dashboard_data
-from analytics.read_architecture import build_platform_reads
 from analytics.sector_engine import build_sector_metrics
 from archive.archive_reader import load_fred_history, load_macro_history
 from benchmarks.benchmark_service import get_benchmark_metrics_from_market_frame
@@ -77,7 +77,12 @@ from loaders.market_valuation_loader import load_market_valuation_context
 from loaders.nfci_loader import load_nfci_history
 from loaders.snapshot_writer import persist_refresh_snapshots
 from loaders.weekly_context_loader import load_current_context, load_weekly_context
-from loaders.current_context_daily import refresh_current_context_once_daily
+from loaders.current_context_daily import (
+    describe_current_context_state,
+    finalize_context_report,
+    load_public_shared_context_snapshot,
+    refresh_current_context_once_daily,
+)
 from rendering.components import render_masthead, render_platform_purpose
 from rendering.snapshot_status import market_snapshot_label
 from rendering.dashboard import render_research_dashboard
@@ -85,8 +90,8 @@ from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v6.10.12"
-APP_STATE_SCHEMA_VERSION = "64.0-retained-loader-policy"
+APP_VERSION = "v6.10.19"
+APP_STATE_SCHEMA_VERSION = "68.0-source-grounded-current-context"
 
 DOMAIN_REFRESH_LABELS = {
     "current_context": "Current Context",
@@ -110,6 +115,9 @@ inject_research_theme()
 
 if "archive_suspended" not in st.session_state:
     st.session_state.archive_suspended = False
+
+if "current_context_load_report" not in st.session_state:
+    st.session_state.current_context_load_report = {}
 
 if st.session_state.get("app_state_schema_version") != APP_STATE_SCHEMA_VERSION:
     st.session_state.force_rebuild = True
@@ -375,6 +383,24 @@ def render_developer_load_report(report):
                         for column, count in sorted(columns.items())
                     )
                     st.caption(f"Fields filled from the prior snapshot: {summary}")
+        if label == "YFinance" and block.get("provider_fetch_attempts"):
+            st.caption(
+                "Provider pacing: "
+                f"{int(block.get('provider_initial_workers') or 0)} initial workers · "
+                f"batch {int(block.get('provider_batch_size') or 0)} · "
+                f"{int(block.get('provider_fetch_attempts') or 0)} ticker attempts"
+            )
+            retry_rounds = int(block.get("provider_retry_rounds") or 0)
+            rate_limits = int(block.get("provider_rate_limit_events") or 0)
+            if retry_rounds:
+                delays = block.get("provider_retry_delays_sec") or []
+                delay_text = ", ".join(f"{float(value):.1f}s" for value in delays) if delays else "adaptive"
+                st.caption(f"YFinance retries: {retry_rounds} round(s) · cooldowns {delay_text}")
+            if rate_limits:
+                st.warning(f"YFinance rate-limit signals observed: {rate_limits}; adaptive cooldown was applied.")
+            provider_failed = block.get("provider_failed_tickers") or []
+            if provider_failed:
+                st.caption(f"Provider misses after retries ({len(provider_failed)}): {', '.join(provider_failed[:30])}")
         if block.get("requested_at_utc"):
             st.write(f"Requested: `{block.get('requested_at_utc')}`")
         if block.get("latest_complete_date"):
@@ -497,6 +523,87 @@ if developer_mode():
             st.rerun()
 
         st.markdown("---")
+        context_block = dict(st.session_state.get("current_context_load_report") or {})
+        if context_block:
+            st.markdown("**Current Context**")
+            st.write(f"Mode: `{context_block.get('source_mode', context_block.get('refresh_status', 'unknown'))}`")
+            st.write(f"Engine: `{context_block.get('engine_version', 'unknown')}` · retained snapshot: `{context_block.get('retained_discovery_version', context_block.get('discovery_version', 'unknown'))}`")
+            if context_block.get("snapshot_id"):
+                st.write(
+                    f"Snapshot: `{context_block.get('snapshot_id')}` · "
+                    f"Context+Read pair: `{context_block.get('context_read_pair_version', 'pending')}`"
+                )
+            if context_block.get("as_of"):
+                st.write(f"Context as of: `{context_block.get('as_of')}`")
+            if "candidate_count" in context_block:
+                st.write(f"Candidates: `{int(context_block.get('candidate_count', 0) or 0)}` · qualified: `{int(context_block.get('qualified_count', 0) or 0)}`")
+            grounding = context_block.get("grounding") or {}
+            if grounding:
+                st.write(
+                    f"Source grounding: `{int(grounding.get('succeeded', 0) or 0)}/{int(grounding.get('attempted', 0) or 0)}` "
+                    f"succeeded · `{int(grounding.get('failed', 0) or 0)}` rejected · contract `{grounding.get('version', 'unknown')}`"
+                )
+                rejection_reasons = grounding.get("rejection_reasons") or []
+                if rejection_reasons:
+                    with st.expander("Source-grounding rejection reasons", expanded=False):
+                        for row in rejection_reasons[:8]:
+                            st.write(f"`{int(row.get('count', 0) or 0)}` · {row.get('reason', '')}")
+                by_domain_grounding = grounding.get("by_domain") or {}
+                if by_domain_grounding:
+                    with st.expander("Source-grounding by domain", expanded=False):
+                        for domain, row in by_domain_grounding.items():
+                            if not isinstance(row, dict):
+                                continue
+                            metadata_count = int(row.get("metadata_qualified", 0) or 0)
+                            attempted_count = int(row.get("attempted", 0) or 0)
+                            succeeded_count = int(row.get("succeeded", 0) or 0)
+                            selected_count = int(row.get("selected", 0) or 0)
+                            if domain not in {"market", "finance"} and not any((metadata_count, attempted_count, succeeded_count, selected_count)):
+                                continue
+                            st.write(
+                                f"**{domain.replace('_', ' ').title()}** · metadata `{metadata_count}` · "
+                                f"attempted `{attempted_count}` · grounded `{succeeded_count}` · selected `{selected_count}`"
+                            )
+                            domain_reasons = row.get("rejection_reasons") or []
+                            for reason_row in domain_reasons[:3]:
+                                st.caption(
+                                    f"Rejected {int(reason_row.get('count', 0) or 0)} · {reason_row.get('reason', '')}"
+                                )
+            selected_counts = context_block.get("selected_counts") or {
+                domain: len(items) if isinstance(items, list) else 0
+                for domain, items in (context_block.get("selected") or {}).items()
+            }
+            if selected_counts:
+                st.write(
+                    "Selected: "
+                    + " · ".join(
+                        f"{domain.replace('_', ' ').title()} `{count}`"
+                        for domain, count in selected_counts.items()
+                        if domain in {"market", "finance"} or int(count or 0) > 0
+                    )
+                )
+            rendered_counts = context_block.get("rendered_context_counts") or {}
+            if rendered_counts:
+                st.write(
+                    "Rendered: "
+                    + " · ".join(
+                        f"{domain.replace('_', ' ').title()} `{count}`"
+                        for domain, count in rendered_counts.items()
+                        if domain in {"market", "finance"} or int(count or 0) > 0
+                    )
+                )
+            if context_block.get("engine_mismatch") or context_block.get("refresh_required"):
+                st.warning("Retained Current Context predates the installed discovery engine. Use Refresh Current Context to exercise the new policy.")
+            fetch_errors = context_block.get("fetch_errors") or [
+                row for row in (context_block.get("fetch_status") or [])
+                if isinstance(row, dict) and str(row.get("error") or "").strip()
+            ]
+            if fetch_errors:
+                with st.expander(f"Current Context provider errors ({len(fetch_errors)})", expanded=False):
+                    for row in fetch_errors[:20]:
+                        st.write(f"{row.get('domain', '')}:{row.get('provider', '')}: {row.get('error', '')}")
+            st.markdown("---")
+
         st.markdown("**Refresh data sources**")
 
         st.button(
@@ -703,31 +810,44 @@ if st.session_state.force_rebuild:
         force_refresh=commercialization_refresh,
         refresh_token=combined_domain_token(*commercialization_domains),
     )
-    if load_policy.allows_live(RefreshSource.CURRENT_CONTEXT):
-        context_refresh = refresh_current_context_once_daily(
+    if developer_mode():
+        if load_policy.allows_live(RefreshSource.CURRENT_CONTEXT):
+            context_refresh = refresh_current_context_once_daily(
+                as_of=market_date(),
+                force=True,
+            )
+            context_registry_path = context_refresh.get("registry_path")
+        else:
+            # Developer startup remains a strict retained-data read.  The
+            # owner chooses when to exercise the discovery providers.
+            context_refresh = describe_current_context_state()
+            context_registry_path = None
+        current_context = load_current_context(
             as_of=market_date(),
-            force=True,
+            path=context_registry_path,
+            limit_per_domain=2,
         )
-        context_registry_path = context_refresh.get("registry_path")
+        sector_weekly_context = load_weekly_context(
+            as_of=market_date(),
+            path=context_registry_path,
+            surface="sector",
+            limit=15,
+        )
+        context_refresh = finalize_context_report(context_refresh, current_context)
+        current_context = dict(current_context)
+        current_context["snapshot_id"] = context_refresh.get("snapshot_id", "")
+        current_context["snapshot_retrieved_at"] = context_refresh.get("retrieved_at", "")
+        current_context["snapshot_ttl_seconds"] = context_refresh.get("snapshot_ttl_seconds", 900)
     else:
-        context_refresh = {
-            "refresh_status": "retained",
-            "source_mode": "retained",
-        }
-        context_registry_path = None
-    current_context = load_current_context(
-        as_of=market_date(),
-        path=context_registry_path,
-        limit_per_domain=1,
-        include_live=False,
-    )
-    sector_weekly_context = load_weekly_context(
-        as_of=market_date(),
-        path=context_registry_path,
-        surface="sector",
-        limit=15,
-        include_live=False,
-    )
+        # Reader mode keeps repository data immutable while allowing the
+        # ephemeral Current Context layer to advance as one shared ~15-minute
+        # packet.  Streamlit's shared cache means contemporaneous readers see
+        # the same Context rather than independently hitting discovery feeds.
+        shared_context = load_public_shared_context_snapshot(as_of=market_date())
+        context_refresh = dict(shared_context.get("report") or {})
+        current_context = dict(shared_context.get("current_context") or {})
+        sector_weekly_context = dict(shared_context.get("sector_weekly_context") or {})
+    st.session_state.current_context_load_report = dict(context_refresh or {})
     if refresh_domains:
         domain_reports = {
             "current_context": context_refresh,
@@ -777,7 +897,13 @@ if st.session_state.force_rebuild:
         commercialization_data=commercialization_data,
         current_context=current_context,
     )
-    platform_reads = build_platform_reads(read_context)
+    context_read_pair = build_context_read_pair(read_context, context_report=context_refresh)
+    platform_reads = context_read_pair["reads"]
+    st.session_state.current_context_load_report.update({
+        "context_read_pair_version": context_read_pair.get("pair_version", ""),
+        "read_architecture_version": context_read_pair.get("read_architecture_version", ""),
+        "snapshot_id": context_read_pair.get("snapshot_id", context_refresh.get("snapshot_id", "")),
+    })
     regime_metrics["Macro Interpretation"] = platform_reads["macro"]
     market_report = dict(st.session_state.get("market_universe_load_report", {}) or {})
     market_report["fred"] = fred_report
@@ -874,6 +1000,49 @@ commercialization_data = st.session_state.get("commercialization_data", {})
 sector_weekly_context = st.session_state.get("sector_weekly_context", {})
 dashboard_data = st.session_state.get("dashboard_data")
 platform_reads = st.session_state.get("platform_reads", {})
+
+# Public Reader sessions can remain open across several Current Context cache
+# windows.  Ask only for the shared cached packet on every Streamlit rerun; if
+# its snapshot id advanced, rebuild the deterministic Reads against the already
+# loaded immutable analytical data without reloading any retained-data provider.
+if not developer_mode():
+    shared_context = load_public_shared_context_snapshot(as_of=market_date())
+    shared_report = dict(shared_context.get("report") or {})
+    previous_report = dict(st.session_state.get("current_context_load_report") or {})
+    if str(shared_report.get("snapshot_id") or "") != str(previous_report.get("snapshot_id") or ""):
+        current_context = dict(shared_context.get("current_context") or {})
+        sector_weekly_context = dict(shared_context.get("sector_weekly_context") or {})
+        refreshed_read_context = DashboardContext(
+            sector_data=sector_data,
+            sector_metrics=sector_metrics,
+            dashboard_data=dashboard_data,
+            regime_metrics=regime_metrics,
+            fred_data=fred_data,
+            nfci_history=nfci_history,
+            energy_data=energy_data,
+            debt_markets_data=debt_markets_data,
+            infrastructure_data=infrastructure_data,
+            connectivity_data=connectivity_data,
+            water_data=water_data,
+            adaptation_data=adaptation_data,
+            workforce_data=workforce_data,
+            economic_impact_data=economic_impact_data,
+            commercialization_data=commercialization_data,
+            current_context=current_context,
+        )
+        context_read_pair = build_context_read_pair(refreshed_read_context, context_report=shared_report)
+        platform_reads = context_read_pair["reads"]
+        regime_metrics = dict(regime_metrics or {})
+        regime_metrics["Macro Interpretation"] = platform_reads["macro"]
+        shared_report.update({
+            "context_read_pair_version": context_read_pair.get("pair_version", ""),
+            "read_architecture_version": context_read_pair.get("read_architecture_version", ""),
+            "snapshot_id": context_read_pair.get("snapshot_id", shared_report.get("snapshot_id", "")),
+        })
+        st.session_state.current_context_load_report = shared_report
+        st.session_state.sector_weekly_context = sector_weekly_context
+        st.session_state.platform_reads = platform_reads
+        st.session_state.regime_metrics = regime_metrics
 
 loaded_tickers = {
     str(ticker).strip().upper()

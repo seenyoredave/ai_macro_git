@@ -1,22 +1,30 @@
 from __future__ import annotations
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 import re
 
 import pandas as pd
 
 from config.current_context_policy import (
+    DOMAIN_CONTEXT_POLICY,
     DOMAIN_CONTEXT_FALLBACK,
+    DOMAIN_NEWS_TERMS,
+    DOMAIN_TOPIC_ANCHORS,
     assess_source,
+    materiality_score,
     recent_development_copy_issues,
+    term_present,
 )
 from config.sector_config import SECTOR_CONFIG
 from loaders.current_context_news import (
     _bool,
     _clean_sentence,
-    _fetch_live_sector_event,
     _valid_https_url,
+)
+from loaders.current_context_grounding import (
+    GROUNDING_VERSION,
+    is_preview_or_calendar_item,
+    strip_legacy_source_leadin,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,7 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVENT_PATH = ROOT / "data" / "weekly_context_events.csv"
 
 
-WEEKLY_CONTEXT_VERSION = "2.1"
+WEEKLY_CONTEXT_VERSION = "2.4"
 
 
 REQUIRED_COLUMNS = {
@@ -45,7 +53,7 @@ REQUIRED_COLUMNS = {
 }
 
 
-NO_QUALIFYING_NEWS = "No qualifying sector-specific headline was identified in the last seven days."
+NO_QUALIFYING_NEWS = "No qualifying sector-specific development was identified in the last seven days."
 
 
 def _fallback_domain_event(domain: str, current: pd.Timestamp) -> dict:
@@ -105,6 +113,8 @@ def _read_registry(path: Path) -> pd.DataFrame:
         "retrieved_at": "",
         "discovery_provider": "",
         "discovery_query": "",
+        "discovered_via": "",
+        "discovery_source_url": "",
     }
     for column, default in defaults.items():
         if column not in frame.columns:
@@ -122,21 +132,48 @@ def _read_registry(path: Path) -> pd.DataFrame:
 
 
 def _curated_source_allowed(row: dict) -> tuple[bool, str, str]:
+    """Apply the same evidence-status contract on retained reload as discovery.
+
+    Automated discovery records provenance states such as ``reported``,
+    ``primary``, ``company_statement`` and ``independently_retrieved``.  The
+    registry loader preserves those qualified states and applies the same
+    evidence boundary on every reload.
+    """
     source_name = str(row.get("source_name") or "").strip()
     source_url = str(row.get("source_url") or "").strip()
     assessment = assess_source(source_name, source_url, source_url)
     source_type = str(row.get("source_type") or "").strip().lower()
     verification = str(row.get("verification_status") or "").strip().lower()
-    if assessment.tier == "blocked":
+    stored_tier = str(row.get("source_tier") or assessment.tier or "").strip()
+    stored_role = str(row.get("evidence_role") or assessment.evidence_role or "").strip()
+
+    if assessment.tier in {"blocked", "blocked_social", "discovery_only"}:
         return False, assessment.tier, assessment.evidence_role
     if assessment.tier == "manual_review" and verification != "corroborated":
         return False, assessment.tier, assessment.evidence_role
+
     # Curated primary records may include official corporate investor releases
-    # not present on the unattended-news allowlist.
-    if source_type == "primary" and verification in {"confirmed", "corroborated"}:
-        return True, str(row.get("source_tier") or assessment.tier or "primary"), str(row.get("evidence_role") or assessment.evidence_role or "official_statement")
-    if source_type == "news" and verification in {"confirmed", "corroborated"} and assessment.auto_eligible:
-        return True, str(row.get("source_tier") or assessment.tier), str(row.get("evidence_role") or assessment.evidence_role)
+    # not present on the unattended-news allowlist.  Automated institutional
+    # records use source_type=official_statement and verification=primary.
+    if source_type in {"primary", "official_statement"} and verification in {
+        "confirmed", "corroborated", "primary"
+    }:
+        return True, stored_tier or "primary", stored_role or "official_statement"
+
+    # Issuer-distributed releases are evidence of what the issuer said, not
+    # independent journalism.  Preserve that bounded role across persistence.
+    if source_type == "company_statement" and verification in {
+        "confirmed", "corroborated", "company_statement"
+    } and (assessment.auto_eligible or stored_role == "company_statement"):
+        return True, stored_tier or assessment.tier, "company_statement"
+
+    # Approved journalism may be a legacy curated confirmation, an unattended
+    # reported item, or a Tier-2 lead that was independently rediscovered.
+    if source_type == "news" and verification in {
+        "confirmed", "corroborated", "reported", "independently_retrieved"
+    } and assessment.auto_eligible:
+        return True, stored_tier or assessment.tier, stored_role or assessment.evidence_role
+
     return False, assessment.tier, assessment.evidence_role
 
 
@@ -155,12 +192,51 @@ def _row_is_temporally_valid(row: dict, current: pd.Timestamp) -> bool:
     return 0 <= age <= int(expiration)
 
 
+def _automated_row_still_qualifies(row: dict) -> bool:
+    """Revalidate automated rows under the current source-grounded contract.
+
+    Automated records from pre-grounding releases are intentionally ineligible.
+    A retained Reader must never revive headline-derived prose merely because the
+    old row remains in the append-only audit ledger.
+    """
+    if str(row.get("record_origin") or "").strip().casefold() != "automated_discovery":
+        return True
+    if str(row.get("grounding_version") or "").strip() != GROUNDING_VERSION:
+        return False
+    if str(row.get("grounding_status") or "").strip().casefold() != "grounded":
+        return False
+    if not str(row.get("source_evidence_hash") or "").strip():
+        return False
+
+    domain = str(row.get("domain") or "").strip().casefold()
+    fact = strip_legacy_source_leadin(row.get("verified_fact"), row.get("source_name"))
+    relevance = str(row.get("platform_relevance") or "")
+    text = f"{fact} {relevance}".strip()
+    if is_preview_or_calendar_item(fact):
+        return False
+    terms = DOMAIN_NEWS_TERMS.get(domain, ())
+    if terms and not any(term_present(text, term) for term in terms):
+        return False
+    anchors = DOMAIN_TOPIC_ANCHORS.get(domain, ())
+    if anchors and not any(term_present(text, term) for term in anchors):
+        # Source-grounded Grid/Water system constraints may legitimately omit an
+        # AI token in the final compact prose while still affecting the platform.
+        if domain not in {"grid_storage", "water"}:
+            return False
+    minimum = float((DOMAIN_CONTEXT_POLICY.get(domain, {}) or {}).get("minimum_materiality", 0.0001))
+    if materiality_score(text, domain) < minimum:
+        return False
+    return True
+
+
 def _curated_events(frame: pd.DataFrame, current: pd.Timestamp) -> list[dict]:
     events: list[dict] = []
     if frame.empty:
         return events
     for row in frame.to_dict("records"):
         if pd.isna(row.get("priority")) or not _row_is_temporally_valid(row, current):
+            continue
+        if not _automated_row_still_qualifies(row):
             continue
         if not _valid_https_url(row.get("source_url")):
             continue
@@ -211,6 +287,17 @@ def _curated_events(frame: pd.DataFrame, current: pd.Timestamp) -> list[dict]:
             "retrieved_at": str(row.get("retrieved_at") or "").strip(),
             "discovery_provider": str(row.get("discovery_provider") or "").strip(),
             "discovery_query": str(row.get("discovery_query") or "").strip(),
+            "discovered_via": str(row.get("discovered_via") or "").strip(),
+            "discovery_source_url": str(row.get("discovery_source_url") or "").strip(),
+            "grounding_version": str(row.get("grounding_version") or "").strip(),
+            "grounding_status": str(row.get("grounding_status") or "").strip(),
+            "source_resolved_url": str(row.get("source_resolved_url") or row.get("source_url") or "").strip(),
+            "source_text_method": str(row.get("source_text_method") or "").strip(),
+            "source_text_chars": int(float(row.get("source_text_chars") or 0)) if str(row.get("source_text_chars") or "").strip() not in {"", "nan"} else 0,
+            "source_evidence_hash": str(row.get("source_evidence_hash") or "").strip(),
+            "source_title": str(row.get("source_title") or "").strip(),
+            "source_published_date": str(row.get("source_published_date") or "").strip(),
+            "source_modified_date": str(row.get("source_modified_date") or "").strip(),
         })
     return events
 
@@ -300,6 +387,9 @@ def _renumber_context(events: list[dict], current: pd.Timestamp, *, source: str)
                     "event_date": item.get("event_date", ""),
                     "source_tier": item.get("source_tier", ""),
                     "evidence_role": item.get("evidence_role", ""),
+                    "grounding_version": item.get("grounding_version", ""),
+                    "grounding_status": item.get("grounding_status", ""),
+                    "source_evidence_hash": item.get("source_evidence_hash", ""),
                 })
         item["reference_number"] = number
         numbered_events.append(item)
@@ -313,7 +403,8 @@ def _renumber_context(events: list[dict], current: pd.Timestamp, *, source: str)
     }
 
 
-def _complete_sector_context(base_events: list[dict], current: pd.Timestamp, *, include_live: bool) -> dict:
+def _complete_sector_context(base_events: list[dict], current: pd.Timestamp) -> dict:
+    """Resolve Sector Dossier context strictly from the canonical registry."""
     chosen: dict[str, dict] = {}
     for sector in SECTOR_CONFIG:
         candidates = [event for event in base_events if _event_valid_for_sector(event, sector)]
@@ -321,24 +412,7 @@ def _complete_sector_context(base_events: list[dict], current: pd.Timestamp, *, 
         if candidates:
             chosen[sector] = dict(candidates[0])
 
-    missing = [sector for sector in SECTOR_CONFIG if sector not in chosen]
-    if include_live and missing:
-        workers = min(8, len(missing))
-        with ThreadPoolExecutor(max_workers=workers) as executor:
-            futures = {
-                executor.submit(_fetch_live_sector_event, sector, current.date().isoformat()): sector
-                for sector in missing
-            }
-            for future in as_completed(futures):
-                sector = futures[future]
-                try:
-                    event = future.result()
-                except Exception:
-                    event = None
-                if event is not None:
-                    chosen[sector] = event
-
     for sector in SECTOR_CONFIG:
         chosen.setdefault(sector, _fallback_sector_event(sector, current))
     ordered = [chosen[sector] for sector in SECTOR_CONFIG]
-    return _renumber_context(ordered, current, source="curated registry + approved live sector feeds")
+    return _renumber_context(ordered, current, source="current-context registry")

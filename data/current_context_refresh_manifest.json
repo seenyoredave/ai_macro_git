@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-08-09",
+  "as_of": "2026-08-10",
   "audit_path": "/Users/Dave/Desktop/VSC/ai_macro_working/data/current_context_candidate_audit.csv",
-  "candidate_count": 449,
-  "discovery_version": "1.0",
+  "candidate_count": 2033,
+  "discovery_version": "2.1",
   "domains": [
     "market",
     "finance",
@@ -18,212 +18,721 @@
   ],
   "fetch_status": [
     {
-      "domain": "connectivity",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 14,
-      "provider": "gdelt",
-      "query": "(submarine cable OR cable landing station OR internet exchange OR peering facility OR middle mile fiber OR long-haul fiber backbone)",
-      "status": "error"
-    },
-    {
-      "domain": "connectivity",
-      "error": "",
-      "item_count": 0,
-      "lookback_days": 14,
-      "provider": "google_news_rss",
-      "query": "(submarine cable OR cable landing station OR internet exchange OR peering facility OR middle mile fiber OR long-haul fiber backbone)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 10,
-      "provider": "gdelt",
-      "query": "(transmission project OR interconnection queue OR power grid OR battery storage OR transformer shortage OR curtailment)",
-      "status": "error"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 5,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(transmission project OR interconnection queue OR power grid OR battery storage OR transformer shortage OR curtailment)",
-      "status": "ok"
-    },
-    {
       "domain": "compute",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 10,
-      "provider": "gdelt",
-      "query": "(AI chips OR semiconductor manufacturing OR chip export controls OR semiconductor fab OR GPU supply)",
-      "status": "error"
-    },
-    {
-      "domain": "compute",
-      "error": "",
-      "item_count": 4,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(AI chips OR semiconductor manufacturing OR chip export controls OR semiconductor fab OR GPU supply)",
-      "status": "ok"
-    },
-    {
-      "domain": "power",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 7,
-      "provider": "gdelt",
-      "query": "(data center electricity demand OR power generation capacity OR electricity prices OR natural gas generation)",
-      "status": "error"
-    },
-    {
-      "domain": "power",
-      "error": "",
-      "item_count": 57,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(data center electricity demand OR power generation capacity OR electricity prices OR natural gas generation)",
-      "status": "ok"
-    },
-    {
-      "domain": "water",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 14,
-      "provider": "gdelt",
-      "query": "(data center water OR wastewater infrastructure OR industrial water permit OR drought water supply)",
-      "status": "error"
-    },
-    {
-      "domain": "water",
       "error": "",
       "item_count": 62,
-      "lookback_days": 14,
+      "lookback_days": 7,
       "provider": "google_news_rss",
-      "query": "(data center water OR wastewater infrastructure OR industrial water permit OR drought water supply)",
+      "query": "(AI chips OR GPU supply OR AI accelerator supply OR HBM AI)",
       "status": "ok"
     },
     {
-      "domain": "finance",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 7,
-      "provider": "gdelt",
-      "query": "(AI financing OR private equity AI OR venture capital AI OR private credit OR interest rates technology investment)",
-      "status": "error"
-    },
-    {
-      "domain": "finance",
+      "domain": "compute",
       "error": "",
-      "item_count": 69,
+      "item_count": 63,
       "lookback_days": 7,
       "provider": "google_news_rss",
-      "query": "(AI financing OR private equity AI OR venture capital AI OR private credit OR interest rates technology investment)",
+      "query": "(semiconductor fab AI OR advanced packaging AI OR foundry AI)",
       "status": "ok"
     },
     {
-      "domain": "market",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 3,
-      "provider": "gdelt",
-      "query": "(AI earnings OR AI stocks OR semiconductor earnings OR cloud earnings OR AI software guidance)",
-      "status": "error"
+      "domain": "compute",
+      "error": "",
+      "item_count": 65,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI chip export controls OR semiconductor export restrictions)",
+      "status": "ok"
     },
     {
-      "domain": "market",
+      "domain": "compute",
+      "error": "",
+      "item_count": 17,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(Nvidia AMD Broadcom TSMC AI capacity OR semiconductor capacity AI)",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 64,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center construction OR data center campus OR hyperscale campus)",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 56,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center permit OR data center moratorium OR data center zoning)",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 48,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center capacity OR colocation capacity OR hyperscaler campus)",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 58,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center project delay OR data center cancellation OR data center approval)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 58,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center fiber OR AI fiber backbone OR cloud fiber network)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 12,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(submarine cable cloud OR submarine cable data center OR cable landing station)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(internet exchange data center OR peering facility OR interconnection facility)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 0,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(long-haul fiber OR middle mile fiber data center OR route diversity cloud)",
+      "status": "ok"
+    },
+    {
+      "domain": "water",
+      "error": "",
+      "item_count": 52,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center water OR data center wastewater OR data center cooling water)",
+      "status": "ok"
+    },
+    {
+      "domain": "water",
+      "error": "",
+      "item_count": 11,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(industrial water permit data center OR water reuse data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "water",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(drought data center OR water shortage industrial development)",
+      "status": "ok"
+    },
+    {
+      "domain": "water",
       "error": "",
       "item_count": 59,
-      "lookback_days": 3,
+      "lookback_days": 7,
       "provider": "google_news_rss",
-      "query": "(AI earnings OR AI stocks OR semiconductor earnings OR cloud earnings OR AI software guidance)",
+      "query": "(water utility data center OR wastewater capacity data center)",
       "status": "ok"
     },
     {
-      "domain": "data_center",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 14,
-      "provider": "gdelt",
-      "query": "(data center moratorium OR data center permits OR data center construction OR data center campus)",
-      "status": "error"
-    },
-    {
-      "domain": "data_center",
+      "domain": "power",
       "error": "",
-      "item_count": 70,
-      "lookback_days": 14,
+      "item_count": 60,
+      "lookback_days": 7,
       "provider": "google_news_rss",
-      "query": "(data center moratorium OR data center permits OR data center construction OR data center campus)",
+      "query": "(data center electricity demand OR AI electricity demand OR utility load forecast data center)",
       "status": "ok"
     },
     {
-      "domain": "workforce",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 14,
-      "provider": "gdelt",
-      "query": "(AI employment OR technology hiring OR semiconductor jobs OR data center jobs OR AI workforce wages)",
-      "status": "error"
+      "domain": "power",
+      "error": "",
+      "item_count": 49,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center power purchase agreement OR AI power contract OR hyperscaler power)",
+      "status": "ok"
     },
     {
-      "domain": "workforce",
+      "domain": "power",
       "error": "",
-      "item_count": 22,
-      "lookback_days": 14,
+      "item_count": 56,
+      "lookback_days": 7,
       "provider": "google_news_rss",
-      "query": "(AI employment OR technology hiring OR semiconductor jobs OR data center jobs OR AI workforce wages)",
+      "query": "(power generation data center OR gas turbine data center OR nuclear data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 11,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(electricity price data center OR power price industrial load)",
       "status": "ok"
     },
     {
       "domain": "adaptation",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
-      "item_count": 0,
-      "lookback_days": 14,
-      "provider": "gdelt",
-      "query": "(business AI adoption OR enterprise AI use OR AI deployment survey)",
-      "status": "error"
+      "error": "",
+      "item_count": 63,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(enterprise AI adoption OR business AI use OR generative AI adoption)",
+      "status": "ok"
+    },
+    {
+      "domain": "adaptation",
+      "error": "",
+      "item_count": 50,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI deployment survey business OR enterprise AI survey)",
+      "status": "ok"
+    },
+    {
+      "domain": "adaptation",
+      "error": "",
+      "item_count": 23,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI agents enterprise deployment OR AI copilots business use)",
+      "status": "ok"
     },
     {
       "domain": "adaptation",
       "error": "",
       "item_count": 67,
-      "lookback_days": 14,
+      "lookback_days": 7,
       "provider": "google_news_rss",
-      "query": "(business AI adoption OR enterprise AI use OR AI deployment survey)",
+      "query": "(company AI rollout OR AI implementation enterprise)",
       "status": "ok"
     },
     {
-      "domain": "economic_impact",
-      "error": "URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>",
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 57,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center interconnection OR AI interconnection queue OR large load interconnection)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 54,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(transmission data center OR grid upgrade data center OR substation data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 32,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(battery storage data center OR grid storage AI load)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(transformer shortage OR transmission congestion OR renewable curtailment)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 68,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(data center debt OR AI infrastructure financing OR project finance data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 34,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI data center leases OR uncommenced leases OR contractual commitments OR forward commitments)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 24,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(private credit technology OR private credit data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 50,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI venture funding OR AI private equity OR AI fundraise)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 14,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(technology bond issuance OR AI credit ratings OR technology credit spreads)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 28,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(private equity fund close OR technology exits OR private equity distributions)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 15,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(Federal Reserve rates OR interest rates technology investment)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 15,
+      "lookback_days": 7,
+      "provider": "primary_feed",
+      "query": "https://www.federalreserve.gov/feeds/press_monetary.xml",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 25,
+      "lookback_days": 7,
+      "provider": "primary_feed",
+      "query": "https://www.sec.gov/news/pressreleases.rss",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 51,
+      "lookback_days": 7,
+      "provider": "tier2_outbound",
+      "query": "https://abnormalreturns.com/feed",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 15,
+      "lookback_days": 7,
+      "provider": "tier2_outbound",
+      "query": "https://datacenterrichness.substack.com/feed",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 58,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI earnings OR AI guidance OR semiconductor earnings OR cloud earnings)",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 52,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(hyperscaler capex OR AI spending OR data center capex)",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 9,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(semiconductor revenue OR cloud revenue OR AI bookings)",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
       "item_count": 0,
-      "lookback_days": 14,
-      "provider": "gdelt",
-      "query": "(AI productivity OR labor productivity release OR GDP industry technology investment OR economic output AI)",
-      "status": "error"
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI acquisition OR technology IPO OR technology antitrust)",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 67,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI stocks rally OR AI stocks selloff OR AI valuation OR market breadth technology)",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 25,
+      "lookback_days": 7,
+      "provider": "primary_feed",
+      "query": "https://www.sec.gov/news/pressreleases.rss",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 10,
+      "lookback_days": 7,
+      "provider": "tier2_outbound",
+      "query": "https://www.techmeme.com/feed.xml",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 51,
+      "lookback_days": 7,
+      "provider": "tier2_outbound",
+      "query": "https://abnormalreturns.com/feed",
+      "status": "ok"
     },
     {
       "domain": "economic_impact",
       "error": "",
-      "item_count": 34,
-      "lookback_days": 14,
+      "item_count": 63,
+      "lookback_days": 7,
       "provider": "google_news_rss",
-      "query": "(AI productivity OR labor productivity release OR GDP industry technology investment OR economic output AI)",
+      "query": "(AI productivity OR generative AI productivity OR labor productivity AI)",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 70,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI GDP OR AI economic output OR AI value added)",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 40,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI investment productivity OR software investment productivity)",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 20,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI unit labor cost OR AI compensation OR AI income)",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 73,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI jobs OR AI employment OR AI layoffs OR AI hiring)",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 5,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(semiconductor jobs OR data center jobs OR AI infrastructure workforce)",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 64,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(AI wages OR AI skills OR AI occupations OR labor market AI)",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 63,
+      "lookback_days": 7,
+      "provider": "google_news_rss",
+      "query": "(automation jobs AI OR generative AI labor market)",
       "status": "ok"
     }
   ],
+  "grounding": {
+    "attempted": 26,
+    "by_domain": {
+      "adaptation": {
+        "attempted": 1,
+        "failed": 1,
+        "metadata_qualified": 1,
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "underlying source could not be established"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "compute": {
+        "attempted": 0,
+        "failed": 0,
+        "metadata_qualified": 0,
+        "rejection_reasons": [],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "connectivity": {
+        "attempted": 2,
+        "failed": 2,
+        "metadata_qualified": 2,
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+          },
+          {
+            "count": 1,
+            "reason": "best source sentence is topical/commentary rather than a concrete development"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "data_center": {
+        "attempted": 1,
+        "failed": 1,
+        "metadata_qualified": 1,
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "economic_impact": {
+        "attempted": 3,
+        "failed": 3,
+        "metadata_qualified": 3,
+        "rejection_reasons": [
+          {
+            "count": 2,
+            "reason": "underlying source could not be established"
+          },
+          {
+            "count": 1,
+            "reason": "attributed commentary without a new empirical release is not a Current Context development"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "finance": {
+        "attempted": 2,
+        "failed": 2,
+        "metadata_qualified": 2,
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "source text did not contain a concrete development beyond the headline"
+          },
+          {
+            "count": 1,
+            "reason": "underlying source could not be established"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "grid_storage": {
+        "attempted": 4,
+        "failed": 4,
+        "metadata_qualified": 4,
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "source fact cleared evidence gates but did not support a specific analytical consequence"
+          },
+          {
+            "count": 1,
+            "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+          },
+          {
+            "count": 1,
+            "reason": "underlying source could not be established"
+          },
+          {
+            "count": 1,
+            "reason": "best source sentence is topical/commentary rather than a concrete development"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "market": {
+        "attempted": 6,
+        "failed": 5,
+        "metadata_qualified": 6,
+        "rejection_reasons": [
+          {
+            "count": 5,
+            "reason": "underlying source could not be established"
+          }
+        ],
+        "selected": 1,
+        "succeeded": 1
+      },
+      "power": {
+        "attempted": 2,
+        "failed": 2,
+        "metadata_qualified": 2,
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+          },
+          {
+            "count": 1,
+            "reason": "underlying source could not be established"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      },
+      "water": {
+        "attempted": 1,
+        "failed": 0,
+        "metadata_qualified": 1,
+        "rejection_reasons": [],
+        "selected": 1,
+        "succeeded": 1
+      },
+      "workforce": {
+        "attempted": 4,
+        "failed": 4,
+        "metadata_qualified": 4,
+        "rejection_reasons": [
+          {
+            "count": 2,
+            "reason": "underlying source could not be established"
+          },
+          {
+            "count": 1,
+            "reason": "source body does not establish the domain-relevant subject"
+          },
+          {
+            "count": 1,
+            "reason": "source is commentary/topic framing without a source-grounded development"
+          }
+        ],
+        "selected": 0,
+        "succeeded": 0
+      }
+    },
+    "failed": 24,
+    "rejection_reasons": [
+      {
+        "count": 13,
+        "reason": "underlying source could not be established"
+      },
+      {
+        "count": 4,
+        "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+      },
+      {
+        "count": 2,
+        "reason": "best source sentence is topical/commentary rather than a concrete development"
+      },
+      {
+        "count": 1,
+        "reason": "source fact cleared evidence gates but did not support a specific analytical consequence"
+      },
+      {
+        "count": 1,
+        "reason": "source text did not contain a concrete development beyond the headline"
+      },
+      {
+        "count": 1,
+        "reason": "attributed commentary without a new empirical release is not a Current Context development"
+      },
+      {
+        "count": 1,
+        "reason": "source body does not establish the domain-relevant subject"
+      },
+      {
+        "count": 1,
+        "reason": "source is commentary/topic framing without a source-grounded development"
+      }
+    ],
+    "succeeded": 2,
+    "version": "2.1"
+  },
   "providers": [
-    "gdelt",
-    "google_news_rss"
+    "google_news_rss",
+    "primary_feed",
+    "tier2_outbound"
   ],
-  "qualified_count": 0,
+  "qualified_count": 2,
   "registry_path": "/Users/Dave/Desktop/VSC/ai_macro_working/data/weekly_context_events.csv",
-  "registry_rows_added": 0,
-  "retrieved_at": "2026-08-10T02:09:21+00:00",
+  "registry_rows_added": 2,
+  "retrieved_at": "2026-08-10T05:37:24+00:00",
   "selected": {
     "adaptation": [],
     "compute": [],
@@ -232,9 +741,26 @@
     "economic_impact": [],
     "finance": [],
     "grid_storage": [],
-    "market": [],
+    "market": [
+      {
+        "event_date": "2026-08-07",
+        "event_id": "auto-2026-08-07-95ee804f64b8",
+        "rank_score": 144.5,
+        "source_name": "CNBC",
+        "source_url": "https://www.cnbc.com/2026/08/07/chesky-airbnb-ai-earnings.html"
+      }
+    ],
     "power": [],
-    "water": [],
+    "water": [
+      {
+        "event_date": "2026-08-05",
+        "event_id": "auto-2026-08-05-d097ba0dcd54",
+        "rank_score": 125.0,
+        "source_name": "CNBC",
+        "source_url": "https://www.cnbc.com/2026/08/05/drought-rhine-danube-water-levels-economy.html"
+      }
+    ],
     "workforce": []
-  }
+  },
+  "snapshot_id": "cd6bacfa94f09c4d"
 }

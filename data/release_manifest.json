@@ -5,16 +5,20 @@
   },
   "files": {
     "AGENTS.md": {
-      "bytes": 9511,
-      "sha256": "c6e571a5e31acba001b552bb5db64fef5179daee2eaaf2698f4ba5930dc1584f"
+      "bytes": 16190,
+      "sha256": "af5e451ec1fd55aaa21976eed0fd04e662aff2c2014c0efca8104e6f5583d8de"
     },
     "ai_macro.py": {
-      "bytes": 40731,
-      "sha256": "6cb0c63dedb4b11961a70bd042b20467adc59c3ed4b1de1c3f1232d53e87461a"
+      "bytes": 51619,
+      "sha256": "6f62fbe04ea90662284933e314cc9eeae1783502738dbe7e1f0f0da4fb1679c9"
     },
     "analytics/capital_commitments.py": {
       "bytes": 6578,
       "sha256": "5e2563d43396f88792b21be67c5a949c7eed5ef7e9b9e5b6d10522f5adf791d0"
+    },
+    "analytics/context_read_snapshot.py": {
+      "bytes": 3133,
+      "sha256": "29611a96981b89b94d0c11142844484cba1bad9b66fe8727c7494018d94fa347"
     },
     "analytics/deployment_funding_mix.py": {
       "bytes": 27016,
@@ -91,6 +95,10 @@
     "config/benchmark_config.py": {
       "bytes": 1759,
       "sha256": "4cee2a0e19e8e5758862d77471d8c9d02ee97350afe863663ceae10da879eb83"
+    },
+    "config/current_context_policy.py": {
+      "bytes": 30455,
+      "sha256": "5dfff95607d3e13ac332c727f7f8f4068e0d6c61e8095ef03bf53bf0831f6473"
     },
     "config/deployment.py": {
       "bytes": 1238,
@@ -179,9 +187,42 @@
       "rows": 1,
       "sha256": "0a9bd6c1ec8dc9bc9f9295f287f71c42f52a9d4a823c2c8bd3c76c08677f991c"
     },
+    "data/weekly_context_events.csv": {
+      "bytes": 7633,
+      "rows": 12,
+      "sha256": "4b67b698af17b9bc8157b4ea9d6cbc475523b8d74ba5c3f8466d1e9084b00d7a"
+    },
+    "docs/CURRENT_CONTEXT_ACTIVATION_READ_LABELS_2026-08-09.md": {
+      "bytes": 1735,
+      "sha256": "9061cc03ee8f061838d5877dd0d2a774ee86fc25d51146e0955e14ffd766d727"
+    },
+    "docs/CURRENT_CONTEXT_CLUMP_A_2026-08-09.md": {
+      "bytes": 2974,
+      "sha256": "ab6da1a70bc4a7300320b1db1732bbb8449f42722afe209d3610770227cc894c"
+    },
+    "docs/CURRENT_CONTEXT_CLUMP_B_2026-08-09.md": {
+      "bytes": 1888,
+      "sha256": "8905fd6ef6aa974e6494558477e868d01ab6dc940a7523d323f8d1a0eebd6f25"
+    },
+    "docs/CURRENT_CONTEXT_CLUMP_C_PROVIDER_RESILIENCE_2026-08-09.md": {
+      "bytes": 1989,
+      "sha256": "1f1f8c775bdd8628333e3f41d6630306ee097302feb77b9b33d229378b08f70e"
+    },
+    "docs/CURRENT_CONTEXT_RENDERING_REPAIR_2026-08-09.md": {
+      "bytes": 1527,
+      "sha256": "35a74c39017a88c41d30085ea73737f870460331af6f922d09102a2c6fbaa571"
+    },
+    "docs/CURRENT_CONTEXT_SOURCE_GROUNDING_2026-08-09.md": {
+      "bytes": 2968,
+      "sha256": "3cee12322f1665df6978347d81e9f51bfa487b6c132c3a4253256d842478fb60"
+    },
+    "docs/EDITORIAL_STYLE.md": {
+      "bytes": 9435,
+      "sha256": "caa2506ee1571d58f4af2188ccad71269e2e68cc2867fb4f87c0cb19b7c25c33"
+    },
     "docs/RUNTIME_DATA_CONTRACT.md": {
-      "bytes": 6469,
-      "sha256": "4d73e391ced64c63f02b96da7e1edf92944f18110291843e706bc5ac45002318"
+      "bytes": 10534,
+      "sha256": "32bd4c9256e451d4c6db4a58a8eb68bd01c372de97a05522bb210f5d99ee87a4"
     },
     "helpers/build_capital_commitment_ledger.py": {
       "bytes": 610,
@@ -195,6 +236,26 @@
       "bytes": 13323,
       "sha256": "e930cce65a8cd87ff7c8336f21e7f2862fb1ce4e20d25ceaad938c9be932e5f5"
     },
+    "loaders/current_context_daily.py": {
+      "bytes": 12096,
+      "sha256": "f216bd93891bebc2d8225f0ef162f5023ca34f1f58f27ac173cfeda670531643"
+    },
+    "loaders/current_context_discovery.py": {
+      "bytes": 39287,
+      "sha256": "7e31a8e454f84b47e6eeb9cdbc0027b1107c6fb1b16dcd00b44908ecac859ae7"
+    },
+    "loaders/current_context_grounding.py": {
+      "bytes": 60836,
+      "sha256": "9a3e203348423d62cacf7fc2157e014605b544c3c3662a6d0b1db21755efe3d4"
+    },
+    "loaders/current_context_news.py": {
+      "bytes": 7103,
+      "sha256": "d59af385a2bbf513f3c5ec01b619e6c17bcdf3fdd535e749fb82ecdf5026bc08"
+    },
+    "loaders/current_context_registry.py": {
+      "bytes": 17819,
+      "sha256": "3e8487c37b230dbf5367cbc6bfab44ad0295b131d1c5830cf932c66051ce5e5f"
+    },
     "loaders/edgar_client.py": {
       "bytes": 2037,
       "sha256": "59cefe8402f34ca0ec5173772b4bfe85a2e66b783a97d66295cf3967b3f30033"
@@ -204,8 +265,8 @@
       "sha256": "3ac6c48a3cf44b30cb897660f8a49cfda2221ad0a7902100dd261ba112cd9d0d"
     },
     "loaders/market_loader.py": {
-      "bytes": 19288,
-      "sha256": "5eba14f5e833d13becbe10024df5de7d8420ec99ef32b2ab5daae0fc21e1f966"
+      "bytes": 24245,
+      "sha256": "af59b22891f81f86e4449bae8221d510e4e27bb0fa2b82e5853c55774c8122d6"
     },
     "loaders/market_valuation_loader.py": {
       "bytes": 1098,
@@ -219,9 +280,17 @@
       "bytes": 11274,
       "sha256": "60b1bdadc4fd2a4f8cbd80543355a7a70c62db0b47133d9e6fc1635d248c4802"
     },
+    "loaders/weekly_context_loader.py": {
+      "bytes": 4547,
+      "sha256": "e4f53f103cca70d03b9f467fed02ff9c27c5ce4773121a3ae0e9200ab0b29be8"
+    },
     "rendering/components.py": {
-      "bytes": 16221,
-      "sha256": "75fc9757754cca75b4bd4f2efc6d4d80bff319b4db54c84259ac8484aee681c6"
+      "bytes": 16267,
+      "sha256": "033dc5cf34fe1d295ba8c2179180dcf21b735d8b3169e510faec81e7bf5caf04"
+    },
+    "rendering/evidence.py": {
+      "bytes": 54302,
+      "sha256": "a002b06800a341c63e86c3f2095563962b24acac55e3fe95045ad2ff6742e5c3"
     },
     "rendering/finance.py": {
       "bytes": 24250,
@@ -235,12 +304,16 @@
       "bytes": 26242,
       "sha256": "edfb0101f527cefdc66cba02fdff815fbe319380a29be2fb31300694079d0613"
     },
+    "rendering/read_markup.py": {
+      "bytes": 5767,
+      "sha256": "72e2528816f48ab069f374b9ee63a8d109e1e84c2ce63493c21eb2151e962c74"
+    },
     "rendering/theme.css": {
-      "bytes": 41752,
-      "sha256": "406ed2b9a085ee9843cb83a83e6050fd4f0c3568c338afcd451fb0c389a4256e"
+      "bytes": 41523,
+      "sha256": "b8f0d6d0d2e8f310cdd5bb0356bff8c2276e817a390fde8f810111b3b2280fd3"
     }
   },
-  "generated_at_utc": "2026-08-10T02:03:01+00:00",
+  "generated_at_utc": "2026-08-10T05:34:59+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -251,6 +324,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "fc7d29c904fd60be7a2c",
+  "release_id": "320419e46f914bfecbb1",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }

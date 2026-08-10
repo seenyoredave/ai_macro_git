@@ -45,8 +45,9 @@ Evidence,Interactive table,detail / evidence,,arrow_safe_dataframe(factor_frame)
 Evidence,Interactive table,detail / evidence,,"arrow_safe_dataframe(metrics.get('Pressure Components', pd.DataFrame()))",shared,,rendering/evidence.py,422
 Evidence,Interactive table,detail / evidence,,arrow_safe_dataframe(concentration_table),shared,,rendering/evidence.py,443
 Evidence,Selector,view control,evidence-workforce-earnings-view,'Earnings evidence',shared,,rendering/evidence.py,715
-Evidence,Selector,view control,evidence-lookup-domain,'Find evidence for',shared,,rendering/evidence.py,832
-Evidence,Selector,view control,evidence-view,'Evidence view',shared,,rendering/evidence.py,893
+Evidence,Selector,view control,evidence-lookup-domain,'Find evidence for',shared,,rendering/evidence.py,906
+Evidence,Selector,view control,evidence-lineage-layer,'Evidence layer',shared,,rendering/evidence.py,932
+Evidence,Selector,view control,evidence-view,'Evidence view',shared,,rendering/evidence.py,988
 Finance,Chart,trend,'finance-{slug}-history',strain_history_figure,shared,,rendering/finance.py,257
 Finance,Chart,diagnostic,'finance-{slug}-components',"component_bars(components, signed=True, height=300)",shared,,rendering/finance.py,264
 Finance,Chart,trend,finance-debt-market-history,"debt_market_history((debt_markets_data or {}).get('history'), years=10)",shared,,rendering/finance.py,314

@@ -28,12 +28,7 @@ from rendering.charts_market import (
     sector_signal_anatomy_chart,
     speculative_load_matrix,
 )
-from loaders.weekly_context_loader import (
-    NO_QUALIFYING_NEWS,
-    _news_item_matches,
-    _parse_google_news_rss,
-    load_weekly_context,
-)
+from loaders.weekly_context_loader import NO_QUALIFYING_NEWS, load_weekly_context
 from rendering.sector_dossier import (
     build_sector_narrative,
     build_structure_snapshot,
@@ -194,7 +189,7 @@ def main() -> None:
         raise AssertionError("A materially dominant company contribution was not recognized.")
 
     sector_context = load_weekly_context(
-        as_of="2026-08-03", surface="sector", limit=15, include_live=False
+        as_of="2026-08-03", surface="sector", limit=15
     )
     if len(sector_context.get("events", [])) != 15:
         raise AssertionError("Every configured sector must receive a This Week event or explicit no-match status.")
@@ -236,19 +231,6 @@ def main() -> None:
     if not cloud_narrative.get("weekly_note") or not cloud_narrative.get("reference"):
         raise AssertionError("Mapped seven-day sector context or its reference is missing.")
 
-    rss_fixture = b"""<?xml version='1.0' encoding='UTF-8'?>
-    <rss><channel><item>
-      <title>Fortinet reports strong security demand - Example News</title>
-      <link>https://news.google.com/rss/articles/example</link>
-      <pubDate>Mon, 03 Aug 2026 12:00:00 GMT</pubDate>
-      <description>Cybersecurity and AI security demand increased.</description>
-      <source url='https://example.com'>Example News</source>
-    </item></channel></rss>"""
-    parsed_items = _parse_google_news_rss(rss_fixture)
-    if len(parsed_items) != 1 or not _news_item_matches(parsed_items[0], "CYBERSECURITY_AI_TRUST"):
-        raise AssertionError("Live sector-news RSS parsing or relevance filtering failed.")
-    if _news_item_matches(parsed_items[0], "ROBOTICS"):
-        raise AssertionError("Sector-news relevance filtering leaked a cyber headline into Robotics.")
     snapshot = dict(build_structure_snapshot(compute_metrics, len(compute)))
     required_snapshot = {
         "Constituents",

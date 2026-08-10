@@ -51,8 +51,13 @@ def main() -> int:
         "Application version is missing or not semantic-versioned.",
     )
     require(
-        'APP_STATE_SCHEMA_VERSION = "64.0-retained-loader-policy"' in app,
-        "State schema lost the retained-loader policy contract.",
+        re.search(r'APP_STATE_SCHEMA_VERSION = "\d+\.\d+-[^"]+"', app) is not None,
+        "Application state schema is missing or malformed.",
+    )
+    runtime_contract = (ROOT / "docs" / "RUNTIME_DATA_CONTRACT.md").read_text(encoding="utf-8")
+    require(
+        "developer retained startup performs zero provider calls" in runtime_contract.casefold(),
+        "State-schema bump lost the retained-loader policy contract.",
     )
     require(READ_ARCHITECTURE_VERSION == "7.2.0", "Read architecture version does not match the v7.2.0 evidence-language contract.")
     require(readme.startswith("# AI Macro\n"), "README no longer opens with the project overview.")

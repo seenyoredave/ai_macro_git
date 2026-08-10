@@ -57,6 +57,33 @@ FINANCIAL_CONDITION_COLUMNS = [
     "Net Debt / EBITDA YoY Change",
     "CapEx / OCF YoY Change",
 ]
+
+YFINANCE_PULL_MAX_ATTEMPTS = 3
+YFINANCE_PULL_INITIAL_WORKERS = 2
+YFINANCE_PULL_BATCH_SIZE = 24
+YFINANCE_PULL_BATCH_PAUSE_SECONDS = 0.35
+YFINANCE_PULL_RETRY_DELAY_SECONDS = 2.0
+YFINANCE_PULL_RATE_LIMIT_DELAY_SECONDS = 6.0
+
+
+def _is_yfinance_rate_limit_error(exc: BaseException) -> bool:
+    text = f"{type(exc).__name__}: {exc}".casefold()
+    tokens = (
+        "429",
+        "too many requests",
+        "rate limit",
+        "ratelimit",
+        "rate-limit",
+        "yf rate limit",
+    )
+    return any(token in text for token in tokens)
+
+
+def _chunked(items, size):
+    size = max(1, int(size))
+    for start in range(0, len(items), size):
+        yield items[start:start + size]
+
 YF_REQUIRED_COLUMNS = [
     "Date",
     "Market Data Date",
@@ -231,7 +258,8 @@ def _safe_market_number(fast_info, info, *keys):
             return value
     return np.nan
 
-def _fetch_company(ticker, company):
+def _fetch_company_attempt(ticker, company):
+    """Fetch one YFinance company and preserve transport/rate-limit diagnostics."""
     try:
         ticker_obj = yf.Ticker(ticker)
         fast_info = getattr(ticker_obj, "fast_info", {}) or {}
@@ -258,16 +286,16 @@ def _fetch_company(ticker, company):
 
         history = ticker_obj.history(period="2y", auto_adjust=True)
         if history is None or history.empty:
-            return None
+            raise ValueError("price history was empty")
         history = history.dropna(subset=["Close"])
         if history.empty:
-            return None
+            raise ValueError("price history contained no valid close")
 
         market_data_date = pd.to_datetime(
             history.index[-1], errors="coerce", utc=True
         )
 
-        return {
+        result = {
             "Ticker": ticker,
             "Company": company,
             "Market Data Date": (
@@ -289,38 +317,107 @@ def _fetch_company(ticker, company):
             **year_to_date_snapshot(history, market_cap),
             **calc_trading_pressure_fields(history),
         }
+        return {
+            "ticker": str(ticker).upper().strip(),
+            "result": result,
+            "error": "",
+            "rate_limited": False,
+        }
     except Exception as exc:
-        print(f"{ticker} failed -> {exc}")
-        return None
+        return {
+            "ticker": str(ticker).upper().strip(),
+            "result": None,
+            "error": f"{type(exc).__name__}: {exc}",
+            "rate_limited": _is_yfinance_rate_limit_error(exc),
+        }
 
-def pull_yfinance(ticker_tuple, attempts=2):
-    tickers = dict(ticker_tuple)
+
+def pull_yfinance(ticker_tuple, attempts=YFINANCE_PULL_MAX_ATTEMPTS):
+    """Pull the configured universe with provider-friendly adaptive pacing.
+
+    The retained archive still advances only on complete live row coverage.
+    Pacing changes therefore improve resilience without relaxing the 204/204
+    publication contract or silently treating archive fallback rows as live.
+    """
+    started = time.perf_counter()
+    tickers = {str(key).upper().strip(): value for key, value in dict(ticker_tuple).items()}
     pending = dict(tickers)
     collected = {}
+    attempt_counts = {ticker: 0 for ticker in tickers}
+    last_errors = {}
+    rate_limit_events = 0
+    retry_delays = []
+    rounds_run = 0
+    max_attempts = max(1, int(attempts))
 
-    for attempt in range(max(1, int(attempts))):
+    for attempt in range(max_attempts):
         if not pending:
             break
-        workers = 3 if attempt == 0 else 1
+        rounds_run += 1
+        workers = YFINANCE_PULL_INITIAL_WORKERS if attempt == 0 else 1
+        batch_size = YFINANCE_PULL_BATCH_SIZE if attempt == 0 else min(12, YFINANCE_PULL_BATCH_SIZE)
         items = list(pending.items())
-        with ThreadPoolExecutor(max_workers=workers) as executor:
-            results = list(executor.map(lambda item: _fetch_company(*item), items))
+        round_rate_limited = False
 
-        for result in results:
-            if result and result.get("Ticker"):
-                ticker = str(result["Ticker"]).upper().strip()
-                collected[ticker] = result
-                pending.pop(ticker, None)
+        batches = list(_chunked(items, batch_size))
+        for batch_index, batch in enumerate(batches):
+            with ThreadPoolExecutor(max_workers=workers) as executor:
+                outcomes = list(executor.map(lambda item: _fetch_company_attempt(*item), batch))
 
-        if pending and attempt + 1 < max(1, int(attempts)):
-            time.sleep(1.0)
+            for outcome in outcomes:
+                ticker = str(outcome.get("ticker") or "").upper().strip()
+                if not ticker:
+                    continue
+                attempt_counts[ticker] = int(attempt_counts.get(ticker, 0)) + 1
+                result = outcome.get("result")
+                if result:
+                    collected[ticker] = result
+                    pending.pop(ticker, None)
+                    last_errors.pop(ticker, None)
+                    continue
+                error = str(outcome.get("error") or "unknown provider failure")
+                last_errors[ticker] = error
+                if bool(outcome.get("rate_limited")):
+                    rate_limit_events += 1
+                    round_rate_limited = True
+
+            # A tiny inter-batch pause reduces burstiness without materially
+            # extending a successful 204-company refresh.
+            if batch_index + 1 < len(batches):
+                time.sleep(YFINANCE_PULL_BATCH_PAUSE_SECONDS)
+
+        if pending and attempt + 1 < max_attempts:
+            base = (
+                YFINANCE_PULL_RATE_LIMIT_DELAY_SECONDS
+                if round_rate_limited
+                else YFINANCE_PULL_RETRY_DELAY_SECONDS
+            )
+            delay = min(20.0, float(base) * (1.0 + attempt))
+            retry_delays.append(delay)
+            time.sleep(delay)
 
     ordered = [
         collected[ticker]
-        for ticker in (str(value).upper().strip() for value in tickers)
+        for ticker in tickers
         if ticker in collected
     ]
-    return pd.DataFrame(ordered)
+    frame = pd.DataFrame(ordered)
+    frame.attrs["provider_report"] = {
+        "requested_tickers": len(tickers),
+        "succeeded_tickers": len(collected),
+        "failed_tickers": sorted(pending),
+        "failed_errors": {ticker: last_errors.get(ticker, "") for ticker in sorted(pending)},
+        "attempt_rounds": int(rounds_run),
+        "retry_rounds": max(0, int(rounds_run) - 1),
+        "total_fetch_attempts": int(sum(attempt_counts.values())),
+        "rate_limit_events": int(rate_limit_events),
+        "retry_delays_sec": retry_delays,
+        "initial_workers": int(YFINANCE_PULL_INITIAL_WORKERS),
+        "retry_workers": 1,
+        "batch_size": int(YFINANCE_PULL_BATCH_SIZE),
+        "elapsed_sec": time.perf_counter() - started,
+    }
+    return frame
 
 def _archive_yfinance_result(frame, tickers, *, source_mode, decision):
     archived = ensure_yf_schema(frame).copy()
@@ -451,14 +548,26 @@ def _load_yfinance_cached(
         )
         debug_print(f"Pulling current YFinance data ({trigger}): {sector}")
         fresh = pull_yfinance(ticker_tuple)
+        provider_report = dict(getattr(fresh, "attrs", {}).get("provider_report", {}))
         if fresh is None or fresh.empty:
-            raise ValueError("yfinance returned an empty DataFrame")
+            failures = provider_report.get("failed_tickers") or []
+            detail = f"; failed tickers={','.join(failures[:12])}" if failures else ""
+            raise ValueError(f"yfinance returned an empty DataFrame{detail}")
 
         merged = merge_live_yfinance_with_archive(fresh, fallback, tickers)
         report = dict(getattr(merged, "attrs", {}).get("load_report", {}))
         report.update({
             "decision": decision,
             "refresh_trigger": trigger,
+            "provider_attempt_rounds": int(provider_report.get("attempt_rounds") or 0),
+            "provider_retry_rounds": int(provider_report.get("retry_rounds") or 0),
+            "provider_fetch_attempts": int(provider_report.get("total_fetch_attempts") or 0),
+            "provider_rate_limit_events": int(provider_report.get("rate_limit_events") or 0),
+            "provider_failed_tickers": provider_report.get("failed_tickers") or [],
+            "provider_failed_errors": provider_report.get("failed_errors") or {},
+            "provider_retry_delays_sec": provider_report.get("retry_delays_sec") or [],
+            "provider_initial_workers": int(provider_report.get("initial_workers") or YFINANCE_PULL_INITIAL_WORKERS),
+            "provider_batch_size": int(provider_report.get("batch_size") or YFINANCE_PULL_BATCH_SIZE),
         })
         merged.attrs["load_report"] = report
         return ensure_yf_schema(merged)

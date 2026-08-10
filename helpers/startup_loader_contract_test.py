@@ -366,13 +366,13 @@ def main() -> None:
         )
         current_context = _timed(
             "current_context",
-            lambda: load_current_context(as_of=market_date(), include_live=False),
+            lambda: load_current_context(as_of=market_date()),
             timings,
         )
         sector_context = _timed(
             "sector_context",
             lambda: load_weekly_context(
-                as_of=market_date(), surface="sector", limit=15, include_live=False
+                as_of=market_date(), surface="sector", limit=15
             ),
             timings,
         )
