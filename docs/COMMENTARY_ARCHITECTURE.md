@@ -44,9 +44,9 @@ Current Context continues to render when it has qualified content. Its determini
 ## OpenAI boundary
 
 - API credentials stay in `OPENAI_API_KEY`; credentials are never persisted in artifacts.
-- Generation is owner-triggered from Developer Tools. Public Streamlit never calls OpenAI.
+- Generation is owner-triggered from Developer Tools or invoked by the approved automation worker under hard paid-call ceilings and zero SDK retries. Public Streamlit never calls OpenAI.
 - Model output is Pydantic-structured and then deterministically validated. Structured shape does not establish factual truth; local validation remains mandatory.
-- The API is not a scheduler, provider loader, database, or autonomous agent.
+- The API is not a scheduler, provider loader, database, or autonomous agent. Scheduling and publication authority live in the deterministic automation layer.
 - Current Context semantic triage/search remains a separate future evaluation surface.
 
 ## Code ownership
@@ -61,6 +61,7 @@ Current Context continues to render when it has qualified content. Its determini
 - `analytics/read_context.py` — independent Current Context attachment
 - `analytics/reader_snapshot.py` — final Reader assembly
 - `developer/` — owner-only Operations, Current Context, AI, and Diagnostics workspaces
+- `automation/` — bounded headless refresh, paid-call guard, run ledger, and publication decision
 
 
 ## Two-paragraph Macro shape

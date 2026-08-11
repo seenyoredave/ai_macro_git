@@ -9,26 +9,35 @@ PUBLIC_RUNTIME_ROOT = Path(tempfile.gettempdir()) / "ai_macro"
 
 
 def app_mode() -> str:
-    """Return the explicit deployment mode; public is the safe default."""
+    """Return the explicit runtime mode; public is the safe default."""
     value = str(os.getenv("AI_MACRO_MODE", "public") or "public").strip().lower()
-    return "developer" if value in {"dev", "developer", "local", "admin"} else "public"
+    if value in {"dev", "developer", "local", "admin"}:
+        return "developer"
+    if value in {"automation", "worker", "scheduled"}:
+        return "automation"
+    return "public"
 
 
 def developer_mode() -> bool:
     return app_mode() == "developer"
 
 
+def automation_mode() -> bool:
+    return app_mode() == "automation"
+
+
 def repository_writes_enabled() -> bool:
-    """Only the desktop/developer workflow may mutate retained repository data."""
-    return developer_mode()
+    """Only explicit owner/developer or automation-worker runtimes may mutate retained state."""
+    return app_mode() in {"developer", "automation"}
 
 
 def current_context_paths() -> dict[str, Path]:
-    """Use retained files locally and an ephemeral shared ledger in public mode."""
-    if developer_mode():
-        base = PROJECT_ROOT / "data"
-    else:
-        base = PUBLIC_RUNTIME_ROOT / "current_context"
+    """Return the single retained Current Context publication paths.
+
+    Public Reader processes are readers only.  Developer and automation-worker
+    processes are the only runtimes allowed to refresh these retained files.
+    """
+    base = PROJECT_ROOT / "data"
     return {
         "base": base,
         "registry": base / "weekly_context_events.csv",

@@ -4,13 +4,17 @@
     "weight_effective_date": "2026-08-02"
   },
   "files": {
+    ".github/workflows/ai_macro_automation.yml": {
+      "bytes": 5858,
+      "sha256": "ee7da7cfbfc71074bee46fea63ed6ea0edba38a72f3139ad7306aa982b004fcc"
+    },
     "AGENTS.md": {
-      "bytes": 21613,
-      "sha256": "4ba3129bc3343475871a7b9d3323f3d81298ebb00b48e9215fa136857222be37"
+      "bytes": 21705,
+      "sha256": "8072625c240edfe8621a186a7e532e782fcae925f1a161d019980836301058b0"
     },
     "ai_macro.py": {
-      "bytes": 29402,
-      "sha256": "7aa1431bfccd1cbfef2f7520ed8f81139ef97129b73722701f3795417686b01c"
+      "bytes": 26844,
+      "sha256": "c57ee10a01b7ed9df939f7ec6f7b5dd47d80700338614211a292b8fef79e68d6"
     },
     "analytics/capital_commitments.py": {
       "bytes": 6578,
@@ -45,8 +49,8 @@
       "sha256": "0da1b85b04a7fb99885ebf6dae0f57a0d254aaac0be13d6b8ad90aa01bacf5aa"
     },
     "analytics/read_store.py": {
-      "bytes": 4780,
-      "sha256": "bc02632081601033c50dfb7dddcaffa467c2dc7ef6dfb057d29cd2d6f650e56f"
+      "bytes": 4810,
+      "sha256": "e5e336597939c101880a71e8f39e25f3665c96203636bc5b3b1c0211da1061a1"
     },
     "analytics/read_validation.py": {
       "bytes": 18591,
@@ -116,6 +120,34 @@
       "rows": 5508,
       "sha256": "819514a345d8fa0d78e7646afa9c4b5b17e0c21964dc9f1e82c12ba2803ad89b"
     },
+    "automation/__init__.py": {
+      "bytes": 61,
+      "sha256": "452925967bf0c71dd8650125027f07a22692d20d93bc8316f0d146819fc25cef"
+    },
+    "automation/budget.py": {
+      "bytes": 2364,
+      "sha256": "5852d888c17a74263944c30bae4a67a6fa5b771ca2fef19ebd491b2abd1b0747"
+    },
+    "automation/config.py": {
+      "bytes": 2520,
+      "sha256": "8456e5536d8a76f1073c9336265ba00fc19fcccf8520bd2a2bec3cfc816f234d"
+    },
+    "automation/ledger.py": {
+      "bytes": 3217,
+      "sha256": "be19ebc5ab52e340a936d6862211e29ad0a8d2e2cc336eac81be7fa190ade627"
+    },
+    "automation/research_refresh.py": {
+      "bytes": 12841,
+      "sha256": "8f5fa395d6a0cc1dac8a0421ac5be4bffafc8fc97bdcb49d861e994aef71187d"
+    },
+    "automation/runner.py": {
+      "bytes": 11120,
+      "sha256": "2ba1e28270ee9465ae5e206dc5b855588d084023f439912a7149beb715cb59f0"
+    },
+    "automation/status.py": {
+      "bytes": 493,
+      "sha256": "dfc72a67cdd395fde53d922ac78a4cf05f9bdb0cf66327870bfa72f3bed50d20"
+    },
     "benchmarks/benchmark_service.py": {
       "bytes": 9769,
       "sha256": "4757dbd8988bd5e7f5406d54b87ef3dc0ebb034a5d610efa062392bc57a9cac5"
@@ -125,28 +157,28 @@
       "sha256": "4cee2a0e19e8e5758862d77471d8c9d02ee97350afe863663ceae10da879eb83"
     },
     "config/current_context_policy.py": {
-      "bytes": 104744,
-      "sha256": "9276829d1ac56982ee32f4b969afc2b4d077980d8c1087bae2486b0412648231"
+      "bytes": 105904,
+      "sha256": "8b57170a70f5a210a545eb203f0888b9d257b659b1ef04a87f2d64ff3b292372"
     },
     "config/deployment.py": {
-      "bytes": 1231,
-      "sha256": "fc03ce35eceb16ed699fb5dee05ac221fe613f3108ee2a7811769ea6ac8dbbb0"
+      "bytes": 1492,
+      "sha256": "b98c3864e21e52b3db12d094f7019929dc32d8dce7c088b249debf0f9bc9a9b2"
     },
     "config/factor_config.py": {
       "bytes": 558,
       "sha256": "79ef62d9fb91730a3a82cd6fc847143f70de4648ffb944412915d53ae38fad26"
     },
     "config/load_policy.py": {
-      "bytes": 3804,
-      "sha256": "9aed804601f3fa8df0993871669253c15be08ecba7e242410b44d589cd541dba"
+      "bytes": 3835,
+      "sha256": "f85c328d3d937c8442cd906818fccc67a235abd7cb5b4a5382e4d9c753a19072"
     },
     "config/metric_definitions.py": {
       "bytes": 47584,
       "sha256": "09751c61f3bd99f5ded346491f49e2055c6400f4b61647301e25ecadcc8f3962"
     },
     "config/openai_config.py": {
-      "bytes": 1245,
-      "sha256": "755ad7662ea239820f51ec92fa7b0d8a817a37e7a5da1508bffb59fbd41c9275"
+      "bytes": 1262,
+      "sha256": "db4dd624845565d25f2f6fe79f2936f41c973f73d05aac7fbbe59ef9a5ceb8c1"
     },
     "config/sector_config.py": {
       "bytes": 23704,
@@ -220,17 +252,17 @@
       "sha256": "0a9bd6c1ec8dc9bc9f9295f287f71c42f52a9d4a823c2c8bd3c76c08677f991c"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 14972,
-      "rows": 18,
-      "sha256": "3fc09c25c010f8a21d8131b57f12577abb698457666b5465eb8c4d1301fc9548"
+      "bytes": 15969,
+      "rows": 19,
+      "sha256": "d8d128faad999113655d9d2c97391e7f231e576b9a558288a4fa9410b7a929dc"
     },
     "developer/load_report.py": {
       "bytes": 8466,
       "sha256": "1bb86fe4c64ae30c8224c19c0373f75e72e973a520d61760013e0ca2e5ab005b"
     },
     "developer/panel.py": {
-      "bytes": 19275,
-      "sha256": "e0201619fc2aa2514a1e016d4eec3d125931fbda2fe9e50ebaad89f6154a017d"
+      "bytes": 20823,
+      "sha256": "8655bf82afeed0cfa580d18af97ca0166e6143c8b65e3ac96e8a0abbc198db89"
     },
     "developer/reports.py": {
       "bytes": 4165,
@@ -240,9 +272,13 @@
       "bytes": 5379,
       "sha256": "8cf74b7ed25032ed3e81d90e89baa8cd61155fd5f0885d0f8d87691be0bb5e87"
     },
+    "docs/AUTOMATION_ARCHITECTURE.md": {
+      "bytes": 5229,
+      "sha256": "8ff622198b33573ec537a472358cd197b4da9852c81f3c135137733109953098"
+    },
     "docs/COMMENTARY_ARCHITECTURE.md": {
-      "bytes": 8145,
-      "sha256": "c6a081e5f1ed17caf7cca12a843a5b597666171a0d2ba1b64aaa903ec82a2673"
+      "bytes": 8422,
+      "sha256": "f2749e6611ca853826a5fa92850a9322fe77fd8317d7cf3aeb2adac787b61ef8"
     },
     "docs/CURRENT_CONTEXT_ACTIVATION_READ_LABELS_2026-08-09.md": {
       "bytes": 1735,
@@ -273,8 +309,8 @@
       "sha256": "cd03e707478722b73e7a084120998e73b7d1f6a9f40053478cf16585a5b52d78"
     },
     "docs/RUNTIME_DATA_CONTRACT.md": {
-      "bytes": 16127,
-      "sha256": "84fe38b91ffe806d482b764666cfc4e1e31c86bef2d8a1ae131bdaeb75e44cd2"
+      "bytes": 16172,
+      "sha256": "ed61f04a097c845a7e9450c5ce764ddae1a3af305fcad801e3f0fa80b9649e9b"
     },
     "helpers/atomic_io.py": {
       "bytes": 6224,
@@ -313,16 +349,16 @@
       "sha256": "3c79a3e6812e0db1b92e77c5a77005785c1d89c01fa15110813f16bf836179e7"
     },
     "loaders/current_context_daily.py": {
-      "bytes": 12331,
-      "sha256": "66ea8e9816c820f2dc7fce2f22e92f5bd46e7475203127ef26e851e47eafce13"
+      "bytes": 10658,
+      "sha256": "bbef62a3bba6fd23ae285a9318db9badcb70558f5a00f9986eebaa0488aefed8"
     },
     "loaders/current_context_discovery.py": {
       "bytes": 59309,
       "sha256": "bdd4f60d6c4bcb072aa61f1c81d20e8f80734e255fc60e2b80c893e8a6c49bf1"
     },
     "loaders/current_context_grounding.py": {
-      "bytes": 96286,
-      "sha256": "8905296857891284b50ab842fc6c1de97dcb11e479186fbf8ed8b49e96a2723f"
+      "bytes": 96467,
+      "sha256": "8203955e31cc987d270f3f6f90f49ab5b0b64e7686699e09fb82f8e4e73f976e"
     },
     "loaders/current_context_loader.py": {
       "bytes": 3361,
@@ -437,7 +473,7 @@
       "sha256": "ff72a9736e11a1e19d63b2bfbd5326aa7b29554a6b854026bafff7661d3a8bec"
     }
   },
-  "generated_at_utc": "2026-08-11T01:23:05+00:00",
+  "generated_at_utc": "2026-08-11T05:10:57+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -448,6 +484,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "1cd79e014c554124d8d0",
+  "release_id": "fbc82cdb945ea7aadc39",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }

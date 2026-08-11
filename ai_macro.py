@@ -93,7 +93,7 @@ from loaders.current_context_loader import load_current_context
 from loaders.current_context_daily import (
     describe_current_context_state,
     finalize_context_report,
-    load_public_shared_context_snapshot,
+    load_retained_context_snapshot,
     refresh_current_context_once_daily,
 )
 from rendering.components import render_masthead, render_platform_purpose
@@ -103,7 +103,7 @@ from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v7.0.9"
+APP_VERSION = "v7.1.1"
 APP_STATE_SCHEMA_VERSION = "70.1-openai-artifact-durability"
 
 st.set_page_config(
@@ -356,13 +356,11 @@ if st.session_state.force_rebuild:
         current_context["snapshot_retrieved_at"] = context_refresh.get("retrieved_at", "")
         current_context["snapshot_ttl_seconds"] = context_refresh.get("snapshot_ttl_seconds", 900)
     else:
-        # Reader mode keeps repository data immutable while allowing the
-        # ephemeral Current Context layer to advance as one shared ~15-minute
-        # packet.  Streamlit's shared cache means contemporaneous readers see
-        # the same Context rather than independently hitting discovery feeds.
-        shared_context = load_public_shared_context_snapshot(as_of=market_date())
-        context_refresh = dict(shared_context.get("report") or {})
-        current_context = dict(shared_context.get("current_context") or {})
+        # Public Reader mode is a strict retained-state reader. Current Context
+        # is refreshed only by the desktop developer workflow or automation worker.
+        retained_context = load_retained_context_snapshot(as_of=market_date())
+        context_refresh = dict(retained_context.get("report") or {})
+        current_context = dict(retained_context.get("current_context") or {})
     st.session_state.current_context_load_report = dict(context_refresh or {})
     if refresh_domains:
         domain_reports = {
@@ -511,49 +509,8 @@ dashboard_data = st.session_state.get("dashboard_data")
 platform_reads = st.session_state.get("platform_reads", {})
 current_context = st.session_state.get("current_context", {})
 
-# Public Reader sessions can remain open across several Current Context cache
-# windows.  Ask only for the shared cached packet on every Streamlit rerun; if
-# its snapshot id advanced, reassemble the Reader snapshot against the already
-# loaded immutable analytical data without reloading any retained-data provider.
-# Commentary is reattached from its persisted evidence-matched artifact; this
-# Current Context advance never calls OpenAI.
-if not developer_mode():
-    shared_context = load_public_shared_context_snapshot(as_of=market_date())
-    shared_report = dict(shared_context.get("report") or {})
-    previous_report = dict(st.session_state.get("current_context_load_report") or {})
-    if str(shared_report.get("snapshot_id") or "") != str(previous_report.get("snapshot_id") or ""):
-        current_context = dict(shared_context.get("current_context") or {})
-        refreshed_read_context = DashboardContext(
-            sector_data=sector_data,
-            sector_metrics=sector_metrics,
-            dashboard_data=dashboard_data,
-            regime_metrics=regime_metrics,
-            fred_data=fred_data,
-            nfci_history=nfci_history,
-            energy_data=energy_data,
-            debt_markets_data=debt_markets_data,
-            infrastructure_data=infrastructure_data,
-            connectivity_data=connectivity_data,
-            water_data=water_data,
-            adoption_data=adoption_data,
-            workforce_data=workforce_data,
-            economic_impact_data=economic_impact_data,
-            commercialization_data=commercialization_data,
-            current_context=current_context,
-        )
-        reader_snapshot = build_reader_snapshot(refreshed_read_context, context_report=shared_report)
-        platform_reads = reader_snapshot["reads"]
-        shared_report.update({
-            "reader_snapshot_version": reader_snapshot.get("snapshot_version", ""),
-            "read_service_version": reader_snapshot.get("read_service_version", ""),
-            "evidence_architecture_version": reader_snapshot.get("evidence_architecture_version", ""),
-            "evidence_snapshot_id": reader_snapshot.get("evidence_snapshot_id", ""),
-            "snapshot_id": reader_snapshot.get("snapshot_id", shared_report.get("snapshot_id", "")),
-        })
-        st.session_state.current_context_load_report = shared_report
-        st.session_state.platform_reads = platform_reads
-        st.session_state.current_context = current_context
-        st.session_state.commentary_status = dict(reader_snapshot.get("commentary") or {})
+# Public Reader sessions never advance research state. A new retained snapshot
+# reaches hosted readers only through the publication/deployment path.
 
 loaded_tickers = {
     str(ticker).strip().upper()

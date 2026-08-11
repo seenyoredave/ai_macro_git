@@ -848,6 +848,9 @@ def retained_reader_quality_gate(
     relevance_text = _spaces(relevance)
     if not fact_is_current_development(fact_text, reference_date=event_date, lookback_days=lookback_days):
         return False, "retained fact is historical context rather than a current development"
+    copy_issues = recent_development_copy_issues(f"{fact_text} {relevance_text}")
+    if copy_issues:
+        return False, f"retained Reader copy failed hygiene: {copy_issues[0]}"
     if reader_copy_has_selection_rationale(relevance_text):
         return False, "retained Reader prose contains selection-rationale language"
     if str(domain or "").strip().casefold() == "market" and not market_event_is_significant(fact_text, relevance_text):

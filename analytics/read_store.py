@@ -74,7 +74,7 @@ def latest_recoverable_attempt(*, evidence_snapshot_id: str = "", domain_prompt_
 def persist_read_artifact(payload: dict[str, Any], path: Path = READ_ARTIFACT_PATH) -> None:
     """Promote one fully validated result to the Reader's current artifact."""
     if not repository_writes_enabled():
-        raise PermissionError("Validated commentary artifacts may be written only in Developer mode.")
+        raise PermissionError("Validated commentary artifacts may be written only by an authorized research writer.")
     artifact = dict(payload)
     artifact["artifact_version"] = READ_ARTIFACT_VERSION
     atomic_write_json(artifact, path)
@@ -102,7 +102,7 @@ def persist_read_attempt(payload: dict[str, Any], *, attempt_id: str | None = No
     validation or publication fails.
     """
     if not repository_writes_enabled():
-        raise PermissionError("OpenAI attempt artifacts may be written only in Developer mode.")
+        raise PermissionError("OpenAI attempt artifacts may be written only by an authorized research writer.")
     resolved_id = str(attempt_id or new_attempt_id(evidence_snapshot_id=str(payload.get("evidence_snapshot_id") or "")))
     artifact = dict(payload)
     artifact["attempt_id"] = resolved_id

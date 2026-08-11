@@ -40,9 +40,9 @@ import loaders.current_context_grounding as grounding
 import loaders.current_context_registry as context_registry
 from loaders.current_context_grounding import GROUNDING_VERSION, SourceDocument, fetch_source_document, ground_candidate
 from loaders.current_context_daily import (
-    CURRENT_CONTEXT_SHARED_TTL_SECONDS,
     context_packet_id,
     finalize_context_report,
+    load_retained_context_snapshot,
 )
 from loaders.current_context_news import DOMAIN_KEYS, _assign_event_owners
 from loaders.current_context_loader import load_current_context
@@ -1148,14 +1148,14 @@ def main() -> None:
     finally:
         discovery.discover_domain = original_discover
 
-    if CURRENT_CONTEXT_SHARED_TTL_SECONDS != 900:
-        raise AssertionError("Shared Current Context cache is not the approved ~15-minute window.")
     daily_source = (PROJECT_ROOT / "loaders" / "current_context_daily.py").read_text()
     app_source = (PROJECT_ROOT / "ai_macro.py").read_text()
-    if "@st.cache_data(ttl=CURRENT_CONTEXT_SHARED_TTL_SECONDS" not in daily_source:
-        raise AssertionError("Public Current Context is not guarded by the shared Streamlit cache.")
-    if "load_public_shared_context_snapshot(as_of=market_date())" not in app_source:
-        raise AssertionError("Public Reader mode does not request the shared Current Context snapshot.")
+    if "load_public_shared_context_snapshot" in daily_source or "@st.cache_data" in daily_source:
+        raise AssertionError("Public Current Context live-refresh/cache machinery returned.")
+    if "load_retained_context_snapshot(as_of=market_date())" not in app_source:
+        raise AssertionError("Public Reader mode is not bound to retained Current Context.")
+    if "load_public_shared_context_snapshot" in app_source:
+        raise AssertionError("Public Reader still contains the retired live Current Context path.")
     if "build_reader_snapshot(" not in app_source:
         raise AssertionError("Current Context is not bound to one completed Read pair.")
     packet_report = finalize_context_report(
@@ -1197,6 +1197,37 @@ def main() -> None:
     )
     if "Virginia State Corporation Commission (SCC)" not in scc_fact or recent_development_copy_issues(scc_fact):
         raise AssertionError(f"Source-defined regional acronym was not restored on first reference: {scc_fact}")
+
+    monday_fragment = (
+        "For the quarter ending June 30, the maker of project management software reported a profit of $1.48 "
+        "a share on an adjusted basis, up 36% from a year earlier.… 2/09/2026 Monday.com topped Q4 estimates "
+        "but shares. The reported results show whether AI-linked demand is turning into realized revenue and "
+        "profit rather than remaining an expectation."
+    )
+    if not recent_development_copy_issues(monday_fragment):
+        raise AssertionError("Recent Developments accepted an ellipsis/date-spliced article fragment.")
+
+    broken_quote = (
+        "“Power generation and infrastructure investors financing transmission, generation, or grid "
+        "infrastructure tied to large-load projects should assess project viability —"
+    )
+    if not recent_development_copy_issues(broken_quote):
+        raise AssertionError("Recent Developments accepted an incomplete quoted extraction fragment.")
+
+    clean_grid = (
+        "California curtailed 4.5 million MWh of renewable generation in the first half of 2026, already "
+        "exceeding the total curtailed during 2025. The losses show that generation additions alone do not "
+        "guarantee delivered supply when transmission and storage capacity lag the buildout."
+    )
+    clean_water = (
+        "The federal government proposed Colorado River operating rules that could cut Lower Basin deliveries "
+        "by as much as 3 million acre-feet per year. The proposal raises the value of location-specific water "
+        "exposure and reuse capacity for industrial and data-center development in the Southwest."
+    )
+    for label, copy in (("grid", clean_grid), ("water", clean_water)):
+        issues = recent_development_copy_issues(copy)
+        if issues:
+            raise AssertionError(f"Recent Developments rejected clean {label} Reader copy: {issues}")
 
     if (
         DOMAIN_CONTEXT_POLICY["market"]["cadence"] != "weekday"

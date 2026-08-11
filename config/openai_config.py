@@ -1,4 +1,4 @@
-"""OpenAI configuration for the owner-triggered v7 commentary workflow."""
+"""OpenAI configuration for owner-triggered and bounded automation commentary workflows."""
 
 from __future__ import annotations
 

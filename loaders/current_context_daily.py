@@ -5,16 +5,14 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import streamlit as st
 
-from config.deployment import PROJECT_ROOT, current_context_paths, developer_mode
-from helpers.atomic_io import atomic_write_bytes, atomic_write_json, synchronized_path
+from config.deployment import automation_mode, current_context_paths, developer_mode, repository_writes_enabled
+from helpers.atomic_io import atomic_write_json, synchronized_path
 from loaders.current_context_discovery import DISCOVERY_VERSION, refresh_current_context
 from loaders.current_context_loader import load_current_context
 
-RETAINED_REGISTRY = PROJECT_ROOT / "data" / "weekly_context_events.csv"
-CURRENT_CONTEXT_SHARED_TTL_SECONDS = 15 * 60
-CONTEXT_READ_SNAPSHOT_VERSION = "1.1"
+RETAINED_REGISTRY = Path(__file__).resolve().parents[1] / "data" / "weekly_context_events.csv"
+CONTEXT_READ_SNAPSHOT_VERSION = "1.2"
 
 
 def _read_manifest(path: Path) -> dict:
@@ -26,16 +24,6 @@ def _read_manifest(path: Path) -> dict:
             return payload if isinstance(payload, dict) else {}
         except (OSError, ValueError, json.JSONDecodeError):
             return {}
-
-
-def _seed_public_registry(path: Path) -> None:
-    with synchronized_path(path.parent / ".current_context_refresh"):
-        if path.exists() and path.stat().st_size > 0:
-            return
-        if RETAINED_REGISTRY.exists():
-            atomic_write_bytes(RETAINED_REGISTRY.read_bytes(), path, lock=False)
-        else:
-            atomic_write_bytes(b"", path, lock=False)
 
 
 def _fallback_snapshot_id(manifest: dict) -> str:
@@ -78,6 +66,15 @@ def context_packet_id(manifest: dict, current_context: dict | None) -> str:
     ).hexdigest()[:16]
 
 
+def _source_mode(refresh_status: str) -> str:
+    if refresh_status == "refreshed":
+        if automation_mode():
+            return "automation_live"
+        if developer_mode():
+            return "manual_live"
+    return "retained"
+
+
 def _decorate_manifest(manifest: dict, *, refresh_status: str, registry_path: Path) -> dict:
     payload = dict(manifest or {})
     selected = payload.get("selected") if isinstance(payload.get("selected"), dict) else {}
@@ -85,9 +82,7 @@ def _decorate_manifest(manifest: dict, *, refresh_status: str, registry_path: Pa
     engine_mismatch = bool(payload.get("discovery_version") and str(payload.get("discovery_version")) != DISCOVERY_VERSION)
     explicit_refresh_required = bool(payload.get("refresh_required", False))
     payload.update({
-        "source_mode": "manual_live" if refresh_status == "refreshed" and developer_mode() else (
-            "shared_live" if refresh_status == "refreshed" else "retained"
-        ),
+        "source_mode": _source_mode(refresh_status),
         "refresh_status": refresh_status,
         "engine_version": DISCOVERY_VERSION,
         "retained_discovery_version": str(payload.get("discovery_version") or "unknown"),
@@ -109,7 +104,6 @@ def _decorate_manifest(manifest: dict, *, refresh_status: str, registry_path: Pa
         ],
         "registry_path": str(registry_path),
         "snapshot_id": str(payload.get("snapshot_id") or _fallback_snapshot_id(payload)),
-        "snapshot_ttl_seconds": CURRENT_CONTEXT_SHARED_TTL_SECONDS,
         "snapshot_architecture_version": CONTEXT_READ_SNAPSHOT_VERSION,
     })
     return payload
@@ -134,19 +128,25 @@ def finalize_context_report(manifest: dict, current_context: dict | None) -> dic
 
 
 def refresh_current_context_once_daily(*, as_of=None, force: bool = False) -> dict:
-    """Developer/manual refresh path; retained startup never calls providers."""
+    """Refresh retained Current Context only from an authorized writer runtime.
+
+    Public Reader processes never call discovery providers and never write
+    Current Context state.  The desktop developer workflow and the scheduled
+    automation worker share this single retained publication path.
+    """
     current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
     expected_date = current.date().isoformat()
     paths = current_context_paths()
-    paths["base"].mkdir(parents=True, exist_ok=True)
 
+    if not repository_writes_enabled():
+        retained = _read_manifest(paths["manifest"])
+        return _decorate_manifest(retained, refresh_status="retained_read_only", registry_path=paths["registry"])
+
+    paths["base"].mkdir(parents=True, exist_ok=True)
     with synchronized_path(paths["daily_lock"]):
         manifest = _read_manifest(paths["manifest"])
         if not force and manifest.get("as_of") == expected_date:
             return _decorate_manifest(manifest, refresh_status="already_current", registry_path=paths["registry"])
-
-        if not developer_mode():
-            _seed_public_registry(paths["registry"])
 
         try:
             manifest = refresh_current_context(
@@ -169,57 +169,6 @@ def refresh_current_context_once_daily(*, as_of=None, force: bool = False) -> di
             with synchronized_path(paths["manifest"].parent / ".current_context_refresh"):
                 atomic_write_json(persisted_failure, paths["manifest"], lock=False)
             return failure
-
-
-@st.cache_data(ttl=CURRENT_CONTEXT_SHARED_TTL_SECONDS, show_spinner=False)
-def _load_public_shared_snapshot_cached(as_of_iso: str, engine_version: str) -> dict:
-    """Build the shared public Context packet once per ~15-minute cache window.
-
-    Public writes are confined to the ephemeral runtime directory.  Repository
-    archives remain immutable.  Streamlit's shared cache means readers inside
-    the same window receive the same completed Context packet.
-    """
-    del engine_version  # part of the cache key; forces refresh after an engine upgrade
-    current = pd.Timestamp(as_of_iso).normalize()
-    paths = current_context_paths()
-    paths["base"].mkdir(parents=True, exist_ok=True)
-    _seed_public_registry(paths["registry"])
-
-    try:
-        with synchronized_path(paths["daily_lock"]):
-            manifest = refresh_current_context(
-                as_of=current,
-                audit_path=paths["audit"],
-                manifest_path=paths["manifest"],
-                registry_path=paths["registry"],
-                merge_registry=True,
-            )
-        report = _decorate_manifest(manifest, refresh_status="refreshed", registry_path=paths["registry"])
-    except Exception as exc:
-        retained = _read_manifest(paths["manifest"])
-        report = _decorate_manifest(retained, refresh_status="failed_retained_fallback", registry_path=paths["registry"])
-        report["error"] = f"{type(exc).__name__}: {exc}"
-
-    current_context = load_current_context(
-        as_of=current,
-        path=paths["registry"],
-        limit_per_domain=2,
-    )
-    report = finalize_context_report(report, current_context)
-    current_context = dict(current_context)
-    current_context["snapshot_id"] = report["snapshot_id"]
-    current_context["snapshot_retrieved_at"] = report.get("retrieved_at", "")
-    current_context["snapshot_ttl_seconds"] = CURRENT_CONTEXT_SHARED_TTL_SECONDS
-    return {
-        "report": report,
-        "current_context": current_context,
-    }
-
-
-def load_public_shared_context_snapshot(*, as_of=None) -> dict:
-    """Return the globally shared public Context packet for the current window."""
-    current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
-    return _load_public_shared_snapshot_cached(current.date().isoformat(), DISCOVERY_VERSION)
 
 
 def describe_current_context_state() -> dict:
@@ -262,6 +211,21 @@ def describe_current_context_state() -> dict:
         "registry_path": str(paths["registry"]),
         "manifest_path": str(paths["manifest"]),
         "snapshot_id": str(manifest.get("snapshot_id") or _fallback_snapshot_id(manifest)),
-        "snapshot_ttl_seconds": CURRENT_CONTEXT_SHARED_TTL_SECONDS,
         "snapshot_architecture_version": CONTEXT_READ_SNAPSHOT_VERSION,
     }
+
+
+def load_retained_context_snapshot(*, as_of=None) -> dict:
+    """Load the published retained Current Context packet with zero network work."""
+    current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
+    report = describe_current_context_state()
+    current_context = load_current_context(
+        as_of=current,
+        path=current_context_paths()["registry"],
+        limit_per_domain=2,
+    )
+    report = finalize_context_report(report, current_context)
+    current_context = dict(current_context)
+    current_context["snapshot_id"] = report.get("snapshot_id", "")
+    current_context["snapshot_retrieved_at"] = report.get("retrieved_at", "")
+    return {"report": report, "current_context": current_context}

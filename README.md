@@ -27,6 +27,11 @@ AI Macro separates deterministic research from probabilistic interpretation. Ret
 
 Commentary is generated from bounded evidence packets and published only after deterministic validation. If validated commentary is unavailable, the underlying dashboard data remain available.
 
+
+## Automation
+
+The hosted Reader remains read-only. A single scheduled GitHub Actions worker may refresh retained research, update Current Context, generate commentary when analytical evidence changes, and publish only after deterministic validation passes. Paid automation is bounded by hard call ceilings and has no automatic API retry loop.
+
 ## Data
 
 Reader mode uses retained data. Definitions, source coverage, and provenance are available in the **Evidence** tab.

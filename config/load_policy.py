@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Iterable
 
-from config.deployment import developer_mode
+from config.deployment import repository_writes_enabled
 
 
 class RefreshSource(StrEnum):
@@ -82,7 +82,7 @@ def build_load_policy(
     refresh_domain: str | None = None,
     refresh_domains: Iterable[str] | None = None,
 ) -> LoadPolicy:
-    """Build the policy from explicit developer controls only.
+    """Build the policy from explicit authorized refresh controls only.
 
     ``force_rebuild`` is deliberately absent: clearing caches or rebuilding the
     dashboard must never grant network access.
@@ -91,7 +91,7 @@ def build_load_policy(
     # Public deployments are immutable readers. Hidden controls, forged
     # session-state values, or a future caller must not be able to turn a
     # viewer request into provider traffic or repository writes.
-    if not developer_mode():
+    if not repository_writes_enabled():
         return LoadPolicy.retained()
 
     sources: set[RefreshSource] = set()

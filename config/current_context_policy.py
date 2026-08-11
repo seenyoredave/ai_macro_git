@@ -2497,6 +2497,28 @@ def recent_development_copy_issues(text: object) -> list[str]:
         return []
 
     issues: list[str] = []
+
+    # Reader copy must be a complete sentence, not a search/article snippet.
+    # These are extraction-damage signals, not editorial preferences: when one
+    # appears, the source fact should be re-grounded or omitted rather than
+    # publishing a visibly chopped fragment.
+    if "…" in value or re.search(r"\.{3,}", value):
+        issues.append("development contains an ellipsis/truncation artifact")
+    if re.search(r"\b\d{1,2}/\d{1,2}/(?:\d{2}|\d{4})\b", value):
+        issues.append("development contains embedded slash-date article furniture")
+
+    trimmed = value.rstrip()
+    trimmed_no_terminal = trimmed.rstrip(".!?\"'”’ ")
+    if trimmed_no_terminal.endswith(("—", "–", "-")):
+        issues.append("development ends with a dangling cutoff mark")
+
+    if value.count("“") != value.count("”"):
+        issues.append("development contains unbalanced smart quotation marks")
+    if value.count('"') % 2:
+        issues.append("development contains an unbalanced quotation mark")
+    if value.count("(") != value.count(")") or value.count("[") != value.count("]"):
+        issues.append("development contains unbalanced brackets")
+
     if _DANGLING_FIRST_REFERENCE.search(value):
         issues.append("development opens with an unresolved actor or pronoun")
     if _BARE_OFFICE_FIRST_REFERENCE.search(value):

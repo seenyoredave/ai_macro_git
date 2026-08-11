@@ -11,6 +11,8 @@ from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_evidenc
 from analytics.read_prompts import DOMAIN_PROMPT_VERSION, MACRO_PROMPT_VERSION
 from analytics.read_service import generate_validated_read_artifact, regenerate_macro_read, resume_saved_read_attempt
 from analytics.read_store import latest_recoverable_attempt, load_read_artifact
+from automation.config import AUTOMATION_START_LOCAL, AUTOMATION_TIMEZONE
+from automation.status import load_automation_status
 from config.openai_config import load_openai_config
 from developer.load_report import render_developer_load_report
 from developer.reports import current_context_status, format_seconds
@@ -94,6 +96,33 @@ def _operations_workspace() -> None:
     last = dict(st.session_state.get("last_domain_refresh") or {})
     if last:
         st.caption(f"Last domain refresh: {last.get('label')} · {last.get('source_mode')}")
+
+    st.markdown("---")
+    st.markdown("**Automation**")
+    automation = load_automation_status()
+    st.caption(f"Scheduled publication worker: {AUTOMATION_START_LOCAL} · {AUTOMATION_TIMEZONE}")
+    if automation:
+        result = str(automation.get("result") or "unknown").replace("_", " ")
+        finished = str(automation.get("finished_at_utc") or automation.get("started_at_utc") or "")
+        st.write(f"Last run: `{result}`")
+        if finished:
+            st.caption(f"Completed: {finished}")
+        paid = dict(automation.get("paid_calls") or {})
+        if paid:
+            st.caption(
+                f"Paid calls: {int(paid.get('this_run', 0) or 0)} this run · "
+                f"{int(paid.get('today_after_run', paid.get('today_before_run', 0)) or 0)}/"
+                f"{int(paid.get('daily_ceiling', 0) or 0)} today"
+            )
+        warnings = [str(item) for item in (automation.get("warnings") or []) if item]
+        if warnings:
+            st.caption(f"Refresh warnings: {len(warnings)} · valid retained fallbacks remained available.")
+        if automation.get("publish_ready"):
+            st.caption("Publication gate: validated and committed by the automation workflow.")
+        elif automation.get("errors"):
+            st.caption("Publication gate: blocked; prior published state retained.")
+    else:
+        st.caption("No committed automation run has been recorded yet.")
     _last_operation()
 
 
