@@ -13,7 +13,9 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 import traceback
+import warnings
 from typing import Any
 
 from automation.config import (
@@ -30,6 +32,22 @@ from automation.ledger import (
     today_local_date,
     write_status,
 )
+
+
+def _configure_runtime_warnings() -> None:
+    # Several official XLSX files contain print-header/footer markup that
+    # openpyxl cannot parse. AI Macro does not consume that print metadata, so
+    # suppress only this known non-data warning in unattended logs.
+    warnings.filterwarnings(
+        "ignore",
+        message=r"Cannot parse header or footer so it will be ignored",
+        category=UserWarning,
+        module=r"openpyxl\.worksheet\.header_footer",
+    )
+
+
+def _log(label: str) -> None:
+    print(f"[automation] {label}", flush=True)
 
 
 def _install_headless_streamlit() -> None:
@@ -104,7 +122,7 @@ def _finish(status: dict[str, Any], *, result: str, publish_ready: bool = False)
     )
     write_status(status)
     append_run(status)
-    print(json.dumps(status, indent=2, sort_keys=True, default=str))
+    print(json.dumps(status, indent=2, sort_keys=True, default=str), flush=True)
 
 
 def _current_artifact_valid(context: Any) -> tuple[bool, str, dict[str, Any]]:
@@ -192,11 +210,15 @@ def main() -> int:
         return 2
 
     try:
+        _configure_runtime_warnings()
         _install_headless_streamlit()
+        _log(f"run {run_id} · trigger={config.trigger} · paid={config.openai_enabled} · publish={config.auto_publish}")
         from automation.research_refresh import blocking_refresh_errors, refresh_research_state, refresh_warnings
 
         status["phases"]["deterministic_refresh"] = {"status": "running"}
+        refresh_started = time.perf_counter()
         bundle = refresh_research_state()
+        refresh_elapsed = max(0.0, time.perf_counter() - refresh_started)
         warnings = refresh_warnings(bundle)
         if warnings:
             status["warnings"] = warnings
@@ -209,18 +231,28 @@ def main() -> int:
             status["errors"].extend(refresh_failures)
             _finish(status, result="deterministic_refresh_failed")
             return 2
-        status["phases"]["deterministic_refresh"] = {"status": "passed"}
+        status["phases"]["deterministic_refresh"] = {
+            "status": "passed",
+            "elapsed_sec": round(refresh_elapsed, 3),
+            "subphases": dict(bundle.timings),
+        }
+        _log(f"deterministic refresh complete · {refresh_elapsed:.1f}s")
         status["current_context_snapshot_id"] = str(
             ((bundle.reports.get("current_context") or {}).get("snapshot_id") or "")
         )
 
+        _log("START evidence comparison")
+        evidence_started = time.perf_counter()
         artifact_valid, evidence_snapshot, commentary = _current_artifact_valid(bundle.context)
+        evidence_elapsed = max(0.0, time.perf_counter() - evidence_started)
         status["evidence_snapshot_id"] = evidence_snapshot
         status["phases"]["evidence"] = {
             "status": "passed",
             "artifact_current": artifact_valid,
             "artifact_status": str(commentary.get("status") or "unknown"),
+            "elapsed_sec": round(evidence_elapsed, 3),
         }
+        _log(f"DONE  evidence comparison · {evidence_elapsed:.1f}s · current={artifact_valid}")
 
         if artifact_valid:
             status["phases"]["openai"] = {
@@ -236,31 +268,36 @@ def main() -> int:
                     "status": "blocked",
                     "reason": "scheduled_paid_generation_requires_AUTO_PUBLISH",
                 }
-                status["errors"].append(
+                status.setdefault("warnings", []).append(
                     "Analytical evidence changed, but scheduled publication is disabled; no OpenAI call was made."
                 )
                 _finish(status, result="scheduled_publish_disabled_for_changed_evidence")
-                return 2
+                return 0
 
             if not config.openai_enabled:
                 status["phases"]["openai"] = {
                     "status": "blocked",
                     "reason": "OPENAI_AUTOMATION_ENABLED is false or manual paid opt-in is absent",
                 }
-                status["errors"].append(
+                status.setdefault("warnings", []).append(
                     "Analytical evidence changed but autonomous OpenAI spending is disabled."
                 )
                 _finish(status, result="openai_disabled_for_changed_evidence")
-                return 2
+                return 0
 
             status["phases"]["openai"] = {"status": "running"}
+            _log("START bounded OpenAI generation")
+            openai_started = time.perf_counter()
             generation = _generate_commentary(bundle.context, config, run_id)
+            openai_elapsed = max(0.0, time.perf_counter() - openai_started)
             status["phases"]["openai"] = {
                 "status": str(generation.get("status") or "unknown"),
                 "stage": str(generation.get("stage") or ""),
                 "attempt_id": str(generation.get("attempt_id") or ""),
                 "validation": generation.get("validation") or {},
+                "elapsed_sec": round(openai_elapsed, 3),
             }
+            _log(f"DONE  bounded OpenAI generation · {openai_elapsed:.1f}s · status={generation.get('status')}")
             if generation.get("status") != "validated":
                 status["errors"].append(
                     f"Commentary publication gate rejected the paid attempt at {generation.get('stage', 'unknown')} stage."

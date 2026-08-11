@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import time
 from typing import Any
 
@@ -58,10 +58,22 @@ class RefreshBundle:
     context: DashboardContext
     reports: dict[str, Any]
     snapshot_write_report: dict[str, Any]
+    timings: dict[str, float] = field(default_factory=dict)
 
 
 def _token() -> int:
     return int(time.time_ns() % 2_000_000_000)
+
+
+def _phase_start(label: str) -> float:
+    print(f"[automation] START {label}", flush=True)
+    return time.perf_counter()
+
+
+def _phase_end(label: str, started: float, timings: dict[str, float]) -> None:
+    elapsed = max(0.0, time.perf_counter() - started)
+    timings[label] = round(elapsed, 3)
+    print(f"[automation] DONE  {label} · {elapsed:.1f}s", flush=True)
 
 
 def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
@@ -74,10 +86,12 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         raise PermissionError("Headless research refresh requires AI_MACRO_MODE=automation.")
 
     token = _token()
+    timings: dict[str, float] = {}
     force = bool(live)
     policy = LoadPolicy.refresh(AUTOMATED_SOURCES) if live else LoadPolicy.retained()
     ticker_map = {ticker: ticker for ticker in all_tickers()}
 
+    phase_started = _phase_start("market + EDGAR")
     raw_universe_data = load_market_universe(
         ticker_map,
         force_yfinance_refresh=force,
@@ -88,6 +102,7 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         allow_edgar_live=live,
     )
     market_report = dict(raw_universe_data.get("_load_report", {}) or {})
+    _phase_end("market + EDGAR", phase_started, timings)
     benchmark_metrics = get_benchmark_metrics_from_market_frame(
         "QQQ", raw_universe_data.get("yfinance")
     )
@@ -104,6 +119,7 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         sector_data[sector] = frame
         sector_metrics[sector] = build_sector_metrics(factors, frame)
 
+    phase_started = _phase_start("FRED + finance")
     fred_started = time.perf_counter()
     fred_data = load_fred(
         force_refresh=force,
@@ -125,7 +141,9 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         refresh_token=token,
         allow_live=live,
     )
+    _phase_end("FRED + finance", phase_started, timings)
 
+    phase_started = _phase_start("power + grid")
     energy_data = load_energy_data(
         fred_data=fred_data,
         force_refresh=force,
@@ -139,6 +157,9 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         allow_fred_live=live,
         allow_market_live=live,
     )
+    _phase_end("power + grid", phase_started, timings)
+
+    phase_started = _phase_start("infrastructure + connectivity")
     infrastructure_data = load_infrastructure_data(
         refresh_token=token,
         force_construction_refresh=force,
@@ -160,6 +181,7 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         refresh_token=token,
         allow_live=False,
     )
+    _phase_end("infrastructure + connectivity", phase_started, timings)
 
     fred_history = load_fred_history()
     macro_history = load_macro_history()
@@ -172,33 +194,49 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         macro_history=macro_history,
     )
 
+    phase_started = _phase_start("water")
     water_data = load_water_utilization_data(
         force_refresh=force,
         refresh_token=token,
         allow_live=live,
     )
     infrastructure_data, water_data = attach_water_context(infrastructure_data, water_data)
+    _phase_end("water", phase_started, timings)
+
+    phase_started = _phase_start("adoption")
     adoption_data = load_adoption_data(
         force_refresh=force,
         refresh_token=token,
         allow_live=live,
     )
+    _phase_end("adoption", phase_started, timings)
+
+    phase_started = _phase_start("workforce")
     workforce_data = load_workforce_data(
         force_refresh=force,
         refresh_token=token,
         allow_live=live,
     )
+    _phase_end("workforce", phase_started, timings)
+
+    phase_started = _phase_start("economic outcomes")
     economic_impact_data = load_economic_impact_data(
         force_refresh=force,
         refresh_token=token,
         allow_live=live,
     )
+    _phase_end("economic outcomes", phase_started, timings)
+
+    phase_started = _phase_start("commercialization")
     commercialization_data = load_commercialization_data(
         force_refresh=force,
         refresh_token=token,
         allow_live=live,
     )
 
+    _phase_end("commercialization", phase_started, timings)
+
+    phase_started = _phase_start("Current Context")
     if live:
         context_refresh = refresh_current_context_once_daily(
             as_of=as_of or market_date(),
@@ -217,7 +255,9 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         retained_context = load_retained_context_snapshot(as_of=as_of or market_date())
         context_refresh = dict(retained_context.get("report") or {})
         current_context = dict(retained_context.get("current_context") or {})
+    _phase_end("Current Context", phase_started, timings)
 
+    phase_started = _phase_start("assemble + persist snapshots")
     dashboard_data = build_macro_dashboard_data(
         sector_metrics=sector_metrics,
         regime_metrics=regime_metrics,
@@ -271,10 +311,12 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         "current_context": context_refresh,
         "snapshot_write": snapshot_write_report,
     }
+    _phase_end("assemble + persist snapshots", phase_started, timings)
     return RefreshBundle(
         context=context,
         reports=reports,
         snapshot_write_report=snapshot_write_report,
+        timings=timings,
     )
 
 

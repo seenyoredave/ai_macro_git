@@ -1,7 +1,7 @@
 {
   "assertions": {
     "adoption_has_data": true,
-    "benchmark_source_mode": "archive_current",
+    "benchmark_source_mode": "archive_read_mode",
     "changed_retained_files": [],
     "commentary_status": "missing",
     "commercialization_has_data": true,
@@ -36,23 +36,23 @@
   },
   "status": "PASS",
   "timings_sec": {
-    "adoption": 0.004120541037991643,
-    "benchmark": 0.003578708041459322,
-    "commercialization": 0.003028542036190629,
-    "connectivity": 0.10860291705466807,
-    "construction": 0.001336290966719389,
-    "current_context": 0.010831625084392726,
-    "derived_outputs": 0.7684319579275325,
-    "economic_outcomes": 0.013948374893516302,
-    "energy": 0.08564162498805672,
-    "fred": 0.011112875072285533,
-    "infrastructure": 1.614686124958098,
-    "market_universe": 0.1439828329021111,
-    "nfci": 0.00205737492069602,
-    "nyfed": 0.003232167102396488,
-    "sector_analytics": 0.07335199997760355,
-    "water": 0.010121542029082775,
-    "workforce": 0.03157012502197176
+    "adoption": 0.0034122500801458955,
+    "benchmark": 0.0028205830603837967,
+    "commercialization": 0.0025600839871913195,
+    "connectivity": 0.10049762506969273,
+    "construction": 0.0012027090415358543,
+    "current_context": 0.010297624976374209,
+    "derived_outputs": 0.7187925420003012,
+    "economic_outcomes": 0.01245762500911951,
+    "energy": 0.07733150001149625,
+    "fred": 0.010084166890010238,
+    "infrastructure": 1.4976731670321897,
+    "market_universe": 0.12863633304368705,
+    "nfci": 0.001792833092622459,
+    "nyfed": 0.0028623329708352685,
+    "sector_analytics": 0.06616570788901299,
+    "water": 0.009526834008283913,
+    "workforce": 0.028591834008693695
   },
-  "total_elapsed_sec": 2.889690541080199
+  "total_elapsed_sec": 2.6747554580215365
 }

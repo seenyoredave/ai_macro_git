@@ -5,8 +5,8 @@
   },
   "files": {
     ".github/workflows/ai_macro_automation.yml": {
-      "bytes": 5955,
-      "sha256": "3cd3863ab05e07f53c9a71f1dae3ffed9d6e49837dcb836c607f94331609740c"
+      "bytes": 6290,
+      "sha256": "8d03057ee1807fc9d9f47c4b580506b01e2f6ffc112bd85a458137b8fbfc5be7"
     },
     "AGENTS.md": {
       "bytes": 21705,
@@ -137,12 +137,12 @@
       "sha256": "be19ebc5ab52e340a936d6862211e29ad0a8d2e2cc336eac81be7fa190ade627"
     },
     "automation/research_refresh.py": {
-      "bytes": 12841,
-      "sha256": "8f5fa395d6a0cc1dac8a0421ac5be4bffafc8fc97bdcb49d861e994aef71187d"
+      "bytes": 14560,
+      "sha256": "482dd1e0f5bb55fdb3401a64cf1bc48472749ebcf34e43f47fff1bcb6b36ff82"
     },
     "automation/runner.py": {
-      "bytes": 11833,
-      "sha256": "84a95b5dc2b64123d8b041d2042cb33b0329653338809e95452048c7adef8f63"
+      "bytes": 13607,
+      "sha256": "2b0b828a972e94b629b19585443609342756873514c47f6d30c64a3f8d2d8c20"
     },
     "automation/status.py": {
       "bytes": 493,
@@ -421,8 +421,8 @@
       "sha256": "5bd205b681f9e562d1eee1621908d361e48a90e15250adfda3482a313f2d49f8"
     },
     "loaders/official_series_refresh.py": {
-      "bytes": 7251,
-      "sha256": "4295ab7c9241b56a0473068807d5b597380f90f6d3ef7195286b445c2fadc25b"
+      "bytes": 9210,
+      "sha256": "8281da56cd76f88c3fa1d4acfc8cd17e990fecca3e90a19d187b2d5f7e40a8cb"
     },
     "loaders/snapshot_writer.py": {
       "bytes": 11274,
@@ -473,7 +473,7 @@
       "sha256": "ff72a9736e11a1e19d63b2bfbd5326aa7b29554a6b854026bafff7661d3a8bec"
     }
   },
-  "generated_at_utc": "2026-08-11T05:51:12+00:00",
+  "generated_at_utc": "2026-08-11T07:09:58+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -484,6 +484,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "8ced142a8d61d15ce179",
+  "release_id": "0c0955662d9784160569",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }
