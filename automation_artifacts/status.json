@@ -1,58 +1,58 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "current_context_snapshot_id": "ae386bdf827dfb3a",
+  "current_context_snapshot_id": "f591128192ef8af4",
   "errors": [
     "Commentary publication gate rejected the paid attempt at domain stage."
   ],
-  "evidence_snapshot_id": "c06bbeebd7d3b6674e6e88a4",
-  "finished_at_utc": "2026-08-11T09:48:43.859911+00:00",
+  "evidence_snapshot_id": "11b39a8b2317339174fb1c25",
+  "finished_at_utc": "2026-08-11T10:27:58.516082+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
     "this_run": 1,
-    "today_after_run": 1,
-    "today_before_run": 0
+    "today_after_run": 2,
+    "today_before_run": 1
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 712.952,
+      "elapsed_sec": 740.177,
       "status": "passed",
       "subphases": {
-        "Current Context": 15.705,
-        "FRED + finance": 8.018,
-        "adoption": 17.806,
-        "assemble + persist snapshots": 5.713,
-        "commercialization": 1.206,
-        "economic outcomes": 60.295,
-        "infrastructure + connectivity": 86.88,
-        "market + EDGAR": 271.482,
-        "power + grid": 160.203,
-        "water": 34.874,
-        "workforce": 48.673
+        "Current Context": 16.549,
+        "FRED + finance": 8.237,
+        "adoption": 17.821,
+        "assemble + persist snapshots": 5.578,
+        "commercialization": 1.499,
+        "economic outcomes": 60.329,
+        "infrastructure + connectivity": 86.004,
+        "market + EDGAR": 301.667,
+        "power + grid": 157.551,
+        "water": 34.697,
+        "workforce": 48.401
       }
     },
     "evidence": {
       "artifact_current": false,
       "artifact_status": "stale",
-      "elapsed_sec": 1.726,
+      "elapsed_sec": 1.578,
       "status": "passed"
     },
     "openai": {
-      "attempt_id": "20260811T094658771919Z_c06bbeeb_4f1bd283",
-      "elapsed_sec": 106.962,
+      "attempt_id": "20260811T102618766265Z_11b39a8b_df6ea458",
+      "elapsed_sec": 101.403,
       "stage": "domain",
       "status": "validation_failed",
       "validation": {
         "checked_claims": 55,
         "errors": [
-          "adoption: analysis uses more than 3 displayed quantities"
+          "grid_storage: analysis uses more than 3 displayed quantities"
         ],
         "failures": [
           {
-            "label": "adoption.analysis",
-            "message": "adoption: analysis uses more than 3 displayed quantities",
+            "label": "grid_storage.analysis",
+            "message": "grid_storage: analysis uses more than 3 displayed quantities",
             "numeric_occurrences": 4,
             "reason": "numeric_density"
           }
@@ -65,13 +65,13 @@
   },
   "publish_ready": false,
   "result": "commentary_validation_failed",
-  "run_id": "20260811T093500Z_6a126ec2",
+  "run_id": "20260811T101354Z_e5b218d8",
   "schedule": {
     "time": "09:00",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-11T09:35:00.945073+00:00",
-  "trigger": "workflow_dispatch",
+  "started_at_utc": "2026-08-11T10:13:54.436740+00:00",
+  "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
