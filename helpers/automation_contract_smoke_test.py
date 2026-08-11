@@ -71,6 +71,10 @@ def main() -> None:
     _check("workflow_dispatch:" in workflow and "allow_paid:" in workflow and "publish:" in workflow, "Manual workflow lacks explicit paid/publish opt-ins.")
     _check("concurrency:" in workflow and "cancel-in-progress: false" in workflow, "Automation workflow can overlap or cancel active publication work.")
     _check("permissions:" in workflow and "contents: write" in workflow, "Workflow lacks explicit publication permission.")
+    _check("FRED_API_KEY: ${{ secrets.FRED_API_KEY }}" in workflow, "Workflow does not pass the FRED repository secret into the automation worker.")
+    _check("SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}" in workflow, "Workflow does not pass the SEC user-agent repository variable into the automation worker.")
+    _check("_runtime_configuration_errors" in runner and "FRED_API_KEY is not configured for the automation worker." in runner, "Automation worker does not fail closed when FRED credentials are missing.")
+    _check("SEC_USER_AGENT is not configured for the automation worker." in runner, "Automation worker does not fail closed when SEC identification is missing.")
     action_lines = [line.strip() for line in workflow.splitlines() if line.strip().startswith("uses: actions/")]
     _check(len(action_lines) == 3, "Automation workflow action dependency count changed unexpectedly.")
     _check(all("@" in line and len(line.split("@", 1)[1].split()[0]) == 40 for line in action_lines), "GitHub-owned actions are not pinned to full immutable commit SHAs.")

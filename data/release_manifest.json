@@ -5,8 +5,8 @@
   },
   "files": {
     ".github/workflows/ai_macro_automation.yml": {
-      "bytes": 5858,
-      "sha256": "ee7da7cfbfc71074bee46fea63ed6ea0edba38a72f3139ad7306aa982b004fcc"
+      "bytes": 5955,
+      "sha256": "3cd3863ab05e07f53c9a71f1dae3ffed9d6e49837dcb836c607f94331609740c"
     },
     "AGENTS.md": {
       "bytes": 21705,
@@ -141,8 +141,8 @@
       "sha256": "8f5fa395d6a0cc1dac8a0421ac5be4bffafc8fc97bdcb49d861e994aef71187d"
     },
     "automation/runner.py": {
-      "bytes": 11120,
-      "sha256": "2ba1e28270ee9465ae5e206dc5b855588d084023f439912a7149beb715cb59f0"
+      "bytes": 11833,
+      "sha256": "84a95b5dc2b64123d8b041d2042cb33b0329653338809e95452048c7adef8f63"
     },
     "automation/status.py": {
       "bytes": 493,
@@ -254,7 +254,7 @@
     "data/weekly_context_events.csv": {
       "bytes": 15969,
       "rows": 19,
-      "sha256": "d8d128faad999113655d9d2c97391e7f231e576b9a558288a4fa9410b7a929dc"
+      "sha256": "479089c1f8f5c23c5464376ca47d1aa88851b02e720a036a8f31daa7c3606500"
     },
     "developer/load_report.py": {
       "bytes": 8466,
@@ -473,7 +473,7 @@
       "sha256": "ff72a9736e11a1e19d63b2bfbd5326aa7b29554a6b854026bafff7661d3a8bec"
     }
   },
-  "generated_at_utc": "2026-08-11T05:10:57+00:00",
+  "generated_at_utc": "2026-08-11T05:51:12+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -484,6 +484,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "fbc82cdb945ea7aadc39",
+  "release_id": "8ced142a8d61d15ce179",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }

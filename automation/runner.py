@@ -117,6 +117,16 @@ def _current_artifact_valid(context: Any) -> tuple[bool, str, dict[str, Any]]:
     return commentary.get("status") == "validated", snapshot, dict(commentary)
 
 
+def _runtime_configuration_errors() -> list[str]:
+    errors: list[str] = []
+    if not str(os.getenv("FRED_API_KEY", "") or "").strip():
+        errors.append("FRED_API_KEY is not configured for the automation worker.")
+    sec_user_agent = str(os.getenv("SEC_USER_AGENT", "") or "").strip()
+    if not sec_user_agent:
+        errors.append("SEC_USER_AGENT is not configured for the automation worker.")
+    return errors
+
+
 def _generate_commentary(context: Any, config: AutomationConfig, run_id: str) -> dict[str, Any]:
     from openai import OpenAI
 
@@ -171,6 +181,13 @@ def main() -> int:
 
     if str(os.getenv("AI_MACRO_MODE", "")).strip().lower() != "automation":
         status["errors"].append("AI_MACRO_MODE must be automation for unattended writes.")
+        _finish(status, result="configuration_failed")
+        return 2
+
+    runtime_errors = _runtime_configuration_errors()
+    if runtime_errors:
+        status["phases"]["configuration"] = {"status": "failed", "errors": runtime_errors}
+        status["errors"].extend(runtime_errors)
         _finish(status, result="configuration_failed")
         return 2
 
