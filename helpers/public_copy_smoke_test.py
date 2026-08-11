@@ -102,7 +102,7 @@ READ_RENDERERS = [
     "power.py",
     "grid_storage.py",
     "water.py",
-    "adaptation.py",
+    "adoption.py",
     "workforce.py",
     "economic_impact.py",
 ]
@@ -150,7 +150,7 @@ def main() -> None:
                 if phrase in text:
                     violations.append(f"{path.name}:{node.lineno}: {phrase}")
 
-    for path in [ROOT / "config" / "metric_definitions.py", ROOT / "analytics" / "read_architecture.py"]:
+    for path in [ROOT / "config" / "metric_definitions.py", ROOT / "analytics" / "read_prompts.py"]:
         for lineno, text in public_literal_strings(path):
             lowered = text.lower()
             for phrase in BANNED_PUBLIC_PHRASES:
@@ -162,7 +162,7 @@ def main() -> None:
     presentation_paths = [RENDERING / filename for filename in READ_RENDERERS] + [
         RENDERING / "read_markup.py",
         RENDERING / "layout_contracts.py",
-        ROOT / "analytics" / "read_architecture.py",
+        ROOT / "analytics" / "read_prompts.py",
         ROOT / "config" / "visual_design.py",
     ]
     for path in presentation_paths:
@@ -200,7 +200,7 @@ def main() -> None:
             pre_section = after[:next_section]
             require("st.caption(" not in pre_section, f"{filename} places a free-floating note beneath the Read.")
 
-    adoption = (RENDERING / "adaptation.py").read_text(encoding="utf-8")
+    adoption = (RENDERING / "adoption.py").read_text(encoding="utf-8")
     workforce = (RENDERING / "workforce.py").read_text(encoding="utf-8")
     require("RPS directly measures" not in adoption, "Adoption developer note returned.")
     require("Coverage now separates" not in workforce, "Workforce developer note returned.")

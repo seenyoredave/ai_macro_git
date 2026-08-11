@@ -75,7 +75,8 @@ class _FakeStreamlit(types.ModuleType):
 FAKE_ST = _FakeStreamlit()
 sys.modules["streamlit"] = FAKE_ST
 
-from analytics.read_architecture import build_connectivity_read  # noqa: E402
+from analytics.dashboard_context import DashboardContext  # noqa: E402
+from analytics.read_evidence import build_connectivity_evidence  # noqa: E402
 from loaders import connectivity_loader  # noqa: E402
 from loaders.facility_registry_loader import (  # noqa: E402
     build_campus_registry,
@@ -145,7 +146,7 @@ def _assert_fallback_contract(campuses: pd.DataFrame) -> None:
             raise RuntimeError("offline fixture")
         for name in originals:
             setattr(connectivity_loader, name, fail)
-        fallback = connectivity_loader.load_connectivity_data(campuses, force_refresh=True, refresh_token=999)
+        fallback = connectivity_loader.load_connectivity_data(campuses, force_refresh=True, refresh_token=999, allow_live=True)
     finally:
         for name, value in originals.items():
             setattr(connectivity_loader, name, value)
@@ -163,18 +164,27 @@ def main() -> None:
     _assert_mismatch_contract(data)
     _assert_fallback_contract(campuses)
 
-    read = build_connectivity_read(data, {"campus_registry": campuses})
-    if not read.get("headline") or not read.get("references"):
-        raise AssertionError("Connectivity Read is missing its narrative or references.")
-    required_signals = {
+    packet = build_connectivity_evidence(DashboardContext(
+        connectivity_data=data,
+        infrastructure_data={"campus_registry": campuses, "connectivity": data},
+    )).to_dict()
+    if not packet.get("references"):
+        raise AssertionError("Connectivity evidence packet lost its source references.")
+    fact_ids = {str(item.get("id") or "").split(".", 1)[-1] for item in packet.get("facts", [])}
+    required_facts = {
         "active_ixps",
         "international_submarine_cable_systems",
         "us_connected_cable_catalog_entries",
         "middle_mile_new_fiber_miles",
         "high_capacity_low_public_connectivity_states",
     }
-    if not required_signals.issubset(read.get("signals", {})):
-        raise AssertionError("Connectivity Read lost core transport signals.")
+    if not required_facts.issubset(fact_ids):
+        raise AssertionError(f"Connectivity evidence lost core transport facts: {sorted(required_facts - fact_ids)}")
+    read = {
+        "headline": "Connectivity evidence is available for validation.",
+        "summary": "The renderer receives commentary separately from deterministic transport evidence.",
+        "references": packet.get("references", []),
+    }
 
     FAKE_ST.charts.clear()
     render_connectivity_tab(data, {"connectivity": data}, tab_read=read)

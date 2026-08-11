@@ -13,23 +13,23 @@ from rendering.common import _fallback, _fred_value, _metric_context, _render_fl
 from rendering.components import fmt_number, metric_card, render_domain_read, render_panel_heading, render_section, render_statline, render_tab_header
 from rendering.spatial import render_spatial_explorer
 
-def _render_primary_macro_cards(regime_metrics, trends, adaptation_data):
-    consumer_history = (adaptation_data or {}).get("consumer_history")
+def _render_primary_macro_cards(regime_metrics, trends, adoption_data):
+    consumer_history = (adoption_data or {}).get("consumer_history")
     if isinstance(consumer_history, pd.DataFrame) and not consumer_history.empty:
         consumer_history = consumer_history.loc[
             consumer_history.get("Series", pd.Series("", index=consumer_history.index)).astype(str).eq("Used last week")
         ].copy()
-        adaptation_history_frame = history_from_frame(consumer_history, "Value")
+        adoption_history_frame = history_from_frame(consumer_history, "Value")
     else:
-        adaptation_history_frame = history_from_frame(
-            (adaptation_data or {}).get("national_history"),
+        adoption_history_frame = history_from_frame(
+            (adoption_data or {}).get("national_history"),
             "Current AI Use",
         )
-    consumer_payload = (adaptation_data or {}).get("consumer_active", {}) or {}
-    adaptation_value = pd.to_numeric(
-        consumer_payload.get("value", (adaptation_data or {}).get("current_use")), errors="coerce"
+    consumer_payload = (adoption_data or {}).get("consumer_active", {}) or {}
+    adoption_value = pd.to_numeric(
+        consumer_payload.get("value", (adoption_data or {}).get("current_use")), errors="coerce"
     )
-    adaptation_date = consumer_payload.get("date", (adaptation_data or {}).get("snapshot_date"))
+    adoption_date = consumer_payload.get("date", (adoption_data or {}).get("snapshot_date"))
     specs = [
         (
             "macro-card-aei",
@@ -65,13 +65,13 @@ def _render_primary_macro_cards(regime_metrics, trends, adaptation_data):
             _metric_context("Power Stress Index", _value(regime_metrics, "Power Stress Index")),
         ),
         (
-            "macro-card-adaptation",
+            "macro-card-adoption",
             "Active AI Use",
-            adaptation_value,
-            adaptation_history_frame,
+            adoption_value,
+            adoption_history_frame,
             (0, 100),
             "RPS via FRED",
-            adaptation_date,
+            adoption_date,
             "green",
             "Working-age adults reporting generative-AI use during the prior week",
         ),
@@ -146,7 +146,7 @@ def _render_buildout_rotation(infrastructure_data):
             role="pipeline",
         )
 
-def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data, adaptation_data, infrastructure_data, tab_read=None):
+def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data, adoption_data, infrastructure_data, tab_read=None):
     del sector_metrics, sector_data
     render_tab_header(
         "AI Macro",
@@ -154,9 +154,9 @@ def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, das
         "YFinance / SEC / FRED / Census / EIA",
     )
     _render_floating_terms("macro")
-    render_domain_read(tab_read or (regime_metrics or {}).get("Macro Interpretation"), label="Read", domain="macro", macro=True)
+    render_domain_read(tab_read, label="Read", domain="macro", macro=True)
     render_section("Regime board", "Current top-level indicators and their recent history.", first=True)
-    _render_primary_macro_cards(regime_metrics, dashboard_data["trends"], adaptation_data)
+    _render_primary_macro_cards(regime_metrics, dashboard_data["trends"], adoption_data)
     render_section("Buildout leadership", "Construction growth across data centers, manufacturing, power, communications, and water systems.")
     _render_buildout_rotation(infrastructure_data)
     render_section("Buildout versus outcomes", "AI investment and construction compared with market, industrial, economic, and power measures.")

@@ -7,9 +7,11 @@ import os
 from pathlib import Path
 import tempfile
 import threading
-from typing import Callable, Iterator
+from typing import Callable, Iterator, Mapping
 
 import pandas as pd
+
+from config.deployment import PUBLIC_RUNTIME_ROOT
 
 try:  # Unix deployment lock; the in-process lock remains the portable fallback.
     import fcntl  # type: ignore
@@ -18,7 +20,7 @@ except ImportError:  # pragma: no cover - Windows fallback
 
 _LOCKS: dict[str, threading.RLock] = {}
 _LOCKS_GUARD = threading.Lock()
-_LOCK_ROOT = Path(tempfile.gettempdir()) / "ai_macro_file_locks"
+_LOCK_ROOT = PUBLIC_RUNTIME_ROOT / "locks"
 
 
 def _thread_lock(path: Path) -> threading.RLock:
@@ -118,3 +120,71 @@ def atomic_write_csv(
             write()
     else:
         write()
+
+
+def atomic_write_bundle(
+    payloads: Mapping[str | Path, bytes],
+    *,
+    transaction_key: str | Path,
+) -> None:
+    """Commit several file replacements as one application transaction.
+
+    All payloads are staged and fsynced before the transaction lock is taken.
+    Existing targets are snapshotted in memory so an exception during commit can
+    roll every already-replaced target back before the lock is released. Readers
+    that use the same ``transaction_key`` therefore never observe an in-process
+    partial commit.
+
+    This is intentionally an application-level transaction rather than a claim
+    that POSIX/Windows can atomically replace several independent directory
+    entries in one filesystem operation. A host crash between ``os.replace``
+    calls is outside that guarantee.
+    """
+    normalized = [(Path(path), bytes(data)) for path, data in payloads.items()]
+    if not normalized:
+        return
+
+    staged: dict[Path, Path] = {}
+    try:
+        for target, data in normalized:
+            temporary = _temporary_path(target)
+            temporary.write_bytes(data)
+            with temporary.open("rb") as handle:
+                os.fsync(handle.fileno())
+            staged[target] = temporary
+
+        with synchronized_path(transaction_key):
+            previous: dict[Path, bytes | None] = {
+                target: target.read_bytes() if target.exists() else None
+                for target, _ in normalized
+            }
+            committed: list[Path] = []
+            try:
+                for target, _ in normalized:
+                    _commit(staged[target], target)
+                    committed.append(target)
+            except BaseException:
+                rollback_errors: list[str] = []
+                for target in reversed(committed):
+                    try:
+                        prior = previous[target]
+                        if prior is None:
+                            target.unlink(missing_ok=True)
+                        else:
+                            rollback_temp = _temporary_path(target)
+                            try:
+                                rollback_temp.write_bytes(prior)
+                                _commit(rollback_temp, target)
+                            finally:
+                                rollback_temp.unlink(missing_ok=True)
+                    except BaseException as rollback_exc:  # pragma: no cover - catastrophic filesystem failure
+                        rollback_errors.append(f"{target}: {type(rollback_exc).__name__}: {rollback_exc}")
+                if rollback_errors:
+                    raise RuntimeError(
+                        "Atomic bundle commit failed and rollback was incomplete: "
+                        + "; ".join(rollback_errors)
+                    )
+                raise
+    finally:
+        for temporary in staged.values():
+            temporary.unlink(missing_ok=True)

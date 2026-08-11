@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import numpy as np
 import pandas as pd
 
@@ -187,9 +186,6 @@ def append_macro_history(
     observation_date,
     market_data_date,
 ):
-    macro_read = regime_metrics.get("Macro Interpretation", {}) or {}
-    constraint_factors = macro_read.get("constraint_factors", []) or []
-    expansion_factors = macro_read.get("expansion_factors", []) or []
     row = {
         "Date": str(observation_date),
         "Market Data Date": str(market_data_date),
@@ -273,36 +269,6 @@ def append_macro_history(
             "Lender Strain Version", np.nan
         ),
         "Pressure Version": regime_metrics.get("Pressure Version", np.nan),
-        "Macro State": macro_read.get("headline", ""),
-        "Macro State Summary": macro_read.get("summary", ""),
-        "Macro Constraint Factors": " || ".join(constraint_factors),
-        "Macro Expansion Factors": " || ".join(expansion_factors),
-        "Macro Pressure Factors": " || ".join(constraint_factors),
-        "Macro Resilience Factors": " || ".join(expansion_factors),
-        "Macro Change Factors": "",
-        "Macro Metric Changes": "",
-        "Macro Weekly References": json.dumps(
-            macro_read.get("references", []),
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
-        "Macro Weekly Context": json.dumps(
-            macro_read.get("current_context", {}),
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
-        "Macro Interpretation Confidence": macro_read.get("confidence", ""),
-        "Macro Interpretation Version": macro_read.get("version", ""),
-        "Macro Domain States": json.dumps(
-            macro_read.get("domains", {}),
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
-        "Macro Snapshot Context": json.dumps(
-            macro_read.get("snapshot_context", {}),
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
         "Consumer Sentiment": fred_data.get("Consumer Sentiment", {}).get("value", np.nan),
         "Fed Funds Rate": fred_data.get("Fed Funds Rate", {}).get("value", np.nan),
         "Industrial Production": fred_data.get("Industrial Production", {}).get("value", np.nan),

@@ -15,15 +15,15 @@ import xml.etree.ElementTree as ET
 
 import pandas as pd
 
-from config.current_context_policy import DOMAIN_NEWS_QUERIES, DOMAIN_OWNER_TERMS
+from config.current_context_policy import DOMAIN_VOCABULARY, domain_owner_terms
 
 
-DOMAIN_KEYS = tuple(DOMAIN_NEWS_QUERIES)
+DOMAIN_KEYS = tuple(DOMAIN_VOCABULARY)
 
 NEWS_RSS_ENDPOINT = "https://news.google.com/rss/search"
 NEWS_TIMEOUT_SECONDS = 4
 NEWS_MAX_BYTES = 1_500_000
-NEWS_USER_AGENT = "AI-Macro/6.10.19 (+source-grounded-current-context; business-research-source-policy)"
+NEWS_USER_AGENT = "AI-Macro/7.0.8 (+event-resolved-source-grounded-current-context; business-research-source-policy)"
 
 _EVENT_STOPWORDS = {
     "about", "after", "again", "against", "also", "amid", "among", "announced",
@@ -111,7 +111,7 @@ def _feed_url(query: str, *, days=7) -> str:
 
 def _domain_fit_score(text: str, domain: str) -> float:
     haystack = " ".join(str(text or "").split()).casefold()
-    matches = sum(1 for term in DOMAIN_OWNER_TERMS.get(domain, ()) if str(term).casefold() in haystack)
+    matches = sum(1 for term in domain_owner_terms(domain) if str(term).casefold() in haystack)
     return min(24.0, matches * 4.0)
 
 

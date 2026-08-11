@@ -333,15 +333,16 @@ def _project_summary(projects: pd.DataFrame) -> dict:
 
 
 @st.cache_data(ttl=86400)
-def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: int = 0, allow_live: bool = False) -> dict:
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     history = _normalize_history(_load_csv(HISTORY_PATH))
     m3_history = _normalize_m3_history(_load_csv(M3_HISTORY_PATH))
     source_mode = "retained"
     refresh_errors: dict[str, str] = {}
     refreshed_datasets: list[str] = []
 
-    if force_refresh:
+    if live_refresh:
         try:
             refreshed = _normalize_history(_fetch_fred_series({**OUTPUT_SERIES, **CAPACITY_SERIES, **UTILIZATION_SERIES}))
             if not refreshed.empty:
@@ -402,6 +403,8 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
         "load_report": {
             "source_mode": source_mode,
             "requested_datasets": ["g17", "m3"] if force_refresh else [],
+            "authorized": bool(allow_live),
+            "executed": live_refresh,
             "refreshed_datasets": refreshed_datasets,
             "errors": refresh_errors,
         },

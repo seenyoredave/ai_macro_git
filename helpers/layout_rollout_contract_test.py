@@ -23,7 +23,7 @@ def main() -> None:
 
     renderer_names = (
         "compute.py", "data_center.py", "connectivity.py", "finance.py", "power.py",
-        "grid_storage.py", "water.py", "adaptation.py", "workforce.py", "economic_impact.py",
+        "grid_storage.py", "water.py", "adoption.py", "workforce.py", "economic_impact.py",
     )
     sources = {name: (ROOT / "rendering" / name).read_text(encoding="utf-8") for name in renderer_names}
 
@@ -40,7 +40,7 @@ def main() -> None:
         "data_center.py": "Data-center project data",
         "connectivity.py": "Connectivity data",
         "power.py": "Power data",
-        "adaptation.py": "Adoption data",
+        "adoption.py": "Adoption data",
         "workforce.py": "Workforce data",
         "economic_impact.py": "Economic-outcomes data",
     }.items():
@@ -82,8 +82,8 @@ def main() -> None:
     require("render_detail_dossier(" in sources["water.py"], "Water dossier redesign is missing.")
     require("water-system-workbench" in sources["water.py"], "Water context workbench is missing.")
 
-    require("full-width-layout-adoption-trajectory" in sources["adaptation.py"], "Adoption unified trajectory is missing.")
-    require('view = st.radio("Use view", ["People", "Business"]' in sources["adaptation.py"], "Adoption People/Business selector is missing.")
+    require("full-width-layout-adoption-trajectory" in sources["adoption.py"], "Adoption unified trajectory is missing.")
+    require('view = st.radio("Use view", ["People", "Business"]' in sources["adoption.py"], "Adoption People/Business selector is missing.")
 
     require("full-width-layout-workforce-outcomes-matrix" in sources["workforce.py"], "Workforce Outcomes Matrix is not the hero.")
     require("full-width-layout-workforce-channels" in sources["workforce.py"], "Workforce channel workbench is missing.")
@@ -95,7 +95,7 @@ def main() -> None:
 
     css = (ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
     components = (ROOT / "rendering" / "components.py").read_text(encoding="utf-8")
-    require("v6.10 full-platform editorial rollout: space-efficiency contract" in css, "Space-efficiency CSS contract is missing.")
+    require("Full-platform editorial rollout: space-efficiency contract" in css, "Space-efficiency CSS contract is missing.")
     require('st.columns(5, gap="small", vertical_alignment="top")' in components, "Grid connection summary is not using five native Streamlit columns.")
     require('grid-delivery-pathway-' in components and '.rm-deliverability-stage-card' in css, "Grid connection summary runtime styling contract is missing.")
 

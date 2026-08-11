@@ -30,7 +30,7 @@ DOMAIN_BY_FILE = {
     "power.py": "Power",
     "grid_storage.py": "Grid & Storage",
     "water.py": "Water",
-    "adaptation.py": "Adoption",
+    "adoption.py": "Adoption",
     "workforce.py": "Workforce",
     "economic_impact.py": "Economic Outcomes",
     "evidence.py": "Evidence",

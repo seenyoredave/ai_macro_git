@@ -104,7 +104,7 @@ import requests  # noqa: E402
 from analytics.dashboard_context import DashboardContext  # noqa: E402
 from analytics.factor_engine import calc_sector_factors  # noqa: E402
 from analytics.macro_dataframe import build_macro_dashboard_data  # noqa: E402
-from analytics.read_architecture import build_platform_reads  # noqa: E402
+from analytics.read_service import build_platform_reads  # noqa: E402
 from analytics.regime_engine import build_regime_metrics  # noqa: E402
 from analytics.sector_builder import get_sector_data  # noqa: E402
 from analytics.sector_engine import build_sector_metrics  # noqa: E402
@@ -114,7 +114,7 @@ from benchmarks.benchmark_service import get_benchmark_metrics  # noqa: E402
 from config.load_policy import LoadPolicy, RefreshSource, build_load_policy  # noqa: E402
 from config.market_clock import market_date  # noqa: E402
 from config.sector_config import SECTOR_CONFIG, all_tickers  # noqa: E402
-from loaders.adaptation_loader import load_adaptation_data  # noqa: E402
+from loaders.adoption_loader import load_adoption_data  # noqa: E402
 from loaders.commercialization_loader import load_commercialization_data  # noqa: E402
 from loaders.connectivity_loader import load_connectivity_data  # noqa: E402
 from loaders.construction_loader import load_data_center_construction  # noqa: E402
@@ -126,7 +126,7 @@ from loaders.infrastructure_loader import load_infrastructure_data  # noqa: E402
 from loaders.market_loader import load_market_universe  # noqa: E402
 from loaders.nfci_loader import load_nfci_history  # noqa: E402
 from loaders.water_loader import load_water_utilization_data  # noqa: E402
-from loaders.weekly_context_loader import load_current_context, load_weekly_context  # noqa: E402
+from loaders.current_context_loader import load_current_context  # noqa: E402
 from loaders.workforce_loader import load_workforce_data  # noqa: E402
 
 
@@ -283,25 +283,90 @@ def _assert_policy_contract() -> LoadPolicy:
 
 def _assert_application_routing() -> None:
     source = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
+    developer_panel = (ROOT / "developer" / "panel.py").read_text(encoding="utf-8")
     required = (
         "build_load_policy(",
         "allow_yfinance_live=load_policy.allows_live(RefreshSource.YFINANCE)",
         "allow_edgar_live=load_policy.allows_live(RefreshSource.EDGAR)",
         "allow_live=load_policy.allows_live(RefreshSource.FRED)",
+        "allow_supply_live=load_policy.allows_live(RefreshSource.POWER)",
+        "allow_fred_live=load_policy.allows_live(RefreshSource.FRED)",
+        "allow_live=load_policy.allows_live(RefreshSource.CONNECTIVITY)",
+        "allow_live=load_policy.allows_live(RefreshSource.WATER)",
+        "allow_live=load_policy.allows_live(RefreshSource.WORKFORCE)",
+        "allow_live=load_policy.allows_live(RefreshSource.ECONOMIC_OUTCOMES)",
         "persist_refresh_snapshots(",
         "if load_policy.allows_live(RefreshSource.CURRENT_CONTEXT):",
-        "Rebuild from retained data",
-        "Refresh All Sources",
-        "Refresh All Domains",
     )
     missing = [token for token in required if token not in source]
     if missing:
         raise AssertionError(f"Application loader-policy routing is incomplete: {missing}")
+    for token in ("Rebuild from retained data", "Refresh all sources", "Refresh all domains"):
+        if token not in developer_panel:
+            raise AssertionError(f"Developer refresh control is missing: {token}")
+
+
+
+def _assert_force_without_authorization_is_retained() -> None:
+    """A refresh request must never grant its own network permission."""
+
+    with _network_blocker() as attempts:
+        tickers = {ticker: ticker for ticker in all_tickers()}
+        market = load_market_universe(
+            tickers,
+            force_yfinance_refresh=True,
+            force_edgar_refresh=True,
+            allow_yfinance_live=False,
+            allow_edgar_live=False,
+        )
+        get_benchmark_metrics("QQQ", force_refresh=True, allow_live=False)
+        load_fred(force_refresh=True, allow_live=False)
+        load_nfci_history(force_refresh=True, allow_live=False)
+        load_energy_data(
+            force_refresh=True,
+            force_fred_refresh=True,
+            force_market_refresh=True,
+            allow_supply_live=False,
+            allow_fred_live=False,
+            allow_market_live=False,
+        )
+        load_debt_markets_data(force_refresh=True, allow_live=False)
+        infrastructure = load_infrastructure_data(
+            force_construction_refresh=True,
+            force_facility_refresh=True,
+            force_compute_refresh=True,
+            allow_construction_live=False,
+            allow_facility_live=False,
+            allow_compute_live=False,
+        )
+        load_connectivity_data(
+            infrastructure.get("campus_registry"),
+            force_refresh=True,
+            allow_live=False,
+        )
+        load_data_center_construction(force_refresh=True, allow_live=False)
+        load_water_utilization_data(force_refresh=True, allow_live=False)
+        load_adoption_data(force_refresh=True, allow_live=False)
+        load_workforce_data(force_refresh=True, allow_live=False)
+        load_economic_impact_data(force_refresh=True, allow_live=False)
+        load_commercialization_data(force_refresh=True, allow_live=False)
+
+        # The calls above are intentionally forceful. The policy bit is the only
+        # thing keeping them retained-only, so any attempted provider access is a
+        # direct contract failure rather than a tolerated fallback.
+        if attempts:
+            raise AssertionError(
+                "force_refresh bypassed live authorization: " + "; ".join(attempts)
+            )
+
+    if not isinstance(market, dict) or market.get("yfinance") is None:
+        raise AssertionError("Unauthorized-force market load did not return retained data")
 
 
 def main() -> None:
     policy = _assert_policy_contract()
     _assert_application_routing()
+    _assert_force_without_authorization_is_retained()
 
     tracked = _tracked_files()
     before = _hash_files(tracked)
@@ -338,7 +403,7 @@ def main() -> None:
         )
         energy = _timed(
             "energy",
-            lambda: load_energy_data(fred_data=fred, allow_live=False),
+            lambda: load_energy_data(fred_data=fred),
             timings,
         )
         debt = _timed(
@@ -358,7 +423,7 @@ def main() -> None:
             "construction", load_data_center_construction, timings
         )
         water = _timed("water", load_water_utilization_data, timings)
-        adoption = _timed("adoption", load_adaptation_data, timings)
+        adoption = _timed("adoption", load_adoption_data, timings)
         workforce = _timed("workforce", load_workforce_data, timings)
         outcomes = _timed("economic_outcomes", load_economic_impact_data, timings)
         commercialization = _timed(
@@ -369,13 +434,7 @@ def main() -> None:
             lambda: load_current_context(as_of=market_date()),
             timings,
         )
-        sector_context = _timed(
-            "sector_context",
-            lambda: load_weekly_context(
-                as_of=market_date(), surface="sector", limit=15
-            ),
-            timings,
-        )
+
 
         def build_sectors():
             sector_data = {}
@@ -428,15 +487,16 @@ def main() -> None:
                 infrastructure_data=enriched_infrastructure,
                 connectivity_data=connectivity,
                 water_data=enriched_water,
-                adaptation_data=adoption,
+                adoption_data=adoption,
                 workforce_data=workforce,
                 economic_impact_data=outcomes,
                 commercialization_data=commercialization,
                 current_context=current_context,
             )
-            return regime, dashboard, build_platform_reads(context)
+            reads, commentary = build_platform_reads(context, artifact={})
+            return regime, dashboard, reads, commentary
 
-        regime, dashboard, platform_reads = _timed(
+        regime, dashboard, platform_reads, commentary_status = _timed(
             "derived_outputs", build_derived_outputs, timings
         )
 
@@ -470,9 +530,9 @@ def main() -> None:
         "outcomes_has_data": bool(outcomes),
         "commercialization_has_data": bool(commercialization),
         "current_context_domains": int(len(current_context.get("by_domain", {}))),
-        "sector_context_events": int(len(sector_context.get("events", []))),
         "sector_count": int(len(sector_data)),
         "platform_read_count": int(len(platform_reads)),
+        "commentary_status": commentary_status.get("status"),
         "dashboard_has_data": dashboard is not None,
         "regime_has_data": bool(regime),
     }
@@ -498,7 +558,7 @@ def main() -> None:
         failures.append(f"FRED retained series: {assertions['fred_returned']}")
     if assertions["nfci_rows"] < 1:
         failures.append("NFCI retained history is empty")
-    if assertions["benchmark_source_mode"] != "archive_read_mode":
+    if assertions["benchmark_source_mode"] not in {"archive_read_mode", "archive_current"}:
         failures.append(
             f"Benchmark source mode: {assertions['benchmark_source_mode']}"
         )
@@ -519,9 +579,9 @@ def main() -> None:
             f"Sector analytics coverage: {assertions['sector_count']}/{len(SECTOR_CONFIG)}"
         )
     if assertions["platform_read_count"] < 12:
-        failures.append(
-            f"Platform Read coverage: {assertions['platform_read_count']}"
-        )
+        failures.append(f"Platform Read coverage: {assertions['platform_read_count']}")
+    if assertions["commentary_status"] != "missing":
+        failures.append(f"Unexpected retained commentary state: {assertions['commentary_status']}")
     if total_elapsed > PERFORMANCE_GATE_SECONDS:
         failures.append(
             f"retained loader graph took {total_elapsed:.2f}s; gate is {PERFORMANCE_GATE_SECONDS:.2f}s"

@@ -187,12 +187,13 @@ def load_data_center_construction(
     allow_live: bool = False,
 ) -> dict:
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     local = _load_local_construction_history()
-    if not force_refresh and local is not None and not local.empty:
+    if not live_refresh and local is not None and not local.empty:
         result = summarize_data_center_construction(local)
         result["source"] = "Census Local History"
         return result
-    if not force_refresh and not allow_live:
+    if not live_refresh:
         return {
             "value": np.nan,
             "date": None,

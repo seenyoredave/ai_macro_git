@@ -28,7 +28,7 @@ class _FakeStreamlit(types.ModuleType):
 
 sys.modules.setdefault("streamlit", _FakeStreamlit())
 
-from loaders import adaptation_loader  # noqa: E402
+from loaders import adoption_loader  # noqa: E402
 from loaders import energy_market_loader  # noqa: E402
 from loaders import official_series_refresh  # noqa: E402
 from water.refresh import _latest_summary_url  # noqa: E402
@@ -192,19 +192,19 @@ def check_btos_sector_boundary() -> None:
     )
     errors = estimates.copy()
     errors["202601"] = "1%"
-    original_read_excel = adaptation_loader.pd.read_excel
-    original_cycle_dates = adaptation_loader._cycle_dates
+    original_read_excel = adoption_loader.pd.read_excel
+    original_cycle_dates = adoption_loader._cycle_dates
 
     def fake_read_excel(content, *, sheet_name, **kwargs):
         return estimates.copy() if sheet_name == "Response Estimates" else errors.copy()
 
     try:
-        adaptation_loader.pd.read_excel = fake_read_excel
-        adaptation_loader._cycle_dates = lambda content: {"202601": pd.Timestamp("2026-01-15")}
-        result = adaptation_loader.parse_btos_sector_workbook(b"fixture")
+        adoption_loader.pd.read_excel = fake_read_excel
+        adoption_loader._cycle_dates = lambda content: {"202601": pd.Timestamp("2026-01-15")}
+        result = adoption_loader.parse_btos_sector_workbook(b"fixture")
     finally:
-        adaptation_loader.pd.read_excel = original_read_excel
-        adaptation_loader._cycle_dates = original_cycle_dates
+        adoption_loader.pd.read_excel = original_read_excel
+        adoption_loader._cycle_dates = original_cycle_dates
 
     if result["Sector Code"].tolist() != ["11"]:
         raise AssertionError("BTOS footnote or unknown sector leaked into the sector snapshot.")
@@ -222,44 +222,35 @@ def check_water_release_gate() -> None:
 
 
 def check_sidebar_contract() -> None:
-    source = (PROJECT_ROOT / "ai_macro.py").read_text(encoding="utf-8")
+    app = (PROJECT_ROOT / "ai_macro.py").read_text(encoding="utf-8")
+    state = (PROJECT_ROOT / "developer" / "state.py").read_text(encoding="utf-8")
+    panel = (PROJECT_ROOT / "developer" / "panel.py").read_text(encoding="utf-8")
     expected = (
-        "Current Context",
-        "Compute",
-        "Data Centers",
-        "Connectivity",
-        "Power",
-        "Grid & Storage",
-        "Water",
-        "Adoption",
-        "Workforce",
-        "Economic Outcomes",
+        "Current Context", "Compute", "Data Centers", "Connectivity", "Power",
+        "Grid & Storage", "Water", "Adoption", "Workforce", "Economic Outcomes",
     )
     for label in expected:
-        if f'"{label}"' not in source:
+        if f'"{label}"' not in state:
             raise AssertionError(f"Domain refresh label is missing: {label}")
-    if "force_energy_market_refresh" in source:
+    if "force_energy_market_refresh" in app + state + panel:
         raise AssertionError("The retired global energy refresh flag returned.")
-    if 'st.markdown("**Refresh data sources**")' not in source or 'st.markdown("**Refresh domains**")' not in source:
-        raise AssertionError("Source and domain refresh controls are not separated.")
-    if '"Refresh All Sources"' not in source:
-        raise AssertionError("Refresh All Sources control is missing.")
-    if 'on_click=request_all_source_refreshes' not in source:
-        raise AssertionError("Refresh All Sources is not armed through a pre-rerun callback.")
-    if 'on_click=request_source_refresh' not in source or 'args=("yfinance",)' not in source:
-        raise AssertionError("YFinance refresh is not armed through a pre-rerun callback.")
-    if source.rfind('render_developer_load_report(st.session_state.get("market_universe_load_report"))') < source.find('if st.session_state.force_rebuild:'):
-        raise AssertionError("Developer load report renders before the rebuild completes.")
-    if 'if st.button("Refresh YFinance"' in source:
-        raise AssertionError("YFinance refresh reverted to the fragile nested-button rerun pattern.")
-    if 'st.button("Refresh All Domains"' not in source:
-        raise AssertionError("Refresh All Domains control is missing.")
-    if "Rebuild and cache clearing stay offline" in source:
-        raise AssertionError("Retired developer-tool instruction returned.")
-    if 'or load_policy.allows_live(RefreshSource.GRID_STORAGE)' not in source:
+    for workspace in ("Operations", "Current Context", "AI", "Diagnostics"):
+        if f'"{workspace}"' not in panel:
+            raise AssertionError(f"Developer workspace is missing: {workspace}")
+    if "request_source_refresh(st.session_state, source)" not in panel:
+        raise AssertionError("Source selector is not routed through the developer refresh command.")
+    if "request_domain_refresh(st.session_state, domain)" not in panel:
+        raise AssertionError("Domain selector is not routed through the developer refresh command.")
+    if "request_all_source_refreshes(st.session_state)" not in panel:
+        raise AssertionError("Refresh-all-sources command is missing.")
+    if "request_all_domain_refreshes(st.session_state)" not in panel:
+        raise AssertionError("Refresh-all-domains command is missing.")
+    if 'or load_policy.allows_live(RefreshSource.GRID_STORAGE)' not in app:
         raise AssertionError("Grid & Storage refresh is not authorized through the load policy.")
-    if 'st.caption("Evidence updates with the source domains above.")' not in source:
+    if 'st.caption("Evidence updates with the source domains above.")' not in panel:
         raise AssertionError("Evidence refresh ownership is not explained.")
+    if "tier_test_module_open" in app + state + panel or "developer_load_report_open" in app + state + panel:
+        raise AssertionError("Legacy developer-tool toggle state returned.")
 
 
 def main() -> None:

@@ -27,12 +27,9 @@ class _FakeStreamlit(types.ModuleType):
 
 sys.modules.setdefault("streamlit", _FakeStreamlit())
 
-from analytics.read_architecture import (  # noqa: E402
-    READ_ARCHITECTURE_VERSION,
-    _macro_headline,
-    build_economic_impact_read,
-    build_workforce_read,
-)
+from analytics.dashboard_context import DashboardContext  # noqa: E402
+from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_economic_impact_evidence, build_workforce_evidence  # noqa: E402
+from analytics.read_prompts import BASE_INSTRUCTIONS  # noqa: E402
 from config.visual_design import signature_tool  # noqa: E402
 from loaders.economic_impact_loader import load_economic_impact_data  # noqa: E402
 from loaders.workforce_loader import load_workforce_data  # noqa: E402
@@ -59,7 +56,7 @@ def main() -> int:
         "developer retained startup performs zero provider calls" in runtime_contract.casefold(),
         "State-schema bump lost the retained-loader policy contract.",
     )
-    require(READ_ARCHITECTURE_VERSION == "7.2.0", "Read architecture version does not match the v7.2.0 evidence-language contract.")
+    require(EVIDENCE_ARCHITECTURE_VERSION == "1.1.0", "v7 evidence architecture version drifted.")
     require(readme.startswith("# AI Macro\n"), "README no longer opens with the project overview.")
     require("## v" not in readme and "review build" not in readme.casefold(), "README has drifted back into release-note copy.")
 
@@ -70,31 +67,17 @@ def main() -> int:
 
     workforce_data = load_workforce_data()
     outcomes_data = load_economic_impact_data()
-    workforce_read = build_workforce_read(workforce_data)
-    outcomes_read = build_economic_impact_read(outcomes_data, commercialization_data=None)
-    require(workforce_read.get("confidence") in {"moderate", "high"}, "Workforce Read confidence is unexpectedly low.")
-    require("do not measure jobs actually lost or automated" in str(workforce_read.get("summary")), "Workforce Read does not distinguish potential task exposure from observed outcomes.")
-    require("occupation_exposure_count" in (workforce_read.get("signals") or {}), "Workforce Read lost its exposure signal.")
-    require("productivity" in str(outcomes_read.get("headline")).casefold(), "Economic Outcomes Read no longer centers the productivity-to-capture test.")
-    for signal in ("productivity_real_comp_gap", "labor_share_since_2020", "median_real_earnings_growth", "group_growth_spread_ppts"):
-        require(pd.notna(pd.to_numeric((outcomes_read.get("signals") or {}).get(signal), errors="coerce")), f"Economic Outcomes Read signal is missing: {signal}")
-
-    macro_headline = _macro_headline({
-        "market": {"signals": {"aei": 65}},
-        "data_center": {"signals": {"tracked_pipeline_capacity_gw": 280}},
-        "connectivity": {"signals": {}},
-        "grid_storage": {"signals": {"advanced_share": 35}},
-        "adaptation": {"signals": {"consumer_active": 50}},
-        "economic_impact": {"signals": {
-            "microsoft_ai_arr_b": 37,
-            "openai_arr_b": 20,
-            "productivity_growth": 2.8,
-            "productivity_real_comp_gap": 9.6,
-            "labor_share_since_2020": -7.0,
-            "median_real_earnings_growth": 0.8,
-        }},
-    })
-    require(macro_headline == "AI use and provider revenue are growing, but worker gains still lag productivity.", "AI Macro overstates economic confirmation after Phase 1.")
+    workforce_packet = build_workforce_evidence(DashboardContext(workforce_data=workforce_data)).to_dict()
+    outcomes_packet = build_economic_impact_evidence(DashboardContext(economic_impact_data=outcomes_data)).to_dict()
+    workforce_ids = {str(item.get("id") or "").split(".", 1)[-1] for item in workforce_packet.get("facts", [])}
+    outcomes_facts = {str(item.get("id") or "").split(".", 1)[-1]: item for item in outcomes_packet.get("facts", [])}
+    require("occupation_exposure_count" in workforce_ids, "Workforce evidence lost its occupation-exposure fact.")
+    require(any("Task-exposure" in boundary or "task exposure" in boundary for boundary in workforce_packet.get("boundaries", [])), "Workforce evidence lost the observed-outcomes boundary.")
+    for fact_id in ("productivity_real_comp_gap", "labor_share_since_2020", "median_real_earnings_growth", "group_growth_spread_ppts"):
+        fact = outcomes_facts.get(fact_id, {})
+        require(pd.notna(pd.to_numeric(fact.get("value"), errors="coerce")), f"Economic Outcomes evidence is missing: {fact_id}")
+    require("supplied evidence is the exclusive factual record" in BASE_INSTRUCTIONS.casefold(), "v7 prompt no longer makes deterministic evidence authoritative.")
+    require("separate observation from interpretation" in BASE_INSTRUCTIONS.casefold(), "v7 prompt lost the observation-versus-interpretation boundary.")
 
     workforce_loader_source = (ROOT / "loaders" / "workforce_loader.py").read_text(encoding="utf-8")
     outcomes_loader_source = (ROOT / "loaders" / "economic_impact_loader.py").read_text(encoding="utf-8")
@@ -108,8 +91,9 @@ def main() -> int:
         require(retained_key in evidence, f"Evidence does not expose {retained_key}.")
 
     print(
-        "PASS  v6.8 Phase 1 value transmission · "
-        f"Workforce: {workforce_read['headline']} · Economic Outcomes: {outcomes_read['headline']}"
+        "PASS  v7 value-transmission evidence · "
+        f"{len(workforce_packet.get('facts', []))} Workforce facts · "
+        f"{len(outcomes_packet.get('facts', []))} Economic Outcomes facts"
     )
     return 0
 

@@ -24,12 +24,11 @@ class DashboardContext:
     infrastructure_data: dict = field(default_factory=dict)
     connectivity_data: dict = field(default_factory=dict)
     water_data: dict = field(default_factory=dict)
-    adaptation_data: dict = field(default_factory=dict)
+    adoption_data: dict = field(default_factory=dict)
     workforce_data: dict = field(default_factory=dict)
     economic_impact_data: dict = field(default_factory=dict)
     commercialization_data: dict = field(default_factory=dict)
     current_context: dict = field(default_factory=dict)
     market_universe_summary: dict = field(default_factory=dict)
-    sector_weekly_context: dict = field(default_factory=dict)
     dashboard_data: dict | None = None
     platform_reads: dict = field(default_factory=dict)

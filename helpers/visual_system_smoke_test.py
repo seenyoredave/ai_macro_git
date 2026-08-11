@@ -115,7 +115,7 @@ def main() -> int:
         "power.py": "power",
         "grid_storage.py": "grid_storage",
         "water.py": "water",
-        "adaptation.py": "adoption",
+        "adoption.py": "adoption",
         "workforce.py": "workforce",
         "economic_impact.py": "economic_outcomes",
     }

@@ -14,7 +14,7 @@ READ_RENDERERS = {
     "Power": "rendering/power.py",
     "Grid & Storage": "rendering/grid_storage.py",
     "Water": "rendering/water.py",
-    "Adoption": "rendering/adaptation.py",
+    "Adoption": "rendering/adoption.py",
     "Workforce": "rendering/workforce.py",
     "Economic Outcomes": "rendering/economic_impact.py",
 }
@@ -85,7 +85,7 @@ def main() -> None:
         ("rendering/power.py", "Current power conditions", "render_statline"),
         ("rendering/grid_storage.py", "Grid connection conditions", "render_deliverability_screen"),
         ("rendering/water.py", "Current water exposure", "render_statline"),
-        ("rendering/adaptation.py", "Current use", "societal ="),
+        ("rendering/adoption.py", "Current use", "societal ="),
         ("rendering/workforce.py", "Employment and real pay", "with st.container"),
         ("rendering/economic_impact.py", "From AI revenue to economic results", "render_summary_row"),
     ]

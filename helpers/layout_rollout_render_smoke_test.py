@@ -83,11 +83,11 @@ class _FakeStreamlit(types.ModuleType):
 FAKE_ST = _FakeStreamlit()
 sys.modules["streamlit"] = FAKE_ST
 
-from loaders.adaptation_loader import load_adaptation_data  # noqa: E402
+from loaders.adoption_loader import load_adoption_data  # noqa: E402
 from loaders.commercialization_loader import load_commercialization_data  # noqa: E402
 from loaders.economic_impact_loader import load_economic_impact_data  # noqa: E402
 from loaders.infrastructure_loader import load_infrastructure_data  # noqa: E402
-from rendering.adaptation import render_adaptation_tab  # noqa: E402
+from rendering.adoption import render_adoption_tab  # noqa: E402
 from rendering.compute import render_compute_tab  # noqa: E402
 from rendering.economic_impact import render_economic_impact_tab  # noqa: E402
 
@@ -95,7 +95,7 @@ from rendering.economic_impact import render_economic_impact_tab  # noqa: E402
 def main() -> None:
     infrastructure = load_infrastructure_data()
     commercialization = load_commercialization_data()
-    adaptation = load_adaptation_data()
+    adoption = load_adoption_data()
     outcomes = load_economic_impact_data()
 
     FAKE_ST.charts.clear()
@@ -106,9 +106,9 @@ def main() -> None:
         raise AssertionError(f"Compute default rollout charts changed: {sorted(compute_keys)}")
 
     FAKE_ST.charts.clear()
-    render_adaptation_tab(adaptation, commercialization_data=commercialization, tab_read=None)
+    render_adoption_tab(adoption, commercialization_data=commercialization, tab_read=None)
     adoption_keys = set(FAKE_ST.charts)
-    required_adoption = {"adoption-consumer-history", "adaptation-sector-breadth"}
+    required_adoption = {"adoption-consumer-history", "adoption-sector-breadth"}
     if required_adoption != adoption_keys:
         raise AssertionError(f"Adoption default chart set changed: {sorted(adoption_keys)}")
 

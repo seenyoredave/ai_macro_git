@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import html
+
 import pandas as pd
 import streamlit as st
 
@@ -8,7 +10,7 @@ from analytics.private_capital import build_private_capital_realization
 from config.benchmark_config import QQQ_WEIGHTS_EFFECTIVE_DATE
 from config.factor_config import FACTOR_DISPLAY_NAMES
 from rendering.visual_system import render_plotly_chart
-from rendering.adaptation import _adaptation_source_rows
+from rendering.adoption import _adoption_source_rows
 from rendering.charts_common import COLORS
 from rendering.charts_finance import component_bars
 from rendering.common import _coverage_text, _display_text
@@ -27,23 +29,21 @@ from rendering.labels import sector_display_name
 
 
 EVIDENCE_STANDARDS = """
-**AI Macro is built around evidence, not allegiance.**
+**AI Macro applies a consistent evidence standard across its research.**
 
-The platform uses public records, regulatory filings, official datasets, company disclosures, and selected business reporting to study the AI economy. Sources are evaluated for what they establish, not for their reputation, popularity, ideology, or institutional status.
+The platform draws on public records, regulatory filings, official datasets, company disclosures, and selected business reporting to study the AI economy. Sources are evaluated according to the relevance, specificity, and quality of the evidence they provide.
 
-Secondary aggregators and specialist publications may be used to discover relevant developments, but they do not establish facts merely by reporting them. Material claims are traced whenever practical to primary records or independently verified through approved reporting.
+Secondary aggregators and specialist publications may help identify relevant developments. When practical, material claims are traced to primary records or corroborated through other approved sources.
 
-**Social media is excluded from the research pipeline.** Posts, threads, comments, and other user-generated social content are not used for discovery, corroboration, evidence, or citation. Popularity, repetition, and virality do not establish factual reliability.
+**Social media is excluded from the research pipeline.** Posts, threads, comments, and other user-generated social content are not used for discovery, corroboration, evidence, or citation.
 
-For consequential claims, AI Macro seeks evidence that could qualify, contradict, or narrow the initial interpretation. A source that identifies useful evidence is not owed agreement with its conclusions.
+For consequential claims, AI Macro considers evidence that may support, qualify, narrow, or contradict an initial interpretation. Conclusions are based on the available evidence rather than automatically adopting the interpretation of any individual source.
 
-Political and regulatory developments are included when they have a concrete economic or operational consequence. The platform preserves the identity of the acting institution or official, the nature of the action, and its legal or procedural status. Statements, requests, proposals, directives, orders, rules, and enacted law are not treated as interchangeable.
+Political and regulatory developments are included when they have a concrete economic or operational consequence. The platform preserves the identity of the acting institution or official, the nature of the action, and its legal or procedural status. Statements, requests, proposals, directives, orders, rules, and enacted laws are treated according to those distinctions.
 
-**Corroboration means independent evidence, not repeated publication.** Multiple stories derived from the same filing, wire report, press release, or other upstream source do not count as independent confirmation.
+**Corroboration requires independent evidence.** Multiple reports derived from the same filing, wire story, press release, or other upstream source are treated as a single underlying source rather than independent confirmation.
 
-Data and news serve different roles. Retained datasets provide the analytical foundation. Recent developments provide limited current context and should influence interpretation only when they materially change, explain, reinforce, or complicate the evidence.
-
-**No source is owed agreement.**
+Data and news serve different purposes within the platform. Retained datasets provide the analytical foundation, while recent developments provide current context when they materially change, explain, reinforce, or complicate the broader evidence.
 """.strip()
 
 def _status_rows(regime_metrics):
@@ -698,10 +698,10 @@ def _render_water_evidence(water_data, infrastructure_data):
             st.caption("No thermoelectric plant records are available.")
 
 
-def _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic_impact_data):
+def _render_adoption_outcomes_evidence(adoption_data, workforce_data, economic_impact_data):
     render_section("Adoption evidence", "Consumer use, employer adoption, and commercialization source records.", first=True)
-    with st.expander("Adaptation observations", expanded=False):
-        render_static_table(_adaptation_source_rows(adaptation_data or {}))
+    with st.expander("Adoption observations", expanded=False):
+        render_static_table(_adoption_source_rows(adoption_data or {}))
 
     render_section(
         "Workforce evidence",
@@ -751,61 +751,61 @@ _EVIDENCE_LOOKUP = {
     "market": {
         "label": "Market",
         "definition": "Equity performance, participation, concentration, and trading pressure across the configured 204-company AI market universe; not the entire stock market.",
-        "datasets": "archive/yf_history.csv · archive/sector_history.csv",
+        "datasets": "Retained market-price history · sector history · SEC filing-derived company records",
         "detail_view": "Market & finance",
     },
     "finance": {
         "label": "Finance",
         "definition": "Funding capacity, credit conditions, borrower and lender stress, and cash realization in the covered company and fund records.",
-        "datasets": "archive/yf_history.csv · archive/edgar_history.csv · archive/fred_history.csv · NY Fed retained series · private-capital fund records",
+        "datasets": "Retained market and SEC histories · Federal Reserve financial-condition series · private-capital fund records",
         "detail_view": "Market & finance",
     },
     "compute": {
         "label": "Compute",
         "definition": "U.S. compute-manufacturing output, utilization, investment, and announced production projects; project announcements are not operating capacity.",
-        "datasets": "compute manufacturing history · compute project ledger · construction history",
+        "datasets": "Federal Reserve manufacturing history · BEA investment · Census construction · compute project ledger",
         "detail_view": "Compute & data centers",
     },
     "data_center": {
         "label": "Data Centers",
         "definition": "Project stages, campus locations, and published capacity from the project registry; the registry is evidence of development activity, not a census of the national fleet.",
-        "datasets": "facility registry · campus registry · data-center project records · facility identity decisions",
+        "datasets": "Facility registry · campus registry · data-center project records · reviewed identity decisions",
         "detail_view": "Compute & data centers",
     },
     "connectivity": {
         "label": "Connectivity",
         "definition": "Public evidence of network reach and interconnection depth, including cables, IXPs, facilities, middle-mile awards, and campus proximity; private routes are not fully observed.",
-        "datasets": "connectivity source register · cable systems · IXP registry · interconnection facilities · middle-mile awards",
+        "datasets": "Cable systems · IXP registry · interconnection facilities · NTIA middle-mile awards",
         "detail_view": "Connectivity",
     },
     "power": {
         "label": "Power",
         "definition": "Electricity demand, operating and planned generation, prices, and large-load context; published data-center MW is not metered electricity demand.",
-        "datasets": "EIA retained power records · FRED series · generator pipeline · data-center campus records",
+        "datasets": "EIA electricity records · FRED series · generator pipeline · data-center campus power records",
         "detail_view": "Power & grid",
     },
     "grid_storage": {
         "label": "Grid & Storage",
         "definition": "Interconnection progress, historical queue outcomes, reserve margins, storage duration, and grid construction; queued capacity is not connected capacity.",
-        "datasets": "Berkeley Lab queue records · NERC reserve margins · EIA storage records · electric-power construction history",
+        "datasets": "Berkeley Lab grid-connection records · NERC reserve margins · EIA storage · electric-power construction history",
         "detail_view": "Power & grid",
     },
     "water": {
         "label": "Water",
         "definition": "Regional water exposure and facility-level disclosure. State and national water totals provide context but cannot establish supply at a specific campus.",
-        "datasets": "USGS water-use records · drought snapshot · EIA thermoelectric records · facility water evidence",
+        "datasets": "USGS water-use records · U.S. Drought Monitor / NOAA · EIA thermoelectric records · facility water disclosures",
         "detail_view": "Water",
     },
-    "adaptation": {
+    "adoption": {
         "label": "Adoption",
         "definition": "Reported consumer use and business adoption. Expected future use is intent, not completed deployment, and provider users are not a national adoption rate.",
-        "datasets": "consumer-use history · Census BTOS business adoption · commercialization disclosures",
+        "datasets": "Consumer-use history · Census BTOS business adoption · provider commercialization disclosures",
         "detail_view": "Adoption & outcomes",
     },
     "workforce": {
         "label": "Workforce",
         "definition": "Observed employment, real pay, openings, hires, quits, layoffs, and a separate task-exposure benchmark. Exposure is not observed displacement.",
-        "datasets": "occupation exposure benchmark · BLS CES · BLS JOLTS · workforce outcomes matrix",
+        "datasets": "Occupation exposure benchmark · BLS employment and earnings · BLS JOLTS labor flows",
         "detail_view": "Adoption & outcomes",
     },
     "economic_impact": {
@@ -847,11 +847,28 @@ def _evidence_lineage_rows(selected: str, read: dict, spec: dict) -> list[dict]:
         str(item.get("source_label") or item.get("source_name") or "").strip()
         for item in static_refs[:6]
     )
+    generator = str(read.get("generator") or "").strip().casefold()
+    headline_support = next((
+        item for item in read.get("claim_support", []) or []
+        if isinstance(item, dict) and str(item.get("field") or "") == "headline"
+    ), {})
+    fact_ids = [str(item) for item in headline_support.get("fact_ids", []) or [] if str(item).strip()]
+    if generator == "openai":
+        first_claim = str(read.get("headline") or "Generated interpretation unavailable.").strip()
+        layer = "Validated interpretation"
+        source = static_sources or "Validated retained evidence packet"
+        support = f" · fact IDs: {', '.join(fact_ids)}" if fact_ids else ""
+        provenance = f"OpenAI commentary passed deterministic validation{support} · boundary: {spec['definition']}"
+    else:
+        first_claim = "Retained evidence remains available; generated commentary is not currently published."
+        layer = "Retained evidence"
+        source = "Detailed retained source register"
+        provenance = f"{spec['datasets']} · boundary: {spec['definition']}"
     rows = [{
-        "Claim / evidence": str(read.get("headline") or "Current domain claim is unavailable.").strip(),
-        "Layer": "Retained analytical",
-        "Source": static_sources or "Detailed retained source register",
-        "Provenance": f"{spec['datasets']} · boundary: {spec['definition']}",
+        "Claim / evidence": first_claim,
+        "Layer": layer,
+        "Source": source,
+        "Provenance": provenance,
         "source_url": "",
     }]
 
@@ -878,8 +895,12 @@ def _evidence_lineage_rows(selected: str, read: dict, spec: dict) -> list[dict]:
         source = str(reference.get("source_label") or reference.get("source_name") or event.get("source_label") or event.get("source_name") or "Source").strip()
         provider = str(event.get("discovery_provider") or "").strip()
         discovered_via = str(event.get("discovered_via") or "").strip()
+        resolution_mode = str(event.get("evidence_resolution_mode") or "").strip()
+        seed_source = str(event.get("evidence_seed_source_name") or "").strip()
         verification = str(event.get("verification_status") or item.get("status") or "").replace("_", " ").strip()
-        if discovered_via:
+        if resolution_mode == "alternate_source" and seed_source:
+            provenance = f"Event surfaced by {seed_source}; evidence established independently by {source}"
+        elif discovered_via:
             provenance = f"Discovered via {discovered_via}; evidence established by {source}"
         elif provider == "primary_feed":
             provenance = f"Direct primary-source discovery; {verification or 'primary'}"
@@ -897,14 +918,169 @@ def _evidence_lineage_rows(selected: str, read: dict, spec: dict) -> list[dict]:
     return rows
 
 
-def _render_evidence_lookup(platform_reads: dict | None) -> None:
+def _read_fact_ids(read: dict) -> list[str]:
+    fact_ids: list[str] = []
+    for claim in read.get("claim_support", []) or []:
+        if not isinstance(claim, dict):
+            continue
+        for fact_id in claim.get("fact_ids", []) or []:
+            value = str(fact_id or "").strip()
+            if value and value not in fact_ids:
+                fact_ids.append(value)
+    return fact_ids
+
+
+def _packet_fact_index(packet: dict) -> dict[str, dict]:
+    return {
+        str(item.get("id") or "").strip(): dict(item)
+        for item in packet.get("facts", []) or []
+        if isinstance(item, dict) and str(item.get("id") or "").strip()
+    }
+
+
+def _safe_source_link(label: str, url: str) -> str:
+    safe_label = html.escape(str(label or "Source").strip())
+    safe_url = str(url or "").strip()
+    if safe_url.startswith("https://"):
+        return (
+            f'<a class="rm-evidence-source-link" href="{html.escape(safe_url, quote=True)}" '
+            f'target="_blank" rel="noopener noreferrer">{safe_label}</a>'
+        )
+    return f'<span class="rm-evidence-source-text">{safe_label}</span>'
+
+
+def _render_evidence_interpretation(read: dict) -> None:
+    generator = str(read.get("generator") or "").strip().casefold()
+    if generator == "openai":
+        headline = str(read.get("headline") or "").strip()
+        analysis = str(read.get("analysis") or "").strip()
+        kicker = "Validated interpretation"
+    else:
+        headline = "Retained evidence is available."
+        analysis = "No validated generated interpretation is published for the current analytical evidence snapshot."
+        kicker = "Analytical evidence"
+    st.markdown(
+        "".join([
+            '<div class="rm-evidence-interpretation">',
+            f'<div class="rm-evidence-kicker">{html.escape(kicker)}</div>',
+            f'<div class="rm-evidence-interpretation-title">{html.escape(headline)}</div>',
+            f'<div class="rm-evidence-interpretation-copy">{html.escape(analysis)}</div>' if analysis else "",
+            '</div>',
+        ]),
+        unsafe_allow_html=True,
+    )
+
+
+def _render_cited_facts(read: dict, packet: dict) -> None:
+    fact_index = _packet_fact_index(packet)
+    facts = [fact_index[fact_id] for fact_id in _read_fact_ids(read) if fact_id in fact_index][:6]
+    if not facts:
+        st.caption("No generated claim-to-fact links are published for the current evidence snapshot.")
+        return
+    cards = []
+    for fact in facts:
+        label = str(fact.get("label") or "Evidence").strip()
+        value = str(fact.get("display") or "n/a").strip()
+        context = str(fact.get("context") or "").strip()
+        cards.append(
+            '<div class="rm-evidence-fact-card">'
+            '<div class="rm-evidence-fact-label">{}</div>'
+            '<div class="rm-evidence-fact-value">{}</div>'
+            '{}'
+            '</div>'.format(
+                html.escape(label),
+                html.escape(value),
+                f'<div class="rm-evidence-fact-context">{html.escape(context)}</div>' if context else "",
+            )
+        )
+    st.markdown('<div class="rm-evidence-fact-grid">' + ''.join(cards) + '</div>', unsafe_allow_html=True)
+
+
+def _render_analytical_foundation(packet: dict, spec: dict) -> None:
+    references = [dict(item) for item in packet.get("references", []) or [] if isinstance(item, dict)]
+    source_links = []
+    seen = set()
+    for reference in references:
+        label = str(reference.get("source_label") or reference.get("source_name") or "").strip()
+        url = str(reference.get("source_url") or "").strip()
+        key = (label, url)
+        if not label or key in seen:
+            continue
+        seen.add(key)
+        source_links.append(_safe_source_link(label, url))
+    sources_html = ' · '.join(source_links) if source_links else '<span class="rm-evidence-source-text">Detailed source register</span>'
+    st.markdown(
+        "".join([
+            '<div class="rm-evidence-foundation-card">',
+            '<div class="rm-evidence-card-kicker">Data foundation</div>',
+            f'<div class="rm-evidence-card-copy">{html.escape(str(spec.get("datasets") or "").strip())}</div>',
+            '<div class="rm-evidence-card-divider"></div>',
+            '<div class="rm-evidence-card-kicker">Source foundation</div>',
+            f'<div class="rm-evidence-source-list">{sources_html}</div>',
+            '</div>',
+        ]),
+        unsafe_allow_html=True,
+    )
+
+
+def _render_scope_and_limits(packet: dict, spec: dict) -> None:
+    boundaries = [str(item).strip() for item in packet.get("boundaries", []) or [] if str(item).strip()]
+    items = [str(spec.get("definition") or "").strip(), *boundaries]
+    items = [item for item in items if item]
+    list_html = ''.join(f'<li>{html.escape(item)}</li>' for item in items)
+    st.markdown(
+        "".join([
+            '<div class="rm-evidence-foundation-card">',
+            '<div class="rm-evidence-card-kicker">Scope &amp; limits</div>',
+            f'<ul class="rm-evidence-boundary-list">{list_html}</ul>',
+            '</div>',
+        ]),
+        unsafe_allow_html=True,
+    )
+
+
+def _render_current_context_evidence(read: dict) -> None:
+    items = [dict(item) for item in read.get("current_context_items", []) or [] if isinstance(item, dict) and str(item.get("text") or "").strip()]
+    if not items:
+        return
+    references = {
+        int(item.get("reference_number")): dict(item)
+        for item in read.get("references", []) or []
+        if isinstance(item, dict) and str(item.get("reference_number") or "").isdigit()
+    }
+    cards = []
+    for item in items[:2]:
+        try:
+            number = int(item.get("reference_number"))
+        except (TypeError, ValueError):
+            number = 0
+        reference = references.get(number, {})
+        source = str(reference.get("source_label") or reference.get("source_name") or "Source").strip()
+        url = str(reference.get("source_url") or item.get("source_url") or "").strip()
+        cards.append(
+            '<div class="rm-evidence-context-card">'
+            f'<div class="rm-evidence-context-copy">{html.escape(str(item.get("text") or "").strip())}</div>'
+            f'<div class="rm-evidence-context-source">{_safe_source_link(source, url)}</div>'
+            '</div>'
+        )
+    if cards:
+        render_section(
+            "Recent context",
+            "Current developments are sourced separately from the retained analytical evidence above.",
+            compact=True,
+        )
+        st.markdown('<div class="rm-evidence-context-grid">' + ''.join(cards) + '</div>', unsafe_allow_html=True)
+
+
+def _render_evidence_trace(platform_reads: dict | None, evidence_packets: dict | None) -> str:
     reads = platform_reads or {}
+    packets = evidence_packets or {}
     options = list(_EVIDENCE_LOOKUP)
     if "evidence-view" not in st.session_state:
         st.session_state["evidence-view"] = _EVIDENCE_LOOKUP[options[0]]["detail_view"]
 
     selected = st.selectbox(
-        "Find evidence for",
+        "Evidence for",
         options,
         format_func=lambda key: _EVIDENCE_LOOKUP[key]["label"],
         key="evidence-lookup-domain",
@@ -912,18 +1088,36 @@ def _render_evidence_lookup(platform_reads: dict | None) -> None:
     )
     spec = _EVIDENCE_LOOKUP[selected]
     read = dict(reads.get(selected) or {})
-    rows = _evidence_lineage_rows(selected, read, spec)
+    packet = dict(packets.get(selected) or {})
 
-    render_static_table(pd.DataFrame([
-        {"Step": "Definition / boundary", "Record": spec["definition"]},
-        {"Step": "Dataset", "Record": spec["datasets"]},
-        {"Step": "Primary sources", "Record": "Trace the current claim and recent-context evidence in the lineage below, then open the detailed source register."},
-    ]))
+    _render_evidence_interpretation(read)
+    render_section(
+        "Evidence used in the Read",
+        "The facts below are the analytical evidence explicitly cited by the published interpretation.",
+        compact=True,
+    )
+    _render_cited_facts(read, packet)
+
+    foundation, limits = st.columns(2)
+    with foundation:
+        _render_analytical_foundation(packet, spec)
+    with limits:
+        _render_scope_and_limits(packet, spec)
+
+    _render_current_context_evidence(read)
+    return selected
+
+
+def _render_lineage_audit(selected: str, platform_reads: dict | None) -> None:
+    reads = platform_reads or {}
+    spec = _EVIDENCE_LOOKUP[selected]
+    read = dict(reads.get(selected) or {})
+    rows = _evidence_lineage_rows(selected, read, spec)
 
     control_a, control_b = st.columns([2, 1])
     with control_a:
         query = st.text_input(
-            "Search this evidence path",
+            "Search claim lineage",
             placeholder="claim, source, dataset, or provenance",
             key="evidence-lineage-search",
         ).strip().casefold()
@@ -945,15 +1139,9 @@ def _render_evidence_lookup(platform_reads: dict | None) -> None:
         for row in filtered
     ])
     if display.empty:
-        st.caption("No evidence-path records match the current search and layer filter.")
+        st.caption("No lineage records match the current search and layer filter.")
     else:
         render_static_table(display)
-
-    snapshot_id = str(read.get("context_snapshot_id") or "").strip()
-    if snapshot_id:
-        st.caption(f"Current Context snapshot: {snapshot_id} · Detailed records below: {spec['detail_view']}")
-    else:
-        st.caption(f"Detailed records below: {spec['detail_view']}")
 
     linked = []
     seen = set()
@@ -965,50 +1153,84 @@ def _render_evidence_lookup(platform_reads: dict | None) -> None:
             seen.add(key)
             linked.append(f"[{label}]({url})")
     if linked:
-        st.markdown("Evidence links: " + " · ".join(linked[:6]))
+        st.markdown("Source links: " + " · ".join(linked[:8]))
 
-
-def render_evidence_tab(fred_data, sector_data, sector_metrics, regime_metrics, energy_data, debt_markets_data, dashboard_data, infrastructure_data=None, connectivity_data=None, water_data=None, adaptation_data=None, workforce_data=None, economic_impact_data=None, platform_reads=None):
+def render_evidence_tab(
+    fred_data,
+    sector_data,
+    sector_metrics,
+    regime_metrics,
+    energy_data,
+    debt_markets_data,
+    dashboard_data,
+    infrastructure_data=None,
+    connectivity_data=None,
+    water_data=None,
+    adoption_data=None,
+    workforce_data=None,
+    economic_impact_data=None,
+    platform_reads=None,
+    evidence_packets=None,
+):
     render_tab_header(
         "Evidence",
-        "Definitions, methods, source records, and the limits of the data.",
-        "Methods and sources",
+        "Trace the research from published interpretation back to the facts, sources, and boundaries that support it.",
+        "Sources and methodology",
     )
     render_line_break()
-    with st.expander("Evidence standards", expanded=False):
-        st.markdown(EVIDENCE_STANDARDS)
     render_section(
-        "Find the evidence",
-        "Start with a current claim, then trace its definition, dataset, and primary sources.",
+        "Research standards",
+        "How sources are selected, corroborated, and kept separate from interpretation.",
         first=True,
         compact=True,
     )
-    _render_evidence_lookup(platform_reads)
-    render_section("Detailed records", "Open the underlying methods, source registers, and observations.", compact=True)
-    view = st.selectbox(
-        "Evidence view",
-        [
-            "Metrics",
-            "Market & finance",
-            "Compute & data centers",
-            "Connectivity",
-            "Power & grid",
-            "Water",
-            "Adoption & outcomes",
-        ],
-        key="evidence-view",
+    with st.expander("Read the evidence standards", expanded=False):
+        st.markdown(EVIDENCE_STANDARDS)
+
+    render_section(
+        "Trace a Read",
+        "Start with the conclusion, then inspect the cited analytical evidence and its source foundation.",
+        compact=True,
     )
-    if view == "Metrics":
-        _render_metric_evidence(regime_metrics)
-    elif view == "Market & finance":
-        _render_market_finance_evidence(fred_data, sector_data, sector_metrics, debt_markets_data, dashboard_data)
-    elif view == "Compute & data centers":
-        _render_compute_data_center_evidence(infrastructure_data)
-    elif view == "Connectivity":
-        _render_connectivity_evidence(connectivity_data)
-    elif view == "Power & grid":
-        _render_power_grid_evidence(energy_data, infrastructure_data)
-    elif view == "Water":
-        _render_water_evidence(water_data, infrastructure_data)
-    else:
-        _render_adoption_outcomes_evidence(adaptation_data, workforce_data, economic_impact_data)
+    selected = _render_evidence_trace(platform_reads, evidence_packets)
+
+    render_section(
+        "Technical records",
+        "Full formulas, coverage tables, source registers, and underlying observations are retained for audit and deeper review.",
+        compact=True,
+    )
+    with st.expander("Open technical records", expanded=False):
+        st.markdown("**Claim lineage**")
+        st.caption("Audit the selected Read's interpretation, Current Context evidence, and provenance trail.")
+        _render_lineage_audit(selected, platform_reads)
+
+        st.markdown("---")
+        st.markdown("**Detailed source records**")
+        view = st.selectbox(
+            "Record group",
+            [
+                "Metrics",
+                "Market & finance",
+                "Compute & data centers",
+                "Connectivity",
+                "Power & grid",
+                "Water",
+                "Adoption & outcomes",
+            ],
+            key="evidence-view",
+        )
+        if view == "Metrics":
+            _render_metric_evidence(regime_metrics)
+        elif view == "Market & finance":
+            _render_market_finance_evidence(fred_data, sector_data, sector_metrics, debt_markets_data, dashboard_data)
+        elif view == "Compute & data centers":
+            _render_compute_data_center_evidence(infrastructure_data)
+        elif view == "Connectivity":
+            _render_connectivity_evidence(connectivity_data)
+        elif view == "Power & grid":
+            _render_power_grid_evidence(energy_data, infrastructure_data)
+        elif view == "Water":
+            _render_water_evidence(water_data, infrastructure_data)
+        else:
+            _render_adoption_outcomes_evidence(adoption_data, workforce_data, economic_impact_data)
+

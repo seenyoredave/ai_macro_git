@@ -7,7 +7,6 @@ import pandas as pd
 import streamlit as st
 
 from analytics.energy_pulse import (
-    build_power_read,
     demand_snapshot,
     development_snapshot,
     large_load_snapshot,
@@ -278,9 +277,6 @@ def _power_context(power_data, infrastructure_data) -> dict:
         "development": development_snapshot(pipeline, pd.DataFrame(), pd.DataFrame()),
         "prices": price_snapshot(retail, _power_item(power_data, "Natural Gas Price")),
     }
-    context["read"] = build_power_read(
-        context["demand"], context["large_loads"], context["development"], context["prices"]
-    )
     return context
 
 
@@ -529,7 +525,7 @@ def render_power_tab(fred_data, regime_metrics, power_data, dashboard_data, infr
     render_tab_header("Power", "Electricity demand, generation, planned capacity, prices, and major fuel infrastructure.", "EIA / FRED / facility registry")
     _render_floating_terms("power")
     context = _power_context(power_data, infrastructure_data or {})
-    render_domain_read(tab_read or context.get("read"), label="Read", domain="power")
+    render_domain_read(tab_read, label="Read", domain="power")
     _render_power_pulse(context)
     _render_demand(context)
     _render_supply(context)

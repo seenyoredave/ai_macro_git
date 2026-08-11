@@ -1,0 +1,2822 @@
+{
+  "artifact_version": "1.2.0",
+  "attempt_id": "20260810T144212300145Z_50717b5b_174d45e1",
+  "evidence_packets": {
+    "adoption": {
+      "boundaries": [
+        "Expected business use is stated intent and must not be described as deployed use.",
+        "Provider subscriber counts are not a national paid-adoption rate."
+      ],
+      "domain": "adoption",
+      "facts": [
+        {
+          "context": "",
+          "display": "21.5%",
+          "id": "adoption.current_business_use_pct",
+          "label": "Businesses reporting current AI use",
+          "value": 21.5
+        },
+        {
+          "context": "",
+          "display": "24.3%",
+          "id": "adoption.expected_business_use_pct",
+          "label": "Businesses expecting AI use within six months",
+          "value": 24.3
+        },
+        {
+          "context": "",
+          "display": "2.8 percentage points",
+          "id": "adoption.expected_adoption_gap_ppts",
+          "label": "Expected-minus-current business AI-use gap",
+          "value": 2.8000000000000007
+        },
+        {
+          "context": "",
+          "display": "61.8%",
+          "id": "adoption.consumer_overall_pct",
+          "label": "Adults age 18\u201364 reporting some generative-AI use",
+          "value": 61.78024
+        },
+        {
+          "context": "",
+          "display": "54.8%",
+          "id": "adoption.consumer_personal_pct",
+          "label": "Adults reporting personal generative-AI use",
+          "value": 54.8078
+        },
+        {
+          "context": "",
+          "display": "45.2%",
+          "id": "adoption.consumer_work_pct",
+          "label": "Adults reporting generative-AI use for work",
+          "value": 45.19932
+        },
+        {
+          "context": "",
+          "display": "54.2%",
+          "id": "adoption.consumer_active_pct",
+          "label": "Adults reporting generative-AI use in the prior week",
+          "value": 54.20874
+        },
+        {
+          "context": "",
+          "display": "15.4%",
+          "id": "adoption.consumer_daily_pct",
+          "label": "Adults reporting daily generative-AI use",
+          "value": 15.43863
+        },
+        {
+          "context": "",
+          "display": "9.9 percentage points",
+          "id": "adoption.consumer_change_ppts",
+          "label": "Change in overall consumer use across the retained series",
+          "value": 9.915349999999997
+        },
+        {
+          "context": "",
+          "display": "90.5%",
+          "id": "adoption.sector_coverage",
+          "label": "Share of BTOS sectors with a current-use reading",
+          "value": 0.9047619047619048
+        },
+        {
+          "context": "",
+          "display": "Information",
+          "id": "adoption.leading_sector",
+          "label": "BTOS sector with the highest current AI-use reading",
+          "value": "Information"
+        },
+        {
+          "context": "",
+          "display": "41.9%",
+          "id": "adoption.leading_sector_use_pct",
+          "label": "Highest BTOS sector current AI-use reading",
+          "value": 41.9
+        },
+        {
+          "context": "",
+          "display": "50.0 million",
+          "id": "adoption.chatgpt_subscribers_m",
+          "label": "OpenAI reported ChatGPT subscribers",
+          "value": 50.0
+        },
+        {
+          "context": "",
+          "display": "5.6%",
+          "id": "adoption.implied_subscriber_share_pct",
+          "label": "Implied subscriber share of working-age U.S. adults",
+          "value": 5.555555555555555
+        },
+        {
+          "context": "",
+          "display": "9.0 million",
+          "id": "adoption.openai_paying_business_users_m",
+          "label": "OpenAI reported paying business users",
+          "value": 9.0
+        },
+        {
+          "context": "",
+          "display": "8.0 million",
+          "id": "adoption.gemini_enterprise_paid_seats_m",
+          "label": "Alphabet reported paid Gemini enterprise seats",
+          "value": 8.0
+        }
+      ],
+      "importance": 49.57674999999998,
+      "label": "Adoption",
+      "references": [
+        {
+          "source_label": "Real-Time Population Survey via FRED",
+          "source_url": "https://fred.stlouisfed.org/release?rid=524"
+        },
+        {
+          "source_label": "U.S. Census BTOS",
+          "source_url": "https://www.census.gov/hfp/btos/"
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "compute": {
+      "boundaries": [
+        "Announced projects are commitments, not current operating capacity.",
+        "Provider serving-cost disclosures must not be generalized to the whole market."
+      ],
+      "domain": "compute",
+      "facts": [
+        {
+          "context": "",
+          "display": "9.2%",
+          "id": "compute.computer_output_growth",
+          "label": "Computer and peripheral equipment output growth",
+          "value": 0.09247983352669742
+        },
+        {
+          "context": "",
+          "display": "11.5%",
+          "id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth",
+          "value": 0.11465238662263166
+        },
+        {
+          "context": "",
+          "display": "81.7%",
+          "id": "compute.computer_utilization",
+          "label": "Computer and peripheral equipment capacity utilization",
+          "value": 81.6758
+        },
+        {
+          "context": "",
+          "display": "72.2%",
+          "id": "compute.semiconductor_utilization",
+          "label": "Semiconductor capacity utilization",
+          "value": 72.1577
+        },
+        {
+          "context": "",
+          "display": "15.9%",
+          "id": "compute.information_processing_investment_growth",
+          "label": "Information-processing investment growth",
+          "value": 0.1592742836027563
+        },
+        {
+          "context": "",
+          "display": "$362.0B",
+          "id": "compute.project_capex_b",
+          "label": "Expected investment in announced U.S. compute-manufacturing projects",
+          "value": 362.026
+        },
+        {
+          "context": "",
+          "display": "17",
+          "id": "compute.project_sites",
+          "label": "Announced U.S. compute-manufacturing project sites",
+          "value": 17.0
+        },
+        {
+          "context": "",
+          "display": "4",
+          "id": "compute.critical_layers_covered",
+          "label": "Tracked AI supply-chain layers with announced domestic projects",
+          "value": 4.0
+        },
+        {
+          "context": "",
+          "display": "4",
+          "id": "compute.critical_layers_total",
+          "label": "Tracked critical AI supply-chain layers",
+          "value": 4.0
+        },
+        {
+          "context": "",
+          "display": "11",
+          "id": "compute.core_ai_sites",
+          "label": "Core-AI manufacturing project sites",
+          "value": 11.0
+        },
+        {
+          "context": "",
+          "display": "$348.0B",
+          "id": "compute.core_ai_capex_b",
+          "label": "Expected investment in core-AI manufacturing projects",
+          "value": 348.026
+        },
+        {
+          "context": "",
+          "display": "1.9 GW",
+          "id": "compute.available_compute_gw",
+          "label": "OpenAI reported available compute",
+          "value": 1.9
+        },
+        {
+          "context": "",
+          "display": "78.0%",
+          "id": "compute.serving_cost_reduction_pct",
+          "label": "Alphabet reported serving unit-cost reduction",
+          "value": 78.0
+        }
+      ],
+      "importance": 35.0,
+      "label": "Compute",
+      "references": [
+        {
+          "source_label": "Federal Reserve G.17",
+          "source_url": "https://www.federalreserve.gov/releases/g17/current/"
+        },
+        {
+          "source_label": "BEA Fixed Assets",
+          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
+        },
+        {
+          "source_label": "Census Construction Spending",
+          "source_url": "https://www.census.gov/constructionspending"
+        },
+        {
+          "source_label": "Primary project disclosures",
+          "source_url": ""
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet AI serving economics",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "connectivity": {
+      "boundaries": [
+        "Public IXP and cable records do not capture every private route or bilateral connection.",
+        "National route totals do not establish usable capacity at a specific campus."
+      ],
+      "domain": "connectivity",
+      "facts": [
+        {
+          "context": "",
+          "display": "168",
+          "id": "connectivity.active_ixps",
+          "label": "Active U.S. internet exchange points",
+          "value": 168.0
+        },
+        {
+          "context": "",
+          "display": "2,805",
+          "id": "connectivity.combined_ixp_members",
+          "label": "Combined reported IXP members",
+          "value": 2805.0
+        },
+        {
+          "context": "",
+          "display": "90",
+          "id": "connectivity.international_submarine_cable_systems",
+          "label": "U.S. international submarine cable systems",
+          "value": 90.0
+        },
+        {
+          "context": "",
+          "display": "115",
+          "id": "connectivity.us_connected_cable_catalog_entries",
+          "label": "U.S.-connected cable catalog entries",
+          "value": 115.0
+        },
+        {
+          "context": "",
+          "display": "24",
+          "id": "connectivity.future_or_current_year_cable_entries",
+          "label": "Future or current-year cable entries",
+          "value": 24.0
+        },
+        {
+          "context": "",
+          "display": "250",
+          "id": "connectivity.interconnection_facilities_or_floor",
+          "label": "PeeringDB interconnection facilities or coverage floor",
+          "value": 250.0
+        },
+        {
+          "context": "",
+          "display": "12,500 miles",
+          "id": "connectivity.middle_mile_new_fiber_miles",
+          "label": "Federally supported middle-mile new fiber",
+          "value": 12500.0
+        },
+        {
+          "context": "",
+          "display": "22",
+          "id": "connectivity.high_capacity_low_public_connectivity_states",
+          "label": "States with data-center development but limited visible public interconnection depth",
+          "value": 22.0
+        },
+        {
+          "context": "",
+          "display": "309",
+          "id": "connectivity.campuses_screened",
+          "label": "Data-center campuses screened for connectivity context",
+          "value": 309.0
+        },
+        {
+          "context": "",
+          "display": "40",
+          "id": "connectivity.population_centers_with_ixp",
+          "label": "Population centers over 300k with an IXP",
+          "value": 40.0
+        },
+        {
+          "context": "",
+          "display": "75",
+          "id": "connectivity.population_centers_total",
+          "label": "Population centers over 300k assessed",
+          "value": 75.0
+        }
+      ],
+      "importance": 94.0,
+      "label": "Connectivity",
+      "references": [
+        {
+          "source_label": "FCC submarine cable records",
+          "source_url": "https://www.fcc.gov/research-reports/guides/submarine-cable-landing-licenses"
+        },
+        {
+          "source_label": "Internet Society Pulse / PeeringDB",
+          "source_url": "https://pulse.internetsociety.org/en/ixp-tracker/country/US/"
+        },
+        {
+          "source_label": "PeeringDB facility registry",
+          "source_url": "https://www.peeringdb.com/advanced_search?country__in=US&reftag=fac"
+        },
+        {
+          "source_label": "TeleGeography Submarine Cable Map",
+          "source_url": "https://www.submarinecablemap.com/country/united-states"
+        },
+        {
+          "source_label": "NTIA Middle Mile Program",
+          "source_url": "https://broadbandusa.ntia.gov/news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program"
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "data_center": {
+      "boundaries": [
+        "The project registry is not a national census of the U.S. data-center fleet.",
+        "Published MW describes disclosed project scale, not energized load."
+      ],
+      "domain": "data_center",
+      "facts": [
+        {
+          "context": "",
+          "display": "3,068",
+          "id": "data_center.operating_sites",
+          "label": "Operating sites in available project records",
+          "value": 3068.0
+        },
+        {
+          "context": "",
+          "display": "1,556",
+          "id": "data_center.development_sites",
+          "label": "Sites in development in available project records",
+          "value": 1556.0
+        },
+        {
+          "context": "",
+          "display": "0.51x",
+          "id": "data_center.development_to_operating",
+          "label": "Development sites relative to operating sites",
+          "value": 0.5071707953063885
+        },
+        {
+          "context": "",
+          "display": "894",
+          "id": "data_center.tracked_pipeline_sites",
+          "label": "Tracked active pipeline sites",
+          "value": 894.0
+        },
+        {
+          "context": "",
+          "display": "287.2 GW",
+          "id": "data_center.pipeline_capacity_gw",
+          "label": "Published capacity associated with development sites",
+          "value": 287.155
+        },
+        {
+          "context": "",
+          "display": "22.9 GW",
+          "id": "data_center.operating_capacity_gw",
+          "label": "Published capacity associated with operating sites",
+          "value": 22.9025
+        },
+        {
+          "context": "",
+          "display": "37.9%",
+          "id": "data_center.canonical_capacity_coverage",
+          "label": "Share of active campus records with a canonical published capacity",
+          "value": 0.3793103448275862
+        }
+      ],
+      "importance": 57.82268578878748,
+      "label": "Data Centers",
+      "references": [
+        {
+          "source_label": "Pew / Data Center Map",
+          "source_url": "https://www.pewresearch.org/short-reads/2026/04/13/most-new-data-centers-in-the-us-are-coming-to-rural-areas/"
+        },
+        {
+          "source_label": "FracTracker Alliance",
+          "source_url": "https://fractracker.org/2026/04/open-u-s-data-centers-tracker/"
+        },
+        {
+          "source_label": "Deduplicated campus records",
+          "source_url": ""
+        },
+        {
+          "source_label": "Gigawatt Map",
+          "source_url": "https://gigawattmap.com/"
+        },
+        {
+          "source_label": "Primary project disclosures",
+          "source_url": ""
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "economic_impact": {
+      "boundaries": [
+        "Economy-wide productivity and output measures do not identify AI as the cause.",
+        "Provider revenue does not establish economy-wide return on AI investment."
+      ],
+      "domain": "economic_impact",
+      "facts": [
+        {
+          "context": "",
+          "display": "2.2%",
+          "id": "economic_impact.productivity_growth",
+          "label": "Nonfarm-business productivity growth",
+          "value": 2.2
+        },
+        {
+          "context": "",
+          "display": "2.5%",
+          "id": "economic_impact.real_output_growth",
+          "label": "Nonfarm-business real output growth",
+          "value": 2.5
+        },
+        {
+          "context": "",
+          "display": "0.6%",
+          "id": "economic_impact.real_compensation_growth",
+          "label": "Real hourly compensation growth",
+          "value": 0.5837482300278696
+        },
+        {
+          "context": "",
+          "display": "1.4%",
+          "id": "economic_impact.unit_labor_cost_growth",
+          "label": "Unit labor cost growth",
+          "value": 1.4
+        },
+        {
+          "context": "",
+          "display": "15.9%",
+          "id": "economic_impact.information_investment_growth",
+          "label": "Information-processing investment growth",
+          "value": 15.92742836027563
+        },
+        {
+          "context": "",
+          "display": "14.1%",
+          "id": "economic_impact.productivity_since_2020",
+          "label": "Productivity change since 2020",
+          "value": 14.098338730786498
+        },
+        {
+          "context": "",
+          "display": "4.5%",
+          "id": "economic_impact.real_compensation_since_2020",
+          "label": "Real hourly compensation change since 2020",
+          "value": 4.475884122330087
+        },
+        {
+          "context": "",
+          "display": "9.6 percentage points",
+          "id": "economic_impact.productivity_real_comp_gap",
+          "label": "Productivity minus real-compensation change since 2020",
+          "value": 9.622454608456412
+        },
+        {
+          "context": "",
+          "display": "-8.4%",
+          "id": "economic_impact.labor_share_since_2020",
+          "label": "Labor-share index change since 2020",
+          "value": -8.429996378194781
+        },
+        {
+          "context": "",
+          "display": "0.8%",
+          "id": "economic_impact.median_real_earnings_growth",
+          "label": "Median real weekly earnings growth",
+          "value": 0.8032128514056325
+        },
+        {
+          "context": "",
+          "display": "3.3 percentage points",
+          "id": "economic_impact.group_growth_spread_ppts",
+          "label": "Cross-group real-earnings growth spread",
+          "value": 3.300566845370434
+        },
+        {
+          "context": "",
+          "display": "$37.0B",
+          "id": "economic_impact.microsoft_ai_arr_b",
+          "label": "Microsoft reported AI annual revenue run rate",
+          "value": 37.0
+        },
+        {
+          "context": "",
+          "display": "$20.0B",
+          "id": "economic_impact.openai_arr_b",
+          "label": "OpenAI reported annualized revenue run rate",
+          "value": 20.0
+        },
+        {
+          "context": "",
+          "display": "82.0%",
+          "id": "economic_impact.alphabet_cloud_growth_pct",
+          "label": "Alphabet Cloud revenue growth",
+          "value": 82.0
+        },
+        {
+          "context": "",
+          "display": "40.0%",
+          "id": "economic_impact.openai_enterprise_share_pct",
+          "label": "OpenAI enterprise share of revenue",
+          "value": 40.0
+        }
+      ],
+      "importance": 48.112273042282055,
+      "label": "Economic Outcomes",
+      "references": [
+        {
+          "source_label": "BLS Labor Productivity and Costs",
+          "source_url": "https://www.bls.gov/productivity/"
+        },
+        {
+          "source_label": "BLS Current Population Survey",
+          "source_url": "https://www.bls.gov/cps/earnings.htm"
+        },
+        {
+          "source_label": "BEA Investment Accounts",
+          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
+        },
+        {
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
+        },
+        {
+          "source_label": "Microsoft FY2026 Q3 AI disclosure",
+          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "finance": {
+      "boundaries": [
+        "Company funding metrics describe the covered issuers, not all AI investment.",
+        "Private-fund NAV is not realized cash and should not be described as a realized return.",
+        "Provider revenue demonstrates paid demand but not economy-wide return on AI investment."
+      ],
+      "domain": "finance",
+      "facts": [
+        {
+          "context": "",
+          "display": "26.0",
+          "id": "finance.borrower_strain",
+          "label": "Borrower strain",
+          "value": 25.97866308980106
+        },
+        {
+          "context": "",
+          "display": "-17.0",
+          "id": "finance.lender_strain",
+          "label": "Lender strain",
+          "value": -17.002687259605295
+        },
+        {
+          "context": "",
+          "display": "1.46x",
+          "id": "finance.internal_funding_coverage",
+          "label": "Operating cash flow coverage of current CapEx",
+          "value": 1.4572562522760866
+        },
+        {
+          "context": "",
+          "display": "1.01 years",
+          "id": "finance.cash_reserve_coverage_years",
+          "label": "Cash reserves relative to current CapEx",
+          "value": 1.0108881123388487
+        },
+        {
+          "context": "",
+          "display": "5.16x",
+          "id": "finance.forward_commitment_load",
+          "label": "Forward commitments relative to current CapEx",
+          "value": 5.163460687107745
+        },
+        {
+          "context": "",
+          "display": "0.4",
+          "id": "finance.debt_financing_pulse",
+          "label": "Definition-matched debt financing pulse",
+          "value": 0.39654740836629904
+        },
+        {
+          "context": "",
+          "display": "-0.53",
+          "id": "finance.nfci",
+          "label": "Chicago Fed NFCI",
+          "value": -0.529
+        },
+        {
+          "context": "",
+          "display": "-0.04",
+          "id": "finance.nfci_change",
+          "label": "Three-month change in NFCI",
+          "value": -0.038000000000000034
+        },
+        {
+          "context": "",
+          "display": "0.15",
+          "id": "finance.bond_distress",
+          "label": "Corporate bond market distress",
+          "value": 0.15
+        },
+        {
+          "context": "",
+          "display": "1.18x",
+          "id": "finance.private_capital_dpi",
+          "label": "Mature technology-fund DPI",
+          "value": 1.1842385657863554
+        },
+        {
+          "context": "",
+          "display": "0.97x",
+          "id": "finance.private_capital_rvpi",
+          "label": "Mature technology-fund RVPI",
+          "value": 0.974091081680859
+        },
+        {
+          "context": "",
+          "display": "2.16x",
+          "id": "finance.private_capital_tvpi",
+          "label": "Mature technology-fund TVPI",
+          "value": 2.1583296474672142
+        },
+        {
+          "context": "",
+          "display": "54.9%",
+          "id": "finance.private_capital_realized_share",
+          "label": "Share of private-fund value already realized",
+          "value": 0.54868289798829
+        },
+        {
+          "context": "",
+          "display": "31",
+          "id": "finance.private_capital_mature_funds",
+          "label": "Public-LP mature fund records",
+          "value": 31.0
+        },
+        {
+          "context": "",
+          "display": "$37.0B",
+          "id": "finance.microsoft_ai_arr_b",
+          "label": "Microsoft reported AI annual revenue run rate",
+          "value": 37.0
+        },
+        {
+          "context": "",
+          "display": "123.0%",
+          "id": "finance.microsoft_ai_arr_growth_pct",
+          "label": "Microsoft AI annual revenue run-rate growth",
+          "value": 123.0
+        },
+        {
+          "context": "",
+          "display": "$20.0B",
+          "id": "finance.openai_arr_b",
+          "label": "OpenAI reported annualized revenue run rate",
+          "value": 20.0
+        },
+        {
+          "context": "",
+          "display": "$514.0B",
+          "id": "finance.alphabet_cloud_backlog_b",
+          "label": "Alphabet reported Cloud backlog",
+          "value": 514.0
+        }
+      ],
+      "importance": 75.0,
+      "label": "Finance",
+      "references": [
+        {
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
+        },
+        {
+          "source_label": "Chicago Fed NFCI",
+          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
+        },
+        {
+          "source_label": "New York Fed CMDI",
+          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
+        },
+        {
+          "source_label": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/edgar/search/"
+        },
+        {
+          "source_label": "CalSTRS PE Performance",
+          "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"
+        },
+        {
+          "source_label": "Microsoft FY2026 Q3 AI disclosure",
+          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "grid_storage": {
+      "boundaries": [
+        "Queue capacity measures developer interest, not near-term supply.",
+        "Storage duration can address short peaks but does not remove transmission or interconnection constraints."
+      ],
+      "domain": "grid_storage",
+      "facts": [
+        {
+          "context": "",
+          "display": "2061 GW",
+          "id": "grid_storage.queue_gw",
+          "label": "Active interconnection queue",
+          "value": 2061.3275019726048
+        },
+        {
+          "context": "",
+          "display": "24.2%",
+          "id": "grid_storage.advanced_share",
+          "label": "Queue share in executed-agreement or construction stages",
+          "value": 24.245265300990745
+        },
+        {
+          "context": "",
+          "display": "552.7 GW",
+          "id": "grid_storage.storage_queue_gw",
+          "label": "Storage capacity in the active queue",
+          "value": 552.7496947276098
+        },
+        {
+          "context": "",
+          "display": "13%",
+          "id": "grid_storage.historical_operational_pct",
+          "label": "2000\u20132020 queue cohort that reached operation",
+          "value": 13.0
+        },
+        {
+          "context": "",
+          "display": "75%",
+          "id": "grid_storage.historical_withdrawn_pct",
+          "label": "2000\u20132020 queue cohort withdrawn",
+          "value": 75.0
+        },
+        {
+          "context": "",
+          "display": "5.0 years",
+          "id": "grid_storage.median_request_to_cod_years",
+          "label": "Median request-to-commercial-operation time for 2025 completions",
+          "value": 5.0
+        },
+        {
+          "context": "",
+          "display": "549.0 GW",
+          "id": "grid_storage.draft_or_executed_ia_gw",
+          "label": "Queue capacity with draft or executed interconnection agreements",
+          "value": 549.0
+        },
+        {
+          "context": "",
+          "display": "-0.9%",
+          "id": "grid_storage.lowest_extreme_margin_pct",
+          "label": "Lowest NERC extreme-conditions reserve margin",
+          "value": -0.9
+        },
+        {
+          "context": "",
+          "display": "NPCC-New England",
+          "id": "grid_storage.lowest_extreme_margin_area",
+          "label": "Area with the lowest NERC extreme-conditions margin",
+          "value": "NPCC-New England"
+        },
+        {
+          "context": "",
+          "display": "1",
+          "id": "grid_storage.negative_extreme_margin_areas",
+          "label": "NERC assessment areas with negative extreme-conditions margins",
+          "value": 1.0
+        },
+        {
+          "context": "",
+          "display": "2.8 hours",
+          "id": "grid_storage.operating_storage_weighted_duration_hours",
+          "label": "Weighted average duration of operating storage",
+          "value": 2.7522794416029703
+        },
+        {
+          "context": "",
+          "display": "46.1%",
+          "id": "grid_storage.operating_storage_four_hour_plus_share_pct",
+          "label": "Operating storage capacity with at least four hours duration",
+          "value": 46.13068341099738
+        },
+        {
+          "context": "",
+          "display": "2.5%",
+          "id": "grid_storage.electric_power_construction_growth",
+          "label": "Electric-power construction growth",
+          "value": 0.024620203602192747
+        }
+      ],
+      "importance": 70.0,
+      "label": "Grid & Storage",
+      "references": [
+        {
+          "source_label": "Berkeley Lab Queued Up",
+          "source_url": "https://emp.lbl.gov/queues"
+        },
+        {
+          "source_label": "NERC Summer Reliability Assessment",
+          "source_url": "https://www.nerc.com/pa/RAPA/ra/Reliability%20Assessments%20DL/2026-Summer-Reliability-Assessment.pdf"
+        },
+        {
+          "source_label": "U.S. EIA",
+          "source_url": "https://www.eia.gov/electricity/data.php"
+        },
+        {
+          "source_label": "Census Construction Spending",
+          "source_url": "https://www.census.gov/constructionspending"
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "market": {
+      "boundaries": [
+        "Covered-company market measures are not the entire U.S. equity market.",
+        "Concentration and breadth describe participation; they do not establish causality."
+      ],
+      "domain": "market",
+      "facts": [
+        {
+          "context": "",
+          "display": "39.6",
+          "id": "market.aei",
+          "label": "AI Equity Index",
+          "value": 39.60468679259759
+        },
+        {
+          "context": "",
+          "display": "57.5",
+          "id": "market.pressure",
+          "label": "Average sector trading pressure",
+          "value": 57.5285915468339
+        },
+        {
+          "context": "",
+          "display": "68.1%",
+          "id": "market.positive_breadth",
+          "label": "Covered companies with positive one-year returns",
+          "value": 0.6813725490196079
+        },
+        {
+          "context": "",
+          "display": "27.2%",
+          "id": "market.median_return",
+          "label": "Median one-year return",
+          "value": 0.2715274533666759
+        },
+        {
+          "context": "",
+          "display": "54.0%",
+          "id": "market.equal_weight_return",
+          "label": "Equal-weight one-year return",
+          "value": 0.5397204713339558
+        },
+        {
+          "context": "",
+          "display": "64.2%",
+          "id": "market.top_10_share",
+          "label": "Top-ten share of covered market value",
+          "value": 0.6415546294005902
+        },
+        {
+          "context": "",
+          "display": "18.7",
+          "id": "market.effective_firms",
+          "label": "Effective firm count",
+          "value": 18.6589878003422
+        },
+        {
+          "context": "",
+          "display": "3",
+          "id": "market.strong_sector_count",
+          "label": "Sectors above the strong-equity threshold",
+          "value": 3.0
+        },
+        {
+          "context": "",
+          "display": "3",
+          "id": "market.crowded_sector_count",
+          "label": "Sectors above the high-pressure threshold",
+          "value": 3.0
+        }
+      ],
+      "importance": 19.15546294005901,
+      "label": "Market",
+      "references": [
+        {
+          "source_label": "YFinance",
+          "source_url": "https://finance.yahoo.com/"
+        },
+        {
+          "source_label": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/edgar/search/"
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "power": {
+      "boundaries": [
+        "Planned generation is not equivalent to capacity placed in service.",
+        "Power ownership excludes interconnection-queue maturity, which belongs to Grid & Storage."
+      ],
+      "domain": "power",
+      "facts": [
+        {
+          "context": "",
+          "display": "1.2%",
+          "id": "power.demand_growth",
+          "label": "Total retail electricity demand growth",
+          "value": 1.2007350328539612
+        },
+        {
+          "context": "",
+          "display": "2.9%",
+          "id": "power.commercial_growth",
+          "label": "Commercial electricity demand growth",
+          "value": 2.909109066881821
+        },
+        {
+          "context": "",
+          "display": "227.0 GW",
+          "id": "power.planned_net_gw",
+          "label": "Net planned generation additions through the pipeline horizon",
+          "value": 227.00179999999992
+        },
+        {
+          "context": "",
+          "display": "5.4%",
+          "id": "power.retail_price_growth",
+          "label": "Retail electricity price growth",
+          "value": 5.395660783561906
+        },
+        {
+          "context": "",
+          "display": "263,644 MW",
+          "id": "power.large_load_capacity_mw",
+          "label": "Published capacity associated with large-load campus records",
+          "value": 263644.395
+        },
+        {
+          "context": "",
+          "display": "2030",
+          "id": "power.pipeline_end_year",
+          "label": "Planned-generation pipeline end year",
+          "value": 2030.0
+        }
+      ],
+      "importance": 100.0,
+      "label": "Power",
+      "references": [
+        {
+          "source_label": "U.S. EIA",
+          "source_url": "https://www.eia.gov/electricity/data.php"
+        },
+        {
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
+        },
+        {
+          "source_label": "Data-center campus records",
+          "source_url": ""
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "water": {
+      "boundaries": [
+        "State drought conditions do not establish campus-level water availability.",
+        "Sparse facility disclosure prevents a national estimate of data-center water use."
+      ],
+      "domain": "water",
+      "facts": [
+        {
+          "context": "",
+          "display": "108.4 Bgal/day",
+          "id": "water.irrigation_withdrawal_bgal_day_2020",
+          "label": "U.S. crop-irrigation withdrawals in 2020",
+          "value": 108.412
+        },
+        {
+          "context": "",
+          "display": "80.2 Bgal/day",
+          "id": "water.thermoelectric_withdrawal_bgal_day_2020",
+          "label": "U.S. thermoelectric-power withdrawals in 2020",
+          "value": 80.213
+        },
+        {
+          "context": "",
+          "display": "35.6 Bgal/day",
+          "id": "water.public_supply_withdrawal_bgal_day_2020",
+          "label": "U.S. public-supply withdrawals in 2020",
+          "value": 35.575
+        },
+        {
+          "context": "",
+          "display": "124.6 Bgal/day",
+          "id": "water.thermoelectric_reported_withdrawal_bgal_day_2024",
+          "label": "Reported thermoelectric withdrawals in 2024",
+          "value": 124.61096676438356
+        },
+        {
+          "context": "",
+          "display": "2.6 Bgal/day",
+          "id": "water.thermoelectric_reported_consumption_bgal_day_2024",
+          "label": "Reported thermoelectric consumption in 2024",
+          "value": 2.559680884931507
+        },
+        {
+          "context": "",
+          "display": "1,906",
+          "id": "water.mapped_facilities",
+          "label": "Mapped data-center facilities",
+          "value": 1906.0
+        },
+        {
+          "context": "",
+          "display": "63",
+          "id": "water.direct_evidence_records",
+          "label": "Mapped facilities with direct water evidence",
+          "value": 63.0
+        },
+        {
+          "context": "",
+          "display": "0",
+          "id": "water.quantified_use_records",
+          "label": "Mapped facilities with quantified withdrawal or consumption records",
+          "value": 0.0
+        },
+        {
+          "context": "",
+          "display": "3.3%",
+          "id": "water.direct_evidence_share_pct",
+          "label": "Mapped facilities with direct water evidence",
+          "value": 3.305351521511018
+        },
+        {
+          "context": "",
+          "display": "39",
+          "id": "water.states_with_d2_area",
+          "label": "Mapped states with some D2-or-worse drought area",
+          "value": 39.0
+        },
+        {
+          "context": "",
+          "display": "18",
+          "id": "water.states_with_25pct_d2_area",
+          "label": "Mapped states with at least 25% D2-or-worse drought area",
+          "value": 18.0
+        },
+        {
+          "context": "",
+          "display": "239.2 GW",
+          "id": "water.published_capacity_in_d2_states_gw",
+          "label": "Published data-center capacity in mapped states with D2-or-worse drought",
+          "value": 239.23911999999999
+        },
+        {
+          "context": "",
+          "display": "81.0 GW",
+          "id": "water.published_capacity_in_25pct_d2_states_gw",
+          "label": "Published data-center capacity in mapped states with at least 25% D2-or-worse drought",
+          "value": 80.9692
+        },
+        {
+          "context": "",
+          "display": "UT",
+          "id": "water.highest_d2_state",
+          "label": "Mapped state with the highest D2-or-worse drought-area share",
+          "value": "UT"
+        },
+        {
+          "context": "",
+          "display": "94.7%",
+          "id": "water.highest_d2_area_pct",
+          "label": "Highest mapped state D2-or-worse drought-area share",
+          "value": 94.71
+        }
+      ],
+      "importance": 73.94200000000001,
+      "label": "Water",
+      "references": [
+        {
+          "source_label": "USGS Water Use",
+          "source_url": "https://www.usgs.gov/mission-areas/water-resources/science/water-use-united-states"
+        },
+        {
+          "source_label": "U.S. Drought Monitor / NOAA NCEI",
+          "source_url": "https://www.ncei.noaa.gov/pub/data/nidis/geojson/state/stateranks/"
+        },
+        {
+          "source_label": "U.S. EIA",
+          "source_url": "https://www.eia.gov/"
+        },
+        {
+          "source_label": "Data-center campus records",
+          "source_url": ""
+        }
+      ],
+      "version": "1.1.0"
+    },
+    "workforce": {
+      "boundaries": [
+        "Task-exposure estimates describe work AI could affect; they do not measure jobs lost or automated.",
+        "Tracked AI-linked channels are not the entire labor market."
+      ],
+      "domain": "workforce",
+      "facts": [
+        {
+          "context": "",
+          "display": "1",
+          "id": "workforce.employment_breadth",
+          "label": "Tracked AI-linked labor channels with positive employment growth",
+          "value": 1.0
+        },
+        {
+          "context": "",
+          "display": "2",
+          "id": "workforce.real_earnings_breadth",
+          "label": "Tracked AI-linked labor channels with positive real-earnings growth",
+          "value": 2.0
+        },
+        {
+          "context": "",
+          "display": "Power & communication construction",
+          "id": "workforce.strongest_channel",
+          "label": "Tracked channel with the strongest employment growth",
+          "value": "Power & communication construction"
+        },
+        {
+          "context": "",
+          "display": "0.8%",
+          "id": "workforce.strongest_channel_growth",
+          "label": "Strongest tracked-channel employment growth",
+          "value": 0.8443908323281235
+        },
+        {
+          "context": "",
+          "display": "Computing infrastructure",
+          "id": "workforce.weakest_channel",
+          "label": "Tracked channel with the weakest employment growth",
+          "value": "Computing infrastructure"
+        },
+        {
+          "context": "",
+          "display": "-4.1%",
+          "id": "workforce.weakest_channel_growth",
+          "label": "Weakest tracked-channel employment growth",
+          "value": -4.071458246780213
+        },
+        {
+          "context": "",
+          "display": "2.2%",
+          "id": "workforce.max_layoff_rate",
+          "label": "Highest layoff rate among tracked channels",
+          "value": 2.2
+        },
+        {
+          "context": "",
+          "display": "5.5%",
+          "id": "workforce.max_openings_rate",
+          "label": "Highest openings rate among tracked channels",
+          "value": 5.5
+        },
+        {
+          "context": "",
+          "display": "923",
+          "id": "workforce.occupation_exposure_count",
+          "label": "Occupations in the static task-exposure benchmark",
+          "value": 923.0
+        },
+        {
+          "context": "",
+          "display": "45.8%",
+          "id": "workforce.median_llm_software_exposure_pct",
+          "label": "Median software-adjusted LLM task exposure in the benchmark",
+          "value": 45.83333333333333
+        },
+        {
+          "context": "",
+          "display": "47.3%",
+          "id": "workforce.high_exposure_occupation_share_pct",
+          "label": "Benchmark occupations with at least 50% software-adjusted task exposure",
+          "value": 47.34561213434453
+        }
+      ],
+      "importance": 40.71458246780213,
+      "label": "Workforce",
+      "references": [
+        {
+          "source_label": "GPTs are GPTs occupation benchmark",
+          "source_url": "https://github.com/openai/GPTs-are-GPTs"
+        },
+        {
+          "source_label": "BLS Current Employment Statistics",
+          "source_url": "https://www.bls.gov/ces/"
+        },
+        {
+          "source_label": "BLS JOLTS",
+          "source_url": "https://www.bls.gov/jlt/"
+        }
+      ],
+      "version": "1.1.0"
+    }
+  },
+  "evidence_snapshot_id": "50717b5bf4873cae48f38230",
+  "finished_at": "2026-08-10T14:43:27.818176+00:00",
+  "generated_output": {
+    "domain": {
+      "reads": [
+        {
+          "domain": "market",
+          "headline": {
+            "fact_ids": [
+              "market.positive_breadth",
+              "market.median_return",
+              "market.top_10_share",
+              "market.pressure"
+            ],
+            "inference": "interpretation",
+            "text": "Broad covered-company gains coexist with concentration and trading pressure"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "market.positive_breadth",
+                "market.median_return",
+                "market.equal_weight_return"
+              ],
+              "inference": "observation",
+              "text": "Positive one-year returns cover 68.1% of companies, with a 27.2% median return and a 54.0% equal-weight return."
+            },
+            {
+              "fact_ids": [
+                "market.top_10_share",
+                "market.crowded_sector_count"
+              ],
+              "inference": "interpretation",
+              "text": "Participation is broad, but the top ten still represent 64.2% of covered market value, while three sectors are above the high-pressure threshold."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "market.positive_breadth",
+              "market.pressure"
+            ],
+            "inference": "interpretation",
+            "text": "Whether positive breadth persists as sector trading pressure changes."
+          }
+        },
+        {
+          "domain": "finance",
+          "headline": {
+            "fact_ids": [
+              "finance.internal_funding_coverage",
+              "finance.cash_reserve_coverage_years",
+              "finance.forward_commitment_load"
+            ],
+            "inference": "interpretation",
+            "text": "Current funding covers spending, but commitments exceed liquid buffers"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "finance.internal_funding_coverage",
+                "finance.cash_reserve_coverage_years",
+                "finance.forward_commitment_load"
+              ],
+              "inference": "observation",
+              "text": "Operating cash flow covers current CapEx by 1.46x and cash reserves equal 1.01 years of current CapEx, against forward commitments of 5.16x current CapEx."
+            },
+            {
+              "fact_ids": [
+                "finance.nfci",
+                "finance.bond_distress"
+              ],
+              "inference": "interpretation",
+              "text": "A -0.53 NFCI and 0.15 corporate bond distress indicate that broad financial conditions are not the main visible constraint."
+            },
+            {
+              "fact_ids": [
+                "finance.microsoft_ai_arr_b",
+                "finance.openai_arr_b",
+                "finance.alphabet_cloud_backlog_b"
+              ],
+              "inference": "interpretation",
+              "text": "Reported provider revenue and backlog show substantial paid demand, but not economy-wide investment returns."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "finance.internal_funding_coverage",
+              "finance.cash_reserve_coverage_years",
+              "finance.forward_commitment_load"
+            ],
+            "inference": "interpretation",
+            "text": "Whether operating cash flow and reserves keep pace with forward commitments."
+          }
+        },
+        {
+          "domain": "compute",
+          "headline": {
+            "fact_ids": [
+              "compute.computer_output_growth",
+              "compute.semiconductor_output_growth",
+              "compute.project_capex_b",
+              "compute.project_sites"
+            ],
+            "inference": "interpretation",
+            "text": "Compute supply is expanding, with domestic capacity still largely announced"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "compute.computer_output_growth",
+                "compute.semiconductor_output_growth",
+                "compute.information_processing_investment_growth"
+              ],
+              "inference": "observation",
+              "text": "Computer output grew 9.2%, semiconductor output 11.5%, and information-processing investment 15.9%."
+            },
+            {
+              "fact_ids": [
+                "compute.critical_layers_covered",
+                "compute.critical_layers_total",
+                "compute.project_capex_b",
+                "compute.project_sites"
+              ],
+              "inference": "interpretation",
+              "text": "Announced domestic projects span all four tracked critical supply-chain layers, with $362.0B expected across 17 sites, but these commitments are not yet operating capacity."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "compute.project_capex_b",
+              "compute.project_sites"
+            ],
+            "inference": "interpretation",
+            "text": "Conversion of announced manufacturing projects into operating capacity."
+          }
+        },
+        {
+          "domain": "data_center",
+          "headline": {
+            "fact_ids": [
+              "data_center.development_sites",
+              "data_center.pipeline_capacity_gw",
+              "data_center.canonical_capacity_coverage"
+            ],
+            "inference": "interpretation",
+            "text": "The development pipeline is vast, but capacity visibility is incomplete"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "data_center.development_sites",
+                "data_center.development_to_operating",
+                "data_center.operating_sites"
+              ],
+              "inference": "observation",
+              "text": "Available records show 1,556 development sites, equal to 0.51x the 3,068 operating-site count."
+            },
+            {
+              "fact_ids": [
+                "data_center.pipeline_capacity_gw",
+                "data_center.operating_capacity_gw",
+                "data_center.canonical_capacity_coverage"
+              ],
+              "inference": "interpretation",
+              "text": "Published development capacity of 287.2 GW far exceeds 22.9 GW associated with operating sites, but only 37.9% of active campus records have canonical published capacity."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "data_center.pipeline_capacity_gw",
+              "data_center.development_sites",
+              "data_center.operating_sites"
+            ],
+            "inference": "interpretation",
+            "text": "Whether disclosed development capacity converts into energized operating sites."
+          }
+        },
+        {
+          "domain": "connectivity",
+          "headline": {
+            "fact_ids": [
+              "connectivity.active_ixps",
+              "connectivity.international_submarine_cable_systems",
+              "connectivity.high_capacity_low_public_connectivity_states"
+            ],
+            "inference": "interpretation",
+            "text": "National connectivity is extensive, but visible local depth remains uneven"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "connectivity.active_ixps",
+                "connectivity.international_submarine_cable_systems",
+                "connectivity.interconnection_facilities_or_floor"
+              ],
+              "inference": "observation",
+              "text": "Public records show 168 active U.S. internet exchanges, 90 international submarine cable systems, and at least 250 interconnection facilities."
+            },
+            {
+              "fact_ids": [
+                "connectivity.population_centers_with_ixp",
+                "connectivity.population_centers_total",
+                "connectivity.high_capacity_low_public_connectivity_states"
+              ],
+              "inference": "interpretation",
+              "text": "Visible access is uneven: 40 of 75 assessed population centers over 300k have an exchange, while 22 states combine data-center development with limited visible public interconnection depth."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "connectivity.high_capacity_low_public_connectivity_states"
+            ],
+            "inference": "interpretation",
+            "text": "Expansion of visible interconnection depth in the 22 states currently flagged."
+          }
+        },
+        {
+          "domain": "power",
+          "headline": {
+            "fact_ids": [
+              "power.commercial_growth",
+              "power.retail_price_growth",
+              "power.planned_net_gw",
+              "power.pipeline_end_year"
+            ],
+            "inference": "interpretation",
+            "text": "Commercial demand and prices are rising ahead of planned supply"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "power.commercial_growth",
+                "power.demand_growth",
+                "power.retail_price_growth"
+              ],
+              "inference": "observation",
+              "text": "Commercial electricity demand grew 2.9%, faster than total retail demand at 1.2%, while retail prices rose 5.4%."
+            },
+            {
+              "fact_ids": [
+                "power.planned_net_gw",
+                "power.pipeline_end_year"
+              ],
+              "inference": "interpretation",
+              "text": "The 227.0 GW net generation pipeline through 2030 is substantial, but planned additions do not establish when capacity will enter service."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "power.planned_net_gw",
+              "power.pipeline_end_year"
+            ],
+            "inference": "interpretation",
+            "text": "The pace at which planned generation is placed in service."
+          }
+        },
+        {
+          "domain": "grid_storage",
+          "headline": {
+            "fact_ids": [
+              "grid_storage.queue_gw",
+              "grid_storage.advanced_share",
+              "grid_storage.historical_operational_pct",
+              "grid_storage.median_request_to_cod_years"
+            ],
+            "inference": "interpretation",
+            "text": "A huge queue offers limited assurance of timely grid capacity"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "grid_storage.queue_gw",
+                "grid_storage.advanced_share"
+              ],
+              "inference": "observation",
+              "text": "The active queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages."
+            },
+            {
+              "fact_ids": [
+                "grid_storage.historical_operational_pct",
+                "grid_storage.historical_withdrawn_pct",
+                "grid_storage.median_request_to_cod_years"
+              ],
+              "inference": "interpretation",
+              "text": "Historical conversion is weak: 13% of the 2000\u20132020 cohort reached operation, 75% withdrew, and 2025 completions took a median 5.0 years from request to operation."
+            },
+            {
+              "fact_ids": [
+                "grid_storage.storage_queue_gw",
+                "grid_storage.operating_storage_weighted_duration_hours"
+              ],
+              "inference": "interpretation",
+              "text": "Storage interest is large at 552.7 GW, although operating storage averages 2.8 hours of duration."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "grid_storage.advanced_share",
+              "grid_storage.historical_operational_pct",
+              "grid_storage.median_request_to_cod_years"
+            ],
+            "inference": "interpretation",
+            "text": "Whether advanced queue capacity progresses to operation faster than the historical record."
+          }
+        },
+        {
+          "domain": "water",
+          "headline": {
+            "fact_ids": [
+              "water.direct_evidence_share_pct",
+              "water.quantified_use_records",
+              "water.published_capacity_in_d2_states_gw"
+            ],
+            "inference": "interpretation",
+            "text": "Water exposure is visible, but facility-level use remains opaque"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "water.direct_evidence_records",
+                "water.mapped_facilities",
+                "water.quantified_use_records"
+              ],
+              "inference": "observation",
+              "text": "Only 63 of 1,906 mapped facilities have direct water evidence, and none has a quantified withdrawal or consumption record."
+            },
+            {
+              "fact_ids": [
+                "water.published_capacity_in_d2_states_gw",
+                "water.published_capacity_in_25pct_d2_states_gw",
+                "water.states_with_d2_area",
+                "water.states_with_25pct_d2_area"
+              ],
+              "inference": "interpretation",
+              "text": "Published capacity overlaps materially with drought geography: 239.2 GW is in mapped states with some D2-or-worse drought area, including 81.0 GW where at least 25% of the state is affected."
+            },
+            {
+              "fact_ids": [
+                "water.published_capacity_in_d2_states_gw",
+                "water.published_capacity_in_25pct_d2_states_gw"
+              ],
+              "inference": "interpretation",
+              "text": "State-level drought overlap signals exposure, not campus-level water availability."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "water.quantified_use_records",
+              "water.direct_evidence_records"
+            ],
+            "inference": "interpretation",
+            "text": "Growth in quantified facility withdrawal or consumption records."
+          }
+        },
+        {
+          "domain": "adoption",
+          "headline": {
+            "fact_ids": [
+              "adoption.consumer_overall_pct",
+              "adoption.current_business_use_pct"
+            ],
+            "inference": "interpretation",
+            "text": "Consumer AI use is broad; business deployment remains much narrower"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "adoption.consumer_overall_pct",
+                "adoption.consumer_active_pct"
+              ],
+              "inference": "observation",
+              "text": "Among adults age 18\u201364, 61.8% report some generative-AI use and 54.2% report use in the prior week."
+            },
+            {
+              "fact_ids": [
+                "adoption.current_business_use_pct",
+                "adoption.expected_business_use_pct",
+                "adoption.expected_adoption_gap_ppts"
+              ],
+              "inference": "observation",
+              "text": "Current business use is 21.5%, while expected use within six months is 24.3%, leaving a 2.8 percentage-point intent gap."
+            },
+            {
+              "fact_ids": [
+                "adoption.current_business_use_pct",
+                "adoption.expected_business_use_pct",
+                "adoption.expected_adoption_gap_ppts"
+              ],
+              "inference": "interpretation",
+              "text": "The narrow intent gap suggests near-term business diffusion may remain incremental rather than abrupt."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "adoption.current_business_use_pct",
+              "adoption.expected_business_use_pct"
+            ],
+            "inference": "interpretation",
+            "text": "Whether expected business use converts into reported current use."
+          }
+        },
+        {
+          "domain": "workforce",
+          "headline": {
+            "fact_ids": [
+              "workforce.employment_breadth",
+              "workforce.median_llm_software_exposure_pct",
+              "workforce.high_exposure_occupation_share_pct"
+            ],
+            "inference": "interpretation",
+            "text": "Employment breadth is weak despite broad measured task exposure"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "workforce.employment_breadth",
+                "workforce.strongest_channel",
+                "workforce.strongest_channel_growth",
+                "workforce.weakest_channel",
+                "workforce.weakest_channel_growth"
+              ],
+              "inference": "observation",
+              "text": "Only one tracked AI-linked labor channel has positive employment growth; power and communication construction leads at 0.8%, while computing infrastructure is weakest at -4.1%."
+            },
+            {
+              "fact_ids": [
+                "workforce.median_llm_software_exposure_pct",
+                "workforce.high_exposure_occupation_share_pct"
+              ],
+              "inference": "interpretation",
+              "text": "The task benchmark shows 45.8% median software-adjusted LLM exposure and 47.3% of occupations at or above 50% exposure, but this measures potential task impact rather than job loss."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "workforce.employment_breadth"
+            ],
+            "inference": "interpretation",
+            "text": "Whether positive employment growth broadens beyond the current single tracked channel."
+          }
+        },
+        {
+          "domain": "economic_impact",
+          "headline": {
+            "fact_ids": [
+              "economic_impact.productivity_growth",
+              "economic_impact.real_compensation_growth",
+              "economic_impact.productivity_real_comp_gap"
+            ],
+            "inference": "interpretation",
+            "text": "Productivity is rising, but compensation has not kept pace"
+          },
+          "summary": [
+            {
+              "fact_ids": [
+                "economic_impact.productivity_growth",
+                "economic_impact.real_output_growth",
+                "economic_impact.real_compensation_growth"
+              ],
+              "inference": "observation",
+              "text": "Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6%."
+            },
+            {
+              "fact_ids": [
+                "economic_impact.productivity_since_2020",
+                "economic_impact.real_compensation_since_2020",
+                "economic_impact.productivity_real_comp_gap",
+                "economic_impact.labor_share_since_2020"
+              ],
+              "inference": "observation",
+              "text": "Since 2020, productivity increased 14.1% versus 4.5% for real hourly compensation, a 9.6 percentage-point gap, while the labor-share index fell 8.4%."
+            },
+            {
+              "fact_ids": [
+                "economic_impact.information_investment_growth",
+                "economic_impact.microsoft_ai_arr_b",
+                "economic_impact.openai_arr_b",
+                "economic_impact.productivity_growth"
+              ],
+              "inference": "interpretation",
+              "text": "Rapid information-processing investment and provider revenue coexist with stronger productivity, but these measures do not identify AI as the cause."
+            }
+          ],
+          "watchpoint": {
+            "fact_ids": [
+              "economic_impact.productivity_real_comp_gap",
+              "economic_impact.information_investment_growth",
+              "economic_impact.real_compensation_growth"
+            ],
+            "inference": "interpretation",
+            "text": "Whether real compensation begins closing the productivity gap as investment continues."
+          }
+        }
+      ]
+    }
+  },
+  "generation": {
+    "domain": {
+      "elapsed_sec": 75.24098979192786,
+      "input_tokens": 5179,
+      "model": "gpt-5.6-sol",
+      "output_tokens": 3829,
+      "response_id": "resp_064d41a23ba9281c016a79e34585bc8199a13c72795758ea92",
+      "total_tokens": 9008
+    }
+  },
+  "model": "gpt-5.6-sol",
+  "model_evidence_packets": {
+    "adoption": {
+      "boundaries": [
+        "Expected business use is stated intent and must not be described as deployed use.",
+        "Provider subscriber counts are not a national paid-adoption rate."
+      ],
+      "domain": "adoption",
+      "facts": [
+        {
+          "display": "21.5%",
+          "id": "adoption.current_business_use_pct",
+          "label": "Businesses reporting current AI use"
+        },
+        {
+          "display": "24.3%",
+          "id": "adoption.expected_business_use_pct",
+          "label": "Businesses expecting AI use within six months"
+        },
+        {
+          "display": "2.8 percentage points",
+          "id": "adoption.expected_adoption_gap_ppts",
+          "label": "Expected-minus-current business AI-use gap"
+        },
+        {
+          "display": "61.8%",
+          "id": "adoption.consumer_overall_pct",
+          "label": "Adults age 18\u201364 reporting some generative-AI use"
+        },
+        {
+          "display": "54.8%",
+          "id": "adoption.consumer_personal_pct",
+          "label": "Adults reporting personal generative-AI use"
+        },
+        {
+          "display": "45.2%",
+          "id": "adoption.consumer_work_pct",
+          "label": "Adults reporting generative-AI use for work"
+        },
+        {
+          "display": "54.2%",
+          "id": "adoption.consumer_active_pct",
+          "label": "Adults reporting generative-AI use in the prior week"
+        },
+        {
+          "display": "15.4%",
+          "id": "adoption.consumer_daily_pct",
+          "label": "Adults reporting daily generative-AI use"
+        },
+        {
+          "display": "9.9 percentage points",
+          "id": "adoption.consumer_change_ppts",
+          "label": "Change in overall consumer use across the retained series"
+        },
+        {
+          "display": "90.5%",
+          "id": "adoption.sector_coverage",
+          "label": "Share of BTOS sectors with a current-use reading"
+        },
+        {
+          "display": "Information",
+          "id": "adoption.leading_sector",
+          "label": "BTOS sector with the highest current AI-use reading"
+        },
+        {
+          "display": "41.9%",
+          "id": "adoption.leading_sector_use_pct",
+          "label": "Highest BTOS sector current AI-use reading"
+        },
+        {
+          "display": "50.0 million",
+          "id": "adoption.chatgpt_subscribers_m",
+          "label": "OpenAI reported ChatGPT subscribers"
+        },
+        {
+          "display": "5.6%",
+          "id": "adoption.implied_subscriber_share_pct",
+          "label": "Implied subscriber share of working-age U.S. adults"
+        },
+        {
+          "display": "9.0 million",
+          "id": "adoption.openai_paying_business_users_m",
+          "label": "OpenAI reported paying business users"
+        },
+        {
+          "display": "8.0 million",
+          "id": "adoption.gemini_enterprise_paid_seats_m",
+          "label": "Alphabet reported paid Gemini enterprise seats"
+        }
+      ],
+      "importance": 49.6,
+      "label": "Adoption",
+      "sources": [
+        "Real-Time Population Survey via FRED",
+        "U.S. Census BTOS",
+        "OpenAI business scale disclosure",
+        "Alphabet Q2 2026 AI and Cloud disclosure"
+      ]
+    },
+    "compute": {
+      "boundaries": [
+        "Announced projects are commitments, not current operating capacity.",
+        "Provider serving-cost disclosures must not be generalized to the whole market."
+      ],
+      "domain": "compute",
+      "facts": [
+        {
+          "display": "9.2%",
+          "id": "compute.computer_output_growth",
+          "label": "Computer and peripheral equipment output growth"
+        },
+        {
+          "display": "11.5%",
+          "id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth"
+        },
+        {
+          "display": "81.7%",
+          "id": "compute.computer_utilization",
+          "label": "Computer and peripheral equipment capacity utilization"
+        },
+        {
+          "display": "72.2%",
+          "id": "compute.semiconductor_utilization",
+          "label": "Semiconductor capacity utilization"
+        },
+        {
+          "display": "15.9%",
+          "id": "compute.information_processing_investment_growth",
+          "label": "Information-processing investment growth"
+        },
+        {
+          "display": "$362.0B",
+          "id": "compute.project_capex_b",
+          "label": "Expected investment in announced U.S. compute-manufacturing projects"
+        },
+        {
+          "display": "17",
+          "id": "compute.project_sites",
+          "label": "Announced U.S. compute-manufacturing project sites"
+        },
+        {
+          "display": "4",
+          "id": "compute.critical_layers_covered",
+          "label": "Tracked AI supply-chain layers with announced domestic projects"
+        },
+        {
+          "display": "4",
+          "id": "compute.critical_layers_total",
+          "label": "Tracked critical AI supply-chain layers"
+        },
+        {
+          "display": "11",
+          "id": "compute.core_ai_sites",
+          "label": "Core-AI manufacturing project sites"
+        },
+        {
+          "display": "$348.0B",
+          "id": "compute.core_ai_capex_b",
+          "label": "Expected investment in core-AI manufacturing projects"
+        },
+        {
+          "display": "1.9 GW",
+          "id": "compute.available_compute_gw",
+          "label": "OpenAI reported available compute"
+        },
+        {
+          "display": "78.0%",
+          "id": "compute.serving_cost_reduction_pct",
+          "label": "Alphabet reported serving unit-cost reduction"
+        }
+      ],
+      "importance": 35.0,
+      "label": "Compute",
+      "sources": [
+        "Federal Reserve G.17",
+        "BEA Fixed Assets",
+        "Census Construction Spending",
+        "Primary project disclosures",
+        "OpenAI business scale disclosure",
+        "Alphabet AI serving economics"
+      ]
+    },
+    "connectivity": {
+      "boundaries": [
+        "Public IXP and cable records do not capture every private route or bilateral connection.",
+        "National route totals do not establish usable capacity at a specific campus."
+      ],
+      "domain": "connectivity",
+      "facts": [
+        {
+          "display": "168",
+          "id": "connectivity.active_ixps",
+          "label": "Active U.S. internet exchange points"
+        },
+        {
+          "display": "2,805",
+          "id": "connectivity.combined_ixp_members",
+          "label": "Combined reported IXP members"
+        },
+        {
+          "display": "90",
+          "id": "connectivity.international_submarine_cable_systems",
+          "label": "U.S. international submarine cable systems"
+        },
+        {
+          "display": "115",
+          "id": "connectivity.us_connected_cable_catalog_entries",
+          "label": "U.S.-connected cable catalog entries"
+        },
+        {
+          "display": "24",
+          "id": "connectivity.future_or_current_year_cable_entries",
+          "label": "Future or current-year cable entries"
+        },
+        {
+          "display": "250",
+          "id": "connectivity.interconnection_facilities_or_floor",
+          "label": "PeeringDB interconnection facilities or coverage floor"
+        },
+        {
+          "display": "12,500 miles",
+          "id": "connectivity.middle_mile_new_fiber_miles",
+          "label": "Federally supported middle-mile new fiber"
+        },
+        {
+          "display": "22",
+          "id": "connectivity.high_capacity_low_public_connectivity_states",
+          "label": "States with data-center development but limited visible public interconnection depth"
+        },
+        {
+          "display": "309",
+          "id": "connectivity.campuses_screened",
+          "label": "Data-center campuses screened for connectivity context"
+        },
+        {
+          "display": "40",
+          "id": "connectivity.population_centers_with_ixp",
+          "label": "Population centers over 300k with an IXP"
+        },
+        {
+          "display": "75",
+          "id": "connectivity.population_centers_total",
+          "label": "Population centers over 300k assessed"
+        }
+      ],
+      "importance": 94.0,
+      "label": "Connectivity",
+      "sources": [
+        "FCC submarine cable records",
+        "Internet Society Pulse / PeeringDB",
+        "PeeringDB facility registry",
+        "TeleGeography Submarine Cable Map",
+        "NTIA Middle Mile Program"
+      ]
+    },
+    "data_center": {
+      "boundaries": [
+        "The project registry is not a national census of the U.S. data-center fleet.",
+        "Published MW describes disclosed project scale, not energized load."
+      ],
+      "domain": "data_center",
+      "facts": [
+        {
+          "display": "3,068",
+          "id": "data_center.operating_sites",
+          "label": "Operating sites in available project records"
+        },
+        {
+          "display": "1,556",
+          "id": "data_center.development_sites",
+          "label": "Sites in development in available project records"
+        },
+        {
+          "display": "0.51x",
+          "id": "data_center.development_to_operating",
+          "label": "Development sites relative to operating sites"
+        },
+        {
+          "display": "894",
+          "id": "data_center.tracked_pipeline_sites",
+          "label": "Tracked active pipeline sites"
+        },
+        {
+          "display": "287.2 GW",
+          "id": "data_center.pipeline_capacity_gw",
+          "label": "Published capacity associated with development sites"
+        },
+        {
+          "display": "22.9 GW",
+          "id": "data_center.operating_capacity_gw",
+          "label": "Published capacity associated with operating sites"
+        },
+        {
+          "display": "37.9%",
+          "id": "data_center.canonical_capacity_coverage",
+          "label": "Share of active campus records with a canonical published capacity"
+        }
+      ],
+      "importance": 57.8,
+      "label": "Data Centers",
+      "sources": [
+        "Pew / Data Center Map",
+        "FracTracker Alliance",
+        "Deduplicated campus records",
+        "Gigawatt Map",
+        "Primary project disclosures"
+      ]
+    },
+    "economic_impact": {
+      "boundaries": [
+        "Economy-wide productivity and output measures do not identify AI as the cause.",
+        "Provider revenue does not establish economy-wide return on AI investment."
+      ],
+      "domain": "economic_impact",
+      "facts": [
+        {
+          "display": "2.2%",
+          "id": "economic_impact.productivity_growth",
+          "label": "Nonfarm-business productivity growth"
+        },
+        {
+          "display": "2.5%",
+          "id": "economic_impact.real_output_growth",
+          "label": "Nonfarm-business real output growth"
+        },
+        {
+          "display": "0.6%",
+          "id": "economic_impact.real_compensation_growth",
+          "label": "Real hourly compensation growth"
+        },
+        {
+          "display": "1.4%",
+          "id": "economic_impact.unit_labor_cost_growth",
+          "label": "Unit labor cost growth"
+        },
+        {
+          "display": "15.9%",
+          "id": "economic_impact.information_investment_growth",
+          "label": "Information-processing investment growth"
+        },
+        {
+          "display": "14.1%",
+          "id": "economic_impact.productivity_since_2020",
+          "label": "Productivity change since 2020"
+        },
+        {
+          "display": "4.5%",
+          "id": "economic_impact.real_compensation_since_2020",
+          "label": "Real hourly compensation change since 2020"
+        },
+        {
+          "display": "9.6 percentage points",
+          "id": "economic_impact.productivity_real_comp_gap",
+          "label": "Productivity minus real-compensation change since 2020"
+        },
+        {
+          "display": "-8.4%",
+          "id": "economic_impact.labor_share_since_2020",
+          "label": "Labor-share index change since 2020"
+        },
+        {
+          "display": "0.8%",
+          "id": "economic_impact.median_real_earnings_growth",
+          "label": "Median real weekly earnings growth"
+        },
+        {
+          "display": "3.3 percentage points",
+          "id": "economic_impact.group_growth_spread_ppts",
+          "label": "Cross-group real-earnings growth spread"
+        },
+        {
+          "display": "$37.0B",
+          "id": "economic_impact.microsoft_ai_arr_b",
+          "label": "Microsoft reported AI annual revenue run rate"
+        },
+        {
+          "display": "$20.0B",
+          "id": "economic_impact.openai_arr_b",
+          "label": "OpenAI reported annualized revenue run rate"
+        },
+        {
+          "display": "82.0%",
+          "id": "economic_impact.alphabet_cloud_growth_pct",
+          "label": "Alphabet Cloud revenue growth"
+        },
+        {
+          "display": "40.0%",
+          "id": "economic_impact.openai_enterprise_share_pct",
+          "label": "OpenAI enterprise share of revenue"
+        }
+      ],
+      "importance": 48.1,
+      "label": "Economic Outcomes",
+      "sources": [
+        "BLS Labor Productivity and Costs",
+        "BLS Current Population Survey",
+        "BEA Investment Accounts",
+        "FRED",
+        "Microsoft FY2026 Q3 AI disclosure",
+        "OpenAI business scale disclosure",
+        "Alphabet Q2 2026 AI and Cloud disclosure"
+      ]
+    },
+    "finance": {
+      "boundaries": [
+        "Company funding metrics describe the covered issuers, not all AI investment.",
+        "Private-fund NAV is not realized cash and should not be described as a realized return.",
+        "Provider revenue demonstrates paid demand but not economy-wide return on AI investment."
+      ],
+      "domain": "finance",
+      "facts": [
+        {
+          "display": "26.0",
+          "id": "finance.borrower_strain",
+          "label": "Borrower strain"
+        },
+        {
+          "display": "-17.0",
+          "id": "finance.lender_strain",
+          "label": "Lender strain"
+        },
+        {
+          "display": "1.46x",
+          "id": "finance.internal_funding_coverage",
+          "label": "Operating cash flow coverage of current CapEx"
+        },
+        {
+          "display": "1.01 years",
+          "id": "finance.cash_reserve_coverage_years",
+          "label": "Cash reserves relative to current CapEx"
+        },
+        {
+          "display": "5.16x",
+          "id": "finance.forward_commitment_load",
+          "label": "Forward commitments relative to current CapEx"
+        },
+        {
+          "display": "0.4",
+          "id": "finance.debt_financing_pulse",
+          "label": "Definition-matched debt financing pulse"
+        },
+        {
+          "display": "-0.53",
+          "id": "finance.nfci",
+          "label": "Chicago Fed NFCI"
+        },
+        {
+          "display": "-0.04",
+          "id": "finance.nfci_change",
+          "label": "Three-month change in NFCI"
+        },
+        {
+          "display": "0.15",
+          "id": "finance.bond_distress",
+          "label": "Corporate bond market distress"
+        },
+        {
+          "display": "1.18x",
+          "id": "finance.private_capital_dpi",
+          "label": "Mature technology-fund DPI"
+        },
+        {
+          "display": "0.97x",
+          "id": "finance.private_capital_rvpi",
+          "label": "Mature technology-fund RVPI"
+        },
+        {
+          "display": "2.16x",
+          "id": "finance.private_capital_tvpi",
+          "label": "Mature technology-fund TVPI"
+        },
+        {
+          "display": "54.9%",
+          "id": "finance.private_capital_realized_share",
+          "label": "Share of private-fund value already realized"
+        },
+        {
+          "display": "31",
+          "id": "finance.private_capital_mature_funds",
+          "label": "Public-LP mature fund records"
+        },
+        {
+          "display": "$37.0B",
+          "id": "finance.microsoft_ai_arr_b",
+          "label": "Microsoft reported AI annual revenue run rate"
+        },
+        {
+          "display": "123.0%",
+          "id": "finance.microsoft_ai_arr_growth_pct",
+          "label": "Microsoft AI annual revenue run-rate growth"
+        },
+        {
+          "display": "$20.0B",
+          "id": "finance.openai_arr_b",
+          "label": "OpenAI reported annualized revenue run rate"
+        },
+        {
+          "display": "$514.0B",
+          "id": "finance.alphabet_cloud_backlog_b",
+          "label": "Alphabet reported Cloud backlog"
+        }
+      ],
+      "importance": 75.0,
+      "label": "Finance",
+      "sources": [
+        "FRED",
+        "Chicago Fed NFCI",
+        "New York Fed CMDI",
+        "SEC EDGAR",
+        "CalSTRS PE Performance",
+        "Microsoft FY2026 Q3 AI disclosure",
+        "OpenAI business scale disclosure",
+        "Alphabet Q2 2026 AI and Cloud disclosure"
+      ]
+    },
+    "grid_storage": {
+      "boundaries": [
+        "Queue capacity measures developer interest, not near-term supply.",
+        "Storage duration can address short peaks but does not remove transmission or interconnection constraints."
+      ],
+      "domain": "grid_storage",
+      "facts": [
+        {
+          "display": "2061 GW",
+          "id": "grid_storage.queue_gw",
+          "label": "Active interconnection queue"
+        },
+        {
+          "display": "24.2%",
+          "id": "grid_storage.advanced_share",
+          "label": "Queue share in executed-agreement or construction stages"
+        },
+        {
+          "display": "552.7 GW",
+          "id": "grid_storage.storage_queue_gw",
+          "label": "Storage capacity in the active queue"
+        },
+        {
+          "display": "13%",
+          "id": "grid_storage.historical_operational_pct",
+          "label": "2000\u20132020 queue cohort that reached operation"
+        },
+        {
+          "display": "75%",
+          "id": "grid_storage.historical_withdrawn_pct",
+          "label": "2000\u20132020 queue cohort withdrawn"
+        },
+        {
+          "display": "5.0 years",
+          "id": "grid_storage.median_request_to_cod_years",
+          "label": "Median request-to-commercial-operation time for 2025 completions"
+        },
+        {
+          "display": "549.0 GW",
+          "id": "grid_storage.draft_or_executed_ia_gw",
+          "label": "Queue capacity with draft or executed interconnection agreements"
+        },
+        {
+          "display": "-0.9%",
+          "id": "grid_storage.lowest_extreme_margin_pct",
+          "label": "Lowest NERC extreme-conditions reserve margin"
+        },
+        {
+          "display": "NPCC-New England",
+          "id": "grid_storage.lowest_extreme_margin_area",
+          "label": "Area with the lowest NERC extreme-conditions margin"
+        },
+        {
+          "display": "1",
+          "id": "grid_storage.negative_extreme_margin_areas",
+          "label": "NERC assessment areas with negative extreme-conditions margins"
+        },
+        {
+          "display": "2.8 hours",
+          "id": "grid_storage.operating_storage_weighted_duration_hours",
+          "label": "Weighted average duration of operating storage"
+        },
+        {
+          "display": "46.1%",
+          "id": "grid_storage.operating_storage_four_hour_plus_share_pct",
+          "label": "Operating storage capacity with at least four hours duration"
+        },
+        {
+          "display": "2.5%",
+          "id": "grid_storage.electric_power_construction_growth",
+          "label": "Electric-power construction growth"
+        }
+      ],
+      "importance": 70.0,
+      "label": "Grid & Storage",
+      "sources": [
+        "Berkeley Lab Queued Up",
+        "NERC Summer Reliability Assessment",
+        "U.S. EIA",
+        "Census Construction Spending"
+      ]
+    },
+    "market": {
+      "boundaries": [
+        "Covered-company market measures are not the entire U.S. equity market.",
+        "Concentration and breadth describe participation; they do not establish causality."
+      ],
+      "domain": "market",
+      "facts": [
+        {
+          "display": "39.6",
+          "id": "market.aei",
+          "label": "AI Equity Index"
+        },
+        {
+          "display": "57.5",
+          "id": "market.pressure",
+          "label": "Average sector trading pressure"
+        },
+        {
+          "display": "68.1%",
+          "id": "market.positive_breadth",
+          "label": "Covered companies with positive one-year returns"
+        },
+        {
+          "display": "27.2%",
+          "id": "market.median_return",
+          "label": "Median one-year return"
+        },
+        {
+          "display": "54.0%",
+          "id": "market.equal_weight_return",
+          "label": "Equal-weight one-year return"
+        },
+        {
+          "display": "64.2%",
+          "id": "market.top_10_share",
+          "label": "Top-ten share of covered market value"
+        },
+        {
+          "display": "18.7",
+          "id": "market.effective_firms",
+          "label": "Effective firm count"
+        },
+        {
+          "display": "3",
+          "id": "market.strong_sector_count",
+          "label": "Sectors above the strong-equity threshold"
+        },
+        {
+          "display": "3",
+          "id": "market.crowded_sector_count",
+          "label": "Sectors above the high-pressure threshold"
+        }
+      ],
+      "importance": 19.2,
+      "label": "Market",
+      "sources": [
+        "YFinance",
+        "SEC EDGAR"
+      ]
+    },
+    "power": {
+      "boundaries": [
+        "Planned generation is not equivalent to capacity placed in service.",
+        "Power ownership excludes interconnection-queue maturity, which belongs to Grid & Storage."
+      ],
+      "domain": "power",
+      "facts": [
+        {
+          "display": "1.2%",
+          "id": "power.demand_growth",
+          "label": "Total retail electricity demand growth"
+        },
+        {
+          "display": "2.9%",
+          "id": "power.commercial_growth",
+          "label": "Commercial electricity demand growth"
+        },
+        {
+          "display": "227.0 GW",
+          "id": "power.planned_net_gw",
+          "label": "Net planned generation additions through the pipeline horizon"
+        },
+        {
+          "display": "5.4%",
+          "id": "power.retail_price_growth",
+          "label": "Retail electricity price growth"
+        },
+        {
+          "display": "263,644 MW",
+          "id": "power.large_load_capacity_mw",
+          "label": "Published capacity associated with large-load campus records"
+        },
+        {
+          "display": "2030",
+          "id": "power.pipeline_end_year",
+          "label": "Planned-generation pipeline end year"
+        }
+      ],
+      "importance": 100.0,
+      "label": "Power",
+      "sources": [
+        "U.S. EIA",
+        "FRED",
+        "Data-center campus records"
+      ]
+    },
+    "water": {
+      "boundaries": [
+        "State drought conditions do not establish campus-level water availability.",
+        "Sparse facility disclosure prevents a national estimate of data-center water use."
+      ],
+      "domain": "water",
+      "facts": [
+        {
+          "display": "108.4 Bgal/day",
+          "id": "water.irrigation_withdrawal_bgal_day_2020",
+          "label": "U.S. crop-irrigation withdrawals in 2020"
+        },
+        {
+          "display": "80.2 Bgal/day",
+          "id": "water.thermoelectric_withdrawal_bgal_day_2020",
+          "label": "U.S. thermoelectric-power withdrawals in 2020"
+        },
+        {
+          "display": "35.6 Bgal/day",
+          "id": "water.public_supply_withdrawal_bgal_day_2020",
+          "label": "U.S. public-supply withdrawals in 2020"
+        },
+        {
+          "display": "124.6 Bgal/day",
+          "id": "water.thermoelectric_reported_withdrawal_bgal_day_2024",
+          "label": "Reported thermoelectric withdrawals in 2024"
+        },
+        {
+          "display": "2.6 Bgal/day",
+          "id": "water.thermoelectric_reported_consumption_bgal_day_2024",
+          "label": "Reported thermoelectric consumption in 2024"
+        },
+        {
+          "display": "1,906",
+          "id": "water.mapped_facilities",
+          "label": "Mapped data-center facilities"
+        },
+        {
+          "display": "63",
+          "id": "water.direct_evidence_records",
+          "label": "Mapped facilities with direct water evidence"
+        },
+        {
+          "display": "0",
+          "id": "water.quantified_use_records",
+          "label": "Mapped facilities with quantified withdrawal or consumption records"
+        },
+        {
+          "display": "3.3%",
+          "id": "water.direct_evidence_share_pct",
+          "label": "Mapped facilities with direct water evidence"
+        },
+        {
+          "display": "39",
+          "id": "water.states_with_d2_area",
+          "label": "Mapped states with some D2-or-worse drought area"
+        },
+        {
+          "display": "18",
+          "id": "water.states_with_25pct_d2_area",
+          "label": "Mapped states with at least 25% D2-or-worse drought area"
+        },
+        {
+          "display": "239.2 GW",
+          "id": "water.published_capacity_in_d2_states_gw",
+          "label": "Published data-center capacity in mapped states with D2-or-worse drought"
+        },
+        {
+          "display": "81.0 GW",
+          "id": "water.published_capacity_in_25pct_d2_states_gw",
+          "label": "Published data-center capacity in mapped states with at least 25% D2-or-worse drought"
+        },
+        {
+          "display": "UT",
+          "id": "water.highest_d2_state",
+          "label": "Mapped state with the highest D2-or-worse drought-area share"
+        },
+        {
+          "display": "94.7%",
+          "id": "water.highest_d2_area_pct",
+          "label": "Highest mapped state D2-or-worse drought-area share"
+        }
+      ],
+      "importance": 73.9,
+      "label": "Water",
+      "sources": [
+        "USGS Water Use",
+        "U.S. Drought Monitor / NOAA NCEI",
+        "U.S. EIA",
+        "Data-center campus records"
+      ]
+    },
+    "workforce": {
+      "boundaries": [
+        "Task-exposure estimates describe work AI could affect; they do not measure jobs lost or automated.",
+        "Tracked AI-linked channels are not the entire labor market."
+      ],
+      "domain": "workforce",
+      "facts": [
+        {
+          "display": "1",
+          "id": "workforce.employment_breadth",
+          "label": "Tracked AI-linked labor channels with positive employment growth"
+        },
+        {
+          "display": "2",
+          "id": "workforce.real_earnings_breadth",
+          "label": "Tracked AI-linked labor channels with positive real-earnings growth"
+        },
+        {
+          "display": "Power & communication construction",
+          "id": "workforce.strongest_channel",
+          "label": "Tracked channel with the strongest employment growth"
+        },
+        {
+          "display": "0.8%",
+          "id": "workforce.strongest_channel_growth",
+          "label": "Strongest tracked-channel employment growth"
+        },
+        {
+          "display": "Computing infrastructure",
+          "id": "workforce.weakest_channel",
+          "label": "Tracked channel with the weakest employment growth"
+        },
+        {
+          "display": "-4.1%",
+          "id": "workforce.weakest_channel_growth",
+          "label": "Weakest tracked-channel employment growth"
+        },
+        {
+          "display": "2.2%",
+          "id": "workforce.max_layoff_rate",
+          "label": "Highest layoff rate among tracked channels"
+        },
+        {
+          "display": "5.5%",
+          "id": "workforce.max_openings_rate",
+          "label": "Highest openings rate among tracked channels"
+        },
+        {
+          "display": "923",
+          "id": "workforce.occupation_exposure_count",
+          "label": "Occupations in the static task-exposure benchmark"
+        },
+        {
+          "display": "45.8%",
+          "id": "workforce.median_llm_software_exposure_pct",
+          "label": "Median software-adjusted LLM task exposure in the benchmark"
+        },
+        {
+          "display": "47.3%",
+          "id": "workforce.high_exposure_occupation_share_pct",
+          "label": "Benchmark occupations with at least 50% software-adjusted task exposure"
+        }
+      ],
+      "importance": 40.7,
+      "label": "Workforce",
+      "sources": [
+        "GPTs are GPTs occupation benchmark",
+        "BLS Current Employment Statistics",
+        "BLS JOLTS"
+      ]
+    }
+  },
+  "prompt_versions": {
+    "domain": "domain-read-1.2",
+    "generator": "1.1.0",
+    "macro": "macro-read-1.2"
+  },
+  "reasoning_effort": "medium",
+  "saved_at": "2026-08-10T14:43:27.818183+00:00",
+  "service_version": "1.2.0",
+  "stage": "domain",
+  "started_at": "2026-08-10T14:42:12.300184+00:00",
+  "status": "validation_failed",
+  "validation": {
+    "domain": {
+      "checked_claims": 49,
+      "errors": [
+        "market.watchpoint: interrogative phrasing is not allowed",
+        "finance.watchpoint: interrogative phrasing is not allowed",
+        "data_center.watchpoint: interrogative phrasing is not allowed",
+        "grid_storage.watchpoint: interrogative phrasing is not allowed",
+        "adoption.watchpoint: interrogative phrasing is not allowed",
+        "workforce.watchpoint: interrogative phrasing is not allowed",
+        "economic_impact.summary[1]: unsupported numeric tokens: 8.4",
+        "economic_impact.watchpoint: interrogative phrasing is not allowed"
+      ],
+      "failures": [
+        {
+          "fact_ids": [
+            "market.positive_breadth",
+            "market.pressure"
+          ],
+          "label": "market.watchpoint",
+          "message": "market.watchpoint: interrogative phrasing is not allowed",
+          "reason": "interrogative",
+          "sentence": "Whether positive breadth persists as sector trading pressure changes."
+        },
+        {
+          "fact_ids": [
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.forward_commitment_load"
+          ],
+          "label": "finance.watchpoint",
+          "message": "finance.watchpoint: interrogative phrasing is not allowed",
+          "reason": "interrogative",
+          "sentence": "Whether operating cash flow and reserves keep pace with forward commitments."
+        },
+        {
+          "fact_ids": [
+            "data_center.pipeline_capacity_gw",
+            "data_center.development_sites",
+            "data_center.operating_sites"
+          ],
+          "label": "data_center.watchpoint",
+          "message": "data_center.watchpoint: interrogative phrasing is not allowed",
+          "reason": "interrogative",
+          "sentence": "Whether disclosed development capacity converts into energized operating sites."
+        },
+        {
+          "fact_ids": [
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct",
+            "grid_storage.median_request_to_cod_years"
+          ],
+          "label": "grid_storage.watchpoint",
+          "message": "grid_storage.watchpoint: interrogative phrasing is not allowed",
+          "reason": "interrogative",
+          "sentence": "Whether advanced queue capacity progresses to operation faster than the historical record."
+        },
+        {
+          "fact_ids": [
+            "adoption.current_business_use_pct",
+            "adoption.expected_business_use_pct"
+          ],
+          "label": "adoption.watchpoint",
+          "message": "adoption.watchpoint: interrogative phrasing is not allowed",
+          "reason": "interrogative",
+          "sentence": "Whether expected business use converts into reported current use."
+        },
+        {
+          "fact_ids": [
+            "workforce.employment_breadth"
+          ],
+          "label": "workforce.watchpoint",
+          "message": "workforce.watchpoint: interrogative phrasing is not allowed",
+          "reason": "interrogative",
+          "sentence": "Whether positive employment growth broadens beyond the current single tracked channel."
+        },
+        {
+          "cited_facts": [
+            {
+              "context": "",
+              "display": "14.1%",
+              "id": "economic_impact.productivity_since_2020",
+              "label": "Productivity change since 2020"
+            },
+            {
+              "context": "",
+              "display": "4.5%",
+              "id": "economic_impact.real_compensation_since_2020",
+              "label": "Real hourly compensation change since 2020"
+            },
+            {
+              "context": "",
+              "display": "9.6 percentage points",
+              "id": "economic_impact.productivity_real_comp_gap",
+              "label": "Productivity minus real-compensation change since 2020"
+            },
+            {
+              "context": "",
+              "display": "-8.4%",
+              "id": "economic_impact.labor_share_since_2020",
+              "label": "Labor-share index change since 2020"
+            }
+          ],
+          "fact_ids": [
+            "economic_impact.productivity_since_2020",
+            "economic_impact.real_compensation_since_2020",
+            "economic_impact.productivity_real_comp_gap",
+            "economic_impact.labor_share_since_2020"
+          ],
+          "label": "economic_impact.summary[1]",
+          "message": "economic_impact.summary[1]: unsupported numeric tokens: 8.4",
+          "reason": "unsupported_numeric_tokens",
+          "sentence": "Since 2020, productivity increased 14.1% versus 4.5% for real hourly compensation, a 9.6 percentage-point gap, while the labor-share index fell 8.4%.",
+          "unsupported_numeric_tokens": [
+            "8.4"
+          ]
+        },
+        {
+          "fact_ids": [
+            "economic_impact.productivity_real_comp_gap",
+            "economic_impact.information_investment_growth",
+            "economic_impact.real_compensation_growth"
+          ],
+          "label": "economic_impact.watchpoint",
+          "message": "economic_impact.watchpoint: interrogative phrasing is not allowed",
+          "reason": "interrogative",
+          "sentence": "Whether real compensation begins closing the productivity gap as investment continues."
+        }
+      ],
+      "grounded_claims": 41,
+      "passed": false,
+      "version": "1.1.0"
+    }
+  }
+}

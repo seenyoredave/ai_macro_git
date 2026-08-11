@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from rendering.visual_system import render_plotly_chart
-from rendering.charts_adaptation import adaptation_history, adaptation_sector_bars, consumer_adoption_history
+from rendering.charts_adoption import adoption_history, adoption_sector_bars, consumer_adoption_history
 from rendering.common import _render_floating_terms
 from rendering.commercialization import filtered_ledger, metric_value
 from rendering.dataframe import arrow_safe_dataframe
@@ -22,13 +22,13 @@ from rendering.components import (
 )
 
 
-def _consumer_payload(adaptation_data: dict, key: str) -> dict:
-    payload = (adaptation_data or {}).get(key, {})
+def _consumer_payload(adoption_data: dict, key: str) -> dict:
+    payload = (adoption_data or {}).get(key, {})
     return payload if isinstance(payload, dict) else {}
 
 
-def _adaptation_source_rows(adaptation_data):
-    national = (adaptation_data or {}).get("national_history")
+def _adoption_source_rows(adoption_data):
+    national = (adoption_data or {}).get("national_history")
     rows = []
     if isinstance(national, pd.DataFrame) and not national.empty:
         latest = national.sort_values("Date").iloc[-1]
@@ -51,7 +51,7 @@ def _adaptation_source_rows(adaptation_data):
         ("consumer_active", "Adult Generative-AI Use — Used Last Week"),
         ("consumer_daily", "Adult Generative-AI Use — Daily"),
     ]:
-        payload = _consumer_payload(adaptation_data or {}, key)
+        payload = _consumer_payload(adoption_data or {}, key)
         rows.append({
             "Series": label,
             "Reading": fmt_number(payload.get("value"), 1, suffix="%"),
@@ -61,11 +61,11 @@ def _adaptation_source_rows(adaptation_data):
     return pd.DataFrame(rows)
 
 
-def _societal_metrics(adaptation_data):
-    overall = _consumer_payload(adaptation_data, "consumer_overall")
-    personal = _consumer_payload(adaptation_data, "consumer_personal")
-    active = _consumer_payload(adaptation_data, "consumer_active")
-    daily = _consumer_payload(adaptation_data, "consumer_daily")
+def _societal_metrics(adoption_data):
+    overall = _consumer_payload(adoption_data, "consumer_overall")
+    personal = _consumer_payload(adoption_data, "consumer_personal")
+    active = _consumer_payload(adoption_data, "consumer_active")
+    daily = _consumer_payload(adoption_data, "consumer_daily")
     return [
         ("Any-purpose use", fmt_number(overall.get("value"), 1, suffix="%"), f"adults age 18–64 · {fmt_date(overall.get('date'))}"),
         ("Personal / outside work", fmt_number(personal.get("value"), 1, suffix="%"), f"adults age 18–64 · {fmt_date(personal.get('date'))}"),
@@ -74,25 +74,25 @@ def _societal_metrics(adaptation_data):
     ]
 
 
-def _render_societal_summary(adaptation_data):
-    render_statline(_societal_metrics(adaptation_data), key_prefix="adoption-societal-summary")
+def _render_societal_summary(adoption_data):
+    render_statline(_societal_metrics(adoption_data), key_prefix="adoption-societal-summary")
 
 
-def _business_metrics(adaptation_data):
-    current = pd.to_numeric((adaptation_data or {}).get("current_use"), errors="coerce")
-    expected = pd.to_numeric((adaptation_data or {}).get("expected_use"), errors="coerce")
-    expected_gap = pd.to_numeric((adaptation_data or {}).get("expected_adoption_gap"), errors="coerce")
-    annual = pd.to_numeric((adaptation_data or {}).get("annual_change"), errors="coerce")
+def _business_metrics(adoption_data):
+    current = pd.to_numeric((adoption_data or {}).get("current_use"), errors="coerce")
+    expected = pd.to_numeric((adoption_data or {}).get("expected_use"), errors="coerce")
+    expected_gap = pd.to_numeric((adoption_data or {}).get("expected_adoption_gap"), errors="coerce")
+    annual = pd.to_numeric((adoption_data or {}).get("annual_change"), errors="coerce")
     return [
         ("Current business use", fmt_number(current, 1, suffix="%"), "used AI in any business function"),
         ("Expected business use", fmt_number(expected, 1, suffix="%"), "expected within six months"),
         ("Expected adoption gap", fmt_number(expected_gap, 1, signed=True, suffix=" pp"), "expected minus current use"),
-        ("12-month change", fmt_number(annual, 1, signed=True, suffix=" pp"), fmt_date((adaptation_data or {}).get("snapshot_date"))),
+        ("12-month change", fmt_number(annual, 1, signed=True, suffix=" pp"), fmt_date((adoption_data or {}).get("snapshot_date"))),
     ]
 
 
-def _render_business_summary(adaptation_data):
-    render_statline(_business_metrics(adaptation_data), key_prefix="adoption-business-summary")
+def _render_business_summary(adoption_data):
+    render_statline(_business_metrics(adoption_data), key_prefix="adoption-business-summary")
 
 
 def _render_paid_adoption(commercialization_data):
@@ -110,25 +110,25 @@ def _render_paid_adoption(commercialization_data):
         ("Gemini Enterprise", fmt_number(gemini_enterprise, 0, suffix="M"), "paid seats"),
     ], key_prefix="adoption-paid")
 
-def _render_adoption_ledger(adaptation_data, commercialization_data):
+def _render_adoption_ledger(adoption_data, commercialization_data):
     datasets = {
-        "People history": (adaptation_data or {}).get("consumer_history"),
-        "Business history": (adaptation_data or {}).get("national_history"),
-        "Industry snapshot": (adaptation_data or {}).get("sector_snapshot"),
+        "People history": (adoption_data or {}).get("consumer_history"),
+        "Business history": (adoption_data or {}).get("national_history"),
+        "Industry snapshot": (adoption_data or {}).get("sector_snapshot"),
         "Paid disclosures": filtered_ledger(commercialization_data, pillars=["Paid demand", "Enterprise adoption", "Reach"]),
     }
     with st.expander("Adoption data", expanded=False):
         view = st.radio("Dataset", list(datasets), horizontal=True, key="adoption-ledger-view")
         st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", hide_index=True, height=440)
 
-def render_adaptation_tab(adaptation_data, commercialization_data=None, tab_read=None):
+def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=None):
     render_tab_header("Adoption", "Personal AI use, business adoption, paid use, and industry differences.", "RPS / U.S. Census BTOS / primary provider disclosures")
-    _render_floating_terms("adaptation")
+    _render_floating_terms("adoption")
     render_domain_read(tab_read, label="Read", domain="adoption")
 
     render_section("Current use", "Current personal and business use, shown together before the longer history.", first=True, compact=True)
-    societal = _societal_metrics(adaptation_data)
-    business = _business_metrics(adaptation_data)
+    societal = _societal_metrics(adoption_data)
+    business = _business_metrics(adoption_data)
     render_summary_row([societal[0], societal[2], business[0], business[2]], key_prefix="adoption-diffusion-state")
 
     render_section("Use over time", "Survey estimates of personal use or business use over time, one view at a time.")
@@ -137,12 +137,12 @@ def render_adaptation_tab(adaptation_data, commercialization_data=None, tab_read
             view = st.radio("Use view", ["People", "Business"], horizontal=True, label_visibility="collapsed", key="adoption-trajectory-view")
             if view == "Business":
                 render_panel_heading("Business AI use over time", "Census BTOS / employer businesses / 95% confidence intervals")
-                figure, key = adaptation_history((adaptation_data or {}).get("national_history")), "adaptation-national-history"
-                render_summary_row(_business_metrics(adaptation_data), key_prefix="adoption-business-summary")
+                figure, key = adoption_history((adoption_data or {}).get("national_history")), "adoption-national-history"
+                render_summary_row(_business_metrics(adoption_data), key_prefix="adoption-business-summary")
             else:
                 render_panel_heading("Personal AI use over time", "Real-Time Population Survey · quarterly · adults age 18–64")
-                figure, key = consumer_adoption_history((adaptation_data or {}).get("consumer_history")), "adoption-consumer-history"
-                render_summary_row(_societal_metrics(adaptation_data), key_prefix="adoption-societal-summary")
+                figure, key = consumer_adoption_history((adoption_data or {}).get("consumer_history")), "adoption-consumer-history"
+                render_summary_row(_societal_metrics(adoption_data), key_prefix="adoption-societal-summary")
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=key)
 
     _render_paid_adoption(commercialization_data)
@@ -150,6 +150,6 @@ def render_adaptation_tab(adaptation_data, commercialization_data=None, tab_read
     with st.container(key="full-width-layout-adoption-industry-breadth"):
         with st.container(border=True, key="adoption-panel-industry-breadth"):
             render_panel_heading("AI use by industry", "Latest published observation / 95% confidence intervals")
-            render_plotly_chart(adaptation_sector_bars((adaptation_data or {}).get("sector_snapshot")), width="stretch", config={"displayModeBar": True, "responsive": True}, key="adaptation-sector-breadth")
-    _render_adoption_ledger(adaptation_data, commercialization_data)
+            render_plotly_chart(adoption_sector_bars((adoption_data or {}).get("sector_snapshot")), width="stretch", config={"displayModeBar": True, "responsive": True}, key="adoption-sector-breadth")
+    _render_adoption_ledger(adoption_data, commercialization_data)
 

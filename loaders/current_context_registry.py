@@ -8,22 +8,23 @@ import pandas as pd
 from config.current_context_policy import (
     DOMAIN_CONTEXT_POLICY,
     DOMAIN_CONTEXT_FALLBACK,
-    DOMAIN_NEWS_TERMS,
-    DOMAIN_TOPIC_ANCHORS,
+    domain_relevance_terms,
+    domain_topic_anchors,
     assess_source,
     materiality_score,
     recent_development_copy_issues,
     term_present,
 )
-from config.sector_config import SECTOR_CONFIG
+from helpers.atomic_io import synchronized_path
 from loaders.current_context_news import (
     _bool,
     _clean_sentence,
     _valid_https_url,
 )
 from loaders.current_context_grounding import (
-    GROUNDING_VERSION,
+    MIN_SOURCE_TEXT_CHARS,
     is_preview_or_calendar_item,
+    retained_reader_quality_gate,
     strip_legacy_source_leadin,
 )
 
@@ -33,7 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVENT_PATH = ROOT / "data" / "weekly_context_events.csv"
 
 
-WEEKLY_CONTEXT_VERSION = "2.4"
+CURRENT_CONTEXT_READ_VERSION = "2.8"
 
 
 REQUIRED_COLUMNS = {
@@ -51,9 +52,6 @@ REQUIRED_COLUMNS = {
     "verification_status",
     "expires_after_days",
 }
-
-
-NO_QUALIFYING_NEWS = "No qualifying sector-specific development was identified in the last seven days."
 
 
 def _fallback_domain_event(domain: str, current: pd.Timestamp) -> dict:
@@ -91,9 +89,11 @@ def _fallback_domain_event(domain: str, current: pd.Timestamp) -> dict:
 
 
 def _read_registry(path: Path) -> pd.DataFrame:
-    if not path.exists():
-        return pd.DataFrame()
-    frame = pd.read_csv(path)
+    transaction_key = path.parent / ".current_context_refresh"
+    with synchronized_path(transaction_key):
+        if not path.exists():
+            return pd.DataFrame()
+        frame = pd.read_csv(path)
     missing = REQUIRED_COLUMNS.difference(frame.columns)
     if missing:
         raise ValueError(f"Current-context registry is missing columns: {sorted(missing)}")
@@ -115,6 +115,11 @@ def _read_registry(path: Path) -> pd.DataFrame:
         "discovery_query": "",
         "discovered_via": "",
         "discovery_source_url": "",
+        "evidence_resolution_mode": "",
+        "evidence_seed_source_name": "",
+        "evidence_seed_source_url": "",
+        "evidence_resolution_query": "",
+        "evidence_resolution_similarity": "",
     }
     for column, default in defaults.items():
         if column not in frame.columns:
@@ -128,6 +133,24 @@ def _read_registry(path: Path) -> pd.DataFrame:
     frame["expires_after_days"] = pd.to_numeric(frame["expires_after_days"], errors="coerce")
     for column in ("source_type", "verification_status", "surface", "resolution_status"):
         frame[column] = frame[column].fillna("").astype(str).str.strip().str.lower()
+
+    # The event registry is a current-state store, not the audit ledger. If an
+    # older release left multiple rows for one event_id, use the most recently
+    # retrieved row. Engine/grounding version is provenance; it is not freshness.
+    # Full discovery history lives in current_context_candidate_audit.csv.
+    if "event_id" in frame.columns and not frame.empty:
+        retrieved = pd.to_datetime(frame.get("retrieved_at", ""), errors="coerce", utc=True)
+        frame["_retrieved_order"] = retrieved
+        frame["_row_order"] = range(len(frame))
+        frame = (
+            frame.sort_values(
+                ["event_id", "_retrieved_order", "_row_order"],
+                na_position="first",
+            )
+            .drop_duplicates(subset=["event_id"], keep="last")
+            .drop(columns=["_retrieved_order", "_row_order"])
+            .reset_index(drop=True)
+        )
     return frame
 
 
@@ -193,19 +216,22 @@ def _row_is_temporally_valid(row: dict, current: pd.Timestamp) -> bool:
 
 
 def _automated_row_still_qualifies(row: dict) -> bool:
-    """Revalidate automated rows under the current source-grounded contract.
+    """Revalidate automated rows against the durable evidence contract.
 
-    Automated records from pre-grounding releases are intentionally ineligible.
-    A retained Reader must never revive headline-derived prose merely because the
-    old row remains in the append-only audit ledger.
+    Grounding/discovery versions are provenance, not expiration controls. Once
+    an automated row has actually been source-grounded, carries an evidence
+    hash, and remains temporally/materially eligible, a later engine version
+    must not make that vetted fact disappear. Pre-grounding headline-derived
+    rows fail this contract because they lack the grounded evidence fields.
     """
     if str(row.get("record_origin") or "").strip().casefold() != "automated_discovery":
         return True
-    if str(row.get("grounding_version") or "").strip() != GROUNDING_VERSION:
-        return False
     if str(row.get("grounding_status") or "").strip().casefold() != "grounded":
         return False
     if not str(row.get("source_evidence_hash") or "").strip():
+        return False
+    source_chars = pd.to_numeric(row.get("source_text_chars"), errors="coerce")
+    if pd.isna(source_chars) or int(source_chars) < MIN_SOURCE_TEXT_CHARS:
         return False
 
     domain = str(row.get("domain") or "").strip().casefold()
@@ -214,10 +240,10 @@ def _automated_row_still_qualifies(row: dict) -> bool:
     text = f"{fact} {relevance}".strip()
     if is_preview_or_calendar_item(fact):
         return False
-    terms = DOMAIN_NEWS_TERMS.get(domain, ())
+    terms = domain_relevance_terms(domain)
     if terms and not any(term_present(text, term) for term in terms):
         return False
-    anchors = DOMAIN_TOPIC_ANCHORS.get(domain, ())
+    anchors = domain_topic_anchors(domain)
     if anchors and not any(term_present(text, term) for term in anchors):
         # Source-grounded Grid/Water system constraints may legitimately omit an
         # AI token in the final compact prose while still affecting the platform.
@@ -225,6 +251,12 @@ def _automated_row_still_qualifies(row: dict) -> bool:
             return False
     minimum = float((DOMAIN_CONTEXT_POLICY.get(domain, {}) or {}).get("minimum_materiality", 0.0001))
     if materiality_score(text, domain) < minimum:
+        return False
+    lookback_days = int((DOMAIN_CONTEXT_POLICY.get(domain, {}) or {}).get("lookback_days", 7) or 7)
+    quality_ok, _ = retained_reader_quality_gate(
+        domain, fact, relevance, event_date=row.get("event_date"), lookback_days=lookback_days
+    )
+    if not quality_ok:
         return False
     return True
 
@@ -298,47 +330,13 @@ def _curated_events(frame: pd.DataFrame, current: pd.Timestamp) -> list[dict]:
             "source_title": str(row.get("source_title") or "").strip(),
             "source_published_date": str(row.get("source_published_date") or "").strip(),
             "source_modified_date": str(row.get("source_modified_date") or "").strip(),
+            "evidence_resolution_mode": str(row.get("evidence_resolution_mode") or "").strip(),
+            "evidence_seed_source_name": str(row.get("evidence_seed_source_name") or "").strip(),
+            "evidence_seed_source_url": str(row.get("evidence_seed_source_url") or "").strip(),
+            "evidence_resolution_query": str(row.get("evidence_resolution_query") or "").strip(),
+            "evidence_resolution_similarity": str(row.get("evidence_resolution_similarity") or "").strip(),
         })
     return events
-
-
-def _event_valid_for_sector(event: dict, sector: str) -> bool:
-    sectors = {str(value) for value in event.get("sectors", [])}
-    if str(sector) not in sectors:
-        return False
-    event_tickers = {str(value).upper() for value in event.get("tickers", []) if str(value).strip()}
-    if not event_tickers:
-        return True
-    basket = {str(value).upper() for value in (SECTOR_CONFIG.get(sector, {}) or {}).get("basket", [])}
-    return bool(event_tickers.intersection(basket))
-
-
-def _fallback_sector_event(sector: str, current: pd.Timestamp) -> dict:
-    return {
-        "event_id": f"no-news-{sector.lower()}-{current.date().isoformat()}",
-        "event_date": current.date().isoformat(),
-        "domain": "market",
-        "event_type": "sector_news_status",
-        "priority": 0.0,
-        "verified_fact": NO_QUALIFYING_NEWS,
-        "platform_relevance": "",
-        "display": NO_QUALIFYING_NEWS,
-        "reference_number": None,
-        "source_name": "",
-        "source_label": "",
-        "source_url": "",
-        "source_type": "status",
-        "source_tier": "status",
-        "evidence_role": "none",
-        "verification_status": "no_match",
-        "status": "No match",
-        "legal_status": "",
-        "resolution_status": "recent",
-        "surface": "sector",
-        "sectors": [sector],
-        "tickers": [],
-        "rank_score": 0.0,
-    }
 
 
 def _dedupe_events(events: list[dict]) -> list[dict]:
@@ -399,20 +397,7 @@ def _renumber_context(events: list[dict], current: pd.Timestamp, *, source: str)
         "as_of": current.date().isoformat(),
         "window_start": (current - pd.Timedelta(days=6)).date().isoformat(),
         "source": source,
-        "version": WEEKLY_CONTEXT_VERSION,
+        "version": CURRENT_CONTEXT_READ_VERSION,
     }
 
 
-def _complete_sector_context(base_events: list[dict], current: pd.Timestamp) -> dict:
-    """Resolve Sector Dossier context strictly from the canonical registry."""
-    chosen: dict[str, dict] = {}
-    for sector in SECTOR_CONFIG:
-        candidates = [event for event in base_events if _event_valid_for_sector(event, sector)]
-        candidates = _dedupe_events(candidates)
-        if candidates:
-            chosen[sector] = dict(candidates[0])
-
-    for sector in SECTOR_CONFIG:
-        chosen.setdefault(sector, _fallback_sector_event(sector, current))
-    ordered = [chosen[sector] for sector in SECTOR_CONFIG]
-    return _renumber_context(ordered, current, source="current-context registry")

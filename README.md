@@ -17,6 +17,20 @@ The deployed application runs in **Reader mode**. Users can explore the research
 
 **Developer mode** is restricted to the owner and contains the refresh, diagnostic, and maintenance controls.
 
+## Runtime
+
+AI Macro requires Python 3.11 or newer. Release artifacts for this version were produced from a Python 3.13 development environment. `requirements.txt` contains the application runtime; `requirements-dev.txt` adds local browser-contract tooling.
+
+## Commentary
+
+AI Macro separates deterministic research from probabilistic interpretation. Retained data and local analytics build bounded evidence packets; OpenAI generates grounded analytical domain Reads and a cross-domain Macro synthesis; a deterministic validator decides whether the result may be published. Reader sessions never call OpenAI.
+
+Commentary is generated from bounded evidence packets and published only after deterministic validation. If validated commentary is unavailable, the underlying dashboard data remain available.
+
 ## Data
 
 Reader mode uses retained data. Definitions, source coverage, and provenance are available in the **Evidence** tab.
+
+## Current Context evidence resolution
+
+Discovery nominates events, not mandatory article URLs. The discovered evidence source is tried first; when it is inaccessible for a non-disqualifying reason, the canonical Current Context engine may research the same event through another policy-eligible source. Alternate evidence must pass the same source-body grounding contract and preserves discovery-to-evidence lineage.

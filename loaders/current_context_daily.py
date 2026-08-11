@@ -10,7 +10,7 @@ import streamlit as st
 from config.deployment import PROJECT_ROOT, current_context_paths, developer_mode
 from helpers.atomic_io import atomic_write_bytes, atomic_write_json, synchronized_path
 from loaders.current_context_discovery import DISCOVERY_VERSION, refresh_current_context
-from loaders.weekly_context_loader import load_current_context, load_weekly_context
+from loaders.current_context_loader import load_current_context
 
 RETAINED_REGISTRY = PROJECT_ROOT / "data" / "weekly_context_events.csv"
 CURRENT_CONTEXT_SHARED_TTL_SECONDS = 15 * 60
@@ -18,22 +18,24 @@ CONTEXT_READ_SNAPSHOT_VERSION = "1.1"
 
 
 def _read_manifest(path: Path) -> dict:
-    if not path.exists() or path.stat().st_size == 0:
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        return payload if isinstance(payload, dict) else {}
-    except (OSError, ValueError, json.JSONDecodeError):
-        return {}
+    with synchronized_path(path.parent / ".current_context_refresh"):
+        if not path.exists() or path.stat().st_size == 0:
+            return {}
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            return payload if isinstance(payload, dict) else {}
+        except (OSError, ValueError, json.JSONDecodeError):
+            return {}
 
 
 def _seed_public_registry(path: Path) -> None:
-    if path.exists() and path.stat().st_size > 0:
-        return
-    if RETAINED_REGISTRY.exists():
-        atomic_write_bytes(RETAINED_REGISTRY.read_bytes(), path)
-    else:
-        atomic_write_bytes(b"", path)
+    with synchronized_path(path.parent / ".current_context_refresh"):
+        if path.exists() and path.stat().st_size > 0:
+            return
+        if RETAINED_REGISTRY.exists():
+            atomic_write_bytes(RETAINED_REGISTRY.read_bytes(), path, lock=False)
+        else:
+            atomic_write_bytes(b"", path, lock=False)
 
 
 def _fallback_snapshot_id(manifest: dict) -> str:
@@ -162,7 +164,10 @@ def refresh_current_context_once_daily(*, as_of=None, force: bool = False) -> di
                 "error": f"{type(exc).__name__}: {exc}",
                 "registry_path": str(paths["registry"]),
             }
-            atomic_write_json(failure, paths["manifest"])
+            persisted_failure = dict(failure)
+            persisted_failure["registry_path"] = paths["registry"].name
+            with synchronized_path(paths["manifest"].parent / ".current_context_refresh"):
+                atomic_write_json(persisted_failure, paths["manifest"], lock=False)
             return failure
 
 
@@ -200,12 +205,6 @@ def _load_public_shared_snapshot_cached(as_of_iso: str, engine_version: str) -> 
         path=paths["registry"],
         limit_per_domain=2,
     )
-    sector_context = load_weekly_context(
-        as_of=current,
-        path=paths["registry"],
-        surface="sector",
-        limit=15,
-    )
     report = finalize_context_report(report, current_context)
     current_context = dict(current_context)
     current_context["snapshot_id"] = report["snapshot_id"]
@@ -214,7 +213,6 @@ def _load_public_shared_snapshot_cached(as_of_iso: str, engine_version: str) -> 
     return {
         "report": report,
         "current_context": current_context,
-        "sector_weekly_context": sector_context,
     }
 
 

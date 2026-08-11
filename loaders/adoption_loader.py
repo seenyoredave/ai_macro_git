@@ -15,8 +15,8 @@ from config.debug_config import debug_print
 from loaders.official_series_refresh import refresh_templated_history
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-NATIONAL_HISTORY_PATH = PROJECT_ROOT / "data" / "adaptation_national_history.csv"
-SECTOR_SNAPSHOT_PATH = PROJECT_ROOT / "data" / "adaptation_sector_snapshot.csv"
+NATIONAL_HISTORY_PATH = PROJECT_ROOT / "data" / "adoption_national_history.csv"
+SECTOR_SNAPSHOT_PATH = PROJECT_ROOT / "data" / "adoption_sector_snapshot.csv"
 CONSUMER_HISTORY_PATH = PROJECT_ROOT / "data" / "adoption_consumer_history.csv"
 BTOS_NATIONAL_URL = "https://www.census.gov/hfp/btos/downloads/National.xlsx"
 BTOS_SECTOR_URL = "https://www.census.gov/hfp/btos/downloads/Sector.xlsx"
@@ -258,16 +258,17 @@ def _summarize(national: pd.DataFrame, sector: pd.DataFrame, *, source: str, con
     }
 
 @st.cache_data(ttl=43200)
-def load_adaptation_data(
+def load_adoption_data(
     force_refresh: bool = False,
     refresh_token: int = 0,
     allow_live: bool = False,
 ) -> dict:
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     local_national, local_sector = _load_local()
     consumer_history = _load_consumer_history()
     reports = {}
-    if not force_refresh and not allow_live:
+    if not live_refresh:
         payload = _summarize(
             local_national,
             local_sector,

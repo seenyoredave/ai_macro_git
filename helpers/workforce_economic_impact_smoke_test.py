@@ -159,7 +159,7 @@ def main() -> int:
     workforce_source = (PROJECT_ROOT / "rendering" / "workforce.py").read_text(encoding="utf-8")
     impact_source = (PROJECT_ROOT / "rendering" / "economic_impact.py").read_text(encoding="utf-8")
     evidence_source = (PROJECT_ROOT / "rendering" / "evidence.py").read_text(encoding="utf-8")
-    read_source = (PROJECT_ROOT / "analytics" / "read_architecture.py").read_text(encoding="utf-8")
+    read_source = (PROJECT_ROOT / "analytics" / "read_evidence.py").read_text(encoding="utf-8") + (PROJECT_ROOT / "analytics" / "read_prompts.py").read_text(encoding="utf-8")
 
     for phrase in (
         "Employment and real pay",
@@ -185,7 +185,7 @@ def main() -> int:
         "Real median weekly earnings distribution",
     ):
         require(phrase in evidence_source, f"Evidence does not expose a Phase 1 retained layer: {phrase}")
-    require("worker compensation" in read_source and "household earnings" in read_source, "AI Macro lost the worker-and-household interpretation.")
+    require("Task-exposure estimates describe work AI could affect" in read_source and "Economy-wide productivity and output measures do not identify AI as the cause" in read_source, "v7 evidence lost the worker/outcomes causal boundary.")
     for forbidden in ("AI caused these layoffs", "AI eliminated", "automation forecast"):
         require(forbidden.casefold() not in (workforce_source + impact_source).casefold(), f"Phase 1 crossed its causal boundary: {forbidden}")
 

@@ -740,10 +740,25 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     margin-top: 0.26rem;
     max-width: 1160px;
 }
+.rm-domain-read-watch,
 .rm-domain-read-context-row,
 .rm-domain-read-refs {
     border-top: 1px solid rgba(148, 163, 184, 0.14);
     padding-top: 0.52rem;
+}
+.rm-domain-read-watch {
+    color: #9eabba;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    margin-top: 0.58rem;
+}
+.rm-domain-read-watch > span {
+    color: var(--rm-read-accent);
+    font-size: 0.61rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-right: 0.42rem;
+    text-transform: uppercase;
 }
 .rm-domain-read-context-row {
     color: #9eabba;
@@ -1154,9 +1169,10 @@ div[class*="st-key-full-width-layout-"] {
     width: 100% !important;
 }
 /* Streamlit's width="stretch" contract measures stFullScreenFrame and passes
-   that width into Plotly. Do not size stElementContainer, stFullScreenFrame,
-   stPlotlyChart, or Plotly's internal wrappers here; doing so creates a second
-   geometry owner and can strand a chart at Plotly's 700 px fallback. */
+   that width into Plotly. Do not size chart-bearing stElementContainer paths,
+   stFullScreenFrame, stPlotlyChart, or Plotly's internal wrappers here; doing
+   so creates a second geometry owner and can strand a chart at Plotly's 700 px
+   fallback. Named pure-markdown wrappers may own their local layout width. */
 div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
     align-items: stretch;
 }
@@ -1621,7 +1637,7 @@ div[class*="st-key-water-system-workbench"] {
 }
 
 
-/* v6.10 full-platform editorial rollout: space-efficiency contract. */
+/* Full-platform editorial rollout: space-efficiency contract. */
 div[data-testid="stElementContainer"]:has(.rm-deliverability-screen),
 div[data-testid="stElementContainer"]:has(.rm-signal-rail),
 div[data-testid="stElementContainer"]:has(.rm-dossier),

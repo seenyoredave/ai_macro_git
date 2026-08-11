@@ -1,11 +1,11 @@
 Domain,Surface Type,Analytical Role,Key / Control,Source Expression,Signature Status,Signature Tool,Source File,Line
 AI Macro,Chart,relationship,macro-current-divergence-chart,current_gap_bars(gaps),shared,,rendering/macro.py,115
 AI Macro,Chart,pipeline,macro-buildout-leadership-rotation,infrastructure_leadership_rotation(history),protected signature,Buildout Leadership Rotation,rendering/macro.py,141
-Adoption,Selector,view control,adoption-ledger-view,'Dataset',shared,,rendering/adaptation.py,121
-Adoption,Interactive table,detail / evidence,,arrow_safe_dataframe(datasets.get(view)),shared,,rendering/adaptation.py,122
-Adoption,Selector,view control,adoption-trajectory-view,'Use view',shared,,rendering/adaptation.py,137
-Adoption,Chart,diagnostic,key,figure,shared,,rendering/adaptation.py,146
-Adoption,Chart,diagnostic,adaptation-sector-breadth,adaptation_sector_bars((adaptation_data or {}).get('sector_snapshot')),shared,,rendering/adaptation.py,153
+Adoption,Selector,view control,adoption-ledger-view,'Dataset',shared,,rendering/adoption.py,121
+Adoption,Interactive table,detail / evidence,,arrow_safe_dataframe(datasets.get(view)),shared,,rendering/adoption.py,122
+Adoption,Selector,view control,adoption-trajectory-view,'Use view',shared,,rendering/adoption.py,137
+Adoption,Chart,diagnostic,key,figure,shared,,rendering/adoption.py,146
+Adoption,Chart,diagnostic,adoption-sector-breadth,adoption_sector_bars((adoption_data or {}).get('sector_snapshot')),shared,,rendering/adoption.py,153
 Compute,Chart,trend,compute-output-history,"compute_manufacturing_output_history(history, height=500, years=10)",shared,,rendering/compute.py,80
 Compute,Selector,view control,compute-view-capacity-demand,'Factory view',shared,,rendering/compute.py,103
 Compute,Chart,diagnostic,chart_key,figure,shared,,rendering/compute.py,119
@@ -45,9 +45,9 @@ Evidence,Interactive table,detail / evidence,,arrow_safe_dataframe(factor_frame)
 Evidence,Interactive table,detail / evidence,,"arrow_safe_dataframe(metrics.get('Pressure Components', pd.DataFrame()))",shared,,rendering/evidence.py,422
 Evidence,Interactive table,detail / evidence,,arrow_safe_dataframe(concentration_table),shared,,rendering/evidence.py,443
 Evidence,Selector,view control,evidence-workforce-earnings-view,'Earnings evidence',shared,,rendering/evidence.py,715
-Evidence,Selector,view control,evidence-lookup-domain,'Find evidence for',shared,,rendering/evidence.py,906
-Evidence,Selector,view control,evidence-lineage-layer,'Evidence layer',shared,,rendering/evidence.py,932
-Evidence,Selector,view control,evidence-view,'Evidence view',shared,,rendering/evidence.py,988
+Evidence,Selector,view control,evidence-lookup-domain,'Find evidence for',shared,,rendering/evidence.py,927
+Evidence,Selector,view control,evidence-lineage-layer,'Evidence layer',shared,,rendering/evidence.py,953
+Evidence,Selector,view control,evidence-view,'Evidence view',shared,,rendering/evidence.py,1009
 Finance,Chart,trend,'finance-{slug}-history',strain_history_figure,shared,,rendering/finance.py,257
 Finance,Chart,diagnostic,'finance-{slug}-components',"component_bars(components, signed=True, height=300)",shared,,rendering/finance.py,264
 Finance,Chart,trend,finance-debt-market-history,"debt_market_history((debt_markets_data or {}).get('history'), years=10)",shared,,rendering/finance.py,314
@@ -56,60 +56,60 @@ Finance,Chart,map,finance-private-capital-map,private_capital_realization_map(fu
 Finance,Selector,view control,finance-ledger-view,'Ledger',shared,,rendering/finance.py,491
 Finance,Interactive table,detail / evidence,,arrow_safe_dataframe(frame),shared,,rendering/finance.py,515
 Finance,Selector,view control,finance-view-stress-detail,'Stress detail',shared,,rendering/finance.py,565
-Grid & Storage,Chart,pipeline,grid-storage-conversion-funnel,queue_conversion_funnel(context.get('queue_outcomes')),signature,Grid Connection Conditions,rendering/grid_storage.py,182
-Grid & Storage,Chart,diagnostic,grid-storage-reserve-margins,"reserve_margin_stress(reserves, height=500)",signature,Grid Connection Conditions,rendering/grid_storage.py,214
-Grid & Storage,Selector,view control,grid-storage-storage-view,'Storage view',shared,,rendering/grid_storage.py,222
-Grid & Storage,Chart,diagnostic,grid-storage-storage-region,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,232
-Grid & Storage,Chart,diagnostic,grid-storage-storage-duration,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,236
-Grid & Storage,Selector,view control,grid-storage-queue-view,'Queue view',shared,,rendering/grid_storage.py,254
-Grid & Storage,Chart,pipeline,grid-storage-queue-age,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,264
-Grid & Storage,Chart,pipeline,grid-storage-queue-region,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,268
-Grid & Storage,Chart,pipeline,grid-storage-queue-technology,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,272
-Grid & Storage,Chart,trend,grid-storage-construction-history,"grid_construction_history(context.get('construction'), height=400)",signature,Grid Connection Conditions,rendering/grid_storage.py,297
-Grid & Storage,Selector,view control,grid-storage-ledger-view,'Ledger',shared,,rendering/grid_storage.py,321
-Grid & Storage,Interactive table,detail / evidence,,arrow_safe_dataframe(frames.get(ledger_view)),shared,,rendering/grid_storage.py,334
-Market,Selector,view control,research-overlay-sector,'Sector',shared,,rendering/market.py,303
-Market,Chart,diagnostic,sector-detail-signal-anatomy,"sector_signal_anatomy_chart(factor_frame, metrics.get('Pressure Components', pd.DataFrame()))",signature,Sector Profile,rendering/market.py,361
-Market,Chart,map,market-ownership-treemap-v3,"market_ownership_treemap((ledger or {}).get('companies', pd.DataFrame()))",signature,Public AI Market Ownership,rendering/market.py,478
-Market,Chart,composition,market-return-contribution-1y,"return_contribution_chart((ledger or {}).get('contributions', pd.DataFrame()))",shared,,rendering/market.py,487
-Market,Chart,trend,market-concentration-history,"concentration_history_chart((ledger or {}).get('history', pd.DataFrame()))",shared,,rendering/market.py,498
-Market,Chart,trend,market-participation-history,"participation_history_chart((ledger or {}).get('history', pd.DataFrame()))",shared,,rendering/market.py,507
-Market,Selector,view control,market-constituent-ledger-view,'Constituent view',shared,,rendering/market.py,522
-Market,Interactive table,detail / evidence,,arrow_safe_dataframe(frame),shared,,rendering/market.py,537
-Market,Chart,map,sectors-earnings-support,earnings_support_map(macro_df),shared,,rendering/market.py,579
-Market,Chart,relationship,sectors-speculative-load,speculative_load_matrix(macro_df),shared,,rendering/market.py,591
+Grid & Storage,Chart,pipeline,grid-storage-conversion-funnel,queue_conversion_funnel(context.get('queue_outcomes')),signature,Grid Connection Conditions,rendering/grid_storage.py,162
+Grid & Storage,Chart,diagnostic,grid-storage-reserve-margins,"reserve_margin_stress(reserves, height=500)",signature,Grid Connection Conditions,rendering/grid_storage.py,194
+Grid & Storage,Selector,view control,grid-storage-storage-view,'Storage view',shared,,rendering/grid_storage.py,202
+Grid & Storage,Chart,diagnostic,grid-storage-storage-region,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,212
+Grid & Storage,Chart,diagnostic,grid-storage-storage-duration,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,216
+Grid & Storage,Selector,view control,grid-storage-queue-view,'Queue view',shared,,rendering/grid_storage.py,234
+Grid & Storage,Chart,pipeline,grid-storage-queue-age,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,244
+Grid & Storage,Chart,pipeline,grid-storage-queue-region,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,248
+Grid & Storage,Chart,pipeline,grid-storage-queue-technology,conditional selected view,signature,Grid Connection Conditions,rendering/grid_storage.py,252
+Grid & Storage,Chart,trend,grid-storage-construction-history,"grid_construction_history(context.get('construction'), height=400)",signature,Grid Connection Conditions,rendering/grid_storage.py,277
+Grid & Storage,Selector,view control,grid-storage-ledger-view,'Ledger',shared,,rendering/grid_storage.py,301
+Grid & Storage,Interactive table,detail / evidence,,arrow_safe_dataframe(frames.get(ledger_view)),shared,,rendering/grid_storage.py,314
+Market,Selector,view control,research-overlay-sector,'Sector',shared,,rendering/market.py,215
+Market,Chart,diagnostic,sector-detail-signal-anatomy,"sector_signal_anatomy_chart(factor_frame, metrics.get('Pressure Components', pd.DataFrame()))",signature,Sector Profile,rendering/market.py,269
+Market,Chart,map,market-ownership-treemap-v3,"market_ownership_treemap((ledger or {}).get('companies', pd.DataFrame()))",signature,Public AI Market Ownership,rendering/market.py,386
+Market,Chart,composition,market-return-contribution-1y,"return_contribution_chart((ledger or {}).get('contributions', pd.DataFrame()))",shared,,rendering/market.py,395
+Market,Chart,trend,market-concentration-history,"concentration_history_chart((ledger or {}).get('history', pd.DataFrame()))",shared,,rendering/market.py,406
+Market,Chart,trend,market-participation-history,"participation_history_chart((ledger or {}).get('history', pd.DataFrame()))",shared,,rendering/market.py,415
+Market,Selector,view control,market-constituent-ledger-view,'Constituent view',shared,,rendering/market.py,430
+Market,Interactive table,detail / evidence,,arrow_safe_dataframe(frame),shared,,rendering/market.py,445
+Market,Chart,map,sectors-earnings-support,earnings_support_map(macro_df),shared,,rendering/market.py,487
+Market,Chart,relationship,sectors-speculative-load,speculative_load_matrix(macro_df),shared,,rendering/market.py,499
 Market,Interactive table,detail / evidence,,arrow_safe_dataframe(tier_view),shared,,rendering/sector.py,38
 Market,Selector,view control,basket_tier_module_sector,'Select sector',shared,,rendering/sector.py,73
-Power,Chart,trend,power-demand-history,"electricity_demand_history(retail, height=430)",signature,Power Demand Profile,rendering/power.py,387
-Power,Selector,view control,power-view-supply,'Supply view',shared,,rendering/power.py,406
-Power,Chart,diagnostic,chart_key,figure,shared,,rendering/power.py,413
-Power,Chart,pipeline,power-planned-capacity,"planned_capacity(development.get('pipeline'), height=450, end_year=int(development.get('end_year', 2030)))",shared,,rendering/power.py,426
-Power,Chart,pipeline,power-gas-pipeline,gas_pipeline_capacity(gas),shared,,rendering/power.py,470
-Power,Chart,ranking,power-lng-capacity,lng_capacity(lng),shared,,rendering/power.py,479
-Power,Selector,view control,power-view-prices,'Price and fuel view',shared,,rendering/power.py,498
-Power,Chart,diagnostic,chart_key,figure,shared,,rendering/power.py,507
-Power,Selector,view control,power-ledger-view,'Dataset',shared,,rendering/power.py,522
-Power,Interactive table,detail / evidence,,arrow_safe_dataframe(datasets.get(view)),shared,,rendering/power.py,523
+Power,Chart,trend,power-demand-history,"electricity_demand_history(retail, height=430)",signature,Power Demand Profile,rendering/power.py,383
+Power,Selector,view control,power-view-supply,'Supply view',shared,,rendering/power.py,402
+Power,Chart,diagnostic,chart_key,figure,shared,,rendering/power.py,409
+Power,Chart,pipeline,power-planned-capacity,"planned_capacity(development.get('pipeline'), height=450, end_year=int(development.get('end_year', 2030)))",shared,,rendering/power.py,422
+Power,Chart,pipeline,power-gas-pipeline,gas_pipeline_capacity(gas),shared,,rendering/power.py,466
+Power,Chart,ranking,power-lng-capacity,lng_capacity(lng),shared,,rendering/power.py,475
+Power,Selector,view control,power-view-prices,'Price and fuel view',shared,,rendering/power.py,494
+Power,Chart,diagnostic,chart_key,figure,shared,,rendering/power.py,503
+Power,Selector,view control,power-ledger-view,'Dataset',shared,,rendering/power.py,518
+Power,Interactive table,detail / evidence,,arrow_safe_dataframe(datasets.get(view)),shared,,rendering/power.py,519
 Shared / AI Macro,Selector,view control,'{key_prefix}-layer','Map layer',shared,,rendering/spatial.py,132
 Shared / AI Macro,Selector,view control,'{key_prefix}-state','Geography',shared,,rendering/spatial.py,135
 Shared / AI Macro,Selector,view control,'{key_prefix}-size','Marker size',shared,,rendering/spatial.py,138
 Shared / AI Macro,Chart,map,'{key_prefix}-map',figure,protected signature,National Landscape Map,rendering/spatial.py,151
 Shared / AI Macro,Interactive table,detail / evidence,,arrow_safe_dataframe(table),shared,,rendering/spatial.py,171
-Water,Selector,view control,water-exposure-view,'Water exposure view',shared,,rendering/water.py,108
-Water,Chart,coverage,water-capacity-disclosure,conditional selected view,shared,,rendering/water.py,118
-Water,Chart,diagnostic,water-drought-exposure,conditional selected view,shared,,rendering/water.py,122
-Water,Selector,view control,water-dossier-state,'State',shared,,rendering/water.py,144
-Water,Selector,view control,water-dossier-campus,'Campus',shared,,rendering/water.py,154
-Water,Selector,view control,water-disclosure-view,'Disclosure view',shared,,rendering/water.py,233
-Water,Chart,coverage,water-state-evidence-profile,conditional selected view,shared,,rendering/water.py,243
-Water,Chart,coverage,water-evidence-ladder,conditional selected view,signature,Water Disclosure Coverage,rendering/water.py,247
-Water,Selector,view control,water-system-context-view,'Comparison view',shared,,rendering/water.py,305
-Water,Selector,view control,water-thermoelectric-metric,'Thermoelectric metric',shared,,rendering/water.py,313
-Water,Chart,diagnostic,water-thermoelectric-groups,conditional selected view,shared,,rendering/water.py,323
-Water,Chart,trend,water-wastewater-construction-history,conditional selected view,shared,,rendering/water.py,328
-Water,Chart,diagnostic,water-competing-uses-2020,conditional selected view,shared,,rendering/water.py,333
-Water,Selector,view control,water-ledger-view,'Ledger',shared,,rendering/water.py,357
-Water,Interactive table,detail / evidence,,arrow_safe_dataframe(frames.get(view)),shared,,rendering/water.py,370
+Water,Selector,view control,water-exposure-view,'Water exposure view',shared,,rendering/water.py,90
+Water,Chart,coverage,water-capacity-disclosure,conditional selected view,shared,,rendering/water.py,100
+Water,Chart,diagnostic,water-drought-exposure,conditional selected view,shared,,rendering/water.py,104
+Water,Selector,view control,water-dossier-state,'State',shared,,rendering/water.py,126
+Water,Selector,view control,water-dossier-campus,'Campus',shared,,rendering/water.py,136
+Water,Selector,view control,water-disclosure-view,'Disclosure view',shared,,rendering/water.py,215
+Water,Chart,coverage,water-state-evidence-profile,conditional selected view,shared,,rendering/water.py,225
+Water,Chart,coverage,water-evidence-ladder,conditional selected view,signature,Water Disclosure Coverage,rendering/water.py,229
+Water,Selector,view control,water-system-context-view,'Comparison view',shared,,rendering/water.py,287
+Water,Selector,view control,water-thermoelectric-metric,'Thermoelectric metric',shared,,rendering/water.py,295
+Water,Chart,diagnostic,water-thermoelectric-groups,conditional selected view,shared,,rendering/water.py,305
+Water,Chart,trend,water-wastewater-construction-history,conditional selected view,shared,,rendering/water.py,310
+Water,Chart,diagnostic,water-competing-uses-2020,conditional selected view,shared,,rendering/water.py,315
+Water,Selector,view control,water-ledger-view,'Ledger',shared,,rendering/water.py,339
+Water,Interactive table,detail / evidence,,arrow_safe_dataframe(frames.get(view)),shared,,rendering/water.py,352
 Workforce,Chart,relationship,workforce-outcomes-matrix,"workforce_outcomes_matrix(data.get('transmission_matrix'), height=560)",signature,Workforce Outcomes Matrix,rendering/workforce.py,50
 Workforce,Selector,view control,workforce-channel-view,'Channel',shared,,rendering/workforce.py,75
 Workforce,Selector,view control,workforce-flow-view,'Labor-flow measure',shared,,rendering/workforce.py,77

@@ -196,8 +196,10 @@ def _fractracker_raw_frame(*, force_refresh: bool = False, timeout: int = 30) ->
 def load_fractracker_facility_records(
     *,
     force_refresh: bool = False,
+    allow_live: bool = False,
     return_report: bool = False,
 ) -> pd.DataFrame | tuple[pd.DataFrame, dict]:
+    live_refresh = bool(force_refresh and allow_live)
     source_mode = "retained"
     error = None
 
@@ -205,14 +207,16 @@ def load_fractracker_facility_records(
         report = {
             "source_mode": source_mode,
             "requested": bool(force_refresh),
+            "authorized": bool(allow_live),
+            "executed": live_refresh,
             "returned_rows": int(len(frame)),
             "error": error,
         }
         return (frame, report) if return_report else frame
 
     try:
-        raw = _fractracker_raw_frame(force_refresh=force_refresh)
-        if force_refresh:
+        raw = _fractracker_raw_frame(force_refresh=live_refresh)
+        if live_refresh:
             source_mode = "live_refresh"
     except Exception as exc:
         error = f"{type(exc).__name__}: {exc}"
@@ -224,7 +228,7 @@ def load_fractracker_facility_records(
         except Exception as fallback_exc:
             error = f"{error}; fallback {type(fallback_exc).__name__}: {fallback_exc}"
             return finish(_blank_registry())
-    if raw.empty and force_refresh and FRACTRACKER_PATH.exists() and FRACTRACKER_PATH.stat().st_size:
+    if raw.empty and live_refresh and FRACTRACKER_PATH.exists() and FRACTRACKER_PATH.stat().st_size:
         error = "ValueError: live source returned no records"
         source_mode = "retained_fallback"
         try:

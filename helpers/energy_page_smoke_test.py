@@ -1,4 +1,4 @@
-"""Targeted regression for the v6.5 Power / Grid & Storage boundary."""
+"""Targeted regression for the Power / Grid & Storage evidence boundary."""
 
 from __future__ import annotations
 
@@ -61,7 +61,8 @@ class _FakeStreamlit(types.ModuleType):
 FAKE_ST = _FakeStreamlit()
 sys.modules["streamlit"] = FAKE_ST
 
-from analytics.energy_pulse import build_power_read  # noqa: E402
+from analytics.dashboard_context import DashboardContext  # noqa: E402
+from analytics.read_evidence import build_power_evidence  # noqa: E402
 from rendering.power import (  # noqa: E402
     _power_context,
     _render_buildout,
@@ -124,9 +125,14 @@ def main() -> None:
         raise AssertionError("Trailing electricity-demand growth changed unexpectedly.")
     if not np.isclose(power["development"]["planned_net_gw"], 227.0018, atol=1e-4):
         raise AssertionError("Planned generation balance changed unexpectedly.")
-    read = build_power_read(power["demand"], power["large_loads"], power["development"], power["prices"])
-    if "queue" in (read["headline"] + " " + read["body"]).casefold() or "interconnection" in (read["headline"] + " " + read["body"]).casefold():
-        raise AssertionError("Power Read crossed into Grid & Storage ownership.")
+    power_evidence = build_power_evidence(
+        DashboardContext(energy_data=power_data, infrastructure_data=infrastructure)
+    )
+    fact_ids = {fact.id for fact in power_evidence.facts}
+    if any("queue" in fact_id or "interconnection" in fact_id for fact_id in fact_ids):
+        raise AssertionError("Power evidence crossed into Grid & Storage ownership.")
+    if "power.planned_net_gw" not in fact_ids or "power.demand_growth" not in fact_ids:
+        raise AssertionError("Power evidence lost its generation/demand boundary facts.")
 
     FAKE_ST.charts.clear()
     FAKE_ST.radio_options.clear()
@@ -170,7 +176,7 @@ def main() -> None:
         raise AssertionError("Power and Grid & Storage no longer retain distinct analytical surfaces.")
 
     print(
-        "PASS  v6.5.2 Power + Grid boundary · "
+        "PASS  Power + Grid evidence boundary · "
         f"{len(visible)} visible Power charts · {len(hidden)} collapsed Power charts · "
         f"{development['headline_queue_gw']:.0f} GW active queue"
     )

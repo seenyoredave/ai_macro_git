@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from analytics.dashboard_context import DashboardContext
 from analytics.macro_dataframe import build_macro_dashboard_data
-from rendering.adaptation import render_adaptation_tab
+from analytics.read_evidence import build_evidence_packets
+from rendering.adoption import render_adoption_tab
 from rendering.compute import render_compute_tab
 from rendering.connectivity import render_connectivity_tab
 from rendering.data_center import render_data_center_tab
@@ -36,7 +37,7 @@ def render_research_dashboard(tabs, context: DashboardContext):
                 context.fred_data,
                 context.regime_metrics,
                 dashboard_data,
-                context.adaptation_data,
+                context.adoption_data,
                 context.infrastructure_data,
                 tab_read=platform_reads.get("macro"),
             )
@@ -48,7 +49,6 @@ def render_research_dashboard(tabs, context: DashboardContext):
                 context.regime_metrics,
                 dashboard_data,
                 context.market_universe_summary,
-                weekly_context=context.sector_weekly_context,
                 tab_read=platform_reads.get("market"),
             )
     if tabs[2].open:
@@ -110,10 +110,10 @@ def render_research_dashboard(tabs, context: DashboardContext):
             )
     if tabs[9].open:
         with tabs[9]:
-            render_adaptation_tab(
-                context.adaptation_data,
+            render_adoption_tab(
+                context.adoption_data,
                 commercialization_data=context.commercialization_data,
-                tab_read=platform_reads.get("adaptation"),
+                tab_read=platform_reads.get("adoption"),
             )
     if tabs[10].open:
         with tabs[10]:
@@ -130,6 +130,10 @@ def render_research_dashboard(tabs, context: DashboardContext):
             )
     if tabs[12].open:
         with tabs[12]:
+            evidence_packets = {
+                domain: packet.to_dict()
+                for domain, packet in build_evidence_packets(context).items()
+            }
             render_evidence_tab(
                 context.fred_data,
                 context.sector_data,
@@ -141,8 +145,9 @@ def render_research_dashboard(tabs, context: DashboardContext):
                 context.infrastructure_data,
                 context.connectivity_data,
                 context.water_data,
-                context.adaptation_data,
+                context.adoption_data,
                 context.workforce_data,
                 context.economic_impact_data,
                 platform_reads=platform_reads,
+                evidence_packets=evidence_packets,
             )

@@ -236,7 +236,7 @@ def _load_debt_markets_cached(
         and metadata_release.date() >= required_release
     )
 
-    if not force_refresh and not allow_live:
+    if not (force_refresh and allow_live):
         return _snapshot(
             local,
             source_mode="archive_read_mode" if not local.empty else "unavailable",
@@ -290,7 +290,7 @@ def load_debt_markets_data(
     clock_token: str | None = None,
     allow_live: bool = False,
 ) -> dict:
-    live_enabled = bool(allow_live or force_refresh)
+    live_enabled = bool(allow_live and force_refresh)
     return _load_debt_markets_cached(
         (clock_token or debt_markets_cache_token()) if live_enabled else "retained-snapshot",
         bool(force_refresh),

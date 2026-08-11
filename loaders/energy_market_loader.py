@@ -607,13 +607,14 @@ def _refresh(scope: str = "all"):
 
 
 @st.cache_data(ttl=3600)
-def load_energy_market_data(*, force_refresh=False, refresh_token=0, refresh_scope="all"):
+def load_energy_market_data(*, force_refresh=False, refresh_token=0, refresh_scope="all", allow_live=False):
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     started = time_module.perf_counter()
     errors = {}
     refreshed = []
     resolved_urls = {}
-    if force_refresh:
+    if live_refresh:
         frames, errors, refreshed, resolved_urls = _refresh(refresh_scope)
         if refreshed and not errors:
             source_mode = "refreshed"
@@ -629,6 +630,9 @@ def load_energy_market_data(*, force_refresh=False, refresh_token=0, refresh_sco
         "source_mode": source_mode,
         "elapsed_sec": float(time_module.perf_counter() - started),
         "requested_at_utc": utc_now().isoformat(),
+        "requested": bool(force_refresh),
+        "authorized": bool(allow_live),
+        "executed": live_refresh,
         "returned_rows": returned,
         "refreshed_datasets": refreshed,
         "refresh_scope": str(refresh_scope),

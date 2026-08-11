@@ -13,7 +13,6 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from analytics.factor_engine import calc_sector_factors
 from analytics.market_ledger import _company_ownership, _one_year_contributions
-from config.sector_config import SECTOR_CONFIG
 from analytics.sector_engine import build_sector_metrics
 from archive.archive_reader import load_yf_history
 from config.factor_config import FACTOR_DISPLAY_NAMES
@@ -28,12 +27,7 @@ from rendering.charts_market import (
     sector_signal_anatomy_chart,
     speculative_load_matrix,
 )
-from loaders.weekly_context_loader import NO_QUALIFYING_NEWS, load_weekly_context
-from rendering.sector_dossier import (
-    build_sector_narrative,
-    build_structure_snapshot,
-    company_contribution_shoutout,
-)
+from rendering.sector_dossier import build_structure_interpretation, build_structure_snapshot
 
 
 def main() -> None:
@@ -161,75 +155,9 @@ def main() -> None:
     if list(anatomy.layout.xaxis2.range) != [0, 108]:
         raise AssertionError("Signal anatomy is not using the shared normalized scale.")
 
-    narrative = build_sector_narrative(
-        compute_metrics,
-        "COMPUTE",
-        "Compute",
-        compute,
-        {"COMPUTE": compute_metrics},
-    )
-    if not narrative.get("headline") or "Compute" not in narrative.get("body", ""):
-        raise AssertionError("Sector narrative is missing its headline or sector context.")
-    if narrative.get("weekly_note") is not None:
-        raise AssertionError("Unmapped weekly context was forced into the Compute read.")
-
-    diffuse = pd.DataFrame({
-        "Ticker": [f"T{index}" for index in range(6)],
-        "Market Cap": [100.0] * 6,
-        "1Y Return": [0.20, 0.19, 0.18, 0.17, 0.16, 0.15],
-    })
-    if company_contribution_shoutout(diffuse) is not None:
-        raise AssertionError("Diffuse company contributions should not force a shout-out.")
-    concentrated = pd.DataFrame({
-        "Ticker": ["AAPL", "B", "C", "D", "E", "F"],
-        "Market Cap": [900.0, 20.0, 20.0, 20.0, 20.0, 20.0],
-        "1Y Return": [0.60, 0.02, 0.01, 0.00, -0.01, -0.02],
-    })
-    if company_contribution_shoutout(concentrated) is None:
-        raise AssertionError("A materially dominant company contribution was not recognized.")
-
-    sector_context = load_weekly_context(
-        as_of="2026-08-03", surface="sector", limit=15
-    )
-    if len(sector_context.get("events", [])) != 15:
-        raise AssertionError("Every configured sector must receive a This Week event or explicit no-match status.")
-    events_by_sector = {
-        event.get("sectors", [""])[0]: event
-        for event in sector_context.get("events", [])
-    }
-    if set(events_by_sector) != set(SECTOR_CONFIG):
-        raise AssertionError("Sector weekly context does not cover the configured universe exactly once.")
-    data_ai_event = events_by_sector["DATA_AI_INFRASTRUCTURE"]
-    if "MSFT" in set(data_ai_event.get("tickers", [])):
-        raise AssertionError("Microsoft leaked into Data & AI Infrastructure weekly context.")
-    if data_ai_event.get("display") != NO_QUALIFYING_NEWS:
-        raise AssertionError("Unmapped offline sector context should use the explicit no-match status.")
-    for sector in SECTOR_CONFIG:
-        event = events_by_sector[sector]
-        sector_narrative = build_sector_narrative(
-            compute_metrics,
-            sector,
-            sector,
-            compute,
-            {sector: compute_metrics},
-            sector_context,
-        )
-        is_no_match = str(event.get("verification_status") or event.get("status") or "").strip().lower() == "no_match"
-        if is_no_match and sector_narrative.get("weekly_note"):
-            raise AssertionError(f"{sector} exposed an internal no-match status as news.")
-        if not is_no_match and not sector_narrative.get("weekly_note"):
-            raise AssertionError(f"{sector} lost its qualifying This Week narrative row.")
-
-    cloud_narrative = build_sector_narrative(
-        compute_metrics,
-        "CLOUD_HYPERSCALERS",
-        "Cloud Hyperscalers",
-        compute,
-        {"CLOUD_HYPERSCALERS": compute_metrics},
-        sector_context,
-    )
-    if not cloud_narrative.get("weekly_note") or not cloud_narrative.get("reference"):
-        raise AssertionError("Mapped seven-day sector context or its reference is missing.")
+    structure_copy = build_structure_interpretation(compute_metrics)
+    if not structure_copy or "market-cap" not in structure_copy.casefold():
+        raise AssertionError("Sector structure interpretation lost its measured market-structure context.")
 
     snapshot = dict(build_structure_snapshot(compute_metrics, len(compute)))
     required_snapshot = {
@@ -244,6 +172,9 @@ def main() -> None:
         raise AssertionError("Structure snapshot is missing required facts.")
 
     market_source = (PROJECT_ROOT / "rendering" / "market.py").read_text()
+    sector_source = (PROJECT_ROOT / "rendering" / "sector_dossier.py").read_text()
+    if "Sector read" in market_source or "build_sector_narrative" in market_source or "build_sector_narrative" in sector_source:
+        raise AssertionError("Retired deterministic Sector read commentary remains reachable.")
     if 'with st.expander("Company records", expanded=False):' not in market_source:
         raise AssertionError("Constituent ledger is not collapsed by default.")
     if '_render_market_constituent_ledger(selection, market_ledger)' not in market_source:

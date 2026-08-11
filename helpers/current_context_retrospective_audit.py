@@ -16,7 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from loaders.current_context_discovery import evaluate_item  # noqa: E402
-from loaders.weekly_context_loader import DOMAIN_KEYS  # noqa: E402
+from loaders.current_context_loader import DOMAIN_KEYS  # noqa: E402
 
 SOURCE = PROJECT_ROOT / "audit" / "current_context_retrospective" / "candidate_audit_pre_source_grounding.csv"
 OUT_DIR = PROJECT_ROOT / "audit" / "current_context_clump_c"

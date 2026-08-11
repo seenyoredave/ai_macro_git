@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-PUBLIC_RUNTIME_ROOT = Path(tempfile.gettempdir()) / "ai_macro_v6_5_2"
+PUBLIC_RUNTIME_ROOT = Path(tempfile.gettempdir()) / "ai_macro"
 
 
 def app_mode() -> str:

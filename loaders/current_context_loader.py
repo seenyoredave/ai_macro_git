@@ -1,7 +1,7 @@
 """Stable read interface for the canonical Current Context registry.
 
 All network discovery is owned by ``current_context_discovery``.  This loader
-only resolves already-qualified registry records into domain, sector, and macro
+only resolves already-qualified registry records into domain and macro
 surfaces, which keeps retained startup provider-free by construction.
 """
 
@@ -14,13 +14,12 @@ import pandas as pd
 from loaders.current_context_news import DOMAIN_KEYS, _assign_event_owners
 from loaders.current_context_registry import (
     DEFAULT_EVENT_PATH,
-    NO_QUALIFYING_NEWS,
-    _complete_sector_context,
     _curated_events,
     _dedupe_events,
     _fallback_domain_event,
     _read_registry,
     _renumber_context,
+    CURRENT_CONTEXT_READ_VERSION,
 )
 
 
@@ -75,37 +74,9 @@ def load_current_context(*, as_of=None, path=None, limit_per_domain=2) -> dict:
         "as_of": current.date().isoformat(),
         "window_start": (current - pd.Timedelta(days=6)).date().isoformat(),
         "source": "current-context registry",
-        "version": "2.3",
+        "version": CURRENT_CONTEXT_READ_VERSION,
     }
 
 
-def load_weekly_context(*, as_of=None, path=None, limit=3, surface="macro"):
-    """Resolve macro or Sector Dossier context from the same qualified registry."""
-    current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
-    frame = _read_registry(Path(path or DEFAULT_EVENT_PATH))
-    curated = _curated_events(frame, current)
-    surface_value = str(surface or "macro").strip().lower()
 
-    if surface_value == "sector":
-        base = [
-            event for event in curated
-            if str(event.get("surface") or "").strip().lower() in {"sector", "both", "all"}
-        ]
-        return _complete_sector_context(base, current)
-
-    if surface_value == "domain":
-        return load_current_context(
-            as_of=current,
-            path=path,
-            limit_per_domain=min(max(int(limit), 1), 2),
-        )
-
-    candidates = [
-        event for event in curated
-        if str(event.get("surface") or "").strip().lower() in {surface_value, "both", "all"}
-    ]
-    selected = _dedupe_events(candidates)[: max(0, int(limit))]
-    return _renumber_context(selected, current, source="current-context registry")
-
-
-__all__ = ["DOMAIN_KEYS", "NO_QUALIFYING_NEWS", "load_current_context", "load_weekly_context"]
+__all__ = ["DOMAIN_KEYS", "load_current_context"]

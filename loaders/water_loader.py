@@ -25,9 +25,10 @@ def _read_csv(name: str, **kwargs) -> pd.DataFrame:
         return pd.DataFrame()
 
 @st.cache_data(show_spinner=False)
-def load_water_utilization_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_water_utilization_data(force_refresh: bool = False, refresh_token: int = 0, allow_live: bool = False) -> dict:
     del refresh_token
-    refresh_report = refresh_water_sources() if force_refresh else {}
+    live_refresh = bool(force_refresh and allow_live)
+    refresh_report = refresh_water_sources() if live_refresh else {}
     summary_path = DERIVED / "water_national_summary.json"
     try:
         summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {}

@@ -31,6 +31,8 @@ from helpers.atomic_io import atomic_write_json  # noqa: E402
 OUTPUT = PROJECT_ROOT / "data" / "release_manifest.json"
 RELEASE_FILES = (
     "AGENTS.md",
+    "requirements.txt",
+    "requirements-dev.txt",
     "config/sector_config.py",
     "config/factor_config.py",
     "config/benchmark_config.py",
@@ -41,13 +43,41 @@ RELEASE_FILES = (
     "archive/archive.py",
     "analytics/regime_engine.py",
     "analytics/trend_engine.py",
-    "analytics/read_architecture.py",
-    "analytics/context_read_snapshot.py",
+    "analytics/read_evidence.py",
+    "analytics/read_models.py",
+    "analytics/read_prompts.py",
+    "analytics/read_generation.py",
+    "analytics/read_validation.py",
+    "analytics/read_context.py",
+    "analytics/read_store.py",
+    "analytics/read_service.py",
+    "developer/state.py",
+    "developer/reports.py",
+    "developer/load_report.py",
+    "developer/panel.py",
+    "config/openai_config.py",
+    "analytics/reader_snapshot.py",
     "analytics/capital_commitments.py",
     "analytics/deployment_funding_mix.py",
     "config/metric_definitions.py",
+    "helpers/atomic_io.py",
     "helpers/build_capital_commitment_ledger.py",
     "loaders/snapshot_writer.py",
+    "loaders/benchmark_loader.py",
+    "loaders/fred_loader.py",
+    "loaders/nfci_loader.py",
+    "loaders/debt_markets_loader.py",
+    "loaders/energy_loader.py",
+    "loaders/energy_market_loader.py",
+    "loaders/construction_loader.py",
+    "loaders/infrastructure_loader.py",
+    "loaders/facility_sources.py",
+    "loaders/compute_manufacturing_loader.py",
+    "loaders/connectivity_loader.py",
+    "loaders/water_loader.py",
+    "loaders/adoption_loader.py",
+    "loaders/workforce_loader.py",
+    "loaders/economic_impact_loader.py",
     "loaders/edgar_client.py",
     "loaders/edgar_loader.py",
     "loaders/market_loader.py",
@@ -59,7 +89,7 @@ RELEASE_FILES = (
     "loaders/current_context_grounding.py",
     "loaders/current_context_daily.py",
     "loaders/current_context_registry.py",
-    "loaders/weekly_context_loader.py",
+    "loaders/current_context_loader.py",
     "loaders/commercialization_loader.py",
     "rendering/components.py",
     "rendering/read_markup.py",
@@ -70,6 +100,7 @@ RELEASE_FILES = (
     "rendering/theme.css",
     "ai_macro.py",
     "docs/RUNTIME_DATA_CONTRACT.md",
+    "docs/COMMENTARY_ARCHITECTURE.md",
     "docs/EDITORIAL_STYLE.md",
     "docs/CURRENT_CONTEXT_CLUMP_A_2026-08-09.md",
     "docs/CURRENT_CONTEXT_ACTIVATION_READ_LABELS_2026-08-09.md",
@@ -132,7 +163,11 @@ def _csv_metadata(path: Path) -> dict:
 
 def build_manifest() -> dict:
     files: dict[str, dict] = {}
-    for relative in RELEASE_FILES:
+    # Paid/generated OpenAI artifacts are runtime state, not source-release
+    # inputs.  They live under openai_artifacts/ and are intentionally excluded
+    # from ordinary release fingerprints and update packages.
+    release_files = list(RELEASE_FILES)
+    for relative in release_files:
         path = PROJECT_ROOT / relative
         if not path.exists():
             raise FileNotFoundError(f"Release input is missing: {relative}")

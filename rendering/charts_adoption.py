@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 
 from rendering.charts_common import COLORS, _base_layout, add_axis_headroom
 
-def adaptation_history(history: pd.DataFrame | None, *, height: int = 325, years: int = 3):
+def adoption_history(history: pd.DataFrame | None, *, height: int = 325, years: int = 3):
     if history is None or not isinstance(history, pd.DataFrame) or history.empty or "Date" not in history.columns:
         clean = pd.DataFrame(columns=["Date", "Current AI Use", "Expected AI Use"])
     else:
@@ -49,7 +49,7 @@ def adaptation_history(history: pd.DataFrame | None, *, height: int = 325, years
     figure = _base_layout(figure, height=height, legend=True, margin=dict(l=44, r=18, t=28, b=36))
     return add_axis_headroom(figure, upper=0.20, lower=0.05, include_zero=True)
 
-def adaptation_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int = 680, limit: int | None = None):
+def adoption_sector_bars(sector_snapshot: pd.DataFrame | None, *, height: int = 680, limit: int | None = None):
     required = {"Sector", "Current AI Use", "Expected AI Use"}
     if sector_snapshot is None or not isinstance(sector_snapshot, pd.DataFrame) or sector_snapshot.empty or not required.issubset(sector_snapshot.columns):
         clean = pd.DataFrame(columns=list(required))

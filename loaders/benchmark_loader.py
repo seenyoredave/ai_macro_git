@@ -24,7 +24,7 @@ def load_benchmark(
         force_refresh=bool(force_refresh),
         refresh_token=int(refresh_token),
         clock_token=clock_token,
-        allow_live=bool(allow_live or force_refresh),
+        allow_live=bool(allow_live),
     ).copy()
     weights = BENCHMARK_WEIGHTS.get(name)
     if not weights:

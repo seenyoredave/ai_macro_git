@@ -59,24 +59,6 @@ def _context(water_data: dict, infrastructure_data: dict) -> dict:
     }
 
 
-def _fallback_read(context: dict) -> dict:
-    summary = context.get("summary", {})
-    facilities = int(summary.get("facilities", 0) or 0)
-    direct = int(summary.get("direct_water_evidence_records", 0) or 0)
-    severe = int(summary.get("severe_drought_facilities", 0) or 0)
-    if facilities and direct / max(facilities, 1) < 0.1:
-        headline = "Water risk is local, and facility disclosure is sparse."
-    elif severe:
-        headline = "Data-center development overlaps active drought in several states."
-    else:
-        headline = "Water exposure varies sharply by place and cooling design."
-    body = (
-        f"Only {direct:,} of {facilities:,} mapped facilities have direct water evidence, so a national total would hide more than it explains. "
-        f"{severe:,} facilities are in states reporting severe-drought area in July 2026; site-level supply, cooling design, and local rules determine the actual constraint."
-    )
-    return {"headline": headline, "body": body, "confidence": "moderate" if facilities else "limited"}
-
-
 def _state_exposure_stats(context: dict):
     state_profile = context["state_profile"]
     severe_mask = state_profile.get("D2+ Area Percent", pd.Series(dtype=float)).fillna(0).gt(0) if not state_profile.empty else pd.Series(dtype=bool)
@@ -347,7 +329,7 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
         "USGS / NOAA-NCEI / EIA / U.S. Census Bureau",
     )
     _render_floating_terms("water")
-    render_domain_read(tab_read or _fallback_read(context), label="Read", domain="water")
+    render_domain_read(tab_read, label="Read", domain="water")
     _render_state_exposure(context)
     _render_campus_dossier(context)
     _render_disclosure(context)

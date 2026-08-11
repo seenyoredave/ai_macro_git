@@ -13,6 +13,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+from difflib import SequenceMatcher
 from html.parser import HTMLParser
 from pathlib import Path
 import argparse
@@ -28,18 +29,16 @@ import pandas as pd
 
 from config.current_context_policy import (
     DOMAIN_CONTEXT_POLICY,
-    DOMAIN_NEWS_QUERIES,
-    DOMAIN_NEWS_TERMS,
-    DOMAIN_TOPIC_ANCHORS,
+    domain_relevance_terms,
+    domain_topic_anchors,
     DISCOVERY_ONLY_DOMAINS,
     assess_source,
     domain_news_queries,
-    recent_development_copy_issues,
     materiality_score,
     term_present,
 )
-from helpers.atomic_io import atomic_write_csv, atomic_write_json, synchronized_path
-from loaders.current_context_grounding import GROUNDING_VERSION, ground_candidate, is_preview_or_calendar_item
+from helpers.atomic_io import atomic_write_bundle, atomic_write_csv, synchronized_path
+from loaders.current_context_grounding import GROUNDING_VERSION, GroundingResult, ground_candidate, is_preview_or_calendar_item
 from loaders.current_context_news import (
     DOMAIN_KEYS,
     NEWS_MAX_BYTES,
@@ -59,7 +58,7 @@ from loaders.current_context_registry import DEFAULT_EVENT_PATH
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_AUDIT_PATH = ROOT / "data" / "current_context_candidate_audit.csv"
 DEFAULT_MANIFEST_PATH = ROOT / "data" / "current_context_refresh_manifest.json"
-DISCOVERY_VERSION = "2.1"
+DISCOVERY_VERSION = "2.6"
 
 # Free second-layer sources are lead generators only.  The adapter harvests
 # outbound evidence links and discards the intermediary prose for selection.
@@ -337,8 +336,8 @@ def evaluate_item(item: dict, *, domain: str, current: pd.Timestamp, provider: s
     assessment = assess_source(source_name, publisher_url, article_url)
     text = f"{title} {item.get('description', '')}".strip()
     materiality = float(materiality_score(text, domain))
-    relevance_matches = [term for term in DOMAIN_NEWS_TERMS.get(domain, ()) if term_present(text, str(term))]
-    topic_anchor_matches = [term for term in DOMAIN_TOPIC_ANCHORS.get(domain, ()) if term_present(text, str(term))]
+    relevance_matches = [term for term in domain_relevance_terms(domain) if term_present(text, str(term))]
+    topic_anchor_matches = [term for term in domain_topic_anchors(domain) if term_present(text, str(term))]
     fit = float(_domain_fit_score(text, domain))
     freshness = 0.0
     score = assessment.score + (materiality * 2.5) + (fit * 1.5)
@@ -361,14 +360,12 @@ def evaluate_item(item: dict, *, domain: str, current: pd.Timestamp, provider: s
             reason = "preview/calendar item is not a completed development"
         elif not relevance_matches:
             reason = "no domain relevance term"
-        elif DOMAIN_TOPIC_ANCHORS.get(domain) and not topic_anchor_matches:
+        elif domain_topic_anchors(domain) and not topic_anchor_matches:
             reason = "no AI/technology or system-wide domain anchor"
         elif materiality < float(policy.get("minimum_materiality", 0.0001)):
             reason = "insufficient domain materiality"
         elif not _valid_https_url(article_url):
             reason = "missing traceable HTTPS article URL"
-        elif recent_development_copy_issues(title):
-            reason = "headline lacks formal first-reference context"
         else:
             decision = "metadata_qualified"
             reason = "cleared discovery-metadata gates; underlying source grounding required before selection"
@@ -458,7 +455,7 @@ def evaluate_item(item: dict, *, domain: str, current: pd.Timestamp, provider: s
         "surface": "domain",
         "sectors": [],
         "tickers": [],
-        "owner_score": score,
+        "owner_score": fit,
         "rank_score": score,
         "discovery_provider": provider,
         "discovery_query": str(item.get("discovery_query") or " || ".join(domain_news_queries(domain))),
@@ -517,6 +514,207 @@ def _enforce_tier2_evidence_boundary(evaluated: list[tuple[dict, dict]]) -> list
     return accepted
 
 
+
+_EVENT_EVIDENCE_STOPWORDS = {
+    "about", "after", "against", "amid", "among", "article", "builds", "company",
+    "development", "from", "into", "more", "news", "reports", "reported", "says",
+    "said", "than", "that", "their", "this", "through", "under", "week", "with",
+    "year", "years", "would", "could", "will", "reuters", "bloomberg", "journal",
+    "times", "market", "markets", "business", "finance", "financial", "latest",
+}
+
+
+def _event_evidence_text(candidate: dict) -> str:
+    return " ".join(
+        str(candidate.get(key) or "")
+        for key in ("discovery_title", "discovery_description", "verified_fact")
+    ).strip()
+
+
+def _event_evidence_tokens(text: object) -> set[str]:
+    value = str(text or "").casefold().replace("data-centre", "data center").replace("data-centre", "data center")
+    tokens = re.findall(r"[a-z0-9]+", value)
+    return {
+        token for token in tokens
+        if len(token) >= 3 and token not in _EVENT_EVIDENCE_STOPWORDS
+    }
+
+
+def _event_numeric_tokens(text: object) -> set[str]:
+    """Return coarse numeric signatures so $15bn and $15 billion can match."""
+    value = str(text or "").casefold().replace(",", "")
+    matches: set[str] = set()
+    pattern = re.compile(
+        r"\$?\s*(\d+(?:\.\d+)?)\s*(trillion|billion|million|tn|bn|mn|%|percent|gw|mw|gbps|tbps|bps)?",
+        re.I,
+    )
+    scale = {"tn": "trillion", "bn": "billion", "mn": "million", "percent": "%"}
+    for number, unit in pattern.findall(value):
+        try:
+            canonical_number = f"{float(number):g}"
+        except ValueError:
+            canonical_number = number
+        canonical_unit = scale.get(unit.casefold(), unit.casefold()) if unit else ""
+        if canonical_unit or float(number) >= 10:
+            matches.add(f"{canonical_number}:{canonical_unit}")
+    return matches
+
+
+def _event_evidence_similarity(seed: dict, item: dict, *, domain: str) -> float:
+    """Score whether an alternate search result is about the nominated event.
+
+    This is deliberately an evidence-routing score, not a qualification score.
+    The alternate source still has to pass the normal source-body grounding gate.
+    """
+    seed_text = _event_evidence_text(seed)
+    item_text = f"{item.get('title', '')} {item.get('description', '')}".strip()
+    left = _event_evidence_tokens(seed_text)
+    right = _event_evidence_tokens(item_text)
+    if not left or not right:
+        return 0.0
+    overlap = len(left.intersection(right)) / max(1, min(len(left), len(right)))
+    seq = SequenceMatcher(None, " ".join(sorted(left)), " ".join(sorted(right))).ratio()
+    seed_numbers = _event_numeric_tokens(seed_text)
+    item_numbers = _event_numeric_tokens(item_text)
+    number_bonus = 0.22 if seed_numbers and item_numbers and seed_numbers.intersection(item_numbers) else 0.0
+
+    anchor_matches = sum(
+        1 for term in domain_topic_anchors(domain)
+        if term_present(seed_text, str(term)) and term_present(item_text, str(term))
+    )
+    relevance_matches = sum(
+        1 for term in domain_relevance_terms(domain)
+        if term_present(seed_text, str(term)) and term_present(item_text, str(term))
+    )
+    signal_bonus = min(0.22, anchor_matches * 0.04 + relevance_matches * 0.03)
+    return min(1.0, overlap * 0.55 + seq * 0.23 + number_bonus + signal_bonus)
+
+
+def _event_resolution_queries(candidate: dict, *, domain: str) -> tuple[str, ...]:
+    """Build a tiny source-independent search set for one nominated event."""
+    headline = _strip_source_suffix(
+        str(candidate.get("discovery_title") or candidate.get("verified_fact") or ""),
+        str(candidate.get("source_name") or ""),
+    )
+    headline = " ".join(headline.split()).strip()
+    combined = _event_evidence_text(candidate)
+    queries: list[str] = []
+    if headline:
+        queries.append(headline[:220])
+
+    anchors = [str(term) for term in domain_topic_anchors(domain) if term_present(combined, str(term))]
+    relevance = [str(term) for term in domain_relevance_terms(domain) if term_present(combined, str(term))]
+    numbers = sorted(_event_numeric_tokens(combined))
+    number_words = []
+    for value in numbers[:2]:
+        number, unit = value.split(":", 1)
+        number_words.append(" ".join(part for part in (number, unit) if part))
+    signal_query = " ".join(dict.fromkeys([*anchors[:6], *relevance[:4], *number_words]))
+    if signal_query and signal_query.casefold() != headline.casefold():
+        queries.append(signal_query[:220])
+    return tuple(dict.fromkeys(query for query in queries if query))[:2]
+
+
+def _alternate_evidence_candidate(
+    seed: dict,
+    item: dict,
+    *,
+    domain: str,
+    current: pd.Timestamp,
+    resolution_query: str,
+) -> dict | None:
+    source_name = " ".join(str(item.get("source_name") or "News source").split()).strip()
+    article_url = str(item.get("link") or "").strip()
+    publisher_url = str(item.get("source_url") or "").strip()
+    assessment = assess_source(source_name, publisher_url, article_url)
+    if not assessment.auto_eligible or not _valid_https_url(article_url):
+        return None
+
+    # An alternate-evidence lookup exists to escape one inaccessible publisher.
+    # Retrying the same host under a different headline is not independent evidence.
+    alternate_host = _host(publisher_url) or _host(article_url)
+    seed_host = _host(str(seed.get("publisher_url") or "")) or _host(str(seed.get("source_url") or ""))
+    if alternate_host and seed_host and alternate_host == seed_host:
+        return None
+
+    published = item.get("published")
+    if published is None:
+        return None
+    try:
+        published = pd.Timestamp(published).normalize()
+        lookback = max(int(seed.get("lookback_days", 7) or 7), 1)
+        age = int((current - published).days)
+        seed_date = pd.Timestamp(seed.get("event_date")).normalize()
+        if age < 0 or age >= lookback or abs(int((published - seed_date).days)) > 4:
+            return None
+    except Exception:
+        return None
+
+    similarity = _event_evidence_similarity(seed, item, domain=domain)
+    if similarity < 0.42:
+        return None
+
+    alternate = dict(seed)
+    alternate.update({
+        "source_name": source_name,
+        "source_label": source_name,
+        "source_url": article_url,
+        "publisher_url": publisher_url,
+        "source_tier": assessment.tier,
+        "evidence_role": assessment.evidence_role,
+        "evidence_resolution_similarity": round(float(similarity), 4),
+        "evidence_resolution_query": resolution_query,
+        "evidence_resolution_mode": "alternate_source",
+        "evidence_seed_source_name": str(seed.get("source_name") or ""),
+        "evidence_seed_source_url": str(seed.get("source_url") or ""),
+    })
+    if assessment.evidence_role == "official_statement":
+        alternate.update({"source_type": "official_statement", "verification_status": "primary", "status": "Primary record"})
+    elif assessment.evidence_role == "company_statement":
+        alternate.update({"source_type": "company_statement", "verification_status": "company_statement", "status": "Company statement"})
+    else:
+        alternate.update({"source_type": "news", "verification_status": "reported", "status": "Reported"})
+    return alternate
+
+
+def _known_event_evidence_alternatives(
+    seed: dict,
+    items: list[dict],
+    *,
+    domain: str,
+    current: pd.Timestamp,
+) -> list[dict]:
+    alternatives: list[tuple[float, dict]] = []
+    seen_urls: set[str] = set()
+    for item in items:
+        candidate = _alternate_evidence_candidate(
+            seed, item, domain=domain, current=current, resolution_query="existing discovery pool"
+        )
+        if candidate is None:
+            continue
+        url = str(candidate.get("source_url") or "").casefold()
+        if not url or url in seen_urls:
+            continue
+        seen_urls.add(url)
+        alternatives.append((float(candidate.get("evidence_resolution_similarity", 0)), candidate))
+    alternatives.sort(key=lambda pair: pair[0], reverse=True)
+    return [candidate for _, candidate in alternatives]
+
+
+def _should_seek_alternate_evidence(result: GroundingResult) -> bool:
+    reason = str(result.reason or "").casefold()
+    # Explicitly disqualifying event types should remain dead. Everything else
+    # that failed because one URL was inaccessible or insufficient may be
+    # researched through another eligible evidence path.
+    disqualifying = (
+        "preview/calendar",
+        "central-bank commentary",
+        "attributed commentary",
+        "publisher page predates",
+        "commentary/topic framing",
+    )
+    return not any(marker in reason for marker in disqualifying)
+
 def _ground_domain_candidates(
     candidates: list[dict],
     audit_rows: list[dict],
@@ -524,31 +722,151 @@ def _ground_domain_candidates(
     domain: str,
     target_grounded: int,
     max_attempts: int,
+    current: pd.Timestamp | None = None,
+    discovery_items: list[dict] | None = None,
+    statuses: list[FetchStatus] | None = None,
+    grounder=None,
+    event_searcher=None,
 ) -> list[dict]:
-    """Ground ranked candidates until the domain has usable evidence or hits a cap.
+    """Ground events, not URLs.
 
-    A fixed top-N crawl can starve a high-volume domain when the first few
-    publisher pages are inaccessible or fail the evidence gate.  We therefore
-    continue down the ranked queue until enough source-grounded candidates exist
-    to survive cross-domain ownership/deduplication, subject to a strict request
-    budget.  The evidence threshold itself is unchanged.
+    A discovery URL nominates an event.  The URL gets the first chance because
+    it is the shortest evidence path, but an inaccessible/paywalled publisher is
+    not allowed to veto an otherwise material event.  When direct grounding
+    fails for a non-disqualifying reason, the same event is researched through
+    other eligible evidence already in the discovery pool and then through a
+    small source-independent Google News event search.  Every alternate source
+    still has to pass the exact same source-body grounding contract.
     """
+    current = pd.Timestamp(current or pd.Timestamp.now()).normalize()
+    discovery_items = list(discovery_items or [])
+    statuses = statuses if statuses is not None else []
+    grounder = grounder or ground_candidate
+    event_searcher = event_searcher or fetch_google_news
     by_event = {str(row.get("event_id") or ""): row for row in audit_rows if row.get("event_id")}
     grounded: list[dict] = []
     attempted: set[str] = set()
     target = max(1, int(target_grounded))
     budget = max(target, int(max_attempts))
+    event_search_budget = 6 if domain == "finance" else (4 if domain == "market" else 2)
+    alternate_fetch_budget = 10 if domain == "finance" else (7 if domain == "market" else 4)
+    event_search_cache: dict[str, tuple[list[dict], str]] = {}
+    tried_evidence_urls: set[str] = set()
 
+    # Do not let one inaccessible publisher consume the entire grounding budget.
+    # First try the highest-ranked candidate from each source, then return to the
+    # remaining ranked queue. This changes transport resilience, not the evidence bar.
+    first_by_source: list[dict] = []
+    deferred: list[dict] = []
+    seen_sources: set[str] = set()
     for candidate in candidates:
+        source_key = str(candidate.get("source_name") or candidate.get("publisher_url") or candidate.get("source_url") or "unknown").strip().casefold()
+        if source_key not in seen_sources:
+            seen_sources.add(source_key)
+            first_by_source.append(candidate)
+        else:
+            deferred.append(candidate)
+    attempt_queue = first_by_source + deferred
+
+    for candidate in attempt_queue:
         if len(attempted) >= budget or len(grounded) >= target:
             break
         event_id = str(candidate.get("event_id") or "")
         attempted.add(event_id)
         row = by_event.get(event_id)
-        result_candidate, result = ground_candidate(candidate, domain=domain)
+
+        result_candidate, result = grounder(candidate, domain=domain)
+        seed_reason = result.reason or result.error or "underlying source did not establish the development"
+        evidence_attempts = 0
+        alternate_errors: list[str] = []
+
+        # The discovered URL is a nomination, not a mandatory endpoint. If that
+        # route fails, search for the same event through another eligible source.
+        if result_candidate is None and _should_seek_alternate_evidence(result) and alternate_fetch_budget > 0:
+            alternatives = _known_event_evidence_alternatives(
+                candidate, discovery_items, domain=domain, current=current
+            )
+
+            if event_search_budget > 0:
+                queries = _event_resolution_queries(candidate, domain=domain)
+                allowed_queries = min(len(queries), event_search_budget)
+                searched: list[dict] = []
+                for query in queries[:allowed_queries]:
+                    event_search_budget -= 1
+                    if query not in event_search_cache:
+                        found, error = event_searcher(query, days=max(int(candidate.get("lookback_days", 7) or 7), 1))
+                        event_search_cache[query] = (found, error)
+                        statuses.append(FetchStatus(
+                            domain,
+                            "event_evidence_search",
+                            query,
+                            max(int(candidate.get("lookback_days", 7) or 7), 1),
+                            "ok" if not error else "error",
+                            len(found),
+                            error,
+                        ))
+                    found, error = event_search_cache[query]
+                    if error:
+                        alternate_errors.append(f"event search {query!r}: {error}")
+                        continue
+                    for item in found:
+                        alternate = _alternate_evidence_candidate(
+                            candidate, item, domain=domain, current=current, resolution_query=query
+                        )
+                        if alternate is not None:
+                            searched.append(alternate)
+                alternatives.extend(searched)
+
+            deduped_alternatives: list[dict] = []
+            local_seen: set[str] = set()
+            for alternate in sorted(
+                alternatives,
+                key=lambda item: float(item.get("evidence_resolution_similarity", 0)),
+                reverse=True,
+            ):
+                alt_url = str(alternate.get("source_url") or "").strip().casefold()
+                if not alt_url or alt_url in local_seen or alt_url in tried_evidence_urls:
+                    continue
+                local_seen.add(alt_url)
+                deduped_alternatives.append(alternate)
+
+            for alternate in deduped_alternatives[:4]:
+                if alternate_fetch_budget <= 0:
+                    break
+                alternate_fetch_budget -= 1
+                evidence_attempts += 1
+                tried_evidence_urls.add(str(alternate.get("source_url") or "").strip().casefold())
+                alt_candidate, alt_result = grounder(alternate, domain=domain)
+                if alt_candidate is None:
+                    alternate_errors.append(
+                        f"{alternate.get('source_name', 'alternate source')}: "
+                        f"{alt_result.reason or alt_result.error or 'grounding rejected'}"
+                    )
+                    continue
+
+                # Preserve the event's discovery/ranking identity while replacing
+                # the evidentiary endpoint with the source that actually grounded it.
+                for key in (
+                    "event_id", "domain", "owner_domain", "priority", "owner_score",
+                    "rank_score", "event_type", "lookback_days", "discovery_provider",
+                    "discovery_query", "discovered_via", "discovery_source_url",
+                ):
+                    if key in candidate:
+                        alt_candidate[key] = candidate[key]
+                alt_candidate.update({
+                    "evidence_resolution_mode": "alternate_source",
+                    "evidence_seed_source_name": str(candidate.get("source_name") or ""),
+                    "evidence_seed_source_url": str(candidate.get("source_url") or ""),
+                    "evidence_resolution_query": str(alternate.get("evidence_resolution_query") or ""),
+                    "evidence_resolution_similarity": alternate.get("evidence_resolution_similarity", ""),
+                })
+                result_candidate = alt_candidate
+                result = alt_result
+                break
+
         if row is not None:
             row.update({
-                "grounding_status": "grounded" if result.accepted else "rejected",
+                "grounding_status": "grounded" if result_candidate is not None else "rejected",
                 "source_resolved_url": result.resolved_url,
                 "source_text_method": result.extraction_method,
                 "source_text_chars": result.text_chars,
@@ -558,17 +876,42 @@ def _ground_domain_candidates(
                 "source_modified_date": result.source_modified_date,
                 "grounding_reason": result.reason,
                 "grounding_error": result.error,
+                "evidence_resolution_status": (
+                    "alternate_source_grounded"
+                    if result_candidate is not None and str(result_candidate.get("evidence_resolution_mode") or "") == "alternate_source"
+                    else ("direct_source_grounded" if result_candidate is not None else "exhausted")
+                ),
+                "evidence_resolution_attempts": evidence_attempts,
+                "evidence_seed_grounding_reason": seed_reason if evidence_attempts else "",
+                "evidence_source_name": str(result_candidate.get("source_name") or "") if result_candidate is not None else "",
+                "evidence_resolution_query": str(result_candidate.get("evidence_resolution_query") or "") if result_candidate is not None else "",
+                "evidence_resolution_error": " | ".join(alternate_errors[:4]),
             })
+
         if result_candidate is None:
             if row is not None:
                 row["decision"] = "rejected_source_grounding"
-                row["reason"] = result.reason or result.error or "underlying source did not establish the development"
+                row["reason"] = seed_reason
+                if evidence_attempts or alternate_errors:
+                    row["grounding_reason"] = (
+                        f"{seed_reason}; alternate eligible evidence did not establish the event"
+                    )
             continue
+
         if row is not None:
             row["decision"] = "accepted"
-            row["reason"] = result.reason
-            row["article_url"] = result.resolved_url or row.get("article_url", "")
-            row["evidence_path"] = f"{row.get('evidence_path') or 'eligible source'} -> source body grounded"
+            if str(result_candidate.get("evidence_resolution_mode") or "") == "alternate_source":
+                row["reason"] = "event established through alternate eligible evidence"
+                row["article_url"] = result.resolved_url or result_candidate.get("source_url", "")
+                row["evidence_path"] = (
+                    f"{row.get('source_name') or 'discovery source'} nominated event -> "
+                    f"{result_candidate.get('source_name') or 'alternate eligible source'} established event"
+                )
+                row["source_resolved_url"] = result.resolved_url or result_candidate.get("source_url", "")
+            else:
+                row["reason"] = result.reason
+                row["article_url"] = result.resolved_url or row.get("article_url", "")
+                row["evidence_path"] = f"{row.get('evidence_path') or 'eligible source'} -> source body grounded"
         grounded.append(result_candidate)
 
     for candidate in candidates:
@@ -580,7 +923,6 @@ def _ground_domain_candidates(
             row["decision"] = "metadata_qualified_not_grounded"
             row["reason"] = "source-grounding request budget reached after higher-ranked candidates"
     return grounded
-
 
 def _select_ranked_domain_events(ranked: list[dict], max_items: int) -> list[dict]:
     """Select at most two events and prevent a Tier-2 discovery source from monopolizing the surface."""
@@ -652,13 +994,16 @@ def discover_domain(domain: str, *, as_of=None) -> tuple[list[dict], list[dict],
     # they encounter more paywalls, commentary, and duplicate coverage.
     max_items = max(1, min(int(policy.get("max_items", 2)), 2))
     target_grounded = min(4, max_items * 2)
-    max_attempts = 12 if domain in {"market", "finance"} else 8
+    max_attempts = 18 if domain == "finance" else (14 if domain == "market" else 8)
     grounded = _ground_domain_candidates(
         metadata_qualified,
         audit,
         domain=domain,
         target_grounded=target_grounded,
         max_attempts=max_attempts,
+        current=current,
+        discovery_items=items,
+        statuses=statuses,
     )
     grounded.sort(
         key=lambda item: (
@@ -711,28 +1056,62 @@ def _registry_row(event: dict, *, retrieved_at: str) -> dict:
         "source_title": event.get("source_title", ""),
         "source_published_date": event.get("source_published_date", ""),
         "source_modified_date": event.get("source_modified_date", ""),
+        "evidence_resolution_mode": event.get("evidence_resolution_mode", "direct_source"),
+        "evidence_seed_source_name": event.get("evidence_seed_source_name", ""),
+        "evidence_seed_source_url": event.get("evidence_seed_source_url", ""),
+        "evidence_resolution_query": event.get("evidence_resolution_query", ""),
+        "evidence_resolution_similarity": event.get("evidence_resolution_similarity", ""),
     }
 
 
-def merge_selected_into_registry(selected: dict[str, list[dict]], *, path=DEFAULT_EVENT_PATH, retrieved_at: str) -> int:
+def _merged_registry_frame(
+    selected: dict[str, list[dict]],
+    *,
+    path=DEFAULT_EVENT_PATH,
+    retrieved_at: str,
+) -> tuple[pd.DataFrame | None, int]:
+    """Build the qualified-registry upsert without publishing it yet."""
     path = Path(path)
     rows = [_registry_row(event, retrieved_at=retrieved_at) for events in selected.values() for event in events]
     if not rows:
-        return 0
+        return None, 0
 
-    with synchronized_path(path):
-        existing = pd.read_csv(path) if path.exists() and path.stat().st_size > 0 else pd.DataFrame()
-        additions = pd.DataFrame(rows)
-        if not existing.empty and "event_id" in existing.columns:
-            additions = additions.loc[~additions["event_id"].isin(existing["event_id"].astype(str))]
-        if additions.empty:
-            return 0
-        columns = list(dict.fromkeys([*existing.columns.tolist(), *additions.columns.tolist()]))
-        existing = existing.reindex(columns=columns)
-        additions = additions.reindex(columns=columns)
-        combined = pd.concat([existing, additions], ignore_index=True)
-        atomic_write_csv(combined, path, lock=False)
-        return len(additions)
+    existing = pd.read_csv(path) if path.exists() and path.stat().st_size > 0 else pd.DataFrame()
+    additions = pd.DataFrame(rows)
+    if additions.empty:
+        return None, 0
+
+    # weekly_context_events.csv is the current qualified registry; the audit
+    # CSV owns history. Rediscovering the same event is therefore an upsert,
+    # not a reason to discard newer grounded provenance.
+    additions = additions.drop_duplicates(subset=["event_id"], keep="last")
+    if not existing.empty and "event_id" in existing.columns:
+        replacement_ids = set(additions["event_id"].astype(str))
+        existing = existing.loc[~existing["event_id"].astype(str).isin(replacement_ids)].copy()
+
+    columns = list(dict.fromkeys([*existing.columns.tolist(), *additions.columns.tolist()]))
+    existing = existing.reindex(columns=columns)
+    additions = additions.reindex(columns=columns)
+    combined = pd.concat([existing, additions], ignore_index=True)
+    return combined, len(additions)
+
+
+def merge_selected_into_registry(selected: dict[str, list[dict]], *, path=DEFAULT_EVENT_PATH, retrieved_at: str) -> int:
+    """Compatibility helper for callers that only need the registry upsert."""
+    path = Path(path)
+    with synchronized_path(path.parent / ".current_context_refresh"):
+        combined, added = _merged_registry_frame(selected, path=path, retrieved_at=retrieved_at)
+        if combined is not None:
+            atomic_write_csv(combined, path, lock=False)
+        return added
+
+
+def _portable_manifest_path(path: Path) -> str:
+    """Persist repository-relative paths and never leak a developer home path."""
+    try:
+        return path.resolve().relative_to(ROOT.resolve()).as_posix()
+    except (OSError, ValueError):
+        return path.name
 
 
 def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manifest_path=DEFAULT_MANIFEST_PATH, registry_path=DEFAULT_EVENT_PATH, merge_registry=True) -> dict:
@@ -797,12 +1176,21 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
             row["reason"] = "qualified but ranked below the domain's selected development(s)"
 
     audit_path = Path(audit_path)
+    manifest_path = Path(manifest_path)
+    registry_path = Path(registry_path)
     audit_path.parent.mkdir(parents=True, exist_ok=True)
-    atomic_write_csv(pd.DataFrame(audit_rows), audit_path)
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    registry_path.parent.mkdir(parents=True, exist_ok=True)
 
+    registry_frame: pd.DataFrame | None = None
     added = 0
     if merge_registry:
-        added = merge_selected_into_registry(selected, path=registry_path, retrieved_at=retrieved_at)
+        with synchronized_path(registry_path.parent / ".current_context_refresh"):
+            registry_frame, added = _merged_registry_frame(
+                selected,
+                path=registry_path,
+                retrieved_at=retrieved_at,
+            )
 
     snapshot_material = {
         "discovery_version": DISCOVERY_VERSION,
@@ -837,8 +1225,23 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
             for row in rows
             if str(row.get("grounding_status") or "").strip() == "rejected"
         )
+        metadata_rejected = Counter(
+            str(row.get("reason") or "metadata rejected").strip()
+            for row in rows
+            if str(row.get("decision") or "").strip() == "rejected"
+            and str(row.get("grounding_status") or "").strip() not in {"grounded", "rejected"}
+        )
         grounding_by_domain[domain] = {
+            "discovered": len(rows),
             "metadata_qualified": sum(1 for row in rows if str(row.get("event_id") or "").strip()),
+            "direct_source_grounded": sum(1 for row in rows if str(row.get("evidence_resolution_status") or "") == "direct_source_grounded"),
+            "alternate_source_grounded": sum(1 for row in rows if str(row.get("evidence_resolution_status") or "") == "alternate_source_grounded"),
+            "evidence_resolution_attempts": sum(int(row.get("evidence_resolution_attempts") or 0) for row in rows),
+            "metadata_rejection_reasons": [
+                {"reason": reason, "count": count}
+                for reason, count in metadata_rejected.most_common(6)
+                if reason
+            ],
             "attempted": sum(1 for row in rows if str(row.get("grounding_status") or "").strip() in {"grounded", "rejected"}),
             "succeeded": sum(1 for row in rows if str(row.get("grounding_status") or "").strip() == "grounded"),
             "failed": sum(1 for row in rows if str(row.get("grounding_status") or "").strip() == "rejected"),
@@ -865,6 +1268,7 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
             "attempted": sum(1 for row in audit_rows if str(row.get("grounding_status", "")) in {"grounded", "rejected"}),
             "succeeded": sum(1 for row in audit_rows if str(row.get("grounding_status", "")) == "grounded"),
             "failed": sum(1 for row in audit_rows if str(row.get("grounding_status", "")) == "rejected"),
+            "alternate_source_grounded": sum(1 for row in audit_rows if str(row.get("evidence_resolution_status") or "") == "alternate_source_grounded"),
             "rejection_reasons": [
                 {"reason": reason, "count": count}
                 for reason, count in grounding_reasons.most_common(8)
@@ -886,12 +1290,20 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
             for domain, events in selected.items()
         },
         "registry_rows_added": added,
-        "audit_path": str(audit_path),
-        "registry_path": str(registry_path),
+        "audit_path": _portable_manifest_path(audit_path),
+        "registry_path": _portable_manifest_path(registry_path),
     }
-    manifest_path = Path(manifest_path)
-    manifest_path.parent.mkdir(parents=True, exist_ok=True)
-    atomic_write_json(manifest, manifest_path)
+
+    payloads: dict[Path, bytes] = {
+        audit_path: pd.DataFrame(audit_rows).to_csv(index=False).encode("utf-8"),
+        manifest_path: (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("utf-8"),
+    }
+    if registry_frame is not None:
+        payloads[registry_path] = registry_frame.to_csv(index=False).encode("utf-8")
+    atomic_write_bundle(
+        payloads,
+        transaction_key=manifest_path.parent / ".current_context_refresh",
+    )
     return manifest
 
 

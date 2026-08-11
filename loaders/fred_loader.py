@@ -574,10 +574,11 @@ def load_fred(
     allow_live: bool = False,
 ):
     del refresh_token
-    archived = None if force_refresh else _latest_weekly_fred_archive()
+    live_refresh = bool(force_refresh and allow_live)
+    archived = None if live_refresh else _latest_weekly_fred_archive()
     fallback = _latest_fred_archive_fallback()
 
-    if not force_refresh and not allow_live:
+    if not live_refresh:
         retained = archived if archived is not None else (fallback or {})
         debug_print("Loading retained FRED snapshot without provider calls")
         return retained

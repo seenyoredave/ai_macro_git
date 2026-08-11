@@ -28,7 +28,9 @@ class _FakeStreamlit(types.ModuleType):
 
 sys.modules.setdefault("streamlit", _FakeStreamlit())
 
-from analytics.read_architecture import DOMAIN_ORDER, DOMAIN_REFERENCES, build_macro_read  # noqa: E402
+from analytics.read_evidence import DOMAIN_ORDER, DOMAIN_REFERENCES  # noqa: E402
+from analytics.read_models import GeneratedMacroRead, SupportedSentence  # noqa: E402
+from analytics.read_service import _macro_public_read  # noqa: E402
 from config.metric_definitions import METRIC_DEFINITIONS  # noqa: E402
 from loaders import commercialization_loader  # noqa: E402
 from loaders.connectivity_loader import (  # noqa: E402
@@ -52,8 +54,10 @@ def check_purpose_beacon() -> None:
     _check("Streamlit research platform" in readme, "README no longer identifies the project as a Streamlit research platform.")
     _check("U.S. AI economy" in readme, "README no longer states the project's economic scope.")
     _check("Reader mode" in readme and "Developer mode" in readme, "README no longer states the actual Reader/Developer access model.")
-    _check(len(readme.splitlines()) <= 40, "README has grown beyond the brief repository-overview contract.")
-    _check("## v" not in readme and "review build" not in readme.casefold(), "README has drifted back into release-note copy.")
+    lower = readme.casefold()
+    _check("## v" not in readme and "review build" not in lower, "README has drifted back into release-note copy.")
+    for release_marker in ("## release notes", "## changelog", "## build notes", "release fingerprint", "zip sha-256"):
+        _check(release_marker not in lower, f"README has drifted into build/release diary content: {release_marker}")
     for forbidden in ("contributors", "contributing", "pull request", "pip install", "streamlit run"):
         _check(forbidden not in readme.casefold(), f"README has drifted into contributor/setup language: {forbidden}")
     approved_purpose = (
@@ -135,39 +139,32 @@ def check_commercialization_parser_contract() -> None:
 
 
 def check_macro_reference_alignment() -> None:
-    reads = {
+    selected = ["finance", "data_center", "power", "adoption", "workforce", "economic_impact"]
+    packets = {
         domain: {
-            "headline": f"{domain} headline",
-            "summary": f"{domain} summary",
             "importance": 20,
-            "confidence": "high",
-            "signals": {},
-            "highlights": [{"score": 20, "kind": domain, "text": f"{domain} highlight"}],
+            "facts": [{"id": f"{domain}.anchor", "label": f"{domain} anchor", "value": 1, "display": "1", "context": ""}],
             "references": [dict(item) for item in DOMAIN_REFERENCES.get(domain, ())],
         }
         for domain in DOMAIN_ORDER
     }
-    reads["compute"]["signals"].update({"critical_layers_covered": 4, "critical_layers_total": 4})
-    reads["data_center"]["signals"].update({"tracked_pipeline_capacity_gw": 287.2})
-    reads["connectivity"]["signals"].update({
-        "active_ixps": 168,
-        "international_submarine_cable_systems": 90,
-        "cable_catalog_entries": 115,
-        "middle_mile_fiber_miles": 12500,
-        "high_capacity_low_public_connectivity_states": 1,
-    })
-    reads["grid_storage"]["signals"].update({"advanced_share": 25})
-    reads["adaptation"]["signals"].update({"consumer_active": 50, "current_use": 12, "implied_subscriber_share_pct": 5.6})
-    reads["economic_impact"]["signals"].update({
-        "microsoft_ai_arr_b": 37, "openai_arr_b": 20,
-        "productivity_growth": 2.0, "real_compensation_growth": 1.0,
-        "productivity_real_comp_gap": 7.0, "labor_share_since_2020": -4.0,
-        "median_real_earnings_growth": 0.5,
-    })
-    macro = build_macro_read(reads)
+    macro_model = GeneratedMacroRead(
+        selected_domains=selected,
+        headline=SupportedSentence(text="Capital and buildout are meeting the diffusion and outcomes test.", fact_ids=["finance.anchor", "data_center.anchor", "power.anchor", "adoption.anchor", "workforce.anchor", "economic_impact.anchor"], inference="interpretation"),
+        analysis=[
+            SupportedSentence(text="Financing and physical buildout establish the upstream capacity for the broader AI lifecycle.", fact_ids=["finance.anchor", "data_center.anchor", "power.anchor"], inference="interpretation"),
+            SupportedSentence(text="Adoption and economic outcomes test whether that upstream commitment is diffusing into realized use.", fact_ids=["adoption.anchor", "workforce.anchor", "economic_impact.anchor"], inference="interpretation"),
+            SupportedSentence(text="The selected domains therefore connect capital, delivery, diffusion, and outcomes rather than describing one stage in isolation.", fact_ids=["finance.anchor", "data_center.anchor", "power.anchor", "adoption.anchor", "workforce.anchor", "economic_impact.anchor"], inference="interpretation"),
+            SupportedSentence(text="That cross-domain relationship is more informative than a single-stage metric.", fact_ids=["data_center.anchor", "economic_impact.anchor"], inference="interpretation"),
+        ],
+    )
+    macro = _macro_public_read(macro_model, packets)
     labels = {str(item.get("source_label") or item.get("source_name") or "") for item in macro.get("references", [])}
-    required = {"FracTracker Alliance", "Real-Time Population Survey via FRED", "BLS Labor Productivity and Costs"}
-    _check(required.issubset(labels), f"Macro references do not follow the three evidence anchors: {sorted(labels)}")
+    required = {
+        str(DOMAIN_REFERENCES[domain][0].get("source_label") or "")
+        for domain in selected
+    }
+    _check(required.issubset(labels), f"Macro references do not preserve one source per selected domain: {sorted(labels)}")
 
 
 def check_refresh_ownership() -> None:
@@ -182,7 +179,8 @@ def check_refresh_ownership() -> None:
         and "commercialization_refresh = bool(refresh_domains & commercialization_domains)" in app,
         "Commercialization refresh is not owned by explicit domain controls.",
     )
-    _check('"connectivity": "Connectivity"' in app, "Connectivity is missing from the domain refresh router.")
+    developer_state = (PROJECT_ROOT / "developer" / "state.py").read_text(encoding="utf-8")
+    _check('"connectivity": "Connectivity"' in developer_state, "Connectivity is missing from the domain refresh router.")
     _check("load_connectivity_data(" in app, "Connectivity does not have an independent loader call.")
     _check("(2 if facility_refresh else 0)" in infrastructure, "Data Centers refresh completeness does not retain its two-source boundary.")
     _check("load_connectivity_data" not in infrastructure, "Connectivity refresh is still owned by Data Centers.")

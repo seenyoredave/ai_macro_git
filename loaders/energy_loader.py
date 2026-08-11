@@ -557,26 +557,28 @@ def load_energy_data(
     market_refresh_token: int = 0,
     market_refresh_scope: str = "all",
     clock_token: str | None = None,
-    allow_live: bool = False,
+    allow_supply_live: bool = False,
+    allow_fred_live: bool = False,
+    allow_market_live: bool = False,
 ) -> dict:
-    supply_live_enabled = bool(
-        allow_live
-        or force_refresh
-        or force_fred_refresh
-    )
+    supply_refresh = bool(force_refresh and allow_supply_live)
+    fred_refresh = bool(force_fred_refresh and allow_fred_live)
+    market_refresh = bool(force_market_refresh and allow_market_live)
+    supply_live_enabled = bool(supply_refresh or fred_refresh)
     supply_snapshot = _load_energy_data_cached(
-        force_refresh=bool(force_refresh),
+        force_refresh=supply_refresh,
         refresh_token=int(refresh_token),
-        force_fred_refresh=bool(force_fred_refresh),
+        force_fred_refresh=fred_refresh,
         fred_refresh_token=int(fred_refresh_token),
         clock_token=(clock_token or energy_cache_token()) if supply_live_enabled else "retained-snapshot",
         allow_live=supply_live_enabled,
     )
     snapshot = _attach_power_series(dict(supply_snapshot), fred_data)
     market = load_energy_market_data(
-        force_refresh=bool(force_market_refresh),
+        force_refresh=market_refresh,
         refresh_token=int(market_refresh_token),
         refresh_scope=str(market_refresh_scope),
+        allow_live=market_refresh,
     )
     market_report = market.pop("market_load_report", {})
     snapshot.update(market)

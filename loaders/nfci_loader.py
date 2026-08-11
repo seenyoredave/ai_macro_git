@@ -144,7 +144,8 @@ def load_nfci_history(
     allow_live: bool = False,
 ) -> pd.DataFrame:
     del refresh_token
-    if not force_refresh and not allow_live:
+    live_refresh = bool(force_refresh and allow_live)
+    if not live_refresh:
         archived = _load_archived_nfci_history()
         archived.attrs["source"] = "FRED Archive" if not archived.empty else "Unavailable"
         return archived

@@ -172,10 +172,11 @@ def _capture_summary(transmission: pd.DataFrame, distribution: pd.DataFrame) -> 
 
 
 @st.cache_data(ttl=21600)
-def load_economic_impact_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_economic_impact_data(force_refresh: bool = False, refresh_token: int = 0, allow_live: bool = False) -> dict:
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     refresh_reports = {}
-    if force_refresh:
+    if live_refresh:
         productivity, refresh_reports["productivity"] = refresh_templated_history(
             PRODUCTIVITY_PATH,
             start_date="2020-01-01",

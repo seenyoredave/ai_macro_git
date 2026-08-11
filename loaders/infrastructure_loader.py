@@ -267,18 +267,20 @@ def _load_live_locations() -> pd.DataFrame:
 
 @st.cache_data(ttl=86400)
 def load_infrastructure_data(
-    force_refresh: bool = False,
     refresh_token: int = 0,
     force_construction_refresh: bool = False,
     force_facility_refresh: bool = False,
     force_compute_refresh: bool = False,
-    force_fred_refresh: bool = False,
-    fred_refresh_token: int = 0,
+    allow_construction_live: bool = False,
+    allow_facility_live: bool = False,
+    allow_compute_live: bool = False,
 ) -> dict:
-    construction_refresh = bool(force_refresh or force_construction_refresh)
-    facility_refresh = bool(force_refresh or force_facility_refresh)
-    compute_refresh = bool(force_refresh or force_compute_refresh)
-    del force_fred_refresh, fred_refresh_token
+    construction_requested = bool(force_construction_refresh)
+    facility_requested = bool(force_facility_refresh)
+    compute_requested = bool(force_compute_refresh)
+    construction_refresh = bool(construction_requested and allow_construction_live)
+    facility_refresh = bool(facility_requested and allow_facility_live)
+    compute_refresh = bool(compute_requested and allow_compute_live)
     refresh_errors: dict[str, str] = {}
     refreshed_datasets: list[str] = []
 
@@ -313,7 +315,8 @@ def load_infrastructure_data(
             refresh_errors["im3_locations"] = f"{type(exc).__name__}: {exc}"
 
     fractracker_records, fractracker_report = load_fractracker_facility_records(
-        force_refresh=facility_refresh,
+        force_refresh=facility_requested,
+        allow_live=allow_facility_live,
         return_report=True,
     )
     if facility_refresh and fractracker_report.get("source_mode") == "live_refresh":
@@ -334,8 +337,9 @@ def load_infrastructure_data(
     stage_summary = registry_stage_summary(registry)
     water_coverage = water_evidence_coverage(registry)
     compute_manufacturing = load_compute_manufacturing_data(
-        force_refresh=compute_refresh,
+        force_refresh=compute_requested,
         refresh_token=refresh_token if compute_refresh else 0,
+        allow_live=allow_compute_live,
     )
     compute_report = dict(compute_manufacturing.get("load_report", {}) or {})
     if compute_refresh:
@@ -387,9 +391,15 @@ def load_infrastructure_data(
         "construction_source": construction_source,
         "refresh_report": {
             "source_mode": refresh_source_mode,
-            "construction_requested": construction_refresh,
-            "facility_requested": facility_refresh,
-            "compute_requested": compute_refresh,
+            "construction_requested": construction_requested,
+            "construction_authorized": bool(allow_construction_live),
+            "construction_executed": construction_refresh,
+            "facility_requested": facility_requested,
+            "facility_authorized": bool(allow_facility_live),
+            "facility_executed": facility_refresh,
+            "compute_requested": compute_requested,
+            "compute_authorized": bool(allow_compute_live),
+            "compute_executed": compute_refresh,
             "map_refreshed": map_refreshed,
             "compute_source_mode": compute_manufacturing.get("source_mode"),
             "refreshed_datasets": refreshed_datasets,

@@ -23,11 +23,7 @@ from rendering.charts_market import (
 )
 from rendering.common import _forward_multiple_text, _render_floating_terms
 from rendering.components import fmt_date, fmt_number, inject_panel_height_rules, render_domain_read, render_panel_heading, render_section, render_signal_rail, render_statline, render_tab_header
-from rendering.sector_dossier import (
-    build_sector_narrative,
-    build_structure_interpretation,
-    build_structure_snapshot,
-)
+from rendering.sector_dossier import build_structure_interpretation, build_structure_snapshot
 from rendering.tables import _company_table
 
 
@@ -49,54 +45,6 @@ def _inject_market_page_theme() -> None:
         div[class*="st-key-statline-sector-dossier-"] {
             border-top-color: rgba(167, 139, 250, 0.86) !important;
         }
-        .rm-sector-read {
-            border: 1px solid rgba(167, 139, 250, 0.22);
-            border-left: 3px solid #a78bfa;
-            border-radius: 0;
-            background: linear-gradient(90deg, rgba(124, 58, 237, 0.12), rgba(17, 24, 39, 0.64));
-            padding: 0.82rem 1rem 0.86rem 1rem;
-            margin: 0.15rem 0 0.95rem 0;
-        }
-        .rm-sector-read-kicker {
-            color: #a78bfa;
-            font-size: 0.64rem;
-            font-weight: 800;
-            letter-spacing: 0.11em;
-            text-transform: uppercase;
-        }
-        .rm-sector-read-title {
-            color: #f8fafc;
-            font-size: 1.02rem;
-            font-weight: 760;
-            margin-top: 0.18rem;
-        }
-        .rm-sector-read-copy {
-            color: #b9c3d2;
-            font-size: 0.82rem;
-            line-height: 1.48;
-            margin-top: 0.2rem;
-        }
-        .rm-sector-read-weekly {
-            border-top: 1px solid rgba(148, 163, 184, 0.14);
-            color: #aab5c5;
-            font-size: 0.76rem;
-            line-height: 1.45;
-            margin-top: 0.62rem;
-            padding-top: 0.58rem;
-        }
-        .rm-sector-read-weekly span {
-            color: #60a5fa;
-            font-size: 0.62rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            margin-right: 0.28rem;
-            text-transform: uppercase;
-        }
-        .rm-sector-read-reference {
-            font-size: 0.68rem;
-            margin-top: 0.28rem;
-        }
-        .rm-sector-read-reference a { color: #93c5fd; text-decoration: none; }
         .rm-sector-structure-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -234,42 +182,6 @@ def _pressure_movement_text(macro_df: pd.DataFrame, sector: str) -> str:
         return 'Shrinking'
     return 'Static'
 
-def _render_sector_read(metrics: dict, selected: str, df: pd.DataFrame, peer_metrics: dict, weekly_context=None, movement=None) -> None:
-    narrative = build_sector_narrative(metrics, selected, sector_display_name(selected), df, peer_metrics, weekly_context, movement)
-    headline = narrative["headline"]
-    sentence = narrative["body"]
-    weekly_note = narrative.get("weekly_note")
-    reference = narrative.get("reference")
-    weekly_html = ""
-    if weekly_note:
-        reference_html = ""
-        citation = ""
-        if reference:
-            url = str(reference.get("source_url") or "")
-            label = str(reference.get("source_label") or reference.get("source_name") or "Source")
-            if url.startswith("https://"):
-                citation = " [1]"
-                reference_html = (
-                    f'<div class="rm-sector-read-reference"><a href="{html.escape(url, quote=True)}" '
-                    f'target="_blank" rel="noopener noreferrer">[1] {html.escape(label)}</a></div>'
-                )
-        weekly_html = (
-            f'<div class="rm-sector-read-weekly"><span>This week</span> '
-            f'{html.escape(weekly_note)}{citation}</div>{reference_html}'
-        )
-    st.markdown(
-        f"""
-        <div class="rm-sector-read">
-            <div class="rm-sector-read-kicker">Sector read</div>
-            <div class="rm-sector-read-title">{html.escape(headline)}</div>
-            <div class="rm-sector-read-copy">{html.escape(sentence)}</div>
-            {weekly_html}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
 def _render_structure_snapshot(metrics: dict, company_count: int) -> None:
     items = build_structure_snapshot(metrics, company_count)
     cells = "".join(
@@ -291,7 +203,7 @@ def _render_structure_snapshot(metrics: dict, company_count: int) -> None:
     )
 
 
-def _render_sector_detail(sector_data, sector_metrics, macro_df, weekly_context=None):
+def _render_sector_detail(sector_data, sector_metrics, macro_df):
     sectors = [
         sector for sector in sector_metrics
         if sector in sector_data and sector_data[sector] is not None and not sector_data[sector].empty
@@ -339,10 +251,6 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df, weekly_context=
         ],
         key_prefix="sector-dossier-summary-primary",
     )
-    movement_frame = select_current_sector_assessment(macro_df, sector_data={}).get("movement", pd.DataFrame())
-    movement_row = movement_frame.loc[movement_frame["Sector"].astype(str).eq(str(selected))].iloc[0].to_dict() if movement_frame is not None and not movement_frame.empty and "Sector" in movement_frame.columns and movement_frame["Sector"].astype(str).eq(str(selected)).any() else {}
-    _render_sector_read(metrics, selected, df, sector_metrics, weekly_context, movement_row)
-
     signal_col, structure_col = st.columns([1.65, 0.85])
     with signal_col:
         with st.container(border=True, key="market-panel-sector-signal-anatomy"):
@@ -542,7 +450,7 @@ def _render_market_constituent_ledger(selection: dict | None, ledger: dict) -> N
         )
 
 
-def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data, market_universe_summary=None, weekly_context=None, tab_read=None):
+def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data, market_universe_summary=None, tab_read=None):
     del regime_metrics
     macro_df = dashboard_data["macro_df"]
     market_ledger = build_market_ledger(sector_data)
@@ -600,5 +508,5 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
         "Sector profile",
         "Select a sector to see its drivers, market structure, fundamentals, and trading pressure.",
     )
-    selection = _render_sector_detail(sector_data, sector_metrics, macro_df, weekly_context)
+    selection = _render_sector_detail(sector_data, sector_metrics, macro_df)
     _render_market_constituent_ledger(selection, market_ledger)

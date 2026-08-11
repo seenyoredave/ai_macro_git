@@ -694,7 +694,7 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     }
 }
 
-/* v6.0 structured read system */
+/* v7 structured Read system */
 .rm-domain-read {
     --rm-read-accent: #a78bfa;
     border: 1px solid rgba(148, 163, 184, 0.17);
@@ -738,6 +738,9 @@ div[class*="st-key-floating-terms-"][data-testid="stPopover"] > button:hover {
     line-height: 1.5;
     margin-top: 0.26rem;
     max-width: 1160px;
+}
+.rm-domain-read.macro .rm-domain-read-copy + .rm-domain-read-copy {
+    margin-top: 0.46rem;
 }
 .rm-domain-read-context-row,
 .rm-domain-read-refs {
@@ -1153,9 +1156,10 @@ div[class*="st-key-full-width-layout-"] {
     width: 100% !important;
 }
 /* Streamlit's width="stretch" contract measures stFullScreenFrame and passes
-   that width into Plotly. Do not size stElementContainer, stFullScreenFrame,
-   stPlotlyChart, or Plotly's internal wrappers here; doing so creates a second
-   geometry owner and can strand a chart at Plotly's 700 px fallback. */
+   that width into Plotly. Do not size chart-bearing stElementContainer paths,
+   stFullScreenFrame, stPlotlyChart, or Plotly's internal wrappers here; doing
+   so creates a second geometry owner and can strand a chart at Plotly's 700 px
+   fallback. Named pure-markdown wrappers may own their local layout width. */
 div[class*="st-key-compact-layout-"] [data-testid="stHorizontalBlock"] {
     align-items: stretch;
 }
@@ -1620,7 +1624,7 @@ div[class*="st-key-water-system-workbench"] {
 }
 
 
-/* v6.10 full-platform editorial rollout: space-efficiency contract. */
+/* Full-platform editorial rollout: space-efficiency contract. */
 div[data-testid="stElementContainer"]:has(.rm-deliverability-screen),
 div[data-testid="stElementContainer"]:has(.rm-signal-rail),
 div[data-testid="stElementContainer"]:has(.rm-dossier),
@@ -1645,4 +1649,148 @@ div[data-testid="stMarkdown"]:has(.rm-value-bridge) {
 div[class*="st-key-full-width-layout-"] {
     width: 100% !important;
     max-width: none !important;
+}
+
+/* v7.0.9 Evidence: reader-facing trace first, technical warehouse second. */
+.rm-evidence-interpretation {
+    border: 1px solid rgba(148, 163, 184, 0.17);
+    border-left: 3px solid var(--rm-violet);
+    background: rgba(15, 23, 42, 0.48);
+    padding: 1rem 1.05rem 1.05rem;
+    margin: 0.15rem 0 0.9rem;
+}
+.rm-evidence-kicker,
+.rm-evidence-card-kicker {
+    color: #9fb4d0;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+.rm-evidence-interpretation-title {
+    color: #f3f6fb;
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    font-weight: 760;
+    line-height: 1.32;
+    margin-top: 0.28rem;
+    max-width: 1050px;
+}
+.rm-evidence-interpretation-copy {
+    color: #aeb8c8;
+    font-size: 0.86rem;
+    line-height: 1.58;
+    margin-top: 0.45rem;
+    max-width: 1120px;
+}
+.rm-evidence-fact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0.2rem 0 0.9rem;
+}
+.rm-evidence-fact-card {
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    background: rgba(17, 24, 39, 0.62);
+    min-width: 0;
+    padding: 0.78rem 0.82rem 0.82rem;
+}
+.rm-evidence-fact-label {
+    color: #8d9aad;
+    font-size: 0.61rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    line-height: 1.35;
+    min-height: 2.15rem;
+    text-transform: uppercase;
+}
+.rm-evidence-fact-value {
+    color: #f3f6fb;
+    font-size: 1.12rem;
+    font-weight: 760;
+    line-height: 1.2;
+    margin-top: 0.2rem;
+}
+.rm-evidence-fact-context {
+    color: #8f9bad;
+    font-size: 0.71rem;
+    line-height: 1.42;
+    margin-top: 0.25rem;
+}
+.rm-evidence-foundation-card {
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
+    min-height: 100%;
+    padding: 0.78rem 0.05rem 0.45rem;
+}
+.rm-evidence-card-copy {
+    color: #c1cad7;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    margin-top: 0.32rem;
+}
+.rm-evidence-card-divider {
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+    margin: 0.75rem 0 0.72rem;
+}
+.rm-evidence-source-list {
+    color: #8794a7;
+    font-size: 0.76rem;
+    line-height: 1.72;
+    margin-top: 0.28rem;
+}
+.rm-evidence-source-link,
+.rm-evidence-source-text {
+    color: #9fb4d0;
+    text-decoration: none;
+}
+.rm-evidence-source-link:hover {
+    color: #dce4ef;
+    text-decoration: underline;
+}
+.rm-evidence-boundary-list {
+    color: #aeb8c8;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    margin: 0.34rem 0 0;
+    padding-left: 1.05rem;
+}
+.rm-evidence-boundary-list li + li {
+    margin-top: 0.34rem;
+}
+.rm-evidence-context-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0.15rem 0 0.75rem;
+}
+.rm-evidence-context-card {
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    background: rgba(15, 23, 42, 0.34);
+    padding: 0.78rem 0.82rem 0.75rem;
+}
+.rm-evidence-context-copy {
+    color: #aeb8c8;
+    font-size: 0.78rem;
+    line-height: 1.52;
+}
+.rm-evidence-context-source {
+    border-top: 1px solid rgba(148, 163, 184, 0.10);
+    color: #8794a7;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    margin-top: 0.62rem;
+    padding-top: 0.52rem;
+}
+@media (max-width: 900px) {
+    .rm-evidence-fact-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 720px) {
+    .rm-evidence-fact-grid,
+    .rm-evidence-context-grid {
+        grid-template-columns: 1fr;
+    }
+    .rm-evidence-fact-label {
+        min-height: auto;
+    }
 }

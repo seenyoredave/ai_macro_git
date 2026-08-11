@@ -191,15 +191,16 @@ def _retained_only_metrics(ledger: pd.DataFrame) -> list[str]:
 
 
 @st.cache_data(ttl=86400)
-def load_commercialization_data(*, force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_commercialization_data(*, force_refresh: bool = False, refresh_token: int = 0, allow_live: bool = False) -> dict:
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     ledger = _normalize(_load_csv(LEDGER_PATH))
     manifest = _load_csv(MANIFEST_PATH)
     source_mode = "retained"
     errors: dict[str,str] = {}
     parser_reports: dict[str,dict] = {}
     updated = 0
-    if force_refresh:
+    if live_refresh:
         values, errors, parser_reports = _refresh_values(manifest)
         if values and not ledger.empty:
             indexed = ledger.set_index(KEY_COLUMNS).sort_index()
@@ -228,7 +229,9 @@ def load_commercialization_data(*, force_refresh: bool = False, refresh_token: i
         "source_mode": source_mode,
         "load_report": {
             "source_mode":source_mode,
-            "requested":force_refresh,
+            "requested":bool(force_refresh),
+            "authorized":bool(allow_live),
+            "executed":live_refresh,
             "refresh_contract":"fixed_page_validation",
             "latest_release_discovery":False,
             "updated_metrics":updated,

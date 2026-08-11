@@ -80,26 +80,6 @@ def _context(energy_data: dict, infrastructure_data: dict) -> dict:
     }
 
 
-def _fallback_read(context: dict) -> dict:
-    development = context.get("development", {})
-    active = pd.to_numeric(development.get("headline_queue_gw"), errors="coerce")
-    advanced = pd.to_numeric(development.get("advanced_share"), errors="coerce")
-    median_years = pd.to_numeric(context.get("queue_outcome", {}).get("Median Request to COD Years"), errors="coerce")
-    if pd.notna(active) and pd.notna(advanced) and advanced < 30:
-        headline = "The interconnection queue is huge, but most projects are still early-stage."
-    elif pd.notna(active):
-        headline = "Proposed grid projects are taking too long to become operating capacity."
-    else:
-        headline = "No current grid-delivery reading is available."
-    body = (
-        f"Only {fmt_number(advanced, 1, suffix='%')} of the {fmt_number(active, 0, suffix=' GW')} active queue "
-        "has reached executed-agreement or construction stages, so queue size should not be read as near-term supply. "
-        f"Projects completed in 2025 took more than {fmt_number(median_years, 0, suffix=' years')} from request to commercial operation, "
-        "making conversion time the central constraint."
-    )
-    return {"headline": headline, "body": body, "confidence": "high" if pd.notna(active) and pd.notna(advanced) else "moderate"}
-
-
 def _queue_conversion_stats(context: dict):
     development = context["development"]
     outcome = context.get("queue_outcome", {})
@@ -310,7 +290,7 @@ def render_grid_storage_tab(energy_data: dict, infrastructure_data: dict, tab_re
         "Berkeley Lab / NERC / EIA / U.S. Census Bureau",
     )
     _render_floating_terms("grid_storage")
-    render_domain_read(tab_read or _fallback_read(context), label="Read", domain="grid_storage")
+    render_domain_read(tab_read, label="Read", domain="grid_storage")
     _render_deliverability_screen(context)
     _render_queue_conversion(context)
     _render_reliability_storage(context)

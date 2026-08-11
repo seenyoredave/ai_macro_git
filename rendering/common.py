@@ -138,7 +138,7 @@ TAB_METRIC_REGISTRIES = {
         "Power Stress Index",
         "Power Capacity Gap",
     ],
-    "adaptation": [
+    "adoption": [
         "Adult Generative-AI Use",
         "Personal Generative-AI Use",
         "Work Generative-AI Use",

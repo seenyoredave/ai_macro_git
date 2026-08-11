@@ -454,8 +454,9 @@ def _augment_national(national: pd.DataFrame, cables: pd.DataFrame, landing_mark
 
 
 @st.cache_data(ttl=86400)
-def load_connectivity_data(campuses: pd.DataFrame | None = None, *, force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_connectivity_data(campuses: pd.DataFrame | None = None, *, force_refresh: bool = False, refresh_token: int = 0, allow_live: bool = False) -> dict:
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     ixps = _normalize_ixps(_load_csv(IXP_PATH))
     retained_national = _load_csv(NATIONAL_PATH)
     national = retained_national.copy()
@@ -476,7 +477,7 @@ def load_connectivity_data(campuses: pd.DataFrame | None = None, *, force_refres
     }
     national_validation = {"required_fields":list(REQUIRED_NATIONAL_FIELDS),"live_fields":[],"retained_fields":[],"missing_fields":[],"complete":True}
 
-    if force_refresh:
+    if live_refresh:
         try:
             refreshed_ixps, refreshed_national = _parse_pulse_pages()
             national, national_validation = _merge_national_refresh(refreshed_national, retained_national)
@@ -523,7 +524,7 @@ def load_connectivity_data(campuses: pd.DataFrame | None = None, *, force_refres
 
     live_layers = sum(report.get("source_mode") == "live_refresh" for report in layer_reports.values())
     fallback_layers = sum("fallback" in str(report.get("source_mode")) or str(report.get("source_mode")) == "retained_summary" for report in layer_reports.values())
-    source_mode = "retained" if not force_refresh else "live_refresh" if live_layers == len(layer_reports) else "partial_refresh" if live_layers else "retained_fallback"
+    source_mode = "retained" if not live_refresh else "live_refresh" if live_layers == len(layer_reports) else "partial_refresh" if live_layers else "retained_fallback"
 
     campus_frame = campuses if isinstance(campuses, pd.DataFrame) else pd.DataFrame()
     state = _state_summary(ixps, landing_markets, middle_awards, campus_frame, facilities)
@@ -537,7 +538,9 @@ def load_connectivity_data(campuses: pd.DataFrame | None = None, *, force_refres
         "phase": CONNECTIVITY_PHASE,
         "load_report": {
             "source_mode":source_mode,
-            "requested":force_refresh,
+            "requested":bool(force_refresh),
+            "authorized":bool(allow_live),
+            "executed":live_refresh,
             "error":"; ".join(report.get("error", "") for report in layer_reports.values() if report.get("error")),
             "errors":{name:report.get("error") for name,report in layer_reports.items() if report.get("error")},
             "layers":layer_reports,

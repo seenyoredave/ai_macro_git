@@ -244,10 +244,11 @@ def _build_transmission_matrix(
 
 
 @st.cache_data(ttl=21600)
-def load_workforce_data(force_refresh: bool = False, refresh_token: int = 0) -> dict:
+def load_workforce_data(force_refresh: bool = False, refresh_token: int = 0, allow_live: bool = False) -> dict:
     del refresh_token
+    live_refresh = bool(force_refresh and allow_live)
     refresh_reports = {}
-    if force_refresh:
+    if live_refresh:
         ces, refresh_reports["ces"] = refresh_templated_history(
             CES_PATH, start_date="2020-01-01", required_columns=("Series", "Metric", "Unit", "Source")
         )

@@ -116,7 +116,7 @@ def build_domain_read_html(
     """Return compact one-line markup so Streamlit never exposes nested tags."""
     payload = read or {}
     headline = str(payload.get("headline") or "Read unavailable").strip()
-    summary = str(payload.get("summary") or payload.get("body") or "").strip()
+    analysis = str(payload.get("analysis") or "").strip()
     domain_label = str(label or payload.get("label") or "Read").strip()
     references = payload.get("references") or payload.get("weekly_references") or []
 
@@ -131,16 +131,22 @@ def build_domain_read_html(
     )
 
     classes = "rm-domain-read macro" if macro else "rm-domain-read"
-    summary_html = (
-        f'<div class="rm-domain-read-copy">{html.escape(summary)}</div>'
-        if summary else ""
+    paragraph_values = [
+        str(item).strip() for item in payload.get("analysis_paragraphs", []) or []
+        if str(item).strip()
+    ]
+    if not paragraph_values and analysis:
+        paragraph_values = [analysis]
+    analysis_html = "".join(
+        f'<div class="rm-domain-read-copy">{html.escape(paragraph)}</div>'
+        for paragraph in paragraph_values
     )
     macro_html = _macro_evidence_html(payload) if macro else ""
     return "".join([
         f'<div class="{classes}" style="--rm-read-accent:{html.escape(accent_color, quote=True)};">',
         f'<div class="rm-domain-read-kicker">{html.escape(domain_label)}</div>',
         f'<div class="rm-domain-read-title">{html.escape(headline)}</div>',
-        summary_html,
+        analysis_html,
         macro_html,
         context_html,
         refs_html,

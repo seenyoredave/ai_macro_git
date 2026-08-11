@@ -97,11 +97,8 @@ from analytics.grid_deliverability import (  # noqa: E402
     reserve_margin_profile,
     storage_duration_profile,
 )
-from analytics.read_architecture import (  # noqa: E402
-    READ_ARCHITECTURE_VERSION,
-    build_grid_storage_read,
-    build_water_read,
-)
+from analytics.dashboard_context import DashboardContext  # noqa: E402
+from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_grid_storage_evidence, build_water_evidence  # noqa: E402
 from analytics.spatial_context import attach_water_context  # noqa: E402
 from analytics.water_competition import campus_water_dossier, state_water_exposure_profile  # noqa: E402
 from config.visual_design import signature_tool  # noqa: E402
@@ -118,7 +115,7 @@ def require(condition: bool, message: str) -> None:
 
 
 def main() -> None:
-    require(READ_ARCHITECTURE_VERSION == "7.2.0", "Phase 2 Read architecture version drifted.")
+    require(EVIDENCE_ARCHITECTURE_VERSION == "1.1.0", "Phase 2 evidence architecture version drifted.")
 
     energy = load_energy_data()
     infrastructure = load_infrastructure_data()
@@ -161,12 +158,16 @@ def main() -> None:
     dossier = campus_water_dossier(water.get("facility_context"))
     require(len(dossier) >= 1900 and "Exposure Tier" in dossier.columns, "Campus water dossier is incomplete.")
 
-    grid_read = build_grid_storage_read(energy, infrastructure)
-    for signal in ["historical_operational_pct", "lowest_extreme_margin_pct", "operating_storage_weighted_duration_hours"]:
-        require(pd.notna(pd.to_numeric(grid_read.get("signals", {}).get(signal), errors="coerce")), f"Grid Read signal missing: {signal}")
-    water_read = build_water_read(water)
-    for signal in ["states_with_25pct_d2_area", "published_capacity_in_25pct_d2_states_gw", "direct_evidence_share_pct"]:
-        require(pd.notna(pd.to_numeric(water_read.get("signals", {}).get(signal), errors="coerce")), f"Water Read signal missing: {signal}")
+    grid_packet = build_grid_storage_evidence(DashboardContext(energy_data=energy, infrastructure_data=infrastructure)).to_dict()
+    grid_facts = {str(item.get("id") or "").split(".", 1)[-1]: item for item in grid_packet.get("facts", [])}
+    for fact_id in ["historical_operational_pct", "lowest_extreme_margin_pct", "operating_storage_weighted_duration_hours"]:
+        require(pd.notna(pd.to_numeric((grid_facts.get(fact_id) or {}).get("value"), errors="coerce")), f"Grid evidence missing: {fact_id}")
+    water_packet = build_water_evidence(DashboardContext(water_data=water, infrastructure_data=infrastructure)).to_dict()
+    water_facts = {str(item.get("id") or "").split(".", 1)[-1]: item for item in water_packet.get("facts", [])}
+    for fact_id in ["states_with_25pct_d2_area", "published_capacity_in_25pct_d2_states_gw", "direct_evidence_share_pct"]:
+        require(pd.notna(pd.to_numeric((water_facts.get(fact_id) or {}).get("value"), errors="coerce")), f"Water evidence missing: {fact_id}")
+    grid_read = {"headline": "Grid evidence ready.", "summary": "Validated commentary is supplied separately.", "references": grid_packet.get("references", [])}
+    water_read = {"headline": "Water evidence ready.", "summary": "Validated commentary is supplied separately.", "references": water_packet.get("references", [])}
 
     FAKE_ST.charts.clear()
     render_grid_storage_tab(energy, infrastructure, tab_read=grid_read)

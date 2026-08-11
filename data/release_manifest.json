@@ -5,28 +5,56 @@
   },
   "files": {
     "AGENTS.md": {
-      "bytes": 16190,
-      "sha256": "af5e451ec1fd55aaa21976eed0fd04e662aff2c2014c0efca8104e6f5583d8de"
+      "bytes": 21613,
+      "sha256": "4ba3129bc3343475871a7b9d3323f3d81298ebb00b48e9215fa136857222be37"
     },
     "ai_macro.py": {
-      "bytes": 51619,
-      "sha256": "6f62fbe04ea90662284933e314cc9eeae1783502738dbe7e1f0f0da4fb1679c9"
+      "bytes": 29402,
+      "sha256": "7aa1431bfccd1cbfef2f7520ed8f81139ef97129b73722701f3795417686b01c"
     },
     "analytics/capital_commitments.py": {
       "bytes": 6578,
       "sha256": "5e2563d43396f88792b21be67c5a949c7eed5ef7e9b9e5b6d10522f5adf791d0"
     },
-    "analytics/context_read_snapshot.py": {
-      "bytes": 3133,
-      "sha256": "29611a96981b89b94d0c11142844484cba1bad9b66fe8727c7494018d94fa347"
-    },
     "analytics/deployment_funding_mix.py": {
       "bytes": 27016,
       "sha256": "907a29d12d76acbcc6a3e35344d824289b218fd3afc3a1e337e236ee428a3fef"
     },
-    "analytics/read_architecture.py": {
-      "bytes": 103409,
-      "sha256": "989214b2295a2cb554a8e473640eaa1734d73133ec14838cfd37742e60f7c193"
+    "analytics/read_context.py": {
+      "bytes": 2482,
+      "sha256": "ef6684cac0d77da0af1f571cb155edd3181d412a1f7098f850b11c746711b096"
+    },
+    "analytics/read_evidence.py": {
+      "bytes": 56871,
+      "sha256": "60907f7e9f4bc0ff96ca7f48fd277f15febb521cd15ce5ced11f50bd7b3b4010"
+    },
+    "analytics/read_generation.py": {
+      "bytes": 3815,
+      "sha256": "f5792a5807e231d28a242d59dee74162f14a3462ca1a9e1c8df2e457276ae8b9"
+    },
+    "analytics/read_models.py": {
+      "bytes": 1282,
+      "sha256": "24478cb63c2a792a476c0a32ed5b4adb63dd5068e111e317ae6f364567673fc8"
+    },
+    "analytics/read_prompts.py": {
+      "bytes": 7128,
+      "sha256": "17e61476df3aeb5d5615f1e3f42d92cfc03813f80c253bcca3a7e63109ebbecb"
+    },
+    "analytics/read_service.py": {
+      "bytes": 27557,
+      "sha256": "0da1b85b04a7fb99885ebf6dae0f57a0d254aaac0be13d6b8ad90aa01bacf5aa"
+    },
+    "analytics/read_store.py": {
+      "bytes": 4780,
+      "sha256": "bc02632081601033c50dfb7dddcaffa467c2dc7ef6dfb057d29cd2d6f650e56f"
+    },
+    "analytics/read_validation.py": {
+      "bytes": 18591,
+      "sha256": "d375569f7be4e88cd92671857f561d0364261343cca627492e9da8264304c539"
+    },
+    "analytics/reader_snapshot.py": {
+      "bytes": 2712,
+      "sha256": "0f77f733d437a294ec513db95034d09a7bf573bef8dc04511f693a840c46621b"
     },
     "analytics/regime_engine.py": {
       "bytes": 11254,
@@ -37,56 +65,56 @@
       "sha256": "aa295aa2f71b066525764ce2ab06535f9de4bddbe6b844859abb233162aec423"
     },
     "archive/archive.py": {
-      "bytes": 20555,
-      "sha256": "956acb28fa36dfeb2576ce363c36507986952368b7e8d11fcd2a85223952353b"
+      "bytes": 19055,
+      "sha256": "1681ceb9d25b09bcaf7c0cb9dbbb193abc4d2e46a79755f4933881aacfd4136d"
     },
     "archive/benchmark_history.csv": {
-      "bytes": 4720,
+      "bytes": 4919,
       "date_column": "Date",
-      "date_max": "2026-08-07",
+      "date_max": "2026-08-10",
       "date_min": "2026-06-12",
-      "rows": 26,
-      "sha256": "fea620f8e619474b641e5c5dd43b020098726a506b19d07d1de95957cea7de9f"
+      "rows": 27,
+      "sha256": "edc75754037d92929127010f21969494af8d9982322d1171948793c9e9a8144a"
     },
     "archive/edgar_history.csv": {
-      "bytes": 801419,
+      "bytes": 825188,
       "date_column": "Date",
-      "date_max": "2026-08-09",
+      "date_max": "2026-08-10",
       "date_min": "2026-06-14",
-      "rows": 6502,
-      "sha256": "8ad4a7f5872d7acf07b41364cfa8878898fc98ac8295bb1aad6a93b7fdcc7a1c"
+      "rows": 6693,
+      "sha256": "c792d88d11db19f414ac1a287791eb68c363f4486a2c9734656416e899d21381"
     },
     "archive/fred_history.csv": {
-      "bytes": 10685,
+      "bytes": 11445,
       "date_column": "Date",
-      "date_max": "2026-08-09",
+      "date_max": "2026-08-10",
       "date_min": "2026-06-14",
-      "rows": 23,
-      "sha256": "f6c86e104c29dd4535abdb39f733d1c5783f80f69529cd85e8c08d0027447190"
+      "rows": 24,
+      "sha256": "6d008dc40fe124829dbbdf4806d24ddc96c3ae9935b2dd9eb030eef16104a222"
     },
     "archive/macro_history.csv": {
-      "bytes": 46332,
+      "bytes": 47063,
       "date_column": "Date",
-      "date_max": "2026-08-07",
+      "date_max": "2026-08-10",
       "date_min": "2026-06-12",
-      "rows": 26,
-      "sha256": "0bd8431d539f5cc6a996b86da4568379b9c6ab561711993646499358dac8aa1d"
+      "rows": 27,
+      "sha256": "a06765aa9782b20bc7834298a9d9e4c34fd9f7267d1e4f96054a6eeeb23edc70"
     },
     "archive/sector_history.csv": {
-      "bytes": 53029,
+      "bytes": 55860,
       "date_column": "Date",
-      "date_max": "2026-08-07",
+      "date_max": "2026-08-10",
       "date_min": "2026-06-12",
-      "rows": 390,
-      "sha256": "e6cf3a611f742b5cf1c8b519d7b29fd4d042b7f3e559d0b5c3595941476f7262"
+      "rows": 405,
+      "sha256": "f9da903fe5b5fcff3e1aa9ace82f358ac3604ad1e2241a46667bedb6da609044"
     },
     "archive/yf_history.csv": {
-      "bytes": 2095986,
+      "bytes": 2209442,
       "date_column": "Date",
-      "date_max": "2026-08-09",
+      "date_max": "2026-08-10",
       "date_min": "2026-06-12",
-      "rows": 5304,
-      "sha256": "57f2a8417c2c9c3ea3f96058a624b088c0974d83a5b812fe94c48a3ee9688cfb"
+      "rows": 5508,
+      "sha256": "819514a345d8fa0d78e7646afa9c4b5b17e0c21964dc9f1e82c12ba2803ad89b"
     },
     "benchmarks/benchmark_service.py": {
       "bytes": 9769,
@@ -97,12 +125,12 @@
       "sha256": "4cee2a0e19e8e5758862d77471d8c9d02ee97350afe863663ceae10da879eb83"
     },
     "config/current_context_policy.py": {
-      "bytes": 30455,
-      "sha256": "5dfff95607d3e13ac332c727f7f8f4068e0d6c61e8095ef03bf53bf0831f6473"
+      "bytes": 104744,
+      "sha256": "9276829d1ac56982ee32f4b969afc2b4d077980d8c1087bae2486b0412648231"
     },
     "config/deployment.py": {
-      "bytes": 1238,
-      "sha256": "14667325d6afaf4bc3de84ecad546fe43cd35bb03d9a16b6749b1ed92d529380"
+      "bytes": 1231,
+      "sha256": "fc03ce35eceb16ed699fb5dee05ac221fe613f3108ee2a7811769ea6ac8dbbb0"
     },
     "config/factor_config.py": {
       "bytes": 558,
@@ -116,17 +144,21 @@
       "bytes": 47584,
       "sha256": "09751c61f3bd99f5ded346491f49e2055c6400f4b61647301e25ecadcc8f3962"
     },
+    "config/openai_config.py": {
+      "bytes": 1245,
+      "sha256": "755ad7662ea239820f51ec92fa7b0d8a817a37e7a5da1508bffb59fbd41c9275"
+    },
     "config/sector_config.py": {
       "bytes": 23704,
       "sha256": "3053dba0242a299d476f172af36d3c8b154acdd782f0f4753aa250039ba2400d"
     },
     "data/borrower_strain_fundamentals_history.csv": {
-      "bytes": 48537,
+      "bytes": 60795,
       "date_column": "Date",
-      "date_max": "2026-08-09",
+      "date_max": "2026-08-10",
       "date_min": "2014-12-31",
-      "rows": 180,
-      "sha256": "7669fe3a8927c6d0bc7d5412ae8b549f936f1d8c2670e85c179ecd2459cdef76"
+      "rows": 190,
+      "sha256": "864c2ad96931f3311ecd42ac2f650f5450f1d0b575658250414b00e7fb640bcb"
     },
     "data/capital_commitment_components.csv": {
       "bytes": 9195,
@@ -188,9 +220,29 @@
       "sha256": "0a9bd6c1ec8dc9bc9f9295f287f71c42f52a9d4a823c2c8bd3c76c08677f991c"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 7633,
-      "rows": 12,
-      "sha256": "4b67b698af17b9bc8157b4ea9d6cbc475523b8d74ba5c3f8466d1e9084b00d7a"
+      "bytes": 14972,
+      "rows": 18,
+      "sha256": "3fc09c25c010f8a21d8131b57f12577abb698457666b5465eb8c4d1301fc9548"
+    },
+    "developer/load_report.py": {
+      "bytes": 8466,
+      "sha256": "1bb86fe4c64ae30c8224c19c0373f75e72e973a520d61760013e0ca2e5ab005b"
+    },
+    "developer/panel.py": {
+      "bytes": 19275,
+      "sha256": "e0201619fc2aa2514a1e016d4eec3d125931fbda2fe9e50ebaad89f6154a017d"
+    },
+    "developer/reports.py": {
+      "bytes": 4165,
+      "sha256": "2c7a49dd3b8e40957f76f983ecb590fe6408e980bb858c063199a1f49d4a2c40"
+    },
+    "developer/state.py": {
+      "bytes": 5379,
+      "sha256": "8cf74b7ed25032ed3e81d90e89baa8cd61155fd5f0885d0f8d87691be0bb5e87"
+    },
+    "docs/COMMENTARY_ARCHITECTURE.md": {
+      "bytes": 8145,
+      "sha256": "c6a081e5f1ed17caf7cca12a843a5b597666171a0d2ba1b64aaa903ec82a2673"
     },
     "docs/CURRENT_CONTEXT_ACTIVATION_READ_LABELS_2026-08-09.md": {
       "bytes": 1735,
@@ -213,48 +265,84 @@
       "sha256": "35a74c39017a88c41d30085ea73737f870460331af6f922d09102a2c6fbaa571"
     },
     "docs/CURRENT_CONTEXT_SOURCE_GROUNDING_2026-08-09.md": {
-      "bytes": 2968,
-      "sha256": "3cee12322f1665df6978347d81e9f51bfa487b6c132c3a4253256d842478fb60"
+      "bytes": 4263,
+      "sha256": "faaa0b5633a57669015952589e1961acd3deafa9901ef96002dafb0285172121"
     },
     "docs/EDITORIAL_STYLE.md": {
-      "bytes": 9435,
-      "sha256": "caa2506ee1571d58f4af2188ccad71269e2e68cc2867fb4f87c0cb19b7c25c33"
+      "bytes": 9960,
+      "sha256": "cd03e707478722b73e7a084120998e73b7d1f6a9f40053478cf16585a5b52d78"
     },
     "docs/RUNTIME_DATA_CONTRACT.md": {
-      "bytes": 10534,
-      "sha256": "32bd4c9256e451d4c6db4a58a8eb68bd01c372de97a05522bb210f5d99ee87a4"
+      "bytes": 16127,
+      "sha256": "84fe38b91ffe806d482b764666cfc4e1e31c86bef2d8a1ae131bdaeb75e44cd2"
+    },
+    "helpers/atomic_io.py": {
+      "bytes": 6224,
+      "sha256": "32670921b4ce70b12a411e994152e691ac571ec0675c86d9a5a4ed117b0949eb"
     },
     "helpers/build_capital_commitment_ledger.py": {
       "bytes": 610,
       "sha256": "8818b4699347e17bc3e29c8baa0bbd378fdf8e7f45d74dd7490b5f52bd9efd5d"
+    },
+    "loaders/adoption_loader.py": {
+      "bytes": 16121,
+      "sha256": "007eef60c08e01c09b20877915144eb810163c907ac9a531ec988b35447402fa"
+    },
+    "loaders/benchmark_loader.py": {
+      "bytes": 941,
+      "sha256": "b6c69a9a47dacfd31f777bb699b470f32a6594934bd165d520f15abf91b7f101"
     },
     "loaders/borrower_finance_refresh.py": {
       "bytes": 18370,
       "sha256": "bea3fe8f098d63659f691277ab58f687e3f7a9ff0f054d967591e2825ac31d34"
     },
     "loaders/commercialization_loader.py": {
-      "bytes": 13323,
-      "sha256": "e930cce65a8cd87ff7c8336f21e7f2862fb1ce4e20d25ceaad938c9be932e5f5"
+      "bytes": 13488,
+      "sha256": "0a0fcf8d08162a6ce670a08f65fe1f98e7999f16e9723d4eb5fe631056a072eb"
+    },
+    "loaders/compute_manufacturing_loader.py": {
+      "bytes": 19610,
+      "sha256": "c3f76458512d073e4e6170c1295a2a45d9734206eea8e45de86d465232865b95"
+    },
+    "loaders/connectivity_loader.py": {
+      "bytes": 37964,
+      "sha256": "5c2b0cc5efc89ceb46ae098387acb7e612c76e9fc099039c7af93322080a7aed"
+    },
+    "loaders/construction_loader.py": {
+      "bytes": 7750,
+      "sha256": "3c79a3e6812e0db1b92e77c5a77005785c1d89c01fa15110813f16bf836179e7"
     },
     "loaders/current_context_daily.py": {
-      "bytes": 12096,
-      "sha256": "f216bd93891bebc2d8225f0ef162f5023ca34f1f58f27ac173cfeda670531643"
+      "bytes": 12331,
+      "sha256": "66ea8e9816c820f2dc7fce2f22e92f5bd46e7475203127ef26e851e47eafce13"
     },
     "loaders/current_context_discovery.py": {
-      "bytes": 39287,
-      "sha256": "7e31a8e454f84b47e6eeb9cdbc0027b1107c6fb1b16dcd00b44908ecac859ae7"
+      "bytes": 59309,
+      "sha256": "bdd4f60d6c4bcb072aa61f1c81d20e8f80734e255fc60e2b80c893e8a6c49bf1"
     },
     "loaders/current_context_grounding.py": {
-      "bytes": 60836,
-      "sha256": "9a3e203348423d62cacf7fc2157e014605b544c3c3662a6d0b1db21755efe3d4"
+      "bytes": 96286,
+      "sha256": "8905296857891284b50ab842fc6c1de97dcb11e479186fbf8ed8b49e96a2723f"
+    },
+    "loaders/current_context_loader.py": {
+      "bytes": 3361,
+      "sha256": "43076d5107af7e012be08b510aa0c2e019e9b6c915f7c22d02430be819130ffa"
     },
     "loaders/current_context_news.py": {
-      "bytes": 7103,
-      "sha256": "d59af385a2bbf513f3c5ec01b619e6c17bcdf3fdd535e749fb82ecdf5026bc08"
+      "bytes": 7104,
+      "sha256": "0d5a8cb023dac1ec37db5dcc203e2e4b72a0df30e37869fab88d9ad17e0415f3"
     },
     "loaders/current_context_registry.py": {
-      "bytes": 17819,
-      "sha256": "3e8487c37b230dbf5367cbc6bfab44ad0295b131d1c5830cf932c66051ce5e5f"
+      "bytes": 17931,
+      "sha256": "2d3c9dce767673a1a6e8037e8cce56783cbd4852e36761507dcddbc9aceb0565"
+    },
+    "loaders/debt_markets_loader.py": {
+      "bytes": 10567,
+      "sha256": "75be9deedb45bf9a4f1325b9e63d998affd04f3822e15cfd8fdeb5795b28b432"
+    },
+    "loaders/economic_impact_loader.py": {
+      "bytes": 14992,
+      "sha256": "eea592b89e4bf513b861a5370f9a4ffaf545020d790dcfeb7a4361a745731951"
     },
     "loaders/edgar_client.py": {
       "bytes": 2037,
@@ -264,6 +352,26 @@
       "bytes": 10937,
       "sha256": "3ac6c48a3cf44b30cb897660f8a49cfda2221ad0a7902100dd261ba112cd9d0d"
     },
+    "loaders/energy_loader.py": {
+      "bytes": 26796,
+      "sha256": "0c95a3bdf4b3b3590113e4cbc32daf8caf5ddabe184a6f605f1f5bd7fe185307"
+    },
+    "loaders/energy_market_loader.py": {
+      "bytes": 29959,
+      "sha256": "a97ef93c60bf8f789c03788ba6bc6a973f1ea4d33af1e7fe6dcdbe2da48f29d7"
+    },
+    "loaders/facility_sources.py": {
+      "bytes": 17632,
+      "sha256": "c188bfd98e02657644b9263d52593b4f694e2d55f38b78c09c0b32a641f98879"
+    },
+    "loaders/fred_loader.py": {
+      "bytes": 20946,
+      "sha256": "3cd161752f63126a92f59a6525f6f0fe946e87ee6cf1ea1f61d24a2b89e836e2"
+    },
+    "loaders/infrastructure_loader.py": {
+      "bytes": 21019,
+      "sha256": "bf48830ace931c25e1dabb1d067c44d934407117660067af9cda3f983b29f2d0"
+    },
     "loaders/market_loader.py": {
       "bytes": 24245,
       "sha256": "af59b22891f81f86e4449bae8221d510e4e27bb0fa2b82e5853c55774c8122d6"
@@ -271,6 +379,10 @@
     "loaders/market_valuation_loader.py": {
       "bytes": 1098,
       "sha256": "1c30b36c51288408dcddbf2f33ca32a4caffa296338455055a545afc46760cc9"
+    },
+    "loaders/nfci_loader.py": {
+      "bytes": 6507,
+      "sha256": "5bd205b681f9e562d1eee1621908d361e48a90e15250adfda3482a313f2d49f8"
     },
     "loaders/official_series_refresh.py": {
       "bytes": 7251,
@@ -280,40 +392,52 @@
       "bytes": 11274,
       "sha256": "60b1bdadc4fd2a4f8cbd80543355a7a70c62db0b47133d9e6fc1635d248c4802"
     },
-    "loaders/weekly_context_loader.py": {
-      "bytes": 4547,
-      "sha256": "e4f53f103cca70d03b9f467fed02ff9c27c5ce4773121a3ae0e9200ab0b29be8"
+    "loaders/water_loader.py": {
+      "bytes": 2859,
+      "sha256": "0c0de328a462fcea2d53f3e695f5628bcf3e11eb56eb1df82702d8957976874c"
+    },
+    "loaders/workforce_loader.py": {
+      "bytes": 16314,
+      "sha256": "e81b9529d426bbcf676157ac3ac544684d4dbaa033bb17b18a5341ad7757abfc"
     },
     "rendering/components.py": {
       "bytes": 16267,
       "sha256": "033dc5cf34fe1d295ba8c2179180dcf21b735d8b3169e510faec81e7bf5caf04"
     },
     "rendering/evidence.py": {
-      "bytes": 54302,
-      "sha256": "a002b06800a341c63e86c3f2095563962b24acac55e3fe95045ad2ff6742e5c3"
+      "bytes": 63179,
+      "sha256": "0ff4b93aa360d73b16ea8580b9ef4e65d38c524ad1b49f71b91e5b0ae817fff9"
     },
     "rendering/finance.py": {
       "bytes": 24250,
       "sha256": "47372e7df072c76118dd77493feb0aa334374a04dc9d9c24b5d82d1eda2e86c7"
     },
     "rendering/market.py": {
-      "bytes": 25228,
-      "sha256": "d054a4fa2c3c0fde2ab139b41566fad5f69cec7ec93fd06506d1d951b35ec7be"
+      "bytes": 21458,
+      "sha256": "8e95386453f2da8500f4f60d8b905db034af6bce4ee660fb622a764a8fca66a0"
     },
     "rendering/power.py": {
-      "bytes": 26242,
-      "sha256": "edfb0101f527cefdc66cba02fdff815fbe319380a29be2fb31300694079d0613"
+      "bytes": 26058,
+      "sha256": "f91e4480d1a8c6da3ebd1148e96145eee00ff47ab841e4c00555d6f402d6b604"
     },
     "rendering/read_markup.py": {
-      "bytes": 5767,
-      "sha256": "72e2528816f48ab069f374b9ee63a8d109e1e84c2ce63493c21eb2151e962c74"
+      "bytes": 5995,
+      "sha256": "18d04d4c29c8d88fdf4dc7e979882e9242e56f3167efecedbcc9782324ce1501"
     },
     "rendering/theme.css": {
-      "bytes": 41523,
-      "sha256": "b8f0d6d0d2e8f310cdd5bb0356bff8c2276e817a390fde8f810111b3b2280fd3"
+      "bytes": 45138,
+      "sha256": "f7241d7c13c395d52cf7f0cc1db4c882d069992e3ee96dca3c1e53ea8b34d3b0"
+    },
+    "requirements-dev.txt": {
+      "bytes": 39,
+      "sha256": "afd8bd12dab46e15941ede9767a5e770899dab3fac6b32ee3f3b99c03fe3855b"
+    },
+    "requirements.txt": {
+      "bytes": 190,
+      "sha256": "ff72a9736e11a1e19d63b2bfbd5326aa7b29554a6b854026bafff7661d3a8bec"
     }
   },
-  "generated_at_utc": "2026-08-10T05:34:59+00:00",
+  "generated_at_utc": "2026-08-11T01:23:05+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -324,6 +448,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "320419e46f914bfecbb1",
+  "release_id": "1cd79e014c554124d8d0",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }
