@@ -1,12 +1,10 @@
 {
   "auto_publish": false,
   "automation_enabled": true,
-  "current_context_snapshot_id": "0a585be42179f54d",
-  "errors": [
-    "Analytical evidence changed but autonomous OpenAI spending is disabled."
-  ],
-  "evidence_snapshot_id": "4b1db8082e6f58fcb7b878f3",
-  "finished_at_utc": "2026-08-11T06:48:55.578754+00:00",
+  "current_context_snapshot_id": "4eceb185d2c96ddd",
+  "errors": [],
+  "evidence_snapshot_id": "328007af4f1368152c2c4f45",
+  "finished_at_utc": "2026-08-11T08:37:57.072675+00:00",
   "openai_enabled": false,
   "paid_calls": {
     "daily_ceiling": 4,
@@ -17,11 +15,26 @@
   },
   "phases": {
     "deterministic_refresh": {
-      "status": "passed"
+      "elapsed_sec": 706.413,
+      "status": "passed",
+      "subphases": {
+        "Current Context": 14.446,
+        "FRED + finance": 25.715,
+        "adoption": 15.947,
+        "assemble + persist snapshots": 5.075,
+        "commercialization": 2.435,
+        "economic outcomes": 60.665,
+        "infrastructure + connectivity": 80.993,
+        "market + EDGAR": 263.013,
+        "power + grid": 153.392,
+        "water": 34.496,
+        "workforce": 48.48
+      }
     },
     "evidence": {
       "artifact_current": false,
       "artifact_status": "stale",
+      "elapsed_sec": 1.511,
       "status": "passed"
     },
     "openai": {
@@ -31,22 +44,23 @@
   },
   "publish_ready": false,
   "result": "openai_disabled_for_changed_evidence",
-  "run_id": "20260811T060658Z_f17fa44a",
+  "run_id": "20260811T082608Z_0d48a301",
   "schedule": {
     "time": "05:17",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-11T06:06:58.844912+00:00",
+  "started_at_utc": "2026-08-11T08:26:08.532254+00:00",
   "trigger": "workflow_dispatch",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
     "connectivity: SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
-    "adoption: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
-    "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
-    "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
+    "adoption: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
-    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth"
+    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
+    "Analytical evidence changed but autonomous OpenAI spending is disabled."
   ]
 }
