@@ -103,7 +103,7 @@ from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 
-APP_VERSION = "v7.1.1"
+APP_VERSION = "v7.1.2"
 APP_STATE_SCHEMA_VERSION = "70.1-openai-artifact-durability"
 
 st.set_page_config(

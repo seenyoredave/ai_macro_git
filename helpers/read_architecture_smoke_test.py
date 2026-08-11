@@ -29,7 +29,7 @@ sys.modules.setdefault("streamlit", _FakeStreamlit())
 from analytics.dashboard_context import DashboardContext  # noqa: E402
 from analytics.read_evidence import DOMAIN_ORDER, EvidenceFact, EvidencePacket, evidence_snapshot_id, model_evidence_packets  # noqa: E402
 from analytics.read_models import GeneratedDomainRead, GeneratedDomainReadSet, GeneratedMacroRead, SupportedSentence  # noqa: E402
-from analytics.read_prompts import MACRO_PROMPT_VERSION, macro_read_input  # noqa: E402
+from analytics.read_prompts import BASE_INSTRUCTIONS, DOMAIN_PROMPT_VERSION, MACRO_PROMPT_VERSION, domain_read_input, macro_read_input  # noqa: E402
 import analytics.read_service as read_service  # noqa: E402
 import analytics.read_store as read_store  # noqa: E402
 from analytics.read_validation import validate_domain_read_set, validate_macro_read  # noqa: E402
@@ -87,24 +87,24 @@ def _macro() -> GeneratedMacroRead:
     return GeneratedMacroRead(
         selected_domains=selected,
         headline=_sentence(
-            "Investment capacity is outrunning realized diffusion and outcomes.",
+            "Investment is moving through the system faster than broad economic gains.",
             "finance.anchor", "compute.anchor", "adoption.anchor", "economic_impact.anchor",
         ),
         analysis=[
             _sentence(
-                "Capital and compute evidence point to continued buildout capacity, but that supply-side momentum is only one part of the system.",
+                "Available financing is supporting continued compute investment.",
                 "finance.anchor", "compute.anchor",
             ),
             _sentence(
-                "Adoption evidence shows that deployment is progressing on a different track from the resources being committed upstream.",
+                "Compute investment creates capacity that businesses still need to turn into routine use.",
                 "compute.anchor", "adoption.anchor",
             ),
             _sentence(
-                "Market evidence adds a financing and valuation backdrop without establishing that infrastructure spending has already translated into broad economic gains.",
-                "market.anchor", "finance.anchor", "economic_impact.anchor",
+                "Market and financing evidence both show that capital remains available for the buildout.",
+                "market.anchor", "finance.anchor",
             ),
             _sentence(
-                "Taken together, the lifecycle is better described as a large buildout moving through uneven diffusion than as a completed productivity transformation.",
+                "The final step is broader adoption translating into measurable economic gains.",
                 "adoption.anchor", "economic_impact.anchor",
             ),
         ],
@@ -239,6 +239,14 @@ def main() -> None:
     ratio_validation = validate_domain_read_set(ratio_reads, ratio_dicts)
     require(ratio_validation.passed, f"Ratio display expressed as natural-language times was rejected: {ratio_validation.errors}")
 
+    thousands_packets = _packets()
+    thousands_dicts = {domain: packet.to_dict() for domain, packet in thousands_packets.items()}
+    thousands_dicts["market"]["facts"][0]["display"] = "1,234,567"
+    thousands_reads = _domain_set().model_copy(deep=True)
+    thousands_reads.reads[0].analysis[0].text = "The retained total is 1,234,567."
+    thousands_validation = validate_domain_read_set(thousands_reads, thousands_dicts)
+    require(thousands_validation.passed, f"Thousands separators were miscounted as prose commas: {thousands_validation.errors}")
+
     question_reads = _domain_set().model_copy(deep=True)
     question_reads.reads[0].analysis[0].text = "What does the retained evidence mean?"
     question_validation = validate_domain_read_set(question_reads, packet_dicts)
@@ -272,7 +280,8 @@ def main() -> None:
     macro_validation = validate_macro_read(_macro(), packet_dicts, domain_texts=domain_texts)
     require(macro_validation.passed, f"Valid macro commentary failed validation: {macro_validation.errors}")
     require(4 <= len(_macro().selected_domains) <= 6, "Macro synthesis is not broad enough to represent the platform lifecycle.")
-    require(MACRO_PROMPT_VERSION == "macro-read-3.2", "Macro prompt version did not advance with the plain-language editorial contract.")
+    require(DOMAIN_PROMPT_VERSION == "domain-read-3.0", "Domain prompt version did not advance with the Reader Voice contract.")
+    require(MACRO_PROMPT_VERSION == "macro-read-4.0", "Macro prompt version did not advance with the Reader Voice contract.")
     macro_prompt = macro_read_input(model_packet_dicts, {
         domain: {"headline": f"{domain} thesis", "fact_ids_used": [f"{domain}.anchor"]}
         for domain in DOMAIN_ORDER
@@ -281,10 +290,26 @@ def main() -> None:
         "smart non-specialist",
         "Simplify the language, not the analysis",
         "Do not define technical terms inside the Read",
-        "95-125 words",
-        "no more than two displayed quantities",
+        "85-110 words",
+        "No analysis sentence may rely on more than two domains",
+        "Do not flatten those levels into a peer comparison",
     ):
-        require(phrase in macro_prompt, f"Macro prompt lost the plain-language reader contract: {phrase!r}")
+        require(phrase in macro_prompt, f"Macro prompt lost the Reader Voice contract: {phrase!r}")
+    domain_prompt = domain_read_input(model_packet_dicts)
+    for phrase in (
+        "55-85 words",
+        "One main relationship per sentence",
+        "Prefer zero to two commas",
+        "never use more than three",
+    ):
+        require(phrase in domain_prompt, f"Domain prompt lost the Reader Voice contract: {phrase!r}")
+    for phrase in (
+        "Preserve analytical hierarchy",
+        "false grammatical equality",
+        "Read the prose as spoken English",
+        "Do not use semicolons",
+    ):
+        require(phrase in BASE_INSTRUCTIONS, f"Base prompt lost the human-prose contract: {phrase!r}")
 
     copied_macro = _macro().model_copy(deep=True)
     copied_macro.analysis[0].text = _domain_set().reads[0].analysis[0].text
@@ -407,16 +432,33 @@ def main() -> None:
         # Macro validation must prevent a single overloaded sentence from doing
         # the work of an entire platform overview.
         overloaded = _macro().model_copy(deep=True)
-        overloaded.analysis[3].text = (
-            "Taken together, the lifecycle is better described as a large buildout moving through uneven diffusion, "
-            "with capital, compute, adoption, workforce, and economic outcomes all contributing separate signals that "
-            "must be reconciled before the platform can describe the transformation as mature or broadly distributed."
-        )
-        overloaded.analysis[3].fact_ids = [
-            "market.anchor", "finance.anchor", "compute.anchor", "adoption.anchor", "economic_impact.anchor"
-        ]
+        overloaded.analysis[2].text = "Market, financing, and compute evidence all contribute to the same system-level claim."
+        overloaded.analysis[2].fact_ids = ["market.anchor", "finance.anchor", "compute.anchor"]
         overloaded_result = validate_macro_read(overloaded, {domain: packet.to_dict() for domain, packet in packets.items()}, domain_texts={})
-        require(not overloaded_result.passed, "Macro validator accepted an overloaded closing sentence spanning more than three domains.")
+        require(not overloaded_result.passed, "Macro validator accepted a sentence spanning more than two domains.")
+
+        comma_heavy = _domain_set().model_copy(deep=True)
+        comma_heavy.reads[0].analysis[0].text = "The evidence is current, material, bounded, specific, and useful."
+        comma_result = validate_domain_read_set(comma_heavy, packet_dicts)
+        require(not comma_result.passed and any("commas" in error for error in comma_result.errors), "Reader validator accepted a sentence with four commas.")
+
+        semicolon_heavy = _domain_set().model_copy(deep=True)
+        semicolon_heavy.reads[0].analysis[0].text = "The evidence establishes the condition; the interpretation stays bounded."
+        semicolon_result = validate_domain_read_set(semicolon_heavy, packet_dicts)
+        require(not semicolon_result.passed and any("semicolons" in error for error in semicolon_result.errors), "Reader validator accepted a semicolon.")
+
+        long_sentence = _domain_set().model_copy(deep=True)
+        long_sentence.reads[0].analysis[0].text = "The retained evidence establishes a current condition that matters because the underlying constraint remains visible across the measured population and still shapes how the domain can move from present capacity toward broader use over time."
+        long_result = validate_domain_read_set(long_sentence, packet_dicts)
+        require(not long_result.passed and any("sentence exceeds 32 words" in error for error in long_result.errors), "Reader validator accepted an analysis sentence over 32 words.")
+
+        numeric_dense_packets = _packets()
+        numeric_dense_dicts = {domain: packet.to_dict() for domain, packet in numeric_dense_packets.items()}
+        numeric_dense_dicts["market"]["facts"][0]["label"] = "Observed values 1 2 3 4"
+        numeric_dense = _domain_set().model_copy(deep=True)
+        numeric_dense.reads[0].analysis[0].text = "The retained values are 1, 2, 3 and 4."
+        numeric_result = validate_domain_read_set(numeric_dense, numeric_dense_dicts)
+        require(not numeric_result.passed and any("displayed quantities" in error for error in numeric_result.errors), "Reader validator accepted more than three displayed quantities.")
 
         saved_attempts.clear()
         published.clear()
@@ -534,7 +576,7 @@ def main() -> None:
         require(retired_token not in live_commentary_sources, f"Retired deterministic analytical commentary path survived: {retired_token}")
 
     print(
-        "PASS  v7.0.8 plain-language Macro synthesis architecture · "
+        "PASS  Reader Voice commentary architecture · "
         f"{len(DOMAIN_ORDER)} evidence domains · 2 mocked API calls · durable paid-attempt gate"
     )
 

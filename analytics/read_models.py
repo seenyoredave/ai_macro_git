@@ -23,7 +23,7 @@ class GeneratedDomainRead(BaseModel):
         "grid_storage", "water", "adoption", "workforce", "economic_impact"
     ]
     headline: SupportedSentence
-    analysis: list[SupportedSentence] = Field(min_length=3, max_length=5)
+    analysis: list[SupportedSentence] = Field(min_length=3, max_length=4)
 
 
 class GeneratedDomainReadSet(BaseModel):

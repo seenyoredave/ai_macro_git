@@ -1,4 +1,4 @@
-"""Contracts for v7.1.0 bounded unattended publication."""
+"""Contracts for bounded unattended publication."""
 
 from __future__ import annotations
 
@@ -66,8 +66,8 @@ def main() -> None:
     daily_source = (ROOT / "loaders" / "current_context_daily.py").read_text(encoding="utf-8")
 
     _check(AUTOMATION_TIMEZONE == "America/New_York", "Automation timezone drifted from Eastern Time.")
-    _check(AUTOMATION_START_LOCAL == "05:17", "Automation start time drifted from 05:17 Eastern.")
-    _check("cron: '17 5 * * *'" in workflow and "timezone: 'America/New_York'" in workflow, "Scheduled workflow is not 05:17 Eastern daily.")
+    _check(AUTOMATION_START_LOCAL == "09:00", "Automation start time drifted from 09:00 Eastern.")
+    _check("cron: '0 9 * * *'" in workflow and "timezone: 'America/New_York'" in workflow, "Scheduled workflow is not 09:00 Eastern daily.")
     _check("workflow_dispatch:" in workflow and "allow_paid:" in workflow and "publish:" in workflow, "Manual workflow lacks explicit paid/publish opt-ins.")
     _check("concurrency:" in workflow and "cancel-in-progress: false" in workflow, "Automation workflow can overlap or cancel active publication work.")
     _check("permissions:" in workflow and "contents: write" in workflow, "Workflow lacks explicit publication permission.")
@@ -181,7 +181,7 @@ def main() -> None:
         budget.reserve_paid_call = original_reserve
         budget.complete_paid_call = original_complete
 
-    print("PASS  v7.1.0 automation · retained-only public Reader · 05:17 Eastern · 2/run · 4/day · zero SDK retries")
+    print("PASS  automation · retained-only public Reader · 09:00 Eastern · 2/run · 4/day · zero SDK retries")
 
 
 if __name__ == "__main__":

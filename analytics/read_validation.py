@@ -10,7 +10,7 @@ from typing import Any, Iterable
 from analytics.read_evidence import DOMAIN_ORDER, evidence_fact_index
 from analytics.read_models import GeneratedDomainRead, GeneratedDomainReadSet, GeneratedMacroRead, SupportedSentence
 
-VALIDATOR_VERSION = "2.5.0"
+VALIDATOR_VERSION = "2.6.0"
 _NUMBER_RE = re.compile(
     r"(?<![A-Za-z0-9])"
     r"[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
@@ -25,6 +25,15 @@ _NEGATIVE_DIRECTION_RE = re.compile(
     r"down|lower|below|negative|reduce|reduced|reducing|reduction|lost|loss|weakened?|weakening)\b",
     re.IGNORECASE,
 )
+
+MAX_ANALYSIS_SENTENCE_WORDS = 32
+MAX_SENTENCE_COMMAS = 3
+MAX_DISPLAYED_QUANTITIES = 3
+MAX_DOMAIN_ANALYSIS_WORDS = 95
+MAX_MACRO_ANALYSIS_WORDS = 120
+MAX_MACRO_SENTENCE_DOMAINS = 2
+MAX_MACRO_CLOSING_WORDS = 28
+
 _SCALE = {
     "k": Decimal("1000"),
     "thousand": Decimal("1000"),
@@ -59,6 +68,35 @@ class ValidationResult:
 
 def _word_count(text: str) -> int:
     return len(str(text or "").split())
+
+
+def _numeric_occurrence_count(text: str) -> int:
+    return sum(1 for _ in _NUMBER_RE.finditer(str(text or "")))
+
+
+def _read_numeric_occurrence_count(sentences: Iterable[SupportedSentence]) -> int:
+    return sum(_numeric_occurrence_count(sentence.text) for sentence in sentences)
+
+
+def _grammatical_comma_count(text: str) -> int:
+    # Thousands separators are numeric formatting, not sentence structure.
+    prose = re.sub(r"(?<=\d),(?=\d{3}(?:\D|$))", "", str(text or ""))
+    return prose.count(",")
+
+
+def _validate_prose_shape(sentence: SupportedSentence, *, label: str) -> tuple[list[str], list[dict[str, Any]]]:
+    errors: list[str] = []
+    failures: list[dict[str, Any]] = []
+    comma_count = _grammatical_comma_count(sentence.text)
+    if comma_count > MAX_SENTENCE_COMMAS:
+        message = f"{label}: sentence uses more than {MAX_SENTENCE_COMMAS} commas"
+        errors.append(message)
+        failures.append(_failure(label, "comma_density", sentence, message, comma_count=comma_count))
+    if ";" in str(sentence.text or ""):
+        message = f"{label}: semicolons are not allowed in Reader commentary"
+        errors.append(message)
+        failures.append(_failure(label, "semicolon", sentence, message))
+    return errors, failures
 
 
 def _canonical_number(raw: str) -> str | None:
@@ -182,6 +220,9 @@ def _validate_sentence(
         message = f"{label}: out-of-scope fact_ids: {', '.join(wrong_scope)}"
         errors.append(message)
         failures.append(_failure(label, "out_of_scope_fact_ids", sentence, message, out_of_scope_fact_ids=wrong_scope))
+    prose_errors, prose_failures = _validate_prose_shape(sentence, label=label)
+    errors.extend(prose_errors)
+    failures.extend(prose_failures)
     known_facts = [fact_index[fact_id] for fact_id in fact_ids if fact_id in fact_index]
     used_numbers = _numeric_tokens(sentence.text)
     allowed_numbers = _allowed_numeric_tokens(known_facts)
@@ -232,10 +273,22 @@ def _validate_domain_read(read: GeneratedDomainRead, fact_index: dict[str, dict[
         message = f"{read.domain}: headline exceeds 12 words"
         errors.append(message)
         failures.append(_failure(f"{read.domain}.headline", "word_limit", read.headline, message))
-    if _word_count(" ".join(item.text for item in read.analysis)) > 150:
-        message = f"{read.domain}: analysis exceeds 150 words"
+    analysis_words = _word_count(" ".join(item.text for item in read.analysis))
+    if analysis_words > MAX_DOMAIN_ANALYSIS_WORDS:
+        message = f"{read.domain}: analysis exceeds {MAX_DOMAIN_ANALYSIS_WORDS} words"
         errors.append(message)
-        failures.append(_failure(f"{read.domain}.analysis", "word_limit", None, message))
+        failures.append(_failure(f"{read.domain}.analysis", "word_limit", None, message, word_count=analysis_words))
+    numeric_occurrences = _read_numeric_occurrence_count(read.analysis)
+    if numeric_occurrences > MAX_DISPLAYED_QUANTITIES:
+        message = f"{read.domain}: analysis uses more than {MAX_DISPLAYED_QUANTITIES} displayed quantities"
+        errors.append(message)
+        failures.append(_failure(f"{read.domain}.analysis", "numeric_density", None, message, numeric_occurrences=numeric_occurrences))
+    for index, sentence in enumerate(read.analysis):
+        words = _word_count(sentence.text)
+        if words > MAX_ANALYSIS_SENTENCE_WORDS:
+            message = f"{read.domain}.analysis[{index}]: sentence exceeds {MAX_ANALYSIS_SENTENCE_WORDS} words"
+            errors.append(message)
+            failures.append(_failure(f"{read.domain}.analysis[{index}]", "sentence_length", sentence, message, word_count=words))
     for field, sentence in [("headline", read.headline), *[(f"analysis[{i}]", item) for i, item in enumerate(read.analysis)]]:
         checked += 1
         sentence_errors, sentence_failures, ok = _validate_sentence(
@@ -370,10 +423,16 @@ def validate_macro_read(
         message = "macro: headline exceeds 16 words"
         errors.append(message)
         failures.append(_failure("macro.headline", "word_limit", read.headline, message))
-    if _word_count(" ".join(item.text for item in read.analysis)) > 135:
-        message = "macro: analysis exceeds 135 words"
+    macro_words = _word_count(" ".join(item.text for item in read.analysis))
+    if macro_words > MAX_MACRO_ANALYSIS_WORDS:
+        message = f"macro: analysis exceeds {MAX_MACRO_ANALYSIS_WORDS} words"
         errors.append(message)
-        failures.append(_failure("macro.analysis", "word_limit", None, message))
+        failures.append(_failure("macro.analysis", "word_limit", None, message, word_count=macro_words))
+    numeric_occurrences = _read_numeric_occurrence_count(read.analysis)
+    if numeric_occurrences > MAX_DISPLAYED_QUANTITIES:
+        message = f"macro: analysis uses more than {MAX_DISPLAYED_QUANTITIES} displayed quantities"
+        errors.append(message)
+        failures.append(_failure("macro.analysis", "numeric_density", None, message, numeric_occurrences=numeric_occurrences))
 
     all_claims = [read.headline, *read.analysis]
     cited_domains: set[str] = set()
@@ -396,13 +455,13 @@ def validate_macro_read(
 
     for index, sentence in enumerate(read.analysis):
         words = _word_count(sentence.text)
-        if words > 38:
-            message = f"macro.analysis[{index}]: sentence exceeds 38 words"
+        if words > MAX_ANALYSIS_SENTENCE_WORDS:
+            message = f"macro.analysis[{index}]: sentence exceeds {MAX_ANALYSIS_SENTENCE_WORDS} words"
             errors.append(message)
             failures.append(_failure(f"macro.analysis[{index}]", "sentence_length", sentence, message, word_count=words))
         sentence_domains = _sentence_domains(sentence)
-        if len(sentence_domains) > 3:
-            message = f"macro.analysis[{index}]: sentence spans more than three domains"
+        if len(sentence_domains) > MAX_MACRO_SENTENCE_DOMAINS:
+            message = f"macro.analysis[{index}]: sentence spans more than {MAX_MACRO_SENTENCE_DOMAINS} domains"
             errors.append(message)
             failures.append(_failure(
                 f"macro.analysis[{index}]",
@@ -412,8 +471,8 @@ def validate_macro_read(
                 domains=sorted(sentence_domains),
             ))
     final_words = _word_count(read.analysis[-1].text) if read.analysis else 0
-    if final_words > 30:
-        message = "macro.analysis[3]: closing sentence exceeds 30 words"
+    if final_words > MAX_MACRO_CLOSING_WORDS:
+        message = f"macro.analysis[3]: closing sentence exceeds {MAX_MACRO_CLOSING_WORDS} words"
         errors.append(message)
         failures.append(_failure("macro.analysis[3]", "closing_sentence_length", read.analysis[-1], message, word_count=final_words))
 
