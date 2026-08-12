@@ -9,7 +9,7 @@ import streamlit as st
 from analytics.dashboard_context import DashboardContext
 from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_evidence_packets, evidence_snapshot_id, model_evidence_packets
 from analytics.read_prompts import DOMAIN_PROMPT_VERSION, MACRO_PROMPT_VERSION
-from analytics.read_service import generate_validated_read_artifact, regenerate_macro_read, resume_saved_read_attempt
+from analytics.read_service import READ_SERVICE_COMPATIBLE_VERSIONS, generate_validated_read_artifact, reapply_last_read, regenerate_macro_read, resume_saved_read_attempt
 from analytics.read_store import latest_recoverable_attempt, load_read_artifact
 from automation.config import AUTOMATION_START_LOCAL, AUTOMATION_TIMEZONE
 from automation.status import load_automation_status
@@ -127,9 +127,19 @@ def _operations_workspace() -> None:
 
 
 def _current_context_workspace() -> None:
-    status = current_context_status(st.session_state.get("current_context_load_report"))
-    if status.engine_mismatch or status.refresh_required:
+    report = dict(st.session_state.get("current_context_load_report") or {})
+    status = current_context_status(report)
+    refresh_status = str(report.get("refresh_status") or "")
+    if status.engine_mismatch:
         st.warning("Retained Current Context predates the installed discovery engine.")
+    elif refresh_status == "failed_retained_fallback":
+        st.error("Latest Current Context refresh failed before publication; prior retained context remains active.")
+        if report.get("error"):
+            st.caption(f"Refresh error: `{report.get('error')}`")
+    elif refresh_status == "coverage_floor_not_met_retained_fallback":
+        st.warning("Latest Current Context refresh did not reach the six-domain coverage floor; prior retained context remains active.")
+    elif status.refresh_required:
+        st.warning("Current Context requires another refresh before the retained snapshot is considered current.")
     else:
         st.caption(f"{status.source_mode.upper()} · engine {status.engine_version} · as of {status.as_of or 'unknown'}")
     if status.snapshot_id:
@@ -146,8 +156,28 @@ def _current_context_workspace() -> None:
     st.write(f"Grounding attempted `{status.attempted:,}`")
     st.write(f"Grounded `{status.grounded:,}`")
     st.write(f"Qualified `{status.qualified:,}`")
-    st.write(f"Selected `{status.selected:,}`")
-    st.write(f"Rendered `{status.rendered:,}`")
+    st.write(f"Newly selected this refresh `{status.selected:,}`")
+    if status.continuity_attempted:
+        st.write(
+            f"Retained continuity revalidated `{status.continuity_recovered:,}/{status.continuity_attempted:,}`"
+            + (f" · restored `{status.continuity_selected:,}`" if status.continuity_selected else "")
+        )
+    st.write(f"Eligible retained developments rendered now `{status.rendered:,}`")
+
+    st.markdown("**Coverage**")
+    coverage_state = "met" if status.coverage_target_met else "not met"
+    st.write(
+        f"Domain coverage `{status.coverage_selected_domains}/{status.coverage_target}` · "
+        f"floor {coverage_state} · tier `{status.coverage_tier_reached}` {status.coverage_tier_label}"
+    )
+    st.caption(
+        f"Preferred window: {status.preferred_window_days} days · hard window: {status.hard_window_days} days · "
+        f"expanded qualification: {'yes' if status.expanded_qualification else 'no'}"
+    )
+    if status.selected_domains_by_tier:
+        tier_text = " · ".join(f"{key}: {count} domains" for key, count in status.selected_domains_by_tier if count)
+        if tier_text:
+            st.caption(f"Selected domain quality: {tier_text}")
 
     if status.domains:
         with st.expander("Domain pipeline", expanded=False):
@@ -157,7 +187,7 @@ def _current_context_workspace() -> None:
                 st.caption(
                     f"{row.discovered:,} discovered → {row.metadata_qualified:,} metadata → "
                     f"{row.attempted:,} attempted → {row.grounded:,} grounded → "
-                    f"{row.selected:,} selected → {row.rendered:,} rendered"
+                    f"{row.selected:,} newly selected; {row.rendered:,} retained eligible now"
                 )
     if status.grounding_rejections:
         with st.expander("Rejection analysis", expanded=False):
@@ -167,7 +197,6 @@ def _current_context_workspace() -> None:
         with st.expander(f"Provider failures ({len(status.provider_errors)})", expanded=False):
             for row in status.provider_errors[:20]:
                 st.write(f"{row.get('domain', '')}:{row.get('provider', '')}: {row.get('error', '')}")
-    report = dict(st.session_state.get("current_context_load_report") or {})
     with st.expander("Snapshot / provenance", expanded=False):
         st.write(f"Installed engine: `{status.engine_version}`")
         st.write(f"Retained discovery engine: `{status.retained_version}`")
@@ -220,6 +249,8 @@ def _render_ai_result(result: dict) -> None:
     status = str(result.get("status") or "unknown")
     if status == "validated":
         st.success("Validated commentary artifact")
+    elif status == "reapplied":
+        st.success("Last validated Read reapplied for 24 hours")
     elif status == "validation_failed":
         st.error(f"Validation failed at {result.get('stage', 'unknown')} stage")
     else:
@@ -228,6 +259,9 @@ def _render_ai_result(result: dict) -> None:
         st.caption(f"Evidence snapshot `{result.get('evidence_snapshot_id')}`")
     if result.get("attempt_id"):
         st.caption(f"Saved attempt `{result.get('attempt_id')}`")
+    publication = dict(result.get("publication") or {})
+    if publication.get("expires_at"):
+        st.caption(f"Published through: {publication.get('expires_at')}")
     generation = dict(result.get("generation") or {})
     elapsed, input_tokens, output_tokens, total_tokens = _generation_totals(generation)
     if generation:
@@ -311,7 +345,29 @@ def _ai_workspace(context: DashboardContext | None) -> None:
         except Exception as exc:
             st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
 
-    current_artifact = load_read_artifact() if current_snapshot else {}
+    current_artifact = load_read_artifact()
+    reapply_ready = bool(
+        current_artifact
+        and bool((current_artifact.get("validation") or {}).get("passed"))
+        and str(current_artifact.get("service_version") or "") in READ_SERVICE_COMPATIBLE_VERSIONS
+        and isinstance(current_artifact.get("reads"), dict)
+    )
+    if st.button("Apply last Read", use_container_width=True, key="dev-apply-last-read", disabled=not reapply_ready):
+        try:
+            renewed = reapply_last_read(persist=True, source="manual_reapply")
+            st.session_state.developer_last_ai_result = {
+                "status": "reapplied",
+                "attempt_id": renewed.get("attempt_id", ""),
+                "evidence_snapshot_id": renewed.get("evidence_snapshot_id", ""),
+                "publication": renewed.get("publication", {}),
+            }
+            st.session_state.force_rebuild = True
+            st.session_state.developer_last_operation = {"kind": "ai", "label": "Apply last Read", "status": "reapplied"}
+            st.rerun()
+        except Exception as exc:
+            st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
+    st.caption("No OpenAI call. Republishes the most recent validated commentary for another 24 hours while preserving its original evidence snapshot and generation time.")
+
     macro_only_ready = bool(
         current_artifact
         and str(current_artifact.get("evidence_snapshot_id") or "") == current_snapshot
@@ -360,11 +416,21 @@ def _ai_workspace(context: DashboardContext | None) -> None:
             st.write(f"Model: `{commentary.get('model')}`")
         if commentary.get("generated_at"):
             st.caption(f"Generated: {commentary.get('generated_at')}")
+        publication = dict(commentary.get("publication") or {})
+        if publication.get("published_at"):
+            st.caption(f"Applied: {publication.get('published_at')}")
+        if publication.get("expires_at"):
+            st.caption(f"Published through: {publication.get('expires_at')}")
         if commentary.get("evidence_snapshot_id"):
             st.caption(f"Current evidence: `{commentary.get('evidence_snapshot_id')}`")
         artifact_snapshot = commentary.get("artifact_evidence_snapshot_id")
-        if artifact_snapshot and artifact_snapshot != commentary.get("evidence_snapshot_id"):
-            st.warning(f"Stored artifact targets `{artifact_snapshot}` and is stale for the current evidence snapshot.")
+        if commentary.get("publication_active") and artifact_snapshot and not commentary.get("evidence_current"):
+            st.warning(
+                f"The published Read targets `{artifact_snapshot}` while current evidence is `{commentary.get('evidence_snapshot_id')}`. "
+                "Its 24-hour publication lease remains active; generate new commentary if the evidence change is material."
+            )
+        elif commentary.get("status") == "expired":
+            st.warning("The last validated Read is retained but its 24-hour publication lease has expired. Apply last Read or generate new commentary.")
 
 
 def _diagnostics_workspace() -> None:

@@ -532,7 +532,7 @@ def check_named_campus_deduplication():
     decision_ids = set(decisions["Source Record ID"].astype(str))
     # Restrict the fixture to reviewed identities and the original six named
     # collisions so the gate stays bounded while using the production path.
-    pattern = "Homer|Rowan|Colossus|Caprock|CoreWeave|Gregory"
+    pattern = "Homer|Rowan|Colossus|Caprock|CoreWeave|Gregory|Keystone|TECfusions"
     relevant = supplemental["Source Record ID"].astype(str).isin(decision_ids)
     for column in ("Facility", "Operator", "Developer", "Address", "City", "Notes"):
         if column in supplemental.columns:
@@ -554,26 +554,61 @@ def check_named_campus_deduplication():
         matches = campuses["Facility"].str.contains(needle, case=False, na=False)
         _check(int(matches.sum()) == 1, f"Named campus did not resolve once: {needle}")
 
+    # Keystone/TECfusions is a reviewed semantic identity whose upstream
+    # content-derived FracTracker IDs can legitimately change.  Assert the
+    # reviewed campus itself resolves once without coupling the gate to one
+    # historical display-name spelling or source-record ID.
+    keystone = campuses.apply(
+        lambda row: (
+            str(row.get("State") or "").strip().upper() == "PA"
+            and "tecfusions" in " ".join(
+                str(row.get(column) or "")
+                for column in ("Facility", "Operator", "Developer", "Notes")
+            ).casefold()
+            and (
+                "keystone" in " ".join(
+                    str(row.get(column) or "")
+                    for column in ("Facility", "Operator", "Developer", "Notes")
+                ).casefold()
+                or "upper burrell" in " ".join(
+                    str(row.get(column) or "")
+                    for column in ("Facility", "Operator", "Developer", "Notes")
+                ).casefold()
+            )
+        ),
+        axis=1,
+    )
+    _check(int(keystone.sum()) == 1, "Named campus did not resolve once: Keystone Connect / TECfusions")
+
     campus_source_sets = campuses["Source Record ID"].map(
         lambda value: {item.strip() for item in str(value).split("|") if item.strip()}
     )
+    observed_source_ids = set().union(*campus_source_sets.tolist()) if len(campus_source_sets) else set()
     for decision_group, rows in decisions.groupby("Decision Group", sort=False):
         source_ids = set(rows["Source Record ID"].astype(str))
+        # Upstream open trackers may edit/delete records, and FracTracker rows
+        # without an OBJECTID use a content-derived fallback ID.  A reviewed
+        # historical ID therefore cannot be required to exist forever.  Apply
+        # the merge/separate assertion to the reviewed members still present in
+        # the current retained source universe.
+        present_source_ids = source_ids.intersection(observed_source_ids)
+        if len(present_source_ids) < 2:
+            continue
         member_rows = [
             index for index, observed in campus_source_sets.items()
-            if observed.intersection(source_ids)
+            if observed.intersection(present_source_ids)
         ]
         decision = str(rows["Decision"].iloc[0]).casefold()
         if decision == "merge":
             _check(
                 len(set(member_rows)) == 1
-                and source_ids.issubset(campus_source_sets.loc[member_rows[0]]),
+                and present_source_ids.issubset(campus_source_sets.loc[member_rows[0]]),
                 f"Reviewed campus merge failed: {decision_group}",
             )
         elif decision == "separate":
             _check(
-                len(member_rows) == len(source_ids)
-                and len(set(member_rows)) == len(source_ids),
+                len(member_rows) == len(present_source_ids)
+                and len(set(member_rows)) == len(present_source_ids),
                 f"Reviewed distinct campuses were combined: {decision_group}",
             )
 

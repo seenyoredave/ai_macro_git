@@ -11,7 +11,7 @@ from uuid import uuid4
 from config.deployment import PROJECT_ROOT, repository_writes_enabled
 from helpers.atomic_io import atomic_write_json, synchronized_path
 
-READ_ARTIFACT_VERSION = "2.0.0"
+READ_ARTIFACT_VERSION = "2.1.0"
 OPENAI_ARTIFACT_ROOT = PROJECT_ROOT / "openai_artifacts"
 READ_ARTIFACT_PATH = OPENAI_ARTIFACT_ROOT / "current.json"
 READ_ATTEMPT_DIR = OPENAI_ARTIFACT_ROOT / "attempts"

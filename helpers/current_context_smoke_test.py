@@ -55,31 +55,42 @@ def _fresh_event(event_id: str, date: str, priority: int, fact: str, *, domain="
         "event_id": event_id,
         "event_date": date,
         "domain": domain,
-        "event_type": "regulatory_order",
+        "event_type": "reported_development",
         "priority": priority,
         "verified_fact": fact,
-        "platform_relevance": "The action changes near-term project assumptions",
-        "source_name": "Example Infrastructure Commission",
-        "source_label": "Example commission order",
-        "source_url": f"https://example.gov/{event_id}",
-        "source_type": "primary",
-        "verification_status": "confirmed",
-        "expires_after_days": 7,
+        "platform_relevance": "",
+        "source_name": "Example News",
+        "source_label": "Example News",
+        "source_url": f"https://example.com/{event_id}",
+        "source_type": "news",
+        "verification_status": "reported",
+        "expires_after_days": 10,
         "surface": "domain",
         "secondary_domains": "",
         "sectors": "",
         "tickers": "",
-        "status": "Ordered",
-        "legal_status": "Order issued",
+        "status": "Reported",
+        "legal_status": "",
         "resolution_status": "recent",
         "resolved_date": "",
-        "source_tier": "primary",
-        "evidence_role": "official_statement",
+        "source_tier": "coverage_fallback",
+        "evidence_role": "secondary",
         "persistent": "false",
-        "record_origin": "test_fixture",
-        "retrieved_at": "",
-        "discovery_provider": "fixture",
-        "discovery_query": "",
+        "record_origin": "automated_discovery",
+        "retrieved_at": f"{date}T12:00:00+00:00",
+        "discovery_provider": "google_news_rss",
+        "discovery_query": "fixture query",
+        "grounding_version": GROUNDING_VERSION,
+        "grounding_status": "grounded",
+        "source_resolved_url": f"https://example.com/{event_id}",
+        "source_text_method": "fixture_body",
+        "source_text_chars": 500,
+        "source_evidence_hash": f"fixture-{event_id}",
+        "qualification_tier": "E",
+        "qualification_tier_label": "Coverage floor",
+        "effective_minimum_materiality": 0.1,
+        "topic_anchor_required": False,
+        "minimum_source_text_chars": 100,
     }
 
 
@@ -130,7 +141,20 @@ def main() -> None:
         if first.read_bytes() != b"old-first" or second.read_bytes() != b"old-second":
             raise AssertionError("Current Context bundle rollback left a partial commit.")
 
-    context = load_current_context(as_of="2026-08-04")
+    # Use modern source-grounded fixtures here rather than the shipped legacy
+    # registry. Legacy unproven rows are intentionally no longer Reader-eligible.
+    seed_rows = [
+        _fresh_event("fixture-market", "2026-08-04", 120, "Nvidia shares rose 8% after AI data-center revenue increased", domain="market"),
+        _fresh_event("fixture-finance", "2026-08-04", 119, "Microsoft launched a $10 billion bond offering to finance AI data centers", domain="finance"),
+        _fresh_event("fixture-compute", "2026-08-04", 118, "TSMC announced advanced AI chip production capacity for new accelerators", domain="compute"),
+        _fresh_event("fixture-data-center", "2026-08-04", 117, "Digital Realty opened a 100 MW data center campus for cloud and AI workloads", domain="data_center"),
+        _fresh_event("fixture-power", "2026-08-04", 116, "A utility approved a 500 MW power contract for a new data center", domain="power"),
+        _fresh_event("fixture-water", "2026-08-04", 115, "A county approved a 20 million gallon reclaimed-water project for data-center cooling", domain="water"),
+    ]
+    with tempfile.TemporaryDirectory() as tmp:
+        fixture_registry = Path(tmp) / "events.csv"
+        pd.DataFrame(seed_rows).to_csv(fixture_registry, index=False)
+        context = load_current_context(as_of="2026-08-04", path=fixture_registry, limit_per_domain=1)
 
     # Every substantive tab receives one compact row.  A real no-match is
     # permitted; a duplicated development is not.
@@ -188,16 +212,13 @@ def main() -> None:
     if "record_origin" not in registry_text.splitlines()[0]:
         raise AssertionError("The retained event ledger does not disclose record provenance.")
 
-    # Unresolved regulatory events remain eligible beyond an ordinary news window.
-    if texas:
-        later = load_current_context(as_of="2026-10-01")
-        if later["by_domain"]["data_center"]["events"][0]["event_id"] != texas[0]["event_id"]:
-            raise AssertionError("The unresolved Texas audit expired solely because it became older than seven days.")
+    # Current Context is bounded by the hard news window; unresolved actions do
+    # not persist indefinitely without a newly grounded current development.
 
-    # A fresher, more material event can still displace an unresolved event.
+    # A fresher, more material automated event displaces older retained context.
     base = pd.read_csv(PROJECT_ROOT / "data" / "weekly_context_events.csv")
     extra = pd.DataFrame([
-        _fresh_event("fresh-data-center-order", "2026-08-04", 180, "Example Infrastructure Commission ordered a new data-center interconnection standard"),
+        _fresh_event("fresh-data-center-order", "2026-08-04", 180, "Digital Realty opened a 100 MW data center campus for AI workloads"),
     ])
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "events.csv"
@@ -225,13 +246,20 @@ def main() -> None:
 
     for item, expected_reason in (
         (_item("AI company reports earnings and raises guidance", "Fox News", "https://www.foxnews.com/example"), "explicitly excluded"),
-        (_item("AI company reports earnings and raises guidance", "The New York Times", "https://www.nytimes.com/example"), "requires corroboration"),
         (_item("Celebrity discusses artificial intelligence", "Reuters", "https://www.reuters.com/lifestyle/example"), "no domain relevance"),
         (_item("Investors debate the future of AI stocks", "Reuters", "https://www.reuters.com/business/example"), "insufficient domain materiality"),
     ):
         candidate, audit = evaluate_item(item, domain="market", current=current, provider="fixture")
         if candidate is not None or expected_reason not in audit["reason"]:
             raise AssertionError(f"Expected rejection containing {expected_reason!r}: {audit}")
+
+    # Manual-review journalism is a progressive fallback, not a preferred-tier source.
+    nyt_candidate, nyt_audit = evaluate_item(
+        _item("AI company reports earnings and raises guidance", "The New York Times", "https://www.nytimes.com/example"),
+        domain="market", current=current, provider="fixture",
+    )
+    if nyt_candidate is None or nyt_candidate.get("qualification_tier") != "C":
+        raise AssertionError(f"Manual-review source did not enter at the expanded tier: {nyt_audit}")
 
     # Representative Market/Finance business-news fixtures clear the revised
     # domain rules, while a generic market recap does not become AI context.
@@ -265,8 +293,8 @@ def main() -> None:
         ),
         domain="market", current=current, provider="fixture",
     )
-    if generic is not None or "domain anchor" not in generic_audit["reason"]:
-        raise AssertionError(f"Generic market recap leaked into AI Macro Market context: {generic_audit}")
+    if generic is None or generic.get("qualification_tier") not in {"D", "E"}:
+        raise AssertionError(f"Progressive coverage did not nominate the generic recap only at a broad tier: {generic_audit}")
 
     preview, preview_audit = evaluate_item(
         _item(
@@ -287,12 +315,11 @@ def main() -> None:
         ),
         domain="finance", current=current, provider="fixture",
     )
-    if unrelated_private_credit is not None or "domain anchor" not in unrelated_audit["reason"]:
-        raise AssertionError(f"Unrelated private-credit transaction leaked into AI Macro Finance: {unrelated_audit}")
+    if unrelated_private_credit is None or unrelated_private_credit.get("qualification_tier") not in {"D", "E"}:
+        raise AssertionError(f"Progressive coverage did not defer unrelated private credit to a broad tier: {unrelated_audit}")
 
-    # Clump C applies the same transparent 7-day/materiality grammar to every
-    # remaining domain.  Each fixture must clear its own vocabulary rather than
-    # a universal action-word score.
+    # The preferred seven-day grammar remains the first pass for every domain;
+    # lower tiers may broaden only when cross-domain coverage needs it.
     domain_fixtures = {
         "compute": "Nvidia secures additional HBM capacity for AI accelerators",
         "data_center": "Virginia approves permit for 1.2 GW data center campus",
@@ -346,8 +373,8 @@ def main() -> None:
         raise AssertionError(f"Source-grounded Grid fact was not built from source evidence: {grid_grounding}")
     if grounded_grid.get("verified_fact") == grid_meta.get("discovery_title"):
         raise AssertionError("Reader-facing Grid copy merely repeated the discovery headline.")
-    if "transmission and storage" not in grounded_grid.get("platform_relevance", ""):
-        raise AssertionError("Source-grounded Grid synthesis lost the fact -> consequence grammar.")
+    if grounded_grid.get("platform_relevance", "") or grounded_grid.get("display") != grounded_grid.get("verified_fact"):
+        raise AssertionError("Source-grounded Grid Reader copy is not fact-only.")
 
     # Materiality precedes extraction. A Market article can be genuinely AI-
     # relevant and still fail the Market significance boundary. Axon is the
@@ -880,10 +907,8 @@ def main() -> None:
     )
     if grounded_power is None or "1,500 MW" not in grounded_power.get("verified_fact", ""):
         raise AssertionError(f"Concrete Power source evidence failed grounding: {power_grounding}")
-    if "dated supply commitment" not in grounded_power.get("platform_relevance", ""):
-        raise AssertionError("Power synthesis did not explain the analytical consequence of the actual contract.")
-    if "The change affects" in grounded_power.get("platform_relevance", ""):
-        raise AssertionError("Power synthesis regressed to generic domain boilerplate.")
+    if grounded_power.get("platform_relevance", "") or grounded_power.get("display") != grounded_power.get("verified_fact"):
+        raise AssertionError("Power Current Context regressed from source-grounded fact-only copy.")
 
     # There is one Current Context architecture.  Registry loading is provider-
     # free, and the retired score-gated/GDELT/live-loader branches must not be
@@ -1039,19 +1064,11 @@ def main() -> None:
         for category, fact_text in examples:
             if not grounding._synthesis_match(domain, category, fact_text.casefold()):
                 raise AssertionError(f"{domain}.{category} fixture no longer matches its canonical vocabulary.")
-            consequence = grounding._specific_relevance(domain, fact_text, fact_text)
-            if not consequence:
-                raise AssertionError(f"{domain}.{category} has vocabulary but no deterministic Reader consequence.")
 
-    # Market and Finance are high-cadence anchor domains.  Once a development
-    # clears the evidence gates, lack of a bespoke wording template must never
-    # be the reason it disappears from Reader mode.
-    for domain, generic_fact in (
-        ("market", "A major AI-linked company reported a material strategic development"),
-        ("finance", "A major AI-linked company completed a material capital-structure action"),
-    ):
-        if not grounding._specific_relevance(domain, generic_fact, generic_fact):
-            raise AssertionError(f"{domain} still allows a grounded event to die solely for lack of deterministic phrasing.")
+    # Current Context no longer manufactures deterministic consequence prose.
+    # Canonical vocabulary remains available for qualification/grounding only.
+    if hasattr(grounding, "_specific_relevance"):
+        raise AssertionError("Canned Current Context relevance prose returned to the grounding layer.")
 
     policy_source = (PROJECT_ROOT / "config" / "current_context_policy.py").read_text()
     active_sources = "\n".join(
@@ -1120,8 +1137,22 @@ def main() -> None:
         def fake_discover(domain: str, *, as_of=None):
             if domain == "market":
                 event = dict(accepted)
-                event["domain"] = domain
-                event["owner_domain"] = domain
+                event.update({
+                    "domain": domain,
+                    "owner_domain": domain,
+                    "verified_fact": "Palantir shares surged 20% after the company reported quarterly earnings and raised its annual revenue guidance.",
+                    "source_name": "Reuters",
+                    "source_label": "Reuters",
+                    "source_url": "https://www.reuters.com/business/palantir-example-2026-08-04/",
+                    "source_type": "news",
+                    "verification_status": "reported",
+                    "grounding_status": "grounded",
+                    "grounding_version": GROUNDING_VERSION,
+                    "source_text_method": "fixture_body",
+                    "source_text_chars": 800,
+                    "source_evidence_hash": "fixture-refresh-grounding",
+                    "retrieved_at": "2026-08-04T12:00:00+00:00",
+                })
                 audit = dict(accepted_audit)
                 audit["domain_query"] = domain
                 return [event], [audit], [discovery.FetchStatus(domain, "fixture", "fixture query", 3, "ok", 1, "")]
@@ -1297,8 +1328,8 @@ def main() -> None:
     )
     if lease_grounded is None or "$1.09 trillion" not in lease_grounded.get("verified_fact", ""):
         raise AssertionError(f"Finance source grounding rejected a concrete lease commitment: {lease_grounding}")
-    if not any(term in lease_grounded.get("platform_relevance", "") for term in ("fixed future cash claims", "external capital")):
-        raise AssertionError("Finance lease grounding lost the funding-capacity implication of the source fact.")
+    if lease_grounded.get("platform_relevance", "") or lease_grounded.get("display") != lease_grounded.get("verified_fact"):
+        raise AssertionError("Finance lease Current Context is not source-grounded fact-only copy.")
 
     # Reuters and issuer filings often describe the same economics as future
     # lease payments rather than the exact phrase 'lease commitment'. The
@@ -1314,8 +1345,8 @@ def main() -> None:
     )
     if future_lease_grounded is None:
         raise AssertionError(f"Finance rejected the source's 'future lease payments' wording: {future_lease_result}")
-    if "fixed future cash claims" not in future_lease_grounded.get("platform_relevance", ""):
-        raise AssertionError("Future-lease wording was not classified as a contractual funding-capacity claim.")
+    if future_lease_grounded.get("platform_relevance", "") or future_lease_grounded.get("display") != future_lease_grounded.get("verified_fact"):
+        raise AssertionError("Future-lease Current Context is not source-grounded fact-only copy.")
 
     # A financing process is already a concrete Finance development before final
     # pricing when the source establishes the instrument, magnitude, and active
@@ -1341,25 +1372,30 @@ def main() -> None:
     )
     if in_motion_grounded is None or "$15 billion" not in in_motion_grounded.get("verified_fact", ""):
         raise AssertionError(f"Finance rejected a quantified financing already in market: {in_motion_result}")
-    if not any(
-        phrase in in_motion_grounded.get("platform_relevance", "")
-        for phrase in ("outside investors", "refinancing", "external capital")
-    ):
-        raise AssertionError("Active Anthropic financing lost its financing-capacity implication.")
+    if in_motion_grounded.get("platform_relevance", "") or in_motion_grounded.get("display") != in_motion_grounded.get("verified_fact"):
+        raise AssertionError("Active financing Current Context is not source-grounded fact-only copy.")
 
     # Finance synthesis is fact-first: a ratings sentence in an article that
     # also discusses leases must retain the ratings implication rather than
     # borrowing a consequence from another paragraph.
+    rating_candidate = dict(lease_candidate)
+    rating_candidate.update({
+        "discovery_title": "Oracle Corp goes for high-stakes ratings gamble in AI strategy",
+        "verified_fact": "Oracle Corp goes for high-stakes ratings gamble in AI strategy",
+        "source_url": "https://www.reuters.com/business/oracle-ratings-ai",
+    })
     rating_grounded, rating_result = ground_candidate(
-        lease_candidate, domain="finance",
+        rating_candidate, domain="finance",
         fetcher=lambda *a, **k: _doc(
             "Oracle Corp goes for high-stakes ratings gamble in AI strategy",
             "S&P downgraded Oracle to BBB- as debt reached $129.5 billion and leverage rose. Oracle also has about $260 billion in future data-center lease commitments tied to artificial intelligence infrastructure.",
             url="https://www.reuters.com/business/oracle-ratings-ai",
         ),
     )
-    if rating_grounded is None or "borrowing-cost pressure" not in rating_grounded.get("platform_relevance", ""):
-        raise AssertionError(f"Finance synthesis let article-wide lease language overwrite the chosen ratings fact: {rating_result}")
+    if rating_grounded is None or "downgraded" not in rating_grounded.get("verified_fact", "").casefold():
+        raise AssertionError(f"Finance grounding lost the chosen ratings fact: {rating_result}")
+    if rating_grounded.get("platform_relevance", ""):
+        raise AssertionError("Finance ratings Current Context reintroduced canned consequence prose.")
 
     # The auditable Google path must preserve transport failures rather than
     # reporting a misleading successful zero-result query.
@@ -1659,9 +1695,10 @@ def main() -> None:
         if "The development may change" in roundtrip_markup:
             raise AssertionError("Generic Current Context consequence boilerplate entered a grounded row.")
 
-        # Grounding version is provenance, not a freshness kill switch. A row
-        # that cleared the durable source-grounded evidence contract must remain
-        # eligible until its time window expires.
+        # Event reconstruction version is a Reader-quality contract. When the
+        # nucleus/coherence engine changes materially, older rows remain in the
+        # retained/audit history but must be re-grounded before returning to the
+        # live Reader surface.
         older_grounded = dict(automated_finance)
         older_grounded["event_id"] = "durable-grounded-finance"
         older_grounded["grounding_version"] = "2.3"
@@ -1680,8 +1717,8 @@ def main() -> None:
             event for event in durable_context["by_domain"]["finance"]["events"]
             if event.get("verification_status") != "no_match"
         ]
-        if not durable_finance or durable_finance[0].get("event_id") != "durable-grounded-finance":
-            raise AssertionError("A still-fresh grounded row was invalidated solely by grounding-version drift.")
+        if durable_finance:
+            raise AssertionError("An older event-reconstruction row remained live without re-grounding.")
 
         # Rediscovering the same event must replace the current registry row
         # with newer vetted provenance rather than silently discarding it.
@@ -1704,8 +1741,8 @@ def main() -> None:
 
     # Market/Finance may show two qualified developments, but never more.
     dual = pd.DataFrame([
-        _fresh_event("market-one", "2026-08-04", 180, "Reuters reports earnings and raises guidance", domain="market"),
-        _fresh_event("market-two", "2026-08-03", 170, "Bloomberg reports a large technology acquisition", domain="market"),
+        _fresh_event("market-one", "2026-08-04", 180, "Nvidia shares rose 12% after quarterly AI data center revenue beat forecasts", domain="market"),
+        _fresh_event("market-two", "2026-08-03", 170, "AMD shares rose 9% after the company raised AI accelerator revenue guidance", domain="market"),
     ])
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "events.csv"

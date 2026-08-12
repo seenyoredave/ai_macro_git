@@ -43,7 +43,7 @@ Political and regulatory developments are included when they have a concrete eco
 
 **Corroboration requires independent evidence.** Multiple reports derived from the same filing, wire story, press release, or other upstream source are treated as a single underlying source rather than independent confirmation.
 
-Data and news serve different purposes within the platform. Retained datasets provide the analytical foundation, while recent developments provide current context when they materially change, explain, reinforce, or complicate the broader evidence.
+Current Context independently discovers and source-grounds recent developments, ranks them through a progressive quality ladder, and broadens qualification within a ten-day window as needed to maintain coverage across at least six analytical domains. The strongest seven-day candidates are preferred.
 """.strip()
 
 def _status_rows(regime_metrics):

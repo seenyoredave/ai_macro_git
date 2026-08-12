@@ -50,7 +50,7 @@ def _reference_links(references: list[dict[str, Any]], *, limit: int = 6) -> str
 
 
 def _context_items_html(payload: dict) -> str:
-    items = [item for item in payload.get("current_context_items", []) or [] if isinstance(item, dict)][:2]
+    items = [item for item in payload.get("current_context_items", []) or [] if isinstance(item, dict)][:3]
     if not items:
         recent_context = str(payload.get("recent_context") or "").strip()
         if not recent_context:

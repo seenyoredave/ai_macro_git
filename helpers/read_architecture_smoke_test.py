@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
 import sys
@@ -32,6 +33,7 @@ from analytics.read_models import GeneratedDomainRead, GeneratedDomainReadSet, G
 from analytics.read_prompts import BASE_INSTRUCTIONS, DOMAIN_PROMPT_VERSION, MACRO_PROMPT_VERSION, domain_read_input, macro_read_input  # noqa: E402
 import analytics.read_service as read_service  # noqa: E402
 import analytics.read_store as read_store  # noqa: E402
+import analytics.reader_snapshot as reader_snapshot  # noqa: E402
 from analytics.read_validation import validate_domain_read_set, validate_macro_read  # noqa: E402
 from config.openai_config import OpenAIConfig  # noqa: E402
 from rendering.read_markup import build_domain_read_html  # noqa: E402
@@ -460,6 +462,17 @@ def main() -> None:
         numeric_result = validate_domain_read_set(numeric_dense, numeric_dense_dicts)
         require(not numeric_result.passed and any("displayed quantities" in error for error in numeric_result.errors), "Reader validator accepted more than three displayed quantities.")
 
+        # A bounded range is one reader-visible quantity, not two regex tokens.
+        # This protects demographic brackets, date ranges, and capacity ranges
+        # from false numeric-density failures without weakening the hard ceiling.
+        numeric_range_packets = _packets()
+        numeric_range_dicts = {domain: packet.to_dict() for domain, packet in numeric_range_packets.items()}
+        numeric_range_dicts["market"]["facts"][0]["label"] = "Surveyed adults age 18–64 at 61.8% with a 2.8 percentage-point gap"
+        numeric_range = _domain_set().model_copy(deep=True)
+        numeric_range.reads[0].analysis[0].text = "Use reaches 61.8% of adults age 18–64, with a 2.8 percentage-point gap."
+        numeric_range_result = validate_domain_read_set(numeric_range, numeric_range_dicts)
+        require(numeric_range_result.passed, f"Reader validator counted a bounded numeric range as two quantities: {numeric_range_result.errors}")
+
         saved_attempts.clear()
         published.clear()
         bad_client = _BadDomainClient()
@@ -551,11 +564,71 @@ def main() -> None:
         require(incompatible_status["status"] == "stale", "Pre-analytical commentary artifact was not rejected as schema-incompatible.")
         require(incompatible_reads["market"]["generator"] == "unavailable", "Schema-incompatible commentary reached the Reader.")
 
+        # Reader publication and evidence currency are separate contracts. A
+        # validated Read remains visible for its 24-hour lease even after a
+        # deterministic refresh changes the evidence snapshot.
         stale = dict(artifact)
         stale["evidence_snapshot_id"] = "stale-snapshot"
         stale_reads, stale_status = read_service.build_platform_reads(context, artifact=stale)
-        require(stale_status["status"] == "stale", "Evidence-mismatched commentary is not rejected as stale.")
-        require(stale_reads["market"]["generator"] == "unavailable", "Stale commentary reached the Reader.")
+        require(stale_status["status"] == "validated", "Active leased commentary disappeared after an evidence refresh.")
+        require(stale_status["publication_active"] is True, "Fresh commentary lease is not marked active.")
+        require(stale_status["evidence_current"] is False, "Evidence mismatch was hidden by the publication lease.")
+        require(stale_reads["market"]["generator"] == "openai", "Active leased commentary did not reach the Reader.")
+
+        # Once the lease expires, the same validated artifact remains retained
+        # but is no longer public until it is regenerated or explicitly reapplied.
+        expired = dict(stale)
+        expired["publication"] = {
+            "lease_hours": 24,
+            "published_at": "2026-08-09T12:00:00+00:00",
+            "expires_at": "2026-08-10T12:00:00+00:00",
+            "renewal_count": 0,
+            "source": "generation",
+        }
+        expired_reads, expired_status = read_service.build_platform_reads(context, artifact=expired)
+        require(expired_status["status"] == "expired", "Expired commentary lease is not labeled expired.")
+        require(expired_status["artifact_validated"] is True, "Expired validated commentary lost its validation identity.")
+        require(expired_reads["market"]["generator"] == "unavailable", "Expired commentary remained public.")
+
+        tampered_expiry = dict(expired)
+        tampered_expiry["publication"] = dict(expired["publication"])
+        tampered_expiry["publication"]["expires_at"] = "2099-01-01T00:00:00+00:00"
+        _, tampered_status = read_service.build_platform_reads(context, artifact=tampered_expiry)
+        require(tampered_status["status"] == "expired", "Stored expires_at metadata can lengthen the hard 24-hour publication lease.")
+
+        # Manual reapplication is a pure publication operation: no model call,
+        # no claim rewrite, no evidence retargeting, and a fresh 24-hour lease.
+        published.clear()
+        read_service.load_read_artifact = lambda: dict(expired)
+        renewed_at = datetime(2026, 8, 11, 15, 0, tzinfo=timezone.utc)
+        renewed = read_service.reapply_last_read(persist=True, source="manual_reapply", now=renewed_at)
+        require(len(published) == 1, "Apply last Read did not promote exactly one retained artifact.")
+        require(renewed.get("generated_at") == expired.get("generated_at"), "Reapplication rewrote the original generation time.")
+        require(renewed.get("attempt_id") == expired.get("attempt_id"), "Reapplication changed the paid attempt identity.")
+        require(renewed.get("evidence_snapshot_id") == "stale-snapshot", "Reapplication retargeted commentary to newer evidence.")
+        require((renewed.get("publication") or {}).get("published_at") == "2026-08-11T15:00:00+00:00", "Reapplication start time is wrong.")
+        require((renewed.get("publication") or {}).get("expires_at") == "2026-08-12T15:00:00+00:00", "Reapplication did not grant exactly 24 hours.")
+        require((renewed.get("publication") or {}).get("renewal_count") == 1, "Reapplication renewal count did not advance.")
+
+        # Pre-lease v7.1.3 artifacts remain usable during upgrade: generated_at
+        # acts as their initial publication time and service 2.1.0 stays compatible.
+        legacy = dict(artifact)
+        legacy["service_version"] = "2.1.0"
+        legacy.pop("publication", None)
+        legacy_reads, legacy_status = read_service.build_platform_reads(context, artifact=legacy)
+        require(legacy_status["status"] == "validated", "Fresh v7.1.3 commentary was invalidated by the lease upgrade.")
+        require((legacy_status.get("publication") or {}).get("source") == "legacy_generated_at", "Legacy commentary did not derive its initial lease from generated_at.")
+        require(legacy_reads["market"]["generator"] == "openai", "Fresh legacy commentary did not reach the Reader during migration.")
+
+        # Public Reader snapshot caching must not extend a lease past expiry.
+        require(
+            reader_snapshot._cached_snapshot_usable({"commentary": {"status": "validated", "publication": artifact.get("publication", {})}}),
+            "Fresh leased commentary is not reusable from the public Reader snapshot cache.",
+        )
+        require(
+            not reader_snapshot._cached_snapshot_usable({"commentary": {"status": "validated", "publication": expired.get("publication", {})}}),
+            "Public Reader snapshot cache can keep commentary alive after its lease expires.",
+        )
     finally:
         read_service.build_evidence_packets = original_builder
         read_service.load_read_attempt = original_attempt_loader
@@ -564,6 +637,15 @@ def main() -> None:
         read_service.persist_read_artifact = original_current_writer
 
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
+    developer_panel = (ROOT / "developer" / "panel.py").read_text(encoding="utf-8")
+    require(
+        'st.button("Apply last Read"' in developer_panel and "reapply_last_read" in developer_panel,
+        "Developer Tools no longer exposes the zero-cost Apply last Read publication action.",
+    )
+    require(
+        "No OpenAI call." in developer_panel and "another 24 hours" in developer_panel,
+        "Developer Tools does not state the zero-cost 24-hour reapplication contract.",
+    )
     require("analytics.read_architecture" not in app, "Application still imports the retired deterministic commentary engine.")
     require("Macro Interpretation" not in app, "Commentary still leaks into regime_metrics.")
     require(not (ROOT / "analytics" / "read_architecture.py").exists(), "Retired deterministic analytical Read engine returned to the source tree.")

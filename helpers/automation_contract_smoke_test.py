@@ -66,8 +66,8 @@ def main() -> None:
     daily_source = (ROOT / "loaders" / "current_context_daily.py").read_text(encoding="utf-8")
 
     _check(AUTOMATION_TIMEZONE == "America/New_York", "Automation timezone drifted from Eastern Time.")
-    _check(AUTOMATION_START_LOCAL == "09:00", "Automation start time drifted from 09:00 Eastern.")
-    _check("cron: '0 9 * * *'" in workflow and "timezone: 'America/New_York'" in workflow, "Scheduled workflow is not 09:00 Eastern daily.")
+    _check(AUTOMATION_START_LOCAL == "09:07", "Automation start time drifted from 09:07 Eastern.")
+    _check("cron: '7 9 * * *'" in workflow and "timezone: 'America/New_York'" in workflow, "Scheduled workflow is not 09:07 Eastern daily.")
     _check("workflow_dispatch:" in workflow and "allow_paid:" in workflow and "publish:" in workflow, "Manual workflow lacks explicit paid/publish opt-ins.")
     _check("concurrency:" in workflow and "cancel-in-progress: false" in workflow, "Automation workflow can overlap or cancel active publication work.")
     _check("permissions:" in workflow and "contents: write" in workflow, "Workflow lacks explicit publication permission.")
@@ -86,7 +86,19 @@ def main() -> None:
     _check("result=\"openai_disabled_for_changed_evidence\"" in runner and "return 0" in runner, "Expected zero-paid dry-run stop is still treated as a workflow failure.")
     _check("steps.decision.outputs.result != 'disabled'" in workflow, "Disabled scheduled runs can create no-op ledger commits.")
     _check("generate_validated_read_artifact" in runner, "Automation bypasses the validated commentary service.")
+    _check("artifact_validated" in runner and "evidence_current" in runner, "Automation no longer distinguishes Reader publication lease from strict evidence currency.")
+    _check("reapply_last_read" in runner and "validated_evidence_unchanged_no_paid_call" in runner, "Unchanged validated evidence does not renew the 24-hour commentary lease without an OpenAI call.")
     _check("publish_ready" in runner and "transaction_boundary" in runner, "Runner lacks an explicit publication decision boundary.")
+    _check("ai-macro-automation-refresh-lock" in workflow, "Workflow does not publish the owner-visible automation refresh lock.")
+    _check("Release automation refresh lock" in workflow, "Workflow does not clean up the automation refresh lock.")
+    _check("automation.git_transport" in workflow, "Workflow bypasses the fail-closed Git transport boundary.")
+    _check("git push --force origin refs/tags/ai-macro-automation-refresh-lock" in workflow, "Refresh lock is not published before provider work begins.")
+    _check("git push --force origin HEAD:main" not in workflow, "Workflow contains a force push to main.")
+    _check("retained_state_manifest.json" in workflow, "Automation diagnostics omit retained-state freshness metadata.")
+    _check((ROOT / ".githooks" / "pre-push").exists(), "Local pre-push guard is missing.")
+    _check((ROOT / "tooling" / "desktop_sync.py").exists(), "Desktop-to-Git reconciliation command is missing.")
+    _check((ROOT / "automation" / "retained_state.py").exists(), "Retained-state freshness ledger is missing.")
+    _check((ROOT / "automation" / "git_transport.py").exists(), "Fail-closed automation Git transport is missing.")
 
     _check("load_public_shared_context_snapshot" not in app, "Public app still contains live Current Context refresh logic.")
     _check("load_public_shared_context_snapshot" not in daily_source, "Retired public Current Context refresher still exists.")
@@ -181,7 +193,7 @@ def main() -> None:
         budget.reserve_paid_call = original_reserve
         budget.complete_paid_call = original_complete
 
-    print("PASS  automation · retained-only public Reader · 09:00 Eastern · 2/run · 4/day · zero SDK retries")
+    print("PASS  automation · retained-only public Reader · 09:07 Eastern · 2/run · 4/day · zero SDK retries")
 
 
 if __name__ == "__main__":

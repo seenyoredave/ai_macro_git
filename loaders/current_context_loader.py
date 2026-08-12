@@ -12,6 +12,7 @@ from pathlib import Path
 import pandas as pd
 
 from loaders.current_context_news import DOMAIN_KEYS, _assign_event_owners
+from config.current_context_policy import current_context_tier_index
 from loaders.current_context_registry import (
     DEFAULT_EVENT_PATH,
     _curated_events,
@@ -23,8 +24,51 @@ from loaders.current_context_registry import (
 )
 
 
+def _context_window_start(events: list[dict], current: pd.Timestamp) -> str:
+    dates = pd.to_datetime(
+        [event.get("event_date") for event in events if isinstance(event, dict) and event.get("event_date")],
+        errors="coerce",
+    )
+    dates = dates[~pd.isna(dates)]
+    if len(dates):
+        return pd.Timestamp(dates.min()).date().isoformat()
+    return (current - pd.Timedelta(days=6)).date().isoformat()
+
+
+def _macro_ranked_events(events: list[dict], *, limit: int = 3) -> list[dict]:
+    """Select the strongest macro headlines with simple diversity constraints."""
+    ranked = [
+        dict(event) for event in _dedupe_events(events)
+        if str(event.get("verification_status") or event.get("status") or "").strip().lower() != "no_match"
+    ]
+    ranked.sort(
+        key=lambda item: (
+            -current_context_tier_index(item.get("qualification_tier", "A")),
+            float(item.get("rank_score", item.get("priority", 0)) or 0),
+            str(item.get("event_date", "")),
+        ),
+        reverse=True,
+    )
+    chosen: list[dict] = []
+    domain_counts: dict[str, int] = {}
+    market_finance = 0
+    for event in ranked:
+        domain = str(event.get("owner_domain") or event.get("domain") or "").strip().lower()
+        if domain_counts.get(domain, 0) >= 2:
+            continue
+        if domain in {"market", "finance"} and market_finance >= 2:
+            continue
+        chosen.append(event)
+        domain_counts[domain] = domain_counts.get(domain, 0) + 1
+        if domain in {"market", "finance"}:
+            market_finance += 1
+        if len(chosen) >= max(1, int(limit)):
+            break
+    return chosen
+
+
 def load_current_context(*, as_of=None, path=None, limit_per_domain=2) -> dict:
-    """Return zero, one, or two qualified developments for every domain.
+    """Return up to two qualified developments per domain plus a diverse macro top three.
 
     Each event has exactly one visible tab owner.  The discovery engine writes
     qualified evidence into the supplied registry; this function never performs
@@ -67,14 +111,17 @@ def load_current_context(*, as_of=None, path=None, limit_per_domain=2) -> dict:
         if str(event.get("surface") or "").strip().lower() in {"macro", "both", "all"}
         and str(event.get("domain") or "").strip().lower() not in DOMAIN_KEYS
     ]
+    macro_events = _macro_ranked_events(all_events + macro_only, limit=3)
+    macro_context = _renumber_context(macro_events, current, source="current-context registry")
     return {
         "by_domain": by_domain,
-        "events": _dedupe_events(all_events + macro_only),
-        "references": all_references,
+        "events": macro_context["events"],
+        "references": macro_context["references"],
         "as_of": current.date().isoformat(),
-        "window_start": (current - pd.Timedelta(days=6)).date().isoformat(),
+        "window_start": _context_window_start(macro_events, current),
         "source": "current-context registry",
         "version": CURRENT_CONTEXT_READ_VERSION,
+        "macro_display_limit": 3,
     }
 
 

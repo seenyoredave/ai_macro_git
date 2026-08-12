@@ -1,11 +1,4 @@
-"""Source and materiality policy for automated Current Context selection.
-
-The policy is intentionally conservative.  Live retrieval is a discovery layer,
-not a license to repeat every headline.  Only named, reputable publishers or
-primary institutional sources are eligible for automatic display.  Commentary-
-first outlets and sources requiring manual corroboration are excluded from the
-automated path.
-"""
+"""Source, materiality, and coverage policy for automated Current Context."""
 
 from __future__ import annotations
 
@@ -200,11 +193,10 @@ MANUAL_REVIEW_DOMAINS = {
 }
 
 DOMAIN_CONTEXT_POLICY = {
-    # One canonical editorial grammar applies to every domain: eligible
-    # evidence + seven-day recency + domain relevance + a domain-specific
-    # material development.  Materiality and domain fit rank qualified items;
-    # rank score never acts as an acceptance threshold.  Zero, one, or two
-    # visible developments are all valid.
+    # The preferred editorial grammar uses a seven-day window. Progressive
+    # coverage qualification may relax source/materiality/anchor thresholds and
+    # widen recency only to the hard ten-day ceiling. Rank score orders facts
+    # after qualification; it never substitutes for source grounding.
     "market": {"lookback_days": 7, "minimum_materiality": 5.0, "cadence": "weekday", "max_items": 2},
     "finance": {"lookback_days": 7, "minimum_materiality": 7.0, "cadence": "several_per_week", "max_items": 2},
     "compute": {"lookback_days": 7, "minimum_materiality": 7.0, "cadence": "several_per_week", "max_items": 2},
@@ -217,6 +209,72 @@ DOMAIN_CONTEXT_POLICY = {
     "workforce": {"lookback_days": 7, "minimum_materiality": 8.0, "cadence": "event_driven", "max_items": 2},
     "economic_impact": {"lookback_days": 7, "minimum_materiality": 8.0, "cadence": "release_driven", "max_items": 2},
 }
+
+
+
+@dataclass(frozen=True)
+class ContextQualificationTier:
+    key: str
+    label: str
+    lookback_days: int
+    materiality_multiplier: float
+    require_topic_anchor: bool
+    source_policy: str
+    minimum_source_text_chars: int
+    minimum_anchor_score: float
+
+
+# Current Context is a coverage-constrained news layer. It begins with the
+# preferred editorial policy and progressively broadens source, recency,
+# materiality, and topical-anchor thresholds until useful cross-domain coverage
+# is achieved. Every published item still has to resolve to a real source page
+# and support a concrete current development in the source body.
+CURRENT_CONTEXT_PREFERRED_WINDOW_DAYS = 7
+CURRENT_CONTEXT_HARD_WINDOW_DAYS = 10
+CURRENT_CONTEXT_COVERAGE_TARGET = 6
+CURRENT_CONTEXT_QUALIFICATION_TIERS = (
+    ContextQualificationTier('A', 'Preferred', 7, 1.00, True, 'strict', 220, 8.0),
+    ContextQualificationTier('B', 'Strong', 7, 0.70, True, 'strict', 190, 6.5),
+    ContextQualificationTier('C', 'Expanded', 10, 0.45, True, 'manual_review', 160, 5.0),
+    ContextQualificationTier('D', 'Broad', 10, 0.20, False, 'google_news_fallback', 125, 4.0),
+    ContextQualificationTier('E', 'Coverage floor', 10, 0.05, False, 'google_news_fallback', 100, 3.0),
+)
+_CURRENT_CONTEXT_TIER_BY_KEY = {tier.key: tier for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS}
+
+
+def current_context_qualification_tier(value: object = 'A') -> ContextQualificationTier:
+    key = str(value or 'A').strip().upper()
+    return _CURRENT_CONTEXT_TIER_BY_KEY.get(key, CURRENT_CONTEXT_QUALIFICATION_TIERS[0])
+
+
+def current_context_qualification_policy(domain: str, tier_key: object = 'A') -> dict:
+    base = dict(DOMAIN_CONTEXT_POLICY.get(str(domain or '').strip().casefold(), {}) or {})
+    tier = current_context_qualification_tier(tier_key)
+    base_days = max(int(base.get('lookback_days', 7) or 7), 1)
+    base_materiality = max(float(base.get('minimum_materiality', 0.0001) or 0.0001), 0.0001)
+    return {
+        **base,
+        'qualification_tier': tier.key,
+        'qualification_tier_label': tier.label,
+        'lookback_days': max(base_days, int(tier.lookback_days)),
+        'minimum_materiality': base_materiality * float(tier.materiality_multiplier),
+        'require_topic_anchor': bool(tier.require_topic_anchor),
+        'source_policy': tier.source_policy,
+        'minimum_source_text_chars': int(tier.minimum_source_text_chars),
+        'minimum_anchor_score': float(tier.minimum_anchor_score),
+    }
+
+
+def current_context_max_lookback_days(domain: str) -> int:
+    return max(
+        int(current_context_qualification_policy(domain, tier.key)['lookback_days'])
+        for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS
+    )
+
+
+def current_context_tier_index(value: object = 'A') -> int:
+    key = current_context_qualification_tier(value).key
+    return next((index for index, tier in enumerate(CURRENT_CONTEXT_QUALIFICATION_TIERS) if tier.key == key), 0)
 
 # One canonical semantic definition per domain. Every active Current Context
 # stage consumes this registry: discovery queries, metadata qualification,
@@ -2438,6 +2496,40 @@ def assess_source(source_name: str, source_url: str = "", article_url: str = "")
     return SourceAssessment("unapproved", 0.0, False, "none", "not on automated source allowlist")
 
 
+
+def assess_source_for_qualification(
+    source_name: str,
+    source_url: str = '',
+    article_url: str = '',
+    *,
+    provider: str = '',
+    tier_key: object = 'A',
+) -> SourceAssessment:
+    """Return the source profile allowed at one progressive coverage tier.
+
+    Explicitly blocked, social, and discovery-only endpoints remain prohibited
+    at every tier.  Tier C may use manual-review journalism as directly
+    source-grounded secondary evidence.  Tiers D/E may additionally use a
+    publisher surfaced by Google News even when it is not on the preferred
+    allowlist; the underlying publisher page must still be fetched and grounded.
+    """
+    assessment = assess_source(source_name, source_url, article_url)
+    tier = current_context_qualification_tier(tier_key)
+    if assessment.auto_eligible:
+        return assessment
+    if assessment.tier in {'blocked_social', 'blocked', 'discovery_only'}:
+        return assessment
+    if tier.source_policy in {'manual_review', 'google_news_fallback'} and assessment.tier == 'manual_review':
+        return SourceAssessment('coverage_manual', 72.0, True, 'secondary', 'eligible only under progressive coverage relaxation')
+    provider_key = str(provider or '').strip().casefold()
+    if (
+        tier.source_policy == 'google_news_fallback'
+        and assessment.tier == 'unapproved'
+        and provider_key in {'google_news_rss', 'event_evidence_search'}
+    ):
+        return SourceAssessment('coverage_fallback', 58.0, True, 'secondary', 'Google News publisher admitted only under progressive coverage relaxation')
+    return assessment
+
 def term_present(text: str, term: str) -> bool:
     haystack = " ".join(str(text or "").split()).casefold()
     needle = " ".join(str(term or "").split()).casefold()
@@ -2511,6 +2603,18 @@ def recent_development_copy_issues(text: object) -> list[str]:
     trimmed_no_terminal = trimmed.rstrip(".!?\"'”’ ")
     if trimmed_no_terminal.endswith(("—", "–", "-")):
         issues.append("development ends with a dangling cutoff mark")
+    if re.search(r"\b(?:of|to|for|with|from|by|at|in|on|and|or|that|which|as)\s*[.!?]$", trimmed, flags=re.I):
+        issues.append("development ends with a dangling grammatical connector")
+    if re.search(r"https?://|\b(?:up|down)\s+pointing\s+triangle\b", value, flags=re.I):
+        issues.append("development contains embedded page/widget furniture")
+    if re.match(r"^(?:also\s+read|read\s+also|related|recommended)\b", value, flags=re.I):
+        issues.append("development opens with navigation/page furniture")
+    if re.search(r"\b(?:results?|revenue|earnings)\s+than\s+(?:topped|beat|exceeded)\b", value, flags=re.I):
+        issues.append("development contains a malformed comparison from source extraction")
+    if re.search(r"/(?:PRNewswire|Business\s+Wire|GlobeNewswire)/", value, flags=re.I):
+        issues.append("development contains a wire-service dateline")
+    if re.match(r"^(?:during|after|before|over)\b.{0,100},\s+(?:they|it|their|its)\b", value, flags=re.I):
+        issues.append("development contains an unresolved actor after an introductory clause")
 
     if value.count("“") != value.count("”"):
         issues.append("development contains unbalanced smart quotation marks")

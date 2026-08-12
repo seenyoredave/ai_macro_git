@@ -32,18 +32,31 @@ class CurrentContextStatus:
     qualified: int
     selected: int
     rendered: int
+    continuity_attempted: int
+    continuity_recovered: int
+    continuity_selected: int
     engine_mismatch: bool
     refresh_required: bool
     domains: tuple[ContextDomainStatus, ...]
     grounding_rejections: tuple[dict[str, Any], ...]
     provider_errors: tuple[dict[str, Any], ...]
+    coverage_target: int
+    coverage_selected_domains: int
+    coverage_target_met: bool
+    coverage_tier_reached: str
+    coverage_tier_label: str
+    expanded_qualification: bool
+    selected_domains_by_tier: tuple[tuple[str, int], ...]
+    selected_events_by_tier: tuple[tuple[str, int], ...]
+    preferred_window_days: int
+    hard_window_days: int
 
 
 def current_context_status(report: dict | None) -> CurrentContextStatus:
     payload = dict(report or {})
     grounding = dict(payload.get("grounding") or {})
     by_domain = grounding.get("by_domain") or {}
-    selected_counts = payload.get("selected_counts") or {
+    selected_counts = payload.get("fresh_selected_counts") or payload.get("selected_counts") or {
         domain: len(items) if isinstance(items, list) else 0
         for domain, items in (payload.get("selected") or {}).items()
     }
@@ -71,6 +84,8 @@ def current_context_status(report: dict | None) -> CurrentContextStatus:
         metadata_total = int(payload.get("metadata_qualified_count", 0) or 0)
     selected_total = sum(int(value or 0) for value in selected_counts.values())
     rendered_total = sum(int(value or 0) for value in rendered_counts.values())
+    coverage = dict(payload.get("coverage") or {})
+    continuity = dict(payload.get("continuity") or {})
     fetch_errors = payload.get("fetch_errors") or [
         row for row in (payload.get("fetch_status") or [])
         if isinstance(row, dict) and str(row.get("error") or "").strip()
@@ -88,11 +103,28 @@ def current_context_status(report: dict | None) -> CurrentContextStatus:
         qualified=int(payload.get("qualified_count", 0) or 0),
         selected=selected_total,
         rendered=rendered_total,
+        continuity_attempted=int(continuity.get("attempted", 0) or 0),
+        continuity_recovered=int(continuity.get("recovered", 0) or 0),
+        continuity_selected=int(continuity.get("selected", 0) or 0),
         engine_mismatch=bool(payload.get("engine_mismatch")),
         refresh_required=bool(payload.get("refresh_required")),
         domains=tuple(domain_rows),
         grounding_rejections=tuple(item for item in (grounding.get("rejection_reasons") or []) if isinstance(item, dict)),
         provider_errors=tuple(item for item in fetch_errors if isinstance(item, dict)),
+        coverage_target=int(coverage.get("target_domains", 6) or 6),
+        coverage_selected_domains=int(coverage.get("selected_domain_count", 0) or 0),
+        coverage_target_met=bool(coverage.get("target_met", False)),
+        coverage_tier_reached=str(coverage.get("tier_reached") or "A"),
+        coverage_tier_label=str(coverage.get("tier_reached_label") or "Preferred"),
+        expanded_qualification=bool(coverage.get("expanded_discovery_required", False)),
+        selected_domains_by_tier=tuple(
+            (str(key), int(value or 0)) for key, value in (coverage.get("selected_domains_by_tier") or {}).items()
+        ),
+        selected_events_by_tier=tuple(
+            (str(key), int(value or 0)) for key, value in (coverage.get("selected_events_by_tier") or {}).items()
+        ),
+        preferred_window_days=int(coverage.get("preferred_window_days", 7) or 7),
+        hard_window_days=int(coverage.get("hard_window_days", 10) or 10),
     )
 
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from contextlib import ExitStack
+from datetime import date
+from hashlib import sha256
 from io import BytesIO
 import json
 from pathlib import Path
@@ -11,7 +12,7 @@ import requests
 import streamlit as st
 
 from config.deployment import repository_writes_enabled
-from helpers.atomic_io import atomic_write_bytes, atomic_write_csv, synchronized_path
+from helpers.atomic_io import atomic_write_bundle, atomic_write_csv
 
 from config.debug_config import debug_print
 from loaders.census import clean_header as _clean_header, parse_census_month as _parse_census_month
@@ -34,6 +35,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CONSTRUCTION_HISTORY_PATH = PROJECT_ROOT / "data" / "infrastructure_construction_history.csv"
 DATA_CENTER_CONSTRUCTION_HISTORY_PATH = PROJECT_ROOT / "data" / "data_center_construction_history.csv"
 DATA_CENTER_LOCATIONS_PATH = PROJECT_ROOT / "data" / "data_center_locations.csv"
+INFRASTRUCTURE_SOURCE_MANIFEST_PATH = PROJECT_ROOT / "data" / "infrastructure" / "source_manifest.csv"
 
 CENSUS_PRIVATE_SA_URL = "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx"
 CENSUS_PUBLIC_SA_URL = "https://www.census.gov/construction/c30/xlsx/pubsatime.xlsx"
@@ -112,7 +114,7 @@ def _normalize_construction_history(frame: pd.DataFrame | None) -> pd.DataFrame:
     return output
 
 def _persist_construction_bundle(frame: pd.DataFrame) -> None:
-    """Commit both Census histories together or restore both prior versions."""
+    """Commit Census histories and their provenance checksum as one transaction."""
     if not repository_writes_enabled():
         return
     columns = [
@@ -131,29 +133,32 @@ def _persist_construction_bundle(frame: pd.DataFrame) -> None:
     ).copy()
     macro["Observation Date"] = macro["Observation Date"].dt.date.astype(str)
 
-    outputs = {
-        CONSTRUCTION_HISTORY_PATH: infrastructure,
-        DATA_CENTER_CONSTRUCTION_HISTORY_PATH: macro,
+    infrastructure_bytes = infrastructure.to_csv(index=False).encode("utf-8")
+    macro_bytes = macro.to_csv(index=False).encode("utf-8")
+    payloads = {
+        CONSTRUCTION_HISTORY_PATH: infrastructure_bytes,
+        DATA_CENTER_CONSTRUCTION_HISTORY_PATH: macro_bytes,
     }
-    paths = sorted(outputs, key=lambda path: str(path.resolve()))
-    with ExitStack() as stack:
-        for path in paths:
-            stack.enter_context(synchronized_path(path))
-        previous = {
-            path: path.read_bytes() if path.exists() else None
-            for path in paths
-        }
-        try:
-            for path in paths:
-                atomic_write_csv(outputs[path], path, lock=False)
-        except Exception:
-            for path in paths:
-                payload = previous[path]
-                if payload is None:
-                    path.unlink(missing_ok=True)
-                else:
-                    atomic_write_bytes(payload, path, lock=False)
-            raise
+
+    if INFRASTRUCTURE_SOURCE_MANIFEST_PATH.exists():
+        manifest = pd.read_csv(INFRASTRUCTURE_SOURCE_MANIFEST_PATH)
+        mask = manifest["source_id"].astype(str).eq("census-vip-construction")
+        if mask.any():
+            for column in ("derived_artifacts", "derived_sha256", "coverage_period", "retrieval_date"):
+                if column not in manifest.columns:
+                    manifest[column] = ""
+            manifest.loc[mask, "derived_artifacts"] = "data/infrastructure_construction_history.csv"
+            manifest.loc[mask, "derived_sha256"] = sha256(infrastructure_bytes).hexdigest()
+            dates = pd.to_datetime(clean["Observation Date"], errors="coerce").dropna()
+            if not dates.empty:
+                manifest.loc[mask, "coverage_period"] = (
+                    f"{dates.min().date().isoformat()} through {dates.max().date().isoformat()}"
+                )
+            manifest.loc[mask, "retrieval_date"] = date.today().isoformat()
+            payloads[INFRASTRUCTURE_SOURCE_MANIFEST_PATH] = manifest.to_csv(index=False).encode("utf-8")
+
+    atomic_write_bundle(payloads, transaction_key=CONSTRUCTION_HISTORY_PATH)
+
 
 def _load_local_construction_history() -> pd.DataFrame:
     if not CONSTRUCTION_HISTORY_PATH.exists() or CONSTRUCTION_HISTORY_PATH.stat().st_size == 0:

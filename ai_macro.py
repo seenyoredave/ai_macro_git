@@ -102,9 +102,10 @@ from rendering.dashboard import render_research_dashboard
 from rendering.theme import inject_research_theme
 from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
+from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v7.1.2"
-APP_STATE_SCHEMA_VERSION = "70.1-openai-artifact-durability"
+APP_VERSION = "v7.8.1"
+APP_STATE_SCHEMA_VERSION = "70.3-automation-reconciliation"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -446,6 +447,12 @@ if st.session_state.force_rebuild:
         debt_markets_data=debt_markets_data,
         edgar_refresh_token=st.session_state.edgar_refresh_token,
     )
+    if load_policy.is_explicit_refresh:
+        refresh_retained_state_manifest(source="desktop_refresh")
+        from helpers.build_release_manifest import build_manifest
+        from helpers.atomic_io import atomic_write_json
+        atomic_write_json(build_manifest(), PROJECT_ROOT / "data" / "release_manifest.json")
+
 
     # Report archive status after persistence, not the pre-refresh status captured
     # before provider work. This makes a successful manual refresh visible

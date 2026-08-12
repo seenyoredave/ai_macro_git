@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from analytics.dashboard_context import DashboardContext
@@ -14,7 +14,9 @@ from analytics.read_store import load_read_artifact, load_read_attempt, new_atte
 from analytics.read_validation import VALIDATOR_VERSION, validate_domain_read_set, validate_macro_read
 from config.openai_config import OpenAIConfig
 
-READ_SERVICE_VERSION = "2.1.0"
+READ_SERVICE_VERSION = "2.2.0"
+READ_SERVICE_COMPATIBLE_VERSIONS = {"2.1.0", READ_SERVICE_VERSION}
+COMMENTARY_PUBLICATION_LEASE_HOURS = 24
 UNAVAILABLE_HEADLINE = "Commentary temporarily unavailable."
 UNAVAILABLE_ANALYSIS = "The analyst has wandered off. The data have not."
 MAX_MACRO_REFERENCES = 6
@@ -122,53 +124,149 @@ def _unavailable_read(domain: str, packet: dict) -> dict[str, Any]:
     }
 
 
+def _utc_datetime(value: Any) -> datetime | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def publication_lease_state(artifact: dict[str, Any] | None, *, now: datetime | None = None) -> dict[str, Any]:
+    """Return the 24-hour Reader publication lease for one validated artifact.
+
+    v7.1.3 and earlier artifacts did not carry explicit publication metadata.
+    During migration, their generated_at timestamp is treated as the initial
+    publication time so an already-fresh Read does not disappear on upgrade.
+    """
+    stored = dict(artifact or {})
+    publication = dict(stored.get("publication") or {})
+    published_at = _utc_datetime(publication.get("published_at") or stored.get("published_at") or stored.get("generated_at"))
+    # The lease duration is a code contract, not mutable artifact metadata.
+    # Always derive expiry from the publication timestamp so a stale/tampered
+    # expires_at field cannot silently lengthen the Reader publication window.
+    expires_at = published_at + timedelta(hours=COMMENTARY_PUBLICATION_LEASE_HOURS) if published_at is not None else None
+    current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    active = bool(published_at and expires_at and current < expires_at)
+    remaining_seconds = max(0, int((expires_at - current).total_seconds())) if expires_at else 0
+    return {
+        "active": active,
+        "lease_hours": COMMENTARY_PUBLICATION_LEASE_HOURS,
+        "published_at": published_at.isoformat() if published_at else "",
+        "expires_at": expires_at.isoformat() if expires_at else "",
+        "remaining_seconds": remaining_seconds,
+        "renewal_count": int(publication.get("renewal_count", 0) or 0),
+        "source": str(publication.get("source") or ("legacy_generated_at" if published_at else "")),
+    }
+
+
+def _artifact_is_validated(stored: dict[str, Any]) -> bool:
+    return bool(
+        stored
+        and bool((stored.get("validation") or {}).get("passed"))
+        and str(stored.get("service_version") or "") in READ_SERVICE_COMPATIBLE_VERSIONS
+        and isinstance(stored.get("reads"), dict)
+    )
+
+
+def _with_publication_lease(artifact: dict[str, Any], *, source: str, now: datetime | None = None) -> dict[str, Any]:
+    current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    previous = dict(artifact.get("publication") or {})
+    renewal = source in {"manual_reapply", "automation_reapply"}
+    renewal_count = int(previous.get("renewal_count", 0) or 0) + (1 if renewal else 0)
+    output = dict(artifact)
+    output["publication"] = {
+        "lease_hours": COMMENTARY_PUBLICATION_LEASE_HOURS,
+        "published_at": current.isoformat(),
+        "expires_at": (current + timedelta(hours=COMMENTARY_PUBLICATION_LEASE_HOURS)).isoformat(),
+        "renewal_count": renewal_count if renewal else 0,
+        "source": source,
+    }
+    return output
+
+
+def reapply_last_read(*, persist: bool = True, source: str = "manual_reapply", now: datetime | None = None) -> dict[str, Any]:
+    """Republish the most recent validated Read artifact without an OpenAI call.
+
+    Reapplication preserves the original generated_at, attempt_id, evidence
+    snapshot, claims, references, and validation record. Only the publication
+    lease is renewed for another 24 hours.
+    """
+    stored = load_read_artifact()
+    if not stored:
+        raise ValueError("No validated commentary artifact is available to reapply.")
+    if not _artifact_is_validated(stored):
+        raise ValueError("The most recent commentary artifact is not compatible with the current validated Reader schema.")
+    renewed = _with_publication_lease(stored, source=source, now=now)
+    if persist:
+        persist_read_artifact(renewed)
+    return renewed
+
+
 def build_platform_reads(context: DashboardContext, *, artifact: dict | None = None) -> tuple[dict[str, dict], dict[str, Any]]:
-    """Load only a validated artifact matching the current analytical evidence."""
+    """Load validated commentary under a bounded Reader publication lease.
+
+    Reader visibility and evidence currency are intentionally separate. A
+    validated artifact remains publishable for 24 hours even if a later data
+    refresh changes the analytical evidence snapshot. Evidence mismatch is still
+    surfaced explicitly and remains a strict trigger for new automated or owner-
+    initiated generation.
+    """
     packets = build_evidence_packets(context)
     packet_dicts = _packet_dicts(packets)
     snapshot = evidence_snapshot_id(packets)
     stored = dict(artifact if artifact is not None else load_read_artifact())
-    valid_artifact = (
-        bool(stored)
+    artifact_validated = _artifact_is_validated(stored)
+    evidence_current = bool(
+        artifact_validated
         and str(stored.get("evidence_snapshot_id") or "") == snapshot
-        and bool((stored.get("validation") or {}).get("passed"))
-        and str(stored.get("service_version") or "") == READ_SERVICE_VERSION
-        and isinstance(stored.get("reads"), dict)
     )
-    if valid_artifact:
-        reads = {domain: dict((stored.get("reads") or {}).get(domain) or _unavailable_read(domain, packet_dicts[domain])) for domain in DOMAIN_ORDER}
-        reads["macro"] = dict((stored.get("reads") or {}).get("macro") or _unavailable_read("macro", {}))
-        status = {
-            "status": "validated",
-            "artifact_present": True,
-            "evidence_snapshot_id": snapshot,
-            "artifact_evidence_snapshot_id": stored.get("evidence_snapshot_id", ""),
-            "generated_at": stored.get("generated_at", ""),
-            "model": stored.get("model", ""),
-            "prompt_versions": stored.get("prompt_versions", {}),
-            "validation": stored.get("validation", {}),
-            "generation": stored.get("generation", {}),
+    publication = publication_lease_state(stored)
+    publication_active = bool(artifact_validated and publication.get("active"))
+
+    if publication_active:
+        reads = {
+            domain: dict((stored.get("reads") or {}).get(domain) or _unavailable_read(domain, packet_dicts[domain]))
+            for domain in DOMAIN_ORDER
         }
+        reads["macro"] = dict((stored.get("reads") or {}).get("macro") or _unavailable_read("macro", {}))
+        status_name = "validated"
     else:
         reads = {domain: _unavailable_read(domain, packet_dicts[domain]) for domain in DOMAIN_ORDER}
         reads["macro"] = _unavailable_read("macro", {})
-        status = {
-            "status": "stale" if stored else "missing",
-            "artifact_present": bool(stored),
-            "evidence_snapshot_id": snapshot,
-            "artifact_evidence_snapshot_id": stored.get("evidence_snapshot_id", "") if stored else "",
-            "generated_at": stored.get("generated_at", "") if stored else "",
-            "model": stored.get("model", "") if stored else "",
-            "prompt_versions": stored.get("prompt_versions", {}) if stored else {},
-            "validation": stored.get("validation", {}) if stored else {},
-            "generation": stored.get("generation", {}) if stored else {},
-        }
+        if not stored:
+            status_name = "missing"
+        elif artifact_validated and publication.get("published_at"):
+            status_name = "expired"
+        else:
+            status_name = "stale"
+
+    status = {
+        "status": status_name,
+        "artifact_present": bool(stored),
+        "artifact_validated": artifact_validated,
+        "evidence_current": evidence_current,
+        "publication_active": publication_active,
+        "publication": publication,
+        "evidence_snapshot_id": snapshot,
+        "artifact_evidence_snapshot_id": stored.get("evidence_snapshot_id", "") if stored else "",
+        "generated_at": stored.get("generated_at", "") if stored else "",
+        "model": stored.get("model", "") if stored else "",
+        "prompt_versions": stored.get("prompt_versions", {}) if stored else {},
+        "validation": stored.get("validation", {}) if stored else {},
+        "generation": stored.get("generation", {}) if stored else {},
+    }
     by_domain = (context.current_context or {}).get("by_domain", {}) or {}
     for domain in DOMAIN_ORDER:
-        reads[domain] = attach_current_context(reads[domain], by_domain.get(domain, {}))
-    # Macro gets the top verified event across the complete Current Context packet.
+        reads[domain] = attach_current_context(reads[domain], by_domain.get(domain, {}), limit=2)
+    # Macro gets the diverse top three verified events across Current Context.
     macro_context = context.current_context or {}
-    reads["macro"] = attach_current_context(reads["macro"], macro_context)
+    reads["macro"] = attach_current_context(reads["macro"], macro_context, limit=3)
     status["packets"] = packet_dicts
     return reads, status
 
@@ -299,9 +397,12 @@ def _publish_validated_attempt(
     attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
     _save_attempt(attempt, persist=persist)
     if persist:
+        artifact = _with_publication_lease(artifact, source="generation")
         persist_read_artifact(artifact)
+        attempt["validated_artifact"] = artifact
         attempt["status"] = "validated_published"
-        attempt["published_at"] = datetime.now(timezone.utc).isoformat()
+        attempt["published_at"] = artifact["publication"]["published_at"]
+        attempt["publication_expires_at"] = artifact["publication"]["expires_at"]
         _save_attempt(attempt, persist=True)
     return artifact
 
@@ -618,8 +719,11 @@ def regenerate_macro_read(
     attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
     _save_attempt(attempt, persist=persist)
     if persist:
+        artifact = _with_publication_lease(artifact, source="macro_regeneration")
         persist_read_artifact(artifact)
+        attempt["validated_artifact"] = artifact
         attempt["status"] = "validated_published"
-        attempt["published_at"] = datetime.now(timezone.utc).isoformat()
+        attempt["published_at"] = artifact["publication"]["published_at"]
+        attempt["publication_expires_at"] = artifact["publication"]["expires_at"]
         _save_attempt(attempt, persist=True)
     return artifact

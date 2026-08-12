@@ -10,7 +10,7 @@ from typing import Any, Iterable
 from analytics.read_evidence import DOMAIN_ORDER, evidence_fact_index
 from analytics.read_models import GeneratedDomainRead, GeneratedDomainReadSet, GeneratedMacroRead, SupportedSentence
 
-VALIDATOR_VERSION = "2.6.0"
+VALIDATOR_VERSION = "2.6.1"
 _NUMBER_RE = re.compile(
     r"(?<![A-Za-z0-9])"
     r"[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
@@ -71,7 +71,24 @@ def _word_count(text: str) -> int:
 
 
 def _numeric_occurrence_count(text: str) -> int:
-    return sum(1 for _ in _NUMBER_RE.finditer(str(text or "")))
+    """Count reader-visible quantities, treating a bounded range as one item.
+
+    The editorial ceiling is about how many quantities a reader must hold in
+    mind, not how many numeric tokens the regex can find.  A range such as
+    ``18–64`` or ``2024 to 2026`` is one displayed quantity.  Ordinary lists
+    and separate comparisons remain separate quantities.
+    """
+    rendered = str(text or "")
+    matches = list(_NUMBER_RE.finditer(rendered))
+    if not matches:
+        return 0
+
+    count = len(matches)
+    range_separator = re.compile(r"^\s*(?:-|–|—|to|through)\s*$", re.IGNORECASE)
+    for left, right in zip(matches, matches[1:]):
+        if range_separator.fullmatch(rendered[left.end():right.start()]):
+            count -= 1
+    return count
 
 
 def _read_numeric_occurrence_count(sentences: Iterable[SupportedSentence]) -> int:

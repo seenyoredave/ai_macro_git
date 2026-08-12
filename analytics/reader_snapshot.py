@@ -13,12 +13,32 @@ from threading import RLock
 
 from analytics.dashboard_context import DashboardContext
 from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION
-from analytics.read_service import READ_SERVICE_VERSION, build_platform_reads
+from analytics.read_service import READ_SERVICE_VERSION, build_platform_reads, publication_lease_state
+from analytics.read_store import READ_ARTIFACT_PATH
 from config.deployment import developer_mode
 
-READER_SNAPSHOT_VERSION = "1.0.0"
+READER_SNAPSHOT_VERSION = "1.1.0"
 _SNAPSHOT_LOCK = RLock()
 _SNAPSHOT_CACHE: dict[str, dict] = {}
+
+
+def _artifact_cache_token() -> str:
+    try:
+        stat = READ_ARTIFACT_PATH.stat()
+    except OSError:
+        return "missing"
+    return f"{stat.st_mtime_ns}:{stat.st_size}"
+
+
+def _cached_snapshot_usable(snapshot: dict) -> bool:
+    commentary = dict(snapshot.get("commentary") or {})
+    if commentary.get("status") != "validated":
+        return True
+    lease = publication_lease_state({
+        "publication": commentary.get("publication") or {},
+        "generated_at": commentary.get("generated_at") or "",
+    })
+    return bool(lease.get("active"))
 
 
 def _decorate_reads(reads: dict, *, snapshot_id: str, retrieved_at: str) -> dict:
@@ -43,10 +63,11 @@ def build_reader_snapshot(context: DashboardContext, *, context_report: dict | N
     ).strip()
     retrieved_at = str(report.get("retrieved_at") or current_context.get("snapshot_retrieved_at") or "").strip()
 
+    cache_key = f"{snapshot_id}:{_artifact_cache_token()}"
     if not developer_mode():
         with _SNAPSHOT_LOCK:
-            cached = _SNAPSHOT_CACHE.get(snapshot_id)
-            if cached is not None:
+            cached = _SNAPSHOT_CACHE.get(cache_key)
+            if cached is not None and _cached_snapshot_usable(cached):
                 return deepcopy(cached)
 
     reads, commentary = build_platform_reads(context)
@@ -66,5 +87,5 @@ def build_reader_snapshot(context: DashboardContext, *, context_report: dict | N
     if not developer_mode():
         with _SNAPSHOT_LOCK:
             _SNAPSHOT_CACHE.clear()
-            _SNAPSHOT_CACHE[snapshot_id] = deepcopy(snapshot)
+            _SNAPSHOT_CACHE[cache_key] = deepcopy(snapshot)
     return snapshot

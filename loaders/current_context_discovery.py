@@ -29,10 +29,19 @@ import pandas as pd
 
 from config.current_context_policy import (
     DOMAIN_CONTEXT_POLICY,
+    CURRENT_CONTEXT_COVERAGE_TARGET,
+    CURRENT_CONTEXT_PREFERRED_WINDOW_DAYS,
+    CURRENT_CONTEXT_HARD_WINDOW_DAYS,
+    CURRENT_CONTEXT_QUALIFICATION_TIERS,
+    current_context_max_lookback_days,
+    current_context_qualification_policy,
+    current_context_qualification_tier,
+    current_context_tier_index,
     domain_relevance_terms,
     domain_topic_anchors,
     DISCOVERY_ONLY_DOMAINS,
     assess_source,
+    assess_source_for_qualification,
     domain_news_queries,
     materiality_score,
     term_present,
@@ -53,12 +62,13 @@ from loaders.current_context_news import (
     _strip_source_suffix,
     _valid_https_url,
 )
-from loaders.current_context_registry import DEFAULT_EVENT_PATH
+from loaders.current_context_registry import DEFAULT_EVENT_PATH, _automated_row_still_qualifies, _curated_events
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_AUDIT_PATH = ROOT / "data" / "current_context_candidate_audit.csv"
 DEFAULT_MANIFEST_PATH = ROOT / "data" / "current_context_refresh_manifest.json"
-DISCOVERY_VERSION = "2.6"
+DEFAULT_RETROSPECTIVE_REGISTRY_PATH = ROOT / "audit" / "current_context_retrospective" / "retired_unproven_registry_rows_v730.csv"
+DISCOVERY_VERSION = "3.1"
 
 # Free second-layer sources are lead generators only.  The adapter harvests
 # outbound evidence links and discards the intermediary prose for selection.
@@ -324,151 +334,195 @@ def _dedupe_items(items: list[dict]) -> list[dict]:
     return selected
 
 
-def evaluate_item(item: dict, *, domain: str, current: pd.Timestamp, provider: str) -> tuple[dict | None, dict]:
-    """Evaluate one discovery item and return both candidate and audit record."""
-    policy = DOMAIN_CONTEXT_POLICY.get(domain, {}) or {}
-    days = max(int(policy.get("lookback_days", 7)), 1)
-    published = item.get("published")
+def evaluate_item(
+    item: dict,
+    *,
+    domain: str,
+    current: pd.Timestamp,
+    provider: str,
+    qualification_tier: str | None = None,
+) -> tuple[dict | None, dict]:
+    """Evaluate one discovery item through the progressive coverage ladder.
+
+    When ``qualification_tier`` is omitted, the item is assigned to the first
+    tier A→E whose metadata gates it clears.  The audit row therefore records
+    the least-relaxed standard required for that candidate.
+    """
+    tiers = (
+        [tier for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS if tier.key == str(qualification_tier).upper()]
+        if qualification_tier
+        else list(CURRENT_CONTEXT_QUALIFICATION_TIERS)
+    )
+    if not tiers:
+        tiers = [CURRENT_CONTEXT_QUALIFICATION_TIERS[0]]
+
     title = " ".join(str(item.get("title") or "").split()).strip()
     source_name = " ".join(str(item.get("source_name") or "News source").split()).strip()
     article_url = str(item.get("link") or "").strip()
     publisher_url = str(item.get("source_url") or "").strip()
-    assessment = assess_source(source_name, publisher_url, article_url)
+    published_raw = item.get("published")
     text = f"{title} {item.get('description', '')}".strip()
     materiality = float(materiality_score(text, domain))
     relevance_matches = [term for term in domain_relevance_terms(domain) if term_present(text, str(term))]
     topic_anchor_matches = [term for term in domain_topic_anchors(domain) if term_present(text, str(term))]
     fit = float(_domain_fit_score(text, domain))
-    freshness = 0.0
-    score = assessment.score + (materiality * 2.5) + (fit * 1.5)
-    age_days = None
-    decision = "rejected"
-    reason = ""
+    tier_failures: list[str] = []
+    final_audit: dict = {}
 
-    if published is None:
-        reason = "missing publication date"
-    else:
-        published = pd.Timestamp(published).normalize()
-        age_days = int((current - published).days)
-        freshness = max(0.0, float(days - max(age_days, 0)))
-        score += freshness
-        if age_days < 0 or age_days >= days:
-            reason = "outside domain lookback window"
-        elif not assessment.auto_eligible:
-            reason = assessment.reason
-        elif is_preview_or_calendar_item(title):
-            reason = "preview/calendar item is not a completed development"
-        elif not relevance_matches:
-            reason = "no domain relevance term"
-        elif domain_topic_anchors(domain) and not topic_anchor_matches:
-            reason = "no AI/technology or system-wide domain anchor"
-        elif materiality < float(policy.get("minimum_materiality", 0.0001)):
-            reason = "insufficient domain materiality"
-        elif not _valid_https_url(article_url):
-            reason = "missing traceable HTTPS article URL"
+    for tier in tiers:
+        policy = current_context_qualification_policy(domain, tier.key)
+        days = max(int(policy.get("lookback_days", 7)), 1)
+        assessment = assess_source_for_qualification(
+            source_name, publisher_url, article_url, provider=provider, tier_key=tier.key
+        )
+        source_score = float(assessment.score)
+        freshness = 0.0
+        score = source_score + (materiality * 2.5) + (fit * 1.5)
+        age_days = None
+        decision = "rejected"
+        reason = ""
+        published = None
+
+        if published_raw is None:
+            reason = "missing publication date"
         else:
-            decision = "metadata_qualified"
-            reason = "cleared discovery-metadata gates; underlying source grounding required before selection"
+            published = pd.Timestamp(published_raw).normalize()
+            age_days = int((current - published).days)
+            freshness = max(0.0, float(days - max(age_days, 0)))
+            score += freshness
+            if age_days < 0 or age_days >= days:
+                reason = "outside tier lookback window"
+            elif not assessment.auto_eligible:
+                reason = assessment.reason
+            elif is_preview_or_calendar_item(title):
+                reason = "preview/calendar item is not a completed development"
+            elif not relevance_matches:
+                reason = "no domain relevance term"
+            elif bool(policy.get("require_topic_anchor", True)) and domain_topic_anchors(domain) and not topic_anchor_matches:
+                reason = "no AI/technology or system-wide domain anchor"
+            elif materiality < float(policy.get("minimum_materiality", 0.0001)):
+                reason = "insufficient domain materiality"
+            elif not _valid_https_url(article_url):
+                reason = "missing traceable HTTPS article URL"
+            else:
+                decision = "metadata_qualified"
+                reason = "cleared progressive discovery-metadata gates; underlying source grounding required before selection"
 
-    audit = {
-        "audit_version": DISCOVERY_VERSION,
-        "as_of": current.date().isoformat(),
-        "domain_query": domain,
-        "provider": provider,
-        "query": " || ".join(domain_news_queries(domain)),
-        "lookback_days": days,
-        "title": title,
-        "published": published.date().isoformat() if published is not None else "",
-        "age_days": age_days if age_days is not None else "",
-        "source_name": source_name,
-        "publisher_url": publisher_url,
-        "article_url": article_url,
-        "source_tier": assessment.tier,
-        "source_score": assessment.score,
-        "source_role": assessment.evidence_role,
-        "materiality_score": materiality,
-        "domain_fit_score": fit,
-        "rank_score": score,
-        "relevance_terms": "|".join(relevance_matches),
-        "topic_anchor_terms": "|".join(topic_anchor_matches),
-        "decision": decision,
-        "reason": reason,
-        "event_id": "",
-        "owner_domain": "",
-        "selected": False,
-        "discovered_via": str(item.get("discovered_via") or provider),
-        "discovery_source_url": str(item.get("discovery_source_url") or ""),
-        "evidence_path": "primary_or_approved_source" if assessment.auto_eligible else "",
-        "grounding_version": GROUNDING_VERSION,
-        "grounding_status": "not_attempted",
-        "source_resolved_url": "",
-        "source_text_method": "",
-        "source_text_chars": 0,
-        "source_evidence_hash": "",
-        "headline_similarity": "",
-        "source_published_date": "",
-        "source_modified_date": "",
-        "grounding_reason": "",
-        "grounding_error": "",
-    }
-    if decision != "metadata_qualified":
-        return None, audit
+        final_audit = {
+            "audit_version": DISCOVERY_VERSION,
+            "as_of": current.date().isoformat(),
+            "domain_query": domain,
+            "provider": provider,
+            "query": " || ".join(domain_news_queries(domain)),
+            "lookback_days": days,
+            "qualification_tier": tier.key,
+            "qualification_tier_label": tier.label,
+            "effective_minimum_materiality": round(float(policy.get("minimum_materiality", 0.0)), 4),
+            "topic_anchor_required": bool(policy.get("require_topic_anchor", True)),
+            "source_policy": str(policy.get("source_policy") or "strict"),
+            "title": title,
+            "published": published.date().isoformat() if published is not None else "",
+            "age_days": age_days if age_days is not None else "",
+            "source_name": source_name,
+            "publisher_url": publisher_url,
+            "article_url": article_url,
+            "source_tier": assessment.tier,
+            "source_score": source_score,
+            "source_role": assessment.evidence_role,
+            "materiality_score": materiality,
+            "domain_fit_score": fit,
+            "rank_score": score,
+            "relevance_terms": "|".join(relevance_matches),
+            "topic_anchor_terms": "|".join(topic_anchor_matches),
+            "decision": decision,
+            "reason": reason,
+            "event_id": "",
+            "owner_domain": "",
+            "selected": False,
+            "discovered_via": str(item.get("discovered_via") or provider),
+            "discovery_source_url": str(item.get("discovery_source_url") or ""),
+            "evidence_path": "progressive_eligible_source" if assessment.auto_eligible else "",
+            "grounding_version": GROUNDING_VERSION,
+            "grounding_status": "not_attempted",
+            "source_resolved_url": "",
+            "source_text_method": "",
+            "source_text_chars": 0,
+            "source_evidence_hash": "",
+            "headline_similarity": "",
+            "source_published_date": "",
+            "source_modified_date": "",
+            "grounding_reason": "",
+            "grounding_error": "",
+            "tier_failures": " | ".join(tier_failures),
+        }
+        if decision != "metadata_qualified":
+            tier_failures.append(f"{tier.key}:{reason}")
+            continue
 
-    headline = _strip_source_suffix(title, source_name)
-    digest = __import__("hashlib").sha1(f"{headline}|{article_url}".casefold().encode("utf-8")).hexdigest()[:12]
-    event_id = f"auto-{published.date().isoformat()}-{digest}"
-    fact_text, relevance_text = headline, ""
-    if assessment.evidence_role == "official_statement":
-        source_type = "official_statement"
-        verification_status = "primary"
-        status = "Primary record"
-    elif assessment.evidence_role == "company_statement":
-        source_type = "company_statement"
-        verification_status = "company_statement"
-        status = "Company statement"
-    else:
-        source_type = "news"
-        verification_status = "reported"
-        status = "Reported"
-    candidate = {
-        "event_id": event_id,
-        "event_date": published.date().isoformat(),
-        "domain": domain,
-        "owner_domain": domain,
-        "event_type": "reported_development",
-        "priority": score,
-        "verified_fact": fact_text,
-        "platform_relevance": relevance_text,
-        "display": f"{fact_text} {relevance_text}".strip(),
-        "reference_number": 0,
-        "source_name": source_name,
-        "source_label": source_name,
-        "source_url": article_url,
-        "publisher_url": publisher_url,
-        "source_type": source_type,
-        "source_tier": assessment.tier,
-        "evidence_role": assessment.evidence_role,
-        "verification_status": verification_status,
-        "status": status,
-        "legal_status": "",
-        "resolution_status": "recent",
-        "surface": "domain",
-        "sectors": [],
-        "tickers": [],
-        "owner_score": fit,
-        "rank_score": score,
-        "discovery_provider": provider,
-        "discovery_query": str(item.get("discovery_query") or " || ".join(domain_news_queries(domain))),
-        "discovered_via": str(item.get("discovered_via") or provider),
-        "discovery_source_url": str(item.get("discovery_source_url") or ""),
-        "discovery_title": headline,
-        "discovery_description": str(item.get("description") or ""),
-        "grounding_version": GROUNDING_VERSION,
-        "grounding_status": "pending",
-        "lookback_days": days,
-    }
-    audit["event_id"] = event_id
-    return candidate, audit
+        headline = _strip_source_suffix(title, source_name)
+        digest = hashlib.sha1(f"{headline}|{article_url}".casefold().encode("utf-8")).hexdigest()[:12]
+        event_id = f"auto-{published.date().isoformat()}-{digest}"
+        if assessment.evidence_role == "official_statement":
+            source_type = "official_statement"
+            verification_status = "primary"
+            status = "Primary record"
+        elif assessment.evidence_role == "company_statement":
+            source_type = "company_statement"
+            verification_status = "company_statement"
+            status = "Company statement"
+        else:
+            source_type = "news"
+            verification_status = "reported"
+            status = "Reported"
+        candidate = {
+            "event_id": event_id,
+            "event_date": published.date().isoformat(),
+            "domain": domain,
+            "owner_domain": domain,
+            "event_type": "reported_development",
+            "priority": score,
+            "verified_fact": headline,
+            "platform_relevance": "",
+            "display": headline,
+            "reference_number": 0,
+            "source_name": source_name,
+            "source_label": source_name,
+            "source_url": article_url,
+            "publisher_url": publisher_url,
+            "source_type": source_type,
+            "source_tier": assessment.tier,
+            "evidence_role": assessment.evidence_role,
+            "verification_status": verification_status,
+            "status": status,
+            "legal_status": "",
+            "resolution_status": "recent",
+            "surface": "domain",
+            "sectors": [],
+            "tickers": [],
+            "owner_score": fit,
+            "rank_score": score,
+            "discovery_provider": provider,
+            "discovery_query": str(item.get("discovery_query") or " || ".join(domain_news_queries(domain))),
+            "discovered_via": str(item.get("discovered_via") or provider),
+            "discovery_source_url": str(item.get("discovery_source_url") or ""),
+            "discovery_title": headline,
+            "discovery_description": str(item.get("description") or ""),
+            "grounding_version": GROUNDING_VERSION,
+            "grounding_status": "pending",
+            "lookback_days": days,
+            "qualification_tier": tier.key,
+            "qualification_tier_label": tier.label,
+            "effective_minimum_materiality": float(policy.get("minimum_materiality", 0.0)),
+            "topic_anchor_required": bool(policy.get("require_topic_anchor", True)),
+            "minimum_source_text_chars": int(policy.get("minimum_source_text_chars", 220)),
+        }
+        final_audit["event_id"] = event_id
+        final_audit["tier_failures"] = " | ".join(tier_failures)
+        return candidate, final_audit
+
+    if final_audit:
+        final_audit["tier_failures"] = " | ".join(tier_failures)
+    return None, final_audit
 
 
 def _enforce_tier2_evidence_boundary(evaluated: list[tuple[dict, dict]]) -> list[dict]:
@@ -850,6 +904,9 @@ def _ground_domain_candidates(
                     "event_id", "domain", "owner_domain", "priority", "owner_score",
                     "rank_score", "event_type", "lookback_days", "discovery_provider",
                     "discovery_query", "discovered_via", "discovery_source_url",
+                    "qualification_tier", "qualification_tier_label",
+                    "effective_minimum_materiality", "topic_anchor_required",
+                    "minimum_source_text_chars",
                 ):
                     if key in candidate:
                         alt_candidate[key] = candidate[key]
@@ -941,10 +998,289 @@ def _select_ranked_domain_events(ranked: list[dict], max_items: int) -> list[dic
     return selected
 
 
+def _rank_progressive_events(events: list[dict]) -> list[dict]:
+    """Rank quality tier before within-tier materiality/freshness score."""
+    return sorted(
+        events,
+        key=lambda item: (
+            -current_context_tier_index(item.get("qualification_tier", "A")),
+            float(item.get("rank_score", item.get("priority", 0)) or 0),
+            str(item.get("event_date", "")),
+        ),
+        reverse=True,
+    )
+
+
+def _event_survives_reader_contract(event: dict, *, current: pd.Timestamp, retrieved_at: str) -> bool:
+    """Apply the exact retained Reader gate before an event can count toward coverage.
+
+    Discovery and rendering must share one eligibility contract.  A grounded
+    candidate that would disappear on registry reload is not a qualifying
+    Current Context event and may not satisfy the six-domain floor.
+    """
+    row = _registry_row(event, retrieved_at=retrieved_at)
+    frame = pd.DataFrame([row])
+    frame["event_date"] = pd.to_datetime(frame["event_date"], errors="coerce").dt.normalize()
+    frame["priority"] = pd.to_numeric(frame["priority"], errors="coerce")
+    frame["expires_after_days"] = pd.to_numeric(frame["expires_after_days"], errors="coerce")
+    return bool(_curated_events(frame, current))
+
+
+def _reader_renderable_assigned(
+    assigned: dict[str, list[dict]], *, current: pd.Timestamp, retrieved_at: str, audit_rows: list[dict] | None = None
+) -> dict[str, list[dict]]:
+    audit_by_event = {str(row.get("event_id") or ""): row for row in (audit_rows or []) if row.get("event_id")}
+    renderable: dict[str, list[dict]] = {domain: [] for domain in DOMAIN_KEYS}
+    for domain in DOMAIN_KEYS:
+        for event in assigned.get(domain, []) or []:
+            item = dict(event)
+            item["domain"] = domain
+            item["owner_domain"] = domain
+            if _event_survives_reader_contract(item, current=current, retrieved_at=retrieved_at):
+                renderable[domain].append(item)
+                continue
+            row = audit_by_event.get(str(item.get("event_id") or ""))
+            if row is not None:
+                row["decision"] = "rejected_reader_contract"
+                row["reason"] = "grounded event failed the final retained Reader eligibility contract"
+    return renderable
+
+
+def _normalize_reader_registry_frame(frame: pd.DataFrame) -> pd.DataFrame:
+    """Normalize a raw/prospective registry frame before applying Reader rules.
+
+    ``_curated_events`` normally receives the normalized output of the retained
+    registry loader.  Coverage commissioning also evaluates raw CSV/prospective
+    frames directly, so normalize the date/numeric fields here rather than
+    depending on the caller's storage representation.
+    """
+    normalized = frame.copy()
+    if normalized.empty:
+        return normalized
+    if "event_date" in normalized.columns:
+        normalized["event_date"] = pd.to_datetime(normalized["event_date"], errors="coerce").dt.normalize()
+    if "resolved_date" in normalized.columns:
+        normalized["resolved_date"] = pd.to_datetime(normalized["resolved_date"], errors="coerce").dt.normalize()
+    for column in ("priority", "expires_after_days"):
+        if column in normalized.columns:
+            normalized[column] = pd.to_numeric(normalized[column], errors="coerce")
+    return normalized
+
+
+def _reader_visible_domains_from_frame(frame: pd.DataFrame, *, current: pd.Timestamp) -> set[str]:
+    """Resolve the exact set of subordinate Reader domains from a registry frame."""
+    curated = _curated_events(_normalize_reader_registry_frame(frame), current)
+    domain_events: dict[str, list[dict]] = {domain: [] for domain in DOMAIN_KEYS}
+    for event in curated:
+        domain = str(event.get("owner_domain") or event.get("domain") or "").strip().lower()
+        surface = str(event.get("surface") or "").strip().lower()
+        if domain not in domain_events or surface not in {"domain", "tab", "macro", "both", "all"}:
+            continue
+        item = dict(event)
+        item["domain"] = domain
+        item["owner_domain"] = domain
+        item["owner_score"] = float(item.get("rank_score", item.get("priority", 0)) or 0) + 1000.0
+        domain_events[domain].append(item)
+    owned = _assign_event_owners(domain_events)
+    return {domain for domain in DOMAIN_KEYS if owned.get(domain)}
+
+
+def _retained_reader_domains(path: Path, *, current: pd.Timestamp) -> set[str]:
+    """Return domains that are actually renderable from the current retained registry."""
+    try:
+        frame = pd.read_csv(path) if path.exists() and path.stat().st_size > 0 else pd.DataFrame()
+    except Exception:
+        frame = pd.DataFrame()
+    return _reader_visible_domains_from_frame(frame, current=current)
+
+
+def _continuity_seed_candidate(row: dict, *, current: pd.Timestamp) -> dict | None:
+    """Turn a still-current retained/historical event into a discovery seed only.
+
+    The prior prose is never trusted as Reader evidence.  It is used only to
+    identify an event that must be fetched and grounded again under the current
+    source-body contract.
+    """
+    domain = str(row.get("domain") or "").strip().lower()
+    source_url = str(row.get("source_url") or "").strip()
+    if domain not in DOMAIN_KEYS or not _valid_https_url(source_url):
+        return None
+    try:
+        event_date = pd.Timestamp(row.get("event_date")).normalize()
+    except Exception:
+        return None
+    age = int((current - event_date).days)
+    if age < 0 or age >= CURRENT_CONTEXT_HARD_WINDOW_DAYS:
+        return None
+    tier_key = str(row.get("qualification_tier") or "").strip().upper()
+    if tier_key not in {tier.key for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS}:
+        tier_key = "A" if age < CURRENT_CONTEXT_PREFERRED_WINDOW_DAYS else "C"
+    if age >= CURRENT_CONTEXT_PREFERRED_WINDOW_DAYS and current_context_tier_index(tier_key) < current_context_tier_index("C"):
+        tier_key = "C"
+    policy = current_context_qualification_policy(domain, tier_key)
+    title = str(row.get("source_title") or row.get("verified_fact") or "").strip()
+    if not title:
+        return None
+    priority_value = pd.to_numeric(row.get("priority"), errors="coerce")
+    priority = 0.0 if pd.isna(priority_value) else float(priority_value)
+    return {
+        "event_id": str(row.get("event_id") or hashlib.sha256(f"{domain}|{source_url}|{event_date.date()}".encode()).hexdigest()[:16]),
+        "event_date": event_date.date().isoformat(),
+        "domain": domain,
+        "owner_domain": domain,
+        "event_type": str(row.get("event_type") or "reported_development"),
+        "priority": priority,
+        "rank_score": priority,
+        "owner_score": priority,
+        "verified_fact": title,
+        "discovery_title": title,
+        "discovery_description": str(row.get("verified_fact") or "").strip(),
+        "source_name": str(row.get("source_name") or "").strip(),
+        "source_label": str(row.get("source_label") or row.get("source_name") or "").strip(),
+        "source_url": source_url,
+        "publisher_url": source_url,
+        "source_type": str(row.get("source_type") or "news").strip().lower(),
+        "verification_status": str(row.get("verification_status") or "reported").strip().lower(),
+        "status": str(row.get("status") or "Reported"),
+        "qualification_tier": tier_key,
+        "qualification_tier_label": current_context_qualification_tier(tier_key).label,
+        "lookback_days": int(policy.get("lookback_days", CURRENT_CONTEXT_HARD_WINDOW_DAYS) or CURRENT_CONTEXT_HARD_WINDOW_DAYS),
+        "discovery_provider": "retained_continuity",
+        "discovery_query": "retained continuity revalidation",
+        "discovered_via": "retained_continuity",
+        "discovery_source_url": source_url,
+        "_continuity_seed": True,
+    }
+
+
+def _retained_continuity_seeds(
+    *, current: pd.Timestamp, registry_path: Path, retrospective_path: Path | None = None
+) -> dict[str, list[dict]]:
+    """Collect still-current event identities that merit source re-grounding.
+
+    Current-version live rows need no extra fetch. Older reconstruction rows and
+    quarantined historical rows are eligible only as leads; they must pass live
+    source grounding before they can return to the Reader.
+    """
+    paths = [Path(registry_path)]
+    if retrospective_path is not None:
+        paths.append(Path(retrospective_path))
+    by_domain: dict[str, list[dict]] = {domain: [] for domain in DOMAIN_KEYS}
+    seen: set[tuple[str, str]] = set()
+    live_event_ids: set[str] = set()
+    live_source_urls: set[str] = set()
+    for path in paths:
+        if not path.exists() or path.stat().st_size == 0:
+            continue
+        try:
+            frame = pd.read_csv(path)
+        except Exception:
+            continue
+        for row in frame.to_dict("records"):
+            # Current-version automated rows are already eligible for ordinary
+            # retained continuity and do not need another network fetch.
+            if path == Path(registry_path):
+                if (
+                    str(row.get("record_origin") or "").strip().casefold() == "automated_discovery"
+                    and str(row.get("grounding_status") or "").strip().casefold() == "grounded"
+                    and str(row.get("grounding_version") or "").strip() == GROUNDING_VERSION
+                ):
+                    event_id = str(row.get("event_id") or "").strip()
+                    source_url = str(row.get("source_url") or "").strip().casefold()
+                    if event_id:
+                        live_event_ids.add(event_id)
+                    if source_url:
+                        live_source_urls.add(source_url)
+                    continue
+            candidate = _continuity_seed_candidate(row, current=current)
+            if candidate is None:
+                continue
+            event_id = str(candidate.get("event_id") or "")
+            source_url = str(candidate.get("source_url") or "").casefold()
+            if event_id in live_event_ids or source_url in live_source_urls:
+                continue
+            key = (event_id, source_url)
+            if key in seen:
+                continue
+            seen.add(key)
+            by_domain[str(candidate["domain"])].append(candidate)
+    for domain in DOMAIN_KEYS:
+        by_domain[domain].sort(key=lambda item: (float(item.get("rank_score", 0) or 0), str(item.get("event_date", ""))), reverse=True)
+        by_domain[domain] = by_domain[domain][:2]
+    return by_domain
+
+
+def _select_progressive_coverage(assigned: dict[str, list[dict]], *, retained_domains: set[str] | None = None) -> tuple[dict[str, list[dict]], dict]:
+    """Relax A→E only until the six-domain coverage constraint is satisfied.
+
+    Discovery fetches the maximum fallback window once for efficiency, but
+    selection behaves as a true progressive ladder: Tier B cannot enter the
+    retained registry if Tier A alone already covers six domains, and so on.
+    """
+    retained_domains = {str(domain).strip().lower() for domain in (retained_domains or set()) if str(domain).strip().lower() in DOMAIN_KEYS}
+    ranked_by_domain = {
+        domain: _rank_progressive_events(list(assigned.get(domain, []) or []))
+        for domain in DOMAIN_KEYS
+    }
+    cumulative: dict[str, int] = {}
+    reached = CURRENT_CONTEXT_QUALIFICATION_TIERS[-1]
+    for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS:
+        cutoff = current_context_tier_index(tier.key)
+        candidate_domains = {
+            domain for domain in DOMAIN_KEYS
+            if any(current_context_tier_index(event.get("qualification_tier", "A")) <= cutoff for event in ranked_by_domain[domain])
+        }
+        available = len(retained_domains | candidate_domains)
+        cumulative[tier.key] = available
+        reached = tier
+        if available >= CURRENT_CONTEXT_COVERAGE_TARGET:
+            break
+
+    cutoff = current_context_tier_index(reached.key)
+    selected: dict[str, list[dict]] = {}
+    for domain in DOMAIN_KEYS:
+        eligible = [
+            event for event in ranked_by_domain[domain]
+            if current_context_tier_index(event.get("qualification_tier", "A")) <= cutoff
+        ]
+        max_items = max(1, min(int((DOMAIN_CONTEXT_POLICY.get(domain, {}) or {}).get("max_items", 2)), 2))
+        selected[domain] = _select_ranked_domain_events(eligible, max_items)
+
+    selected_domains = [domain for domain in DOMAIN_KEYS if selected.get(domain)]
+    reader_domains = sorted(retained_domains | set(selected_domains))
+    domain_tiers = Counter(
+        str((selected[domain][0] or {}).get("qualification_tier") or "A")
+        for domain in selected_domains
+    )
+    event_tiers = Counter(
+        str(event.get("qualification_tier") or "A")
+        for domain in DOMAIN_KEYS
+        for event in selected.get(domain, [])
+    )
+    return selected, {
+        "target_domains": CURRENT_CONTEXT_COVERAGE_TARGET,
+        "preferred_window_days": CURRENT_CONTEXT_PREFERRED_WINDOW_DAYS,
+        "hard_window_days": CURRENT_CONTEXT_HARD_WINDOW_DAYS,
+        "selected_domain_count": len(reader_domains),
+        "selected_domains": selected_domains,
+        "new_selected_domain_count": len(selected_domains),
+        "retained_baseline_domain_count": len(retained_domains),
+        "retained_baseline_domains": sorted(retained_domains),
+        "reader_domains": reader_domains,
+        "target_met": len(reader_domains) >= CURRENT_CONTEXT_COVERAGE_TARGET,
+        "tier_reached": reached.key,
+        "tier_reached_label": reached.label,
+        "expanded_discovery_required": reached.key != "A",
+        "available_domains_by_tier": {tier.key: int(cumulative.get(tier.key, cumulative.get(reached.key, 0))) for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS if current_context_tier_index(tier.key) <= cutoff},
+        "selected_domains_by_tier": {tier.key: int(domain_tiers.get(tier.key, 0)) for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS},
+        "selected_events_by_tier": {tier.key: int(event_tiers.get(tier.key, 0)) for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS},
+    }
+
+
 def discover_domain(domain: str, *, as_of=None) -> tuple[list[dict], list[dict], list[FetchStatus]]:
     current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
     policy = DOMAIN_CONTEXT_POLICY.get(domain, {}) or {}
-    days = max(int(policy.get("lookback_days", 7)), 1)
+    days = current_context_max_lookback_days(domain)
     queries = domain_news_queries(domain)
     statuses: list[FetchStatus] = []
     items: list[dict] = []
@@ -984,6 +1320,7 @@ def discover_domain(domain: str, *, as_of=None) -> tuple[list[dict], list[dict],
     metadata_qualified = _enforce_tier2_evidence_boundary(evaluated)
     metadata_qualified.sort(
         key=lambda item: (
+            -current_context_tier_index(item.get("qualification_tier", "A")),
             float(item.get("rank_score", 0)),
             str(item.get("event_date", "")),
         ),
@@ -993,8 +1330,13 @@ def discover_domain(domain: str, *, as_of=None) -> tuple[list[dict], list[dict],
     # High-cadence Market/Finance get a slightly larger request budget because
     # they encounter more paywalls, commentary, and duplicate coverage.
     max_items = max(1, min(int(policy.get("max_items", 2)), 2))
-    target_grounded = min(4, max_items * 2)
-    max_attempts = 18 if domain == "finance" else (14 if domain == "market" else 8)
+    # Ground enough of the progressively qualified queue to make coverage a
+    # real constraint rather than a metadata-only aspiration.  Quality order is
+    # preserved because Tier A candidates are attempted before B→E.
+    target_grounded = max(2, max_items)
+    # Sparse domains receive a deeper grounding search so the six-domain floor
+    # is an operating requirement rather than a metadata-only aspiration.
+    max_attempts = 24 if domain in {"grid_storage", "water", "connectivity", "workforce", "economic_impact", "adoption"} else 20
     grounded = _ground_domain_candidates(
         metadata_qualified,
         audit,
@@ -1007,6 +1349,7 @@ def discover_domain(domain: str, *, as_of=None) -> tuple[list[dict], list[dict],
     )
     grounded.sort(
         key=lambda item: (
+            -current_context_tier_index(item.get("qualification_tier", "A")),
             float(item.get("rank_score", 0)),
             str(item.get("event_date", "")),
         ),
@@ -1016,6 +1359,8 @@ def discover_domain(domain: str, *, as_of=None) -> tuple[list[dict], list[dict],
 
 
 def _registry_row(event: dict, *, retrieved_at: str) -> dict:
+    tier_key = str(event.get("qualification_tier") or "A")
+    tier_policy = current_context_qualification_policy(str(event.get("domain") or ""), tier_key)
     return {
         "event_id": event.get("event_id", ""),
         "event_date": event.get("event_date", ""),
@@ -1029,7 +1374,7 @@ def _registry_row(event: dict, *, retrieved_at: str) -> dict:
         "source_url": event.get("source_url", ""),
         "source_type": event.get("source_type", "news"),
         "verification_status": event.get("verification_status", "reported"),
-        "expires_after_days": (DOMAIN_CONTEXT_POLICY.get(event.get("domain", ""), {}) or {}).get("lookback_days", 7),
+        "expires_after_days": int(tier_policy.get("lookback_days", 7) or 7),
         "surface": "domain",
         "sectors": "",
         "tickers": "",
@@ -1061,6 +1406,12 @@ def _registry_row(event: dict, *, retrieved_at: str) -> dict:
         "evidence_seed_source_url": event.get("evidence_seed_source_url", ""),
         "evidence_resolution_query": event.get("evidence_resolution_query", ""),
         "evidence_resolution_similarity": event.get("evidence_resolution_similarity", ""),
+        "qualification_tier": tier_key,
+        "qualification_tier_label": event.get("qualification_tier_label", current_context_qualification_tier(tier_key).label),
+        "effective_minimum_materiality": float(tier_policy.get("minimum_materiality", 0.0) or 0.0),
+        "topic_anchor_required": bool(tier_policy.get("require_topic_anchor", True)),
+        "minimum_source_text_chars": int(tier_policy.get("minimum_source_text_chars", 220) or 220),
+        "minimum_anchor_score": float(tier_policy.get("minimum_anchor_score", 8.0) or 8.0),
     }
 
 
@@ -1077,6 +1428,14 @@ def _merged_registry_frame(
         return None, 0
 
     existing = pd.read_csv(path) if path.exists() and path.stat().st_size > 0 else pd.DataFrame()
+    if not existing.empty:
+        # The qualified registry is a live evidence surface, not a historical
+        # archive.  Legacy rows without modern source-grounding provenance are
+        # retained in the audit corpus, but may not survive a successful v3
+        # registry publication.
+        existing = existing.loc[
+            existing.apply(lambda row: _automated_row_still_qualifies(row.to_dict()), axis=1)
+        ].copy()
     additions = pd.DataFrame(rows)
     if additions.empty:
         return None, 0
@@ -1117,9 +1476,30 @@ def _portable_manifest_path(path: Path) -> str:
 def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manifest_path=DEFAULT_MANIFEST_PATH, registry_path=DEFAULT_EVENT_PATH, merge_registry=True) -> dict:
     current = pd.Timestamp(as_of or pd.Timestamp.now()).normalize()
     retrieved_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    audit_path = Path(audit_path)
+    manifest_path = Path(manifest_path)
+    registry_path = Path(registry_path)
+    audit_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    registry_path.parent.mkdir(parents=True, exist_ok=True)
+
     accepted_by_domain: dict[str, list[dict]] = {domain: [] for domain in DOMAIN_KEYS}
     audit_rows: list[dict] = []
     fetch_statuses: list[FetchStatus] = []
+    retained_domains = _retained_reader_domains(registry_path, current=current)
+
+    retrospective_path = (
+        DEFAULT_RETROSPECTIVE_REGISTRY_PATH
+        if registry_path.resolve() == Path(DEFAULT_EVENT_PATH).resolve()
+        else None
+    )
+    continuity_seeds = _retained_continuity_seeds(
+        current=current,
+        registry_path=registry_path,
+        retrospective_path=retrospective_path,
+    )
+    continuity_attempted = sum(len(items) for items in continuity_seeds.values())
+    continuity_recovered = 0
 
     with ThreadPoolExecutor(max_workers=min(8, len(DOMAIN_KEYS))) as executor:
         futures = {
@@ -1146,18 +1526,77 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
             audit_rows.extend(audit)
             fetch_statuses.extend(statuses)
 
-    assigned = _assign_event_owners(accepted_by_domain)
-    selected: dict[str, list[dict]] = {}
-    selected_ids: set[str] = set()
+    # Continuity rows are leads, never evidence.  Still-current events from an
+    # older reconstruction contract (or the quarantined retrospective corpus)
+    # get one chance to re-establish themselves from the live source.  This
+    # preserves strong events such as a still-current earnings release without
+    # grandfathering bad prose or stale page identity.
     for domain in DOMAIN_KEYS:
-        ranked = sorted(
-            assigned.get(domain, []),
-            key=lambda item: (float(item.get("rank_score", 0)), str(item.get("event_date", ""))),
-            reverse=True,
+        seeds = list(continuity_seeds.get(domain, []) or [])
+        if not seeds:
+            continue
+        recovered = _ground_domain_candidates(
+            seeds,
+            [],
+            domain=domain,
+            target_grounded=len(seeds),
+            max_attempts=len(seeds),
+            current=current,
+            discovery_items=[],
+            statuses=fetch_statuses,
         )
-        max_items = max(1, min(int((DOMAIN_CONTEXT_POLICY.get(domain, {}) or {}).get("max_items", 2)), 2))
-        selected[domain] = _select_ranked_domain_events(ranked, max_items)
-        selected_ids.update(str(item.get("event_id") or "") for item in selected[domain])
+        continuity_recovered += len(recovered)
+        accepted_by_domain[domain].extend(recovered)
+
+    assigned = _assign_event_owners(accepted_by_domain)
+    assigned = _reader_renderable_assigned(
+        assigned, current=current, retrieved_at=retrieved_at, audit_rows=audit_rows
+    )
+
+    fresh_reader_qualified_count = sum(
+        1 for domain in DOMAIN_KEYS for event in assigned.get(domain, []) if not bool(event.get("_continuity_seed"))
+    )
+
+    continuity_selected: dict[str, list[dict]] = {
+        domain: [event for event in assigned.get(domain, []) if bool(event.get("_continuity_seed"))]
+        for domain in DOMAIN_KEYS
+    }
+    continuity_domains = {domain for domain in DOMAIN_KEYS if continuity_selected.get(domain)}
+    fresh_assigned: dict[str, list[dict]] = {
+        domain: [event for event in assigned.get(domain, []) if not bool(event.get("_continuity_seed"))]
+        for domain in DOMAIN_KEYS
+    }
+    fresh_selected, coverage = _select_progressive_coverage(
+        fresh_assigned, retained_domains=(retained_domains | continuity_domains)
+    )
+
+    # Successfully re-grounded continuity events are restored irrespective of
+    # the tier needed for *new* discovery.  The quality ladder governs how far
+    # we relax to acquire additional news; it should not evict a still-current
+    # event that has just passed the current source-body contract.
+    selected: dict[str, list[dict]] = {domain: [] for domain in DOMAIN_KEYS}
+    for domain in DOMAIN_KEYS:
+        seen_ids: set[str] = set()
+        seen_urls: set[str] = set()
+        combined = [*(continuity_selected.get(domain, []) or []), *(fresh_selected.get(domain, []) or [])]
+        for event in combined:
+            event_id = str(event.get("event_id") or "")
+            source_url = str(event.get("source_url") or "").strip().casefold()
+            if event_id and event_id in seen_ids:
+                continue
+            if source_url and source_url in seen_urls:
+                continue
+            selected[domain].append(event)
+            if event_id:
+                seen_ids.add(event_id)
+            if source_url:
+                seen_urls.add(source_url)
+
+    selected_ids: set[str] = {
+        str(item.get("event_id") or "")
+        for domain in DOMAIN_KEYS
+        for item in selected.get(domain, [])
+    }
 
     owner_by_id = {
         str(event.get("event_id") or ""): domain
@@ -1175,22 +1614,37 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
             row["decision"] = "accepted_not_selected"
             row["reason"] = "qualified but ranked below the domain's selected development(s)"
 
-    audit_path = Path(audit_path)
-    manifest_path = Path(manifest_path)
-    registry_path = Path(registry_path)
-    audit_path.parent.mkdir(parents=True, exist_ok=True)
-    manifest_path.parent.mkdir(parents=True, exist_ok=True)
-    registry_path.parent.mkdir(parents=True, exist_ok=True)
-
     registry_frame: pd.DataFrame | None = None
+    prospective_frame: pd.DataFrame | None = None
     added = 0
-    if merge_registry:
+    if coverage.get("target_met"):
         with synchronized_path(registry_path.parent / ".current_context_refresh"):
-            registry_frame, added = _merged_registry_frame(
+            prospective_frame, added = _merged_registry_frame(
                 selected,
                 path=registry_path,
                 retrieved_at=retrieved_at,
             )
+
+    # The floor is a Reader contract, not a discovery statistic.  Recompute it
+    # from the exact prospective registry that would be published.  If the
+    # final retained loader cannot render six domains, publication is refused.
+    if prospective_frame is None:
+        try:
+            prospective_frame = pd.read_csv(registry_path) if registry_path.exists() and registry_path.stat().st_size > 0 else pd.DataFrame()
+        except Exception:
+            prospective_frame = pd.DataFrame()
+    reader_domains = sorted(_reader_visible_domains_from_frame(prospective_frame, current=current))
+    coverage["reader_domains"] = reader_domains
+    coverage["selected_domain_count"] = len(reader_domains)
+    coverage["reader_domain_count"] = len(reader_domains)
+    coverage["target_met"] = len(reader_domains) >= CURRENT_CONTEXT_COVERAGE_TARGET
+    if coverage["target_met"] and merge_registry and prospective_frame is not None:
+        registry_frame = prospective_frame
+    else:
+        registry_frame = None
+        if not coverage["target_met"]:
+            added = 0
+
 
     snapshot_material = {
         "discovery_version": DISCOVERY_VERSION,
@@ -1262,7 +1716,16 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
         "domains": list(DOMAIN_KEYS),
         "fetch_status": [asdict(status) for status in fetch_statuses],
         "candidate_count": len(audit_rows),
-        "qualified_count": sum(1 for row in audit_rows if str(row.get("decision", "")).startswith("accepted")),
+        "qualified_count": int(fresh_reader_qualified_count),
+        "continuity": {
+            "attempted": int(continuity_attempted),
+            "recovered": int(continuity_recovered),
+            "selected": int(sum(len(items) for items in continuity_selected.values())),
+            "domains": sorted(domain for domain in DOMAIN_KEYS if continuity_selected.get(domain)),
+        },
+        "fresh_selected_counts": {
+            domain: len(fresh_selected.get(domain, [])) for domain in DOMAIN_KEYS
+        },
         "grounding": {
             "version": GROUNDING_VERSION,
             "attempted": sum(1 for row in audit_rows if str(row.get("grounding_status", "")) in {"grounded", "rejected"}),
@@ -1284,11 +1747,15 @@ def refresh_current_context(*, as_of=None, audit_path=DEFAULT_AUDIT_PATH, manife
                     "source_url": event.get("source_url", ""),
                     "event_date": event.get("event_date", ""),
                     "rank_score": event.get("rank_score", 0),
+                    "qualification_tier": event.get("qualification_tier", "A"),
+                    "qualification_tier_label": event.get("qualification_tier_label", "Preferred"),
                 }
                 for event in events
             ]
             for domain, events in selected.items()
         },
+        "coverage": coverage,
+        "publication_status": "selected_and_merged" if coverage.get("target_met") else "retained_fallback_coverage_floor",
         "registry_rows_added": added,
         "audit_path": _portable_manifest_path(audit_path),
         "registry_path": _portable_manifest_path(registry_path),

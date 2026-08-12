@@ -1,8 +1,81 @@
 {
   "as_of": "2026-08-11",
   "audit_path": "data/current_context_candidate_audit.csv",
-  "candidate_count": 2068,
-  "discovery_version": "2.6",
+  "candidate_count": 2152,
+  "continuity": {
+    "attempted": 20,
+    "domains": [
+      "connectivity",
+      "grid_storage",
+      "power"
+    ],
+    "recovered": 4,
+    "selected": 3
+  },
+  "coverage": {
+    "available_domains_by_tier": {
+      "A": 5,
+      "B": 5,
+      "C": 5,
+      "D": 11
+    },
+    "expanded_discovery_required": true,
+    "hard_window_days": 10,
+    "new_selected_domain_count": 10,
+    "preferred_window_days": 7,
+    "reader_domain_count": 11,
+    "reader_domains": [
+      "adoption",
+      "compute",
+      "connectivity",
+      "data_center",
+      "economic_impact",
+      "finance",
+      "grid_storage",
+      "market",
+      "power",
+      "water",
+      "workforce"
+    ],
+    "retained_baseline_domain_count": 3,
+    "retained_baseline_domains": [
+      "connectivity",
+      "grid_storage",
+      "power"
+    ],
+    "selected_domain_count": 11,
+    "selected_domains": [
+      "market",
+      "finance",
+      "compute",
+      "data_center",
+      "connectivity",
+      "grid_storage",
+      "water",
+      "adoption",
+      "workforce",
+      "economic_impact"
+    ],
+    "selected_domains_by_tier": {
+      "A": 2,
+      "B": 0,
+      "C": 0,
+      "D": 8,
+      "E": 0
+    },
+    "selected_events_by_tier": {
+      "A": 2,
+      "B": 1,
+      "C": 0,
+      "D": 13,
+      "E": 0
+    },
+    "target_domains": 6,
+    "target_met": true,
+    "tier_reached": "D",
+    "tier_reached_label": "Broad"
+  },
+  "discovery_version": "3.1",
   "domains": [
     "market",
     "finance",
@@ -18,10 +91,64 @@
   ],
   "fetch_status": [
     {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 56,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(data center fiber OR AI fiber backbone OR cloud fiber network)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 14,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(submarine cable cloud OR submarine cable data center OR cable landing station)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 2,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(internet exchange data center OR peering facility OR interconnection facility)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 0,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(long-haul fiber OR middle mile fiber data center OR route diversity cloud)",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "Hollow Core Fiber Backbone Network Market Size & Forecast 2036",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "fiber backbone 2036",
+      "status": "ok"
+    },
+    {
       "domain": "data_center",
       "error": "",
-      "item_count": 66,
-      "lookback_days": 7,
+      "item_count": 61,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center construction OR data center campus OR hyperscale campus)",
       "status": "ok"
@@ -29,8 +156,8 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 64,
-      "lookback_days": 7,
+      "item_count": 66,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center permit OR data center moratorium OR data center zoning)",
       "status": "ok"
@@ -38,8 +165,8 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 65,
-      "lookback_days": 7,
+      "item_count": 53,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center capacity OR colocation capacity OR hyperscaler campus)",
       "status": "ok"
@@ -48,7 +175,7 @@
       "domain": "data_center",
       "error": "",
       "item_count": 56,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center project delay OR data center cancellation OR data center approval)",
       "status": "ok"
@@ -56,26 +183,80 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 14,
+      "item_count": 15,
       "lookback_days": 7,
       "provider": "event_evidence_search",
-      "query": "Texas data center tracker: See where data centers are planned or operating near you",
+      "query": "EXCLUSIVE: Alpha Compute to buy Pennsylvania land, gas rights for $55 million data center campus, company says",
       "status": "ok"
     },
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 100,
+      "item_count": 33,
       "lookback_days": 7,
       "provider": "event_evidence_search",
-      "query": "data center operating",
+      "query": "data center campus 55 million",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 52,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(data center interconnection OR AI interconnection queue OR large load interconnection)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 56,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(transmission data center OR grid upgrade data center OR substation data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 41,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(battery storage data center OR grid storage AI load)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 0,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(transformer shortage OR transmission congestion OR renewable curtailment)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 3,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "A Faster Interconnection Queue Still Ends at a Construction Site",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 39,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "interconnection queue",
       "status": "ok"
     },
     {
       "domain": "water",
       "error": "",
       "item_count": 58,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center water OR data center wastewater OR data center cooling water)",
       "status": "ok"
@@ -83,8 +264,8 @@
     {
       "domain": "water",
       "error": "",
-      "item_count": 13,
-      "lookback_days": 7,
+      "item_count": 14,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(industrial water permit data center OR water reuse data center)",
       "status": "ok"
@@ -93,7 +274,7 @@
       "domain": "water",
       "error": "",
       "item_count": 1,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(drought data center OR water shortage industrial development)",
       "status": "ok"
@@ -101,8 +282,8 @@
     {
       "domain": "water",
       "error": "",
-      "item_count": 58,
-      "lookback_days": 7,
+      "item_count": 56,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(water utility data center OR wastewater capacity data center)",
       "status": "ok"
@@ -110,7 +291,7 @@
     {
       "domain": "water",
       "error": "",
-      "item_count": 6,
+      "item_count": 7,
       "lookback_days": 7,
       "provider": "event_evidence_search",
       "query": "Europe is blowing up riverbeds as an extreme drought wreaks havoc on its economy",
@@ -126,172 +307,10 @@
       "status": "ok"
     },
     {
-      "domain": "connectivity",
-      "error": "",
-      "item_count": 58,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(data center fiber OR AI fiber backbone OR cloud fiber network)",
-      "status": "ok"
-    },
-    {
-      "domain": "connectivity",
-      "error": "",
-      "item_count": 10,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(submarine cable cloud OR submarine cable data center OR cable landing station)",
-      "status": "ok"
-    },
-    {
-      "domain": "connectivity",
-      "error": "",
-      "item_count": 2,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(internet exchange data center OR peering facility OR interconnection facility)",
-      "status": "ok"
-    },
-    {
-      "domain": "connectivity",
-      "error": "",
-      "item_count": 0,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(long-haul fiber OR middle mile fiber data center OR route diversity cloud)",
-      "status": "ok"
-    },
-    {
-      "domain": "connectivity",
-      "error": "",
-      "item_count": 1,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "China Unicom lands SHV-HK submarine cable connecting Hong Kong to Cambodia",
-      "status": "ok"
-    },
-    {
-      "domain": "connectivity",
-      "error": "",
-      "item_count": 44,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "data center submarine cable",
-      "status": "ok"
-    },
-    {
-      "domain": "compute",
-      "error": "",
-      "item_count": 57,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(AI chips OR GPU supply OR AI accelerator supply OR HBM AI)",
-      "status": "ok"
-    },
-    {
-      "domain": "compute",
-      "error": "",
-      "item_count": 63,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(semiconductor fab AI OR advanced packaging AI OR foundry AI)",
-      "status": "ok"
-    },
-    {
-      "domain": "compute",
-      "error": "",
-      "item_count": 57,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(AI chip export controls OR semiconductor export restrictions)",
-      "status": "ok"
-    },
-    {
-      "domain": "compute",
-      "error": "",
-      "item_count": 16,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(Nvidia AMD Broadcom TSMC AI capacity OR semiconductor capacity AI)",
-      "status": "ok"
-    },
-    {
-      "domain": "compute",
-      "error": "",
-      "item_count": 53,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "How Data Center AI Can Keep Growing, Despite Supply Chain Bottlenecks",
-      "status": "ok"
-    },
-    {
-      "domain": "compute",
-      "error": "",
-      "item_count": 61,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "ai semiconductor data center supply",
-      "status": "ok"
-    },
-    {
-      "domain": "power",
-      "error": "",
-      "item_count": 62,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(data center electricity demand OR AI electricity demand OR utility load forecast data center)",
-      "status": "ok"
-    },
-    {
-      "domain": "power",
-      "error": "",
-      "item_count": 51,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(data center power purchase agreement OR AI power contract OR hyperscaler power)",
-      "status": "ok"
-    },
-    {
-      "domain": "power",
-      "error": "",
-      "item_count": 57,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(power generation data center OR gas turbine data center OR nuclear data center)",
-      "status": "ok"
-    },
-    {
-      "domain": "power",
-      "error": "",
-      "item_count": 13,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(electricity price data center OR power price industrial load)",
-      "status": "ok"
-    },
-    {
-      "domain": "power",
-      "error": "",
-      "item_count": 7,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "Constellation Secures More Buyers for its Nuclear Power",
-      "status": "ok"
-    },
-    {
-      "domain": "power",
-      "error": "",
-      "item_count": 100,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "nuclear",
-      "status": "ok"
-    },
-    {
       "domain": "adoption",
       "error": "",
-      "item_count": 62,
-      "lookback_days": 7,
+      "item_count": 63,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(enterprise AI adoption OR business AI use OR generative AI adoption)",
       "status": "ok"
@@ -299,8 +318,8 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 53,
-      "lookback_days": 7,
+      "item_count": 58,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI deployment survey business OR enterprise AI survey)",
       "status": "ok"
@@ -308,8 +327,8 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 20,
-      "lookback_days": 7,
+      "item_count": 24,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI agents enterprise deployment OR AI copilots business use)",
       "status": "ok"
@@ -317,8 +336,8 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 58,
-      "lookback_days": 7,
+      "item_count": 50,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(company AI rollout OR AI implementation enterprise)",
       "status": "ok"
@@ -326,7 +345,7 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 5,
+      "item_count": 8,
       "lookback_days": 7,
       "provider": "event_evidence_search",
       "query": "Health System Adoption of Wolters Kluwer UpToDate Expert AI Now Reaching Approximately 2,500 U.S. Hospitals and Health Systems",
@@ -342,64 +361,10 @@
       "status": "ok"
     },
     {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 53,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(data center interconnection OR AI interconnection queue OR large load interconnection)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 55,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(transmission data center OR grid upgrade data center OR substation data center)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 32,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(battery storage data center OR grid storage AI load)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 1,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(transformer shortage OR transmission congestion OR renewable curtailment)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 4,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "A Faster Interconnection Queue Still Ends at a Construction Site",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 42,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "interconnection queue",
-      "status": "ok"
-    },
-    {
       "domain": "market",
       "error": "",
-      "item_count": 64,
-      "lookback_days": 7,
+      "item_count": 63,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI earnings OR AI guidance OR semiconductor earnings OR cloud earnings)",
       "status": "ok"
@@ -407,8 +372,8 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 55,
-      "lookback_days": 7,
+      "item_count": 59,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(hyperscaler capex OR AI spending OR data center capex)",
       "status": "ok"
@@ -416,8 +381,8 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 12,
-      "lookback_days": 7,
+      "item_count": 13,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(semiconductor revenue OR cloud revenue OR AI bookings)",
       "status": "ok"
@@ -425,8 +390,8 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 4,
-      "lookback_days": 7,
+      "item_count": 9,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI acquisition OR technology IPO OR technology antitrust)",
       "status": "ok"
@@ -434,8 +399,8 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 57,
-      "lookback_days": 7,
+      "item_count": 54,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI stocks rally OR AI stocks selloff OR AI valuation OR market breadth technology)",
       "status": "ok"
@@ -444,7 +409,7 @@
       "domain": "market",
       "error": "",
       "item_count": 25,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "primary_feed",
       "query": "https://www.sec.gov/news/pressreleases.rss",
       "status": "ok"
@@ -452,8 +417,8 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 11,
-      "lookback_days": 7,
+      "item_count": 8,
+      "lookback_days": 10,
       "provider": "tier2_outbound",
       "query": "https://www.techmeme.com/feed.xml",
       "status": "ok"
@@ -461,28 +426,10 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 51,
-      "lookback_days": 7,
+      "item_count": 52,
+      "lookback_days": 10,
       "provider": "tier2_outbound",
       "query": "https://abnormalreturns.com/feed",
-      "status": "ok"
-    },
-    {
-      "domain": "market",
-      "error": "",
-      "item_count": 3,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "Monday.com Falls As Software Maker's Guidance Trumps Earnings Beat",
-      "status": "ok"
-    },
-    {
-      "domain": "market",
-      "error": "",
-      "item_count": 47,
-      "lookback_days": 7,
-      "provider": "event_evidence_search",
-      "query": "software earnings guidance beat",
       "status": "ok"
     },
     {
@@ -504,10 +451,280 @@
       "status": "ok"
     },
     {
+      "domain": "market",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "CoreWeave stock pops 14% as revenue doubles on accelerating AI infrastructure demand",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 59,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "ai revenue stock 14 %",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 51,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(data center debt OR AI infrastructure financing OR project finance data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 40,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI data center leases OR uncommenced leases OR contractual commitments OR forward commitments)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 32,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(private credit technology OR private credit data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 55,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI venture funding OR AI private equity OR AI fundraise)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 13,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(technology bond issuance OR AI credit ratings OR technology credit spreads)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 0,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "((Alphabet OR Google OR Amazon OR Microsoft OR Meta OR Oracle OR Nvidia OR Anthropic OR OpenAI OR CoreWeave) (bond OR debt OR loan OR refinancing OR credit rating OR financing))",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 49,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(private equity fund close OR technology exits OR private equity distributions)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 62,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(Federal Reserve rates OR interest rates technology investment)",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 15,
+      "lookback_days": 10,
+      "provider": "primary_feed",
+      "query": "https://www.federalreserve.gov/feeds/press_monetary.xml",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 25,
+      "lookback_days": 10,
+      "provider": "primary_feed",
+      "query": "https://www.sec.gov/news/pressreleases.rss",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 52,
+      "lookback_days": 10,
+      "provider": "tier2_outbound",
+      "query": "https://abnormalreturns.com/feed",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 14,
+      "lookback_days": 10,
+      "provider": "tier2_outbound",
+      "query": "https://datacenterrichness.substack.com/feed",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 3,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "The US Fed\u2019s New Philosophy Could Be a Recipe for Interest Rate Volatility",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 100,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "interest rate rate",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 30,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "Nvidia, Wall Street Firms Strike AI Financing Deal Targeting $500 Billion",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 100,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "ai nvidia financing 500 billion",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 61,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI chips OR GPU supply OR AI accelerator supply OR HBM AI)",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 62,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(semiconductor fab AI OR advanced packaging AI OR foundry AI)",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 65,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI chip export controls OR semiconductor export restrictions)",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 22,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(Nvidia AMD Broadcom TSMC AI capacity OR semiconductor capacity AI)",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 56,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "How Data Center AI Can Keep Growing, Despite Supply Chain Bottlenecks",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 59,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "ai semiconductor data center supply",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 49,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(data center electricity demand OR AI electricity demand OR utility load forecast data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 52,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(data center power purchase agreement OR AI power contract OR hyperscaler power)",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 56,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(power generation data center OR gas turbine data center OR nuclear data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 22,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(electricity price data center OR power price industrial load)",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 3,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "Babcock & Wilcox Signs Agreement with Siemens Energy to Commence Work on 20 Steam Turbines for Data Center Power Generation",
+      "status": "ok"
+    },
+    {
+      "domain": "power",
+      "error": "",
+      "item_count": 55,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "data center generation 20",
+      "status": "ok"
+    },
+    {
       "domain": "workforce",
       "error": "",
       "item_count": 72,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI jobs OR AI employment OR AI layoffs OR AI hiring)",
       "status": "ok"
@@ -515,8 +732,8 @@
     {
       "domain": "workforce",
       "error": "",
-      "item_count": 5,
-      "lookback_days": 7,
+      "item_count": 6,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(semiconductor jobs OR data center jobs OR AI infrastructure workforce)",
       "status": "ok"
@@ -524,8 +741,8 @@
     {
       "domain": "workforce",
       "error": "",
-      "item_count": 62,
-      "lookback_days": 7,
+      "item_count": 64,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI wages OR AI skills OR AI occupations OR labor market AI)",
       "status": "ok"
@@ -534,7 +751,7 @@
       "domain": "workforce",
       "error": "",
       "item_count": 65,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(automation jobs AI OR generative AI labor market)",
       "status": "ok"
@@ -542,10 +759,10 @@
     {
       "domain": "workforce",
       "error": "",
-      "item_count": 30,
+      "item_count": 13,
       "lookback_days": 7,
       "provider": "event_evidence_search",
-      "query": "AI Is Creating More Jobs Than It Cuts in India, Nomura Says",
+      "query": "The AI threat to India\u2019s IT jobs machine",
       "status": "ok"
     },
     {
@@ -561,7 +778,7 @@
       "domain": "economic_impact",
       "error": "",
       "item_count": 62,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI productivity OR generative AI productivity OR labor productivity AI)",
       "status": "ok"
@@ -569,8 +786,8 @@
     {
       "domain": "economic_impact",
       "error": "",
-      "item_count": 70,
-      "lookback_days": 7,
+      "item_count": 72,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI GDP OR AI economic output OR AI value added)",
       "status": "ok"
@@ -578,8 +795,8 @@
     {
       "domain": "economic_impact",
       "error": "",
-      "item_count": 43,
-      "lookback_days": 7,
+      "item_count": 57,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI investment productivity OR software investment productivity)",
       "status": "ok"
@@ -587,8 +804,8 @@
     {
       "domain": "economic_impact",
       "error": "",
-      "item_count": 17,
-      "lookback_days": 7,
+      "item_count": 24,
+      "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI unit labor cost OR AI compensation OR AI income)",
       "status": "ok"
@@ -612,437 +829,297 @@
       "status": "ok"
     },
     {
-      "domain": "finance",
+      "domain": "market",
       "error": "",
-      "item_count": 47,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(data center debt OR AI infrastructure financing OR project finance data center)",
+      "item_count": 1,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "Palantir crushes earnings as U.S. AI demand sends revenue soaring 93% and prompts another guidance hike | Fortune",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "ai palantir earnings guidance revenue stock 1.801 billion 1.94 billion",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 100,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "nan",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 2,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "palantir revenue shares 1.94 billion 29.5 %",
       "status": "ok"
     },
     {
       "domain": "finance",
       "error": "",
-      "item_count": 43,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(AI data center leases OR uncommenced leases OR contractual commitments OR forward commitments)",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 24,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(private credit technology OR private credit data center)",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 37,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(AI venture funding OR AI private equity OR AI fundraise)",
+      "item_count": 56,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "I Bonds | Inflation Protection, How They Work, & Current Interest Rate | Britannica Money",
       "status": "ok"
     },
     {
       "domain": "finance",
       "error": "",
       "item_count": 11,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(technology bond issuance OR AI credit ratings OR technology credit spreads)",
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "interest rate inflation bonds rate 2026 4.26 %",
+      "status": "ok"
+    },
+    {
+      "domain": "finance",
+      "error": "",
+      "item_count": 5,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "BlackRock Offloads $523 Million in Loans to Rescue Troubled Private Credit Fund - BlackRock TCP Capital (",
       "status": "ok"
     },
     {
       "domain": "finance",
       "error": "",
       "item_count": 0,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "((Alphabet OR Google OR Amazon OR Microsoft OR Meta OR Oracle OR Nvidia OR Anthropic OR OpenAI OR CoreWeave) (bond OR debt OR loan OR refinancing OR credit rating OR financing))",
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "loans private credit exit credit 10 million 14.8 million",
       "status": "ok"
     },
     {
-      "domain": "finance",
+      "domain": "compute",
+      "error": "",
+      "item_count": 11,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "Samsung Stacks HBM Atop GPU, Breaking AI Chip Limits",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 43,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "ai artificial intelligence gpu accelerator hbm chip",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 5,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "Palm Beach County Zoning Commission Approves AI Data Center Moratorium | BIG 105.9 | Florida News",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "data center moratorium zoning 105.9",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "Malbec Submarine Cable System Reaches Shore In Southern Brazil",
+      "status": "ok"
+    },
+    {
+      "domain": "connectivity",
+      "error": "",
+      "item_count": 99,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "submarine cable",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 6,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "Abbott Orders Full Audit of Texas Data Center Interconnection Queue, Threatens to Deny Grid Access",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
       "error": "",
       "item_count": 39,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(private equity fund close OR technology exits OR private equity distributions)",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 57,
-      "lookback_days": 7,
-      "provider": "google_news_rss",
-      "query": "(Federal Reserve rates OR interest rates technology investment)",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 15,
-      "lookback_days": 7,
-      "provider": "primary_feed",
-      "query": "https://www.federalreserve.gov/feeds/press_monetary.xml",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 25,
-      "lookback_days": 7,
-      "provider": "primary_feed",
-      "query": "https://www.sec.gov/news/pressreleases.rss",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 51,
-      "lookback_days": 7,
-      "provider": "tier2_outbound",
-      "query": "https://abnormalreturns.com/feed",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 14,
-      "lookback_days": 7,
-      "provider": "tier2_outbound",
-      "query": "https://datacenterrichness.substack.com/feed",
-      "status": "ok"
-    },
-    {
-      "domain": "finance",
-      "error": "",
-      "item_count": 3,
-      "lookback_days": 7,
+      "lookback_days": 10,
       "provider": "event_evidence_search",
-      "query": "The Fed\u2019s New Philosophy Could Be a Recipe for Interest Rate Volatility",
+      "query": "data center interconnection grid queue",
       "status": "ok"
     },
     {
-      "domain": "finance",
+      "domain": "water",
       "error": "",
-      "item_count": 100,
-      "lookback_days": 7,
+      "item_count": 4,
+      "lookback_days": 10,
       "provider": "event_evidence_search",
-      "query": "interest rate rate",
+      "query": "Do AI data centers use water for cooling? What happens inside Firebird and other facilities | NEWS.am TECH - Innovations and science",
       "status": "ok"
     },
     {
-      "domain": "finance",
+      "domain": "water",
       "error": "",
-      "item_count": 57,
-      "lookback_days": 7,
+      "item_count": 90,
+      "lookback_days": 10,
       "provider": "event_evidence_search",
-      "query": "Nvidia, Wall Street Firms Strike AI Financing Deal Targeting $500 Billion",
+      "query": "water cooling",
       "status": "ok"
     },
     {
-      "domain": "finance",
+      "domain": "adoption",
       "error": "",
-      "item_count": 100,
-      "lookback_days": 7,
+      "item_count": 7,
+      "lookback_days": 10,
       "provider": "event_evidence_search",
-      "query": "ai nvidia financing 500 billion",
+      "query": "Cars24 launches Deployment Inc with $5 million investment to build enterprise AI systems",
       "status": "ok"
     },
     {
-      "domain": "finance",
+      "domain": "adoption",
       "error": "",
-      "item_count": 25,
-      "lookback_days": 7,
+      "item_count": 46,
+      "lookback_days": 10,
       "provider": "event_evidence_search",
-      "query": "Lenders scrutinize US data center financing as community opposition builds",
+      "query": "ai enterprise ai ai agents deployment 24 45",
       "status": "ok"
     },
     {
-      "domain": "finance",
+      "domain": "workforce",
       "error": "",
-      "item_count": 93,
-      "lookback_days": 7,
+      "item_count": 7,
+      "lookback_days": 10,
       "provider": "event_evidence_search",
-      "query": "data center financing",
+      "query": "A Report Says The Worst AI-Related Labor Fears Are Not Materializing Yet. Jobs Are Falling While Hiring Is On The Rise.",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "ai technology jobs hiring layoffs labor 275000 477033",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 10,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "Singapore upgrades 2026 GDP growth forecast to \"4.5-5.5%\", citing stronger AI-related demand",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 70,
+      "lookback_days": 10,
+      "provider": "event_evidence_search",
+      "query": "ai gdp growth 2026 4 %",
       "status": "ok"
     }
   ],
+  "fresh_selected_counts": {
+    "adoption": 2,
+    "compute": 2,
+    "connectivity": 1,
+    "data_center": 2,
+    "economic_impact": 2,
+    "finance": 1,
+    "grid_storage": 1,
+    "market": 1,
+    "power": 0,
+    "water": 2,
+    "workforce": 2
+  },
   "grounding": {
-    "alternate_source_grounded": 0,
-    "attempted": 27,
+    "alternate_source_grounded": 2,
+    "attempted": 75,
     "by_domain": {
       "adoption": {
         "alternate_source_grounded": 0,
-        "attempted": 1,
-        "direct_source_grounded": 0,
-        "discovered": 184,
+        "attempted": 4,
+        "direct_source_grounded": 2,
+        "discovered": 183,
         "evidence_resolution_attempts": 0,
-        "failed": 1,
-        "metadata_qualified": 1,
+        "failed": 2,
+        "metadata_qualified": 76,
         "metadata_rejection_reasons": [
           {
-            "count": 161,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 21,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 1,
+            "count": 104,
             "reason": "no domain relevance term"
+          },
+          {
+            "count": 3,
+            "reason": "outside tier lookback window"
           }
         ],
         "rejection_reasons": [
           {
             "count": 1,
+            "reason": "final Reader development failed domain fit: best source sentence is topical/commentary rather than a concrete development"
+          },
+          {
+            "count": 1,
             "reason": "underlying source could not be established"
           }
         ],
-        "selected": 0,
-        "succeeded": 0
+        "selected": 2,
+        "succeeded": 2
       },
       "compute": {
         "alternate_source_grounded": 0,
-        "attempted": 1,
-        "direct_source_grounded": 0,
-        "discovered": 181,
-        "evidence_resolution_attempts": 0,
-        "failed": 1,
-        "metadata_qualified": 1,
-        "metadata_rejection_reasons": [
-          {
-            "count": 161,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 12,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 4,
-            "reason": "insufficient domain materiality"
-          },
-          {
-            "count": 2,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 1,
-            "reason": "no AI/technology or system-wide domain anchor"
-          }
-        ],
-        "rejection_reasons": [
-          {
-            "count": 1,
-            "reason": "source fact cleared evidence gates but did not support a specific analytical consequence"
-          }
-        ],
-        "selected": 0,
-        "succeeded": 0
-      },
-      "connectivity": {
-        "alternate_source_grounded": 0,
-        "attempted": 2,
-        "direct_source_grounded": 0,
-        "discovered": 69,
-        "evidence_resolution_attempts": 0,
-        "failed": 2,
-        "metadata_qualified": 2,
-        "metadata_rejection_reasons": [
-          {
-            "count": 55,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 10,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 2,
-            "reason": "no domain relevance term"
-          }
-        ],
-        "rejection_reasons": [
-          {
-            "count": 1,
-            "reason": "source fact cleared evidence gates but did not support a specific analytical consequence"
-          },
-          {
-            "count": 1,
-            "reason": "best source sentence is topical/commentary rather than a concrete development"
-          }
-        ],
-        "selected": 0,
-        "succeeded": 0
-      },
-      "data_center": {
-        "alternate_source_grounded": 0,
-        "attempted": 1,
-        "direct_source_grounded": 0,
-        "discovered": 232,
-        "evidence_resolution_attempts": 0,
-        "failed": 1,
-        "metadata_qualified": 1,
-        "metadata_rejection_reasons": [
-          {
-            "count": 178,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 34,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 13,
-            "reason": "insufficient domain materiality"
-          },
-          {
-            "count": 4,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 1,
-            "reason": "discovery-only intermediary; follow outbound evidence instead"
-          },
-          {
-            "count": 1,
-            "reason": "requires corroboration before use"
-          }
-        ],
-        "rejection_reasons": [
-          {
-            "count": 1,
-            "reason": "underlying source could not be established"
-          }
-        ],
-        "selected": 0,
-        "succeeded": 0
-      },
-      "economic_impact": {
-        "alternate_source_grounded": 0,
-        "attempted": 3,
-        "direct_source_grounded": 0,
-        "discovered": 183,
-        "evidence_resolution_attempts": 0,
-        "failed": 3,
-        "metadata_qualified": 3,
-        "metadata_rejection_reasons": [
-          {
-            "count": 157,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 18,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 4,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 1,
-            "reason": "requires corroboration before use"
-          }
-        ],
-        "rejection_reasons": [
-          {
-            "count": 2,
-            "reason": "underlying source could not be established"
-          },
-          {
-            "count": 1,
-            "reason": "attributed commentary without a new empirical release is not a Current Context development"
-          }
-        ],
-        "selected": 0,
-        "succeeded": 0
-      },
-      "finance": {
-        "alternate_source_grounded": 0,
         "attempted": 6,
-        "direct_source_grounded": 1,
-        "discovered": 346,
-        "evidence_resolution_attempts": 5,
-        "failed": 5,
-        "metadata_qualified": 7,
-        "metadata_rejection_reasons": [
-          {
-            "count": 190,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 86,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 52,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 9,
-            "reason": "no AI/technology or system-wide domain anchor"
-          },
-          {
-            "count": 1,
-            "reason": "requires corroboration before use"
-          },
-          {
-            "count": 1,
-            "reason": "preview/calendar item is not a completed development"
-          }
-        ],
-        "rejection_reasons": [
-          {
-            "count": 1,
-            "reason": "underlying source could not be established"
-          },
-          {
-            "count": 1,
-            "reason": "source lead did not establish a clear current material development; alternate eligible evidence did not establish the event"
-          },
-          {
-            "count": 1,
-            "reason": "underlying source could not be established; alternate eligible evidence did not establish the event"
-          },
-          {
-            "count": 1,
-            "reason": "source lead did not establish a clear current material development"
-          }
-        ],
-        "selected": 1,
-        "succeeded": 1
-      },
-      "grid_storage": {
-        "alternate_source_grounded": 0,
-        "attempted": 5,
         "direct_source_grounded": 2,
-        "discovered": 129,
+        "discovered": 199,
         "evidence_resolution_attempts": 0,
-        "failed": 3,
-        "metadata_qualified": 5,
+        "failed": 4,
+        "metadata_qualified": 44,
         "metadata_rejection_reasons": [
           {
-            "count": 98,
-            "reason": "not on automated source allowlist"
+            "count": 77,
+            "reason": "insufficient domain materiality"
           },
           {
-            "count": 18,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 8,
+            "count": 77,
             "reason": "no domain relevance term"
+          },
+          {
+            "count": 1,
+            "reason": "outside tier lookback window"
           }
         ],
         "rejection_reasons": [
+          {
+            "count": 2,
+            "reason": "source established a development but no complete self-contained Reader copy fit the 70-word ceiling"
+          },
           {
             "count": 1,
             "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
@@ -1050,7 +1127,26 @@
           {
             "count": 1,
             "reason": "underlying source could not be established"
-          },
+          }
+        ],
+        "selected": 2,
+        "succeeded": 2
+      },
+      "connectivity": {
+        "alternate_source_grounded": 0,
+        "attempted": 3,
+        "direct_source_grounded": 2,
+        "discovered": 72,
+        "evidence_resolution_attempts": 0,
+        "failed": 1,
+        "metadata_qualified": 21,
+        "metadata_rejection_reasons": [
+          {
+            "count": 51,
+            "reason": "no domain relevance term"
+          }
+        ],
+        "rejection_reasons": [
           {
             "count": 1,
             "reason": "best source sentence is topical/commentary rather than a concrete development"
@@ -1059,229 +1155,474 @@
         "selected": 2,
         "succeeded": 2
       },
-      "market": {
+      "data_center": {
         "alternate_source_grounded": 0,
-        "attempted": 2,
-        "direct_source_grounded": 0,
-        "discovered": 277,
-        "evidence_resolution_attempts": 1,
-        "failed": 2,
-        "metadata_qualified": 4,
-        "metadata_rejection_reasons": [
-          {
-            "count": 160,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 56,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 51,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 6,
-            "reason": "no AI/technology or system-wide domain anchor"
-          }
-        ],
-        "rejection_reasons": [
-          {
-            "count": 1,
-            "reason": "underlying source could not be established; alternate eligible evidence did not establish the event"
-          },
-          {
-            "count": 1,
-            "reason": "source-grounded copy failed first-reference context rules"
-          }
-        ],
-        "selected": 0,
-        "succeeded": 0
-      },
-      "power": {
-        "alternate_source_grounded": 0,
-        "attempted": 2,
-        "direct_source_grounded": 0,
-        "discovered": 173,
+        "attempted": 3,
+        "direct_source_grounded": 2,
+        "discovered": 217,
         "evidence_resolution_attempts": 0,
-        "failed": 2,
-        "metadata_qualified": 2,
+        "failed": 1,
+        "metadata_qualified": 110,
         "metadata_rejection_reasons": [
           {
-            "count": 145,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 12,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 7,
+            "count": 73,
             "reason": "insufficient domain materiality"
           },
           {
-            "count": 4,
+            "count": 33,
             "reason": "no domain relevance term"
           },
           {
-            "count": 2,
-            "reason": "requires corroboration before use"
-          },
-          {
             "count": 1,
-            "reason": "no AI/technology or system-wide domain anchor"
+            "reason": "outside tier lookback window"
           }
         ],
         "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "underlying source could not be established"
+          }
+        ],
+        "selected": 2,
+        "succeeded": 2
+      },
+      "economic_impact": {
+        "alternate_source_grounded": 0,
+        "attempted": 20,
+        "direct_source_grounded": 2,
+        "discovered": 201,
+        "evidence_resolution_attempts": 0,
+        "failed": 18,
+        "metadata_qualified": 93,
+        "metadata_rejection_reasons": [
+          {
+            "count": 107,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 1,
+            "reason": "outside tier lookback window"
+          }
+        ],
+        "rejection_reasons": [
+          {
+            "count": 10,
+            "reason": "underlying source could not be established"
+          },
+          {
+            "count": 2,
+            "reason": "attributed commentary without a new empirical release is not a Current Context development"
+          },
           {
             "count": 1,
             "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
           },
           {
             "count": 1,
-            "reason": "underlying source could not be established"
+            "reason": "source established a development but no complete self-contained Reader copy fit the 70-word ceiling"
           }
         ],
-        "selected": 0,
-        "succeeded": 0
+        "selected": 2,
+        "succeeded": 2
       },
-      "water": {
-        "alternate_source_grounded": 0,
-        "attempted": 1,
+      "finance": {
+        "alternate_source_grounded": 2,
+        "attempted": 2,
         "direct_source_grounded": 0,
-        "discovered": 119,
-        "evidence_resolution_attempts": 0,
-        "failed": 1,
-        "metadata_qualified": 1,
+        "discovered": 391,
+        "evidence_resolution_attempts": 5,
+        "failed": 0,
+        "metadata_qualified": 131,
         "metadata_rejection_reasons": [
           {
-            "count": 99,
-            "reason": "not on automated source allowlist"
-          },
-          {
-            "count": 14,
-            "reason": "outside domain lookback window"
-          },
-          {
-            "count": 3,
+            "count": 199,
             "reason": "no domain relevance term"
           },
           {
-            "count": 1,
+            "count": 53,
+            "reason": "outside tier lookback window"
+          },
+          {
+            "count": 7,
             "reason": "insufficient domain materiality"
           },
           {
             "count": 1,
-            "reason": "requires corroboration before use"
+            "reason": "preview/calendar item is not a completed development"
+          }
+        ],
+        "rejection_reasons": [],
+        "selected": 1,
+        "succeeded": 2
+      },
+      "grid_storage": {
+        "alternate_source_grounded": 0,
+        "attempted": 4,
+        "direct_source_grounded": 2,
+        "discovered": 139,
+        "evidence_resolution_attempts": 0,
+        "failed": 2,
+        "metadata_qualified": 28,
+        "metadata_rejection_reasons": [
+          {
+            "count": 94,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 16,
+            "reason": "insufficient domain materiality"
+          },
+          {
+            "count": 1,
+            "reason": "outside tier lookback window"
           }
         ],
         "rejection_reasons": [
           {
             "count": 1,
-            "reason": "source fact cleared evidence gates but did not support a specific analytical consequence"
-          }
-        ],
-        "selected": 0,
-        "succeeded": 0
-      },
-      "workforce": {
-        "alternate_source_grounded": 0,
-        "attempted": 3,
-        "direct_source_grounded": 0,
-        "discovered": 175,
-        "evidence_resolution_attempts": 0,
-        "failed": 3,
-        "metadata_qualified": 3,
-        "metadata_rejection_reasons": [
-          {
-            "count": 154,
-            "reason": "not on automated source allowlist"
+            "reason": "grid item lacks a concrete measured constraint or binding/physical system action"
           },
           {
-            "count": 16,
-            "reason": "outside domain lookback window"
+            "count": 1,
+            "reason": "underlying source could not be established"
+          }
+        ],
+        "selected": 2,
+        "succeeded": 2
+      },
+      "market": {
+        "alternate_source_grounded": 0,
+        "attempted": 7,
+        "direct_source_grounded": 2,
+        "discovered": 281,
+        "evidence_resolution_attempts": 1,
+        "failed": 5,
+        "metadata_qualified": 115,
+        "metadata_rejection_reasons": [
+          {
+            "count": 111,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 27,
+            "reason": "insufficient domain materiality"
+          },
+          {
+            "count": 26,
+            "reason": "outside tier lookback window"
           },
           {
             "count": 2,
-            "reason": "no domain relevance term"
+            "reason": "preview/calendar item is not a completed development"
           }
         ],
         "rejection_reasons": [
+          {
+            "count": 2,
+            "reason": "underlying source could not be established"
+          },
+          {
+            "count": 1,
+            "reason": "final Reader development failed domain fit: selected source fact does not itself establish the domain-relevant subject"
+          },
+          {
+            "count": 1,
+            "reason": "underlying source could not be established; alternate eligible evidence did not establish the event"
+          },
+          {
+            "count": 1,
+            "reason": "Market-level significance gate rejected the final Reader development"
+          }
+        ],
+        "selected": 1,
+        "succeeded": 2
+      },
+      "power": {
+        "alternate_source_grounded": 0,
+        "attempted": 10,
+        "direct_source_grounded": 2,
+        "discovered": 169,
+        "evidence_resolution_attempts": 3,
+        "failed": 8,
+        "metadata_qualified": 50,
+        "metadata_rejection_reasons": [
+          {
+            "count": 112,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 5,
+            "reason": "insufficient domain materiality"
+          },
+          {
+            "count": 2,
+            "reason": "outside tier lookback window"
+          }
+        ],
+        "rejection_reasons": [
+          {
+            "count": 2,
+            "reason": "underlying source could not be established; alternate eligible evidence did not establish the event"
+          },
+          {
+            "count": 2,
+            "reason": "underlying source could not be established"
+          },
+          {
+            "count": 1,
+            "reason": "selected source fact does not itself establish the domain-relevant subject"
+          },
+          {
+            "count": 1,
+            "reason": "source established a development but no complete self-contained Reader copy fit the 70-word ceiling"
+          }
+        ],
+        "selected": 1,
+        "succeeded": 2
+      },
+      "water": {
+        "alternate_source_grounded": 0,
+        "attempted": 7,
+        "direct_source_grounded": 2,
+        "discovered": 118,
+        "evidence_resolution_attempts": 1,
+        "failed": 5,
+        "metadata_qualified": 16,
+        "metadata_rejection_reasons": [
+          {
+            "count": 79,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 21,
+            "reason": "insufficient domain materiality"
+          },
+          {
+            "count": 2,
+            "reason": "outside tier lookback window"
+          }
+        ],
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "source is an event/webinar listing rather than a reported development; alternate eligible evidence did not establish the event"
+          },
+          {
+            "count": 1,
+            "reason": "source is an opinion/commentary page rather than a reported development"
+          },
+          {
+            "count": 1,
+            "reason": "selected source fact does not itself establish the domain-relevant subject"
+          },
+          {
+            "count": 1,
+            "reason": "underlying source could not be established"
+          }
+        ],
+        "selected": 2,
+        "succeeded": 2
+      },
+      "workforce": {
+        "alternate_source_grounded": 0,
+        "attempted": 9,
+        "direct_source_grounded": 2,
+        "discovered": 182,
+        "evidence_resolution_attempts": 1,
+        "failed": 7,
+        "metadata_qualified": 94,
+        "metadata_rejection_reasons": [
+          {
+            "count": 86,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 1,
+            "reason": "explicitly excluded"
+          },
+          {
+            "count": 1,
+            "reason": "outside tier lookback window"
+          }
+        ],
+        "rejection_reasons": [
+          {
+            "count": 3,
+            "reason": "underlying source could not be established"
+          },
           {
             "count": 1,
             "reason": "source body does not establish the domain-relevant subject"
           },
           {
             "count": 1,
-            "reason": "underlying source could not be established"
+            "reason": "source established a development but no complete self-contained Reader copy fit the 70-word ceiling; alternate eligible evidence did not establish the event"
           },
           {
             "count": 1,
             "reason": "source is commentary/topic framing without a clear current material development"
           }
         ],
-        "selected": 0,
-        "succeeded": 0
+        "selected": 2,
+        "succeeded": 2
       }
     },
-    "failed": 24,
+    "failed": 53,
     "rejection_reasons": [
       {
-        "count": 8,
+        "count": 22,
         "reason": "underlying source could not be established"
       },
       {
-        "count": 3,
-        "reason": "source fact cleared evidence gates but did not support a specific analytical consequence"
+        "count": 4,
+        "reason": "source established a development but no complete self-contained Reader copy fit the 70-word ceiling"
+      },
+      {
+        "count": 4,
+        "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
       },
       {
         "count": 3,
+        "reason": "selected source fact does not itself establish the domain-relevant subject"
+      },
+      {
+        "count": 3,
+        "reason": "underlying source could not be established; alternate eligible evidence did not establish the event"
+      },
+      {
+        "count": 2,
         "reason": "best source sentence is topical/commentary rather than a concrete development"
       },
       {
         "count": 2,
-        "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+        "reason": "source is an opinion/commentary page rather than a reported development"
       },
       {
         "count": 2,
-        "reason": "underlying source could not be established; alternate eligible evidence did not establish the event"
-      },
-      {
-        "count": 1,
-        "reason": "source-grounded copy failed first-reference context rules"
-      },
-      {
-        "count": 1,
         "reason": "source body does not establish the domain-relevant subject"
-      },
-      {
-        "count": 1,
-        "reason": "source is commentary/topic framing without a clear current material development"
       }
     ],
-    "succeeded": 3,
-    "version": "2.8"
+    "succeeded": 22,
+    "version": "4.0"
   },
   "providers": [
     "google_news_rss",
     "primary_feed",
     "tier2_outbound"
   ],
-  "qualified_count": 3,
+  "publication_status": "selected_and_merged",
+  "qualified_count": 16,
   "registry_path": "data/weekly_context_events.csv",
-  "registry_rows_added": 3,
-  "retrieved_at": "2026-08-11T09:16:48+00:00",
+  "registry_rows_added": 19,
+  "retrieved_at": "2026-08-12T02:26:29+00:00",
   "selected": {
-    "adoption": [],
-    "compute": [],
-    "connectivity": [],
-    "data_center": [],
-    "economic_impact": [],
+    "adoption": [
+      {
+        "event_date": "2026-08-11",
+        "event_id": "auto-2026-08-11-8835abbf5470",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 122.5,
+        "source_name": "Indian Startup News",
+        "source_url": "https://indianstartupnews.com/news/cars24-launches-deployment-inc-with-5-million-investment-to-build-enterprise-ai-systems-12248102"
+      },
+      {
+        "event_date": "2026-08-10",
+        "event_id": "auto-2026-08-10-a9cef0d69cdf",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 121.5,
+        "source_name": "Inc42",
+        "source_url": "https://inc42.com/buzz/cars24-launches-enterprise-ai-company-deployment-inc-invests-5-mn/"
+      }
+    ],
+    "compute": [
+      {
+        "event_date": "2026-08-05",
+        "event_id": "auto-2026-08-05-b8d1353bbe67",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 111.5,
+        "source_name": "Seoul Economic Daily",
+        "source_url": "https://en.sedaily.com/finance/2026/08/05/samsung-stacks-hbm-atop-gpu-breaking-ai-chip-limits"
+      },
+      {
+        "event_date": "2026-08-09",
+        "event_id": "auto-2026-08-09-dba893268258",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 109.5,
+        "source_name": "finance.biggo.com",
+        "source_url": "https://finance.biggo.com/news/732d7473-dcae-467e-8108-6768e433a198"
+      }
+    ],
+    "connectivity": [
+      {
+        "event_date": "2026-08-05",
+        "event_id": "auto-2026-08-11-f159a478dcd8",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
+        "rank_score": 141.5,
+        "source_name": "Data Center Dynamics",
+        "source_url": "https://www.datacenterdynamics.com/en/news/verizon-blames-sundays-network-outage-in-southern-california-on-multiple-fiber-cuts/"
+      },
+      {
+        "event_date": "2026-08-11",
+        "event_id": "auto-2026-08-11-e9619756de02",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 101.5,
+        "source_name": "Ocean News & Technology",
+        "source_url": "https://oceannews.com/news/subsea-cable/malbec-submarine-cable-system-reaches-shore-in-southern-brazil/"
+      }
+    ],
+    "data_center": [
+      {
+        "event_date": "2026-08-05",
+        "event_id": "auto-2026-08-05-8d996097380e",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
+        "rank_score": 107.0,
+        "source_name": "houstonchronicle.com",
+        "source_url": "https://www.houstonchronicle.com/projects/2026/tx-data-centers-map/"
+      },
+      {
+        "event_date": "2026-08-05",
+        "event_id": "auto-2026-08-06-1f547146a52c",
+        "qualification_tier": "B",
+        "qualification_tier_label": "Strong",
+        "rank_score": 118.5,
+        "source_name": "Data Center Dynamics",
+        "source_url": "https://www.datacenterdynamics.com/en/news/powerhouse-files-for-300mw-data-center-campus-outside-dallas-fort-worth/"
+      }
+    ],
+    "economic_impact": [
+      {
+        "event_date": "2026-08-11",
+        "event_id": "auto-2026-08-11-4bb7f2e1857e",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 111.5,
+        "source_name": "Human Resources Online",
+        "source_url": "https://www.humanresourcesonline.net/singapore-upgrades-2026-gdp-growth-forecast-to-4-5-5-5-citing-stronger-ai-related-demand"
+      },
+      {
+        "event_date": "2026-08-11",
+        "event_id": "auto-2026-08-11-53b1ca287806",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 101.5,
+        "source_name": "globalbankingandfinance.com",
+        "source_url": "https://www.globalbankingandfinance.com/banking-s-ai-productivity-boom-where-are-the-savings-actually-appearing-/"
+      }
+    ],
     "finance": [
       {
         "event_date": "2026-08-10",
-        "event_id": "auto-2026-08-10-ca3bdc27e4e1",
-        "rank_score": 118.0,
+        "event_id": "auto-2026-08-10-c1f28b5814fd",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
+        "rank_score": 130.0,
         "source_name": "CNBC",
         "source_url": "https://www.cnbc.com/2026/08/10/nvidia-wall-street-asset-managers-500-billion-ai-push.html"
       }
@@ -1290,22 +1631,84 @@
       {
         "event_date": "2026-08-05",
         "event_id": "auto-2026-08-10-4b24e0fbd7e1",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
         "rank_score": 121.5,
         "source_name": "Data Center Dynamics",
         "source_url": "https://www.datacenterdynamics.com/en/news/virginia-regulators-order-dominion-energy-to-directly-assign-transmission-costs-to-data-centers/"
       },
       {
-        "event_date": "2026-08-05",
-        "event_id": "auto-2026-08-05-4dc6c40ad7d6",
-        "rank_score": 119.0,
-        "source_name": "Utility Dive",
-        "source_url": "https://www.utilitydive.com/news/texas-hits-pause-data-center-interconnections/827046/"
+        "event_date": "2026-08-04",
+        "event_id": "auto-2026-08-04-f7debb5367ba",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 118.0,
+        "source_name": "POWER Magazine",
+        "source_url": "https://www.powermag.com/abbott-orders-full-audit-of-texas-data-center-interconnection-queue-threatens-to-deny-grid-access/"
       }
     ],
-    "market": [],
-    "power": [],
-    "water": [],
-    "workforce": []
+    "market": [
+      {
+        "event_date": "2026-08-03",
+        "event_id": "auto-2026-08-03-f6cea6faed74",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 145.5,
+        "source_name": "Fortune",
+        "source_url": "https://fortune.com/2026/08/03/palantir-earnings-guidance-beat-revenue-profit-ai-demand/"
+      }
+    ],
+    "power": [
+      {
+        "event_date": "2026-08-07",
+        "event_id": "auto-2026-08-07-604caca5c9ca",
+        "qualification_tier": "C",
+        "qualification_tier_label": "Expanded",
+        "rank_score": 111.5,
+        "source_name": "Utility Dive",
+        "source_url": "https://www.utilitydive.com/news/existing-power-plants-supply-data-centers-constellation/827326/"
+      }
+    ],
+    "water": [
+      {
+        "event_date": "2026-08-10",
+        "event_id": "auto-2026-08-10-be50d0ca8ff7",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 96.5,
+        "source_name": "NEWS.am TECH",
+        "source_url": "https://tech.news.am/eng/news/7579/do-ai-data-centers-use-water-for-cooling-what-happens-inside-firebird-and-other-facilities.html"
+      },
+      {
+        "event_date": "2026-08-07",
+        "event_id": "auto-2026-08-08-5395e3a8bb36",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 94.5,
+        "source_name": "JD Supra",
+        "source_url": "https://www.jdsupra.com/legalnews/from-water-consumption-to-water-1529779/"
+      }
+    ],
+    "workforce": [
+      {
+        "event_date": "2026-08-07",
+        "event_id": "auto-2026-08-07-7c8857b82751",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 137.0,
+        "source_name": "International Business Times",
+        "source_url": "https://www.ibtimes.com/report-says-worst-ai-related-labor-fears-are-not-materializing-yet-jobs-are-falling-while-hiring-3806134"
+      },
+      {
+        "event_date": "2026-08-07",
+        "event_id": "auto-2026-08-07-3ff54d0b41ad",
+        "qualification_tier": "D",
+        "qualification_tier_label": "Broad",
+        "rank_score": 123.5,
+        "source_name": "TradingView",
+        "source_url": "https://www.tradingview.com/news/moodys:b3cc526f9a796:0-ai-related-hiring-amounted-to-83100-31-921-layoffs-attrition-in-india-report-economists-say-most-firing-cases/"
+      }
+    ]
   },
-  "snapshot_id": "19a744b1e45849ed"
+  "snapshot_id": "d0424260f2d1cdc2"
 }

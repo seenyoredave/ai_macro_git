@@ -25,6 +25,10 @@ from loaders.facility_sources import load_curated_facility_records, normalize_im
 KNOWN_CAMPUS_ALIASES = {
     frozenset({"homer city energy", "homer city redevelopment"}),
     frozenset({"meta hyperion richland parish", "meta rpl 10x hyperion sucre"}),
+    # Reviewed TECfusions identity survives upstream tracker edits that can
+    # change fallback Source Record IDs while the published campus names remain
+    # recognizably the same 1,400-acre Keystone Connect project.
+    frozenset({"upper burrell tecfusions keystone connect", "tecfusions keystone connect"}),
 }
 
 
@@ -187,7 +191,23 @@ def _prepared_match_records(frame: pd.DataFrame) -> list[_MatchRecord]:
 
 
 def _same_prepared_facility(left: _MatchRecord, right: _MatchRecord) -> bool:
-    if left.source == right.source or left.state != right.state:
+    if left.state != right.state:
+        return False
+    # Reviewed identity decisions outrank generic source/spatial heuristics.
+    # This is especially important for duplicate rows emitted by the same
+    # upstream tracker: those rows were historically impossible to merge even
+    # when the decision ledger explicitly said they describe one campus.
+    if left.separation_groups.intersection(right.separation_groups):
+        return False
+    if left.decision_groups.intersection(right.decision_groups):
+        return True
+    # Reviewed semantic aliases are durable identity evidence when an upstream
+    # tracker rewrites content-derived record IDs.  Apply them before the
+    # same-source guard so duplicate rows from one tracker can still resolve
+    # to the reviewed campus after an ID churn.
+    if frozenset({left.name, right.name}) in KNOWN_CAMPUS_ALIASES:
+        return True
+    if left.source == right.source:
         return False
     distance = _haversine_km(
         left.latitude,
@@ -266,6 +286,35 @@ def _assign_canonical_ids(observations: pd.DataFrame) -> pd.DataFrame:
     bucket_degrees = 0.05
     bucket_span = 2
     prepared = _prepared_match_records(clean)
+
+    # Reviewed merge decisions are explicit identity evidence and are not
+    # constrained by the generic spatial candidate window.  Apply them first
+    # so same-source duplicates and wide-campus records can resolve exactly as
+    # reviewed even when the upstream tracker edits coordinates or labels.
+    reviewed_groups: dict[str, int] = {}
+    for index, row in enumerate(prepared):
+        for group in row.decision_groups:
+            if group in reviewed_groups:
+                union(index, reviewed_groups[group])
+            else:
+                reviewed_groups[group] = index
+
+    # Semantic aliases are reviewed identity evidence too.  They must be
+    # applied before the spatial bucket search because a large campus can span
+    # more than the generic candidate radius and upstream content-derived IDs
+    # can churn.  Keep state in the key so a shared project name cannot merge
+    # records across jurisdictions.
+    semantic_alias_groups: dict[tuple[str, frozenset[str]], int] = {}
+    for index, row in enumerate(prepared):
+        for alias_group in KNOWN_CAMPUS_ALIASES:
+            if row.name not in alias_group:
+                continue
+            key = (row.state, alias_group)
+            if key in semantic_alias_groups:
+                union(index, semantic_alias_groups[key])
+            else:
+                semantic_alias_groups[key] = index
+
     for index, row in enumerate(prepared):
         if not math.isfinite(row.latitude) or not math.isfinite(row.longitude):
             continue

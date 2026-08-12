@@ -12,7 +12,7 @@ from loaders.current_context_discovery import DISCOVERY_VERSION, refresh_current
 from loaders.current_context_loader import load_current_context
 
 RETAINED_REGISTRY = Path(__file__).resolve().parents[1] / "data" / "weekly_context_events.csv"
-CONTEXT_READ_SNAPSHOT_VERSION = "1.2"
+CONTEXT_READ_SNAPSHOT_VERSION = "1.3"
 
 
 def _read_manifest(path: Path) -> dict:
@@ -92,6 +92,7 @@ def _decorate_manifest(manifest: dict, *, refresh_status: str, registry_path: Pa
             str(domain): len(items) if isinstance(items, list) else 0
             for domain, items in selected.items()
         },
+        "coverage": dict(payload.get("coverage") or {}),
         "fetch_errors": [
             {
                 "domain": str(row.get("domain") or ""),
@@ -145,7 +146,8 @@ def refresh_current_context_once_daily(*, as_of=None, force: bool = False) -> di
     paths["base"].mkdir(parents=True, exist_ok=True)
     with synchronized_path(paths["daily_lock"]):
         manifest = _read_manifest(paths["manifest"])
-        if not force and manifest.get("as_of") == expected_date:
+        retained_coverage = dict(manifest.get("coverage") or {})
+        if not force and manifest.get("as_of") == expected_date and retained_coverage.get("target_met", True):
             return _decorate_manifest(manifest, refresh_status="already_current", registry_path=paths["registry"])
 
         try:
@@ -156,7 +158,12 @@ def refresh_current_context_once_daily(*, as_of=None, force: bool = False) -> di
                 registry_path=paths["registry"],
                 merge_registry=True,
             )
-            return _decorate_manifest(manifest, refresh_status="refreshed", registry_path=paths["registry"])
+            coverage = dict(manifest.get("coverage") or {})
+            refresh_status = "refreshed" if coverage.get("target_met", True) else "coverage_floor_not_met_retained_fallback"
+            decorated = _decorate_manifest(manifest, refresh_status=refresh_status, registry_path=paths["registry"])
+            if not coverage.get("target_met", True):
+                decorated["refresh_required"] = True
+            return decorated
         except Exception as exc:
             failure = {
                 "as_of": expected_date,
@@ -181,6 +188,7 @@ def describe_current_context_state() -> dict:
         str(domain): len(items) if isinstance(items, list) else 0
         for domain, items in selected.items()
     }
+    fresh_selected_counts = dict(manifest.get("fresh_selected_counts") or selected_counts)
     fetch_status = manifest.get("fetch_status") if isinstance(manifest.get("fetch_status"), list) else []
     fetch_errors = [
         {
@@ -207,6 +215,9 @@ def describe_current_context_state() -> dict:
         "qualified_count": int(manifest.get("qualified_count", 0) or 0),
         "grounding": dict(manifest.get("grounding") or {}),
         "selected_counts": selected_counts,
+        "fresh_selected_counts": fresh_selected_counts,
+        "continuity": dict(manifest.get("continuity") or {}),
+        "coverage": dict(manifest.get("coverage") or {}),
         "fetch_errors": fetch_errors,
         "registry_path": str(paths["registry"]),
         "manifest_path": str(paths["manifest"]),

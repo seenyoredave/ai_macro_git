@@ -1,10 +1,10 @@
-"""Source-grounded qualification and synthesis for AI Macro Current Context.
+"""Source-grounded qualification for AI Macro Current Context.
 
 Discovery metadata may nominate a candidate, but Reader-facing prose may not be
 built from a headline or RSS description.  A candidate must resolve to an
 eligible publisher/primary page, yield substantive source text, contain a
-concrete domain-relevant development, and support an analytical implication
-specific enough to state without generic boilerplate.
+concrete domain-relevant development, and support the factual sentence that is
+published to the Reader.
 
 Only compact derived facts/provenance are persisted.  Full article bodies are
 used transiently during refresh and are never written to the retained ledger.
@@ -13,6 +13,8 @@ used transiently during refresh and are never written to the retained ledger.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
+import html as html_lib
 from difflib import SequenceMatcher
 import hashlib
 import json
@@ -24,17 +26,22 @@ import requests
 from bs4 import BeautifulSoup
 
 from config.current_context_policy import (
+    current_context_qualification_policy,
+    current_context_qualification_tier,
+    current_context_tier_index,
     domain_relevance_terms,
     domain_topic_anchors,
     domain_synthesis_terms,
     assess_source,
+    assess_source_for_qualification,
     recent_development_copy_issues,
     term_present,
 )
 from loaders.current_context_news import NEWS_USER_AGENT, _valid_https_url
+from loaders.current_context_composer import compose_development, strict_domain_fit
 
 
-GROUNDING_VERSION = "2.8"
+GROUNDING_VERSION = "4.0"
 SOURCE_TIMEOUT = (4, 9)
 SOURCE_MAX_BYTES = 2_500_000
 # Publisher HTML is fetched as a normal browser navigation. The RSS/discovery
@@ -48,7 +55,8 @@ SOURCE_BROWSER_USER_AGENT = (
 MIN_SOURCE_TEXT_CHARS = 220
 MIN_SOURCE_SENTENCES = 2
 MAX_SOURCE_TEXT_CHARS = 28_000
-MAX_FACT_WORDS = 36
+PREFERRED_FACT_WORDS = 55
+MAX_FACT_WORDS = 70
 
 _PREVIEW_PATTERNS = (
     r"\bwall st(?:reet)? week ahead\b",
@@ -57,6 +65,8 @@ _PREVIEW_PATTERNS = (
     r"\bwhat investors should watch\b",
     r"\bpreview\b",
     r"\bcalendar:\b",
+    r"\bwebinar\b",
+    r"\bupcoming (?:event|session|webinar)\b",
 )
 
 _COMMENTARY_PATTERNS = (
@@ -84,13 +94,28 @@ _POLICY_COMMENTARY_PATTERNS = (
 )
 
 _EVENT_VERBS = (
-    "announced", "approved", "awarded", "began", "built", "closed", "commissioned",
-    "completed", "cut", "decided", "delayed", "denied", "filed", "found", "grew", "held",
-    "implemented", "increased", "issued", "launched", "maintained", "opened", "ordered",
-    "priced", "proposed", "published", "raised", "released", "reported", "secured", "signed",
+    # Past-tense/reporting forms.
+    "acquired", "announced", "approved", "awarded", "began", "bought", "built", "closed", "commissioned",
+    "completed", "cut", "decided", "delayed", "denied", "directed", "filed", "found", "grew", "held",
+    "implemented", "increased", "invested", "issued", "launched", "maintained", "opened", "ordered",
+    "planned", "priced", "proposed", "published", "purchased", "raised", "reached", "released", "reported", "secured", "signed",
     "started", "suspended", "terminated", "updated", "voted", "withdrew", "rose", "fell",
     "declined", "expanded", "refinanced", "downgraded", "upgraded", "curtailed", "added",
-    "reduced", "adopted", "committed", "agreed", "entered", "lowered", "lowering",
+    "reduced", "adopted", "committed", "agreed", "entered", "lowered",
+    "surged", "jumped", "rallied", "slid", "dropped", "plunged", "climbed", "beat", "blew", "forecast", "exceeded", "topped",
+    "arranged", "marketed", "financed", "funded", "partnered", "stacked",
+    # Headline-present forms. Publisher headlines are an eligible event frame
+    # only when the body independently corroborates them, so present tense is
+    # not by itself a weaker evidentiary form.
+    "acquires", "announces", "approves", "awards", "begins", "buys", "closes", "commissions",
+    "completes", "cuts", "decides", "delays", "denies", "directs", "files", "finds", "grows", "holds",
+    "implements", "increases", "invests", "issues", "launches", "maintains", "opens", "orders",
+    "plans", "prices", "proposes", "publishes", "purchases", "raises", "reaches", "releases", "reports", "secures", "signs",
+    "starts", "suspends", "terminates", "updates", "votes", "withdraws",
+    "declines", "expands", "refinances", "downgrades", "upgrades", "curtails", "adds",
+    "reduces", "adopts", "commits", "agrees", "enters", "lowers",
+    "surges", "jumps", "rallies", "slides", "drops", "plunges", "climbs", "beats", "forecasts", "exceeds", "tops",
+    "arranges", "markets", "finances", "funds", "partners", "stacks",
 )
 
 _EMPIRICAL_MARKERS = (
@@ -174,6 +199,61 @@ class SourceDocument:
         return len(self.body_text or "")
 
 
+
+
+_SYNTHETIC_ANALYSIS_TITLE_PATTERNS = (
+    r"\bfuture of\b",
+    r"\bunderstanding\b",
+    r"\bfundamentals\b",
+    r"\bwhat .* means for\b",
+    r"\blimits of .* bankability\b",
+    r"\bbuilding the .* stack\b",
+    r"\bhow .* is evolving\b",
+)
+
+_SYNTHETIC_ANALYSIS_BODY_MARKERS = (
+    "key takeaways",
+    "in our previous article",
+    "this article is part of",
+    "thought leadership series",
+    "explore our other articles",
+    "in the next article",
+    "looking for deeper insights",
+    "deepen your understanding",
+)
+
+
+def source_content_quality_issues(doc: SourceDocument) -> list[str]:
+    """Identify article formats that are poor Current Context evidence.
+
+    Current Context is a development feed, not an opinion or explainer surface.
+    Publisher reputation does not rescue an article whose form is analytical,
+    promotional, or advisory rather than event-reporting.
+    """
+    title = _spaces(doc.title).casefold()
+    body = _spaces(doc.body_text).casefold()
+    try:
+        path = urlparse(str(doc.resolved_url or doc.requested_url or "")).path.casefold()
+    except ValueError:
+        path = ""
+    issues: list[str] = []
+    title_hits = sum(bool(re.search(pattern, title, flags=re.I)) for pattern in _SYNTHETIC_ANALYSIS_TITLE_PATTERNS)
+    body_hits = sum(marker in body for marker in _SYNTHETIC_ANALYSIS_BODY_MARKERS)
+    if body_hits >= 2 or (title_hits >= 1 and body_hits >= 1):
+        issues.append("source is a thematic/explainer series rather than a discrete current development")
+
+    # Opinion/advice pages may contain useful domain facts, but they are not a
+    # current development in their own right.  Event-specific professional
+    # alerts remain eligible because they do not live on opinion/commentary
+    # routes and still face the ordinary event-nucleus gate below.
+    if re.search(r"/(?:opinion|opinions|commentary)(?:/|$)", path):
+        issues.append("source is an opinion/commentary page rather than a reported development")
+
+    lead = " ".join(_split_sentences(doc.body_text)[:8])
+    if (title_hits or body_hits) and not (_has_event_action(lead) or _has_empirical_marker(lead)):
+        issues.append("source lead is thematic analysis without a concrete reported event")
+    return list(dict.fromkeys(issues))
+
 @dataclass(frozen=True)
 class GroundingResult:
     accepted: bool
@@ -192,7 +272,8 @@ class GroundingResult:
 
 
 def _spaces(value: object) -> str:
-    return " ".join(str(value or "").replace("\xa0", " ").split()).strip()
+    text = html_lib.unescape(str(value or "")).replace("\xa0", " ")
+    return " ".join(text.split()).strip()
 
 
 def _sentence(value: object) -> str:
@@ -206,6 +287,26 @@ def _sentence(value: object) -> str:
 def is_preview_or_calendar_item(title: object) -> bool:
     value = _spaces(title).casefold()
     return any(re.search(pattern, value, flags=re.IGNORECASE) for pattern in _PREVIEW_PATTERNS)
+
+
+def is_event_listing_page(doc: SourceDocument) -> bool:
+    """Reject future event/webinar listings masquerading as current developments."""
+    title = _spaces(doc.title).casefold()
+    lead = _spaces(" ".join(_split_sentences(doc.body_text)[:6])).casefold()
+    try:
+        path = urlparse(str(doc.resolved_url or doc.requested_url or "")).path.casefold()
+    except ValueError:
+        path = ""
+    event_path = bool(re.search(r"/(?:event|events|webinar|webinars)(?:/|$)", path))
+    event_markers = (
+        "webinar", "register", "registration", "this event will take place",
+        "this call will focus", "session will", "conference", "workshop",
+    )
+    if event_path and any(marker in f"{title} {lead}" for marker in event_markers):
+        return True
+    if "webinar" in title and any(marker in lead for marker in ("register", "will take place", "session", "zoom")):
+        return True
+    return False
 
 
 def is_commentary_style_title(title: object) -> bool:
@@ -477,6 +578,68 @@ def _date_only(value: object) -> str:
         return match.group(1) if match else ""
 
 
+def _visible_publication_date(soup: BeautifulSoup) -> str:
+    """Recover a visible article date when metadata/JSON-LD omits one.
+
+    Some trade publishers render only a human-facing age (for example
+    ``9 months ago``). Current Context treats that as authoritative enough to
+    reject stale material; it must not let a fresh RSS recrawl override the
+    publisher's own visible age.
+    """
+    regions: list[str] = []
+    for selector in (
+        "time", "[class*='date']", "[class*='publish']", "[class*='time']",
+        "[id*='date']", "[id*='publish']",
+    ):
+        for node in soup.select(selector)[:12]:
+            text = _spaces(node.get_text(" ", strip=True))
+            if text and text not in regions:
+                regions.append(text)
+    h1 = soup.find("h1")
+    if h1 is not None:
+        parent = h1.parent
+        if parent is not None:
+            text = _spaces(parent.get_text(" ", strip=True))[:1400]
+            if text:
+                regions.append(text)
+        nearby: list[str] = []
+        node = h1
+        for _ in range(10):
+            node = node.find_next() if node is not None else None
+            if node is None:
+                break
+            if getattr(node, "name", None) in {"p", "article", "main"}:
+                break
+            text = _spaces(node.get_text(" ", strip=True))
+            if text:
+                nearby.append(text)
+        if nearby:
+            regions.append(" ".join(nearby)[:1000])
+
+    month_names = (
+        "January|February|March|April|May|June|July|August|September|October|November|December|"
+        "Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec"
+    )
+    for text in regions:
+        for pattern in (
+            rf"\b(?:{month_names})\s+\d{{1,2}},\s+20\d{{2}}\b",
+            rf"\b\d{{1,2}}\s+(?:{month_names})\s+20\d{{2}}\b",
+        ):
+            match = re.search(pattern, text, flags=re.I)
+            if match:
+                parsed = _date_only(match.group(0))
+                if parsed:
+                    return parsed
+        relative = re.search(r"\b(\d{1,3})\s+(day|week|month|year)s?\s+ago\b", text, flags=re.I)
+        if relative:
+            count = int(relative.group(1))
+            unit = relative.group(2).casefold()
+            days = count * {"day": 1, "week": 7, "month": 30, "year": 365}[unit]
+            stamp = datetime.now(timezone.utc).date() - timedelta(days=days)
+            return stamp.isoformat()
+    return ""
+
+
 def _page_dates(soup: BeautifulSoup) -> tuple[str, str]:
     published = ""
     modified = ""
@@ -499,6 +662,8 @@ def _page_dates(soup: BeautifulSoup) -> tuple[str, str]:
         node = soup.find("time", attrs={"datetime": True})
         if node:
             published = _date_only(node.get("datetime"))
+    if not published:
+        published = _visible_publication_date(soup)
     return published, modified
 
 
@@ -556,6 +721,20 @@ def _extract_article(html: str, resolved_url: str) -> SourceDocument:
         body_text = max(article_bodies, key=len)[:MAX_SOURCE_TEXT_CHARS]
         return SourceDocument("", resolved_url, title, description, body_text, "jsonld_article_body", published_date=published_date, modified_date=modified_date)
 
+    # Remove navigation/recommendation furniture before paragraph fallback.
+    # Several publisher pages place ``Related News`` or recommended cards inside
+    # ``main``; allowing those paragraphs into the article body can splice an
+    # unrelated development onto the current story.
+    for node in soup.select(
+        "nav, footer, aside, [class*='related'], [id*='related'], "
+        "[class*='recommend'], [id*='recommend'], [class*='promo'], "
+        "[class*='newsletter'], [class*='sidebar']"
+    ):
+        try:
+            node.decompose()
+        except Exception:
+            pass
+
     selectors = ("article p", "main article p", "main p", "[role='main'] p", "p")
     best: list[str] = []
     for selector in selectors:
@@ -580,6 +759,8 @@ def fetch_source_document(
     *,
     publisher_url: str = "",
     source_name: str = "",
+    qualification_tier: str = "A",
+    discovery_provider: str = "",
 ) -> SourceDocument:
     """Resolve an eligible source page and extract transient article/release text."""
     requested = _spaces(article_url)
@@ -623,7 +804,9 @@ def fetch_source_document(
     # Re-assess the page that was actually fetched.  Discovery metadata can
     # nominate a publisher, but a trusted source name must not bless a redirect
     # onto an unrelated host.
-    assessment = assess_source("", "", resolved)
+    assessment = assess_source_for_qualification(
+        "", "", resolved, provider=discovery_provider, tier_key=qualification_tier
+    )
     if not assessment.auto_eligible:
         return SourceDocument(requested, resolved, "", "", "", "", f"resolved page is not eligible evidence: {assessment.reason}")
 
@@ -632,7 +815,8 @@ def fetch_source_document(
         requested, doc.resolved_url, doc.title, doc.description, doc.body_text,
         doc.extraction_method, doc.error, doc.published_date, doc.modified_date,
     )
-    if doc.text_chars < MIN_SOURCE_TEXT_CHARS or len(_split_sentences(doc.body_text)) < MIN_SOURCE_SENTENCES:
+    minimum_chars = max(80, int(current_context_qualification_tier(qualification_tier).minimum_source_text_chars))
+    if doc.text_chars < minimum_chars or len(_split_sentences(doc.body_text)) < MIN_SOURCE_SENTENCES:
         return SourceDocument(
             requested, doc.resolved_url, doc.title, doc.description, doc.body_text,
             doc.extraction_method, "insufficient source body text", doc.published_date, doc.modified_date,
@@ -640,18 +824,108 @@ def fetch_source_document(
     return doc
 
 
+_SENTENCE_PERIOD_TOKEN = "∯"
+_SENTENCE_ABBREVIATIONS = (
+    "Jan.", "Feb.", "Mar.", "Apr.", "Jun.", "Jul.", "Aug.", "Sep.", "Sept.", "Oct.", "Nov.", "Dec.",
+    "Gov.", "Sen.", "Rep.", "Dr.", "Mr.", "Mrs.", "Ms.", "Prof.", "Gen.", "Lt.", "St.", "No.",
+)
+
+
+def _protect_sentence_abbreviations(text: str) -> str:
+    """Protect periods that are not sentence boundaries.
+
+    v7.5 exposed a classic splitter failure: ``Aug. 3 letter`` became
+    ``3 letter`` because the date abbreviation was treated as a sentence end.
+    Initialisms such as ``U.S.`` and common title/month abbreviations are
+    shielded during segmentation and restored afterward.
+    """
+    value = str(text or "")
+    for abbreviation in _SENTENCE_ABBREVIATIONS:
+        protected = abbreviation.replace(".", _SENTENCE_PERIOD_TOKEN)
+        value = re.sub(re.escape(abbreviation), protected, value, flags=re.I)
+    value = re.sub(
+        r"\b(?:[A-Z]\.){2,}",
+        lambda match: match.group(0).replace(".", _SENTENCE_PERIOD_TOKEN),
+        value,
+    )
+    return value
+
+
+
+def _strip_wire_dateline(text: str) -> str:
+    """Remove wire-service datelines while retaining the reported event."""
+    value = _spaces(text)
+    if not value:
+        return ""
+    # Examples:
+    #   RIYADH, Saudi Arabia, Aug. 3, 2026 /PRNewswire/ -- HUMAIN ...
+    #   Aug. 3, 2026 /PRNewswire/ -- HUMAIN ...
+    month = r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?"
+    pattern = re.compile(
+        rf"^(?:(?:[A-Z][A-Za-z .’'\-]+,\s*){{0,2}})?{month}\s+\d{{1,2}},\s+20\d{{2}}\s*/(?:PRNewswire|Business\s+Wire|GlobeNewswire)/\s*(?:--|[-—–])?\s*",
+        flags=re.I,
+    )
+    value = pattern.sub("", value)
+    # Reuters-style city/dateline furniture.
+    value = re.sub(r"^[A-Z][A-Z .’'\-]{2,40},\s+(?:Aug|Sep|Sept|Oct|Nov|Dec|Jan|Feb|Mar|Apr|May|Jun|Jul)\.\s+\d{1,2}\s*[-—–]\s*", "", value)
+    return _spaces(value)
+
+
+def _strip_market_widget_furniture(text: str) -> str:
+    """Remove ticker widgets embedded in article text without losing the actor."""
+    value = _spaces(text)
+    if not value:
+        return ""
+    # WSJ-like: ``Nvidia NVDA -2.86 % decrease; down pointing triangle reached deals ...``
+    value = re.sub(
+        r"^(?P<actor>[A-Z][A-Za-z0-9.&’'\-]*(?:\s+[A-Z][A-Za-z0-9.&’'\-]*){0,4})\s+"
+        r"[A-Z]{1,6}\s+[+\-−]?\d+(?:\.\d+)?\s*%\s+(?:increase|decrease)\s*;?\s*"
+        r"(?:up|down)\s+pointing\s+triangle\s+",
+        lambda m: m.group('actor') + " ", value, flags=re.I,
+    )
+    return _spaces(value)
+
+
+def _strip_inline_page_furniture(text: str) -> str:
+    """Remove URLs, inline navigation labels, wire datelines and market widgets."""
+    value = _spaces(text)
+    if not value:
+        return ""
+    value = re.sub(r"https?://\S+", " ", value, flags=re.I)
+    value = _strip_wire_dateline(value)
+    value = _strip_market_widget_furniture(value)
+    # Inline recommendation/navigation blocks are ambiguous by construction:
+    # there is no reliable deterministic boundary between the linked headline
+    # and the article sentence that follows.  Reject the contaminated sentence
+    # and let another clean body sentence/candidate carry the event.
+    if re.match(r"^(?:also\s+read|read\s+also|related|recommended)\s*[|:—–-]", value, flags=re.I):
+        return ""
+    # Standalone utility labels do not belong in evidence sentences.
+    value = re.sub(r"^(?:here'?s\s+how|here\s+is\s+how)\b[^:]{0,140}:\s*", "", value, flags=re.I)
+    return _spaces(value)
+
+
 def _split_sentences(text: str) -> list[str]:
-    clean = re.sub(r"\s+", " ", str(text or "")).strip()
+    clean = re.sub(r"[\t\r ]+", " ", str(text or "")).strip()
+    clean = re.sub(r"\n{2,}", "\n", clean)
+    # Some publisher extractors concatenate paragraph/sentence boundaries
+    # without whitespace (``year.However``). Repair only common discourse
+    # starts; broad punctuation splitting would damage abbreviations/initials.
+    clean = re.sub(
+        r"(?<=[A-Za-z0-9%”’])\.(?=(?:However|Overall|Meanwhile|Separately|The|Technology|Among|In|At|On)\b)",
+        ". ", clean,
+    )
     if not clean:
         return []
-    pieces = re.split(r"(?<=[.!?])\s+(?=(?:[\"'“‘(]*[A-Z0-9]))", clean)
+    protected = _protect_sentence_abbreviations(clean)
+    pieces = re.split(r"(?<=[.!?])\s+(?=(?:[\"'“‘(]*[A-Z0-9]))", protected)
     output: list[str] = []
     for piece in pieces:
-        sentence = _spaces(piece)
+        sentence = _spaces(piece.replace(_SENTENCE_PERIOD_TOKEN, "."))
+        sentence = _strip_inline_page_furniture(sentence)
         if 45 <= len(sentence) <= 650:
             output.append(sentence)
     return output
-
 
 def _normalize_tokens(text: str) -> set[str]:
     stop = {
@@ -674,8 +948,8 @@ _QUANTIFIED_RE = re.compile(
     r"(?<![A-Za-z])(?:"
     r"\$\d[\d,]*(?:\.\d+)?(?:\s*(?:million|billion|trillion))?"
     r"|\d[\d,]*(?:\.\d+)?\s*(?:%|percent|percentage points?|basis points?|bps)"
-    r"|\d[\d,]*(?:\.\d+)?\s*(?:million|billion|trillion)\s*(?:MWh|GWh|TWh|Tbps|Gbps|MW|GW|acre-feet|gallons?|jobs?|workers?|employees?|people|companies|firms|sites?|projects?)"
-    r"|\d[\d,]*(?:\.\d+)?\s*(?:MWh|GWh|TWh|Tbps|Gbps|MW|GW|acre-feet|gallons?|jobs?|workers?|employees?|people|companies|firms|sites?|projects?)"
+    r"|\d[\d,]*(?:\.\d+)?\s*(?:million|billion|trillion)\s*(?:MWh|GWh|TWh|Tbps|Gbps|MW|GW|acre-feet|gallons?|jobs?|workers?|employees?|people|customers?|clients?|companies|firms|sites?|projects?)"
+    r"|\d[\d,]*(?:\.\d+)?\s*(?:MWh|GWh|TWh|Tbps|Gbps|MW|GW|acre-feet|gallons?|jobs?|workers?|employees?|people|customers?|clients?|companies|firms|sites?|projects?)"
     r")",
     flags=re.I,
 )
@@ -829,6 +1103,28 @@ def market_event_is_significant(fact: object, context: object = "") -> bool:
     return False
 
 
+def reader_development_event_frame_issues(text: object) -> list[str]:
+    """Require Reader copy to state a discrete event rather than a loose detail."""
+    value = _spaces(text)
+    lower = value.casefold()
+    issues: list[str] = []
+    if not value:
+        return ["development is empty"]
+    if re.match(r'^[\"“]', value):
+        issues.append("development opens with a quotation instead of the event frame")
+    if re.match(r"^over the past\b", lower):
+        issues.append("development opens with a retrospective summary instead of a current event")
+    if _CONTEXT_DEPENDENT_OPENING_RE.search(value):
+        issues.append("development opens with context-dependent wording instead of naming the event")
+    if re.search(r"\bcited\b.{0,100}\bas an example\b", lower):
+        issues.append("development presents a subordinate example without the governing action")
+    if re.search(r"\b(?:this segment|this sector|this market)\b", lower):
+        issues.append("development relies on unresolved thematic context")
+    if not (_has_event_action(value) or _headline_actor(value) or _has_empirical_marker(value) or _finance_transaction_in_motion(value)):
+        issues.append("development does not state a concrete event or empirical release")
+    return list(dict.fromkeys(issues))
+
+
 def retained_reader_quality_gate(
     domain: str,
     fact: object,
@@ -848,9 +1144,14 @@ def retained_reader_quality_gate(
     relevance_text = _spaces(relevance)
     if not fact_is_current_development(fact_text, reference_date=event_date, lookback_days=lookback_days):
         return False, "retained fact is historical context rather than a current development"
+    if len(_spaces(f"{fact_text} {relevance_text}").split()) > MAX_FACT_WORDS:
+        return False, f"retained Reader copy exceeds the {MAX_FACT_WORDS}-word ceiling"
     copy_issues = recent_development_copy_issues(f"{fact_text} {relevance_text}")
     if copy_issues:
         return False, f"retained Reader copy failed hygiene: {copy_issues[0]}"
+    frame_issues = reader_development_event_frame_issues(fact_text)
+    if frame_issues:
+        return False, f"retained Reader copy lacks event framing: {frame_issues[0]}"
     if reader_copy_has_selection_rationale(relevance_text):
         return False, "retained Reader prose contains selection-rationale language"
     if str(domain or "").strip().casefold() == "market" and not market_event_is_significant(fact_text, relevance_text):
@@ -900,10 +1201,22 @@ def _sentence_score(sentence: str, *, domain: str, index: int) -> float:
     if _has_empirical_marker(sentence):
         score += 8.0
     if sentence.count('"') >= 2 or sentence.count("“") >= 1:
-        score -= 3.0
+        score -= 5.0
     lower = sentence.casefold()
     if any(term in lower for term in ("believes", "thinks", "argues", "opinion", "could eventually", "may someday")):
         score -= 4.0
+    # Prefer event-framing sentences over subordinate examples or quotations.
+    if any(term in lower for term in (
+        " approved ", " ordered ", " signed ", " launched ", " released ",
+        " reported ", " completed ", " announced ", " filed ", " awarded ",
+    )):
+        score += 4.0
+    if re.match(r'^[\"“]', sentence.strip()):
+        score -= 8.0
+    if re.search(r"\bcited\b.{0,80}\bas an example\b", lower):
+        score -= 5.0
+    if re.match(r"^(?:over the past|during (?:a|the) )", lower):
+        score -= 2.0
     return score
 
 
@@ -914,14 +1227,28 @@ def _source_sentence_candidates(doc: SourceDocument, *, domain: str) -> list[tup
     return scored
 
 
-def _domain_grounding_gate(domain: str, *, headline: str, source_text: str, fact_sentence: str) -> tuple[bool, str]:
+def _domain_grounding_gate(
+    domain: str,
+    *,
+    headline: str,
+    source_text: str,
+    fact_sentence: str,
+    qualification_tier: str = "A",
+) -> tuple[bool, str]:
     combined = _spaces(f"{headline} {source_text}")
     lower = combined.casefold()
     fact_lower = fact_sentence.casefold()
+    tier_index = current_context_tier_index(qualification_tier)
+    broad_coverage = tier_index >= current_context_tier_index("C")
+    floor_coverage = tier_index >= current_context_tier_index("D")
 
-    if not any(term_present(source_text, str(term)) for term in domain_relevance_terms(domain)):
+    relevance_terms = tuple(domain_relevance_terms(domain))
+    if not any(term_present(source_text, str(term)) for term in relevance_terms):
         return False, "source body does not establish the domain-relevant subject"
-    if domain_topic_anchors(domain) and not any(term_present(source_text, str(term)) for term in domain_topic_anchors(domain)):
+    if not any(term_present(fact_sentence, str(term)) for term in relevance_terms):
+        return False, "selected source fact does not itself establish the domain-relevant subject"
+    tier_policy = current_context_qualification_policy(domain, qualification_tier)
+    if bool(tier_policy.get("require_topic_anchor", True)) and domain_topic_anchors(domain) and not any(term_present(source_text, str(term)) for term in domain_topic_anchors(domain)):
         # A few physical domains may qualify through a system-wide measured constraint.
         if domain == "grid_storage" and _has_number(source_text) and any(term in lower for term in _SYSTEM_GRID_TERMS):
             pass
@@ -946,7 +1273,7 @@ def _domain_grounding_gate(domain: str, *, headline: str, source_text: str, fact
         return False, "best source sentence is topical/commentary rather than a concrete development"
 
     if domain in {"workforce", "economic_impact", "adoption"}:
-        if not _has_number(fact_sentence):
+        if not broad_coverage and not _has_number(fact_sentence):
             return False, "domain requires a quantified observed result; topic commentary or unquantified interpretation is not enough"
 
     if domain == "finance":
@@ -984,7 +1311,7 @@ def _domain_grounding_gate(domain: str, *, headline: str, source_text: str, fact
         # not enough.
         relevant_stack = any(term in fact_lower for term in _AI_INFRA_TERMS)
         strategic_us = any(term in fact_lower for term in _US_STRATEGIC_CONNECTIVITY_TERMS)
-        if not (relevant_stack or strategic_us):
+        if not floor_coverage and not (relevant_stack or strategic_us):
             return False, "connectivity fact is not tied to an AI/cloud compute market or strategic U.S. route"
         if not any(term in fact_lower for term in ("fiber", "fibre", "cable", "landing", "backbone", "internet exchange", "peering", "route")):
             return False, "source fact does not establish a connectivity capacity/route event"
@@ -997,8 +1324,10 @@ def _domain_grounding_gate(domain: str, *, headline: str, source_text: str, fact
             "awarded", "contract", "power purchase agreement", "ppa", "tariff", "rate case",
             "retired", "closed", "added", "increased", "reduced", "held",
         ))
-        if not (direct_ai_load or quantified_system):
+        if not broad_coverage and not (direct_ai_load or quantified_system):
             return False, "power item lacks a concrete AI-load connection or quantified system-wide change"
+        if broad_coverage and not (direct_ai_load or quantified_system or operational_action):
+            return False, "power item lacks an operational, measured, or AI-load development"
         if any(term in fact_lower for term in ("published", "released", "resource", "guide", "overview")) and not (quantified_system or operational_action):
             return False, "informational power publication does not establish a new operational or measured development"
 
@@ -1008,13 +1337,28 @@ def _domain_grounding_gate(domain: str, *, headline: str, source_text: str, fact
             "construction", "commissioned", "energized", "curtail", "curtailed", "transmission",
             "substation", "transformer",
         ))
-        if not (_has_number(fact_sentence) or binding_action):
+        broader_action = any(term in fact_lower for term in (
+            "proposed", "filed", "requested", "announced", "selected", "awarded", "planned",
+            "interconnection", "storage", "battery", "queue", "grid",
+        ))
+        if not (_has_number(fact_sentence) or binding_action or (broad_coverage and broader_action)):
             return False, "grid item lacks a concrete measured constraint or binding/physical system action"
-        if any(term in fact_lower for term in ("roadmap", "recommendation", "guide", "framework")) and not (_has_number(fact_sentence) or any(term in fact_lower for term in ("adopted", "implemented", "approved", "ordered"))):
+        if (
+            not floor_coverage
+            and any(term in fact_lower for term in ("roadmap", "recommendation", "guide", "framework"))
+            and not (_has_number(fact_sentence) or any(term in fact_lower for term in ("adopted", "implemented", "approved", "ordered")))
+        ):
             return False, "nonbinding grid roadmap or guidance is context, not a material development"
 
     if domain == "water":
-        if not (_has_number(fact_sentence) or any(term in fact_lower for term in ("approved", "proposed", "ordered", "restriction", "emergency", "permit", "allocation"))):
+        formal_action = any(term in fact_lower for term in (
+            "approved", "proposed", "ordered", "restriction", "emergency", "permit", "allocation",
+        ))
+        broader_action = any(term in fact_lower for term in (
+            "announced", "funding", "construction", "project", "expansion", "reuse", "treatment",
+            "groundwater", "withdrawal", "drought", "cooling",
+        ))
+        if not (_has_number(fact_sentence) or formal_action or (broad_coverage and broader_action)):
             return False, "water item lacks a concrete measured constraint or formal action"
 
     return True, "source body establishes a concrete, domain-relevant development"
@@ -1044,15 +1388,24 @@ def _development_anchor_candidates(
     accepted: list[tuple[float, str]] = []
     rejection_reasons: list[str] = []
 
+    tier_policy = current_context_qualification_policy(
+        domain, str(candidate.get("qualification_tier") or "A")
+    )
+    minimum_anchor_score = float(tier_policy.get("minimum_anchor_score", 8.0) or 8.0)
+
     for index, sentence in enumerate(sentences):
         score = _sentence_score(sentence, domain=domain, index=index)
-        if score < 8.0:
+        if score < minimum_anchor_score:
             continue
         if not fact_is_current_development(sentence, reference_date=reference_date, lookback_days=lookback_days):
             rejection_reasons.append("lead fact was historical context rather than a current development")
             continue
         gate_ok, gate_reason = _domain_grounding_gate(
-            domain, headline=headline, source_text=lead_text, fact_sentence=sentence
+            domain,
+            headline=headline,
+            source_text=lead_text,
+            fact_sentence=sentence,
+            qualification_tier=str(candidate.get("qualification_tier") or "A"),
         )
         if not gate_ok:
             rejection_reasons.append(gate_reason)
@@ -1120,13 +1473,7 @@ def _support_sentence(source_text: str, fact: str, *, terms: tuple[str, ...] = (
 
 
 def _neutralize_journalistic_lead(text: str) -> str:
-    """Turn common article-lead furniture into a compact neutral fact.
-
-    This is deliberately narrow: it removes attribution syntax when the actor
-    and action are already explicit, but it does not invent actors, values, or
-    causal claims.  If a sentence cannot be safely normalized, it is returned
-    unchanged and the later evidence gates still control eligibility.
-    """
+    """Remove narrow attribution/appositive furniture from an explicit event."""
     value = _spaces(text)
     # ``Company said on Tuesday it signed ...`` -> ``Company signed ...``
     match = re.match(
@@ -1138,6 +1485,21 @@ def _neutralize_journalistic_lead(text: str) -> str:
         actor, action = _spaces(match.group(1)), _spaces(match.group(2))
         if actor and action and len(actor.split()) <= 14:
             value = f"{actor} {action}"
+
+    # ``HUMAIN, a PIF company delivering ..., today announced ...`` and
+    # ``CoreWeave, an AI infrastructure provider, reported ...`` carry useful
+    # background but bury the event.  Remove only one bounded appositive when a
+    # recognized event verb immediately follows it.
+    verbs = "|".join(sorted((re.escape(v) for v in _EVENT_VERBS), key=len, reverse=True))
+    appositive = re.match(
+        rf"^(?P<actor>[A-Z][A-Za-z0-9.&’'\-]*(?:\s+[A-Z][A-Za-z0-9.&’'\-]*){{0,5}}),\s+"
+        rf"(?:(?:an?|the)\s+)?[^,]{{4,120}},\s+(?:today\s+|on\s+[A-Z][a-z]+\s+)?(?P<verb>{verbs})\b(?P<rest>.+)$",
+        value,
+        flags=re.I,
+    )
+    if appositive:
+        value = _spaces(f"{appositive.group('actor')} {appositive.group('verb')}{appositive.group('rest')}")
+
     value = re.sub(r",?\s+the company said(?:\s+on\s+[A-Z][a-z]+)?\.?$", "", value, flags=re.I)
     value = re.sub(r",?\s+the agency said(?:\s+on\s+[A-Z][a-z]+)?\.?$", "", value, flags=re.I)
     return _spaces(value)
@@ -1189,14 +1551,118 @@ def _identity_for_surname(source_text: str, surname: str) -> str:
     return full_name
 
 
+def _public_identity_for_bare_surname(source_text: str, surname: str) -> str:
+    """Resolve a bare public-official surname from the source body."""
+    surname = _spaces(surname)
+    if not surname or not re.fullmatch(r"[A-Z][A-Za-z'’\-]+", surname):
+        return ""
+    roles = r"(?:Governor|Gov\.|President|Chair(?:man|woman)?|Senator|Sen\.|Secretary|Commissioner|Mayor)"
+    patterns = (
+        rf"\b([A-Z][A-Za-z.'’\-]+\s+{roles}\s+[A-Z][A-Za-z'’\-]+\s+{re.escape(surname)})\b",
+        rf"\b({roles}\s+[A-Z][A-Za-z'’\-]+\s+{re.escape(surname)})\b",
+    )
+    matches: list[str] = []
+    for pattern in patterns:
+        for match in re.finditer(pattern, str(source_text or "")):
+            identity = _spaces(match.group(1))
+            if identity and identity not in matches:
+                matches.append(identity)
+    if not matches:
+        return ""
+    # Overlapping role forms (``Texas Governor Greg Abbott`` and
+    # ``Governor Greg Abbott``) describe the same identity; prefer the fuller
+    # source form rather than treating that overlap as ambiguity.
+    return max(matches, key=lambda item: (len(item.split()), len(item)))
+
+
 _DANGLING_FACT_OPENING_RE = re.compile(
     r"^(?:"
-    r"(?:the\s+)?(?:company|firm|chipmaker|manufacturer|operator|developer|utility|regulator|agency|commission|provider|vendor|lender|borrower)\b"
+    r"(?:the\s+)?(?:company|firm|chipmaker|manufacturer|operator|developer|utility|regulator|agency|commission|provider|vendor|lender|borrower|venture)\b"
     r"|(?:they|their|it|its)\b"
     r"|leading\s+up\s+to\s+their\b"
     r")",
     flags=re.IGNORECASE,
 )
+
+_CONTEXT_DEPENDENT_OPENING_RE = re.compile(
+    r"^(?:"
+    r"if\s+(?:built|approved|completed|implemented|constructed|developed)\b"
+    r"|(?:most\s+of\s+)?(?:this|the)\s+(?:capacity|funding|investment|increase|decline|growth)\b"
+    r"|management\s+(?:expects?|said|says|plans?|believes?)\b"
+    r"|the\s+(?:(?:january|february|march|april|may|june|july|august|september|october|november|december|latest|monthly|quarterly)\s+)?(?:financing\s+push|move|deal|transaction|project|proposal|plan|measure|"
+    r"proposed\s+legislation|legislation|figures|results|letter|directive|order|announcement)\b"
+    r"|these\s+(?:figures|results|plans|measures)\b"
+    r")",
+    flags=re.IGNORECASE,
+)
+
+
+def _explicit_actor_action(text: str) -> bool:
+    """Return True when the opening clause names an actor and an event action."""
+    value = _spaces(text)
+    if not value or _DANGLING_FACT_OPENING_RE.search(value) or _CONTEXT_DEPENDENT_OPENING_RE.search(value):
+        return False
+    words = value.split()[:22]
+    prefix = " ".join(words)
+    for verb in _EVENT_VERBS:
+        match = re.search(rf"(?<![A-Za-z]){re.escape(verb)}(?![A-Za-z])", prefix, flags=re.I)
+        if not match:
+            continue
+        actor = prefix[:match.start()].strip(" ,:;-—–")
+        if not (1 <= len(actor.split()) <= 14 and re.search(r"[A-Za-z]", actor)):
+            continue
+        # Page fragments such as ``of respondents ... team cuts`` must not be
+        # mistaken for an actor merely because a later noun matches an event
+        # verb.  Real event frames normally open with a named/proper actor.
+        if re.match(r"^(?:of|in|on|for|from|with|by|at|as|to|and|or|while|after|before|during)\b", actor, flags=re.I):
+            continue
+        if not re.match(r"^(?:[A-Z]|[0-9]+[A-Za-z]|[a-z][A-Z])", actor):
+            continue
+        return True
+    return False
+
+def _strip_embedded_heading_prefix(text: str, *, headline: str = "") -> str:
+    """Strip page furniture concatenated immediately ahead of event prose.
+
+    The old implementation only recognized question-style headings.  Real
+    publisher pages also splice subtitles such as ``Follows growing scrutiny
+    from state regulators`` directly onto the first paragraph.  A prefix may
+    be removed only when a complete actor/action event sentence remains.
+    """
+    value = _spaces(text)
+    words = value.split()
+    if len(words) < 14:
+        return value
+    # Obvious heading shapes get a wider search window.  For other prefixes the
+    # cut is kept short so a genuine introductory clause is not casually lost.
+    heading_like = bool(re.match(
+        r"^(?:why|how|what|when|where|follows?|following|inside|analysis|update|exclusive|breaking)\b",
+        value, flags=re.I,
+    ))
+    if not heading_like:
+        return value
+    max_cut = min(14, len(words) - 10)
+    candidates: list[tuple[float, int, str]] = []
+    headline_tokens = _normalize_tokens(headline) if headline else set()
+    for cut in range(2, max_cut + 1):
+        prefix = _spaces(" ".join(words[:cut]))
+        tail = _spaces(" ".join(words[cut:]))
+        if len(tail.split()) < 10 or not re.match(r"^[A-Z][A-Za-z0-9&.'’\-]*\b", tail) or not _explicit_actor_action(tail):
+            continue
+        # Do not strip a normal comma-delimited introductory clause unless it
+        # has a strong page-heading signature.
+        if prefix.endswith(",") and not heading_like:
+            continue
+        score = -float(cut) * 0.05
+        if headline:
+            score = float(cut) * 0.02
+            score += _headline_similarity(headline, tail) * 12.0
+            score += min(4.0, len(headline_tokens.intersection(_normalize_tokens(tail))) * 0.8)
+        candidates.append((score, cut, tail))
+    if candidates:
+        candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
+        return candidates[0][2]
+    return value
 
 _HEADLINE_ACTOR_RE = re.compile(
     r"^(.{2,80}?)\s+(?:"
@@ -1204,6 +1670,8 @@ _HEADLINE_ACTOR_RE = re.compile(
     r"cuts?|cut|delays?|delayed|files?|filed|launches?|launched|lines\s+up|opens?|opened|"
     r"orders?|ordered|plans?|planned|proposes?|proposed|raises?|raised|refinances?|refinanced|"
     r"reports?|reported|secures?|secured|signs?|signed|starts?|started|unveils?|unveiled|"
+    r"reaches?|reached|invests?|invested|partners?|partnered|deploys?|deployed|directs?|directed|stacks?|stacked|beats?|forecast(?:s|ed)?|exceeds?|tops?|"
+    r"develops?|developed|conducts?|conducted|establishes?|established|makes?\s+(?:an?\s+)?investment|"
     r"will\s+(?:build|buy|invest|open|sell|spend|supply)"
     r")\b",
     flags=re.IGNORECASE,
@@ -1246,15 +1714,23 @@ def _resolve_generic_actor(value: str, headline: str) -> str:
     if not actor:
         return value
     generic = re.match(
-        r"^(?:the\s+)?(?:company|firm|chipmaker|manufacturer|operator|developer|utility|regulator|agency|commission|provider|vendor|lender|borrower)\b",
+        r"^(?:the\s+)?(?:company|firm|chipmaker|manufacturer|operator|developer|utility|regulator|agency|commission|provider|vendor|lender|borrower|venture)\b",
         value,
         flags=re.I,
     )
     if generic:
         return actor + value[generic.end():]
+    management = re.match(r"^management\s+", value, flags=re.I)
+    if management:
+        return actor + " management " + value[management.end():]
     match = re.match(r"^(?:they|it)\s+", value, flags=re.I)
     if match:
         return actor + " " + value[match.end():]
+    # Resolve a generic actor that appears after a short introductory phrase,
+    # e.g. ``During a hearing, they approved ...``.
+    match = re.match(r"^(.{1,90}?,\s*)(?:they|it)\s+", value, flags=re.I)
+    if match:
+        return match.group(1) + actor + " " + value[match.end():]
     match = re.match(r"^(?:their|its)\s+", value, flags=re.I)
     if match:
         return actor + "'s " + value[match.end():]
@@ -1264,20 +1740,50 @@ def _resolve_generic_actor(value: str, headline: str) -> str:
     return value
 
 
+_DUPLICATE_ACRONYM_EXPANSION_RE = re.compile(
+    r"\b(?P<name>[A-Z][A-Za-z&.'’\-]*(?:\s+(?:[A-Z][A-Za-z&.'’\-]*|of|the|and|for|to|&)){1,8})"
+    r"\s*\(\s*(?P=name)\s*\(\s*(?P<acronym>[A-Z]{2,6})\s*\)\s*\)"
+)
+
+
+def _collapse_duplicate_acronym_expansions(text: str) -> str:
+    value = _spaces(text)
+    for _ in range(4):
+        updated = _DUPLICATE_ACRONYM_EXPANSION_RE.sub(
+            lambda match: f"{match.group('name')} ({match.group('acronym')})", value
+        )
+        if updated == value:
+            break
+        value = updated
+    return _spaces(value)
+
+
 def _resolve_first_reference_identity(fact: str, headline: str, source_text: str) -> str:
-    value = _spaces(fact)
-    surnames = []
-    for match in _INSTITUTION_SURNAME_RE.finditer(str(headline or "")):
+    value = _collapse_duplicate_acronym_expansions(fact)
+    identity_matches = list(_INSTITUTION_SURNAME_RE.finditer(str(headline or "")))
+    seen_surnames: set[str] = set()
+    for match in identity_matches:
         surname = _spaces(match.group(1))
-        if surname and surname not in surnames:
-            surnames.append(surname)
-    for surname in surnames:
+        if not surname or surname in seen_surnames:
+            continue
+        seen_surnames.add(surname)
         identity = _identity_for_surname(source_text, surname)
         if not identity or identity.casefold() in value.casefold():
             continue
-        updated = re.sub(rf"\b{re.escape(surname)}\b", identity, value, count=1)
+        shorthand = _spaces(match.group(0))
+        updated = value
+        if shorthand and re.search(re.escape(shorthand), value, flags=re.I):
+            updated = re.sub(re.escape(shorthand), identity, value, count=1, flags=re.I)
+        else:
+            updated = re.sub(rf"\b{re.escape(surname)}\b", identity, value, count=1)
         if updated != value:
             value = updated
+
+    headline_actor = _headline_actor(headline)
+    if headline_actor and len(headline_actor.split()) == 1:
+        identity = _public_identity_for_bare_surname(source_text, headline_actor)
+        if identity and re.match(rf"^{re.escape(headline_actor)}\b", value, flags=re.I):
+            value = re.sub(rf"^{re.escape(headline_actor)}\b", identity, value, count=1, flags=re.I)
 
     # Expand an acronym only when the source itself defines it.  The source
     # body remains the authority; the headline may contribute jurisdiction.
@@ -1289,329 +1795,397 @@ def _resolve_first_reference_identity(fact: str, headline: str, source_text: str
             expansion = "Virginia " + expansion
         if not expansion:
             continue
+        # Do not expand an acronym again when the sentence already supplies
+        # the source-defined full name. This prevents nested artifacts such as
+        # ``Electric Reliability Council of Texas (Electric Reliability Council
+        # of Texas (ERCOT))``.
+        if expansion.casefold() in value.casefold():
+            continue
         value = re.sub(rf"\b{re.escape(acronym)}\b", f"{expansion} ({acronym})", value, count=1)
 
     value = _resolve_generic_actor(value, headline)
     return _spaces(value)
 
 
-def _compress_fact(sentence: str) -> str:
-    text = _neutralize_journalistic_lead(_spaces(sentence))
-    # If a dangling introductory clause is followed by a self-contained event
-    # after a colon, preserve the event rather than publishing the orphaned lead.
+def _compress_fact(sentence: str, *, headline: str = "") -> str:
+    """Normalize one source sentence without inventing or mechanically chopping.
+
+    Cleanup removes page furniture first.  A sentence that remains malformed or
+    context-dependent is not repaired into eligibility; the caller must choose a
+    different event frame/candidate.
+    """
+    text = _strip_inline_page_furniture(sentence)
+    text = _strip_embedded_heading_prefix(_neutralize_journalistic_lead(text), headline=headline)
+    # Remove a short scene-setting temporal clause when the remaining sentence
+    # already names the actor/action. This preserves the event while avoiding
+    # weak openings such as ``During a public hearing yesterday, ...``.
+    intro = re.match(r"^(?:During|At|On|After|Before)\b[^,]{2,90},\s+(.+)$", text, flags=re.I)
+    if intro and _explicit_actor_action(_spaces(intro.group(1))):
+        text = _spaces(intro.group(1))
     if ":" in text:
         lead, tail = (_spaces(part) for part in text.split(":", 1))
         if _DANGLING_FACT_OPENING_RE.search(lead) and tail and not _DANGLING_FACT_OPENING_RE.search(tail):
             text = tail
-    # Remove common dateline/publisher furniture while keeping the actor and fact.
-    text = re.sub(r"^[A-Z][A-Z .,'-]{2,45}\s*[—–-]\s*", "", text)
+    text = re.sub(r"^[A-Z][A-Z .,'-]{2,45}\s+[—–-]\s+", "", text)
     text = re.sub(r"^\([^)]*Reuters\)\s*[-—–]?\s*", "", text, flags=re.I)
     text = re.sub(r"\s+according to (?:the|a) [^.]{0,80}$", "", text, flags=re.I)
-    words = text.split()
-    if len(words) > MAX_FACT_WORDS:
-        # Prefer a complete first clause over a chopped article sentence.
-        clauses = re.split(r"(?<=[,;])\s+|\s+(?:while|although|but|which)\s+", text, maxsplit=2, flags=re.I)
-        candidate = _spaces(clauses[0])
-        if 10 <= len(candidate.split()) <= MAX_FACT_WORDS:
-            text = candidate
-        else:
-            text = " ".join(words[:MAX_FACT_WORDS]).rstrip(",;:")
-    return _sentence(text)
+    text = re.sub(r",?\s+(?:he|she|they)\s+said\.?$", "", text, flags=re.I)
+    text = _spaces(text)
+    if not text:
+        return ""
+    if len(text.split()) <= MAX_FACT_WORDS:
+        return _sentence(text)
+
+    boundaries = re.split(
+        r"(?<=;)\s+|\s+[—–]\s+|\s+(?:while|although|but|whereas)\s+",
+        text,
+        maxsplit=3,
+        flags=re.I,
+    )
+    running: list[str] = []
+    candidates: list[str] = []
+    for part in boundaries:
+        running.append(_spaces(part))
+        candidate = _spaces(" ".join(running))
+        words = len(candidate.split())
+        if 12 <= words <= MAX_FACT_WORDS and (_explicit_actor_action(candidate) or _has_empirical_marker(candidate)):
+            candidates.append(candidate)
+        if words > MAX_FACT_WORDS:
+            break
+    if candidates:
+        return _sentence(max(candidates, key=lambda item: len(item.split())))
+    return ""
+
+def _presentation_score(text: str) -> float:
+    """Prefer copy that frames the event before details or quotations."""
+    value = _spaces(text)
+    lower = value.casefold()
+    words = len(value.split())
+    score = 0.0
+    score += 7.0 if _has_event_action(value) else 0.0
+    score += 3.0 if _has_number(value) else 0.0
+    score += min(4.0, max(0, words - 18) * 0.12)
+    if 25 <= words <= PREFERRED_FACT_WORDS:
+        score += 3.0
+    if words < 18:
+        score -= 5.0
+    if re.match(r'^[\"“]', value):
+        score -= 10.0
+    if re.match(r"^(?:over the past|during (?:a|the) )", lower):
+        score -= 2.0
+    if re.search(r"\bcited\b.{0,80}\bas an example\b", lower):
+        score -= 5.0
+    if re.search(r"\b(?:this segment|the segment|the sector|the market)\b", lower) and words < 30:
+        score -= 6.0
+    return score
+
+
+def _format_source_sentence(sentence: str, *, headline: str, source_text: str) -> str:
+    compressed = _compress_fact(sentence, headline=headline)
+    if not compressed:
+        return ""
+    fact = _sentence(_resolve_first_reference_identity(compressed, headline, source_text))
+    if not fact or len(fact.split()) > MAX_FACT_WORDS:
+        return ""
+    if recent_development_copy_issues(fact):
+        return ""
+    if reader_development_event_frame_issues(fact):
+        return ""
+    return fact
+
+
+def _format_support_sentence(sentence: str, *, headline: str, source_text: str) -> str:
+    """Normalize one grounded context/detail sentence without requiring a second event."""
+    compressed = _compress_fact(sentence, headline=headline)
+    if not compressed:
+        return ""
+    value = _sentence(_resolve_first_reference_identity(compressed, headline, source_text))
+    if not value or len(value.split()) > MAX_FACT_WORDS:
+        return ""
+    if recent_development_copy_issues(value) or reader_copy_has_selection_rationale(value):
+        return ""
+    if re.match(r'^[\"“]', value):
+        return ""
+    return value
+
+
+def _event_identity_tokens(text: str, domain: str) -> set[str]:
+    tokens = _normalize_tokens(text)
+    generic: set[str] = {
+        "artificial", "intelligence", "company", "companies", "market", "markets",
+        "project", "projects", "development", "developments", "reported", "announced",
+        "approved", "signed", "plans", "planned", "data", "center", "centers",
+    }
+    for term in domain_relevance_terms(domain):
+        generic.update(_normalize_tokens(str(term)))
+    return {token for token in tokens if token not in generic}
+
+
+def _same_event_context(frame: str, support: str, *, domain: str, distance: int) -> bool:
+    """Require a support sentence to remain attached to the same event."""
+    left = _event_identity_tokens(frame, domain)
+    right = _event_identity_tokens(support, domain)
+    overlap = left.intersection(right)
+    if len(overlap) >= (1 if distance <= 1 else 2):
+        return True
+    if _headline_similarity(frame, support) >= (0.28 if distance <= 1 else 0.38):
+        return True
+    return False
+
+
+def _numeric_identity_tokens(text: str) -> set[str]:
+    return {token.replace(",", "") for token in re.findall(r"\b\d[\d,]*(?:\.\d+)?\b", str(text or ""))}
+
+
+def _clean_source_title(title: str) -> str:
+    """Normalize a publisher title without rewriting its factual content."""
+    value = _spaces(title)
+    if not value:
+        return ""
+    value = re.sub(r"^(?:breaking|exclusive|update)\s*:\s*", "", value, flags=re.I)
+    value = re.sub(r"\bmakes? (?:an? )?investment in\b", "invests in", value, flags=re.I)
+    # Publisher suffixes appear with inconsistent spacing around pipes/dashes.
+    pipe_parts = re.split(r"\s*\|\s*", value)
+    if len(pipe_parts) > 1:
+        tail = _spaces(pipe_parts[-1])
+        if 1 <= len(tail.split()) <= 6 and not _has_event_action(tail):
+            value = _spaces(" | ".join(pipe_parts[:-1]))
+    for separator in (" — ", " – ", " - "):
+        if separator not in value:
+            continue
+        lead, tail = value.rsplit(separator, 1)
+        if 1 <= len(tail.split()) <= 5 and not _has_event_action(tail):
+            value = _spaces(lead)
+            break
+    return value.strip(" -—–|")
+
+def _source_identity_coherence_issue(
+    discovery_headline: str, source_title: str, source_text: str, *, domain: str
+) -> str:
+    """Reject resolved pages whose identity does not match the discovered story.
+
+    This catches a subtle but serious extraction class: a URL can resolve to one
+    article while page furniture/related cards donate prose from another.  The
+    discovery headline, publisher title, and article lead do not need identical
+    wording, but they must share a distinctive event identity.
+    """
+    discovered = _clean_source_title(discovery_headline)
+    published = _clean_source_title(source_title)
+    lead_sentences = _split_sentences(source_text)[:10]
+    lead = _spaces(" ".join(lead_sentences))
+
+    if discovered and published:
+        left = _event_identity_tokens(discovered, domain)
+        right = _event_identity_tokens(published, domain)
+        overlap = left.intersection(right)
+        if len(left) >= 2 and len(right) >= 2 and not overlap:
+            return "resolved publisher title does not match the discovered article identity"
+
+    if published and lead_sentences and (_has_event_action(published) or _has_empirical_marker(published)):
+        title_tokens = _event_identity_tokens(published, domain)
+        if len(title_tokens) >= 2:
+            best_overlap = 0
+            best_similarity = 0.0
+            for sentence in lead_sentences:
+                best_overlap = max(best_overlap, len(title_tokens.intersection(_event_identity_tokens(sentence, domain))))
+                best_similarity = max(best_similarity, _headline_similarity(published, sentence))
+            # One shared distinctive identity plus ordinary topical overlap is
+            # enough. Zero identity and near-zero textual similarity is not.
+            if best_overlap == 0 and best_similarity < 0.12:
+                return "publisher title is not corroborated by the extracted article lead"
+    return ""
+
+
+def _title_body_corroborated(title_fact: str, source_text: str, *, domain: str) -> bool:
+    title_tokens = _event_identity_tokens(title_fact, domain)
+    title_numbers = _numeric_identity_tokens(title_fact)
+    for sentence in _split_sentences(source_text)[:12]:
+        sentence_tokens = _event_identity_tokens(sentence, domain)
+        overlap = title_tokens.intersection(sentence_tokens)
+        if len(overlap) >= 2:
+            return True
+        if overlap and title_numbers.intersection(_numeric_identity_tokens(sentence)):
+            return True
+        if _headline_similarity(title_fact, sentence) >= 0.24:
+            return True
+    return False
+
+
+def _body_event_frame_candidates(
+    source_text: str,
+    *,
+    headline: str,
+    domain: str,
+    qualification_tier: str,
+    anchors: list[tuple[float, str]],
+) -> list[tuple[float, str, str]]:
+    """Return body sentences that independently state the article's event.
+
+    The body is preferred over the headline because publisher prose normally
+    has natural sentence case and fuller context.  Titles are a fallback when
+    no clean body event frame survives.
+    """
+    anchor_scores = {_spaces(raw): float(score) for score, raw in anchors}
+    options: list[tuple[float, str, str]] = []
+    for index, raw in enumerate(_split_sentences(source_text)[:MAX_DEVELOPMENT_LEAD_SENTENCES]):
+        fact = _format_source_sentence(raw, headline=headline, source_text=source_text)
+        if not fact:
+            continue
+        if not (_explicit_actor_action(fact) or _has_empirical_marker(fact) or _finance_transaction_in_motion(fact)):
+            continue
+        gate_ok, _ = _domain_grounding_gate(
+            domain,
+            headline=headline,
+            source_text=source_text,
+            fact_sentence=fact,
+            qualification_tier=qualification_tier,
+        )
+        if not gate_ok:
+            continue
+        score = _presentation_score(fact)
+        score += min(7.0, _headline_similarity(headline, fact) * 9.0)
+        identity_overlap = _event_identity_tokens(headline, domain).intersection(_event_identity_tokens(fact, domain))
+        score += min(9.0, len(identity_overlap) * 3.0)
+        headline_numbers = _numeric_identity_tokens(headline)
+        if headline_numbers and headline_numbers.intersection(_numeric_identity_tokens(fact)):
+            score += 5.0
+        score += max(0.0, 5.0 - index * 0.45)
+        score += min(4.0, anchor_scores.get(_spaces(raw), 0.0) * 0.16)
+        if _explicit_actor_action(fact):
+            score += 5.0
+        if _has_empirical_marker(fact):
+            score += 3.0
+        options.append((score, fact, raw))
+    options.sort(key=lambda item: item[0], reverse=True)
+    return options
+
+
+def _support_adds_information(frame: str, support: str, *, domain: str) -> bool:
+    """Require support to contribute scale/context rather than restating frame."""
+    if not support or _headline_similarity(frame, support) >= 0.74:
+        return False
+    if _has_number(support) and not _has_number(frame):
+        return True
+    new_tokens = _event_identity_tokens(support, domain) - _event_identity_tokens(frame, domain)
+    if len(new_tokens) >= 3 and any(marker in support.casefold() for marker in (
+        "revenue", "capacity", "queue", "investment", "funding", "guidance", "forecast",
+        "customers", "sites", "jobs", "layoffs", "demand", "route", "cost", "costs",
+    )):
+        return True
+    return False
+
+
+def _source_title_event_frame(
+    source_title: str, *, source_text: str, domain: str, qualification_tier: str
+) -> str:
+    """Use the publisher title only as a corroborated fallback event frame."""
+    value = _clean_source_title(source_title)
+    words = len(value.split())
+    if not value or words < 5 or words > 34:
+        return ""
+    if is_preview_or_calendar_item(value) or is_commentary_style_title(value):
+        return ""
+    if not (_has_event_action(value) or _headline_actor(value) or _has_empirical_marker(value) or _finance_transaction_in_motion(value)):
+        return ""
+    fact = _sentence(_resolve_first_reference_identity(value, value, source_text))
+    if recent_development_copy_issues(fact) or reader_development_event_frame_issues(fact):
+        return ""
+    if not _title_body_corroborated(fact, source_text, domain=domain):
+        return ""
+    return fact
+
+def _best_title_support(
+    title_fact: str, *, source_text: str, headline: str, domain: str
+) -> tuple[str, str]:
+    """Choose one nearby body detail that materially adds to a title fallback."""
+    options: list[tuple[float, str, str]] = []
+    for index, raw in enumerate(_split_sentences(source_text)[:10]):
+        support = _format_support_sentence(raw, headline=headline, source_text=source_text)
+        if not support or not _support_adds_information(title_fact, support, domain=domain):
+            continue
+        if not _same_event_context(title_fact, support, domain=domain, distance=1 if index < 4 else 2):
+            continue
+        combined = _spaces(f"{title_fact} {support}")
+        if len(combined.split()) > MAX_FACT_WORDS or recent_development_copy_issues(combined):
+            continue
+        score = _presentation_score(support)
+        score += 5.0 if _has_number(support) else 0.0
+        score += max(0.0, 3.0 - index * 0.35)
+        options.append((score, support, raw))
+    if not options:
+        return "", ""
+    options.sort(key=lambda item: item[0], reverse=True)
+    _, support, raw = options[0]
+    return support, raw
+
+def _sentence_index(sentences: list[str], raw: str) -> int:
+    target = _spaces(raw)
+    for index, sentence in enumerate(sentences):
+        if _spaces(sentence) == target:
+            return index
+    return -1
+
+
+def _assemble_reader_development(
+    anchors: list[tuple[float, str]],
+    *,
+    headline: str,
+    source_text: str,
+    domain: str,
+    qualification_tier: str = "A",
+    source_title: str = "",
+) -> tuple[str, str]:
+    """Compose Reader copy from a deterministic semantic event frame.
+
+    v7.9 stops treating source sentences as the presentation model.  The
+    article is first reduced to cleaned factual clauses, then the deterministic
+    composer identifies an actor/action event nucleus, assigns supporting facts
+    to that event, and realizes the event before any supporting metric/context.
+
+    The publisher title may participate only as corroborated evidence; it is
+    never concatenated verbatim ahead of body prose.  If the semantic composer
+    cannot establish a complete domain-specific event, the candidate is
+    rejected and discovery proceeds to the next source.
+    """
+    cleaned_body: list[str] = []
+    for raw in _split_sentences(source_text)[:24]:
+        value = _format_support_sentence(raw, headline=headline or source_title, source_text=source_text)
+        if value:
+            cleaned_body.append(value)
+
+    # Anchors can contain a fact that the page splitter omitted because of a
+    # malformed boundary.  They are evidence-only additions, deduplicated
+    # against the cleaned body, not privileged presentation candidates.
+    for _, raw in anchors:
+        value = _format_support_sentence(raw, headline=headline or source_title, source_text=source_text)
+        if value and all(_headline_similarity(value, existing) < 0.94 for existing in cleaned_body):
+            cleaned_body.append(value)
+
+    clean_title = _clean_source_title(source_title or headline)
+    composed = compose_development(
+        domain=domain,
+        source_title=clean_title,
+        body_sentences=cleaned_body,
+    )
+    if composed is None:
+        return "", ""
+
+    fact = _spaces(composed.text)
+    if not fact or len(fact.split()) > MAX_FACT_WORDS:
+        return "", ""
+    if recent_development_copy_issues(fact):
+        return "", ""
+    if reader_development_event_frame_issues(fact):
+        return "", ""
+    if not strict_domain_fit(domain, fact):
+        return "", ""
+    return fact, _spaces(composed.evidence_text)
 
 
 def _synthesis_match(domain: str, category: str, text: str) -> bool:
     """Match a synthesis category from the canonical per-domain vocabulary."""
     return any(term_present(text, term) for term in domain_synthesis_terms(domain, category))
 
-
-def _specific_relevance(domain: str, fact: str, source_text: str) -> str:
-    """Write one bounded, source-grounded analytical consequence.
-
-    Current Context remains deterministic on purpose: once the source body has
-    established a material development, this function maps that fact to one of
-    the platform's explicit economic mechanisms.  The factual first sentence is
-    already carried separately, so these consequences avoid repeating numbers
-    unless the magnitude itself changes the meaning.
-    """
-    lower = _spaces(f"{fact} {source_text}").casefold()
-    fact_lower = fact.casefold()
-
-    if domain == "market":
-        if _synthesis_match("market", "guidance_down", fact_lower):
-            return _sentence("The weaker outlook lowers near-term growth expectations and raises the execution hurdle already reflected in the company's valuation")
-        if _synthesis_match("market", "guidance_up", fact_lower):
-            return _sentence("The stronger outlook raises expected revenue and earnings from AI-linked demand and increases the growth investors can reasonably price into the company")
-        if _synthesis_match("market", "demand_signals", fact_lower):
-            return _sentence("The order or backlog signal adds visibility into future demand before it reaches reported revenue")
-        if _synthesis_match("market", "margin_profitability", fact_lower):
-            return _sentence("The margin or profitability change shows whether AI-linked growth is improving the economics of the business or being offset by the cost of delivering it")
-        if _synthesis_match("market", "capex_investment", fact_lower):
-            return _sentence("The spending plan expands the capacity available for future growth but also raises the amount of execution required before that investment produces a return")
-        if _synthesis_match("market", "operating_results", fact_lower):
-            return _sentence("The reported results show whether AI-linked demand is turning into realized revenue and profit rather than remaining an expectation")
-        if _synthesis_match("market", "ipo_equity_raise", fact_lower):
-            return _sentence("The equity raise adds funding without new debt and establishes a fresh public-market price for the company's growth expectations")
-        if _synthesis_match("market", "antitrust_regulatory", fact_lower):
-            return _sentence("The regulatory action can change the timing, strategic freedom, or economic value of an AI-linked transaction or business line")
-        if _synthesis_match("market", "transaction", fact_lower):
-            return _sentence("The transaction shifts ownership of an AI-linked asset or capability and can redirect future growth, pricing power, and investment returns")
-        if _synthesis_match("market", "concentration_breadth", fact_lower):
-            return _sentence("The breadth or concentration change shows whether AI-linked market gains are spreading across more companies or becoming more dependent on a small group of leaders")
-        if _synthesis_match("market", "analyst_revision", fact_lower):
-            return _sentence("The estimate revision changes the earnings or revenue expectations investors are using to value the company, even though it does not change the underlying operations by itself")
-        if _synthesis_match("market", "share_repurchase", fact_lower):
-            return _sentence("The repurchase directs cash toward shareholders and reduces share count, while also competing with other uses of capital such as investment and acquisitions")
-        if _synthesis_match("market", "dividend_capital_return", fact_lower):
-            return _sentence("The capital-return decision changes how much cash is being distributed to shareholders rather than retained for future investment")
-        if _synthesis_match("market", "repricing", fact_lower):
-            return _sentence("The repricing resets the valuation investors are assigning to AI-linked growth and the execution already embedded in the stock")
-        # Market is expected to remain populated when a genuinely material,
-        # source-grounded event survives the evidence gates.  This fallback is
-        # intentionally broad but still bounded to Market ownership.
-        return _sentence("The development gives investors new information about the growth, risk, or strategic position of an AI-linked company and can change how that business is valued")
-
-    if domain == "finance":
-        if _synthesis_match("finance", "financing_platform", fact_lower):
-            return _sentence("The financing partnership creates a repeatable outside-capital channel for the AI buildout, reducing how much funding must come directly from the customer's own balance sheet")
-        if _synthesis_match("finance", "project_finance", fact_lower):
-            return _sentence("The project financing ties repayment more closely to the economics of the specific infrastructure asset, helping fund construction while putting more weight on the project's own cash flows")
-        if _synthesis_match("finance", "private_credit", fact_lower):
-            return _sentence("The private-credit funding adds another source of capital outside public bonds and traditional bank lending, with its own pricing and covenant tradeoffs")
-        if _synthesis_match("finance", "venture_funding", fact_lower):
-            return _sentence("The funding round extends the company's runway and its ability to invest before the business has to finance growth entirely from its own cash flow")
-        if _synthesis_match("finance", "private_equity", fact_lower):
-            return _sentence("The sponsor investment changes the ownership and financing structure around the business and raises the importance of leverage and eventual exit returns")
-        if _synthesis_match("finance", "securitization", fact_lower):
-            return _sentence("The securitization turns contracted cash flows or infrastructure assets into investable debt, broadening the funding base while adding another layer of financing claims")
-        if _synthesis_match("finance", "restructuring", fact_lower):
-            return _sentence("The restructuring is evidence that the existing financing structure is under strain and can shift both ownership and repayment claims")
-        if _synthesis_match("finance", "secondaries", fact_lower):
-            return _sentence("The secondary transaction creates liquidity and price discovery for an otherwise illiquid private investment without requiring the underlying company to go public")
-        if _synthesis_match("finance", "fund_distributions", fact_lower):
-            return _sentence("The distribution turns private-fund value into realized cash, increasing the capital investors can recycle into new technology investments")
-        if _synthesis_match("finance", "lease_obligation", fact_lower) or ("committed" in fact_lower and "lease" in fact_lower):
-            return _sentence("The commitments add fixed future cash claims alongside funded debt, increasing the share of future cash flow already spoken for by the infrastructure buildout")
-        if _synthesis_match("finance", "ratings", fact_lower):
-            return _sentence("The ratings action changes borrowing-cost pressure and balance-sheet flexibility as AI-related capital spending expands")
-        if _synthesis_match("finance", "covenant", fact_lower):
-            return _sentence("The covenant change alters how much financial flexibility the borrower has before lenders can demand concessions or restrict additional borrowing")
-        if _synthesis_match("finance", "maturity", fact_lower):
-            return _sentence("The maturity change shifts when the borrower must refinance or repay debt, which can move financing risk into or out of the current rate environment")
-        if _synthesis_match("finance", "refinancing", fact_lower):
-            return _sentence("The refinancing puts a current market price on a large AI-infrastructure exposure and shows the terms on which outside investors are willing to keep funding it")
-        if _synthesis_match("finance", "liquidity", fact_lower):
-            return _sentence("The liquidity change alters how much near-term spending the company can fund or absorb before it needs to raise additional capital")
-        if _synthesis_match("finance", "monetary_policy", fact_lower):
-            if any(term in fact_lower for term in ("cut", "lowered", "reduced", "easing")):
-                return _sentence("The rate cut lowers the financing hurdle for long-duration infrastructure and private-company investment")
-            if any(term in fact_lower for term in ("raise", "raised", "increased", "hike", "tightening")):
-                return _sentence("The rate increase raises borrowing costs and the return investors require from long-duration AI investment")
-            return _sentence("The policy decision leaves the prevailing financing hurdle largely in place for long-duration AI infrastructure")
-        if _synthesis_match("finance", "capital_conditions", fact_lower):
-            return _sentence("The change in yields, spreads, or lending conditions alters the cost and availability of capital for long-duration AI investment")
-        if _synthesis_match("finance", "external_financing", fact_lower):
-            return _sentence("The financing shifts part of the buildout onto external capital, making borrowing cost and balance-sheet capacity more important to the economics of the project")
-        return _sentence("The development changes the amount, timing, cost, or source of capital available to support AI investment")
-
-    if domain == "compute":
-        if _synthesis_match("compute", "compute_leasing", fact_lower):
-            return _sentence("Making existing compute capacity available to outside customers increases effective near-term supply without waiting for new fabrication or data-center construction")
-        if _synthesis_match("compute", "policy_constraint", fact_lower):
-            return _sentence("The policy changes where advanced compute can be sold or deployed, shifting accessible demand and the geography of the AI hardware supply chain")
-        if _synthesis_match("compute", "advanced_packaging", fact_lower):
-            return _sentence("The packaging change affects one of the steps that turns leading-edge chips and memory into usable AI accelerators, so it can raise or relieve a bottleneck even when wafer supply is available")
-        if _synthesis_match("compute", "memory_supply", fact_lower):
-            return _sentence("The memory-supply change affects how many high-end accelerators can be completed, because advanced AI chips depend on high-bandwidth memory as well as processor capacity")
-        if _synthesis_match("compute", "fab_investment", fact_lower):
-            return _sentence("The fab investment expands future domestic manufacturing capacity, but the added supply arrives only after construction, equipment installation, and production ramp-up")
-        if _synthesis_match("compute", "foundry_capacity", fact_lower):
-            return _sentence("The foundry-capacity change affects how much leading-edge silicon can be produced before packaging, memory, and system assembly become the next constraints")
-        if _synthesis_match("compute", "supply_agreement", fact_lower):
-            return _sentence("The supply agreement reserves future manufacturing or component capacity for a specific buyer, improving that customer's access while reducing the uncommitted supply available elsewhere")
-        if _synthesis_match("compute", "accelerator_shipments", fact_lower):
-            return _sentence("The shipment change alters accelerator availability and the pace at which new compute capacity can come online")
-        if _synthesis_match("compute", "supply_capacity", fact_lower):
-            return _sentence("The capacity change alters the amount of chip supply available to support new AI systems and therefore how quickly compute can expand")
-        return ""
-
-    if domain == "data_center":
-        if _synthesis_match("data_center", "cancellation", fact_lower):
-            return _sentence("The cancellation removes planned capacity from the development pipeline and is a direct sign that announced projects do not all convert into operating infrastructure")
-        if _synthesis_match("data_center", "power_readiness", fact_lower):
-            return _sentence("The power agreement improves the project's path to energization, which is often a separate constraint from securing land and completing the building")
-        if _synthesis_match("data_center", "commissioning", fact_lower):
-            return _sentence("Commissioning or energization moves the project from construction toward usable operating capacity rather than simply adding another announced site")
-        if _synthesis_match("data_center", "construction_start", fact_lower):
-            return _sentence("Starting construction moves the project beyond planning and into physical execution, although completion and power delivery still remain ahead")
-        if _synthesis_match("data_center", "prelease", fact_lower):
-            return _sentence("The customer commitment gives the planned capacity a clearer demand base before the site is fully built or energized")
-        if _synthesis_match("data_center", "land_site", fact_lower):
-            return _sentence("Securing the site expands the developer's option to build, but land control alone does not establish construction, power availability, or operating capacity")
-        if _synthesis_match("data_center", "tax_incentive", fact_lower):
-            return _sentence("The incentive lowers part of the local cost of developing the project and can influence where new capacity is economically attractive to build")
-        if _synthesis_match("data_center", "execution_gate", fact_lower):
-            return _sentence("The permitting or approval action changes whether announced capacity can move onto its stated construction or energization timetable")
-        if _synthesis_match("data_center", "physical_capacity", fact_lower):
-            return _sentence("The project milestone converts part of the announced development pipeline into physical or operating capacity")
-        return ""
-
-    if domain == "connectivity":
-        if _synthesis_match("connectivity", "outage_resilience", fact_lower):
-            return _sentence("The outage or route-diversity change affects how much network traffic can keep moving when a cable or path fails")
-        if _synthesis_match("connectivity", "permit_right_of_way", fact_lower):
-            return _sentence("The permit or right-of-way action changes how quickly new fiber can be built along the planned route")
-        if _synthesis_match("connectivity", "landing_station", fact_lower):
-            return _sentence("The landing-station development creates the onshore connection needed for new subsea capacity to reach domestic networks and data-center markets")
-        if _synthesis_match("connectivity", "peering_expansion", fact_lower):
-            return _sentence("The peering expansion gives more networks a local place to exchange traffic directly, reducing dependence on longer indirect routes")
-        if _synthesis_match("connectivity", "fiber_build", fact_lower):
-            return _sentence("The fiber build adds a new physical path for moving cloud and data-center traffic between the markets named in the source")
-        if _synthesis_match("connectivity", "capacity_upgrade", fact_lower):
-            return _sentence("The network upgrade increases the amount of traffic the existing route can carry without requiring an entirely new path")
-        if _synthesis_match("connectivity", "interconnection", fact_lower):
-            return _sentence("The interconnection expansion adds network depth between major traffic sources in the named compute market")
-        if _synthesis_match("connectivity", "physical_route", fact_lower):
-            return _sentence("The new route adds transport capacity and physical-path diversity for cloud and data-center traffic")
-        return ""
-
-    if domain == "power":
-        if _synthesis_match("power", "nuclear_restart", fact_lower):
-            return _sentence("Restarting the nuclear unit can add firm generation without waiting for an entirely new plant to be built, although the unit still has to clear its restart and operating milestones")
-        if _synthesis_match("power", "generation_retirement", fact_lower):
-            return _sentence("The retirement removes firm generation from the supply stack and can tighten the amount of dependable power available against rising large-load demand")
-        if _synthesis_match("power", "generation_addition", fact_lower):
-            return _sentence("The generation addition expands future electricity supply, but it becomes useful to large loads only after construction and grid delivery are in place")
-        if _synthesis_match("power", "fuel_supply", fact_lower):
-            return _sentence("The fuel-supply change affects how reliably gas-fired generation can run when electricity demand is high")
-        if _synthesis_match("power", "demand_response", fact_lower):
-            return _sentence("The demand-response arrangement gives the grid a way to reduce or shift large-load demand during tight periods instead of meeting every peak with new generation")
-        if _synthesis_match("power", "utility_capex", fact_lower):
-            return _sentence("The utility investment plan expands the spending committed to serving future load, but the benefits depend on the projects being completed on time")
-        if _synthesis_match("power", "load_forecast", fact_lower):
-            return _sentence("The load forecast changes the amount of future electricity demand utilities must plan to serve, affecting both generation needs and grid investment")
-        if _synthesis_match("power", "supply_contract", fact_lower):
-            support = _support_sentence(source_text, fact, terms=("contract", "supply", "electricity", "generation", "data center"))
-            magnitude = _first_magnitude(fact) or _first_magnitude(support)
-            year = _first_year(support)
-            if magnitude and year:
-                return _sentence(f"The {magnitude} contract beginning in {year} gives the planned data-center load a dated supply commitment")
-            if year:
-                return _sentence(f"Supply beginning in {year} gives the planned load a dated supply commitment")
-            return _sentence("The contract gives planned large-load demand a defined power-supply path rather than leaving the project dependent on uncommitted future generation")
-        if _synthesis_match("power", "cost", fact_lower):
-            return _sentence("The price or tariff change alters the operating-cost base for electricity-intensive compute in the affected market")
-        if _synthesis_match("power", "firm_supply", fact_lower):
-            return _sentence("The supply change alters the amount of dependable generation available against large-load growth")
-        return ""
-
-    if domain == "grid_storage":
-        magnitude = _first_magnitude(fact) or _first_magnitude(source_text)
-        if _synthesis_match("grid_storage", "curtailment", fact_lower):
-            if magnitude:
-                return _sentence(f"Curtailing {magnitude} despite available generation shows that transmission and storage are limiting deliverability even as nameplate supply expands")
-            return _sentence("Renewable curtailment shows that available generation is exceeding the grid's ability to move or store it when and where it is needed")
-        if _synthesis_match("grid_storage", "cost_allocation", fact_lower):
-            return _sentence("Assigning transmission costs directly to large-load customers changes who pays for the grid expansion needed to serve data-center growth and can materially alter project economics")
-        if _synthesis_match("grid_storage", "queue_reform", fact_lower):
-            return _sentence("The queue reform changes how projects advance through grid studies and approvals, which can shorten or lengthen the path from application to construction")
-        if _synthesis_match("grid_storage", "transformer_substation", fact_lower):
-            return _sentence("The transformer or substation change affects the equipment needed to connect new generation and large loads, making hardware availability part of the delivery schedule")
-        if _synthesis_match("grid_storage", "transmission_build", fact_lower):
-            return _sentence("The transmission project expands the physical network available to move power from generation to load, which can relieve constraints that new generation alone cannot solve")
-        if _synthesis_match("grid_storage", "congestion", fact_lower):
-            return _sentence("The congestion signal shows that parts of the grid are already running into transfer limits, raising the value of transmission upgrades, storage, or more flexible load")
-        if _synthesis_match("grid_storage", "reliability", fact_lower):
-            return _sentence("The reliability finding shows how much dependable supply is available under stressed conditions rather than under an average-demand scenario")
-        if _synthesis_match("grid_storage", "interconnection_action", fact_lower):
-            return _sentence("The interconnection action changes the path from queue position to construction and energization for projects waiting to connect")
-        if _synthesis_match("grid_storage", "storage", fact_lower):
-            return _sentence("The storage change increases the amount of electricity that can be shifted from periods of surplus generation into tighter-demand hours")
-        if _synthesis_match("grid_storage", "deliverability", fact_lower):
-            return _sentence("The transmission or equipment change affects how much approved generation can physically reach the customers that need it")
-        return ""
-
-    if domain == "water":
-        magnitude = _first_magnitude(fact) or _first_magnitude(source_text)
-        if _synthesis_match("water", "allocation_policy", fact_lower):
-            return _sentence("The allocation rule changes how much water can be delivered to competing users, making location-specific supply rights more important for new industrial development")
-        if _synthesis_match("water", "drought_emergency", fact_lower):
-            return _sentence("The drought emergency raises the risk that industrial users face tighter restrictions during dry conditions even when average water supply appears adequate")
-        if _synthesis_match("water", "groundwater", fact_lower):
-            return _sentence("The groundwater action changes how much local supply can be pumped over time and therefore how dependable that source is for new industrial load")
-        if _synthesis_match("water", "cooling_technology", fact_lower):
-            return _sentence("The cooling change alters how much water the facility needs to operate, which can reduce or increase its exposure to local water constraints")
-        if _synthesis_match("water", "wastewater_capacity", fact_lower):
-            return _sentence("The wastewater-capacity change affects how much new industrial load the local system can support after water has been used")
-        if _synthesis_match("water", "infrastructure_expansion", fact_lower):
-            return _sentence("The water-infrastructure project increases the physical supply or treatment capacity available to support additional industrial development")
-        if _synthesis_match("water", "permit_reuse", fact_lower):
-            return _sentence("The permit or reuse action changes the local water or wastewater capacity available to support new industrial load")
-        if _synthesis_match("water", "supply_constraint", fact_lower):
-            if magnitude:
-                return _sentence(f"The {magnitude} supply change increases location-specific water exposure and the value of reuse capacity and lower-water cooling designs")
-            return _sentence("The formal supply constraint tightens the water available to new industrial load and raises the importance of location, reuse capacity, and lower-water cooling")
-        return ""
-
-    if domain == "adoption":
-        if _synthesis_match("adoption", "governance_constraint", fact_lower):
-            return _sentence("The policy limits where or how employees can use AI tools, showing that governance and security can slow adoption even when the technology is available")
-        if _synthesis_match("adoption", "production_integration", fact_lower):
-            return _sentence("Moving AI into production workflows is stronger evidence of business adoption than trials or stated plans because the tools are being used in day-to-day operations")
-        if _synthesis_match("adoption", "agent_deployment", fact_lower):
-            return _sentence("The agent deployment moves AI from answering individual prompts toward carrying out multi-step work inside business processes")
-        if _synthesis_match("adoption", "workflow_automation", fact_lower):
-            return _sentence("The automation rollout shows AI being attached to specific work rather than remaining a general-purpose tool available to employees")
-        if _synthesis_match("adoption", "enterprise_rollout", fact_lower):
-            return _sentence("The broader rollout expands access across the organization and moves adoption beyond a small pilot group")
-        if _synthesis_match("adoption", "paid_usage", fact_lower):
-            return _sentence("The paid-user or seat count shows demand that has converted into a recurring commercial relationship rather than free experimentation")
-        if _synthesis_match("adoption", "observed_adoption", fact_lower):
-            return _sentence("The observed-use measure shows how far AI has moved from experimentation into normal business operations")
-        return ""
-
-    if domain == "workforce":
-        if _synthesis_match("workforce", "layoffs", fact_lower):
-            return _sentence("The job cuts show where employers are reducing labor demand, but the event alone does not establish how much of that reduction was caused by AI")
-        if _synthesis_match("workforce", "job_postings", fact_lower):
-            return _sentence("The change in job openings shows where employers are trying to add labor before those plans appear in actual employment")
-        if _synthesis_match("workforce", "wage_compensation", fact_lower):
-            return _sentence("The pay change shows whether demand for the affected work is translating into stronger or weaker compensation")
-        if _synthesis_match("workforce", "skills_training", fact_lower):
-            return _sentence("The training effort shows employers investing in worker adjustment rather than relying only on hiring new people with different skills")
-        if _synthesis_match("workforce", "automation_task_change", fact_lower):
-            return _sentence("The task change shows AI altering the content of work, which can happen before any clear change appears in total employment")
-        if _synthesis_match("workforce", "union_bargaining", fact_lower):
-            return _sentence("The labor agreement shows AI-related work rules becoming a bargaining issue over how technology is introduced and how its effects are shared")
-        if _synthesis_match("workforce", "occupational_shift", fact_lower):
-            return _sentence("The occupational shift shows workers moving between types of jobs as the mix of tasks and employer demand changes")
-        if _synthesis_match("workforce", "labor_composition", fact_lower):
-            return _sentence("The shift shows where AI-related demand is changing the skills or mix of work rather than simply changing the total number of jobs")
-        if _synthesis_match("workforce", "labor_demand", fact_lower):
-            return _sentence("The labor-market change shows where AI-related demand is appearing in hiring, employment, or headcount")
-        return ""
-
-    if domain == "economic_impact":
-        if _synthesis_match("economic_impact", "gdp_revision", fact_lower):
-            return _sentence("The revision changes the measured size or growth of the economy without necessarily representing a new change in underlying activity")
-        if _synthesis_match("economic_impact", "labor_share_distribution", fact_lower):
-            return _sentence("The distribution change shows whether gains in output are reaching workers' compensation or accruing more heavily elsewhere in the economy")
-        if _synthesis_match("economic_impact", "unit_labor_cost", fact_lower):
-            return _sentence("The labor-cost result shows how pay and productivity are combining to change the cost of producing each unit of output")
-        if _synthesis_match("economic_impact", "inflation_prices", fact_lower):
-            return _sentence("The price change shows whether broader cost pressure is easing or rising while AI investment and productivity are expanding")
-        if _synthesis_match("economic_impact", "consumer_spending", fact_lower):
-            return _sentence("The spending result shows whether household demand is reinforcing or offsetting the investment-led part of economic growth")
-        if _synthesis_match("economic_impact", "sector_output", fact_lower):
-            return _sentence("The industry-output change shows where measured economic growth is actually appearing rather than assuming the gains are economy-wide")
-        if _synthesis_match("economic_impact", "investment", fact_lower):
-            return _sentence("The investment change shows how much capital is being committed to future productive capacity before the resulting gains appear in measured output or productivity")
-        if _synthesis_match("economic_impact", "productivity", fact_lower):
-            return _sentence("The productivity result shows whether the economy is producing more output from the labor and capital already in use")
-        if _synthesis_match("economic_impact", "output_income", fact_lower):
-            return _sentence("The output or income result shows how much of the investment cycle is reaching broader economic activity and household earnings")
-        return ""
-
-    return ""
 
 def ground_candidate(
     candidate: dict,
@@ -1625,7 +2199,13 @@ def ground_candidate(
     source_name = _spaces(candidate.get("source_name"))
     article_url = _spaces(candidate.get("source_url"))
 
-    doc = fetcher(article_url, publisher_url=publisher_url, source_name=source_name)
+    doc = fetcher(
+        article_url,
+        publisher_url=publisher_url,
+        source_name=source_name,
+        qualification_tier=str(candidate.get("qualification_tier") or "A"),
+        discovery_provider=str(candidate.get("discovery_provider") or ""),
+    )
     if doc.error:
         return None, GroundingResult(
             False,
@@ -1662,6 +2242,25 @@ def ground_candidate(
             pass
 
     source_title = doc.title or headline
+    coherence_issue = _source_identity_coherence_issue(
+        headline, doc.title, doc.body_text, domain=domain
+    )
+    if coherence_issue:
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars, reason=coherence_issue,
+        )
+    source_quality_issues = source_content_quality_issues(doc)
+    if source_quality_issues:
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars, reason=source_quality_issues[0],
+        )
+    if is_event_listing_page(doc):
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars, reason="source is an event/webinar listing rather than a reported development",
+        )
     if is_preview_or_calendar_item(source_title):
         return None, GroundingResult(False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method, text_chars=doc.text_chars, reason="source is a preview/calendar item")
     if domain == "finance" and is_policy_commentary_title(source_title):
@@ -1682,7 +2281,29 @@ def ground_candidate(
     anchors, salience_reason = _development_anchor_candidates(
         doc, candidate=candidate, domain=domain, headline=headline
     )
-    if not anchors:
+
+    usable_anchors: list[tuple[float, str]] = []
+    best_similarity = 0.0
+    for score, sentence_text in anchors:
+        sim = _headline_similarity(headline, sentence_text)
+        extra_tokens = _normalize_tokens(sentence_text) - _normalize_tokens(headline)
+        extra_number = _has_number(sentence_text) and not _has_number(headline)
+        if sim >= 0.88 and len(extra_tokens) < 4 and not extra_number:
+            continue
+        usable_anchors.append((score, sentence_text))
+        best_similarity = max(best_similarity, sim)
+
+    # Semantic composition is the publication gate. A clean, corroborated
+    # publisher-title event may survive even when no individual body sentence
+    # is independently strong enough for the old sentence-anchor scorer. This
+    # is important for pages whose body begins with consequences/details rather
+    # than restating the headline event.
+    fact, evidence_text = _assemble_reader_development(
+        usable_anchors, headline=headline, source_text=doc.body_text, domain=domain,
+        qualification_tier=str(candidate.get("qualification_tier") or "A"),
+        source_title=source_title,
+    )
+    if not fact and not anchors:
         reason = salience_reason
         if is_commentary_style_title(source_title) and "Market-level significance" not in reason:
             reason = "source is commentary/topic framing without a clear current material development"
@@ -1690,39 +2311,41 @@ def ground_candidate(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
             text_chars=doc.text_chars, reason=reason,
         )
-
-    chosen = ""
-    similarity = 0.0
-    for score, sentence_text in anchors:
-        sim = _headline_similarity(headline, sentence_text)
-        # A source sentence may resemble the headline, but it must add actual
-        # evidence rather than simply restating the title.
-        extra_tokens = _normalize_tokens(sentence_text) - _normalize_tokens(headline)
-        extra_number = _has_number(sentence_text) and not _has_number(headline)
-        if sim >= 0.88 and len(extra_tokens) < 4 and not extra_number:
-            continue
-        chosen = sentence_text
-        similarity = sim
-        break
-
-    if not chosen:
+    if not fact:
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
-            text_chars=doc.text_chars, reason="clear development existed, but source text added no evidence beyond the headline",
+            text_chars=doc.text_chars,
+            reason="source established a development but no complete self-contained Reader copy fit the 70-word ceiling",
+        )
+    final_gate_ok, final_gate_reason = _domain_grounding_gate(
+        domain, headline=source_title, source_text=doc.body_text, fact_sentence=fact,
+        qualification_tier=str(candidate.get("qualification_tier") or "A"),
+    )
+    if not final_gate_ok:
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars,
+            reason=f"final Reader development failed domain fit: {final_gate_reason}",
+        )
+    if domain == "market" and not market_event_is_significant(fact, doc.body_text):
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars,
+            reason="Market-level significance gate rejected the final Reader development",
+        )
+    final_frame_issues = reader_development_event_frame_issues(fact)
+    if final_frame_issues:
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars,
+            reason=f"final Reader development lacks event framing: {final_frame_issues[0]}",
         )
 
-    fact = _sentence(_resolve_first_reference_identity(_compress_fact(chosen), headline, doc.body_text))
-    relevance = _specific_relevance(domain, fact, doc.body_text)
-    if not relevance:
-        return None, GroundingResult(False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method, text_chars=doc.text_chars, reason="source fact cleared evidence gates but did not support a specific analytical consequence")
-    if recent_development_copy_issues(f"{fact} {relevance}"):
-        return None, GroundingResult(False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method, text_chars=doc.text_chars, reason="source-grounded copy failed first-reference context rules")
-    if reader_copy_has_selection_rationale(relevance):
-        return None, GroundingResult(False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method, text_chars=doc.text_chars, reason="Reader prose leaked selection-rationale language")
-    if any(relevance.casefold().startswith(prefix) for prefix in _BOILERPLATE_RELEVANCE_PREFIXES):
-        return None, GroundingResult(False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method, text_chars=doc.text_chars, reason="generic consequence boilerplate is prohibited")
-
-    evidence_hash = hashlib.sha256(_spaces(chosen).encode("utf-8")).hexdigest()[:16]
+    # Current Context uses deterministic language repair only to preserve source
+    # context and readability; it does not generate analytical implications.
+    relevance = ""
+    similarity = best_similarity
+    evidence_hash = hashlib.sha256(_spaces(evidence_text).encode("utf-8")).hexdigest()[:16]
     updated = dict(candidate)
     source_event_date = ""
     if freshness_date:
@@ -1762,6 +2385,6 @@ def ground_candidate(
         headline_similarity=similarity,
         source_published_date=doc.published_date,
         source_modified_date=doc.modified_date,
-        reason="source body established the fact and a domain-specific analytical consequence",
+        reason="source body established a current, domain-relevant factual development",
     )
     return updated, result

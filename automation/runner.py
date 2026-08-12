@@ -132,7 +132,11 @@ def _current_artifact_valid(context: Any) -> tuple[bool, str, dict[str, Any]]:
     packets = build_evidence_packets(context)
     snapshot = evidence_snapshot_id(packets)
     _, commentary = build_platform_reads(context)
-    return commentary.get("status") == "validated", snapshot, dict(commentary)
+    strict_evidence_match = bool(
+        commentary.get("artifact_validated")
+        and commentary.get("evidence_current")
+    )
+    return strict_evidence_match, snapshot, dict(commentary)
 
 
 def _runtime_configuration_errors() -> list[str]:
@@ -241,6 +245,18 @@ def main() -> int:
             ((bundle.reports.get("current_context") or {}).get("snapshot_id") or "")
         )
 
+        # Retained-state freshness advances only for files whose content hash
+        # actually changed during this deterministic refresh.  This ledger is
+        # later used by desktop-to-Git reconciliation; it never authorizes I/O.
+        from automation.retained_state import refresh_retained_state_manifest
+        refresh_retained_state_manifest(source="automation_refresh", run_id=run_id)
+
+        # The release fingerprint includes critical retained data.  Keep it in
+        # lock-step with every publishable automation refresh.
+        from helpers.build_release_manifest import build_manifest
+        from helpers.atomic_io import atomic_write_json
+        atomic_write_json(build_manifest(), root / "data" / "release_manifest.json")
+
         _log("START evidence comparison")
         evidence_started = time.perf_counter()
         artifact_valid, evidence_snapshot, commentary = _current_artifact_valid(bundle.context)
@@ -259,6 +275,23 @@ def main() -> int:
                 "status": "skipped",
                 "reason": "evidence_snapshot_already_has_validated_artifact",
             }
+            if config.auto_publish:
+                from analytics.read_service import reapply_last_read
+
+                renewed = reapply_last_read(persist=True, source="automation_reapply")
+                publication = dict(renewed.get("publication") or {})
+                status["phases"]["publication_lease"] = {
+                    "status": "renewed",
+                    "reason": "validated_evidence_unchanged_no_paid_call",
+                    "published_at": str(publication.get("published_at") or ""),
+                    "expires_at": str(publication.get("expires_at") or ""),
+                }
+                _log("publication lease renewed · no OpenAI call")
+            else:
+                status["phases"]["publication_lease"] = {
+                    "status": "withheld",
+                    "reason": "AUTO_PUBLISH is false or manual publish opt-in is absent",
+                }
         else:
             # Scheduled runs never spend money merely to create a draft that
             # automation is not authorized to publish.  Manual workflow runs

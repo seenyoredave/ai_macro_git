@@ -5,14 +5,14 @@ from __future__ import annotations
 from typing import Any
 
 
-def attach_current_context(read: dict, context: dict | None) -> dict:
+def attach_current_context(read: dict, context: dict | None, *, limit: int = 2) -> dict:
     payload = dict(read or {})
     context_payload = context or {}
     events = [
         dict(item) for item in context_payload.get("events", []) or []
         if isinstance(item, dict)
         and str(item.get("verification_status") or item.get("status") or "").strip().lower() != "no_match"
-    ][:2]
+    ][: max(1, int(limit))]
     event_references = [dict(item) for item in context_payload.get("references", []) or [] if isinstance(item, dict)]
     static_references = [dict(item) for item in payload.get("references", []) or [] if isinstance(item, dict)]
     references: list[dict[str, Any]] = []

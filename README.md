@@ -25,12 +25,17 @@ AI Macro requires Python 3.11 or newer. Release artifacts for this version were 
 
 AI Macro separates deterministic research from probabilistic interpretation. Retained data and local analytics build bounded evidence packets; OpenAI generates grounded analytical domain Reads and a cross-domain Macro synthesis; a deterministic validator decides whether the result may be published. Reader sessions never call OpenAI.
 
-Commentary is generated from bounded evidence packets and published only after deterministic validation. If validated commentary is unavailable, the underlying dashboard data remain available.
+Commentary is generated from bounded evidence packets and published only after deterministic validation. A validated Read remains published for 24 hours; the owner can reapply the last validated Read for another 24 hours without an OpenAI call. If commentary is unavailable, the underlying dashboard data remain available.
 
 
 ## Automation
 
-The hosted Reader remains read-only. A single scheduled GitHub Actions worker may refresh retained research, update Current Context, generate commentary when analytical evidence changes, and publish only after deterministic validation passes. Paid automation is bounded by hard call ceilings and has no automatic API retry loop.
+The hosted Reader remains read-only. A single scheduled GitHub Actions worker runs at 09:07 Eastern, may refresh retained research, update Current Context, generate commentary when analytical evidence changes, renew an unchanged validated Read at zero API cost, and publish only after deterministic validation passes. Paid automation is bounded by hard call ceilings and has no automatic API retry loop. Desktop-to-Git reconciliation preserves newer online retained state while keeping desktop code/configuration authoritative.
+
+## Current Context
+
+Current Context is an independently discovered, source-grounded news layer. It prefers the strongest developments from the most recent seven days, progressively relaxes source/materiality/anchor thresholds within a hard ten-day window until at least six analytical domains are represented, and exposes the qualification tier used for each refresh. The AI Macro Read surfaces the top three developments with diversity limits: no more than two from one domain and no more than two from Market and Finance combined.
+Reader copy is reconstructed deterministically around a corroborated event nucleus: the resolved publisher title may frame the actor/action only when the fetched body confirms the same event, and one same-event body detail may follow within the 70-word ceiling.
 
 ## Data
 

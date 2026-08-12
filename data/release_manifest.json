@@ -4,17 +4,21 @@
     "weight_effective_date": "2026-08-02"
   },
   "files": {
+    ".githooks/pre-push": {
+      "bytes": 284,
+      "sha256": "4cbc10e4221d6deff832fadfb006c3344d4185dcf4332d44b835cd033c699a5d"
+    },
     ".github/workflows/ai_macro_automation.yml": {
-      "bytes": 6289,
-      "sha256": "5c0a3da8d58d55df07093258b2467cc9ca2ebf3e2029abc51c6e9b5bf2bccf73"
+      "bytes": 6835,
+      "sha256": "224d19661afb14d7e09b5e556d76271c166343054e5662950aadd346fc9f4b5c"
     },
     "AGENTS.md": {
-      "bytes": 22095,
-      "sha256": "d5c01f8a821498093b91f15e408694d0c6eaef77027695ea7879e460606f0b3f"
+      "bytes": 24817,
+      "sha256": "e096e804fc6711a39c293858c2e88e68e417de4d87a214a149b31ba113ce940f"
     },
     "ai_macro.py": {
-      "bytes": 26844,
-      "sha256": "bb042aabf935d8477651d9ea57970c58877068266da232c310b746940eb4c1de"
+      "bytes": 27235,
+      "sha256": "48e07981fb1fb40895f4e5534f365ef1483d3267a8aae1e84aeb7fad638e9b79"
     },
     "analytics/capital_commitments.py": {
       "bytes": 6578,
@@ -25,8 +29,8 @@
       "sha256": "907a29d12d76acbcc6a3e35344d824289b218fd3afc3a1e337e236ee428a3fef"
     },
     "analytics/read_context.py": {
-      "bytes": 2482,
-      "sha256": "ef6684cac0d77da0af1f571cb155edd3181d412a1f7098f850b11c746711b096"
+      "bytes": 2519,
+      "sha256": "3b7699d92c96d67c99a34ccf21aaf849cfd0b36828c9e6ea6e39392bd310979c"
     },
     "analytics/read_evidence.py": {
       "bytes": 56871,
@@ -45,20 +49,20 @@
       "sha256": "92bbd0b22fbc7aa3eee78eeae4c9a4cef9243da98e5992acb542cddc2d445f41"
     },
     "analytics/read_service.py": {
-      "bytes": 27557,
-      "sha256": "0da1b85b04a7fb99885ebf6dae0f57a0d254aaac0be13d6b8ad90aa01bacf5aa"
+      "bytes": 32369,
+      "sha256": "2bc74e49f4b97d3b4bf8cc125e28444135a124ad1775fd01d42fc4a2a1d9a959"
     },
     "analytics/read_store.py": {
       "bytes": 4810,
-      "sha256": "e5e336597939c101880a71e8f39e25f3665c96203636bc5b3b1c0211da1061a1"
+      "sha256": "19fa291833cd088036ecd79af2097a316a959e7675d5866fb986e06dd4cc6164"
     },
     "analytics/read_validation.py": {
-      "bytes": 21763,
-      "sha256": "b129fffe3d66d0a74a1e36061dd6c4f5a12f31de32016cd91f23a24ee6b3c3f7"
+      "bytes": 22467,
+      "sha256": "76772ce7f3105e9ef6a0b6ae2b6c311cc9e85c2871b73dcfc660c92fa5131b11"
     },
     "analytics/reader_snapshot.py": {
-      "bytes": 2712,
-      "sha256": "0f77f733d437a294ec513db95034d09a7bf573bef8dc04511f693a840c46621b"
+      "bytes": 3444,
+      "sha256": "b9440fbc9278a58f5fb125f6ae1be712c1080044f705dd879659d34cc0072727"
     },
     "analytics/regime_engine.py": {
       "bytes": 11254,
@@ -73,12 +77,12 @@
       "sha256": "1681ceb9d25b09bcaf7c0cb9dbbb193abc4d2e46a79755f4933881aacfd4136d"
     },
     "archive/benchmark_history.csv": {
-      "bytes": 4919,
+      "bytes": 5116,
       "date_column": "Date",
-      "date_max": "2026-08-10",
+      "date_max": "2026-08-11",
       "date_min": "2026-06-12",
-      "rows": 27,
-      "sha256": "edc75754037d92929127010f21969494af8d9982322d1171948793c9e9a8144a"
+      "rows": 28,
+      "sha256": "1419b98ec0c581a4ad35a028c41cb39fc9618b944d810397d8ac1e2deaab5765"
     },
     "archive/edgar_history.csv": {
       "bytes": 825188,
@@ -97,28 +101,28 @@
       "sha256": "6d008dc40fe124829dbbdf4806d24ddc96c3ae9935b2dd9eb030eef16104a222"
     },
     "archive/macro_history.csv": {
-      "bytes": 47063,
+      "bytes": 47793,
       "date_column": "Date",
-      "date_max": "2026-08-10",
+      "date_max": "2026-08-11",
       "date_min": "2026-06-12",
-      "rows": 27,
-      "sha256": "a06765aa9782b20bc7834298a9d9e4c34fd9f7267d1e4f96054a6eeeb23edc70"
+      "rows": 28,
+      "sha256": "8d837acaeb8b773172385adb0a36cb3ce65001c0a224e1578a587afd383a7ca7"
     },
     "archive/sector_history.csv": {
-      "bytes": 55860,
+      "bytes": 58682,
       "date_column": "Date",
-      "date_max": "2026-08-10",
+      "date_max": "2026-08-11",
       "date_min": "2026-06-12",
-      "rows": 405,
-      "sha256": "f9da903fe5b5fcff3e1aa9ace82f358ac3604ad1e2241a46667bedb6da609044"
+      "rows": 420,
+      "sha256": "52f43696e3660653da2849ac9f2ddde48fab09f4372346566732e7b0f8d2b354"
     },
     "archive/yf_history.csv": {
-      "bytes": 2209442,
+      "bytes": 2322939,
       "date_column": "Date",
-      "date_max": "2026-08-10",
+      "date_max": "2026-08-11",
       "date_min": "2026-06-12",
-      "rows": 5508,
-      "sha256": "819514a345d8fa0d78e7646afa9c4b5b17e0c21964dc9f1e82c12ba2803ad89b"
+      "rows": 5712,
+      "sha256": "5c10f5ac0158ba0773927235479920e53a6975e47dab7a26b0ec3a697b8cc67a"
     },
     "automation/__init__.py": {
       "bytes": 61,
@@ -130,7 +134,11 @@
     },
     "automation/config.py": {
       "bytes": 2520,
-      "sha256": "d90c3c9b3e0f4a4698560fa9fca503bb21f2ba141f725815c3f73e2cc488cbf8"
+      "sha256": "7a72a968b5a25c8d189b398ffd75a4216423ae9b4fd29a66575bbed9d24be52c"
+    },
+    "automation/git_transport.py": {
+      "bytes": 5809,
+      "sha256": "6b6e3ca1387ccb4cf4075563424bc1dd2896497e72dd8a4b31d22bc8d9014fa7"
     },
     "automation/ledger.py": {
       "bytes": 3217,
@@ -140,9 +148,13 @@
       "bytes": 14560,
       "sha256": "482dd1e0f5bb55fdb3401a64cf1bc48472749ebcf34e43f47fff1bcb6b36ff82"
     },
+    "automation/retained_state.py": {
+      "bytes": 8078,
+      "sha256": "28b7a9a4e09f17805bf75f4742b9ef632917c50d38bf8f6cd4d29cf91a54f61f"
+    },
     "automation/runner.py": {
-      "bytes": 13607,
-      "sha256": "2b0b828a972e94b629b19585443609342756873514c47f6d30c64a3f8d2d8c20"
+      "bytes": 15374,
+      "sha256": "763fa10ec792d4d36ba706d6d11c997b1dcde1f3962880c075c148cf1e559470"
     },
     "automation/status.py": {
       "bytes": 493,
@@ -157,8 +169,8 @@
       "sha256": "4cee2a0e19e8e5758862d77471d8c9d02ee97350afe863663ceae10da879eb83"
     },
     "config/current_context_policy.py": {
-      "bytes": 105904,
-      "sha256": "8b57170a70f5a210a545eb203f0888b9d257b659b1ef04a87f2d64ff3b292372"
+      "bytes": 111167,
+      "sha256": "992d0f9dc3c911d883f63765bb603228dbd11107c8332be0a14f22c40f37c161"
     },
     "config/deployment.py": {
       "bytes": 1492,
@@ -242,43 +254,47 @@
       "sha256": "80457b4e92e03e2797da8816fc7d52b548ed71375c69742754aa952eb7cc518b"
     },
     "data/infrastructure/source_manifest.csv": {
-      "bytes": 11518,
+      "bytes": 11524,
       "rows": 11,
-      "sha256": "7f0e1601e3af40593b36fedddcb26d3ca0e568b2eb8cc35f1ad5e08c71ffc2d6"
+      "sha256": "42a7a5fb8b58d5df04ef85a04b0cd4dbd1ef8694700c7e6c4249df9f9027cd46"
     },
     "data/market_valuation_context.csv": {
       "bytes": 353,
       "rows": 1,
       "sha256": "0a9bd6c1ec8dc9bc9f9295f287f71c42f52a9d4a823c2c8bd3c76c08677f991c"
     },
+    "data/retained_state_manifest.json": {
+      "bytes": 34985,
+      "sha256": "54a151008f74c9181c4f7e6e4e9e5640d55b31543120f3cc229b9a49c17e4680"
+    },
     "data/weekly_context_events.csv": {
-      "bytes": 15969,
+      "bytes": 22673,
       "rows": 19,
-      "sha256": "479089c1f8f5c23c5464376ca47d1aa88851b02e720a036a8f31daa7c3606500"
+      "sha256": "b3de726d24993ab7c7cb83485d4cba078659e0494f4690ea646bb55c7bd9ada9"
     },
     "developer/load_report.py": {
       "bytes": 8466,
       "sha256": "1bb86fe4c64ae30c8224c19c0373f75e72e973a520d61760013e0ca2e5ab005b"
     },
     "developer/panel.py": {
-      "bytes": 20823,
-      "sha256": "8655bf82afeed0cfa580d18af97ca0166e6143c8b65e3ac96e8a0abbc198db89"
+      "bytes": 24908,
+      "sha256": "d123f76d6664a2c10ea58b5bc097e5fa3d3dc6789d0ebab30f69719bfea162ea"
     },
     "developer/reports.py": {
-      "bytes": 4165,
-      "sha256": "2c7a49dd3b8e40957f76f983ecb590fe6408e980bb858c063199a1f49d4a2c40"
+      "bytes": 5921,
+      "sha256": "db42aaf1c52e431b603c600057ea81018a998f93168226bc2d7196804f9afba1"
     },
     "developer/state.py": {
       "bytes": 5379,
       "sha256": "8cf74b7ed25032ed3e81d90e89baa8cd61155fd5f0885d0f8d87691be0bb5e87"
     },
     "docs/AUTOMATION_ARCHITECTURE.md": {
-      "bytes": 5366,
-      "sha256": "006978986c96436e2f1e8038c6daef93db221da750243db81ddce273fd304808"
+      "bytes": 6719,
+      "sha256": "d28aeff7d25e1358fc2309ea0999e4503ebfabb45ca2ccf40af50d8819c120bb"
     },
     "docs/COMMENTARY_ARCHITECTURE.md": {
-      "bytes": 8740,
-      "sha256": "260080e092832d43bfb18aacb83a31ca3319d9157e78491460acf4b3db6b5ef0"
+      "bytes": 9448,
+      "sha256": "e6575283e5e2be57b22117aa8919fa5683b7401acf6c816ce115ea53b6845b4d"
     },
     "docs/CURRENT_CONTEXT_ACTIVATION_READ_LABELS_2026-08-09.md": {
       "bytes": 1735,
@@ -308,9 +324,13 @@
       "bytes": 11216,
       "sha256": "7d630d318d2b3b24e256980fc9a3f4d57bbc58ad33f9e6268e6a0fe3ec8db97b"
     },
+    "docs/GIT_RECONCILIATION.md": {
+      "bytes": 3591,
+      "sha256": "b0a3ec86bb14531360694e2d18a55eac9afdde125ee02a278707fca6eea43cf8"
+    },
     "docs/RUNTIME_DATA_CONTRACT.md": {
-      "bytes": 16172,
-      "sha256": "ed61f04a097c845a7e9450c5ce764ddae1a3af305fcad801e3f0fa80b9649e9b"
+      "bytes": 16607,
+      "sha256": "3f6a1f4ad8cfc1c3df5503c921997bda09c561a6f791d1e6b2eb17abce852abc"
     },
     "helpers/atomic_io.py": {
       "bytes": 6224,
@@ -349,28 +369,28 @@
       "sha256": "3c79a3e6812e0db1b92e77c5a77005785c1d89c01fa15110813f16bf836179e7"
     },
     "loaders/current_context_daily.py": {
-      "bytes": 10658,
-      "sha256": "bbef62a3bba6fd23ae285a9318db9badcb70558f5a00f9986eebaa0488aefed8"
+      "bytes": 11421,
+      "sha256": "2e54c5f155bd3ca3716557bccb99e0ff2216bc5874ba5d8ce5bfb3fa39d088a5"
     },
     "loaders/current_context_discovery.py": {
-      "bytes": 59309,
-      "sha256": "bdd4f60d6c4bcb072aa61f1c81d20e8f80734e255fc60e2b80c893e8a6c49bf1"
+      "bytes": 83003,
+      "sha256": "aa88b7dafd2acf2651810ed04551f2e54a145094b00697367224080e4676decd"
     },
     "loaders/current_context_grounding.py": {
-      "bytes": 96467,
-      "sha256": "8203955e31cc987d270f3f6f90f49ab5b0b64e7686699e09fb82f8e4e73f976e"
+      "bytes": 107487,
+      "sha256": "090d601d2619130d1d3efb84dcdbb22216faf73004690ed85dd0696594d6005e"
     },
     "loaders/current_context_loader.py": {
-      "bytes": 3361,
-      "sha256": "43076d5107af7e012be08b510aa0c2e019e9b6c915f7c22d02430be819130ffa"
+      "bytes": 5309,
+      "sha256": "2bee1f370b1d7ae887c30bd96c2445062b7c090736873942491a0aeef303ed29"
     },
     "loaders/current_context_news.py": {
       "bytes": 7104,
       "sha256": "0d5a8cb023dac1ec37db5dcc203e2e4b72a0df30e37869fab88d9ad17e0415f3"
     },
     "loaders/current_context_registry.py": {
-      "bytes": 17931,
-      "sha256": "2d3c9dce767673a1a6e8037e8cce56783cbd4852e36761507dcddbc9aceb0565"
+      "bytes": 20741,
+      "sha256": "1a5c3ad8567965e5a56520f89215f4c03a29a9d31007467dd77c57a577a22205"
     },
     "loaders/debt_markets_loader.py": {
       "bytes": 10567,
@@ -405,8 +425,8 @@
       "sha256": "3cd161752f63126a92f59a6525f6f0fe946e87ee6cf1ea1f61d24a2b89e836e2"
     },
     "loaders/infrastructure_loader.py": {
-      "bytes": 21019,
-      "sha256": "bf48830ace931c25e1dabb1d067c44d934407117660067af9cda3f983b29f2d0"
+      "bytes": 21742,
+      "sha256": "84a9f64fe6ebed44dfe70c26d6c6872547544d015982fc41f0c0874d792e5bc8"
     },
     "loaders/market_loader.py": {
       "bytes": 24245,
@@ -441,8 +461,8 @@
       "sha256": "033dc5cf34fe1d295ba8c2179180dcf21b735d8b3169e510faec81e7bf5caf04"
     },
     "rendering/evidence.py": {
-      "bytes": 63179,
-      "sha256": "0ff4b93aa360d73b16ea8580b9ef4e65d38c524ad1b49f71b91e5b0ae817fff9"
+      "bytes": 63232,
+      "sha256": "9826010951df550ed15dad0653f3daa05ca931d60d87beb4f12312bd1a35acc8"
     },
     "rendering/finance.py": {
       "bytes": 24250,
@@ -458,7 +478,7 @@
     },
     "rendering/read_markup.py": {
       "bytes": 5995,
-      "sha256": "18d04d4c29c8d88fdf4dc7e979882e9242e56f3167efecedbcc9782324ce1501"
+      "sha256": "91ebef9e1330ce5abd6f6a8e8f8148692f726d0f8d9984da1a52eaf7f2fbc742"
     },
     "rendering/theme.css": {
       "bytes": 45138,
@@ -471,9 +491,21 @@
     "requirements.txt": {
       "bytes": 190,
       "sha256": "ff72a9736e11a1e19d63b2bfbd5326aa7b29554a6b854026bafff7661d3a8bec"
+    },
+    "tooling/__init__.py": {
+      "bytes": 51,
+      "sha256": "f7734e18f5ad5595d8d04b3db0757658fabb5e262fb78d47b32d7d76d64527c5"
+    },
+    "tooling/desktop_sync.py": {
+      "bytes": 17563,
+      "sha256": "6ef3d2abe2168dc06f06579a85c7c3d83c7b082aeaa86fb326c8e582621532cf"
+    },
+    "tooling/git_guard.py": {
+      "bytes": 4997,
+      "sha256": "6a7ef2292e0df10ddca28de822faa1f0797f1a84f7f2501a233874ba99b2db09"
     }
   },
-  "generated_at_utc": "2026-08-11T09:14:56+00:00",
+  "generated_at_utc": "2026-08-12T02:28:08+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -484,6 +516,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "afab824a6ed87dbfc570",
+  "release_id": "9f44e193dde9e285b0cd",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }
