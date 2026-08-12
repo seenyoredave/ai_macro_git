@@ -1,0 +1,2078 @@
+{
+  "schema_version": "0.2",
+  "artifact_type": "ai_macro_domain_working_corpus",
+  "domain": "data_center",
+  "status": "IN_PROGRESS_LONG_FORM_12_OF_12_SATURATION_PENDING",
+  "created_at": "2026-08-12T14:15:00-07:00",
+  "prior_checkpoint": {
+    "filename": "AI_MACRO_DATA_CENTER_WORKING_v0.4.json",
+    "sha256": "92745d0d288672778f5c3bc2b178720af8c249b7eebe7274c203bcd41cd40ce2",
+    "relationship": "Extends v0.4 with the required long-form passage analysis; no source admissions or atomic observations were altered."
+  },
+  "mission_boundary": {
+    "core": "Data-center buildout, project states, campus scale, siting, construction and commissioning, disclosed versus energized capacity, geographic concentration, facility resource use, and project-pipeline interpretation.",
+    "permanent_boundaries": [
+      "A project registry is a coverage-limited sample, not a national fleet census.",
+      "Published, design, contracted, connected, energized, IT, and average-load megawatts are distinct states.",
+      "Current status of named projects remains deterministic runtime evidence.",
+      "An academic corpus teaches calibrated reasoning and language; it does not replace live project data."
+    ]
+  },
+  "completion_contract": {
+    "batch_sequence": "15 -> 10 -> 5 -> optional 5",
+    "foundation_target": 15,
+    "saturation_rule": "After adequate foundation coverage, two consecutive five-paper batches must each add no more than two genuinely new generalizable observations and reopen no material gap.",
+    "long_form_requirement": "Approximately 10 to 15 substantial passage analyses from one or two qualifying academic texts.",
+    "admission_gate": "Direct fit, JIF at least 2.0, verified whole text, normalized extraction, durable provenance."
+  },
+  "progress": {
+    "found": 61,
+    "screened": 44,
+    "whole_text_accessed": 25,
+    "fully_analyzed": 25,
+    "admitted": 25,
+    "atomic_observations": 73,
+    "foundation_progress": "15/15",
+    "targeted_gap_closure_progress": "10/10",
+    "long_form_progress": "12/12 passages",
+    "saturation_challenges": "0/2"
+  },
+  "journal_gate_verification": [
+    {
+      "journal": "Science",
+      "jif": 47.3,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.science.org/content/page/journal-metrics",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Nature",
+      "jif": 56.1,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.nature.com/nature/journal-impact",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "npj Clean Water",
+      "jif": 11,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.nature.com/npjcleanwater/journal-impact",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "npj Urban Sustainability",
+      "jif": 10.9,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.nature.com/npjurbansustain/journal-impact",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Scientific Reports",
+      "jif": 4.9,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.nature.com/srep/about",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Environmental Research Letters",
+      "jif": 5.4,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://iopscience.iop.org/journal/1748-9326",
+      "verification_note": "Current 2025 JIF independently visible in journal metrics; publisher page is durable target.",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Building and Environment",
+      "jif": 8.4,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/building-and-environment/about/insights",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Buildings",
+      "jif": 3.6,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.mdpi.com/journal/buildings/stats",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Energies",
+      "jif": 3.9,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.mdpi.com/journal/energies/stats",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Sustainability",
+      "jif": 4.2,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.mdpi.com/journal/sustainability/stats",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "International Journal of Urban and Regional Research",
+      "jif": 2.4,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://onlinelibrary.wiley.com/journal/14682427",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Heliyon",
+      "jif": 3.6,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/heliyon/about/insights",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Cities",
+      "jif": 7,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/cities/about/insights",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Environmental Research Communications",
+      "jif": 2.7,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://iopscience.iop.org/journal/2515-7620",
+      "verification_note": "Current JIF corroborated; publisher page is durable target.",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Energy Reports",
+      "jif": 6.6,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/energy-reports/about/insights",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "IEEE Access",
+      "jif": 4.2,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://ieeeaccess.ieee.org/about/bibliometrics/",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Joule",
+      "jif": 37.1,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/joule/about/insights",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Engineering",
+      "jif": 12.2,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/engineering/about/insights",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Nature Sustainability",
+      "jif": 32.1,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.nature.com/natsustain/journal-impact",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Renewable and Sustainable Energy Reviews",
+      "jif": 18,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/renewable-and-sustainable-energy-reviews/about/insights",
+      "role": "binary admission gate only"
+    },
+    {
+      "journal": "Eco-Environment & Health",
+      "jif": 13.4,
+      "metric_year": 2025,
+      "status": "PASS",
+      "publisher_metrics_url": "https://www.sciencedirect.com/journal/eco-environment-and-health/about/insights",
+      "role": "binary admission gate only"
+    }
+  ],
+  "official_admissions": [
+    {
+      "source_id": "DC-FND-001",
+      "title": "Recalibrating global data center energy-use estimates",
+      "authors_short": "Masanet et al.",
+      "journal": "Science",
+      "year": 2020,
+      "doi": "10.1126/science.aba3758",
+      "durable_source": "https://doi.org/10.1126/science.aba3758",
+      "whole_text_source": "https://datacenters.lbl.gov/sites/default/files/Masanet_et_al_Science_2020.full_.pdf",
+      "study_type": "bottom-up global energy-accounting synthesis and policy forum",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "pages": 4,
+        "sections_reviewed": [
+          "problem framing",
+          "bottom-up data architecture",
+          "2010 to 2018 service, equipment and energy trends",
+          "PUE and hyperscale structural shift",
+          "near-term scenario",
+          "policy implications",
+          "data and uncertainty limitations"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper rejects traffic- or workload-only extrapolation, integrates equipment, virtualization, storage, network, PUE and market-structure data, and presents a conditional near-term efficiency scenario.",
+        "measurement_and_denominator": "Energy is decomposed across servers, storage, network equipment, and infrastructure; compute instances, IP traffic, storage capacity and electricity are separate quantities.",
+        "quantitative_behavior": "From 2010 to 2018, estimated compute instances rose 550% while global data-center electricity rose about 6%, from roughly 194 to 205 TWh; energy per compute instance fell about 20% annually.",
+        "heterogeneity_and_regime": "The result depends on shifts from traditional facilities toward cloud and hyperscale sites, virtualization, device efficiency, storage density, and PUE; practical PUE improvement approaches a floor near highly optimized hyperscale operation.",
+        "causal_calibration": "This is a bottom-up accounting synthesis and conditional near-term scenario, not proof that future AI load growth will remain energy-flat.",
+        "limitations": [
+          "Public bottom-up data on facility types, locations, equipment and efficiency remain incomplete.",
+          "Long-run technical limits and disruptive technologies are uncertain.",
+          "The scenario requires continued efficiency progress and policy effort."
+        ],
+        "anti_patterns": [
+          "Do not scale electricity directly from IP traffic, workload, storage or compute-instance growth.",
+          "Do not turn a conditional near-term plateau scenario into a permanent forecast.",
+          "Do not use PUE alone as a measure of useful computing service."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-002",
+      "title": "Data centre water consumption",
+      "authors_short": "Mytton",
+      "journal": "npj Clean Water",
+      "year": 2021,
+      "doi": "10.1038/s41545-021-00101-w",
+      "durable_source": "https://doi.org/10.1038/s41545-021-00101-w",
+      "whole_text_source": "https://www.nature.com/articles/s41545-021-00101-w",
+      "study_type": "critical review and measurement-framework analysis",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "energy-versus-water framing",
+          "direct and indirect water pathways",
+          "withdrawal versus consumption",
+          "cooling technology and climate",
+          "WUE and source-WUE definitions",
+          "vendor disclosure",
+          "siting and future reduction strategies",
+          "conclusion and access statements"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The article expands data-center environmental accounting beyond energy, separates direct cooling water from electricity-generation water, evaluates measurement metrics and disclosure gaps, and links water impact to local scarcity and siting.",
+        "measurement_and_denominator": "Withdrawal differs from consumption; site WUE differs from source-inclusive WUE; both divide water by IT-equipment energy and therefore depend on consistent site, time and grid boundaries.",
+        "quantitative_behavior": "The article reports that a traditional 1 MW facility can consume around 25.5 million litres annually and that higher chilled-water temperatures can materially reduce cooling cost, but both figures are technology- and climate-conditioned.",
+        "heterogeneity_and_regime": "Cooling demand and feasible technology vary with ambient climate, season, water source, electricity generation mix, facility design and equipment tolerance.",
+        "causal_calibration": "The paper synthesizes published and corporate data; it does not estimate a universal causal effect of siting or cooling changes.",
+        "limitations": [
+          "Operator water disclosure is sparse and often not attributed specifically to data centers.",
+          "Source-water intensity factors vary by technology and geography and become stale as grids change.",
+          "Customer migration to cloud can reduce visibility into the resources behind purchased services."
+        ],
+        "anti_patterns": [
+          "Do not equate withdrawal with consumption.",
+          "Do not call site WUE a complete water footprint.",
+          "Do not compare vendor water totals without organizational and methodological boundaries."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-003",
+      "title": "Using life cycle assessment to drive innovation for sustainable cool clouds",
+      "authors_short": "Alissa et al.",
+      "journal": "Nature",
+      "year": 2025,
+      "doi": "10.1038/s41586-025-08832-3",
+      "durable_source": "https://doi.org/10.1038/s41586-025-08832-3",
+      "whole_text_source": "https://www.nature.com/articles/s41586-025-08832-3",
+      "study_type": "provider-authored cradle-to-grave comparative life-cycle assessment",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "cooling and sustainability framing",
+          "air, cold-plate and immersion systems",
+          "functional-unit construction",
+          "cradle-to-grave system boundary",
+          "grid and renewable scenarios",
+          "GHG, energy and blue-water results",
+          "embodied-impact shifts",
+          "technology tradeoffs",
+          "data quality and uncertainty",
+          "methods and future work"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study defines a cradle-to-grave functional unit, compares three advanced cooling designs against air cooling, decomposes use-phase and embodied impacts, and uses the tradeoffs to inform early design choices.",
+        "measurement_and_denominator": "Impacts are annualized and normalized per virtual core; the boundary includes building shell, workload, servers, racks or tanks, support equipment, grid electricity, water, fluids and end-of-life treatment.",
+        "quantitative_behavior": "The modeled advanced-cooling designs reduce GHG emissions by roughly 15–21%, primary energy by 15–20%, and blue-water consumption by 31–52% per virtual core-year against the modeled air-cooled reference.",
+        "heterogeneity_and_regime": "Results shift with grid mix, server lifetime, density, cooling fluid, maintenance model, regulatory treatment, and whether use-phase or embodied impacts dominate.",
+        "causal_calibration": "This comparative LCA estimates impacts under a specified provider design model; it is not measured fleet-wide realized savings or a market-adoption result.",
+        "limitations": [
+          "Specific cooling-fluid, data-center-equipment and semiconductor inventories were missing or outdated and required proxies.",
+          "The paper uses a pedigree matrix rather than a complete quantitative uncertainty distribution.",
+          "Provider design assumptions and functional-unit choices condition transferability."
+        ],
+        "anti_patterns": [
+          "Do not compare cooling systems without the same functional unit and life-cycle boundary.",
+          "Do not describe modeled per-core reductions as measured total-fleet reductions.",
+          "Do not ignore embodied burdens that become more prominent as operational electricity decarbonizes."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-004",
+      "title": "Decarbonising digital infrastructure and urban sustainability in the case of data centres",
+      "authors_short": "Liu et al.",
+      "journal": "npj Urban Sustainability",
+      "year": 2025,
+      "doi": "10.1038/s42949-025-00203-1",
+      "durable_source": "https://doi.org/10.1038/s42949-025-00203-1",
+      "whole_text_source": "https://www.nature.com/articles/s42949-025-00203-1",
+      "study_type": "mixed-method urban infrastructure and sustainability case study",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "provenance": "Whole-text audit completed during Compute recovery and reclassified here for direct Data Centers use.",
+        "sections_reviewed": [
+          "digital-versus-material framing",
+          "Singapore resource and policy context",
+          "energy, water and land constraints",
+          "technology, regulation, finance, infrastructure and workforce findings",
+          "risk-aversion and adoption",
+          "59 interviews",
+          "two workshops with 150 participants",
+          "discussion, limitations and recommendations"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study challenges digital dematerialization, maps data-center growth into a land-, water- and carbon-constrained urban system, and identifies implementation gaps across technology, policy, finance, infrastructure and people.",
+        "measurement_and_denominator": "The evidence is a non-exhaustive asset landscape, policy and corporate documents, 59 semi-structured interviews, and two validation workshops totaling 150 participants.",
+        "quantitative_behavior": "Counts describe the qualitative evidence base, not a representative estimate of all operators or projects.",
+        "heterogeneity_and_regime": "Tropical climate, grid carbon, land and water scarcity, connectivity, sovereignty, financing, brownfield status and operator risk tolerance change feasible transitions.",
+        "causal_calibration": "This is a mixed-method Singapore case, not a causal technology evaluation. Corporate claims and project projections remain stakeholder evidence.",
+        "limitations": [
+          "The asset landscape is non-exhaustive.",
+          "The institutional and physical regime is Singapore-specific.",
+          "Cross-border relocation can shift rather than remove environmental burdens."
+        ],
+        "anti_patterns": [
+          "Do not treat PUE, renewable certificates or a green-building label as complete sustainability.",
+          "Do not treat announced green finance as realized low-carbon infrastructure.",
+          "Do not infer regional burden reduction when restrictions displace capacity across a border."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-005",
+      "title": "Maximizing waste heat recovery from a building-integrated edge data center",
+      "authors_short": "Kuzay et al.",
+      "journal": "Scientific Reports",
+      "year": 2025,
+      "doi": "10.1038/s41598-025-22498-x",
+      "durable_source": "https://doi.org/10.1038/s41598-025-22498-x",
+      "whole_text_source": "https://www.nature.com/articles/s41598-025-22498-x",
+      "study_type": "physical pilot parameterization plus validated thermal simulation and workload-placement optimization",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "provenance": "Whole-text audit completed during Compute recovery and reclassified here for direct Data Centers use.",
+        "sections_reviewed": [
+          "pilot testbed and monitoring",
+          "water and air-flow experiments",
+          "coil effectiveness",
+          "fast thermal evaluator",
+          "conjugate heat-transfer model",
+          "mesh and validation",
+          "workload allocation",
+          "heat-recovery and cooling simulations",
+          "applicability, computation cost and limitations"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper measures a pilot rack, validates a thermal model, searches workload placements with a fast evaluator, and reports modeled heat-recovery gains before delimiting operational deployment.",
+        "measurement_and_denominator": "A 32-server single-rack pilot supports up to 12 kW; optimization compares modeled placements against random placement under specified flow and load conditions.",
+        "quantitative_behavior": "The fast evaluator reports R-squared 0.93 and RMSE 1.44 degrees C; the validated model estimates up to 17.1% more recovered heat and up to 53.2% lower transferred cooling load under selected conditions.",
+        "heterogeneity_and_regime": "Benefits decline as IT load rises and placement flexibility disappears; geometry, hardware homogeneity, cooling configuration, workload colocation and thermal limits condition results.",
+        "causal_calibration": "Physical measurements parameterize the model, but optimization gains are simulated rather than measured production-fleet energy savings.",
+        "limitations": [
+          "Single-rack scale and homogeneous hardware.",
+          "No production scheduler deployment.",
+          "No measured net building or grid energy outcome."
+        ],
+        "anti_patterns": [
+          "Do not collapse experimental parameterization, model validation, simulated policy gain and production deployment.",
+          "Do not call recovered heat net electricity savings.",
+          "Do not transfer low-load placement gains into saturation conditions."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-006",
+      "title": "Data center growth in the United States: Decoupling the demand for services from electricity use",
+      "authors_short": "Shehabi et al.",
+      "journal": "Environmental Research Letters",
+      "year": 2018,
+      "doi": "10.1088/1748-9326/aaec9c",
+      "durable_source": "https://doi.org/10.1088/1748-9326/aaec9c",
+      "whole_text_source": "https://www.researchgate.net/publication/328620851_Data_center_growth_in_the_United_States_Decoupling_the_demand_for_services_from_electricity_use",
+      "study_type": "twenty-year bottom-up United States stock-and-flow electricity model with scenarios",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "data-center space taxonomy",
+          "server, storage and network stock model",
+          "full-power-equivalent workload metric",
+          "historical calibration",
+          "2020 efficiency scenarios",
+          "uncertainty and conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper reconstructs equipment stocks and operational characteristics by space type, derives useful workload with full-power equivalents, and contrasts frozen-efficiency, current-trend and best-practice scenarios.",
+        "measurement_and_denominator": "Installed servers, full-power-equivalent workload, floor-space type, PUE, utilization and annual electricity are modeled separately; neither installed base nor electricity alone measures service demand.",
+        "quantitative_behavior": "Recent United States data-center electricity demand was nearly steady around 70 billion kWh, while the same projected 2020 workload spans roughly 135 billion kWh between frozen-efficiency and best-practice scenarios and nearly a factor of four across the full scenario range.",
+        "heterogeneity_and_regime": "Efficiency, virtualization and consolidation opportunities differ across server closets, rooms, localized facilities, mid-tier sites and hyperscale facilities.",
+        "causal_calibration": "This is calibrated bottom-up accounting plus conditional scenarios, not a forecast that fixes post-2020 electricity demand.",
+        "limitations": [
+          "Input data are uneven across space and equipment types.",
+          "Scenario outcomes depend on adoption rates for efficiency and consolidation.",
+          "The analysis does not establish post-2020 AI-specific demand."
+        ],
+        "anti_patterns": [
+          "Do not equate installed servers with delivered workload.",
+          "Do not treat a scenario envelope as a point forecast.",
+          "Do not apply hyperscale efficiency to the whole heterogeneous stock."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-007",
+      "title": "Assessing the environmental impact of data centres part 1: Background, energy use and metrics",
+      "authors_short": "Whitehead et al.",
+      "journal": "Building and Environment",
+      "year": 2014,
+      "doi": "10.1016/j.buildenv.2014.08.021",
+      "durable_source": "https://doi.org/10.1016/j.buildenv.2014.08.021",
+      "whole_text_source": "https://www.researchgate.net/publication/265296025_Assessing_the_environmental_impact_of_data_centres_part_1_Background_energy_use_and_metrics",
+      "study_type": "critical literature review of data-center energy, environmental impact and metrics",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "facility and ICT boundaries",
+          "energy-use estimates",
+          "PUE and DCiE",
+          "carbon, water and compute metrics",
+          "metric strengths and omissions",
+          "multi-impact and life-cycle implications",
+          "conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The review traces why operational energy and PUE became dominant, evaluates later carbon, water and compute metrics, and shows why no single operational metric represents whole-system sustainability.",
+        "measurement_and_denominator": "PUE is total facility energy divided by IT-equipment energy; other metrics use different numerators, boundaries and service denominators and therefore are not interchangeable.",
+        "quantitative_behavior": "Reported sector totals and facility ratios vary with inventory scope, time, site type and measurement practice; the review treats them as boundary-conditioned rather than universal constants.",
+        "heterogeneity_and_regime": "Facilities range from single racks and server rooms to warehouse-scale sites, with different cooling, redundancy, occupancy and measurement feasibility.",
+        "causal_calibration": "This is a critical review of metrics and evidence, not a measured intervention study.",
+        "limitations": [
+          "The literature and disclosure base was incomplete and rapidly changing.",
+          "Single-issue metrics omit cross-impact and life-cycle effects.",
+          "Metric definitions and measurement points are not always harmonized."
+        ],
+        "anti_patterns": [
+          "Do not call PUE a sustainability score.",
+          "Do not compare ratios without aligned boundaries and time periods.",
+          "Do not infer lower total impact from improvement in one operational metric."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-008",
+      "title": "Data Center Energy Evaluation Tool Development and Analysis of Power Usage Effectiveness with Different Economizer Types in Various Climate Zones",
+      "authors_short": "Kim et al.",
+      "journal": "Buildings",
+      "year": 2024,
+      "doi": "10.3390/buildings14010299",
+      "durable_source": "https://doi.org/10.3390/buildings14010299",
+      "whole_text_source": "https://www.researchgate.net/publication/377613212_Data_Center_Energy_Evaluation_Tool_Development_and_Analysis_of_Power_Usage_Effectiveness_with_Different_Economizer_Types_in_Various_Climate_Zones",
+      "study_type": "engineering-tool development and comparative climate/economizer simulation",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "tool architecture",
+          "weather and load inputs",
+          "cooling-system models",
+          "economizer controls",
+          "EnergyPlus and DesignBuilder verification",
+          "climate-zone comparisons",
+          "limitations and future work"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study develops a reduced-input energy tool, verifies it against established simulation software, and uses it to compare PUE under cooling and economizer choices across climates.",
+        "measurement_and_denominator": "PUE is calculated from modeled IT and support energy under aligned weather, setpoint, load and cooling-system assumptions.",
+        "quantitative_behavior": "Predicted PUE and cooling savings change materially with outdoor temperature and humidity, economizer type and control limits rather than inhering in the equipment label alone.",
+        "heterogeneity_and_regime": "Air-side and water-side economizers have different feasible hours and performance across climate zones and setpoints.",
+        "causal_calibration": "Software agreement verifies implementation consistency; it is not field validation of realized annual operating cost or environmental impact.",
+        "limitations": [
+          "Capital cost and maintenance are excluded.",
+          "Water use and heat-reuse value are excluded.",
+          "The modeled system does not cover all liquid-cooling or rear-door configurations."
+        ],
+        "anti_patterns": [
+          "Do not generalize an economizer result across climates.",
+          "Do not treat software-to-software agreement as production validation.",
+          "Do not infer whole-system sustainability from modeled PUE."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-009",
+      "title": "Thermal Performance Evaluation of a Data Center Cooling System under Fault Conditions",
+      "authors_short": "Cho et al.",
+      "journal": "Energies",
+      "year": 2019,
+      "doi": "10.3390/en12152996",
+      "durable_source": "https://doi.org/10.3390/en12152996",
+      "whole_text_source": "https://www.researchgate.net/publication/334966939_Thermal_Performance_Evaluation_of_a_Data_Center_Cooling_System_under_Fault_Conditions",
+      "study_type": "project-specific transient thermal analysis and commissioning-oriented fault evaluation",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "20 MW project configuration",
+          "cooling and backup architecture",
+          "six fault scenarios",
+          "transient CFD method",
+          "allowable temperature envelope",
+          "backup activation timing",
+          "design and commissioning implications"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study models loss-of-cooling faults in an actual 20 MW project configuration and translates transient temperature behavior into backup activation and commissioning requirements.",
+        "measurement_and_denominator": "The key outcome is time until server-inlet temperature exceeds the specified allowable envelope under defined chilled-water and supply-air starting conditions.",
+        "quantitative_behavior": "At chilled-water/supply-air conditions no higher than about 17/24 degrees C, allowable time was about 320 seconds; warmer initial conditions caused faster temperature rise, supporting backup activation within 300 seconds.",
+        "heterogeneity_and_regime": "Thermal ride-through depends on starting temperature, air volume, thermal mass, fault type, redundancy and whether cooling components share UPS protection.",
+        "causal_calibration": "The project geometry is real, but fault outcomes are transient simulations used for design and commissioning rather than measured fleet outage statistics.",
+        "limitations": [
+          "Results depend on the studied 20 MW configuration.",
+          "Model assumptions govern thermal mass and airflow response.",
+          "The study evaluates a bounded fault interval, not long-duration resilience."
+        ],
+        "anti_patterns": [
+          "Do not call installed redundancy verified resilience before integrated fault testing.",
+          "Do not transfer a ride-through time across thermal starting states.",
+          "Do not assume IT UPS protection also protects cooling."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-010",
+      "title": "The Energy-Saving Potential of Air-Side Economisers in Modular Data Centres: Analysis of Opportunities and Risks in Different Climates",
+      "authors_short": "Badiei et al.",
+      "journal": "Sustainability",
+      "year": 2023,
+      "doi": "10.3390/su151410777",
+      "durable_source": "https://doi.org/10.3390/su151410777",
+      "whole_text_source": "https://www.researchgate.net/publication/372295452_The_Energy-Saving_Potential_of_Air-Side_Economisers_in_Modular_Data_Centres_Analysis_of_Opportunities_and_Risks_in_Different_Climates",
+      "study_type": "dynamic simulation of a modular data center across four climate regimes",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "90 kW modular base case",
+          "EnergyPlus geometry and loads",
+          "temperature, humidity and enthalpy controls",
+          "PUE validation",
+          "Stockholm, Dubai, San Francisco and Singapore cases",
+          "energy-saving results",
+          "risks and limitations"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper models an air-side economizer for a 90 kW modular facility and tests its opportunity and risk under four distinct climates.",
+        "measurement_and_denominator": "Energy savings and PUE are annual modeled outcomes relative to the same mechanical-cooling base case and specified control envelope.",
+        "quantitative_behavior": "The model estimates savings as high as about 86% in a favorable moderate climate, while hot-dry and hot-humid climates provide much smaller opportunities.",
+        "heterogeneity_and_regime": "Temperature, humidity, enthalpy, particulate risk, control strategy and climate determine free-cooling hours and suitability.",
+        "causal_calibration": "The base model is checked against published PUE data, but climate comparisons remain simulations rather than multi-site billing measurements.",
+        "limitations": [
+          "Validation lacks detailed facility billing and infiltration measurements.",
+          "Contaminant and reliability risks are not fully quantified.",
+          "The 90 kW modular geometry is not a hyperscale campus."
+        ],
+        "anti_patterns": [
+          "Do not apply the maximum modeled saving to all climates.",
+          "Do not equate a modular prototype with fleet-average performance.",
+          "Do not omit air-quality and humidity constraints from free-cooling claims."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-011",
+      "title": "Flexibility-Based Energy and Demand Management in Data Centers: A Case Study for Cloud Computing",
+      "authors_short": "Basmadjian",
+      "journal": "Energies",
+      "year": 2019,
+      "doi": "10.3390/en12173301",
+      "durable_source": "https://doi.org/10.3390/en12173301",
+      "whole_text_source": "https://www.researchgate.net/publication/335436391_Flexibility-Based_Energy_and_Demand_Management_in_Data_Centers_A_Case_Study_for_Cloud_Computing",
+      "study_type": "flexibility review, management-framework design and lab-grade cloud testbed experiment",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "energy versus demand objectives",
+          "IT, cooling and storage flexibility mechanisms",
+          "green SLA and supply-demand contracts",
+          "EMS building blocks",
+          "HPE Milan testbed",
+          "energy-minimization experiment",
+          "peak-demand response experiment",
+          "conclusion and applicability"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper separates kWh minimization from kW peak reduction, maps technical flexibility to contracts, implements management systems, and evaluates them on a lab-grade cloud testbed.",
+        "measurement_and_denominator": "Overall energy and interval peak power are different objectives; flexibility is the feasible, time-bounded change subject to workload, hardware and SLA constraints.",
+        "quantitative_behavior": "The reported case results include roughly 33% overall energy saving and 50% demand-response peak reduction under the tested federation and workload conditions.",
+        "heterogeneity_and_regime": "Deferrability, migration, consolidation, thermal headroom, storage state, workload shape and contract terms determine deliverable flexibility.",
+        "causal_calibration": "The control mechanisms are experimentally evaluated at lab-grade scale; federation-wide savings are not evidence of unrestricted production-fleet response.",
+        "limitations": [
+          "Lab-grade scale limits external validity.",
+          "Savings depend on workload and baseline construction.",
+          "QoS and contractual acceptability constrain response."
+        ],
+        "anti_patterns": [
+          "Do not equate nameplate load with dispatchable flexibility.",
+          "Do not conflate kW peak reduction with kWh energy savings.",
+          "Do not ignore SLA and workload consequences."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-012",
+      "title": "Data Centers Optimized Integration with Multi-Energy Grids: Test Cases and Results in Operational Environment",
+      "authors_short": "Cioara et al.",
+      "journal": "Sustainability",
+      "year": 2020,
+      "doi": "10.3390/su12239893",
+      "durable_source": "https://doi.org/10.3390/su12239893",
+      "whole_text_source": "https://www.researchgate.net/publication/346581154_Data_Centers_Optimized_Integration_with_Multi-Energy_Grids_Test_Cases_and_Results_in_Operational_Environment",
+      "study_type": "multi-site operational pilots and test cases for electrical, thermal and IT flexibility",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "multi-energy optimization architecture",
+          "electrical flexibility",
+          "thermal flexibility and heat reuse",
+          "IT load migration",
+          "micro-data-center PV and storage pilot",
+          "operational test cases",
+          "QoS and renewable tradeoffs",
+          "conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study implements a flexibility-management architecture and demonstrates separate electrical, thermal and workload scenarios in operational pilots and test cases.",
+        "measurement_and_denominator": "Electrical load, recoverable heat and movable IT work are separate profiles; reported flexibility is scenario- and interval-specific.",
+        "quantitative_behavior": "The test cases show that renewable availability can be coupled to storage and load migration, but the achievable level changes with QoS and production conditions.",
+        "heterogeneity_and_regime": "On-site generation, battery state, workload mobility, network delay, heat demand and site topology change the feasible response.",
+        "causal_calibration": "Operational pilots establish technical feasibility at their tested scale, not a universal market-wide flexibility quantity.",
+        "limitations": [
+          "Pilot and micro-data-center scales are not full campus deployments.",
+          "Economic and regulatory participation conditions vary by market.",
+          "Heat-reuse results require a coincident local sink."
+        ],
+        "anti_patterns": [
+          "Do not add electrical, thermal and IT flexibility as if they were identical units.",
+          "Do not call available waste heat useful heat without a matched sink.",
+          "Do not extrapolate pilot response to nameplate campus load."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-013",
+      "title": "How Data Centers Have Come to Matter: Governing the Spatial and Environmental Footprint of the 'Digital Gateway to Europe'",
+      "authors_short": "Monstadt and Saltzman",
+      "journal": "International Journal of Urban and Regional Research",
+      "year": 2025,
+      "doi": "10.1111/1468-2427.13316",
+      "durable_source": "https://doi.org/10.1111/1468-2427.13316",
+      "whole_text_source": "https://www.researchgate.net/publication/382094232_HOW_DATA_CENTERS_HAVE_COME_TO_MATTER_Governing_the_Spatial_and_Environmental_Footprint_of_the_Digital_Gateway_to_Europe",
+      "study_type": "qualitative urban-infrastructure and policy-history case study",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "cloud materiality framing",
+          "Amsterdam metropolitan clustering",
+          "historical political support",
+          "electricity and land controversies",
+          "moratoria and policy reforms",
+          "residual-heat conflicts",
+          "multi-level governance challenges",
+          "conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper traces how a spatially concentrated data-center sector moved from politically obscured enabling infrastructure to contested land, power and heat infrastructure, followed by moratoria and policy reform.",
+        "measurement_and_denominator": "The unit of analysis is a metropolitan governance regime and its clustered campuses, institutions and policy fields, not a national facility census.",
+        "quantitative_behavior": "Facility counts, campus maps and policy events support the historical case; they do not estimate a general causal effect of data-center entry.",
+        "heterogeneity_and_regime": "Local grid scarcity, land constraints, municipal competition, national policy, connectivity and heat-network institutions determine the governance response.",
+        "causal_calibration": "Process tracing supports a contextual account of politicization and regulation, not a transportable numerical treatment effect.",
+        "limitations": [
+          "Amsterdam is an unusually mature and concentrated gateway market.",
+          "Policy documents and interviews reflect institutional perspectives.",
+          "The case cannot serve as a global fleet inventory."
+        ],
+        "anti_patterns": [
+          "Do not describe cloud infrastructure as placeless.",
+          "Do not infer national capacity from one metropolitan cluster.",
+          "Do not count planned heat reuse as delivered heat without network and demand realization."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-014",
+      "title": "The environmental footprint of data centers in the United States",
+      "authors_short": "Siddik et al.",
+      "journal": "Environmental Research Letters",
+      "year": 2021,
+      "doi": "10.1088/1748-9326/abfba1",
+      "durable_source": "https://doi.org/10.1088/1748-9326/abfba1",
+      "whole_text_source": "https://www.researchgate.net/publication/351803384_The_environmental_footprint_of_data_centers_in_the_United_States",
+      "study_type": "bottom-up geospatial operational water and carbon footprint model",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "system boundary and utility linkages",
+          "facility and server-location data",
+          "electricity attribution",
+          "direct and indirect water accounting",
+          "water-stress mapping",
+          "GHG results",
+          "hypothetical 1 MW siting analysis",
+          "uncertainty and conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study links facilities to grids, power plants, water utilities, wastewater treatment and watersheds to estimate location-specific operational water and carbon footprints and siting tradeoffs.",
+        "measurement_and_denominator": "Direct cooling water, indirect power-generation water, water-treatment energy and GHG emissions are attributed through explicit operational boundaries; a hypothetical 1 MW site is used for comparable siting intensities.",
+        "quantitative_behavior": "About one-fifth of servers direct water footprint is in moderately to highly water-stressed watersheds, nearly half are at least partly powered by plants in water-stressed regions, and modeled 2018 operations account for about 31.5 million tons CO2-equivalent, around 0.5% of United States emissions.",
+        "heterogeneity_and_regime": "Grid mix, watershed stress, cooling practice, utility territory and facility location produce large geographic variation and tradeoffs among water, scarcity-weighted water and carbon.",
+        "causal_calibration": "This is spatial attribution and counterfactual siting analysis, not observation of identical facilities randomly relocated.",
+        "limitations": [
+          "Facility locations and server counts are coverage-limited inputs.",
+          "Grid and utility attribution uses modeled connections and averages.",
+          "Operational scope excludes full embodied and construction impacts."
+        ],
+        "anti_patterns": [
+          "Do not treat a mapped facility list as a complete fleet census.",
+          "Do not report national averages as local burden.",
+          "Do not equate ordinary water volume with scarcity-weighted impact."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-FND-015",
+      "title": "A Circular Economy for the Data Centre Industry: Using Design Methods to Address the Challenge of Whole System Sustainability in a Unique Industrial Sector",
+      "authors_short": "Andrews et al.",
+      "journal": "Sustainability",
+      "year": 2021,
+      "doi": "10.3390/su13116319",
+      "durable_source": "https://doi.org/10.3390/su13116319",
+      "whole_text_source": "https://www.researchgate.net/publication/352098304_A_Circular_Economy_for_the_Data_Centre_Industry_Using_Design_Methods_to_Address_the_Challenge_of_Whole_System_Sustainability_in_a_Unique_Industrial_Sector",
+      "study_type": "project case study using sector survey, nine expert interviews and design-process evaluation",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "pages": 21,
+        "sections_reviewed": [
+          "linear-sector and critical-material framing",
+          "ten-subsector structure",
+          "Design Thinking and Double Diamond methods",
+          "CEDaCI work packages and engagement",
+          "44-participant survey",
+          "nine senior-expert interviews",
+          "17 coded themes",
+          "discussion and conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper frames the data-center equipment chain as ten siloed subsectors, applies whole-system design methods in CEDaCI, and evaluates early project engagement and perceived impact through a 44-person survey and nine senior-expert interviews.",
+        "measurement_and_denominator": "Evidence measures participant engagement, perceptions and project-process outputs; it does not measure sector-wide recovered material or avoided lifecycle impact.",
+        "quantitative_behavior": "The empirical evaluation includes 44 survey participants and nine senior experts, with 17 interview themes; authors explicitly state that creating a sectoral circular economy in three and a half years is unrealistic.",
+        "heterogeneity_and_regime": "Designers, manufacturers, operators, users, refurbishers, asset-disposition firms and recyclers have different information, incentives and technical constraints.",
+        "causal_calibration": "The evidence supports early awareness, engagement and design-process learning, not proof of completed industry transformation.",
+        "limitations": [
+          "Small, project-engaged samples risk positive-selection bias.",
+          "Outcomes are early-stage and largely process or perception measures.",
+          "Material-flow and avoided-impact outcomes were not yet observed sector-wide."
+        ],
+        "anti_patterns": [
+          "Do not call project participation completed circularity.",
+          "Do not infer recovered material from design-tool availability.",
+          "Do not optimize one lifecycle stage without tracing effects on the other subsectors."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-016",
+      "title": "Environmental footprints of the data center service sector in Sweden",
+      "authors_short": "Jerléus et al.",
+      "journal": "Heliyon",
+      "year": 2024,
+      "doi": "10.1016/j.heliyon.2024.e31290",
+      "durable_source": "https://doi.org/10.1016/j.heliyon.2024.e31290",
+      "whole_text_source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11140606/",
+      "study_type": "national footprint model plus GIS multi-criteria site-suitability analysis",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "Swedish inventory construction",
+          "questionnaire, permit and public-data inputs",
+          "energy, water and GHG accounting",
+          "renewable, free-cooling, heat-sink and water-risk criteria",
+          "ArcGIS suitability index",
+          "existing-site results",
+          "uncertainty and conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study constructs a Swedish data-center inventory from heterogeneous public and survey sources, estimates sector energy, water and GHG footprints, then scores existing and prospective locations with a multi-criteria GIS tool.",
+        "measurement_and_denominator": "Facility environmental estimates and the site-suitability index are separate outputs; the latter combines renewable access, free cooling, excess-heat receivers and resilience to water shortage.",
+        "quantitative_behavior": "The model estimates roughly 5.4% of Swedish electricity, 42 million cubic metres of annual water and 0.3% of national GHG emissions for the sector; 68 facilities score at or below 45% on the authors site-suitability index.",
+        "heterogeneity_and_regime": "Northern and southern locations differ in climate, geology, grid, heat sinks and water risk, while missing facility data require proxies.",
+        "causal_calibration": "This is inventory estimation and suitability scoring, not causal evidence that relocating a facility produces the modeled benefit.",
+        "limitations": [
+          "The facility inventory is assembled from questionnaires, permits, corporate sites and open repositories rather than mandatory standardized reporting.",
+          "Missing facility parameters require assumptions and imputation.",
+          "A composite suitability score inherits selected criteria and weights."
+        ],
+        "anti_patterns": [
+          "Do not treat the assembled list as a certified fleet census.",
+          "Do not read a suitability score as actual operating performance.",
+          "Do not compare composite scores without preserving criteria and weights."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-017",
+      "title": "Planning data center locations in Swedish municipalities: A comparative case study of Luleå and Stockholm",
+      "authors_short": "Ramos Cáceres et al.",
+      "journal": "Cities",
+      "year": 2024,
+      "doi": "10.1016/j.cities.2024.105063",
+      "durable_source": "https://doi.org/10.1016/j.cities.2024.105063",
+      "whole_text_source": "https://www.sciencedirect.com/science/article/pii/S0264275124002774",
+      "study_type": "comparative urban-planning case study",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "resource-intensive-industry framing",
+          "Industrial Ecology framework",
+          "case selection",
+          "municipal spatial and energy planning evidence",
+          "Luleå case",
+          "Stockholm case",
+          "comparative adaptive-capacity analysis",
+          "policy implications and conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper compares how two municipalities integrate data centers into spatial and energy planning and identifies determinants of municipal adaptive capacity.",
+        "measurement_and_denominator": "The unit of analysis is the municipal energy-spatial system; determinants include electricity and water infrastructure, heat-producer and user diversity, land-use diversity and property fragmentation.",
+        "quantitative_behavior": "The result is a structured comparative judgment that Stockholm exhibits higher adaptive capacity than Luleå, not a causal effect size or universal location ranking.",
+        "heterogeneity_and_regime": "Climate, energy availability, ownership fragmentation, district-heating institutions and municipal authority change feasible integration.",
+        "causal_calibration": "Comparative case evidence supports planning mechanisms and contrasts, not a general causal ranking of all municipalities.",
+        "limitations": [
+          "Two Swedish municipalities limit transferability.",
+          "Planning evidence does not itself establish completed infrastructure or realized heat exchange.",
+          "Adaptive-capacity assessment depends on the selected framework and evidence."
+        ],
+        "anti_patterns": [
+          "Do not equate municipal plan adoption with energized capacity.",
+          "Do not call waste heat beneficial without an integrated user and network.",
+          "Do not rank sites on climate alone while ignoring governance and infrastructure."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-018",
+      "title": "The relationship between data centers and the climate is a systems challenge: a spatial analysis of United States data centers",
+      "authors_short": "Kollar and Grady",
+      "journal": "Environmental Research Communications",
+      "year": 2025,
+      "doi": "10.1088/2515-7620/ae193a",
+      "durable_source": "https://doi.org/10.1088/2515-7620/ae193a",
+      "whole_text_source": "https://www.researchgate.net/publication/397049704_The_relationship_between_data_centers_and_the_climate_is_a_systems_challenge_a_spatial_analysis_of_United_States_data_centers",
+      "study_type": "national geospatial operational-risk analysis",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "systems-dynamics framing",
+          "inventory of more than 2,400 sites",
+          "heat-risk data",
+          "water-stress data",
+          "grid-emissions attribution",
+          "kernel-density and spatial-association analysis",
+          "regional results",
+          "limitations and data release"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper combines a coverage-limited site inventory with heat, water-stress and grid-emissions layers to evaluate environment-to-facility operational risks and facility-to-environment burdens.",
+        "measurement_and_denominator": "The analysis locates more than 2,400 facilities and attaches regional environmental-risk indicators; site presence does not encode MW, operating state or utilization.",
+        "quantitative_behavior": "Spatial clusters and risk categories reveal that many facilities face heat or water stress and materially different grid emissions, but the paper does not convert site counts into fleet load.",
+        "heterogeneity_and_regime": "Local climate, watershed conditions, grid mix and regional clustering jointly determine risk; those variables can be correlated rather than independent.",
+        "causal_calibration": "This is cross-sectional spatial association and risk screening, not causal impact evaluation.",
+        "limitations": [
+          "Commercial and public facility inventories may omit, duplicate or misclassify sites.",
+          "Location-only records lack standardized capacity and operating state.",
+          "Regional indicators do not substitute for facility operating measurements."
+        ],
+        "anti_patterns": [
+          "Do not multiply site counts by a generic MW value.",
+          "Do not call proximity to risk realized outage or damage.",
+          "Do not infer causation from spatial clustering."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-019",
+      "title": "Data centres as a source of flexibility for power systems",
+      "authors_short": "Takci et al.",
+      "journal": "Energy Reports",
+      "year": 2025,
+      "doi": "10.1016/j.egyr.2025.03.020",
+      "durable_source": "https://doi.org/10.1016/j.egyr.2025.03.020",
+      "whole_text_source": "https://www.researchgate.net/publication/390629747_Data_centres_as_a_source_of_flexibility_for_power_systems",
+      "study_type": "critical review and case-based flexibility synthesis",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "power-system flexibility definitions",
+          "UPS, generator and thermal assets",
+          "workload temporal and spatial movement",
+          "response times and duration",
+          "ancillary-service cases",
+          "QoS and SLA constraints",
+          "market and regulatory differences",
+          "data limitations and conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The review maps data-center assets and workload controls to power-system services and tests their plausibility against case examples and market requirements.",
+        "measurement_and_denominator": "Flexibility must specify direction, response time, duration, recovery, energy capacity, availability window and service baseline; asset capacity is not automatically deliverable response.",
+        "quantitative_behavior": "Case values vary by asset and market and are presented as examples rather than a fleet aggregate; the authors report no new dataset for the review itself.",
+        "heterogeneity_and_regime": "UPS topology, battery sizing, generator rules, workload type, QoS/SLA, electricity-market design and regulation change availability.",
+        "causal_calibration": "The review supports technical potential and bounded case feasibility, not a measured national dispatchable total.",
+        "limitations": [
+          "No new data were used.",
+          "Case studies are heterogeneous and may be selectively reported.",
+          "Regulatory and market transferability is limited."
+        ],
+        "anti_patterns": [
+          "Do not sum all asset ratings as simultaneous flexibility.",
+          "Do not omit response duration and recovery.",
+          "Do not treat technical potential as market-qualified availability."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-020",
+      "title": "A Review of Data Centers Energy Consumption and Reliability Modeling",
+      "authors_short": "Ahmed et al.",
+      "journal": "IEEE Access",
+      "year": 2021,
+      "doi": "10.1109/ACCESS.2021.3125092",
+      "durable_source": "https://doi.org/10.1109/ACCESS.2021.3125092",
+      "whole_text_source": "https://www.researchgate.net/publication/355862079_A_Review_of_Data_Centers_Energy_Consumption_And_Reliability_Modeling",
+      "study_type": "systematic technical review of component energy and reliability models",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "193-paper review method",
+          "IT energy models",
+          "internal power-conditioning models",
+          "cooling-load models",
+          "analytical reliability methods",
+          "simulation reliability methods",
+          "failure-data gaps",
+          "standards and research recommendations"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The review classifies component energy models and analytical or simulation reliability methods across 193 papers, then identifies missing power-conditioning, cooling-reliability and failure-data evidence.",
+        "measurement_and_denominator": "Component power consumption, component reliability, degraded operation, service availability and tier classification are different model layers.",
+        "quantitative_behavior": "Internal power-conditioning losses can approach 10% in cited configurations, but the review emphasizes that parameter availability can matter more than nominal model accuracy for usable assessment.",
+        "heterogeneity_and_regime": "Topology, redundancy, component dependence, repair assumptions, cooling architecture and failure data determine modeled reliability.",
+        "causal_calibration": "This is a model-taxonomy and research-gap review, not measured failure-rate estimation for the data-center fleet.",
+        "limitations": [
+          "Failure data are scarce, particularly for cooling and component dependencies.",
+          "Reviewed models use inconsistent assumptions and validation.",
+          "Tier labels do not fully specify operating or degraded-state behavior."
+        ],
+        "anti_patterns": [
+          "Do not equate tier classification with measured availability.",
+          "Do not assume independent component failures where systems are coupled.",
+          "Do not optimize energy without testing reliability consequences."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-021",
+      "title": "Sources of data center energy estimates: A comprehensive review",
+      "authors_short": "Mytton and Ashtine",
+      "journal": "Joule",
+      "year": 2022,
+      "doi": "10.1016/j.joule.2022.07.011",
+      "durable_source": "https://doi.org/10.1016/j.joule.2022.07.011",
+      "whole_text_source": "https://ora.ox.ac.uk/objects/uuid%3A37af62a4-40ff-4a5c-ab12-778e197af64f/files/r3b5919083",
+      "study_type": "systematic provenance and methodology review of energy estimates",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "search and inclusion method",
+          "source taxonomy",
+          "peer-reviewed versus report evidence",
+          "bottom-up and top-down approaches",
+          "geographic and sector boundaries",
+          "method-disclosure scoring",
+          "estimate divergence",
+          "stakeholder recommendations"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The review traces original energy estimates rather than repeated citations, classifies their methods and boundaries, and evaluates how methodological opacity propagates divergent public claims.",
+        "measurement_and_denominator": "Energy estimates differ by included facility types, equipment, geography, year, electricity boundary, workload proxy and whether the value is observed, modeled or forecast.",
+        "quantitative_behavior": "Only 31% of reviewed sources were peer-reviewed publications and 38% were non-peer-reviewed reports; many sources did not disclose enough method to reproduce or compare estimates.",
+        "heterogeneity_and_regime": "Global and national estimates rely on different mixtures of direct measurement, installed-stock models, traffic proxies and scenario assumptions.",
+        "causal_calibration": "This is evidence-provenance analysis; it does not select a timeless correct energy total.",
+        "limitations": [
+          "The review is bounded to original estimates located for 2007–2021.",
+          "Commercial and confidential sources limit validation.",
+          "Published methods and classifications can become stale as facility mix changes."
+        ],
+        "anti_patterns": [
+          "Do not cite a secondary repetition as independent evidence.",
+          "Do not compare totals without reconstructing their scope and year.",
+          "Do not average incompatible estimates to manufacture precision."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-022",
+      "title": "Building Accurate Energy-Use Statistics for Data Centers",
+      "authors_short": "Wang et al.",
+      "journal": "Engineering",
+      "year": 2026,
+      "doi": "10.1016/j.eng.2025.12.014",
+      "durable_source": "https://doi.org/10.1016/j.eng.2025.12.014",
+      "whole_text_source": "https://www.engineering.org.cn/engi/EN/10.1016/j.eng.2025.12.014",
+      "study_type": "measurement-framework and policy analysis",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "sixfold estimate divergence",
+          "proxy and aggregate-statistics critique",
+          "data-center sector definition",
+          "standardized reporting framework",
+          "temporal and spatial resolution",
+          "policy coordination",
+          "demand-response implications",
+          "conclusion"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The paper diagnoses structural gaps in data-center energy statistics and proposes treating data centers as a distinct end-use sector with standardized, coordinated reporting.",
+        "measurement_and_denominator": "Reported 2020 global consumption ranges from 196 to 1,200 TWh because indirect proxies, sector definitions, aggregation and reporting boundaries differ.",
+        "quantitative_behavior": "The more-than-sixfold estimate range is evidence of statistical architecture failure, not physical volatility within the same defined population.",
+        "heterogeneity_and_regime": "National statistical systems, operator disclosure, facility definitions, grid boundaries and temporal granularity differ.",
+        "causal_calibration": "This is a diagnostic and policy-framework paper, not a new meter-level global census.",
+        "limitations": [
+          "The proposed reporting regime is normative and not yet universally implemented.",
+          "Operator confidentiality and classification differences remain barriers.",
+          "Harmonized reporting would still require capacity and operating-state fields."
+        ],
+        "anti_patterns": [
+          "Do not collapse divergent definitions into a midpoint.",
+          "Do not use traffic or revenue as unqualified electricity proxies.",
+          "Do not call modeled demand metered consumption."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-023",
+      "title": "Environmental impact and net-zero pathways for sustainable artificial intelligence servers in the USA",
+      "authors_short": "Xiao et al.",
+      "journal": "Nature Sustainability",
+      "year": 2025,
+      "doi": "10.1038/s41893-025-01681-y",
+      "durable_source": "https://doi.org/10.1038/s41893-025-01681-y",
+      "whole_text_source": "https://www.nature.com/articles/s41893-025-01681-y",
+      "study_type": "open-source bottleneck-based projection with spatial energy-water-carbon scenarios",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "AI-server manufacturing-bottleneck model",
+          "utilization and power assumptions",
+          "current and in-construction facility allocation",
+          "state PUE and WUE model",
+          "ReEDS grid factors",
+          "efficiency and siting scenarios",
+          "net-zero pathway tests",
+          "uncertainty and limitations"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The study projects AI-server shipments from a supply-chain bottleneck, translates them into operational power with utilization assumptions, allocates them geographically using current and in-construction large-site records, and tests efficiency, siting and grid scenarios.",
+        "measurement_and_denominator": "Rated AI-server capacity, shipments, active-server ratio, processor utilization, facility PUE/WUE, grid factors and annual footprints are separate layers.",
+        "quantitative_behavior": "Modeled indirect water is 71% of total; best modeled industry practices reduce energy, water and carbon about 12%, 32% and 11%, while spatial scenarios produce much larger positive or adverse changes.",
+        "heterogeneity_and_regime": "Manufacturing capacity, chip design, adoption, training/inference mix, site distribution, cooling and grid development all drive the scenario range.",
+        "causal_calibration": "These are transparent scenario projections, not observed 2024–2030 fleet outcomes.",
+        "limitations": [
+          "Spatial allocation uses major purchasers current and in-construction large facilities and building area as a proxy.",
+          "The distribution is held constant after considering construction uncertainty.",
+          "Market, geopolitical, algorithmic and full embodied impacts are outside scope."
+        ],
+        "anti_patterns": [
+          "Do not call in-construction building area energized AI load.",
+          "Do not treat supply-chain capacity as deployed servers.",
+          "Do not present a scenario pathway as a realized net-zero trajectory."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-024",
+      "title": "A review of data center cooling technology, operating conditions and the corresponding low-grade waste heat recovery opportunities",
+      "authors_short": "Ebrahimi et al.",
+      "journal": "Renewable and Sustainable Energy Reviews",
+      "year": 2014,
+      "doi": "10.1016/j.rser.2013.12.007",
+      "durable_source": "https://doi.org/10.1016/j.rser.2013.12.007",
+      "whole_text_source": "https://www.researchgate.net/publication/260165268_A_review_of_data_center_cooling_technology_operating_conditions_and_the_corresponding_low-grade_waste_heat_recovery_opportunities",
+      "study_type": "thermodynamic review of cooling architectures and heat-recovery pathways",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "data-center heat sources",
+          "air, liquid and two-phase cooling",
+          "temperature and heat-quality ranges",
+          "eight recovery technologies",
+          "district heat and industrial sinks",
+          "absorption cooling",
+          "organic Rankine cycle",
+          "siting and retrofit constraints",
+          "summary"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The review matches data-center heat-stream temperature and form to the operating requirements of recovery technologies and distinguishes retrofit from co-designed siting opportunities.",
+        "measurement_and_denominator": "Waste-heat quantity, temperature quality, recoverable fraction, usable delivered heat and displaced primary energy are distinct quantities.",
+        "quantitative_behavior": "Many useful processes require roughly 45–60 degrees C or higher and heat degrades with distance; liquid and two-phase cooling expose more recovery options than low-temperature air cooling.",
+        "heterogeneity_and_regime": "Cooling architecture, outlet temperature, distance, sink demand, retrofit status and working fluid govern feasibility.",
+        "causal_calibration": "The review identifies thermodynamic and engineering suitability, not measured adoption or net savings across operating fleets.",
+        "limitations": [
+          "Several technologies were developmental at publication.",
+          "Economic and regulatory conditions are site-specific.",
+          "A technically recoverable stream may lack a coincident buyer."
+        ],
+        "anti_patterns": [
+          "Do not equate rejected heat with useful delivered heat.",
+          "Do not ignore temperature grade and distance.",
+          "Do not transfer new-build co-location options to legacy retrofits."
+        ]
+      }
+    },
+    {
+      "source_id": "DC-GAP-025",
+      "title": "Global data center expansion and human health: A call for empirical research",
+      "authors_short": "Tao and Gao",
+      "journal": "Eco-Environment & Health",
+      "year": 2025,
+      "doi": "10.1016/j.eehl.2025.100157",
+      "durable_source": "https://doi.org/10.1016/j.eehl.2025.100157",
+      "whole_text_source": "https://www.researchgate.net/publication/392126099_Global_data_center_expansion_and_human_health_A_call_for_empirical_research",
+      "study_type": "peer-reviewed perspective and research-agenda synthesis",
+      "whole_text": {
+        "status": "VERIFIED_WHOLE_TEXT",
+        "sections_reviewed": [
+          "electricity-growth framing",
+          "diesel and grid air pollution",
+          "HVAC and generator noise",
+          "worker and community exposure",
+          "water and heat pathways",
+          "environmental-justice implications",
+          "evidence gaps",
+          "empirical research agenda"
+        ]
+      },
+      "rhetoric": {
+        "claim_path": "The perspective maps plausible health pathways from noise, backup generation, grid emissions, heat and water burdens and explicitly calls for exposure and epidemiological research.",
+        "measurement_and_denominator": "Internal equipment noise, property-line exposure, intermittent generator testing, chronic grid emissions and modeled population health burdens are different evidence levels.",
+        "quantitative_behavior": "The paper cites internal noise values up to 96 dBA and model-based future health burdens, but presents them as motivating evidence rather than direct community epidemiology.",
+        "heterogeneity_and_regime": "Facility design, generator fuel and testing, grid mix, distance, land use, workforce exposure and baseline community vulnerability change risk.",
+        "causal_calibration": "This is an agenda-setting perspective; most community health pathways remain hypotheses or modeled risks rather than established facility-specific causal effects.",
+        "limitations": [
+          "Direct epidemiological evidence near data centers is sparse.",
+          "Many cited figures come from models or non-data-center analogues.",
+          "Exposure boundaries and affected populations require measurement."
+        ],
+        "anti_patterns": [
+          "Do not convert internal dBA into neighborhood exposure.",
+          "Do not report modeled future deaths as observed cases.",
+          "Do not omit baseline vulnerability and cumulative exposure."
+        ]
+      }
+    }
+  ],
+  "atomic_observations": [
+    {
+      "atomic_id": "DC-AO-001",
+      "source_id": "DC-FND-001",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U01",
+      "observation": "Service demand, compute instances, storage capacity, network traffic, installed equipment and facility electricity are separate stocks or flows and cannot be extrapolated one-for-one."
+    },
+    {
+      "atomic_id": "DC-AO-002",
+      "source_id": "DC-FND-001",
+      "classification": "evidence_conditioned_expression",
+      "candidate_family": "DC-U02",
+      "observation": "PUE describes facility overhead relative to IT energy; it does not measure useful computation, service quality, utilization or total environmental burden."
+    },
+    {
+      "atomic_id": "DC-AO-003",
+      "source_id": "DC-FND-001",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "An efficiency trajectory supports a conditional scenario only while its technological, structural and policy drivers continue; it is not a permanent law."
+    },
+    {
+      "atomic_id": "DC-AO-004",
+      "source_id": "DC-FND-001",
+      "classification": "anti_pattern",
+      "candidate_family": null,
+      "observation": "Do not forecast data-center electricity by multiplying a historical energy estimate by traffic or compute-demand growth alone."
+    },
+    {
+      "atomic_id": "DC-AO-005",
+      "source_id": "DC-FND-002",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "Resource metrics are boundary equations: site water, source water, withdrawal, consumption and IT-energy denominators must be named before comparison."
+    },
+    {
+      "atomic_id": "DC-AO-006",
+      "source_id": "DC-FND-002",
+      "classification": "domain_conditioned",
+      "candidate_family": "DC-U03",
+      "observation": "The same facility design can create different water burdens across climates, seasons, water sources and electricity-generation mixes."
+    },
+    {
+      "atomic_id": "DC-AO-007",
+      "source_id": "DC-FND-002",
+      "classification": "evidence_conditioned_expression",
+      "candidate_family": "DC-U05",
+      "observation": "Cloud consolidation may improve allocation efficiency while reducing customer visibility into the physical resources behind purchased services."
+    },
+    {
+      "atomic_id": "DC-AO-008",
+      "source_id": "DC-FND-002",
+      "classification": "anti_pattern",
+      "candidate_family": null,
+      "observation": "Do not compare operator water totals without separating data-center use from corporate totals and accounting for methodology changes."
+    },
+    {
+      "atomic_id": "DC-AO-009",
+      "source_id": "DC-FND-003",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "Technology comparisons require a common functional unit and life-cycle boundary; otherwise apparent efficiency can be a denominator artifact."
+    },
+    {
+      "atomic_id": "DC-AO-010",
+      "source_id": "DC-FND-003",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Reducing operational electricity can move the dominant burden toward server manufacturing, cooling fluids, construction materials or end-of-life treatment."
+    },
+    {
+      "atomic_id": "DC-AO-011",
+      "source_id": "DC-FND-003",
+      "classification": "evidence_conditioned_expression",
+      "candidate_family": "DC-U04",
+      "observation": "A modeled design advantage remains upstream of retrofit feasibility, supply chain, regulation, maintenance practice, operator adoption and fleet realization."
+    },
+    {
+      "atomic_id": "DC-AO-012",
+      "source_id": "DC-FND-003",
+      "classification": "quantitative_rhetoric",
+      "candidate_family": null,
+      "observation": "Per-functional-unit percentage reductions must retain the reference design, grid mix, lifetime, workload and normalization unit."
+    },
+    {
+      "atomic_id": "DC-AO-013",
+      "source_id": "DC-FND-004",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Jurisdiction-specific restrictions can displace data-center capacity and its environmental burden rather than reduce regional digital-infrastructure demand."
+    },
+    {
+      "atomic_id": "DC-AO-014",
+      "source_id": "DC-FND-004",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Technical feasibility and financing availability do not guarantee deployment when uptime risk, client preference, regulation, infrastructure and workforce are misaligned."
+    },
+    {
+      "atomic_id": "DC-AO-015",
+      "source_id": "DC-FND-004",
+      "classification": "domain_conditioned",
+      "candidate_family": "DC-U05",
+      "observation": "Facility efficiency can improve while sectoral energy, water, land and material demand grow with service scale."
+    },
+    {
+      "atomic_id": "DC-AO-016",
+      "source_id": "DC-FND-004",
+      "classification": "anti_pattern",
+      "candidate_family": null,
+      "observation": "Do not equate renewable certificates with physical grid decarbonization or ecosystem-wide environmental improvement."
+    },
+    {
+      "atomic_id": "DC-AO-017",
+      "source_id": "DC-FND-005",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U01",
+      "observation": "Usable optimization headroom depends on operating load; placement flexibility and gains can attenuate toward saturation."
+    },
+    {
+      "atomic_id": "DC-AO-018",
+      "source_id": "DC-FND-005",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Optimizing heat recovery can migrate constraints toward latency, slowdown, network traffic, thermal cycling and scheduler compatibility."
+    },
+    {
+      "atomic_id": "DC-AO-019",
+      "source_id": "DC-FND-005",
+      "classification": "evidence_conditioned_expression",
+      "candidate_family": "DC-U04",
+      "observation": "Pilot measurement, numerical validation, simulated scheduling, advisory deployment, production control and net building outcomes are distinct evidence stages."
+    },
+    {
+      "atomic_id": "DC-AO-020",
+      "source_id": "DC-FND-005",
+      "classification": "domain_conditioned",
+      "candidate_family": "DC-U05",
+      "observation": "A larger recovered-heat fraction can improve local reuse without demonstrating lower aggregate electricity demand."
+    },
+    {
+      "atomic_id": "DC-AO-021",
+      "source_id": "DC-FND-005",
+      "classification": "anti_pattern",
+      "candidate_family": null,
+      "observation": "Do not report modeled improvement against random allocation as measured fleet-wide energy savings."
+    },
+    {
+      "atomic_id": "DC-AO-022",
+      "source_id": "DC-FND-006",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U05",
+      "observation": "Workload growth, installed equipment and electricity demand can decouple because utilization, virtualization, equipment efficiency and facility mix change simultaneously."
+    },
+    {
+      "atomic_id": "DC-AO-023",
+      "source_id": "DC-FND-006",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "A scenario comparison is interpretable only when it holds delivered workload constant while varying the efficiency and deployment regime."
+    },
+    {
+      "atomic_id": "DC-AO-024",
+      "source_id": "DC-FND-006",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U01",
+      "observation": "Installed stock is neither active stock nor delivered service; facility-space type and operational state must remain explicit."
+    },
+    {
+      "atomic_id": "DC-AO-025",
+      "source_id": "DC-FND-007",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "PUE measures facility overhead relative to IT energy and cannot by itself represent carbon, water, useful compute or lifecycle impact."
+    },
+    {
+      "atomic_id": "DC-AO-026",
+      "source_id": "DC-FND-007",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Improving a single operational metric can shift impacts across resources or lifecycle stages."
+    },
+    {
+      "atomic_id": "DC-AO-027",
+      "source_id": "DC-FND-007",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "Metric choice is a model of the system: numerator, denominator, boundary, time and excluded stages determine the claim."
+    },
+    {
+      "atomic_id": "DC-AO-028",
+      "source_id": "DC-FND-008",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "Climate-conditioned PUE comparisons require aligned weather, setpoints, control logic and system topology."
+    },
+    {
+      "atomic_id": "DC-AO-029",
+      "source_id": "DC-FND-008",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Agreement with another simulator validates implementation consistency but does not establish realized field performance."
+    },
+    {
+      "atomic_id": "DC-AO-030",
+      "source_id": "DC-FND-008",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Cooling technology can exchange electricity savings for water, cost, maintenance or heat-reuse consequences excluded from PUE."
+    },
+    {
+      "atomic_id": "DC-AO-031",
+      "source_id": "DC-FND-009",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U06",
+      "observation": "Redundant equipment creates a designed reserve whose value is fault ride-through, not average utilization."
+    },
+    {
+      "atomic_id": "DC-AO-032",
+      "source_id": "DC-FND-009",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Commissioning must test integrated failure sequences and activation time; component presence alone does not verify system resilience."
+    },
+    {
+      "atomic_id": "DC-AO-033",
+      "source_id": "DC-FND-009",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U06",
+      "observation": "Thermal ride-through is a state-dependent time budget set by initial temperature, airflow, thermal mass and fault scope."
+    },
+    {
+      "atomic_id": "DC-AO-034",
+      "source_id": "DC-FND-010",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "The same cooling design can be highly beneficial, marginal or unsuitable across climate and air-quality regimes."
+    },
+    {
+      "atomic_id": "DC-AO-035",
+      "source_id": "DC-FND-010",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "A modeled modular-facility maximum is not a measured campus-average saving."
+    },
+    {
+      "atomic_id": "DC-AO-036",
+      "source_id": "DC-FND-010",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "Free-cooling performance must include the temperature, humidity, enthalpy and contamination control envelope."
+    },
+    {
+      "atomic_id": "DC-AO-037",
+      "source_id": "DC-FND-011",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U07",
+      "observation": "Dispatchable facility flexibility is the feasible time-bounded change after workload and service constraints, not nameplate demand."
+    },
+    {
+      "atomic_id": "DC-AO-038",
+      "source_id": "DC-FND-011",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U07",
+      "observation": "Peak-power reduction in kW and energy reduction in kWh are different objectives and can move independently."
+    },
+    {
+      "atomic_id": "DC-AO-039",
+      "source_id": "DC-FND-011",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Lab-grade control results require a deployment and contract-realization bridge before being treated as production capability."
+    },
+    {
+      "atomic_id": "DC-AO-040",
+      "source_id": "DC-FND-012",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U07",
+      "observation": "Electrical, thermal and workload flexibility are separate products with different units, constraints and counterparties."
+    },
+    {
+      "atomic_id": "DC-AO-041",
+      "source_id": "DC-FND-012",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Waste heat becomes useful output only when temperature, timing, distance and a receiving heat demand align."
+    },
+    {
+      "atomic_id": "DC-AO-042",
+      "source_id": "DC-FND-012",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Operational pilots establish bounded technical feasibility, not campus-scale economic availability."
+    },
+    {
+      "atomic_id": "DC-AO-043",
+      "source_id": "DC-FND-013",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Data-center impacts are spatially clustered through land, grid, water, network and heat infrastructures even when services appear placeless."
+    },
+    {
+      "atomic_id": "DC-AO-044",
+      "source_id": "DC-FND-013",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U01",
+      "observation": "A campus map or metropolitan inventory is a jurisdiction-specific asset view, not a national capacity census."
+    },
+    {
+      "atomic_id": "DC-AO-045",
+      "source_id": "DC-FND-013",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Policy approval, announced mitigation and heat-network plans are intermediate states rather than realized operating outcomes."
+    },
+    {
+      "atomic_id": "DC-AO-046",
+      "source_id": "DC-FND-014",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Facility environmental intensity depends on both site resources and upstream utility geography, which need not share the same watershed or jurisdiction."
+    },
+    {
+      "atomic_id": "DC-AO-047",
+      "source_id": "DC-FND-014",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "Water volume and scarcity-weighted water impact answer different questions and must not be substituted."
+    },
+    {
+      "atomic_id": "DC-AO-048",
+      "source_id": "DC-FND-014",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U01",
+      "observation": "Geospatial facility and server datasets are coverage-limited inputs; mapped presence does not prove complete fleet coverage or energized load."
+    },
+    {
+      "atomic_id": "DC-AO-049",
+      "source_id": "DC-FND-014",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Siting can improve one environmental dimension while worsening another, so optimization is multi-objective."
+    },
+    {
+      "atomic_id": "DC-AO-050",
+      "source_id": "DC-FND-015",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "Whole-system circularity requires information and incentive alignment across design, manufacture, operation, reuse and end-of-life actors."
+    },
+    {
+      "atomic_id": "DC-AO-051",
+      "source_id": "DC-FND-015",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Awareness, participation, tools, prototypes and sector-wide material recovery are distinct realization states."
+    },
+    {
+      "atomic_id": "DC-AO-052",
+      "source_id": "DC-FND-015",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Extending equipment life or changing design can shift operational, embodied, supply-security and recovery impacts across lifecycle stages."
+    },
+    {
+      "atomic_id": "DC-AO-053",
+      "source_id": "DC-FND-015",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "Small project-engaged stakeholder samples support process learning but not estimates of industry-wide adoption."
+    },
+    {
+      "atomic_id": "DC-AO-054",
+      "source_id": "DC-GAP-016",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "A facility inventory assembled from surveys, permits, websites and repositories inherits nonresponse, timing, definition and duplication risk."
+    },
+    {
+      "atomic_id": "DC-AO-055",
+      "source_id": "DC-GAP-016",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "A composite siting score encodes chosen criteria and weights and is not observed environmental performance."
+    },
+    {
+      "atomic_id": "DC-AO-056",
+      "source_id": "DC-GAP-017",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Siting feasibility is co-produced by physical resources, municipal authority, ownership patterns and networked heat demand."
+    },
+    {
+      "atomic_id": "DC-AO-057",
+      "source_id": "DC-GAP-017",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "A municipal plan or incentive is an enabling state, not proof of construction, connection or operating integration."
+    },
+    {
+      "atomic_id": "DC-AO-058",
+      "source_id": "DC-GAP-018",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "A location inventory can support spatial-risk analysis while remaining unsuitable for MW or load aggregation."
+    },
+    {
+      "atomic_id": "DC-AO-059",
+      "source_id": "DC-GAP-018",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Environment affects facility reliability while facility operation affects environmental burdens; both directions belong in siting analysis."
+    },
+    {
+      "atomic_id": "DC-AO-060",
+      "source_id": "DC-GAP-019",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U07",
+      "observation": "A flexibility claim must state direction, response time, duration, recovery, baseline and availability window."
+    },
+    {
+      "atomic_id": "DC-AO-061",
+      "source_id": "DC-GAP-019",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U06",
+      "observation": "Dual-purposing reserve assets requires preserving their primary resilience function and accounting for state of charge or fuel."
+    },
+    {
+      "atomic_id": "DC-AO-062",
+      "source_id": "DC-GAP-020",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U06",
+      "observation": "Tier or redundancy labels cannot substitute for coupled failure, degraded-mode and repair modeling."
+    },
+    {
+      "atomic_id": "DC-AO-063",
+      "source_id": "DC-GAP-020",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "New equipment adoption needs reliability evidence for the integrated power, cooling and IT system, not component efficiency alone."
+    },
+    {
+      "atomic_id": "DC-AO-064",
+      "source_id": "DC-GAP-021",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "Repeated citations of one original estimate are not independent observations."
+    },
+    {
+      "atomic_id": "DC-AO-065",
+      "source_id": "DC-GAP-021",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U02",
+      "observation": "Energy totals are comparable only after reconstructing facility types, geography, year, equipment and electricity boundary."
+    },
+    {
+      "atomic_id": "DC-AO-066",
+      "source_id": "DC-GAP-022",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "A sixfold estimate spread can arise from incompatible statistical architectures rather than uncertainty around one common estimand."
+    },
+    {
+      "atomic_id": "DC-AO-067",
+      "source_id": "DC-GAP-022",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U01",
+      "observation": "Standard energy reporting still requires facility and capacity state fields to distinguish planned, connected, energized and consumed power."
+    },
+    {
+      "atomic_id": "DC-AO-068",
+      "source_id": "DC-GAP-023",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U01",
+      "observation": "Manufacturing capacity, shipments, installed servers, current or in-construction building area, rated power and annual energy are separate pipeline states."
+    },
+    {
+      "atomic_id": "DC-AO-069",
+      "source_id": "DC-GAP-023",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "An open scenario with explicit assumptions is auditable but remains a scenario until deployment and operation are observed."
+    },
+    {
+      "atomic_id": "DC-AO-070",
+      "source_id": "DC-GAP-024",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Waste-heat usefulness is a temperature-, distance-, timing- and sink-conditioned service rather than an automatic offset."
+    },
+    {
+      "atomic_id": "DC-AO-071",
+      "source_id": "DC-GAP-024",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U04",
+      "observation": "Heat-recovery technology suitability precedes retrofit feasibility, commercial integration and realized displaced energy."
+    },
+    {
+      "atomic_id": "DC-AO-072",
+      "source_id": "DC-GAP-025",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U08",
+      "observation": "Exposure pathway, modeled risk and observed health outcome must remain separate evidence states."
+    },
+    {
+      "atomic_id": "DC-AO-073",
+      "source_id": "DC-GAP-025",
+      "classification": "generalizable_candidate",
+      "candidate_family": "DC-U03",
+      "observation": "Local externality assessment requires receptor distance, timing and cumulative vulnerability, not facility presence alone."
+    }
+  ],
+  "candidate_universal_families": [
+    {
+      "candidate_id": "DC-U01",
+      "name": "Physical and operational capacity-state decomposition",
+      "working_definition": "Data-center capacity must be tracked through distinct project and operating states rather than represented by a single MW number.",
+      "required_state_chain": "announced or proposed -> permitted -> under construction -> commissioned -> connected -> energized -> IT-ready -> occupied -> utilized -> delivered service",
+      "status": "PROVISIONAL_FOUNDATION"
+    },
+    {
+      "candidate_id": "DC-U02",
+      "name": "Boundary- and denominator-conditioned facility efficiency",
+      "working_definition": "PUE, WUE, carbon intensity, utilization and functional-unit results answer different questions and are comparable only under aligned boundaries and denominators.",
+      "status": "PROVISIONAL_FOUNDATION"
+    },
+    {
+      "candidate_id": "DC-U03",
+      "name": "Geographic and subsystem burden migration",
+      "working_definition": "Siting, cooling, grid, efficiency or regulation can reduce one local burden while shifting another burden across resource, subsystem, time or jurisdiction.",
+      "status": "PROVISIONAL_FOUNDATION"
+    },
+    {
+      "candidate_id": "DC-U04",
+      "name": "Design-to-operation realization ladder",
+      "working_definition": "Modeled or demonstrated facility improvement becomes realized operating performance only through construction, commissioning, integration, adoption and stable operation.",
+      "status": "PROVISIONAL_FOUNDATION"
+    },
+    {
+      "candidate_id": "DC-U05",
+      "name": "Unit efficiency versus aggregate infrastructure demand",
+      "working_definition": "Lower resource use per unit of compute or facility service does not determine total infrastructure demand when volume, density, quality and adoption change.",
+      "status": "CROSS_DOMAIN_REINFORCEMENT_FROM_COMPUTE"
+    },
+    {
+      "candidate_id": "DC-U06",
+      "name": "Reliability reserve versus apparent utilization",
+      "working_definition": "Redundancy, thermal headroom and backup capacity are deliberately reserved states whose value is fault tolerance; average utilization alone misclassifies them.",
+      "status": "PROVISIONAL_FOUNDATION"
+    },
+    {
+      "candidate_id": "DC-U07",
+      "name": "Contract- and time-bounded flexibility envelope",
+      "working_definition": "Dispatchable data-center flexibility is the feasible change over a defined interval after workload, SLA, topology, storage and thermal constraints, not installed or nameplate load.",
+      "status": "PROVISIONAL_FOUNDATION"
+    },
+    {
+      "candidate_id": "DC-U08",
+      "name": "Measurement architecture and evidence coverage",
+      "working_definition": "Every fleet, capacity or impact claim inherits the coverage, boundaries, denominators, state definitions and selection mechanisms of its underlying registry or measurement system.",
+      "status": "PROVISIONAL_FOUNDATION"
+    }
+  ],
+  "coverage_grid": {
+    "project_state_and_pipeline": "MODERATE—state distinctions are well-supported; direct academic construction pipeline remains structurally scarce",
+    "capacity_definitions_and_utilization": "STRONG",
+    "construction_commissioning_and_ramp": "MODERATE—commissioning, reliability and current/in-construction proxy limits covered; direct schedule data thin",
+    "siting_and_geographic_concentration": "STRONG",
+    "land_and_zoning": "STRONG_INITIAL",
+    "power_interconnection_and_energy": "STRONG_INITIAL—statistics and grid-service constraints strong; queue-to-energization observations remain nonacademic/runtime evidence",
+    "cooling_water_and_thermal_management": "STRONG",
+    "modular_and_phased_buildout": "MODERATE—modular and state grammar covered; campus phase schedules remain thin",
+    "reliability_redundancy_and_resilience": "STRONG",
+    "workload_and_facility_coupling": "STRONG",
+    "registry_sample_and_measurement_bias": "STRONG",
+    "local_economic_and_environmental_externalities": "STRONG_INITIAL—environmental, planning and health pathways covered; causal fiscal/employment evidence remains scarce",
+    "lifecycle_materials_and_circularity": "STRONG_INITIAL"
+  },
+  "candidate_queue": [
+    "peer-reviewed construction-to-commissioning and phased energization evidence",
+    "interconnection queue, contracted power and actual energized-load measurement",
+    "project-registry coverage and duplicate or state-classification bias",
+    "campus phasing and modular expansion under demand uncertainty",
+    "local fiscal, employment, housing and distributional effects",
+    "land-use and zoning comparisons beyond a single mature gateway market",
+    "real-facility measurement of redundancy, utilization and ramp after commissioning",
+    "qualifying long-form academic synthesis for passage analysis"
+  ],
+  "screening_notes": [
+    {
+      "candidate": "Industry project-pipeline reports and live campus announcements",
+      "disposition": "NOT_ADMITTED_AS_ACADEMIC_CORPUS_EVIDENCE",
+      "reason": "Useful to deterministic runtime evidence, but not a substitute for qualifying whole-text academic rhetoric sources."
+    },
+    {
+      "candidate": "Commissioning trade articles",
+      "disposition": "HELD_AS_DISCOVERY_CONTEXT_ONLY",
+      "reason": "Directly relevant terminology but currently fail the journal and normalized academic-admission gates."
+    },
+    {
+      "candidate": "Environmental footprints of the data center service sector in Sweden",
+      "disposition": "HELD_OUT",
+      "reason": "Directly relevant and journal gate passes, but the accessible page exposed abstract and references rather than verified whole text during this pass."
+    },
+    {
+      "candidate": "2024 United States Data Center Energy Usage Report",
+      "disposition": "RUNTIME_OR_DISCOVERY_CONTEXT_ONLY",
+      "reason": "Authoritative technical report, but the frozen academic admission gate requires a JIF-qualified journal source."
+    },
+    {
+      "candidate": "Data-center interconnection queue and phantom-load reports",
+      "disposition": "RUNTIME_OR_DISCOVERY_CONTEXT_ONLY",
+      "reason": "Directly relevant to current project state but available evidence is primarily regulatory, consulting or news material rather than qualifying academic whole text."
+    },
+    {
+      "candidate": "Subsidizing the Cloud: U.S. State Incentives to Data Centers",
+      "disposition": "HELD_FOR_LATER",
+      "reason": "Potentially valuable causal fiscal evidence, but currently a working paper and not yet admitted through the JIF-qualified journal gate."
+    },
+    {
+      "candidate": "Geospatial suitability analysis for data center placement: Texas",
+      "disposition": "HELD_OUT",
+      "reason": "Journal gate passes, but verified whole text was not available during this pass."
+    }
+  ],
+  "handoff": {
+    "next_action": "Run saturation challenge 1 on five new qualifying whole-text papers, count genuinely new generalizable observations, and test whether any material gap reopens.",
+    "gap_assessment": "The targeted batch closed the measurement, registry, municipal planning, reliability and externality-pathway gaps. Direct academic evidence for commercial construction schedules, interconnection queues, and realized local fiscal effects remains structurally scarce and must be labeled rather than filled with trade reports.",
+    "convergence_signal": "Twelve long-form analyses across governance and estimate-provenance texts mapped entirely into DC-U01 through DC-U08 and produced zero new top-level families.",
+    "do_not_do": [
+      "Do not call the domain complete before long-form and two saturation challenges.",
+      "Do not replace missing academic pipeline evidence with trade claims.",
+      "Do not aggregate site counts, building area, equipment shipments or published MW into energized load."
+    ]
+  },
+  "long_form_analysis": {
+    "status": "COMPLETE",
+    "design": "Twelve substantial passage analyses from two qualifying whole texts: one qualitative urban-governance case and one quantitative source-audit review.",
+    "source_selection_rationale": "The pairing challenges substantive infrastructure rules and evidence-provenance rules simultaneously. It avoids mistaking repeated facility-efficiency papers for broad domain coverage.",
+    "sources": [
+      {
+        "source_id": "DC-FND-013",
+        "title": "How data centers have come to matter: Governing the spatial and environmental footprint of the 'digital gateway to Europe'",
+        "whole_text_basis": "Open-access author/article text reviewed across framing, methods, empirical history, policy evolution and conclusion.",
+        "analyses": [
+          {
+            "passage_id": "DC-LF-001",
+            "passage_location": "Introduction, materiality framing (article pp. 757–758)",
+            "analytical_theme": "Cloud abstraction versus local physical infrastructure",
+            "faithful_paraphrase": "The authors turn the cloud metaphor inside out: outsourced computation still depends on locally sited power, backup, cooling and fiber systems, so digital services create geographically specific land and resource claims.",
+            "rhetorical_function": "Reframes an apparently placeless service as urban infrastructure.",
+            "evidentiary_move": "Links the service abstraction to named physical subsystems and their local utility connections.",
+            "inference_boundary": "This establishes material dependence, not the magnitude of any particular site burden.",
+            "mapped_families": [
+              "DC-U01",
+              "DC-U03"
+            ],
+            "runtime_implication": "Require a physical boundary and site/jurisdiction tag before interpreting a digital-capacity claim."
+          },
+          {
+            "passage_id": "DC-LF-002",
+            "passage_location": "Introduction, growth and 2019 moratorium (article pp. 758–759)",
+            "analytical_theme": "Growth crossing infrastructure and planning thresholds",
+            "faithful_paraphrase": "Rapid cluster growth became politically salient only after grid and land constraints collided with permissive zoning; the moratorium marks a change in governance state rather than a simple reduction in announced demand.",
+            "rhetorical_function": "Explains how an infrastructure issue moved from passive support to active regulation.",
+            "evidentiary_move": "Sequences growth, constraint recognition, municipal concern and permit suspension.",
+            "inference_boundary": "A moratorium changes the permitted project pipeline; it does not by itself disclose connected, energized or occupied capacity.",
+            "mapped_families": [
+              "DC-U01",
+              "DC-U03"
+            ],
+            "runtime_implication": "Encode regulatory events as state-transition constraints, never as equivalent to canceled or removed MW."
+          },
+          {
+            "passage_id": "DC-LF-003",
+            "passage_location": "Research approach and interview design (article pp. 759–760)",
+            "analytical_theme": "Triangulation under sparse secondary evidence",
+            "faithful_paraphrase": "Because prior empirical urban studies were thin, the authors combined policy and industry documents, news discourse, observation and sixteen semi-structured stakeholder interviews selected through ecosystem mapping and snowballing.",
+            "rhetorical_function": "Makes the case-study evidence architecture explicit.",
+            "evidentiary_move": "Triangulates multiple source classes while reporting participant categories and recruitment logic.",
+            "inference_boundary": "The design supports process tracing and perspective comparison, not statistical prevalence or causal effect size.",
+            "mapped_families": [
+              "DC-U08"
+            ],
+            "runtime_implication": "Preserve study design and sampling mechanism so qualitative process evidence is not converted into fleet-wide frequency claims."
+          },
+          {
+            "passage_id": "DC-LF-004",
+            "passage_location": "Empirical analysis, renewable-electricity claims and local contestation (article p. 768)",
+            "analytical_theme": "Contractual greenness versus regional scarcity",
+            "faithful_paraphrase": "Operator claims of high renewable procurement coexist with a power system where renewable supply is scarce and local residents contest who receives that supply; an accounting claim therefore does not settle the distributional question.",
+            "rhetorical_function": "Contrasts industry environmental claims with territorial resource conflict.",
+            "evidentiary_move": "Places procurement assertions beside grid context and community response.",
+            "inference_boundary": "The passage does not prove that a particular contract caused additional renewable generation or displaced another user.",
+            "mapped_families": [
+              "DC-U02",
+              "DC-U03"
+            ],
+            "runtime_implication": "Separate contractual attribution, physical grid mix, additionality and local opportunity cost."
+          },
+          {
+            "passage_id": "DC-LF-005",
+            "passage_location": "Conclusion, politicization and policy cascade (article pp. 775–776)",
+            "analytical_theme": "Externalities becoming governable through visibility",
+            "faithful_paraphrase": "Resource and land demands remained politically muted until protests, journalism, utility complaints and expert reports made them visible; subsequent rules attempted to align growth with grid and land limits.",
+            "rhetorical_function": "Synthesizes the mechanism by which hidden infrastructure entered formal planning.",
+            "evidentiary_move": "Uses temporal process tracing from low visibility to controversy and policy response.",
+            "inference_boundary": "The sequence supports a governance mechanism in this case, not a universal timing law for every market.",
+            "mapped_families": [
+              "DC-U03",
+              "DC-U08"
+            ],
+            "runtime_implication": "Treat registry and disclosure coverage as causal inputs to governance capacity, while retaining case-specific calibration."
+          },
+          {
+            "passage_id": "DC-LF-006",
+            "passage_location": "Conclusion, rebound, temporal mismatch and cross-policy conflict (article p. 776)",
+            "analytical_theme": "Local efficiency cannot resolve aggregate territorial competition",
+            "faithful_paraphrase": "Facility greening and early circular initiatives do not remove the aggregate land and energy consequences of continued cluster expansion, especially where data-center investment cycles do not align with grid and heat-network planning.",
+            "rhetorical_function": "Limits the reach of efficiency and circular-economy narratives.",
+            "evidentiary_move": "Connects rebound, opacity and mismatched infrastructure timelines to conflicts with housing, mobility and heating goals.",
+            "inference_boundary": "The passage diagnoses persistent governance constraints; it does not quantify net welfare or prove that all growth is socially negative.",
+            "mapped_families": [
+              "DC-U03",
+              "DC-U04",
+              "DC-U05"
+            ],
+            "runtime_implication": "Evaluate unit improvements inside an aggregate-demand and multi-infrastructure timeline, not as standalone closure of the burden."
+          }
+        ]
+      },
+      {
+        "source_id": "DC-GAP-021",
+        "title": "Sources of data center energy estimates: A comprehensive review",
+        "whole_text_basis": "Author manuscript and journal text reviewed across framing, methods, modeling typology, results, provenance audit and stakeholder recommendations.",
+        "analyses": [
+          {
+            "passage_id": "DC-LF-007",
+            "passage_location": "Summary and review design (Joule 6, pp. 2032–2034)",
+            "analytical_theme": "Estimate reliability as a source-chain property",
+            "faithful_paraphrase": "The review does not choose a single preferred energy number; it evaluates 258 estimates from 46 publications by tracing the 676 sources underneath them.",
+            "rhetorical_function": "Moves the object of analysis from headline estimates to their evidentiary ancestry.",
+            "evidentiary_move": "Constructs a source-level audit across a defined publication universe.",
+            "inference_boundary": "Source quality affects confidence but does not mechanically determine whether a numeric estimate is high or low.",
+            "mapped_families": [
+              "DC-U08"
+            ],
+            "runtime_implication": "Store source lineage and audit coverage with every aggregate estimate; a citation count is not a provenance graph."
+          },
+          {
+            "passage_id": "DC-LF-008",
+            "passage_location": "Modeling approaches: bottom-up, top-down and extrapolation (Joule 6, methods/review framework)",
+            "analytical_theme": "Method class determines inputs and failure modes",
+            "faithful_paraphrase": "Bottom-up studies assemble equipment and infrastructure components, top-down studies begin from measured aggregate consumption, and extrapolations project from a baseline using an assumed demand-energy relationship.",
+            "rhetorical_function": "Provides a typology for comparing unlike estimates.",
+            "evidentiary_move": "Classifies models by where measurement enters and which assumptions bridge to the reported total.",
+            "inference_boundary": "No method is intrinsically accurate; each inherits distinct data gaps, aggregation limits and projection assumptions.",
+            "mapped_families": [
+              "DC-U02",
+              "DC-U08"
+            ],
+            "runtime_implication": "Make estimation method a required field and route validation checks by method class."
+          },
+          {
+            "passage_id": "DC-LF-009",
+            "passage_location": "Projection analysis and horizon comparison (Joule 6, results)",
+            "analytical_theme": "Uncertainty expands with forecast horizon",
+            "faithful_paraphrase": "Historical estimates can incorporate observed inputs, while future values require assumptions about shipments, efficiency and demand; the reviewed forecast range widens as the horizon extends.",
+            "rhetorical_function": "Explains why divergent projections should not be collapsed into a point estimate.",
+            "evidentiary_move": "Compares the dispersion of estimates by target year and distinguishes observed from assumed inputs.",
+            "inference_boundary": "A wider range signals model uncertainty, not proof that every scenario is equally plausible.",
+            "mapped_families": [
+              "DC-U04",
+              "DC-U08"
+            ],
+            "runtime_implication": "Attach horizon, scenario assumptions and uncertainty form to forecasts; prohibit silent mixing of historical estimates and projections."
+          },
+          {
+            "passage_id": "DC-LF-010",
+            "passage_location": "Source composition and peer-review audit (Joule 6, results)",
+            "analytical_theme": "Authority cannot be inferred from a peer-reviewed wrapper",
+            "faithful_paraphrase": "Only about 31% of audited sources were peer reviewed, while roughly 38% were non-peer-reviewed reports; a scholarly article can therefore rest materially on industry or grey-literature inputs.",
+            "rhetorical_function": "Tests the evidentiary depth behind formal publication labels.",
+            "evidentiary_move": "Counts and categorizes underlying sources rather than treating the citing paper as the only quality unit.",
+            "inference_boundary": "Non-peer-reviewed data are not automatically false, but require explicit provenance and uncertainty treatment.",
+            "mapped_families": [
+              "DC-U08"
+            ],
+            "runtime_implication": "Apply quality metadata at the atomic source/input level, not just the container-publication level."
+          },
+          {
+            "passage_id": "DC-LF-011",
+            "passage_location": "Source availability and private-data dependence (Joule 6, results)",
+            "analytical_theme": "Discoverability and reproducibility constraints",
+            "faithful_paraphrase": "The literature relies heavily on private IDC and Cisco inputs; some links are broken and some citations are too incomplete to locate, leaving calculations difficult to reproduce even when the headline paper remains accessible.",
+            "rhetorical_function": "Shows how access failures propagate into estimate confidence.",
+            "evidentiary_move": "Audits private-source dependence, link survival and citation sufficiency.",
+            "inference_boundary": "Inaccessibility lowers verifiability; it does not by itself reveal the direction or magnitude of numeric bias.",
+            "mapped_families": [
+              "DC-U08"
+            ],
+            "runtime_implication": "Track durable locators, retrieval date, access status and replacement/archive evidence as first-class fields."
+          },
+          {
+            "passage_id": "DC-LF-012",
+            "passage_location": "Recommendations for end users, researchers and policymakers (Joule 6, discussion)",
+            "analytical_theme": "Role-specific evidence discipline",
+            "faithful_paraphrase": "Users should inspect publication age, estimation basis and visible calculations; researchers should expose data and model assumptions; policymakers should improve standardized measurement and disclosure.",
+            "rhetorical_function": "Converts the audit findings into controls for three decision roles.",
+            "evidentiary_move": "Maps observed provenance failures to practical transparency and reporting remedies.",
+            "inference_boundary": "Transparency enables scrutiny but cannot substitute for representative measurement or valid causal design.",
+            "mapped_families": [
+              "DC-U08"
+            ],
+            "runtime_implication": "Expose a compact estimate card containing vintage, boundary, method, assumptions, source availability and reproducibility status."
+          }
+        ]
+      }
+    ],
+    "family_assessment": {
+      "new_top_level_families": 0,
+      "promoted_families": [],
+      "rejected_families": [],
+      "strengthened_families": [
+        "DC-U01",
+        "DC-U02",
+        "DC-U03",
+        "DC-U04",
+        "DC-U05",
+        "DC-U08"
+      ],
+      "not_directly_exercised": [
+        "DC-U06",
+        "DC-U07"
+      ],
+      "conclusion": "The long-form readings add mechanism, method and inference boundaries but no ninth universal family. Formal promotion remains deferred until both saturation batches pass."
+    }
+  }
+}

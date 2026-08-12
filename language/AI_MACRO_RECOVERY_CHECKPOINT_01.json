@@ -1,0 +1,125 @@
+{
+  "artifact_type": "ai_macro_interruption_recovery_checkpoint",
+  "checkpoint_version": "1.0",
+  "checkpoint_number": 1,
+  "created_date": "2026-08-12",
+  "status": "TRANSCRIPT_HANDOFF_STATUS_PASS_COMPLETE__JSON_CORPUS_AUDIT_PENDING",
+  "purpose": "Durable recovery state after full reading of the transferred conversation transcript, canonical handoff, and mutable project-status document.",
+  "sources_read_in_full": [
+    {
+      "file": "Pasted markdown(9).md",
+      "sha256": "680c626c4566fb1af5f1bf494c397dccdd4fe5f6e976531dbe6990def604c93b",
+      "role": "transferred conversation record"
+    },
+    {
+      "file": "AI_MACRO_CORPUS_PROJECT_CANONICAL_HANDOFF_v1.1(3).md",
+      "sha256": "e63b51fbf385a3113d0fb2ebedbb4990cb33eb4c4a902b3fdcda985cd68369c8",
+      "role": "mission and invariant methodology source of truth"
+    },
+    {
+      "file": "AI_MACRO_CORPUS_PROJECT_STATUS_CURRENT(1)(1).md",
+      "sha256": "0a358791f2658ac0f530094d8e035dbb9caaef0f46195bd29b29e49780565702",
+      "role": "older mutable progress statement"
+    }
+  ],
+  "authority_rules": {
+    "mission_and_method": "canonical handoff",
+    "domain_progress": "latest valid domain JSON artifact, after internal integrity and lineage checks",
+    "conversation_record": "used to recover post-artifact actions and identify delivery failures; narrative claims do not override durable artifacts without verification",
+    "production_behavior": "supplied codebase when available; production code is not to be changed during corpus acquisition"
+  },
+  "project_invariants": [
+    "Build eleven independent domain language/reasoning corpora before deriving the cross-domain editorial framework.",
+    "Academic works teach analytical language and reasoning; they do not become runtime factual authority.",
+    "The deterministic application retains facts, calculations, provenance, evidence selection, validation, and publication control.",
+    "Only one domain is active at a time.",
+    "Admission states remain distinct: found, screened, full text accessed, fully analyzed, admitted.",
+    "Abstracts, search snippets, publisher previews, citations, and inferred outlines do not satisfy whole-text review.",
+    "Whole-text review must cover framing, theory/literature where present, methods/design, results, discussion/implications, and limitations/conclusion.",
+    "JIF >= 2.0 is a binary gate, not a ranking signal.",
+    "Completion requires conceptual coverage, study-design diversity, two qualifying saturation batches after foundation, long-form analysis, normalization, provenance, and integrity audit.",
+    "Preserve atomic observations and anti-patterns; do not legislate final universal rules before all eleven domains are complete.",
+    "Create periodic versioned JSON checkpoints and never call a working artifact COMPLETE.",
+    "Freeze completed domain artifacts; corrections require a new version rather than silent rewriting."
+  ],
+  "recovered_progress_state": {
+    "market": {
+      "narrative_state": "COMPLETE",
+      "claimed_authoritative_artifact": "AI_MACRO_MARKET_CORPUS_COMPLETE_v1.0.json",
+      "verification_state": "pending full JSON audit"
+    },
+    "finance": {
+      "older_status_document_state": "article literature saturated at working v0.5; long-form phase pending",
+      "later_transcript_state": "Finance COMPLETE was independently reconstructed and delivered",
+      "attached_candidate_artifact": "AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.0(2).json",
+      "verification_state": "pending full JSON audit"
+    },
+    "compute": {
+      "active_domain": true,
+      "revoked_state": "The earlier 45-paper/219-atomic COMPLETE claim was explicitly revoked because the claimed whole-text verification was not defensible and the artifact was not durably delivered.",
+      "preserved_scaffold": [
+        "45-paper candidate population",
+        "15 -> 10 -> 5 -> 5 batch map",
+        "gap map",
+        "three provisional candidates CMP-U01 through CMP-U03",
+        "provisional language families, mappings, architectures, and anti-patterns"
+      ],
+      "repair_method": "audit and enrich the existing scaffold; do not discard it and do not constrain new reading to confirmation of it",
+      "verified_narrative_milestone": "30 whole-text-audited and admitted articles after a repaired 15 + 10 + 5 foundation sequence",
+      "exact_continuation_point": "formal broad five-paper saturation challenge #1 was underway; its first paper had been substantively audited and yielded a prediction -> intervention -> realized outcome boundary, but no durable Compute JSON checkpoint was delivered",
+      "durable_artifact_state": "none attached",
+      "confidence_note": "The continuation point is recovered from the transcript and must be converted into a durable working JSON using source-level provenance before further research is claimed."
+    },
+    "data_centers": {
+      "state": "NOT STARTED",
+      "correction": "A prior claim that Data Centers had begun was explicitly retracted."
+    }
+  },
+  "compute_candidates_recovered_from_transcript": [
+    {
+      "id": "CMP-U01",
+      "label": "nominal capability versus effective usable capacity",
+      "state": "strongly reinforced during repaired whole-text audit; formal corpus encoding pending"
+    },
+    {
+      "id": "CMP-U02",
+      "label": "constraint migration under scaling",
+      "state": "strongly reinforced during repaired whole-text audit; formal corpus encoding pending"
+    },
+    {
+      "id": "CMP-U03",
+      "label": "unit efficiency versus aggregate scale demand",
+      "state": "directly supported during repaired whole-text audit; formal corpus encoding pending"
+    }
+  ],
+  "known_contradictions_and_resolutions": [
+    {
+      "issue": "The mutable status document says Finance long-form work is pending, while the later transcript and attached files indicate Finance COMPLETE.",
+      "resolution": "Treat the status document as historically older; determine current Finance authority by auditing the attached COMPLETE JSON."
+    },
+    {
+      "issue": "A prior bot claimed Compute COMPLETE and Data Centers started.",
+      "resolution": "Both claims were explicitly corrected. Compute COMPLETE is revoked; Data Centers is not started."
+    },
+    {
+      "issue": "The Compute research scaffold was initially proposed for deletion and restart.",
+      "resolution": "User-directed method is audit-and-enrich: preserve candidate selection and outline as provisional work, then earn admissions through genuine whole-text review."
+    }
+  ],
+  "delivery_protocol": {
+    "periodic_json_updates_required": true,
+    "checkpoint_cadence": "after each meaningful recoverable stage and during extended research batches",
+    "delivery_rule": "A checkpoint is not reported as delivered until the file is durably saved and linked.",
+    "honesty_rule": "Inherited or transcript-recovered claims remain labeled as such until independently verified from source artifacts."
+  },
+  "next_action": "Read, parse, validate, and compare every attached JSON corpus artifact in full; confirm Market and Finance completed artifacts; reconstruct exact Market checkpoint lineage; then issue checkpoint 2 with verified counts, integrity findings, and the safe Compute continuation state.",
+  "do_not_do": [
+    "Do not begin new Compute research before the attached corpus audit is complete.",
+    "Do not call the recovered Compute narrative a durable corpus.",
+    "Do not revive the revoked fake-complete Compute state.",
+    "Do not restart Compute from zero or discard the existing scaffold.",
+    "Do not begin Data Centers.",
+    "Do not modify production AI Macro code.",
+    "Do not build the cross-domain framework."
+  ]
+}

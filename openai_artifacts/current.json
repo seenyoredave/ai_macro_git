@@ -1,24 +1,24 @@
 {
   "artifact_version": "2.1.0",
-  "attempt_id": "20260811T091804773186Z_e927520b_b47c57d6",
-  "evidence_snapshot_id": "e927520bf1627b043a4f716b",
-  "generated_at": "2026-08-11T09:20:31.140496+00:00",
+  "attempt_id": "20260812T163800054962Z_816a37b2_e1f12bc0",
+  "evidence_snapshot_id": "816a37b2c7ecbb4ebe5cc916",
+  "generated_at": "2026-08-12T16:40:37.456785+00:00",
   "generation": {
     "domain": {
-      "elapsed_sec": 106.00300854200032,
+      "elapsed_sec": 105.28666583297309,
       "input_tokens": 5922,
       "model": "gpt-5.6-sol",
-      "output_tokens": 5941,
-      "response_id": "resp_0a92c1a95c663908016a7ae8ce8c58819b8acda21b28d7451c",
-      "total_tokens": 11863
+      "output_tokens": 6033,
+      "response_id": "resp_07e09ba85d7a9d50016a7ca1691d6c819abf35ece055dd781f",
+      "total_tokens": 11955
     },
     "macro": {
-      "elapsed_sec": 40.0592946249526,
-      "input_tokens": 7077,
+      "elapsed_sec": 52.07003145792987,
+      "input_tokens": 7008,
       "model": "gpt-5.6-sol",
-      "output_tokens": 1905,
-      "response_id": "resp_0448f36414ad0a4c016a7ae937d8f88199b6bb30109cb49b8c",
-      "total_tokens": 8982
+      "output_tokens": 2606,
+      "response_id": "resp_069c17c5c34a940c016a7ca1d1ed108198b94c4659f09feed6",
+      "total_tokens": 9614
     }
   },
   "model": "gpt-5.6-sol",
@@ -28,15 +28,15 @@
     "macro": "macro-read-4.0"
   },
   "publication": {
-    "expires_at": "2026-08-12T17:40:44.048695+00:00",
+    "expires_at": "2026-08-13T16:40:37.458691+00:00",
     "lease_hours": 24,
-    "published_at": "2026-08-11T17:40:44.048695+00:00",
-    "renewal_count": 1,
-    "source": "manual_reapply"
+    "published_at": "2026-08-12T16:40:37.458691+00:00",
+    "renewal_count": 0,
+    "source": "generation"
   },
   "reads": {
     "adoption": {
-      "analysis": "Some generative-AI use reaches 61.8% of surveyed adults, showing exposure well beyond daily users. Current business use is 21.5%, far below reported consumer use. Expected business use sits only modestly above current use, so stated plans imply incremental rather than wholesale near-term deployment. Large paid business-user and enterprise-seat counts confirm commercial demand without making business use economy-wide.",
+      "analysis": "Some generative-AI use reaches 61.8% of working-age adults, compared with 21.5% of businesses reporting current use. Expected business use exceeds current use by only 2.8 points, so stated near-term intent does not close the deployment gap. Paid consumer and enterprise accounts show monetization, but provider totals are not a national paid-adoption rate. Business adoption remains the narrower channel for turning widespread individual familiarity into organizational use.",
       "claim_support": [
         {
           "fact_ids": [
@@ -45,50 +45,52 @@
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Consumer use is broad, but business deployment remains much narrower"
+          "text": "Consumer use is broad, while business deployment remains narrower"
         },
         {
           "fact_ids": [
             "adoption.consumer_overall_pct",
-            "adoption.consumer_daily_pct"
+            "adoption.current_business_use_pct"
           ],
           "field": "analysis[0]",
-          "inference": "interpretation",
-          "text": "Some generative-AI use reaches 61.8% of surveyed adults, showing exposure well beyond daily users."
+          "inference": "observation",
+          "text": "Some generative-AI use reaches 61.8% of working-age adults, compared with 21.5% of businesses reporting current use."
         },
         {
           "fact_ids": [
-            "adoption.current_business_use_pct",
-            "adoption.consumer_overall_pct"
+            "adoption.expected_adoption_gap_ppts",
+            "adoption.expected_business_use_pct",
+            "adoption.current_business_use_pct"
           ],
           "field": "analysis[1]",
-          "inference": "observation",
-          "text": "Current business use is 21.5%, far below reported consumer use."
+          "inference": "interpretation",
+          "text": "Expected business use exceeds current use by only 2.8 points, so stated near-term intent does not close the deployment gap."
         },
         {
           "fact_ids": [
-            "adoption.expected_business_use_pct",
-            "adoption.current_business_use_pct",
-            "adoption.expected_adoption_gap_ppts"
+            "adoption.chatgpt_subscribers_m",
+            "adoption.openai_paying_business_users_m",
+            "adoption.gemini_enterprise_paid_seats_m",
+            "adoption.implied_subscriber_share_pct"
           ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "Expected business use sits only modestly above current use, so stated plans imply incremental rather than wholesale near-term deployment."
+          "text": "Paid consumer and enterprise accounts show monetization, but provider totals are not a national paid-adoption rate."
         },
         {
           "fact_ids": [
-            "adoption.openai_paying_business_users_m",
-            "adoption.gemini_enterprise_paid_seats_m",
-            "adoption.current_business_use_pct"
+            "adoption.consumer_overall_pct",
+            "adoption.current_business_use_pct",
+            "adoption.consumer_work_pct"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "Large paid business-user and enterprise-seat counts confirm commercial demand without making business use economy-wide."
+          "text": "Business adoption remains the narrower channel for turning widespread individual familiarity into organizational use."
         }
       ],
       "domain": "adoption",
       "generator": "openai",
-      "headline": "Consumer use is broad, but business deployment remains much narrower",
+      "headline": "Consumer use is broad, while business deployment remains narrower",
       "label": "Adoption",
       "references": [
         {
@@ -108,10 +110,10 @@
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "compute": {
-      "analysis": "Computer and semiconductor output are both growing, showing that the existing production base is already responding. This production growth coincides with stronger information-processing investment and relatively high computer-equipment capacity use. Announced U.S. projects cover all four tracked supply-chain layers and concentrate expected spending in core AI manufacturing. Because those projects remain announcements, domestic coverage is broader on paper than the operating-capacity evidence establishes.",
+      "analysis": "Computer and semiconductor output are both growing, showing current production is expanding across two key supply layers. Announced domestic projects cover all four tracked critical layers and carry $362.0B of expected investment. Those commitments broaden planned domestic supply, but they are not current operating capacity. Alphabet\u2019s reported serving-cost reduction shows that efficiency is also changing compute economics within a major provider.",
       "claim_support": [
         {
           "fact_ids": [
@@ -121,7 +123,7 @@
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Current manufacturing growth sits beneath a much larger announced buildout"
+          "text": "Manufacturing is expanding before announced capacity becomes operational"
         },
         {
           "fact_ids": [
@@ -130,43 +132,40 @@
           ],
           "field": "analysis[0]",
           "inference": "interpretation",
-          "text": "Computer and semiconductor output are both growing, showing that the existing production base is already responding."
-        },
-        {
-          "fact_ids": [
-            "compute.information_processing_investment_growth",
-            "compute.computer_utilization",
-            "compute.computer_output_growth"
-          ],
-          "field": "analysis[1]",
-          "inference": "observation",
-          "text": "This production growth coincides with stronger information-processing investment and relatively high computer-equipment capacity use."
+          "text": "Computer and semiconductor output are both growing, showing current production is expanding across two key supply layers."
         },
         {
           "fact_ids": [
             "compute.critical_layers_covered",
             "compute.critical_layers_total",
-            "compute.core_ai_capex_b",
             "compute.project_capex_b"
           ],
-          "field": "analysis[2]",
+          "field": "analysis[1]",
           "inference": "observation",
-          "text": "Announced U.S. projects cover all four tracked supply-chain layers and concentrate expected spending in core AI manufacturing."
+          "text": "Announced domestic projects cover all four tracked critical layers and carry $362.0B of expected investment."
         },
         {
           "fact_ids": [
-            "compute.project_sites",
             "compute.project_capex_b",
+            "compute.project_sites",
             "compute.critical_layers_covered"
+          ],
+          "field": "analysis[2]",
+          "inference": "interpretation",
+          "text": "Those commitments broaden planned domestic supply, but they are not current operating capacity."
+        },
+        {
+          "fact_ids": [
+            "compute.serving_cost_reduction_pct"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "Because those projects remain announcements, domestic coverage is broader on paper than the operating-capacity evidence establishes."
+          "text": "Alphabet\u2019s reported serving-cost reduction shows that efficiency is also changing compute economics within a major provider."
         }
       ],
       "domain": "compute",
       "generator": "openai",
-      "headline": "Current manufacturing growth sits beneath a much larger announced buildout",
+      "headline": "Manufacturing is expanding before announced capacity becomes operational",
       "label": "Compute",
       "references": [
         {
@@ -194,10 +193,10 @@
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "connectivity": {
-      "analysis": "Exchange points, interconnection facilities and international cable systems provide multiple paths for moving data across the country and abroad. Federal middle-mile fiber extends that national foundation into additional routes. Even so, 22 states combine data-center development with limited visible public interconnection depth. National reach therefore enables the buildout unevenly because local connection options remain thin in part of the campus footprint.",
+      "analysis": "Public records show 168 active exchanges and 90 international cable systems, establishing a substantial national connectivity base. That national reach cannot establish capacity at individual campuses because public network depth varies by location. Nineteen states combine data-center development with limited visible public interconnection depth, revealing a local access gap within the wider network. Federally supported middle-mile fiber expands the route base, though campus usability still depends on local connections.",
       "claim_support": [
         {
           "fact_ids": [
@@ -207,48 +206,49 @@
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "National networks do not guarantee deep interconnection near every campus"
+          "text": "Extensive national connectivity does not ensure local interconnection depth"
         },
         {
           "fact_ids": [
             "connectivity.active_ixps",
-            "connectivity.interconnection_facilities_or_floor",
             "connectivity.international_submarine_cable_systems"
           ],
           "field": "analysis[0]",
           "inference": "interpretation",
-          "text": "Exchange points, interconnection facilities and international cable systems provide multiple paths for moving data across the country and abroad."
+          "text": "Public records show 168 active exchanges and 90 international cable systems, establishing a substantial national connectivity base."
         },
         {
           "fact_ids": [
-            "connectivity.middle_mile_new_fiber_miles"
+            "connectivity.high_capacity_low_public_connectivity_states",
+            "connectivity.campuses_screened",
+            "connectivity.population_centers_with_ixp",
+            "connectivity.population_centers_total"
           ],
           "field": "analysis[1]",
           "inference": "interpretation",
-          "text": "Federal middle-mile fiber extends that national foundation into additional routes."
+          "text": "That national reach cannot establish capacity at individual campuses because public network depth varies by location."
         },
         {
           "fact_ids": [
             "connectivity.high_capacity_low_public_connectivity_states"
           ],
           "field": "analysis[2]",
-          "inference": "observation",
-          "text": "Even so, 22 states combine data-center development with limited visible public interconnection depth."
+          "inference": "interpretation",
+          "text": "Nineteen states combine data-center development with limited visible public interconnection depth, revealing a local access gap within the wider network."
         },
         {
           "fact_ids": [
-            "connectivity.high_capacity_low_public_connectivity_states",
-            "connectivity.campuses_screened",
-            "connectivity.active_ixps"
+            "connectivity.middle_mile_new_fiber_miles",
+            "connectivity.high_capacity_low_public_connectivity_states"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "National reach therefore enables the buildout unevenly because local connection options remain thin in part of the campus footprint."
+          "text": "Federally supported middle-mile fiber expands the route base, though campus usability still depends on local connections."
         }
       ],
       "domain": "connectivity",
       "generator": "openai",
-      "headline": "National networks do not guarantee deep interconnection near every campus",
+      "headline": "Extensive national connectivity does not ensure local interconnection depth",
       "label": "Connectivity",
       "references": [
         {
@@ -272,10 +272,10 @@
           "source_url": "https://broadbandusa.ntia.gov/news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "data_center": {
-      "analysis": "Development sites carry 287.2 GW of published capacity, compared with 22.9 GW for operating sites. This gap shows how much of the disclosed buildout still depends on projects moving from development into service. Development site counts are also substantial relative to the operating base, reinforcing that conversion remains the key step. Capacity is published for only part of active campus records, so pipeline scale is clearer than eventual energized load.",
+      "analysis": "Development records contain far more published capacity than operating records, making project conversion the key gap. Published development capacity is 287.2 GW versus 22.9 GW for operating sites. Only 35.6% of active campus records have canonical published capacity, so scale comparisons rest on incomplete disclosure. Published capacity also describes project scale rather than energized load, leaving operational availability below the pipeline\u2019s stated ambition.",
       "claim_support": [
         {
           "fact_ids": [
@@ -284,7 +284,7 @@
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Data-center ambition far exceeds the disclosed operating footprint"
+          "text": "The development pipeline dwarfs disclosed operating capacity"
         },
         {
           "fact_ids": [
@@ -292,8 +292,8 @@
             "data_center.operating_capacity_gw"
           ],
           "field": "analysis[0]",
-          "inference": "observation",
-          "text": "Development sites carry 287.2 GW of published capacity, compared with 22.9 GW for operating sites."
+          "inference": "interpretation",
+          "text": "Development records contain far more published capacity than operating records, making project conversion the key gap."
         },
         {
           "fact_ids": [
@@ -301,32 +301,30 @@
             "data_center.operating_capacity_gw"
           ],
           "field": "analysis[1]",
-          "inference": "interpretation",
-          "text": "This gap shows how much of the disclosed buildout still depends on projects moving from development into service."
+          "inference": "observation",
+          "text": "Published development capacity is 287.2 GW versus 22.9 GW for operating sites."
         },
         {
           "fact_ids": [
-            "data_center.development_sites",
-            "data_center.operating_sites",
-            "data_center.development_to_operating"
+            "data_center.canonical_capacity_coverage"
           ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "Development site counts are also substantial relative to the operating base, reinforcing that conversion remains the key step."
+          "text": "Only 35.6% of active campus records have canonical published capacity, so scale comparisons rest on incomplete disclosure."
         },
         {
           "fact_ids": [
-            "data_center.canonical_capacity_coverage",
-            "data_center.pipeline_capacity_gw"
+            "data_center.pipeline_capacity_gw",
+            "data_center.operating_capacity_gw"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "Capacity is published for only part of active campus records, so pipeline scale is clearer than eventual energized load."
+          "text": "Published capacity also describes project scale rather than energized load, leaving operational availability below the pipeline\u2019s stated ambition."
         }
       ],
       "domain": "data_center",
       "generator": "openai",
-      "headline": "Data-center ambition far exceeds the disclosed operating footprint",
+      "headline": "The development pipeline dwarfs disclosed operating capacity",
       "label": "Data Centers",
       "references": [
         {
@@ -350,66 +348,67 @@
           "source_url": ""
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "economic_impact": {
-      "analysis": "Information-processing investment is growing 15.9%, alongside substantial provider AI revenue and cloud growth. Nonfarm productivity and real output are both growing, but these aggregate measures do not identify AI as the cause. Since 2020, productivity has outpaced real compensation by 9.6 percentage points as labor's share has declined. The evidence establishes commercial demand and an investment cycle, not a broad distribution of gains through worker pay.",
+      "analysis": "Information-processing investment is growing 15.9%, alongside gains in productivity and real output. Since 2020, productivity has outpaced real compensation by 9.6 percentage points, and labor share has declined. Provider revenue growth confirms paid AI demand, but it does not establish an economy-wide return on that investment. Current outcomes show stronger investment and commercial demand more clearly than broadly shared economic benefits.",
       "claim_support": [
         {
           "fact_ids": [
-            "economic_impact.microsoft_ai_arr_b",
-            "economic_impact.openai_arr_b",
-            "economic_impact.productivity_growth"
+            "economic_impact.information_investment_growth",
+            "economic_impact.productivity_real_comp_gap",
+            "economic_impact.labor_share_since_2020"
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Provider monetization has not established AI as the economy-wide cause"
+          "text": "Strong digital investment has not clearly translated into shared gains"
         },
         {
           "fact_ids": [
             "economic_impact.information_investment_growth",
-            "economic_impact.microsoft_ai_arr_b",
-            "economic_impact.openai_arr_b",
-            "economic_impact.alphabet_cloud_growth_pct"
-          ],
-          "field": "analysis[0]",
-          "inference": "observation",
-          "text": "Information-processing investment is growing 15.9%, alongside substantial provider AI revenue and cloud growth."
-        },
-        {
-          "fact_ids": [
             "economic_impact.productivity_growth",
             "economic_impact.real_output_growth"
           ],
-          "field": "analysis[1]",
-          "inference": "interpretation",
-          "text": "Nonfarm productivity and real output are both growing, but these aggregate measures do not identify AI as the cause."
+          "field": "analysis[0]",
+          "inference": "observation",
+          "text": "Information-processing investment is growing 15.9%, alongside gains in productivity and real output."
         },
         {
           "fact_ids": [
             "economic_impact.productivity_real_comp_gap",
             "economic_impact.labor_share_since_2020"
           ],
-          "field": "analysis[2]",
+          "field": "analysis[1]",
           "inference": "observation",
-          "text": "Since 2020, productivity has outpaced real compensation by 9.6 percentage points as labor's share has declined."
+          "text": "Since 2020, productivity has outpaced real compensation by 9.6 percentage points, and labor share has declined."
+        },
+        {
+          "fact_ids": [
+            "economic_impact.microsoft_ai_arr_b",
+            "economic_impact.openai_arr_b",
+            "economic_impact.alphabet_cloud_growth_pct",
+            "economic_impact.openai_enterprise_share_pct",
+            "economic_impact.information_investment_growth"
+          ],
+          "field": "analysis[2]",
+          "inference": "interpretation",
+          "text": "Provider revenue growth confirms paid AI demand, but it does not establish an economy-wide return on that investment."
         },
         {
           "fact_ids": [
             "economic_impact.information_investment_growth",
-            "economic_impact.microsoft_ai_arr_b",
-            "economic_impact.openai_arr_b",
-            "economic_impact.real_compensation_growth",
+            "economic_impact.productivity_real_comp_gap",
+            "economic_impact.labor_share_since_2020",
             "economic_impact.median_real_earnings_growth"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "The evidence establishes commercial demand and an investment cycle, not a broad distribution of gains through worker pay."
+          "text": "Current outcomes show stronger investment and commercial demand more clearly than broadly shared economic benefits."
         }
       ],
       "domain": "economic_impact",
       "generator": "openai",
-      "headline": "Provider monetization has not established AI as the economy-wide cause",
+      "headline": "Strong digital investment has not clearly translated into shared gains",
       "label": "Economic Outcomes",
       "references": [
         {
@@ -441,10 +440,10 @@
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "finance": {
-      "analysis": "Covered issuers generate enough operating cash flow to cover current capital spending, limiting their immediate reliance on external finance. Forward commitments equal 5.16 times current capital spending, so the funding challenge sits beyond the present spending cycle. Easy broad financial conditions and low bond distress leave that future burden without a visible market-wide credit shock. Strong provider revenue and cloud backlog show paid demand that can support investment, though they do not establish economy-wide returns.",
+      "analysis": "Covered issuers can fund current capital spending from operating cash flow, with coverage at 1.43x. Forward commitments equal 5.04x current capital spending, so internal funding today does not remove the longer-term financing burden. Easy broad financial conditions and low bond distress leave the external funding backdrop relatively supportive. Reported provider revenue and cloud backlog show paid demand alongside this financing capacity, though not economy-wide investment returns.",
       "claim_support": [
         {
           "fact_ids": [
@@ -453,23 +452,24 @@
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Cash supports current expansion as commitments increase future funding needs"
+          "text": "Current cash generation supports spending, but commitments raise the burden"
         },
         {
           "fact_ids": [
             "finance.internal_funding_coverage"
           ],
           "field": "analysis[0]",
-          "inference": "interpretation",
-          "text": "Covered issuers generate enough operating cash flow to cover current capital spending, limiting their immediate reliance on external finance."
+          "inference": "observation",
+          "text": "Covered issuers can fund current capital spending from operating cash flow, with coverage at 1.43x."
         },
         {
           "fact_ids": [
-            "finance.forward_commitment_load"
+            "finance.forward_commitment_load",
+            "finance.internal_funding_coverage"
           ],
           "field": "analysis[1]",
           "inference": "interpretation",
-          "text": "Forward commitments equal 5.16 times current capital spending, so the funding challenge sits beyond the present spending cycle."
+          "text": "Forward commitments equal 5.04x current capital spending, so internal funding today does not remove the longer-term financing burden."
         },
         {
           "fact_ids": [
@@ -479,7 +479,7 @@
           ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "Easy broad financial conditions and low bond distress leave that future burden without a visible market-wide credit shock."
+          "text": "Easy broad financial conditions and low bond distress leave the external funding backdrop relatively supportive."
         },
         {
           "fact_ids": [
@@ -490,12 +490,12 @@
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "Strong provider revenue and cloud backlog show paid demand that can support investment, though they do not establish economy-wide returns."
+          "text": "Reported provider revenue and cloud backlog show paid demand alongside this financing capacity, though not economy-wide investment returns."
         }
       ],
       "domain": "finance",
       "generator": "openai",
-      "headline": "Cash supports current expansion as commitments increase future funding needs",
+      "headline": "Current cash generation supports spending, but commitments raise the burden",
       "label": "Finance",
       "references": [
         {
@@ -531,62 +531,61 @@
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "grid_storage": {
-      "analysis": "The active queue is enormous, but only 24.2% has reached executed-agreement or construction stages. Historical cohorts show withdrawals far outnumbering projects that reached operation, making queue volume a weak proxy for delivered supply. Projects completed in 2025 took a median five years from request to commercial operation, making timing a material constraint. Storage adds flexibility, but its operating duration does not remove the interconnection bottleneck.",
+      "analysis": "The active queue shows abundant developer interest, but queue capacity is not near-term electricity supply. The queue totals 2,061 GW, with only 24.2% in executed-agreement or construction stages. Historical cohorts show 13% reached operation, indicating that queue size greatly overstates realized supply. Long completion timelines reinforce interconnection as the gap between proposed generation and connected capacity.",
       "claim_support": [
         {
           "fact_ids": [
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
-            "grid_storage.median_request_to_cod_years"
+            "grid_storage.historical_operational_pct"
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Interconnection delays, not project interest, limit near-term grid delivery"
+          "text": "Grid project interest far exceeds evidence of near-term delivery"
+        },
+        {
+          "fact_ids": [
+            "grid_storage.queue_gw"
+          ],
+          "field": "analysis[0]",
+          "inference": "interpretation",
+          "text": "The active queue shows abundant developer interest, but queue capacity is not near-term electricity supply."
         },
         {
           "fact_ids": [
             "grid_storage.queue_gw",
             "grid_storage.advanced_share"
           ],
-          "field": "analysis[0]",
+          "field": "analysis[1]",
           "inference": "observation",
-          "text": "The active queue is enormous, but only 24.2% has reached executed-agreement or construction stages."
+          "text": "The queue totals 2,061 GW, with only 24.2% in executed-agreement or construction stages."
         },
         {
           "fact_ids": [
-            "grid_storage.historical_withdrawn_pct",
             "grid_storage.historical_operational_pct",
             "grid_storage.queue_gw"
           ],
-          "field": "analysis[1]",
-          "inference": "interpretation",
-          "text": "Historical cohorts show withdrawals far outnumbering projects that reached operation, making queue volume a weak proxy for delivered supply."
-        },
-        {
-          "fact_ids": [
-            "grid_storage.median_request_to_cod_years"
-          ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "Projects completed in 2025 took a median five years from request to commercial operation, making timing a material constraint."
+          "text": "Historical cohorts show 13% reached operation, indicating that queue size greatly overstates realized supply."
         },
         {
           "fact_ids": [
-            "grid_storage.storage_queue_gw",
-            "grid_storage.operating_storage_weighted_duration_hours",
-            "grid_storage.advanced_share"
+            "grid_storage.median_request_to_cod_years",
+            "grid_storage.draft_or_executed_ia_gw",
+            "grid_storage.queue_gw"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "Storage adds flexibility, but its operating duration does not remove the interconnection bottleneck."
+          "text": "Long completion timelines reinforce interconnection as the gap between proposed generation and connected capacity."
         }
       ],
       "domain": "grid_storage",
       "generator": "openai",
-      "headline": "Interconnection delays, not project interest, limit near-term grid delivery",
+      "headline": "Grid project interest far exceeds evidence of near-term delivery",
       "label": "Grid & Storage",
       "references": [
         {
@@ -606,13 +605,13 @@
           "source_url": "https://www.census.gov/constructionspending"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "macro": {
-      "analysis": "Operating cash flow covers current capital spending among covered companies, which can support expansion even as much data-center capacity remains developmental. Turning that development pipeline into operating infrastructure depends on grid access, where only a minority of queued capacity has reached advanced stages. Business adoption remains much narrower than consumer use, leaving strong provider revenue without evidence that AI is driving gains across the wider economy. The evidence points to business deployment as the missing bridge between broad task exposure and gains that reach more of the workforce.",
+      "analysis": "Covered issuers\u2019 operating cash flow covers current capital spending 1.43x, although forward commitments stand at 5.04x and raise the future funding burden. The much larger development pipeline can become operating capacity only after securing grid connections, where historical project completion has been limited and slow. The large development pipeline is not matched by equally broad business deployment, so building more capacity does not itself establish widespread productive use. Widespread task exposure has not translated into broad tracked employment growth or broadly shared compensation gains, leaving the buildout\u2019s wider payoff unproven.",
       "analysis_paragraphs": [
-        "Operating cash flow covers current capital spending among covered companies, which can support expansion even as much data-center capacity remains developmental. Turning that development pipeline into operating infrastructure depends on grid access, where only a minority of queued capacity has reached advanced stages.",
-        "Business adoption remains much narrower than consumer use, leaving strong provider revenue without evidence that AI is driving gains across the wider economy. The evidence points to business deployment as the missing bridge between broad task exposure and gains that reach more of the workforce."
+        "Covered issuers\u2019 operating cash flow covers current capital spending 1.43x, although forward commitments stand at 5.04x and raise the future funding burden. The much larger development pipeline can become operating capacity only after securing grid connections, where historical project completion has been limited and slow.",
+        "The large development pipeline is not matched by equally broad business deployment, so building more capacity does not itself establish widespread productive use. Widespread task exposure has not translated into broad tracked employment growth or broadly shared compensation gains, leaving the buildout\u2019s wider payoff unproven."
       ],
       "claim_support": [
         {
@@ -620,55 +619,54 @@
             "finance.internal_funding_coverage",
             "data_center.pipeline_capacity_gw",
             "data_center.operating_capacity_gw",
-            "grid_storage.advanced_share",
-            "adoption.current_business_use_pct"
+            "grid_storage.historical_operational_pct",
+            "adoption.current_business_use_pct",
+            "economic_impact.productivity_real_comp_gap"
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "AI\u2019s funded expansion still faces grid access and business-use bottlenecks"
+          "text": "Cash flow supports expansion, leaving grid access and business use to determine the broader payoff"
         },
         {
           "fact_ids": [
             "finance.internal_funding_coverage",
-            "data_center.pipeline_capacity_gw",
-            "data_center.operating_capacity_gw"
+            "finance.forward_commitment_load"
           ],
           "field": "analysis[0]",
           "inference": "interpretation",
-          "text": "Operating cash flow covers current capital spending among covered companies, which can support expansion even as much data-center capacity remains developmental."
+          "text": "Covered issuers\u2019 operating cash flow covers current capital spending 1.43x, although forward commitments stand at 5.04x and raise the future funding burden."
         },
         {
           "fact_ids": [
             "data_center.pipeline_capacity_gw",
             "data_center.operating_capacity_gw",
-            "grid_storage.advanced_share"
+            "grid_storage.historical_operational_pct",
+            "grid_storage.median_request_to_cod_years"
           ],
           "field": "analysis[1]",
           "inference": "interpretation",
-          "text": "Turning that development pipeline into operating infrastructure depends on grid access, where only a minority of queued capacity has reached advanced stages."
+          "text": "The much larger development pipeline can become operating capacity only after securing grid connections, where historical project completion has been limited and slow."
         },
         {
           "fact_ids": [
-            "adoption.current_business_use_pct",
+            "data_center.pipeline_capacity_gw",
             "adoption.consumer_overall_pct",
-            "economic_impact.microsoft_ai_arr_b",
-            "economic_impact.openai_arr_b",
-            "economic_impact.productivity_growth",
-            "economic_impact.real_output_growth"
+            "adoption.current_business_use_pct"
           ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "\n\nBusiness adoption remains much narrower than consumer use, leaving strong provider revenue without evidence that AI is driving gains across the wider economy."
+          "text": "\n\nThe large development pipeline is not matched by equally broad business deployment, so building more capacity does not itself establish widespread productive use."
         },
         {
           "fact_ids": [
-            "adoption.current_business_use_pct",
-            "workforce.median_llm_software_exposure_pct",
-            "workforce.employment_breadth"
+            "workforce.high_exposure_occupation_share_pct",
+            "workforce.employment_breadth",
+            "economic_impact.productivity_real_comp_gap",
+            "economic_impact.median_real_earnings_growth"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "The evidence points to business deployment as the missing bridge between broad task exposure and gains that reach more of the workforce."
+          "text": "Widespread task exposure has not translated into broad tracked employment growth or broadly shared compensation gains, leaving the buildout\u2019s wider payoff unproven."
         }
       ],
       "domain": "macro",
@@ -677,7 +675,7 @@
           "context": "",
           "fact_id": "finance.internal_funding_coverage",
           "label": "Operating cash flow coverage of current CapEx",
-          "value": "1.46x"
+          "value": "1.43x"
         },
         {
           "context": "",
@@ -693,7 +691,7 @@
         }
       ],
       "generator": "openai",
-      "headline": "AI\u2019s funded expansion still faces grid access and business-use bottlenecks",
+      "headline": "Cash flow supports expansion, leaving grid access and business use to determine the broader payoff",
       "label": "AI Macro",
       "references": [
         {
@@ -729,63 +727,60 @@
         "workforce",
         "economic_impact"
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "market": {
-      "analysis": "Covered-company gains extend beyond a few leaders, as positive-return breadth and the equal-weight return both remain strong. The top ten still hold 64.1% of covered market value, so broad participation has not removed concentration. Elevated trading pressure alongside strong sectors suggests enthusiasm is creating crowding beyond the largest firms. The resulting market signal is broader than a narrow leader rally, though concentrated market value still shapes overall performance.",
+      "analysis": "Covered-company returns are broadly positive, so the market signal extends beyond a small set of winners. The top ten still account for 63.5% of covered market value, leaving substantial concentration within that breadth. Three sectors also exceed the high-pressure threshold, indicating that enthusiasm is crowded in parts of the market. Broad participation strengthens the equity signal, though concentration limits how widely market value reflects that participation.",
       "claim_support": [
         {
           "fact_ids": [
             "market.positive_breadth",
-            "market.equal_weight_return",
-            "market.top_10_share"
+            "market.top_10_share",
+            "market.crowded_sector_count"
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "AI equity gains are broad, though market value remains concentrated"
+          "text": "Broad participation coexists with concentrated value and crowded sectors"
         },
         {
           "fact_ids": [
             "market.positive_breadth",
+            "market.median_return",
             "market.equal_weight_return"
           ],
           "field": "analysis[0]",
-          "inference": "observation",
-          "text": "Covered-company gains extend beyond a few leaders, as positive-return breadth and the equal-weight return both remain strong."
+          "inference": "interpretation",
+          "text": "Covered-company returns are broadly positive, so the market signal extends beyond a small set of winners."
         },
         {
           "fact_ids": [
-            "market.top_10_share",
-            "market.positive_breadth"
+            "market.top_10_share"
           ],
           "field": "analysis[1]",
-          "inference": "interpretation",
-          "text": "The top ten still hold 64.1% of covered market value, so broad participation has not removed concentration."
+          "inference": "observation",
+          "text": "The top ten still account for 63.5% of covered market value, leaving substantial concentration within that breadth."
         },
         {
           "fact_ids": [
-            "market.pressure",
-            "market.strong_sector_count",
             "market.crowded_sector_count"
           ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "Elevated trading pressure alongside strong sectors suggests enthusiasm is creating crowding beyond the largest firms."
+          "text": "Three sectors also exceed the high-pressure threshold, indicating that enthusiasm is crowded in parts of the market."
         },
         {
           "fact_ids": [
             "market.positive_breadth",
-            "market.equal_weight_return",
             "market.top_10_share"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "The resulting market signal is broader than a narrow leader rally, though concentrated market value still shapes overall performance."
+          "text": "Broad participation strengthens the equity signal, though concentration limits how widely market value reflects that participation."
         }
       ],
       "domain": "market",
       "generator": "openai",
-      "headline": "AI equity gains are broad, though market value remains concentrated",
+      "headline": "Broad participation coexists with concentrated value and crowded sectors",
       "label": "Market",
       "references": [
         {
@@ -797,10 +792,10 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "power": {
-      "analysis": "Retail electricity demand is growing, with commercial demand rising faster than the total. The planned generation pipeline reaches 227.0 GW through 2030, providing a potential supply response rather than operating capacity. Large-load campus records show substantial published capacity, making execution of that generation pipeline important to accommodating demand. Retail price growth already exceeds demand growth, so supply adequacy matters for cost as well as availability.",
+      "analysis": "Commercial electricity demand is rising faster than total retail demand, aligning current pressure more closely with business loads. Large-load campus records carry 189,880 MW of published capacity, which measures project scale rather than electricity already being served. Planners list 227.0 GW of net generation additions through 2030, but planned capacity is not power placed in service. Rising retail prices make the timing of that conversion more consequential for electricity customers.",
       "claim_support": [
         {
           "fact_ids": [
@@ -809,48 +804,47 @@
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Power plans must become operating supply to serve large campuses"
+          "text": "Generation plans are large, but delivery remains the constraint"
         },
         {
           "fact_ids": [
-            "power.demand_growth",
-            "power.commercial_growth"
+            "power.commercial_growth",
+            "power.demand_growth"
           ],
           "field": "analysis[0]",
-          "inference": "observation",
-          "text": "Retail electricity demand is growing, with commercial demand rising faster than the total."
+          "inference": "interpretation",
+          "text": "Commercial electricity demand is rising faster than total retail demand, aligning current pressure more closely with business loads."
+        },
+        {
+          "fact_ids": [
+            "power.large_load_capacity_mw"
+          ],
+          "field": "analysis[1]",
+          "inference": "interpretation",
+          "text": "Large-load campus records carry 189,880 MW of published capacity, which measures project scale rather than electricity already being served."
         },
         {
           "fact_ids": [
             "power.planned_net_gw",
             "power.pipeline_end_year"
           ],
-          "field": "analysis[1]",
-          "inference": "interpretation",
-          "text": "The planned generation pipeline reaches 227.0 GW through 2030, providing a potential supply response rather than operating capacity."
-        },
-        {
-          "fact_ids": [
-            "power.large_load_capacity_mw",
-            "power.planned_net_gw"
-          ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "Large-load campus records show substantial published capacity, making execution of that generation pipeline important to accommodating demand."
+          "text": "Planners list 227.0 GW of net generation additions through 2030, but planned capacity is not power placed in service."
         },
         {
           "fact_ids": [
             "power.retail_price_growth",
-            "power.demand_growth"
+            "power.planned_net_gw"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "Retail price growth already exceeds demand growth, so supply adequacy matters for cost as well as availability."
+          "text": "Rising retail prices make the timing of that conversion more consequential for electricity customers."
         }
       ],
       "domain": "power",
       "generator": "openai",
-      "headline": "Power plans must become operating supply to serve large campuses",
+      "headline": "Generation plans are large, but delivery remains the constraint",
       "label": "Power",
       "references": [
         {
@@ -866,10 +860,10 @@
           "source_url": ""
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "water": {
-      "analysis": "Only 3.3% of mapped facilities have direct water evidence, and none has a quantified withdrawal or consumption record. Published data-center capacity overlaps states with D2-or-worse drought, establishing geographic exposure rather than campus-level availability. National withdrawal benchmarks provide context for water demand, but they cannot fill the facility-level evidence gap. The present evidence supports concern about location and disclosure, not a national estimate of data-center water use.",
+      "analysis": "Only 1.6% of mapped facilities have direct water evidence, and none has quantified withdrawal or consumption records. Published data-center capacity overlaps mapped states with drought conditions, identifying potential exposure without establishing campus-level water availability. Sparse facility disclosure therefore leaves the scale of actual data-center water demand unresolved at the national level.",
       "claim_support": [
         {
           "fact_ids": [
@@ -879,7 +873,7 @@
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Sparse disclosure prevents a usable estimate of data-center water risk"
+          "text": "Water exposure is visible, but facility use remains largely unmeasured"
         },
         {
           "fact_ids": [
@@ -888,7 +882,7 @@
           ],
           "field": "analysis[0]",
           "inference": "observation",
-          "text": "Only 3.3% of mapped facilities have direct water evidence, and none has a quantified withdrawal or consumption record."
+          "text": "Only 1.6% of mapped facilities have direct water evidence, and none has quantified withdrawal or consumption records."
         },
         {
           "fact_ids": [
@@ -897,33 +891,22 @@
           ],
           "field": "analysis[1]",
           "inference": "interpretation",
-          "text": "Published data-center capacity overlaps states with D2-or-worse drought, establishing geographic exposure rather than campus-level availability."
+          "text": "Published data-center capacity overlaps mapped states with drought conditions, identifying potential exposure without establishing campus-level water availability."
         },
         {
           "fact_ids": [
-            "water.irrigation_withdrawal_bgal_day_2020",
-            "water.thermoelectric_withdrawal_bgal_day_2020",
-            "water.public_supply_withdrawal_bgal_day_2020",
-            "water.quantified_use_records"
+            "water.direct_evidence_records",
+            "water.quantified_use_records",
+            "water.mapped_facilities"
           ],
           "field": "analysis[2]",
           "inference": "interpretation",
-          "text": "National withdrawal benchmarks provide context for water demand, but they cannot fill the facility-level evidence gap."
-        },
-        {
-          "fact_ids": [
-            "water.states_with_d2_area",
-            "water.direct_evidence_records",
-            "water.quantified_use_records"
-          ],
-          "field": "analysis[3]",
-          "inference": "interpretation",
-          "text": "The present evidence supports concern about location and disclosure, not a national estimate of data-center water use."
+          "text": "Sparse facility disclosure therefore leaves the scale of actual data-center water demand unresolved at the national level."
         }
       ],
       "domain": "water",
       "generator": "openai",
-      "headline": "Sparse disclosure prevents a usable estimate of data-center water risk",
+      "headline": "Water exposure is visible, but facility use remains largely unmeasured",
       "label": "Water",
       "references": [
         {
@@ -943,64 +926,62 @@
           "source_url": ""
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     "workforce": {
-      "analysis": "The occupation benchmark shows broad software-adjusted task exposure, describing work AI could affect rather than jobs already displaced. Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads employment growth, while computing infrastructure is the weakest tracked channel. The evidence points to selective labor demand around physical buildout rather than broad employment gains across tracked channels.",
+      "analysis": "The benchmark classifies 47.3% of occupations as highly exposed to software-adjusted language-model tasks. Only one tracked AI-linked channel has positive employment growth, with power and communication construction the strongest. Computing infrastructure is weakest at -4.1%, showing that infrastructure expansion has not produced broad hiring across the tracked channels. Task exposure therefore identifies where work could change, not where jobs have already been automated or lost.",
       "claim_support": [
         {
           "fact_ids": [
-            "workforce.median_llm_software_exposure_pct",
             "workforce.high_exposure_occupation_share_pct",
             "workforce.employment_breadth"
           ],
           "field": "headline",
           "inference": "interpretation",
-          "text": "Broad AI task exposure has not translated into broad hiring gains"
+          "text": "Broad task exposure has not translated into broad job growth"
         },
         {
           "fact_ids": [
-            "workforce.median_llm_software_exposure_pct",
-            "workforce.high_exposure_occupation_share_pct",
-            "workforce.occupation_exposure_count"
+            "workforce.high_exposure_occupation_share_pct"
           ],
           "field": "analysis[0]",
-          "inference": "interpretation",
-          "text": "The occupation benchmark shows broad software-adjusted task exposure, describing work AI could affect rather than jobs already displaced."
-        },
-        {
-          "fact_ids": [
-            "workforce.employment_breadth"
-          ],
-          "field": "analysis[1]",
           "inference": "observation",
-          "text": "Only one tracked AI-linked labor channel has positive employment growth."
-        },
-        {
-          "fact_ids": [
-            "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "workforce.weakest_channel",
-            "workforce.weakest_channel_growth"
-          ],
-          "field": "analysis[2]",
-          "inference": "observation",
-          "text": "Power and communication construction leads employment growth, while computing infrastructure is the weakest tracked channel."
+          "text": "The benchmark classifies 47.3% of occupations as highly exposed to software-adjusted language-model tasks."
         },
         {
           "fact_ids": [
             "workforce.employment_breadth",
             "workforce.strongest_channel",
-            "workforce.weakest_channel"
+            "workforce.strongest_channel_growth"
+          ],
+          "field": "analysis[1]",
+          "inference": "observation",
+          "text": "Only one tracked AI-linked channel has positive employment growth, with power and communication construction the strongest."
+        },
+        {
+          "fact_ids": [
+            "workforce.weakest_channel",
+            "workforce.weakest_channel_growth",
+            "workforce.employment_breadth"
+          ],
+          "field": "analysis[2]",
+          "inference": "interpretation",
+          "text": "Computing infrastructure is weakest at -4.1%, showing that infrastructure expansion has not produced broad hiring across the tracked channels."
+        },
+        {
+          "fact_ids": [
+            "workforce.occupation_exposure_count",
+            "workforce.median_llm_software_exposure_pct",
+            "workforce.high_exposure_occupation_share_pct"
           ],
           "field": "analysis[3]",
           "inference": "interpretation",
-          "text": "The evidence points to selective labor demand around physical buildout rather than broad employment gains across tracked channels."
+          "text": "Task exposure therefore identifies where work could change, not where jobs have already been automated or lost."
         }
       ],
       "domain": "workforce",
       "generator": "openai",
-      "headline": "Broad AI task exposure has not translated into broad hiring gains",
+      "headline": "Broad task exposure has not translated into broad job growth",
       "label": "Workforce",
       "references": [
         {
@@ -1016,32 +997,32 @@
           "source_url": "https://www.bls.gov/jlt/"
         }
       ],
-      "version": "2.1.0"
+      "version": "2.2.0"
     }
   },
   "reasoning_effort": "medium",
-  "service_version": "2.1.0",
+  "service_version": "2.2.0",
   "status": "validated",
   "validation": {
-    "checked_claims": 60,
+    "checked_claims": 59,
     "domain": {
-      "checked_claims": 55,
+      "checked_claims": 54,
       "errors": [],
       "failures": [],
-      "grounded_claims": 55,
+      "grounded_claims": 54,
       "passed": true,
-      "version": "2.6.0"
+      "version": "2.6.1"
     },
-    "grounded_claims": 60,
+    "grounded_claims": 59,
     "macro": {
       "checked_claims": 5,
       "errors": [],
       "failures": [],
       "grounded_claims": 5,
       "passed": true,
-      "version": "2.6.0"
+      "version": "2.6.1"
     },
     "passed": true,
-    "validator_version": "2.6.0"
+    "validator_version": "2.6.1"
   }
 }

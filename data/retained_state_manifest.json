@@ -1,18 +1,18 @@
 {
   "files": {
     "archive/benchmark_history.csv": {
-      "bytes": 5116,
+      "bytes": 5313,
       "run_id": "",
-      "sha256": "1419b98ec0c581a4ad35a028c41cb39fc9618b944d810397d8ac1e2deaab5765",
-      "updated_at_utc": "2026-08-11T13:42:02+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "54015d6966dabaf3f267de8ede8c81d7bc29a8df231684ab8956fc20339587eb",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "archive/edgar_history.csv": {
-      "bytes": 825188,
+      "bytes": 848957,
       "run_id": "",
-      "sha256": "c792d88d11db19f414ac1a287791eb68c363f4486a2c9734656416e899d21381",
-      "updated_at_utc": "2026-08-10T23:34:16+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "260e559c44f20d2d95db45bd855243ec934a28726380accca345d578f58bbc58",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "archive/energy_history.csv": {
       "bytes": 1377,
@@ -22,32 +22,39 @@
       "updated_by": "desktop_refresh"
     },
     "archive/fred_history.csv": {
-      "bytes": 11445,
+      "bytes": 12205,
       "run_id": "",
-      "sha256": "6d008dc40fe124829dbbdf4806d24ddc96c3ae9935b2dd9eb030eef16104a222",
-      "updated_at_utc": "2026-08-10T23:34:16+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "645eb4aa5d7598f9f1a38df4bc6ff83d14965bd984b5855331ec6a3e2f619ef7",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "archive/macro_history.csv": {
-      "bytes": 47793,
+      "bytes": 48526,
       "run_id": "",
-      "sha256": "8d837acaeb8b773172385adb0a36cb3ce65001c0a224e1578a587afd383a7ca7",
-      "updated_at_utc": "2026-08-11T13:42:02+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "092bc2b467b91e4d977a06194b8af4f053b2232b2bfb49bc6c4385f4fdd9614d",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "archive/sector_history.csv": {
-      "bytes": 58682,
+      "bytes": 61515,
       "run_id": "",
-      "sha256": "52f43696e3660653da2849ac9f2ddde48fab09f4372346566732e7b0f8d2b354",
-      "updated_at_utc": "2026-08-11T13:42:02+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "142ddc06b9bab04e8bbee4a901090d6aed1d4662b1e19a697c4b464d0aea3c03",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "archive/yf_history.csv": {
-      "bytes": 2322939,
+      "bytes": 2436534,
       "run_id": "",
-      "sha256": "5c10f5ac0158ba0773927235479920e53a6975e47dab7a26b0ec3a697b8cc67a",
-      "updated_at_utc": "2026-08-11T13:42:02+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "9ff54caac2d503f422f21d2c7e2d80b140d3d2ec9bdc976db833f506a7be7488",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
+    },
+    "data/.DS_Store": {
+      "bytes": 8196,
+      "run_id": "",
+      "sha256": "0d9505867a8b9fabcfff3b2bfdc0cf290f2208d32c89b2429467232247cf80c7",
+      "updated_at_utc": "2026-08-12T03:34:03+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/adoption/raw/census/National_2026-07-31.xlsx": {
       "bytes": 82915,
@@ -64,11 +71,11 @@
       "updated_by": "v7.2.0_bootstrap"
     },
     "data/adoption_consumer_history.csv": {
-      "bytes": 3696,
+      "bytes": 5771,
       "run_id": "",
-      "sha256": "a5653d2f455c7a83c865af1f99b82e39047c2bb88e2c2ba1036f74c318e0062f",
-      "updated_at_utc": "2026-08-07T06:32:48+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "32bca768cc65d63b01ff59abeaea72054e164c2075b7eb9481c5070ff06fd300",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/adoption_national_history.csv": {
       "bytes": 1073,
@@ -106,11 +113,11 @@
       "updated_by": "v7.2.0_bootstrap"
     },
     "data/borrower_strain_fundamentals_history.csv": {
-      "bytes": 60795,
+      "bytes": 64778,
       "run_id": "",
-      "sha256": "864c2ad96931f3311ecd42ac2f650f5450f1d0b575658250414b00e7fb640bcb",
-      "updated_at_utc": "2026-08-10T23:34:16+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "91b0329035dd5bf639b8c83b649feb40d166b108454dc4a748820c25a13ad14e",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/borrower_strain_history.csv": {
       "bytes": 6257,
@@ -253,17 +260,17 @@
       "updated_by": "v7.2.0_bootstrap"
     },
     "data/current_context_candidate_audit.csv": {
-      "bytes": 2720181,
+      "bytes": 2776575,
       "run_id": "",
-      "sha256": "048884aa1dfe7c22b30a0248a9223ad566c4afa224f7c8c2c89dd2d3142c2a96",
-      "updated_at_utc": "2026-08-12T02:28:08+00:00",
+      "sha256": "7dd86518f45f034f43f1f7c1837a2e640cb1840ce528a0057dca8a3d6d65d84d",
+      "updated_at_utc": "2026-08-12T16:30:35+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/current_context_refresh_manifest.json": {
-      "bytes": 50047,
+      "bytes": 38208,
       "run_id": "",
-      "sha256": "2a269f9ccfc9cc42ce8c305f87de90e2e7d8f0b0a0e350b6ed111e4fb6871c7a",
-      "updated_at_utc": "2026-08-12T02:28:08+00:00",
+      "sha256": "7dcba99db623c755972dcbfa393a8a6170651f217c2b55bb3a01ad54e6f7ac0a",
+      "updated_at_utc": "2026-08-12T16:30:35+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/data_center_construction_history.csv": {
@@ -297,16 +304,16 @@
     "data/debt_markets_metadata.json": {
       "bytes": 161,
       "run_id": "",
-      "sha256": "e4b9369c9787ce04d3428860a1c6560d90e00a957a4f005e326d3be2b6949dbb",
-      "updated_at_utc": "2026-08-10T23:34:14+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "93a587b47b094183fbd7bf1d05241d31b81b166aa3be6e4d6794b48467c006d4",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/economic_impact_cpi_history.csv": {
-      "bytes": 1463,
+      "bytes": 1482,
       "run_id": "",
-      "sha256": "7b6ba8c6d03218a4e150adcc4604c5f87c36e921ad871bea5c54adfa7b44924d",
-      "updated_at_utc": "2026-08-08T09:16:50+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "9a360999ca0ded9a7e06a63e8a37d3fedf2462b720f1e389375c3b9b223cc9f9",
+      "updated_at_utc": "2026-08-12T16:21:49+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/economic_impact_productivity_history.csv": {
       "bytes": 65936,
@@ -442,11 +449,11 @@
       "updated_by": "v7.2.0_bootstrap"
     },
     "data/finance/nfci_anfci_history.csv": {
-      "bytes": 70135,
+      "bytes": 70199,
       "run_id": "",
-      "sha256": "32b937a82c5939a0f975bdcb530691de603042469ab8a940be62ff5c721f73c2",
-      "updated_at_utc": "2026-08-10T23:33:48+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "f1567e1c6a19f2333d9df8fbf74736b0eb5cbe2721cea2172659a6baaeeab8ac",
+      "updated_at_utc": "2026-08-12T16:09:31+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/finance/raw/nyfed/market_cmdi_2026-07-29.xlsx": {
       "bytes": 92345,
@@ -477,11 +484,11 @@
       "updated_by": "v7.2.0_bootstrap"
     },
     "data/household_earnings_distribution_history.csv": {
-      "bytes": 57104,
+      "bytes": 265424,
       "run_id": "",
-      "sha256": "0c6e881bf865e31d08f17c521c9181657ebfe0bc79b19893752610214bd343e9",
-      "updated_at_utc": "2026-08-08T09:16:54+00:00",
-      "updated_by": "v7.2.0_bootstrap"
+      "sha256": "e6a68f197918f89b7795693ddce408bef7ad73573c09f9eff5436128e0284f99",
+      "updated_at_utc": "2026-08-12T16:21:49+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/industrial_production_history.csv": {
       "bytes": 24271,
@@ -496,6 +503,13 @@
       "sha256": "50c463a274daa9bde0f4ad57210f997cdefb15247f5314931257f7221b64c48e",
       "updated_at_utc": "2026-08-08T09:16:50+00:00",
       "updated_by": "v7.2.0_bootstrap"
+    },
+    "data/infrastructure/.DS_Store": {
+      "bytes": 6148,
+      "run_id": "",
+      "sha256": "b6f7b9ca3054ae64761e28434175ea8ae1bef5f581e81a6b49712d7739472ff8",
+      "updated_at_utc": "2026-08-12T03:33:44+00:00",
+      "updated_by": "desktop_refresh"
     },
     "data/infrastructure/derived/compute_m3_history.csv": {
       "bytes": 39943,
@@ -626,8 +640,8 @@
     "data/infrastructure/source_manifest.csv": {
       "bytes": 11524,
       "run_id": "",
-      "sha256": "42a7a5fb8b58d5df04ef85a04b0cd4dbd1ef8694700c7e6c4249df9f9027cd46",
-      "updated_at_utc": "2026-08-12T00:31:28+00:00",
+      "sha256": "477908d6ca7210f483fd45adc76a701d09f0ede29499cb9ea7f8b060283e79fc",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/infrastructure_construction_history.csv": {
@@ -735,6 +749,13 @@
       "updated_at_utc": "2026-08-11T22:00:09+00:00",
       "updated_by": "automation_refresh"
     },
+    "data/water/.DS_Store": {
+      "bytes": 6148,
+      "run_id": "",
+      "sha256": "94dbb4b9322dbae255335556ed2e65a3f902d8d05403e52de5f10a2a3bd42b84",
+      "updated_at_utc": "2026-08-12T03:33:44+00:00",
+      "updated_by": "desktop_refresh"
+    },
     "data/water/README.md": {
       "bytes": 538,
       "run_id": "",
@@ -752,8 +773,8 @@
     "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz": {
       "bytes": 25739,
       "run_id": "",
-      "sha256": "3a5808793ecf9c59d1593f151fbd90965364abf8128af4b1eceff7da6edc932a",
-      "updated_at_utc": "2026-08-12T00:31:28+00:00",
+      "sha256": "2bf1796a720052654eb63de4039b7e1b51164c6a8b27ff5afd9ad93e92ee6214",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/water/derived/usdm_state_drought_snapshot.csv": {
@@ -766,8 +787,8 @@
     "data/water/derived/usgs_2015_county_summary.csv.gz": {
       "bytes": 67310,
       "run_id": "",
-      "sha256": "874e7ea7edd74422553297b766a622b0f2bdc4da3d00c0ae5e4f7649197f20d7",
-      "updated_at_utc": "2026-08-12T00:31:28+00:00",
+      "sha256": "609ba0b61c2e3f63d81d54503f2d97446049391e0269dd985e29f5c3a9aff612",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/water/derived/usgs_2015_national_category_summary.csv": {
@@ -780,8 +801,8 @@
     "data/water/derived/usgs_2015_reconciliation.csv.gz": {
       "bytes": 60310,
       "run_id": "",
-      "sha256": "75e574013cd693621880e50401391aa7fc5851e446f67207070d5f167fa25305",
-      "updated_at_utc": "2026-08-12T00:31:28+00:00",
+      "sha256": "c839f34926f3ca21620d8aa76f0749fdb1bb138ae98a724d892c0cf85f1848d6",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/water/derived/usgs_2015_state_category_summary.csv": {
@@ -801,15 +822,15 @@
     "data/water/derived/water_national_summary.json": {
       "bytes": 1242,
       "run_id": "",
-      "sha256": "e59582a698c43dd2b987ae7f616fa7663fa424420283b84db9cd7d7fd9d0a4e6",
-      "updated_at_utc": "2026-08-11T23:45:21+00:00",
+      "sha256": "57b137cfbc1f2a8b10b0dff6ab73b616719f54d737587b6ba15157136c5c6f55",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/water/derived/water_observations.csv.gz": {
       "bytes": 1603735,
       "run_id": "",
-      "sha256": "82e18b8f05bb6f6102b81836a6db65308675f2a6fac58d7f329eaa64a67eb934",
-      "updated_at_utc": "2026-08-12T00:31:28+00:00",
+      "sha256": "a4e090ba1c3c6e7ddc9a44001b7fcb971254addae106a196d07bfc0ca8685c1e",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/water/field_dictionary.csv": {
@@ -843,15 +864,15 @@
     "data/water/source_manifest.csv": {
       "bytes": 6071,
       "run_id": "",
-      "sha256": "fcfae7034537f8c269ba43572266a576de9627fde9911227f686bfb6b98e75d4",
-      "updated_at_utc": "2026-08-11T23:45:21+00:00",
+      "sha256": "ca020c59c11cea4fda406bf95688e3f24134a1dc32342cf2f4cf85491ba5b027",
+      "updated_at_utc": "2026-08-12T16:27:42+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 22673,
+      "bytes": 26080,
       "run_id": "",
-      "sha256": "b3de726d24993ab7c7cb83485d4cba078659e0494f4690ea646bb55c7bd9ada9",
-      "updated_at_utc": "2026-08-12T02:28:08+00:00",
+      "sha256": "a921bf529097580a0df3eccfe91b0363c2fe77b1ada69bcbf5e22c0eb06fec58",
+      "updated_at_utc": "2026-08-12T16:30:35+00:00",
       "updated_by": "desktop_refresh"
     },
     "data/workforce_ces_history.csv": {
@@ -883,7 +904,7 @@
       "updated_by": "v7.2.0_bootstrap"
     }
   },
-  "generated_at_utc": "2026-08-12T02:28:08+00:00",
+  "generated_at_utc": "2026-08-12T16:30:35+00:00",
   "manifest_version": "1.0",
   "run_id": "",
   "source": "desktop_refresh"

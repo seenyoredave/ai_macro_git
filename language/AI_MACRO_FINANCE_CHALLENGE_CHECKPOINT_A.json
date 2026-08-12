@@ -1,0 +1,99 @@
+{
+  "artifact": "AI Macro Finance Corpus — Post-Foundation Saturation Challenge Checkpoint A",
+  "version": "0.1",
+  "created_utc": "2026-08-12T00:00:00Z",
+  "status": "CHALLENGE_BATCH_005__PAPERS_1_TO_2_COMPLETE",
+  "purpose": "Recover the missing second formal five-paper post-foundation Finance challenge required by the canonical saturation rule.",
+  "canonical_rule": {
+    "required": "Two consecutive post-foundation five-paper challenge batches with no source-class or framework gaps and no more than two new generalizable observations per batch.",
+    "prior_formal_challenge": {
+      "batch": "finance_batch_004",
+      "paper_count": 5,
+      "new_generalizable_observations": 1,
+      "gap_found": false
+    },
+    "current_formal_challenge": {
+      "batch": "finance_batch_005",
+      "papers_completed": 2,
+      "papers_required": 5,
+      "new_generalizable_observations_so_far": 0,
+      "gap_found_so_far": false
+    }
+  },
+  "papers": [
+    {
+      "challenge_sequence": 1,
+      "title": "Firms’ Bond Market Access and Impact on Bank Borrowing Costs",
+      "authors": ["Jang Ping Thia", "Xinyu Kong"],
+      "journal": "Journal of Financial Services Research",
+      "issue_year": 2025,
+      "published_online": "2024-03-12",
+      "doi": "10.1007/s10693-024-00424-y",
+      "access": "open_access_full_text",
+      "source_class": "primary_empirical_endogenous_treatment",
+      "finance_coverage": ["corporate debt choice", "bank loan pricing", "bond-market access", "selection", "counterfactual treatment effects"],
+      "claim_method_alignment": {
+        "direct_findings": "Firms using both bonds and syndicated loans have 57 bps lower observed loan spreads; endogenous treatment/outcome models estimate 114–185 bps higher counterfactual spreads without bond access.",
+        "method": "Cross-country public-company data for 2000–2020; endogenous treatment linear regression and endogenous-treatment-effects/control-function specifications; OLS and propensity-score matching used as contrasts.",
+        "identification_boundary": "The treatment estimates depend on selection-model assumptions and the initial-sales treatment equation; the sample is restricted to listed firms, and the exact bargaining-versus-information channel is not identified.",
+        "rhetorical_architecture": "Observed pricing gap → endogenous-entry objection → jointly modeled treatment and outcome → counterfactual effect larger than descriptive gap → partial mechanism tests → explicit limits."
+      },
+      "proposed_atomic_observations": [
+        "An observed between-group pricing difference and a modeled treatment effect are different estimands; endogenous selection can make the descriptive contrast materially smaller than the counterfactual effect.",
+        "Access to an alternative funding channel can change terms in another channel by altering outside options, not merely by substituting one funding source for another.",
+        "An information-release mechanism can receive partial support without exhausting the effect of continuing market access, bargaining power, or lender market power.",
+        "Counterfactual treatment estimates must be described as model-dependent potential outcomes and kept separate from observed spreads and simple matched-sample contrasts."
+      ],
+      "novelty_classification": "reinforcement_only",
+      "new_universal_candidate": false,
+      "reinforces": ["selection and estimand discipline", "funding-source substitution", "two-sided outcome decomposition", "mechanism uncertainty"]
+    },
+    {
+      "challenge_sequence": 2,
+      "title": "Access to Credit in a Market Downturn",
+      "authors": ["Barbara Casu", "Laura Chiaramonte", "Ettore Croci", "Stefano Filomeni"],
+      "journal": "Journal of Financial Services Research",
+      "issue_year": 2024,
+      "published_online": "2022-10-18",
+      "doi": "10.1007/s10693-022-00388-x",
+      "access": "open_access_full_text",
+      "source_class": "primary_empirical_crisis_shock_loan_level",
+      "finance_coverage": ["credit lines", "relationship lending", "credit rationing", "bank funding shocks", "evergreening"],
+      "claim_method_alignment": {
+        "direct_findings": "Among 400 mandatory credit-line renewals at one large European bank after the August 2011 funding shock, higher line use predicted a lower probability and smaller amount of rationing; deterioration in borrower risk weakened protection; the study did not find evidence of evergreening in this existing-borrower portfolio.",
+        "method": "Proprietary loan-level renewal data; logit, OLS, ordered models, interaction tests, and robustness checks; mandatory renewals reduce applicant self-selection.",
+        "identification_boundary": "The supply-side interpretation assumes bank-funding effects dominate borrower-demand effects during the one-year window; evidence comes from one bank, one mid-corporate segment, and existing borrowers, not new originations.",
+        "rhetorical_architecture": "Crisis credit-supply problem → relationship-benefit/evergreening alternatives → funding-shock and mandatory-renewal design → probability, amount, intensity, and binding-rationing outcomes → interaction and robustness tests → bounded policy conclusion."
+      },
+      "proposed_atomic_observations": [
+        "Granted credit, committed credit, drawn credit, renewed availability, a line reduction, and binding rationing are distinct states and should not be collapsed into a single access-to-credit measure.",
+        "Relationship value and borrower risk interact: active use may protect an existing facility while a downgrade changes the bank’s capital and credit-risk calculus.",
+        "A negative result for evergreening in an existing-borrower renewal portfolio does not establish the absence of credit reallocation away from new borrowers or across institutions.",
+        "Mandatory renewals can reduce application self-selection, but a supply-side interpretation still depends on the shock window, portfolio scope, and demand assumptions."
+      ],
+      "novelty_classification": "reinforcement_only",
+      "new_universal_candidate": false,
+      "reinforces": ["stock-versus-flow distinctions", "state-contingent credit access", "interaction-aware mechanism claims", "external-validity discipline"]
+    }
+  ],
+  "interim_result": {
+    "papers_completed": 2,
+    "papers_remaining": 3,
+    "proposed_article_atomic_observations": 8,
+    "new_generalizable_observations": 0,
+    "gap_found": false,
+    "saturation_status": "not_yet_adjudicable_until_five_papers_complete"
+  },
+  "neuroscience_preservation_lock": {
+    "instruction": "Carry the Finance v1.0 cross_disciplinary_bonus_layer forward without semantic or structural edits.",
+    "expected_counts": {
+      "sources": 16,
+      "pages_reviewed": 219,
+      "bonus_atomic_observations": 70,
+      "canonical_bonus_families": 22,
+      "mathematical_motifs": 14,
+      "finance_transfer_candidates": 12
+    }
+  },
+  "next_action": "Read and extract the remaining three challenge papers, adjudicate batch novelty, integrate twenty proposed article atomics into Finance COMPLETE v1.1, and run full structural and preservation audits."
+}
