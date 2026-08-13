@@ -74,4 +74,6 @@ def load_automation_config() -> AutomationConfig:
         openai_timeout_seconds=_float(
             "AI_MACRO_OPENAI_TIMEOUT_SECONDS", DEFAULT_OPENAI_TIMEOUT_SECONDS
         ),
+        
+        DEFAULT_OPENAI_TIMEOUT_SECONDS = 600.0
     )
