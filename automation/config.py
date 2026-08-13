@@ -9,7 +9,7 @@ AUTOMATION_TIMEZONE = "America/New_York"
 AUTOMATION_START_LOCAL = "09:07"
 HARD_MAX_PAID_CALLS_PER_RUN = 2
 HARD_MAX_PAID_CALLS_PER_DAY = 4
-DEFAULT_OPENAI_TIMEOUT_SECONDS = 240.0
+DEFAULT_OPENAI_TIMEOUT_SECONDS = 600.0
 
 
 def _bool(name: str, default: bool = False) -> bool:
@@ -75,5 +75,4 @@ def load_automation_config() -> AutomationConfig:
             "AI_MACRO_OPENAI_TIMEOUT_SECONDS", DEFAULT_OPENAI_TIMEOUT_SECONDS
         ),
         
-        DEFAULT_OPENAI_TIMEOUT_SECONDS = 600.0
     )
