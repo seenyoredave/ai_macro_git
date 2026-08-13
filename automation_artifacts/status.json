@@ -1,36 +1,36 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "current_context_snapshot_id": "6bb66317dcdd3f58",
+  "current_context_snapshot_id": "838f360c850d8271",
   "errors": [
     "OpenAI generation did not return a publishable response at domain_reads stage."
   ],
-  "evidence_snapshot_id": "fd33f4b79e20139cbb5f229d",
-  "finished_at_utc": "2026-08-13T14:09:25.789428+00:00",
+  "evidence_snapshot_id": "c658d48b71393b2d98eb53e8",
+  "finished_at_utc": "2026-08-13T14:44:32.285117+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
     "this_run": 1,
-    "today_after_run": 1,
-    "today_before_run": 0
+    "today_after_run": 2,
+    "today_before_run": 1
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 947.556,
+      "elapsed_sec": 880.623,
       "status": "passed",
       "subphases": {
-        "assemble + persist": 4.485,
-        "current context": 37.174,
-        "domain sources": 401.606,
-        "market sources": 504.291
+        "assemble + persist": 4.401,
+        "current context": 33.195,
+        "domain sources": 404.714,
+        "market sources": 438.311
       }
     },
     "evidence": {
       "artifact_current": false,
       "artifact_materially_current": false,
       "artifact_status": "published_with_warnings",
-      "elapsed_sec": 1.672,
+      "elapsed_sec": 1.662,
       "materiality": {
         "baseline_available": false,
         "changes": [
@@ -39,7 +39,7 @@
             "material": true
           }
         ],
-        "current_snapshot_id": "fd33f4b79e20139cbb5f229d",
+        "current_snapshot_id": "c658d48b71393b2d98eb53e8",
         "decision": "generate_missing_baseline",
         "exact_match": false,
         "material": true,
@@ -51,7 +51,7 @@
       "status": "passed"
     },
     "openai": {
-      "attempt_id": "20260813T140525680794Z_fd33f4b7_4f68b05c",
+      "attempt_id": "20260813T144032155874Z_c658d48b_cc9065e3",
       "elapsed_sec": 241.947,
       "stage": "domain_reads",
       "status": "generation_failed",
@@ -60,13 +60,13 @@
   },
   "publish_ready": false,
   "result": "commentary_generation_failed",
-  "run_id": "20260813T134933Z_84f3d654",
+  "run_id": "20260813T142546Z_dff74e3c",
   "schedule": {
     "time": "09:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-13T13:49:33.067161+00:00",
-  "trigger": "workflow_dispatch",
+  "started_at_utc": "2026-08-13T14:25:46.434015+00:00",
+  "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
