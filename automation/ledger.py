@@ -72,9 +72,16 @@ def complete_paid_call(*, call_id: str, run_id: str, stage: str, status: str, de
 
 
 def paid_calls_for_local_date(local_date: str) -> int:
+    """Count in-flight calls and calls that successfully returned a response.
+
+    A reservation temporarily holds a safety slot while its request is in
+    flight. Once the call completes, only status="completed" continues to
+    consume the allowance. Calls completed with status="error" do not count.
+    """
     if not CALL_JOURNAL_PATH.exists():
         return 0
-    call_ids: set[str] = set()
+    reservations: dict[str, str] = {}
+    completion_statuses: dict[str, str] = {}
     with synchronized_path(CALL_JOURNAL_PATH):
         try:
             lines = CALL_JOURNAL_PATH.read_text(encoding="utf-8").splitlines()
@@ -85,14 +92,25 @@ def paid_calls_for_local_date(local_date: str) -> int:
             row = json.loads(line)
         except (TypeError, ValueError, json.JSONDecodeError):
             continue
-        if (
-            isinstance(row, dict)
-            and row.get("event") == "reserved"
-            and str(row.get("local_date") or "") == local_date
-            and row.get("call_id")
-        ):
-            call_ids.add(str(row["call_id"]))
-    return len(call_ids)
+        if not isinstance(row, dict) or not row.get("call_id"):
+            continue
+
+        call_id = str(row["call_id"])
+        event = str(row.get("event") or "")
+        if event == "reserved":
+            reservations[call_id] = str(row.get("local_date") or "")
+        elif event == "completed":
+            completion_statuses[call_id] = str(row.get("status") or "")
+
+    return sum(
+        1
+        for call_id, reservation_date in reservations.items()
+        if reservation_date == local_date
+        and (
+            call_id not in completion_statuses
+            or completion_statuses[call_id] == "completed"
+        )
+    )
 
 
 def today_local_date(now: datetime | None = None) -> str:

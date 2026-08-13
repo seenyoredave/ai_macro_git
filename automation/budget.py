@@ -39,6 +39,10 @@ class PaidCallGuard:
         self.calls_this_run += 1
         return call_id
 
+    def release(self) -> None:
+        """Release an in-run slot when a call returns no response."""
+        self.calls_this_run = max(0, self.calls_this_run - 1)
+
 
 class _BudgetedResponses:
     def __init__(self, inner: Any, guard: PaidCallGuard) -> None:
@@ -59,6 +63,7 @@ class _BudgetedResponses:
                 status="error",
                 detail=f"{type(exc).__name__}: {exc}",
             )
+            self._guard.release()
             raise
         complete_paid_call(
             call_id=call_id,
