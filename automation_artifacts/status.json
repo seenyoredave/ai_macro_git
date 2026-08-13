@@ -1,34 +1,36 @@
 {
-  "auto_publish": false,
+  "auto_publish": true,
   "automation_enabled": true,
-  "current_context_snapshot_id": "6026818e16715d32",
-  "errors": [],
-  "evidence_snapshot_id": "fbee11fd485114156e1fc8a3",
-  "finished_at_utc": "2026-08-13T10:12:22.458092+00:00",
-  "openai_enabled": false,
+  "current_context_snapshot_id": "6bb66317dcdd3f58",
+  "errors": [
+    "OpenAI generation did not return a publishable response at domain_reads stage."
+  ],
+  "evidence_snapshot_id": "fd33f4b79e20139cbb5f229d",
+  "finished_at_utc": "2026-08-13T14:09:25.789428+00:00",
+  "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
-    "this_run": 0,
-    "today_after_run": 0,
+    "this_run": 1,
+    "today_after_run": 1,
     "today_before_run": 0
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 775.507,
+      "elapsed_sec": 947.556,
       "status": "passed",
       "subphases": {
-        "assemble + persist": 5.715,
-        "current context": 37.326,
-        "domain sources": 403.361,
-        "market sources": 329.104
+        "assemble + persist": 4.485,
+        "current context": 37.174,
+        "domain sources": 401.606,
+        "market sources": 504.291
       }
     },
     "evidence": {
       "artifact_current": false,
       "artifact_materially_current": false,
       "artifact_status": "published_with_warnings",
-      "elapsed_sec": 1.527,
+      "elapsed_sec": 1.672,
       "materiality": {
         "baseline_available": false,
         "changes": [
@@ -37,7 +39,7 @@
             "material": true
           }
         ],
-        "current_snapshot_id": "fbee11fd485114156e1fc8a3",
+        "current_snapshot_id": "fd33f4b79e20139cbb5f229d",
         "decision": "generate_missing_baseline",
         "exact_match": false,
         "material": true,
@@ -49,18 +51,21 @@
       "status": "passed"
     },
     "openai": {
-      "reason": "OPENAI_AUTOMATION_ENABLED is false or manual paid opt-in is absent",
-      "status": "blocked"
+      "attempt_id": "20260813T140525680794Z_fd33f4b7_4f68b05c",
+      "elapsed_sec": 241.947,
+      "stage": "domain_reads",
+      "status": "generation_failed",
+      "validation": {}
     }
   },
   "publish_ready": false,
-  "result": "openai_disabled_for_changed_evidence",
-  "run_id": "20260813T095924Z_1c5cfdcf",
+  "result": "commentary_generation_failed",
+  "run_id": "20260813T134933Z_84f3d654",
   "schedule": {
     "time": "09:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-13T09:59:24.180720+00:00",
+  "started_at_utc": "2026-08-13T13:49:33.067161+00:00",
   "trigger": "workflow_dispatch",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
@@ -72,6 +77,6 @@
     "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
     "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
-    "Analytical evidence changed but autonomous OpenAI spending is disabled."
+    "snapshot yfinance: The live YFinance refresh did not produce one complete, single-date market snapshot. The last complete retained snapshot remained in use, and no YFinance-owned history was advanced. Mode=archive_fallback_market_date_mismatch; retained market date=2026-08-12."
   ]
 }
