@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -45,10 +46,18 @@ import loaders.current_context_daily as daily
 class _Responses:
     def __init__(self) -> None:
         self.calls = 0
+        self.retrievals = 0
 
     def parse(self, *args, **kwargs):
         self.calls += 1
-        return {"ok": True}
+        return SimpleNamespace(id=f"resp-{self.calls}", status="queued")
+
+    def retrieve(self, response_id, *args, **kwargs):
+        self.retrievals += 1
+        return SimpleNamespace(id=response_id, status="completed")
+
+    def cancel(self, response_id, *args, **kwargs):
+        return SimpleNamespace(id=response_id, status="cancelled")
 
 
 class _Client:
@@ -222,30 +231,47 @@ def main() -> None:
     original_daily = budget.paid_calls_for_local_date
     original_reserve = budget.reserve_paid_call
     original_complete = budget.complete_paid_call
+    original_submitted = budget.mark_paid_call_submitted
     try:
         budget.paid_calls_for_local_date = lambda _date: 0
         counter = {"value": 0}
+        completed = []
+        submitted = []
         def fake_reserve(**kwargs):
             counter["value"] += 1
             return f"call-{counter['value']}"
         budget.reserve_paid_call = fake_reserve
-        budget.complete_paid_call = lambda **kwargs: None
+        budget.complete_paid_call = lambda **kwargs: completed.append(kwargs)
+        budget.mark_paid_call_submitted = lambda **kwargs: submitted.append(kwargs)
         guard = PaidCallGuard("test-run", 2, 4)
         client = BudgetedOpenAIClient(_Client(), guard)
-        client.responses.parse(text_format=type("GeneratedDomainReadSet", (), {}))
-        client.responses.parse(text_format=type("GeneratedMacroRead", (), {}))
+        domain = client.responses.parse(text_format=type("GeneratedDomainReadSet", (), {}))
+        client.responses.retrieve(domain.id)
+        client.responses.commit(domain.id)
+        macro = client.responses.parse(text_format=type("GeneratedMacroRead", (), {}))
+        _check(counter["value"] == 2, "Background retrieval consumed an additional paid-call reservation.")
+        _check(len(submitted) == 2 and submitted[0]["response_id"] == "resp-1", "Background response IDs are not journaled before polling.")
         try:
             client.responses.parse(text_format=type("GeneratedMacroRead", (), {}))
         except PaidCallBudgetExceeded:
             pass
         else:
             raise AssertionError("A third paid call was allowed inside one automation run.")
+        client.responses.abandon(macro.id, detail="no usable output")
+        replacement = client.responses.parse(text_format=type("GeneratedMacroRead", (), {}))
+        client.responses.abandon(replacement.id, detail="test cleanup")
+        _check(counter["value"] == 3, "A response-free call did not release its in-run safety slot.")
+        _check(
+            [row["status"] for row in completed] == ["completed", "error", "error"],
+            "Response-only allowance accounting changed unexpectedly.",
+        )
     finally:
         budget.paid_calls_for_local_date = original_daily
         budget.reserve_paid_call = original_reserve
         budget.complete_paid_call = original_complete
+        budget.mark_paid_call_submitted = original_submitted
 
-    print("PASS  automation · weekdays 09:07 Eastern · ordered refresh · 10% materiality · 2/run · zero SDK retries")
+    print("PASS  automation · weekdays 09:07 Eastern · background polling · 2/run · response-only allowance")
 
 
 if __name__ == "__main__":

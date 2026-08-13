@@ -59,6 +59,26 @@ def reserve_paid_call(*, run_id: str, stage: str, now: datetime | None = None) -
     return call_id
 
 
+def mark_paid_call_submitted(
+    *,
+    call_id: str,
+    run_id: str,
+    stage: str,
+    response_id: str,
+    response_status: str,
+) -> None:
+    """Persist the provider response ID before the first poll begins."""
+    _append_jsonl(CALL_JOURNAL_PATH, {
+        "event": "submitted",
+        "call_id": call_id,
+        "run_id": run_id,
+        "stage": stage,
+        "response_id": str(response_id or ""),
+        "response_status": str(response_status or ""),
+        "at_utc": utc_now().isoformat(),
+    })
+
+
 def complete_paid_call(*, call_id: str, run_id: str, stage: str, status: str, detail: str = "") -> None:
     _append_jsonl(CALL_JOURNAL_PATH, {
         "event": "completed",
