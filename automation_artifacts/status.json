@@ -1,11 +1,11 @@
 {
   "auto_publish": false,
   "automation_enabled": true,
-  "errors": [
-    "ValueError: Benchmark members do not share one market date: [datetime.date(2026, 8, 10), datetime.date(2026, 8, 11)]"
-  ],
-  "finished_at_utc": "2026-08-12T10:32:42.164702+00:00",
-  "openai_enabled": true,
+  "current_context_snapshot_id": "6026818e16715d32",
+  "errors": [],
+  "evidence_snapshot_id": "fbee11fd485114156e1fc8a3",
+  "finished_at_utc": "2026-08-13T10:12:22.458092+00:00",
+  "openai_enabled": false,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
@@ -15,30 +15,63 @@
   },
   "phases": {
     "deterministic_refresh": {
-      "status": "running"
+      "elapsed_sec": 775.507,
+      "status": "passed",
+      "subphases": {
+        "assemble + persist": 5.715,
+        "current context": 37.326,
+        "domain sources": 403.361,
+        "market sources": 329.104
+      }
+    },
+    "evidence": {
+      "artifact_current": false,
+      "artifact_materially_current": false,
+      "artifact_status": "published_with_warnings",
+      "elapsed_sec": 1.527,
+      "materiality": {
+        "baseline_available": false,
+        "changes": [
+          {
+            "kind": "missing_generated_evidence_baseline",
+            "material": true
+          }
+        ],
+        "current_snapshot_id": "fbee11fd485114156e1fc8a3",
+        "decision": "generate_missing_baseline",
+        "exact_match": false,
+        "material": true,
+        "percentage_point_threshold": 2.0,
+        "previous_snapshot_id": "51d04468a8202dc0f293a847",
+        "relative_change_threshold": 0.1,
+        "version": "1.0.0"
+      },
+      "status": "passed"
+    },
+    "openai": {
+      "reason": "OPENAI_AUTOMATION_ENABLED is false or manual paid opt-in is absent",
+      "status": "blocked"
     }
   },
   "publish_ready": false,
-  "result": "exception",
-  "run_id": "20260812T102831Z_7ae60241",
+  "result": "openai_disabled_for_changed_evidence",
+  "run_id": "20260813T095924Z_1c5cfdcf",
   "schedule": {
     "time": "09:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-12T10:28:31.603279+00:00",
-  "traceback_tail": [
-    "Traceback (most recent call last):",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/runner.py\", line 224, in main",
-    "    bundle = refresh_research_state()",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/research_refresh.py\", line 106, in refresh_research_state",
-    "    benchmark_metrics = get_benchmark_metrics_from_market_frame(",
-    "        \"QQQ\", raw_universe_data.get(\"yfinance\")",
-    "    )",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/benchmarks/benchmark_service.py\", line 145, in get_benchmark_metrics_from_market_frame",
-    "    market_data_date = _single_market_data_date(benchmark_frame)",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/benchmarks/benchmark_service.py\", line 101, in _single_market_data_date",
-    "    raise ValueError(f\"Benchmark members do not share one market date: {unique}\")",
-    "ValueError: Benchmark members do not share one market date: [datetime.date(2026, 8, 10), datetime.date(2026, 8, 11)]"
-  ],
-  "trigger": "schedule"
+  "started_at_utc": "2026-08-13T09:59:24.180720+00:00",
+  "trigger": "workflow_dispatch",
+  "warnings": [
+    "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
+    "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
+    "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
+    "connectivity: SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
+    "adoption: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
+    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
+    "Analytical evidence changed but autonomous OpenAI spending is disabled."
+  ]
 }
