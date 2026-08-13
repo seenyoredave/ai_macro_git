@@ -1,36 +1,65 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "current_context_snapshot_id": "b91f1224d343f15b",
-  "errors": [
-    "OpenAI generation did not return a publishable response at domain_reads stage."
+  "changed_paths": [
+    "archive/benchmark_history.csv",
+    "archive/edgar_history.csv",
+    "archive/fred_history.csv",
+    "archive/macro_history.csv",
+    "archive/sector_history.csv",
+    "archive/yf_history.csv",
+    "automation_artifacts/call_journal.jsonl",
+    "automation_artifacts/status.json",
+    "data/adoption_national_history.csv",
+    "data/adoption_sector_snapshot.csv",
+    "data/borrower_strain_fundamentals_history.csv",
+    "data/commercialization/commercialization_ledger.csv",
+    "data/connectivity/ixp_snapshot.csv",
+    "data/connectivity/national_summary.csv",
+    "data/current_context_candidate_audit.csv",
+    "data/current_context_refresh_manifest.json",
+    "data/debt_markets_metadata.json",
+    "data/infrastructure/source_manifest.csv",
+    "data/release_manifest.json",
+    "data/retained_state_manifest.json",
+    "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
+    "data/water/derived/usgs_2015_county_summary.csv.gz",
+    "data/water/derived/usgs_2015_reconciliation.csv.gz",
+    "data/water/derived/usgs_2015_state_category_summary.csv",
+    "data/water/derived/water_national_summary.json",
+    "data/water/derived/water_observations.csv.gz",
+    "data/water/source_manifest.csv",
+    "data/weekly_context_events.csv",
+    "openai_artifacts/current.json"
   ],
-  "evidence_snapshot_id": "60dd49ea8749e964aaedef8d",
-  "finished_at_utc": "2026-08-13T23:02:51.290424+00:00",
+  "current_context_snapshot_id": "04154860be1d535e",
+  "errors": [],
+  "evidence_snapshot_id": "96bd766384562323bf5e2bf5",
+  "finished_at_utc": "2026-08-13T23:56:55.147230+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
-    "this_run": 0,
-    "today_after_run": 0,
+    "this_run": 2,
+    "today_after_run": 2,
     "today_before_run": 0
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 794.053,
+      "elapsed_sec": 787.852,
       "status": "passed",
       "subphases": {
-        "assemble + persist": 4.706,
-        "current context": 73.23,
-        "domain sources": 394.0,
-        "market sources": 322.116
+        "assemble + persist": 5.815,
+        "current context": 55.83,
+        "domain sources": 403.971,
+        "market sources": 322.235
       }
     },
     "evidence": {
       "artifact_current": false,
       "artifact_materially_current": false,
       "artifact_status": "published_with_warnings",
-      "elapsed_sec": 1.718,
+      "elapsed_sec": 1.734,
       "materiality": {
         "baseline_available": false,
         "changes": [
@@ -39,7 +68,7 @@
             "material": true
           }
         ],
-        "current_snapshot_id": "60dd49ea8749e964aaedef8d",
+        "current_snapshot_id": "96bd766384562323bf5e2bf5",
         "decision": "generate_missing_baseline",
         "exact_match": false,
         "material": true,
@@ -51,21 +80,85 @@
       "status": "passed"
     },
     "openai": {
-      "attempt_id": "20260813T225809615700Z_60dd49ea_c30bfe80",
-      "elapsed_sec": 283.406,
-      "stage": "domain_reads",
-      "status": "generation_failed",
-      "validation": {}
+      "attempt_id": "20260813T234022609352Z_96bd7663_117ac8d1",
+      "elapsed_sec": 991.877,
+      "stage": "",
+      "status": "published_with_warnings",
+      "validation": {
+        "checked_claims": 59,
+        "domain": {
+          "checked_claims": 48,
+          "errors": [
+            "data_center.analysis[2]: conspicuous same-initial word run is not allowed: capacity comparisons can"
+          ],
+          "failures": [
+            {
+              "fact_ids": [
+                "data_center.canonical_capacity_coverage"
+              ],
+              "label": "data_center.analysis[2]",
+              "message": "data_center.analysis[2]: conspicuous same-initial word run is not allowed: capacity comparisons can",
+              "reason": "alliterative_run",
+              "sentence": "Canonical published capacity exists for 35.6% of active campus records, which limits how far capacity comparisons can extend across the registry.",
+              "words": [
+                "capacity",
+                "comparisons",
+                "can"
+              ]
+            }
+          ],
+          "grounded_claims": 47,
+          "passed": false,
+          "version": "3.4.0"
+        },
+        "gate_results": {
+          "domain_grounding": false,
+          "macro_grounding": false
+        },
+        "grounded_claims": 57,
+        "macro": {
+          "checked_claims": 11,
+          "errors": [
+            "macro.analysis[8]: reuses domain Read language from economic_impact"
+          ],
+          "failures": [
+            {
+              "fact_ids": [
+                "economic_impact.productivity_since_2020",
+                "economic_impact.real_compensation_since_2020",
+                "economic_impact.productivity_real_comp_gap"
+              ],
+              "label": "macro.analysis[8]",
+              "message": "macro.analysis[8]: reuses domain Read language from economic_impact",
+              "reason": "domain_language_reuse",
+              "sentence": "Since 2020, productivity in the nonfarm business sector has outpaced real hourly compensation by 9.6 percentage points.",
+              "source_domain": "economic_impact",
+              "source_text": "Since 2020, nonfarm-business productivity rose 14.1%, outpacing real hourly compensation by 9.6 percentage points."
+            }
+          ],
+          "grounded_claims": 10,
+          "passed": false,
+          "version": "3.4.0"
+        },
+        "passed": false,
+        "publication_policy": "publish_every_completed_openai_response_with_diagnostics",
+        "raw_stage": "",
+        "validator_version": "3.4.0"
+      }
+    },
+    "publication": {
+      "status": "ready",
+      "transaction_boundary": "git_commit"
     }
   },
-  "publish_ready": false,
-  "result": "commentary_generation_failed",
-  "run_id": "20260813T224450Z_5021b763",
+  "publish_ready": true,
+  "result": "publish_ready",
+  "run_id": "20260813T232709Z_bc4462cb",
   "schedule": {
     "time": "09:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-13T22:44:50.561248+00:00",
+  "started_at_utc": "2026-08-13T23:27:09.833741+00:00",
   "trigger": "workflow_dispatch",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
