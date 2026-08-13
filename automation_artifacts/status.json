@@ -1,36 +1,36 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "current_context_snapshot_id": "838f360c850d8271",
+  "current_context_snapshot_id": "8918085d15e14f7a",
   "errors": [
     "OpenAI generation did not return a publishable response at domain_reads stage."
   ],
-  "evidence_snapshot_id": "c658d48b71393b2d98eb53e8",
-  "finished_at_utc": "2026-08-13T14:44:32.285117+00:00",
+  "evidence_snapshot_id": "d209a82dfee15b92ff1c2c2c",
+  "finished_at_utc": "2026-08-13T21:35:21.958314+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
     "this_run": 1,
-    "today_after_run": 2,
-    "today_before_run": 1
+    "today_after_run": 3,
+    "today_before_run": 2
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 880.623,
+      "elapsed_sec": 833.436,
       "status": "passed",
       "subphases": {
-        "assemble + persist": 4.401,
-        "current context": 33.195,
-        "domain sources": 404.714,
-        "market sources": 438.311
+        "assemble + persist": 7.395,
+        "current context": 55.515,
+        "domain sources": 398.652,
+        "market sources": 371.872
       }
     },
     "evidence": {
       "artifact_current": false,
       "artifact_materially_current": false,
       "artifact_status": "published_with_warnings",
-      "elapsed_sec": 1.662,
+      "elapsed_sec": 1.721,
       "materiality": {
         "baseline_available": false,
         "changes": [
@@ -39,7 +39,7 @@
             "material": true
           }
         ],
-        "current_snapshot_id": "c658d48b71393b2d98eb53e8",
+        "current_snapshot_id": "d209a82dfee15b92ff1c2c2c",
         "decision": "generate_missing_baseline",
         "exact_match": false,
         "material": true,
@@ -51,8 +51,8 @@
       "status": "passed"
     },
     "openai": {
-      "attempt_id": "20260813T144032155874Z_c658d48b_cc9065e3",
-      "elapsed_sec": 241.947,
+      "attempt_id": "20260813T213035093266Z_d209a82d_4238b9c8",
+      "elapsed_sec": 288.734,
       "stage": "domain_reads",
       "status": "generation_failed",
       "validation": {}
@@ -60,13 +60,13 @@
   },
   "publish_ready": false,
   "result": "commentary_generation_failed",
-  "run_id": "20260813T142546Z_dff74e3c",
+  "run_id": "20260813T211636Z_af6988f8",
   "schedule": {
     "time": "09:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-13T14:25:46.434015+00:00",
-  "trigger": "schedule",
+  "started_at_utc": "2026-08-13T21:16:36.826551+00:00",
+  "trigger": "workflow_dispatch",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
@@ -76,7 +76,6 @@
     "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
-    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
-    "snapshot yfinance: The live YFinance refresh did not produce one complete, single-date market snapshot. The last complete retained snapshot remained in use, and no YFinance-owned history was advanced. Mode=archive_fallback_market_date_mismatch; retained market date=2026-08-12."
+    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth"
   ]
 }
