@@ -165,11 +165,19 @@ def main() -> None:
             "current_context": {"source_mode": "retained", "refresh_status": "retained"},
             "snapshot_write": {},
         },
-        snapshot_write_report={"errors": {}},
+        snapshot_write_report={
+            "errors": {},
+            "warnings": {"yfinance": "complete retained market snapshot used"},
+        },
     )
     _check(not blocking_refresh_errors(degraded), "Valid retained/partial fallbacks block the entire automation release.")
     warning_text = " | ".join(refresh_warnings(degraded))
-    _check("provider unavailable" in warning_text and "temporary miss" in warning_text, "Fallback degradation is not visible in the automation ledger.")
+    _check(
+        "provider unavailable" in warning_text
+        and "temporary miss" in warning_text
+        and "complete retained market snapshot used" in warning_text,
+        "Fallback degradation is not visible in the automation ledger.",
+    )
     unavailable = RefreshBundle(
         context=None,
         reports={"finance": {"source_mode": "unavailable", "error": "no valid retained state"}},

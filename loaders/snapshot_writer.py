@@ -129,6 +129,8 @@ def persist_refresh_snapshots(
         "policy": policy.describe(),
         "written": [],
         "retained_by_loader": [],
+        "retained_fallbacks": [],
+        "warnings": {},
         "errors": {},
     }
     if archive_suspended:
@@ -143,6 +145,8 @@ def persist_refresh_snapshots(
 
     written: list[str] = report["written"]
     retained_by_loader: list[str] = report["retained_by_loader"]
+    retained_fallbacks: list[str] = report["retained_fallbacks"]
+    report_warnings: dict[str, str] = report["warnings"]
     errors: dict[str, str] = report["errors"]
 
     def run(label: str, function: Callable[[], object]) -> bool:
@@ -211,14 +215,32 @@ def persist_refresh_snapshots(
             expected = int(yf_report.get("expected_tickers") or 0)
             fallback_rows = int(yf_report.get("archive_fallback_tickers") or 0)
             fallback_fields = int(yf_report.get("archive_field_backfills") or 0)
-            missing = len(yf_report.get("missing_tickers") or [])
-            errors["yfinance"] = (
-                "YFinance refresh did not return a complete live ticker universe; "
-                "the retained archive was not advanced. "
-                f"Mode={mode}, live={live}/{expected}, "
-                f"fallback rows={fallback_rows}, missing rows={missing}, "
-                f"retained field fills={fallback_fields}."
+            missing_symbols = yf_report.get("missing_tickers") or []
+            returned = int(yf_report.get("returned_tickers") or 0)
+            retained_date = _market_observation_date(raw_universe_data)
+            valid_retained_fallback = (
+                mode.casefold().startswith("archive_fallback")
+                and expected > 0
+                and returned == expected
+                and not missing_symbols
+                and bool(retained_date)
             )
+            if valid_retained_fallback:
+                retained_fallbacks.append("yfinance")
+                report_warnings["yfinance"] = (
+                    "The live YFinance refresh did not produce one complete, single-date "
+                    "market snapshot. The last complete retained snapshot remained in use, "
+                    "and no YFinance-owned history was advanced. "
+                    f"Mode={mode}; retained market date={retained_date}."
+                )
+            else:
+                errors["yfinance"] = (
+                    "YFinance refresh did not return a complete live ticker universe; "
+                    "the retained archive was not advanced. "
+                    f"Mode={mode}, live={live}/{expected}, "
+                    f"fallback rows={fallback_rows}, missing rows={len(missing_symbols)}, "
+                    f"retained field fills={fallback_fields}."
+                )
 
     if policy.allows_live(RefreshSource.EDGAR):
         edgar_report = dict(market_report.get("edgar", {}) or {})
@@ -281,6 +303,10 @@ def persist_refresh_snapshots(
         run("energy", lambda: append_energy_history(energy_data))
 
     report["status"] = (
-        "written" if written or retained_by_loader else "no_successful_live_sources"
+        "written"
+        if written or retained_by_loader
+        else "retained_fallback"
+        if retained_fallbacks
+        else "no_successful_live_sources"
     )
     return report

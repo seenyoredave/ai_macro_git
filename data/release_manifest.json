@@ -5,8 +5,8 @@
   },
   "files": {
     ".githooks/pre-push": {
-      "bytes": 52,
-      "sha256": "a62e831b7af08ab7064cebb8a10d259717ca2ba64884c4849d0218f02dbe22da"
+      "bytes": 146,
+      "sha256": "9a2ff7aecbd10051a1476b2eed21a2d63290902392f5b09ab80f400dc1ea4cfc"
     },
     ".github/workflows/ai_macro_automation.yml": {
       "bytes": 5526,
@@ -14,7 +14,7 @@
     },
     "ai_macro.py": {
       "bytes": 27235,
-      "sha256": "00d7828e7da16b21047aa63eb5c8042f12ee03bda6a3181e54178123d7846921"
+      "sha256": "c7191c740e97531482c27c74322bb7041c0b31b76fb71230bdb24a49a0415aa5"
     },
     "analytics/capital_commitments.py": {
       "bytes": 6578,
@@ -153,8 +153,8 @@
       "sha256": "be19ebc5ab52e340a936d6862211e29ad0a8d2e2cc336eac81be7fa190ade627"
     },
     "automation/research_refresh.py": {
-      "bytes": 15063,
-      "sha256": "54fbcb0b9fbd8f18ee69cad709281f65fe743277907cb1a2f349bb7f1fe7903c"
+      "bytes": 15257,
+      "sha256": "3c3a312a4190e80efb295caec68ac0b57a63bb7335f39f51c9a2e3c82aec0dce"
     },
     "automation/retained_state.py": {
       "bytes": 8078,
@@ -300,41 +300,9 @@
       "bytes": 7178,
       "sha256": "abcc68d328b09509698c186d4a92a9bdc2486777e54be46a4357248bc016e484"
     },
-    "docs/COMMENTARY_ARCHITECTURE.md": {
-      "bytes": 3983,
-      "sha256": "0534a812b2822cae16a0230bc07779f46e50031d15924e900dc0696135c29eac"
-    },
-    "docs/CURRENT_CONTEXT_ACTIVATION_READ_LABELS_2026-08-09.md": {
-      "bytes": 1735,
-      "sha256": "9061cc03ee8f061838d5877dd0d2a774ee86fc25d51146e0955e14ffd766d727"
-    },
-    "docs/CURRENT_CONTEXT_CLUMP_A_2026-08-09.md": {
-      "bytes": 2974,
-      "sha256": "ab6da1a70bc4a7300320b1db1732bbb8449f42722afe209d3610770227cc894c"
-    },
-    "docs/CURRENT_CONTEXT_CLUMP_B_2026-08-09.md": {
-      "bytes": 1888,
-      "sha256": "8905fd6ef6aa974e6494558477e868d01ab6dc940a7523d323f8d1a0eebd6f25"
-    },
-    "docs/CURRENT_CONTEXT_CLUMP_C_PROVIDER_RESILIENCE_2026-08-09.md": {
-      "bytes": 1989,
-      "sha256": "1f1f8c775bdd8628333e3f41d6630306ee097302feb77b9b33d229378b08f70e"
-    },
-    "docs/CURRENT_CONTEXT_RENDERING_REPAIR_2026-08-09.md": {
-      "bytes": 1527,
-      "sha256": "35a74c39017a88c41d30085ea73737f870460331af6f922d09102a2c6fbaa571"
-    },
-    "docs/CURRENT_CONTEXT_SOURCE_GROUNDING_2026-08-09.md": {
-      "bytes": 4263,
-      "sha256": "faaa0b5633a57669015952589e1961acd3deafa9901ef96002dafb0285172121"
-    },
     "docs/EDITORIAL_STYLE.md": {
       "bytes": 13063,
       "sha256": "e632b8630e482215119579193f6a7b80e3528c52ff9a1544a774d020cb344a80"
-    },
-    "docs/GIT_RECONCILIATION.md": {
-      "bytes": 3591,
-      "sha256": "b0a3ec86bb14531360694e2d18a55eac9afdde125ee02a278707fca6eea43cf8"
     },
     "docs/LANGUAGE_LAYER.md": {
       "bytes": 4910,
@@ -353,8 +321,8 @@
       "sha256": "8818b4699347e17bc3e29c8baa0bbd378fdf8e7f45d74dd7490b5f52bd9efd5d"
     },
     "helpers/build_release_manifest.py": {
-      "bytes": 8880,
-      "sha256": "f0092df657fb662260dd978a8827009e390635b1cf2ab133827ccae2bb911e78"
+      "bytes": 8454,
+      "sha256": "d2a079a6281d0844ae117e112c2cf05a796d7471ebe210972fd5a50f6365cd42"
     },
     "helpers/editorial_quality_contract_test.py": {
       "bytes": 4821,
@@ -497,8 +465,8 @@
       "sha256": "84a9f64fe6ebed44dfe70c26d6c6872547544d015982fc41f0c0874d792e5bc8"
     },
     "loaders/market_loader.py": {
-      "bytes": 24245,
-      "sha256": "af59b22891f81f86e4449bae8221d510e4e27bb0fa2b82e5853c55774c8122d6"
+      "bytes": 29379,
+      "sha256": "2dc98f6f39b6545e30d56a44c52f0d11a9223dbe959deee6082455cc15983299"
     },
     "loaders/market_valuation_loader.py": {
       "bytes": 1098,
@@ -513,8 +481,8 @@
       "sha256": "8281da56cd76f88c3fa1d4acfc8cd17e990fecca3e90a19d187b2d5f7e40a8cb"
     },
     "loaders/snapshot_writer.py": {
-      "bytes": 11274,
-      "sha256": "60b1bdadc4fd2a4f8cbd80543355a7a70c62db0b47133d9e6fc1635d248c4802"
+      "bytes": 12490,
+      "sha256": "e6335c8f121edcd3572fbe712e46959c0b48d209aeed03e7560d59f39c69af1d"
     },
     "loaders/water_loader.py": {
       "bytes": 2859,
@@ -589,7 +557,7 @@
       "sha256": "6a7ef2292e0df10ddca28de822faa1f0797f1a84f7f2501a233874ba99b2db09"
     }
   },
-  "generated_at_utc": "2026-08-13T08:35:36+00:00",
+  "generated_at_utc": "2026-08-13T09:48:44+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -600,6 +568,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "873f16f9810d52a72666",
+  "release_id": "be6e9d6bf65a0dc73033",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }

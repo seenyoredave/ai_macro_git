@@ -351,6 +351,11 @@ def refresh_warnings(bundle: RefreshBundle) -> list[str]:
             errors = refresh_errors(report)
             if errors:
                 messages.extend(f"{label}: {message}" for message in errors)
+    for label, message in (
+        dict(bundle.snapshot_write_report or {}).get("warnings") or {}
+    ).items():
+        if message:
+            messages.append(f"snapshot {label}: {message}")
     return list(dict.fromkeys(messages))
 
 

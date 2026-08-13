@@ -248,6 +248,79 @@ def merge_live_yfinance_with_archive(fresh, fallback, tickers):
         ),
     )
 
+
+def _market_data_dates(frame):
+    if not isinstance(frame, pd.DataFrame) or frame.empty or "Market Data Date" not in frame.columns:
+        return []
+    parsed = pd.to_datetime(
+        frame["Market Data Date"], errors="coerce", format="mixed"
+    ).dt.date
+    if parsed.isna().any() or len(parsed) != len(frame):
+        return []
+    return sorted({value.isoformat() for value in parsed})
+
+
+def resolve_yfinance_market_date_mismatch(merged, fallback, tickers):
+    """Use one complete retained snapshot when live rows span market dates.
+
+    YFinance occasionally returns a stale close for one otherwise successful
+    ticker.  Mixing that row with current-date rows is valid for neither the
+    fixed QQQ reference nor retained history.  The analytical transaction may
+    continue from the prior complete retained snapshot, but the live refresh
+    remains unsuccessful and must not advance YFinance-owned history.
+    """
+    live_dates = _market_data_dates(merged)
+    if len(live_dates) == 1:
+        return merged
+
+    raw_tickers = tickers.keys() if isinstance(tickers, dict) else tickers
+    expected_order = [str(ticker).upper().strip() for ticker in raw_tickers]
+    expected = set(expected_order)
+    retained = ensure_yf_schema(fallback) if isinstance(fallback, pd.DataFrame) else pd.DataFrame()
+    if retained.empty or "Ticker" not in retained.columns:
+        return merged
+
+    retained = retained.copy()
+    retained["Ticker"] = retained["Ticker"].astype(str).str.upper().str.strip()
+    retained = retained.loc[retained["Ticker"].isin(expected)].drop_duplicates(
+        subset=["Ticker"], keep="last"
+    )
+    retained_dates = _market_data_dates(retained)
+    returned = set(retained["Ticker"]) if not retained.empty else set()
+    if returned != expected or len(retained_dates) != 1:
+        return merged
+
+    row_order = {ticker: index for index, ticker in enumerate(expected_order)}
+    retained["_ticker_order"] = retained["Ticker"].map(row_order)
+    retained = (
+        retained.sort_values("_ticker_order", kind="stable")
+        .drop(columns="_ticker_order")
+        .reset_index(drop=True)
+    )
+
+    prior_report = dict(getattr(merged, "attrs", {}).get("load_report", {}) or {})
+    provider_live_tickers = int(prior_report.get("live_tickers") or 0)
+    retained.attrs["load_report"] = {
+        **prior_report,
+        "source_mode": "archive_fallback_market_date_mismatch",
+        "live_tickers": 0,
+        "provider_live_tickers": provider_live_tickers,
+        "archive_fallback_tickers": len(expected),
+        "archive_fallback_symbols": sorted(expected),
+        "archive_field_backfills": 0,
+        "archive_field_backfill_details": [],
+        "archive_field_backfill_columns": {},
+        "missing_tickers": [],
+        "returned_tickers": len(returned),
+        "live_market_data_dates": live_dates,
+        "retained_market_data_date": retained_dates[0],
+        "live_error": (
+            "YFinance live rows did not share one Market Data Date; "
+            "the complete retained market snapshot was used without advancing history."
+        ),
+    }
+    return retained
+
 def _safe_market_number(fast_info, info, *keys):
     for key in keys:
         value = (fast_info or {}).get(key)
@@ -346,6 +419,8 @@ def pull_yfinance(ticker_tuple, attempts=YFINANCE_PULL_MAX_ATTEMPTS):
     attempt_counts = {ticker: 0 for ticker in tickers}
     last_errors = {}
     rate_limit_events = 0
+    market_date_mismatch_events = 0
+    market_date_retry_tickers = set()
     retry_delays = []
     rounds_run = 0
     max_attempts = max(1, int(attempts))
@@ -386,6 +461,34 @@ def pull_yfinance(ticker_tuple, attempts=YFINANCE_PULL_MAX_ATTEMPTS):
             if batch_index + 1 < len(batches):
                 time.sleep(YFINANCE_PULL_BATCH_PAUSE_SECONDS)
 
+        # Successful transport does not guarantee a coherent market
+        # observation. Yahoo can briefly return the prior close for one ticker
+        # while the rest of the universe has advanced. Retry only those
+        # outliers inside the existing bounded attempt budget.
+        dated = {}
+        for ticker, row in collected.items():
+            parsed = pd.to_datetime(
+                row.get("Market Data Date"), errors="coerce", format="mixed"
+            )
+            dated[ticker] = parsed.date() if pd.notna(parsed) else None
+        valid_dates = [value for value in dated.values() if value is not None]
+        if valid_dates:
+            counts = pd.Series(valid_dates).value_counts()
+            dominant_date = max(counts.index, key=lambda value: (int(counts[value]), value))
+            outliers = sorted(
+                ticker for ticker, value in dated.items() if value != dominant_date
+            )
+            if outliers:
+                market_date_mismatch_events += 1
+                market_date_retry_tickers.update(outliers)
+                for ticker in outliers:
+                    collected.pop(ticker, None)
+                    pending[ticker] = tickers[ticker]
+                    last_errors[ticker] = (
+                        "Market Data Date did not match the dominant live observation "
+                        f"date {dominant_date.isoformat()}"
+                    )
+
         if pending and attempt + 1 < max_attempts:
             base = (
                 YFINANCE_PULL_RATE_LIMIT_DELAY_SECONDS
@@ -411,6 +514,8 @@ def pull_yfinance(ticker_tuple, attempts=YFINANCE_PULL_MAX_ATTEMPTS):
         "retry_rounds": max(0, int(rounds_run) - 1),
         "total_fetch_attempts": int(sum(attempt_counts.values())),
         "rate_limit_events": int(rate_limit_events),
+        "market_date_mismatch_events": int(market_date_mismatch_events),
+        "market_date_retry_tickers": sorted(market_date_retry_tickers),
         "retry_delays_sec": retry_delays,
         "initial_workers": int(YFINANCE_PULL_INITIAL_WORKERS),
         "retry_workers": 1,
@@ -555,6 +660,7 @@ def _load_yfinance_cached(
             raise ValueError(f"yfinance returned an empty DataFrame{detail}")
 
         merged = merge_live_yfinance_with_archive(fresh, fallback, tickers)
+        merged = resolve_yfinance_market_date_mismatch(merged, fallback, tickers)
         report = dict(getattr(merged, "attrs", {}).get("load_report", {}))
         report.update({
             "decision": decision,
@@ -563,6 +669,12 @@ def _load_yfinance_cached(
             "provider_retry_rounds": int(provider_report.get("retry_rounds") or 0),
             "provider_fetch_attempts": int(provider_report.get("total_fetch_attempts") or 0),
             "provider_rate_limit_events": int(provider_report.get("rate_limit_events") or 0),
+            "provider_market_date_mismatch_events": int(
+                provider_report.get("market_date_mismatch_events") or 0
+            ),
+            "provider_market_date_retry_tickers": (
+                provider_report.get("market_date_retry_tickers") or []
+            ),
             "provider_failed_tickers": provider_report.get("failed_tickers") or [],
             "provider_failed_errors": provider_report.get("failed_errors") or {},
             "provider_retry_delays_sec": provider_report.get("retry_delays_sec") or [],
