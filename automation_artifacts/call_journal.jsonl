@@ -8,3 +8,5 @@
 {"at_utc":"2026-08-13T14:44:32.280920+00:00","call_id":"20260813T142546Z_dff74e3c_domain_66d8ea0f","detail":"APITimeoutError: Request timed out.","event":"completed","run_id":"20260813T142546Z_dff74e3c","stage":"domain","status":"error"}
 {"at_utc":"2026-08-13T21:30:35.094743+00:00","call_id":"20260813T211636Z_af6988f8_domain_368de7f8","event":"reserved","local_date":"2026-08-13","run_id":"20260813T211636Z_af6988f8","stage":"domain"}
 {"at_utc":"2026-08-13T21:35:21.952928+00:00","call_id":"20260813T211636Z_af6988f8_domain_368de7f8","detail":"APIConnectionError: Connection error.","event":"completed","run_id":"20260813T211636Z_af6988f8","stage":"domain","status":"error"}
+{"at_utc":"2026-08-13T22:58:09.617139+00:00","call_id":"20260813T224450Z_5021b763_domain_9c6f8374","event":"reserved","local_date":"2026-08-13","run_id":"20260813T224450Z_5021b763","stage":"domain"}
+{"at_utc":"2026-08-13T23:02:51.286129+00:00","call_id":"20260813T224450Z_5021b763_domain_9c6f8374","detail":"APIConnectionError: Connection error.","event":"completed","run_id":"20260813T224450Z_5021b763","stage":"domain","status":"error"}
