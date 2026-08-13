@@ -1,4 +1,4 @@
-"""Typed model-output contracts for v7 commentary generation."""
+"""Typed OpenAI output contracts for the AI Macro language-layer pipeline."""
 
 from __future__ import annotations
 
@@ -30,10 +30,19 @@ class GeneratedDomainReadSet(BaseModel):
     reads: list[GeneratedDomainRead] = Field(min_length=len(DOMAIN_ORDER), max_length=len(DOMAIN_ORDER))
 
 
+class GeneratedMacroParagraph(BaseModel):
+    sentences: list[SupportedSentence] = Field(min_length=2, max_length=4)
+
+
 class GeneratedMacroRead(BaseModel):
     selected_domains: list[Literal[
         "market", "finance", "compute", "data_center", "connectivity", "power",
         "grid_storage", "water", "adoption", "workforce", "economic_impact"
-    ]] = Field(min_length=4, max_length=6)
+    ]] = Field(min_length=3, max_length=5)
     headline: SupportedSentence
-    analysis: list[SupportedSentence] = Field(min_length=4, max_length=4)
+    paragraphs: list[GeneratedMacroParagraph] = Field(min_length=3, max_length=4)
+
+    @property
+    def analysis(self) -> list[SupportedSentence]:
+        """Flatten paragraph sentences for grounding and editorial audits."""
+        return [sentence for paragraph in self.paragraphs for sentence in paragraph.sentences]

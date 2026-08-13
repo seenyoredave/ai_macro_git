@@ -1,0 +1,2296 @@
+{
+  "schema_version": "1.0-combined-power-grid-storage-complete",
+  "artifact_type": "AI_MACRO_COMBINED_DOMAIN_CORPUS_COMPLETE",
+  "domains": [
+    "power",
+    "grid_storage"
+  ],
+  "status": "COMPLETE",
+  "created_at": "2026-08-12T20:58:00-07:00",
+  "supersedes": [
+    "AI_MACRO_POWER_GRID_STORAGE_CORPUS_WORKING_v0.1.json",
+    "AI_MACRO_POWER_GRID_STORAGE_CORPUS_WORKING_v0.2.json",
+    "AI_MACRO_POWER_GRID_STORAGE_CORPUS_WORKING_v0.3.json",
+    "AI_MACRO_POWER_GRID_STORAGE_CORPUS_WORKING_v0.4.json",
+    "AI_MACRO_POWER_GRID_STORAGE_CORPUS_WORKING_v0.5.json",
+    "AI_MACRO_POWER_GRID_STORAGE_CORPUS_WORKING_v0.6.json",
+    "AI_MACRO_POWER_GRID_STORAGE_CORPUS_WORKING_v0.7.json"
+  ],
+  "corpus_purpose": "A prompt-time reasoning and language corpus for OpenAI generation. It teaches Power and Grid & Storage as separate platform domains built from a shared acquisition effort. It does not provide runtime facts and must not deterministically rewrite generated prose.",
+  "runtime_boundary": {
+    "academic_sources": "Analytical and rhetorical guidance only; never substitute paper quantities for current platform evidence.",
+    "long_form_sources": "Production-form and boundary guidance only; report quantities are not injected as current facts unless independently present in the runtime evidence packet.",
+    "generation_contract": "All corpus rules and current evidence are supplied to OpenAI before generation. Domain Reads are generated first; accepted domain outputs and evidence then feed the AI Macro roll-up. No hidden replacement call, automatic retry, fallback generation, or post-generation prose mutation is authorized.",
+    "domain_separation": "Power and Grid & Storage share selected reasoning families but retain separate titles, evidence packets, instructions, and outputs."
+  },
+  "methodology": {
+    "journal_gate": {
+      "minimum_current_jif": 2.0,
+      "metric_registry": {
+        "Science": {
+          "current_jif": 47.3,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED_IN_SOURCE_CORPUS"
+        },
+        "Environmental Research Letters": {
+          "current_jif": 5.4,
+          "metric_year": 2025,
+          "verification": "CURRENT_SECONDARY_SOURCE_THRESHOLD_ROBUST"
+        },
+        "Energies": {
+          "current_jif": 3.9,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED_IN_SOURCE_CORPUS"
+        },
+        "Sustainability": {
+          "current_jif": 4.1,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED_IN_SOURCE_CORPUS"
+        },
+        "Energy Reports": {
+          "current_jif": 6.6,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED_IN_SOURCE_CORPUS"
+        },
+        "Joule": {
+          "current_jif": 37.1,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED"
+        },
+        "Nature Sustainability": {
+          "current_jif": 32.1,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED_IN_SOURCE_CORPUS"
+        },
+        "Nature Communications": {
+          "current_jif": 18.1,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED"
+        },
+        "iScience": {
+          "current_jif": 4.5,
+          "metric_year": 2025,
+          "verification": "PUBLISHER_VERIFIED"
+        }
+      }
+    },
+    "counting_rules": {
+      "found": "A bibliographically identified candidate, including blocked candidates and replacements.",
+      "screened": "Identity, relevance, current journal gate, and prospective full-text route checked.",
+      "full_text_accessed": "Complete framing, methods, results, discussion, and limitations or genre-equivalent sections were available.",
+      "fully_analyzed": "Every substantive section was reviewed and a bounded extraction was recorded.",
+      "admitted": "Journal gate passed, complete-text audit passed, and the source contributed a transferable analytical observation.",
+      "transfers": "Previously complete audits are not described as newly read; original source IDs and artifact provenance are retained."
+    },
+    "full_text_rule": "Admission required complete substantive access and review of framing, methods, results, discussion, limitations, and genre-equivalent sections.",
+    "saturation_rule": "Two consecutive independent five-paper challenge batches must add no more than two universal families each and reopen no foundation gap.",
+    "long_form_rule": "Two complete technical texts and approximately fourteen passage analyses; store learned moves, not copied passages.",
+    "rights_boundary": "Store structured observations, provenance, and learned form rather than copyrighted prose."
+  },
+  "progress": {
+    "found": 48,
+    "screened": 48,
+    "full_text_accessed": 30,
+    "fully_analyzed": 30,
+    "admitted": 30,
+    "audit_blocked": 3,
+    "rejected": 0,
+    "verified_atomic_observations": 108,
+    "universal_families": 15,
+    "long_form_texts": 2,
+    "long_form_passages": 14,
+    "saturation_challenges_passed": 2
+  },
+  "verified_admissions": [
+    {
+      "source_id": "PGS-FND-001",
+      "identity": {
+        "title": "Recalibrating global data center energy-use estimates",
+        "authors_short": "Masanet et al.",
+        "journal": "Science",
+        "year": 2020,
+        "doi": "10.1126/science.aba3758"
+      },
+      "domain_weight": [
+        "shared",
+        "power"
+      ],
+      "audit": {
+        "status": "COMPLETE_TRANSFERRED_AUDIT",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json:DC-FND-001"
+      },
+      "bounded_extraction": "Workload and service-volume growth do not map directly into electricity demand because equipment efficiency, utilization, facility mix, and infrastructure overhead mediate the result.",
+      "anti_patterns": [
+        "Do not scale electricity directly from traffic, storage, workload, or compute growth.",
+        "Do not turn a conditional scenario into a permanent forecast."
+      ],
+      "decision": "ADMITTED_TRANSFERRED_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-002",
+      "identity": {
+        "title": "Data center growth in the United States: Decoupling the demand for services from electricity use",
+        "authors_short": "Shehabi et al.",
+        "journal": "Environmental Research Letters",
+        "year": 2018,
+        "doi": "10.1088/1748-9326/aaec9c"
+      },
+      "domain_weight": [
+        "shared",
+        "power"
+      ],
+      "audit": {
+        "status": "COMPLETE_TRANSFERRED_AUDIT",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json:DC-FND-006"
+      },
+      "bounded_extraction": "Installed equipment, full-power-equivalent workload, computation delivered, and electricity consumed are distinct quantities; conditional efficiency scenarios are not post-2020 forecasts.",
+      "anti_patterns": [
+        "Do not apply hyperscale utilization to the heterogeneous facility stock.",
+        "Do not use a pre-AI scenario as measured accelerator demand."
+      ],
+      "decision": "ADMITTED_TRANSFERRED_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-003",
+      "identity": {
+        "title": "Data centres as a source of flexibility for power systems",
+        "authors_short": "Takci et al.",
+        "journal": "Energy Reports",
+        "year": 2025,
+        "doi": "10.1016/j.egyr.2025.03.020"
+      },
+      "domain_weight": [
+        "shared",
+        "power",
+        "grid_storage"
+      ],
+      "audit": {
+        "status": "COMPLETE_TRANSFERRED_AUDIT",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json:DC-GAP-019"
+      },
+      "bounded_extraction": "Flexible-load capability is multidimensional: direction, response time, duration, recovery, availability, baseline, asset state, and service rules determine whether technical capacity can become qualified response.",
+      "anti_patterns": [
+        "Do not sum UPS, cooling, workload, and generator ratings as simultaneous flexibility.",
+        "Do not report flexible MW without duration, recovery, and availability."
+      ],
+      "decision": "ADMITTED_TRANSFERRED_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-004",
+      "identity": {
+        "title": "Sources of data center energy estimates: A comprehensive review",
+        "authors_short": "Mytton and Ashtine",
+        "journal": "Joule",
+        "year": 2022,
+        "doi": "10.1016/j.joule.2022.07.011"
+      },
+      "domain_weight": [
+        "shared",
+        "power"
+      ],
+      "audit": {
+        "status": "COMPLETE_TRANSFERRED_AUDIT",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json:DC-GAP-021"
+      },
+      "bounded_extraction": "Electricity estimates with different boundaries, equipment populations, baselines, and shared upstream data are neither directly comparable nor independent.",
+      "anti_patterns": [
+        "Do not average incompatible estimates into a fleet truth.",
+        "Do not treat papers as independent when they share hidden market sources."
+      ],
+      "decision": "ADMITTED_TRANSFERRED_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-005",
+      "identity": {
+        "title": "Environmental impact and net-zero pathways for sustainable artificial intelligence servers in the USA",
+        "authors_short": "Xiao et al.",
+        "journal": "Nature Sustainability",
+        "year": 2025,
+        "doi": "10.1038/s41893-025-01681-y"
+      },
+      "domain_weight": [
+        "shared",
+        "power",
+        "grid_storage"
+      ],
+      "audit": {
+        "status": "COMPLETE_TRANSFERRED_AUDIT",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json:DC-GAP-023"
+      },
+      "bounded_extraction": "Capacity, utilization, facility efficiency, geography, grid mix, and scenario assumptions form a chain from server supply to electricity and environmental outcomes; modeled best practice is not achieved capacity.",
+      "anti_patterns": [
+        "Do not report scenario ranges as forecasts with known probabilities.",
+        "Do not optimize one resource burden while suppressing another."
+      ],
+      "decision": "ADMITTED_TRANSFERRED_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-006",
+      "identity": {
+        "title": "Flexibility-Based Energy and Demand Management in Data Centers: A Case Study for Cloud Computing",
+        "authors_short": "Basmadjian",
+        "journal": "Energies",
+        "year": 2019,
+        "doi": "10.3390/en12173301"
+      },
+      "domain_weight": [
+        "power",
+        "grid_storage"
+      ],
+      "audit": {
+        "status": "COMPLETE_TRANSFERRED_AUDIT",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json:DC-FND-011"
+      },
+      "bounded_extraction": "Load consolidation, migration, and relaxed service levels can create bounded response, but shifted demand, receiving-site energy, rebound, and service constraints determine net system value.",
+      "anti_patterns": [
+        "Do not equate migrated load with eliminated energy.",
+        "Do not omit rebound or destination-site consumption."
+      ],
+      "decision": "ADMITTED_TRANSFERRED_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-007",
+      "identity": {
+        "title": "Data Centers Optimized Integration with Multi-Energy Grids: Test Cases and Results in Operational Environment",
+        "authors_short": "Cioara et al.",
+        "journal": "Sustainability",
+        "year": 2020,
+        "doi": "10.3390/su12239893"
+      },
+      "domain_weight": [
+        "power",
+        "grid_storage"
+      ],
+      "audit": {
+        "status": "COMPLETE_TRANSFERRED_AUDIT",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json:DC-FND-012"
+      },
+      "bounded_extraction": "Operational demonstrations, modeled extrapolations, and architectural proposals are different evidence tiers; renewable matching, load shifting, and waste-heat reuse each have distinct physical boundaries.",
+      "anti_patterns": [
+        "Do not merge measured pilots with extrapolated totals.",
+        "Do not treat renewable matching as net energy reduction."
+      ],
+      "decision": "ADMITTED_TRANSFERRED_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-008",
+      "identity": {
+        "title": "Grid connection barriers to renewable energy deployment in the United States",
+        "authors_short": "Gorman et al.",
+        "journal": "Joule",
+        "year": 2025,
+        "doi": "10.1016/j.joule.2024.11.008"
+      },
+      "domain_weight": [
+        "grid_storage",
+        "shared"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete CC BY article text",
+        "sections_reviewed": [
+          "framing and literature",
+          "queue dataset and state definitions",
+          "results on progression, timing, and costs",
+          "discussion and policy mechanisms",
+          "methods, data, and limitations"
+        ]
+      },
+      "bounded_extraction": "Interconnection is a staged realization process from request through studies, agreement, construction, and operation; active queue stock is developer interest, while withdrawal, elapsed time, service type, cost allocation, and network deliverability govern conversion.",
+      "limitations": [
+        "Distribution-level and behind-the-meter projects are excluded.",
+        "Cost categories are not fully harmonized across regions.",
+        "Some regional cost data are confidential.",
+        "Completed historical cohorts do not mechanically predict active-project completion."
+      ],
+      "anti_patterns": [
+        "Do not describe queued GW as available supply.",
+        "Do not collapse active, agreement-executed, construction, and operating states.",
+        "Do not treat point-of-interconnection costs as total network cost."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-009",
+      "identity": {
+        "title": "Electric transmission value and its drivers in United States power markets",
+        "authors_short": "Kemp et al.",
+        "journal": "Nature Communications",
+        "year": 2025,
+        "doi": "10.1038/s41467-025-63143-5"
+      },
+      "domain_weight": [
+        "grid_storage",
+        "power"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete CC BY publisher article",
+        "sections_reviewed": [
+          "introduction",
+          "empirical design and market-value definition",
+          "results",
+          "discussion",
+          "methods, data, and limitations"
+        ]
+      },
+      "bounded_extraction": "Observed price separation reveals time-varying marginal spatial-arbitrage value, often concentrated in a small number of hours and sometimes bidirectional, but it is not the engineering value or total welfare of a specific transmission project.",
+      "limitations": [
+        "The measure covers energy-market value rather than every reliability, capacity, or policy benefit.",
+        "A static counterfactual does not model entry, demand changes, or network reconfiguration.",
+        "AC flows, security constraints, losses, and saturation separate a price-gap signal from a project test."
+      ],
+      "anti_patterns": [
+        "Do not call an LMP difference a transmission-line business case.",
+        "Do not summarize average value while erasing tail-hour concentration.",
+        "Do not assume value flows in only one direction."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-010",
+      "identity": {
+        "title": "Meteorological drivers of resource adequacy failures in current and high renewable Western U.S. power systems",
+        "authors_short": "Sundar et al.",
+        "journal": "Nature Communications",
+        "year": 2023,
+        "doi": "10.1038/s41467-023-41875-6"
+      },
+      "domain_weight": [
+        "grid_storage",
+        "power"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete CC BY publisher article",
+        "sections_reviewed": [
+          "framing",
+          "capacity-expansion and adequacy methods",
+          "weather-regime results",
+          "discussion",
+          "limitations and data/code"
+        ]
+      },
+      "bounded_extraction": "Resource adequacy is a probabilistic operational balance under correlated weather and outages, not a comparison of nameplate capacity with peak load; changes in failure frequency and maximum severity can move in different directions.",
+      "limitations": [
+        "The weather sample covers four historical years.",
+        "Storage is represented with a fixed four-hour duration.",
+        "Flexible loads are excluded.",
+        "Future climate and downscaling uncertainty remain.",
+        "Detailed findings center on a Western U.S. case."
+      ],
+      "anti_patterns": [
+        "Do not infer adequacy from installed nameplate capacity.",
+        "Do not report fewer risk hours as proof that worst-case severity fell.",
+        "Do not generalize a fixed-duration storage result to all storage."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-011",
+      "identity": {
+        "title": "The value of long-duration energy storage under various grid conditions in a zero-emissions future",
+        "authors_short": "Staadecker et al.",
+        "journal": "Nature Communications",
+        "year": 2024,
+        "doi": "10.1038/s41467-024-53274-6"
+      },
+      "domain_weight": [
+        "grid_storage"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete CC BY publisher article",
+        "sections_reviewed": [
+          "introduction",
+          "capacity-expansion formulation",
+          "scenario results",
+          "discussion",
+          "limitations and data/code"
+        ]
+      },
+      "bounded_extraction": "Storage power, energy, and duration are separate design variables; economically useful duration depends on resource mix, transmission assumptions, hydro availability, temporal resolution, and the cost of energy capacity.",
+      "limitations": [
+        "The study models a zero-emission 2050 Western U.S. system rather than a forecast.",
+        "Four-hour dispatch resolution can miss shorter operational constraints.",
+        "Other interconnections and several sources of demand and weather uncertainty are omitted.",
+        "Marginal model prices include investment duals and are not ordinary market LMPs."
+      ],
+      "anti_patterns": [
+        "Do not equate storage MW with MWh or duration.",
+        "Do not transfer an optimal duration across resource mixes.",
+        "Do not call a modeled mandate or zero-cost case a forecast."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-012",
+      "identity": {
+        "title": "Effects of Deep Reductions in Energy Storage Costs on Highly Reliable Wind and Solar Electricity Systems",
+        "authors_short": "Tong et al.",
+        "journal": "iScience",
+        "year": 2020,
+        "doi": "10.1016/j.isci.2020.101484"
+      },
+      "domain_weight": [
+        "grid_storage",
+        "power"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete accepted CC BY manuscript",
+        "sections_reviewed": [
+          "framing",
+          "optimization design",
+          "results",
+          "discussion",
+          "limitations and supplemental method detail"
+        ]
+      },
+      "bounded_extraction": "Deep-decarbonization designs trade overbuild and curtailment against storage; as storage economics change, its role can shift from intraday balancing toward longer horizons, while required reliability and spatial aggregation materially change the optimum.",
+      "limitations": [
+        "The model is idealized and aggregates the contiguous United States.",
+        "Transmission is perfect and lossless.",
+        "Storage power-to-energy ratio is fixed and round-trip efficiency is assumed.",
+        "Perfect foresight is unrealistic.",
+        "Power costs and short-term grid services are out of scope."
+      ],
+      "anti_patterns": [
+        "Do not transfer model-optimal capacity or duration into a runtime fact.",
+        "Do not erase the difference between 100% and near-100% modeled adequacy.",
+        "Do not describe curtailed energy as a physical system failure without context."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-013",
+      "identity": {
+        "title": "The role of energy storage in deep decarbonization of electricity production",
+        "authors_short": "Arbabzadeh et al.",
+        "journal": "Nature Communications",
+        "year": 2019,
+        "doi": "10.1038/s41467-019-11161-5"
+      },
+      "domain_weight": [
+        "grid_storage",
+        "power"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete CC BY publisher article",
+        "sections_reviewed": [
+          "introduction",
+          "co-optimization method",
+          "regional and technology results",
+          "discussion",
+          "limitations"
+        ]
+      },
+      "bounded_extraction": "Storage deployment and emissions effects depend on local generation mix, renewable penetration, generator flexibility, capital cost, efficiency, and the service being modeled; the same technology can have different value across systems.",
+      "limitations": [
+        "Hourly resolution misses subhourly services.",
+        "Degradation and several locational, geological, and environmental constraints are omitted.",
+        "State of charge is permitted across a simplified full range.",
+        "Regional case results are not universal calibrations."
+      ],
+      "anti_patterns": [
+        "Do not call storage inherently clean without marginal-generation accounting.",
+        "Do not explain deployment from round-trip efficiency alone.",
+        "Do not transfer one region's result to another grid mix."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-014",
+      "identity": {
+        "title": "Flexibility-aware framework for efficient planner-initiated siting of data center",
+        "authors_short": "Kim et al.",
+        "journal": "Nature Communications",
+        "year": 2026,
+        "doi": "10.1038/s41467-026-72324-9"
+      },
+      "domain_weight": [
+        "power",
+        "grid_storage",
+        "shared"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete CC BY publisher article",
+        "sections_reviewed": [
+          "framing",
+          "reliability gate and market model",
+          "siting and flexibility results",
+          "discussion",
+          "methods and limitations"
+        ]
+      },
+      "bounded_extraction": "Large-load stress depends on speed, size, geographic concentration, local network conditions, and auditable flexibility; a staged siting screen can reject infeasible locations before ranking feasible alternatives, but it is not proof of energization.",
+      "limitations": [
+        "The synthetic Texas system is a proof of concept, not a universal calibration.",
+        "DC approximations omit voltage, reactive-power, and small-signal behavior that require later AC studies.",
+        "Distribution, land, water, and other siting constraints are exogenous.",
+        "More shifting can create congestion, ramps, and diminishing returns."
+      ],
+      "anti_patterns": [
+        "Do not use historical low prices as the sole siting test.",
+        "Do not call a conditional screen an interconnection approval.",
+        "Do not count flexibility unless its envelope is measurable and contractible."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-FND-015",
+      "identity": {
+        "title": "Regional coordination can alleviate the cost burden of a low-carbon electricity system",
+        "authors_short": "Wessel et al.",
+        "journal": "Nature Communications",
+        "year": 2025,
+        "doi": "10.1038/s41467-025-64093-8"
+      },
+      "domain_weight": [
+        "shared",
+        "power",
+        "grid_storage"
+      ],
+      "audit": {
+        "status": "COMPLETE_NEW_AUDIT",
+        "full_text": "Complete CC BY publisher article",
+        "sections_reviewed": [
+          "framing",
+          "capacity and transmission co-optimization",
+          "coordination scenarios",
+          "discussion",
+          "methods and limitations"
+        ]
+      },
+      "bounded_extraction": "Regional coordination can change the least-cost generation, storage, and transmission portfolio, but system-level gains can be distributed unevenly and remain conditional on institutions, trade constraints, network representation, and resource geography.",
+      "limitations": [
+        "The five-country system uses one node per country and representative time slices.",
+        "Intra-country constraints and losses are omitted.",
+        "Institutional and geopolitical friction is not modeled.",
+        "Unmet demand and curtailment are first-order model estimates."
+      ],
+      "anti_patterns": [
+        "Do not narrate aggregate coordination benefits as uniform local gains.",
+        "Do not present transmission and storage as universal substitutes or complements.",
+        "Do not transfer foreign-region quantities into U.S. runtime evidence."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-PWR-016",
+      "identity": {
+        "title": "Amplification of future energy demand growth due to climate change",
+        "authors_short": "van Ruijven et al.",
+        "journal": "Nature Communications",
+        "year": 2019,
+        "doi": "10.1038/s41467-019-10399-3"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-019-10399-3",
+        "sections_reviewed": [
+          "introduction and prior work",
+          "empirical elasticity design",
+          "scenario construction",
+          "sectoral and spatial results",
+          "discussion, caveats, and interpretation"
+        ]
+      },
+      "bounded_extraction": "Future energy demand is jointly conditioned by population, income, price, sector, fuel, temperature exposure, and adjustment behavior. Climate-model distributions and long-run elasticities create long-tailed conditional projections rather than physical forecasts.",
+      "limitations": [
+        "Internationally comparable demand data are annual and coarse.",
+        "Local weather-sensitive demand fractions are not directly observed.",
+        "The framework assumes all long-run demand responds to temperature and therefore can overstate effects.",
+        "Price, substitution, rebound, and induced technical change separate ex-ante demand shocks from ex-post use."
+      ],
+      "anti_patterns": [
+        "Do not narrate a multi-model scenario distribution as a point forecast.",
+        "Do not translate final-energy demand one-to-one into electricity or emissions.",
+        "Do not suppress sector and regional sign differences behind a global average."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-PWR-017",
+      "identity": {
+        "title": "Impacts of long-term temperature change and variability on electricity investments",
+        "authors_short": "Khan et al.",
+        "journal": "Nature Communications",
+        "year": 2021,
+        "doi": "10.1038/s41467-021-21785-1"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-021-21785-1",
+        "sections_reviewed": [
+          "introduction",
+          "scenario and temperature inputs",
+          "annual, peak, capacity, and investment results",
+          "sensitivity analysis",
+          "discussion, methods, and caveats"
+        ]
+      },
+      "bounded_extraction": "Annual energy, peak load, capacity requirement, and capital investment are different outcomes. Temperature-driven peak changes and socioeconomic assumptions can alter capacity needs more than annual demand, with trade shifting where investments occur.",
+      "limitations": [
+        "The main analysis uses one high-emissions scenario.",
+        "State-level climate and transport policies are omitted.",
+        "Reserve margin is fixed at fifteen percent.",
+        "The year is represented by twenty-five time segments and fixed non-building load shapes.",
+        "Alternative transmission, storage, and demand-response designs are outside the modeled result."
+      ],
+      "anti_patterns": [
+        "Do not infer capacity investment from annual energy growth alone.",
+        "Do not treat a fixed reserve margin as an observed reliability requirement.",
+        "Do not attribute investment geography solely to local temperature when trade is modeled."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-PWR-018",
+      "identity": {
+        "title": "A Cross-Domain Approach to Analyzing the Short-Run Impact of COVID-19 on the U.S. Electricity Sector",
+        "authors_short": "Ruan et al.",
+        "journal": "Joule",
+        "year": 2020,
+        "doi": "10.1016/j.joule.2020.08.017"
+      },
+      "journal_gate": {
+        "current_jif": 37.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://arxiv.org/pdf/2005.06631",
+        "extent": "39-page accepted manuscript, version 7",
+        "sections_reviewed": [
+          "framing and data-hub design",
+          "backcast counterfactual",
+          "cross-market results",
+          "restricted VAR analysis",
+          "discussion, experimental procedures, data quality, and supplement"
+        ]
+      },
+      "bounded_extraction": "Load changes during an economy-wide shock require a weather- and calendar-adjusted counterfactual and cross-domain drivers. Regional magnitudes and recovery timing differ, while VAR relationships remain correlated dynamic evidence rather than clean causal isolation of each driver.",
+      "limitations": [
+        "The study covers the early 2020 shock and is not a structural long-run demand model.",
+        "Mobile-location, public-health, and commercial-activity variables are interdependent.",
+        "Backcast results depend on feature choice and model specification.",
+        "Market-area aggregation hides local sector and customer heterogeneity.",
+        "Correlation and Granger ordering do not establish all claimed mechanisms causally."
+      ],
+      "anti_patterns": [
+        "Do not use the previous year's load as an unadjusted counterfactual.",
+        "Do not equate correlation or variance decomposition with causal magnitude.",
+        "Do not transfer a short-run pandemic elasticity to AI load growth."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-PWR-019",
+      "identity": {
+        "title": "Incentive based emergency demand response effectively reduces peak load during heatwave without harm to vulnerable groups",
+        "authors_short": "Wang et al.",
+        "journal": "Nature Communications",
+        "year": 2023,
+        "doi": "10.1038/s41467-023-41970-8"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-023-41970-8",
+        "sections_reviewed": [
+          "introduction and trial design",
+          "intent-to-treat and participant effects",
+          "heterogeneity and repeated-trial results",
+          "discussion and equity implications",
+          "methods, robustness, data, and code"
+        ]
+      },
+      "bounded_extraction": "Random assignment identifies an invitation effect, while instrumental-variable estimates identify a local participant effect among compliers. Peak response is program-, interval-, population-, incentive-, and climate-specific, and aggregate efficiency can conflict with distributional equity or thermal safety.",
+      "limitations": [
+        "Participation after assignment creates noncompliance and self-selection.",
+        "The intervention spans six heatwave trial days in one regulated-market region.",
+        "Persistence beyond the limited trial sequence is unresolved.",
+        "Individual meter data are restricted.",
+        "Subgroup response potential partly reflects appliance ownership and baseline load."
+      ],
+      "anti_patterns": [
+        "Do not report a participant treatment effect as fleet-wide available capacity.",
+        "Do not equate invitation, participation, and response denominators.",
+        "Do not describe lower response from low-load households as lower willingness.",
+        "Do not claim persistence from six trials."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-PWR-020",
+      "identity": {
+        "title": "Climate change impacts on the extreme power shortage events of wind-solar supply systems worldwide during 1980–2022",
+        "authors_short": "Zheng et al.",
+        "journal": "Nature Communications",
+        "year": 2024,
+        "doi": "10.1038/s41467-024-48966-y"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-024-48966-y",
+        "sections_reviewed": [
+          "introduction",
+          "resource and demand construction",
+          "event definitions",
+          "historical results and drivers",
+          "discussion, sensitivity tests, and limitations"
+        ]
+      },
+      "bounded_extraction": "Average wind and solar conditions can move little while compound low-resource tails and modeled shortage frequency, duration, or intensity move substantially. The event metric, technology assumptions, resource mix, demand profile, and reanalysis dataset define the result.",
+      "limitations": [
+        "Hourly meteorology misses minute-scale variability.",
+        "Reanalysis choice affects event estimates.",
+        "Wind turbine, solar tracking, and wind-solar mix are assumed.",
+        "Demand profiles and installed capacities are modeled.",
+        "Defined shortages exclude the complete flexibility and network system."
+      ],
+      "anti_patterns": [
+        "Do not infer tail reliability from average resource conditions.",
+        "Do not call a modeled supply-demand gap an observed outage.",
+        "Do not merge event frequency, duration, and intensity.",
+        "Do not transfer global modeled quantities into U.S. runtime evidence."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-GRD-021",
+      "identity": {
+        "title": "Long-duration electricity storage needs for coping with Dunkelflaute events in Europe",
+        "authors_short": "Kittel et al.",
+        "journal": "Nature Communications",
+        "year": 2026,
+        "doi": "10.1038/s41467-026-72681-5"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-026-72681-5",
+        "sections_reviewed": [
+          "introduction and drought definition",
+          "thirty-five-weather-year design",
+          "storage and interconnection results",
+          "flexibility interactions",
+          "discussion, assumptions, limitations, methods, and correction history"
+        ]
+      },
+      "bounded_extraction": "Rare multi-week energy deficits can define storage energy investment even when ordinary operation uses short-duration resources. Transmission, hydrogen exchange, firm supply, short-duration storage, demand seasonality, foresight, and chosen technology condition the result; modeled least-cost TWh are not deployment forecasts.",
+      "limitations": [
+        "The system is a future fully renewable European model.",
+        "Demand seasonality is moderate and thermal storage is omitted.",
+        "Industrial and commercial shedding and optimized EV charging are excluded.",
+        "Hydrogen cavern storage stands in for a wider class of long-duration resources.",
+        "Perfect foresight yields a benchmark rather than an operating requirement.",
+        "Inter-hourly constraints are simplified."
+      ],
+      "anti_patterns": [
+        "Do not use Dunkelflaute for a brief intraday lull.",
+        "Do not treat modeled energy capacity as installed or financeable capacity.",
+        "Do not infer storage power from storage energy.",
+        "Do not transfer European quantities into U.S. runtime evidence."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-GRD-022",
+      "identity": {
+        "title": "Designing a sector-coupled European energy system robust to 60 years of historical weather data",
+        "authors_short": "Gøtske et al.",
+        "journal": "Nature Communications",
+        "year": 2024,
+        "doi": "10.1038/s41467-024-54853-3"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-024-54853-3",
+        "sections_reviewed": [
+          "framing and model design",
+          "design-year capacity layouts",
+          "operational-year stress testing",
+          "compound-event and robustness results",
+          "discussion, sensitivity, methods, data, code, and limitations"
+        ]
+      },
+      "bounded_extraction": "A capacity layout optimized for one weather year should be stress-tested against many operational years. Annual-average resource conditions can look ordinary while multi-day compound events create unserved energy; robust capacity, system cost, and emissions are separate performance axes.",
+      "limitations": [
+        "The model uses greenfield investment, thirty-seven nodes, and three-hour resolution.",
+        "Electricity transmission is initially fixed to today's capacity.",
+        "Most residential load is perfectly inelastic.",
+        "Europe is autarkic.",
+        "Each design optimization has one-year perfect foresight and cost recovery only in that year.",
+        "Historical reanalysis is detrended to study natural variability rather than future climate change."
+      ],
+      "anti_patterns": [
+        "Do not validate a system on its design weather year alone.",
+        "Do not infer extreme-event adequacy from annual resource averages.",
+        "Do not merge unserved energy, emissions overshoot, and system cost into one robustness claim."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-GRD-023",
+      "identity": {
+        "title": "Geophysical constraints on the reliability of solar and wind power worldwide",
+        "authors_short": "Tong et al.",
+        "journal": "Nature Communications",
+        "year": 2021,
+        "doi": "10.1038/s41467-021-26355-z"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-021-26355-z",
+        "sections_reviewed": [
+          "introduction and geophysical scope",
+          "resource, demand, storage, and overbuild design",
+          "country and regional results",
+          "diminishing returns",
+          "discussion, sensitivity, methods, and limitations"
+        ]
+      },
+      "bounded_extraction": "Overbuild, storage, resource mix, and geographic pooling reduce mismatches with diminishing returns, but even systems meeting a high share of demand can retain long-duration gaps. The study isolates geophysical relationships and intentionally omits costs and realistic network operation.",
+      "limitations": [
+        "Perfect internal transmission is assumed.",
+        "Storage and overbuild are tested at discrete levels.",
+        "Costs, network security, losses, and build-out externalities are excluded.",
+        "One demand year is paired with thirty-nine resource years.",
+        "Large pooled regions require unmodeled technology and political feasibility."
+      ],
+      "anti_patterns": [
+        "Do not equate percent of demand served with absence of material shortage hours.",
+        "Do not compare storage and overbuild without cost and service context.",
+        "Do not treat perfect geographic pooling as delivered transmission capability."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-GRD-024",
+      "identity": {
+        "title": "Electric vehicle batteries alone could satisfy short-term grid storage demand by as early as 2030",
+        "authors_short": "Xu et al.",
+        "journal": "Nature Communications",
+        "year": 2023,
+        "doi": "10.1038/s41467-022-35393-0"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-022-35393-0",
+        "sections_reviewed": [
+          "framing",
+          "dynamic fleet, use, and degradation models",
+          "technical and available capacity results",
+          "participation and second-use scenarios",
+          "discussion, methods, data, and limitations"
+        ]
+      },
+      "bounded_extraction": "Theoretical battery stock becomes grid-available storage only after driving reserve, connection timing, degradation, charger power, participation, second-use recovery, and service duration are applied. Energy capacity cannot establish dispatchable power or market-qualified availability.",
+      "limitations": [
+        "Future fleet, chemistry, degradation, driving, and vehicle-size distributions are uncertain.",
+        "Rated capacity per vehicle is held constant.",
+        "The comparison uses an average four-hour storage requirement.",
+        "Participation and second-use utilization are scenario assumptions.",
+        "Hardware, software, interconnection, aggregation, and market qualification are not measured deployment."
+      ],
+      "anti_patterns": [
+        "Do not call total EV battery stock grid storage.",
+        "Do not treat technical, connected, participating, and dispatched capacity as synonyms.",
+        "Do not infer MW or location from global TWh."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-GRD-025",
+      "identity": {
+        "title": "Spatiotemporal assessment of renewable adequacy during diverse extreme weather events in China",
+        "authors_short": "Jiang et al.",
+        "journal": "Nature Communications",
+        "year": 2025,
+        "doi": "10.1038/s41467-025-60264-9"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-025-60264-9",
+        "sections_reviewed": [
+          "introduction and alert dataset",
+          "bidirectional adequacy metric",
+          "spatial and event-type results",
+          "scenario and flexibility analysis",
+          "discussion, methods, sensitivities, and limitations"
+        ]
+      },
+      "bounded_extraction": "Extreme weather can create simultaneous or alternating surplus and deficit through supply, demand, and ramping changes. Upward and downward flexibility, cumulative energy, peak, valley, and ramp direction are separate requirements, while idealized regional aggregation ignores line constraints.",
+      "limitations": [
+        "The alert record covers seven historical years.",
+        "Transmission constraints and line faults are omitted in the coordination counterfactual.",
+        "Reserve capacity is assumed fully available.",
+        "Adequacy values do not quantify social or economic outage risk.",
+        "Only seven weather types are modeled.",
+        "Future power paths and load sensitivities are scenario inputs."
+      ],
+      "anti_patterns": [
+        "Do not label all variability as shortage risk.",
+        "Do not net surplus and deficit into a single harmless average.",
+        "Do not treat assumed reserve as deliverable response.",
+        "Do not treat copperplate aggregation as actual transfer capability."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-INT-026",
+      "identity": {
+        "title": "Grid congestion stymies climate benefit from U.S. vehicle electrification",
+        "authors_short": "Duan and Motter",
+        "journal": "Nature Communications",
+        "year": 2025,
+        "doi": "10.1038/s41467-025-61976-8"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-025-61976-8",
+        "sections_reviewed": [
+          "abstract, introduction, and electrification framing",
+          "three-stage power-flow and transmission-upgrade results",
+          "regional and renewable-integration comparisons",
+          "discussion, assumptions, limitations, methods, data, and code statements"
+        ]
+      },
+      "bounded_extraction": "Electrification demand produces its modeled climate benefit only when generation can be redispatched and delivered through the network. The paper's least-cost charging and transmission results are constrained operational counterfactuals, not forecasts of actual charging behavior or approved construction.",
+      "limitations": [
+        "The grid, generation mix, and base flows are anchored to 2018 data.",
+        "Renewable generation and load are spatially scaled from aggregate interconnection projections.",
+        "The model applies static limits and DC power flow, omitting synchronization, frequency, voltage, reactive-power, and other nonlinear constraints.",
+        "Vehicle adoption and fuel consumption are allocated within states in proportion to county population.",
+        "Only vehicle operational emissions are modeled; manufacturing and full fuel-cycle effects are outside scope.",
+        "Transmission upgrades above 200 kV are optimized for vehicle load alone, making the reported requirement a lower-bound sectoral result rather than an all-load plan."
+      ],
+      "anti_patterns": [
+        "Do not infer delivered decarbonization from electrified load or renewable nameplate alone.",
+        "Do not narrate an optimized transmission allocation as approved, financed, or constructible capacity.",
+        "Do not transfer a vehicle-only result to data centers or total electrification without adding their load and location.",
+        "Do not describe DC power-flow feasibility as full grid-security validation."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-INT-027",
+      "identity": {
+        "title": "Rapid cost decrease of renewables and storage accelerates the decarbonization of China’s power system",
+        "authors_short": "He et al.",
+        "journal": "Nature Communications",
+        "year": 2020,
+        "doi": "10.1038/s41467-020-16184-x"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-020-16184-x",
+        "sections_reviewed": [
+          "abstract and model motivation",
+          "capacity, generation, storage, transmission, and cost results",
+          "scenario and sensitivity comparisons",
+          "discussion, policy and capital constraints, methods, data, code, and correction history"
+        ]
+      },
+      "bounded_extraction": "Technology-cost trajectories can reorganize a modeled power portfolio, but technical least-cost capacity does not establish the pace of permitting, capital formation, market reform, or physical delivery. Storage nameplate, annual storage use, and system reliability are separate quantities.",
+      "limitations": [
+        "The study is a provincial-scale China capacity-expansion model for four 2030 scenarios.",
+        "Results depend on technology-cost trajectories, demand projections, carbon constraints, and the available asset menu.",
+        "The optimization minimizes modeled system cost and does not reproduce every institutional or financing barrier.",
+        "Government policy, stakeholder interests, capital markets, and interregional trading rules can accelerate or impede the modeled path.",
+        "Country-specific scenario quantities are not transferable runtime facts for a U.S.-focused read."
+      ],
+      "anti_patterns": [
+        "Do not turn a modeled cost trajectory into a deployment forecast.",
+        "Do not equate installed storage power with energy throughput or duration.",
+        "Do not treat technical feasibility as policy, market, or financing readiness.",
+        "Do not import China-specific capacity values into U.S. evidence."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-INT-028",
+      "identity": {
+        "title": "Global transcontinental power pools for low-carbon electricity",
+        "authors_short": "Yang et al.",
+        "journal": "Nature Communications",
+        "year": 2023,
+        "doi": "10.1038/s41467-023-43723-z"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-023-43723-z",
+        "sections_reviewed": [
+          "introduction and land-constraint framing",
+          "country and transcontinental capacity-expansion results",
+          "importer, exporter, curtailment, storage, and cost-allocation comparisons",
+          "discussion, temporal-resolution test, technology exclusions, limitations, and methods"
+        ]
+      },
+      "bounded_extraction": "Geographic pooling can reduce modeled curtailment and cost, yet aggregate benefits do not guarantee that every participant benefits under a given allocation rule. Physical corridors, market design, ownership, pricing, cost recovery, and geopolitical coordination remain separate realization steps.",
+      "limitations": [
+        "The model assumes shared wholesale markets and a particular proportional cost-allocation rule.",
+        "Three-hour full-year capacity expansion is validated against hourly operation but remains a planning model.",
+        "Long-duration hydrogen storage is excluded from the technology set.",
+        "Uniform regional technology costs omit differences in capital cost, labor, access, and skills.",
+        "Land-use factors and transmission costs are uncertain.",
+        "International ownership, pricing, revenue allocation, and geopolitical agreements are prerequisites rather than model outputs."
+      ],
+      "anti_patterns": [
+        "Do not narrate modeled cross-border exchange as existing transmission capacity.",
+        "Do not infer participant-level benefit from lower aggregate system cost.",
+        "Do not treat an allocation convention as an observed market outcome.",
+        "Do not claim storage resolves a geographic resource shortage that requires energy imports."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-INT-029",
+      "identity": {
+        "title": "Globally interconnected solar-wind system addresses future electricity demands",
+        "authors_short": "Jiang et al.",
+        "journal": "Nature Communications",
+        "year": 2025,
+        "doi": "10.1038/s41467-025-59879-9"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-025-59879-9",
+        "sections_reviewed": [
+          "introduction and high-resolution resource assessment",
+          "exploitable, accessible, and interconnectable potential definitions",
+          "multi-objective configuration, dispatch, resilience, and phased-roadmap results",
+          "discussion, cost assumptions, climate inputs, limitations, optimization, and methods"
+        ]
+      },
+      "bounded_extraction": "Resource potential should pass through explicit land, access, and network screens before entering a system model. Even then, proximity to an existing line is only a siting proxy: it does not establish spare transfer capacity, an interconnection right, reliability approval, or construction feasibility.",
+      "limitations": [
+        "Interconnectability is defined as location within 10 km of an existing transmission line, not verified deliverability or available line capacity.",
+        "Solar and wind resources use 2000–2022 average conditions and therefore do not establish extreme-weather adequacy.",
+        "Global average costs are used for storage, transmission, and offshore wind where local data are limited.",
+        "Land, labor, transport, and coastal installation costs are simplified.",
+        "The optimization assumes high solar-wind penetration and global decarbonization commitment.",
+        "The phased pathway is a modeled roadmap rather than actual project status."
+      ],
+      "anti_patterns": [
+        "Do not call all geophysical potential developable supply.",
+        "Do not equate nearness to a transmission line with usable interconnection capacity.",
+        "Do not infer extreme-event resilience from multi-year average weather inputs.",
+        "Do not narrate a globally optimized roadmap as committed construction."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "PGS-INT-030",
+      "identity": {
+        "title": "Coordinating power sector climate transitions under policy uncertainty",
+        "authors_short": "Kucuksayacigil et al.",
+        "journal": "Nature Communications",
+        "year": 2025,
+        "doi": "10.1038/s41467-025-59126-1"
+      },
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "decision": "PASS"
+      },
+      "audit": {
+        "status": "COMPLETE",
+        "source": "https://www.nature.com/articles/s41467-025-59126-1",
+        "sections_reviewed": [
+          "introduction and five coordination functions",
+          "capacity, transmission, storage, policy, and cost results",
+          "sensitivity and baseline comparisons",
+          "discussion, limitations, data, model, aggregation, time sampling, and scenarios"
+        ]
+      },
+      "bounded_extraction": "Regional coordination changes where resources and transmission are built, how reserves are shared, and how costs are distributed; its effect cannot be read from region-wide nameplate alone. Modeled economic coordination does not remove intra-state congestion, deliverability limits, political participation, or cost-allocation disputes.",
+      "limitations": [
+        "Five stylized coordination functions cannot represent every staged market arrangement or participation configuration.",
+        "The model omits intra-state transmission expansion required for feasible dispatch.",
+        "Six sampled weeks from a single weather year omit many extreme conditions.",
+        "Aggregated zones suppress within-state utility and network frictions.",
+        "Shared reserves lack detailed deliverability beyond contractual imports and exports.",
+        "Results depend on the selected policy baseline, technology costs, availability, and hurdle rates."
+      ],
+      "anti_patterns": [
+        "Do not infer local deliverability from regional reserve sharing.",
+        "Do not describe a coordinated least-cost solution as politically available.",
+        "Do not compare transmission expansion claims without their policy and infrastructure baselines.",
+        "Do not infer the distribution of benefits from aggregate cost savings."
+      ],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    }
+  ],
+  "verified_atomic_observations": [
+    {
+      "id": "PGS-A001",
+      "source_id": "PGS-FND-001",
+      "observation": "Service demand and electricity demand require an explicit efficiency and infrastructure bridge."
+    },
+    {
+      "id": "PGS-A002",
+      "source_id": "PGS-FND-001",
+      "observation": "Conditional efficiency plateaus cannot be narrated as permanent load forecasts."
+    },
+    {
+      "id": "PGS-A003",
+      "source_id": "PGS-FND-002",
+      "observation": "Installed equipment, utilized workload, delivered computation, and consumed electricity are different denominators."
+    },
+    {
+      "id": "PGS-A004",
+      "source_id": "PGS-FND-002",
+      "observation": "Facility-type heterogeneity prevents fleet-wide use of hyperscale utilization or overhead assumptions."
+    },
+    {
+      "id": "PGS-A005",
+      "source_id": "PGS-FND-003",
+      "observation": "Flexible capacity requires direction, response time, duration, recovery, availability, and baseline."
+    },
+    {
+      "id": "PGS-A006",
+      "source_id": "PGS-FND-003",
+      "observation": "Asset ratings cannot be summed without simultaneity and operating-state constraints."
+    },
+    {
+      "id": "PGS-A007",
+      "source_id": "PGS-FND-004",
+      "observation": "Energy estimates with incompatible boundaries should not be averaged."
+    },
+    {
+      "id": "PGS-A008",
+      "source_id": "PGS-FND-004",
+      "observation": "Shared upstream datasets create correlated evidence even across distinct papers."
+    },
+    {
+      "id": "PGS-A009",
+      "source_id": "PGS-FND-005",
+      "observation": "Server capacity reaches grid demand through utilization, efficiency, siting, and grid-mix assumptions."
+    },
+    {
+      "id": "PGS-A010",
+      "source_id": "PGS-FND-005",
+      "observation": "Scenario frontiers describe conditional possibilities rather than achieved outcomes."
+    },
+    {
+      "id": "PGS-A011",
+      "source_id": "PGS-FND-006",
+      "observation": "Load migration may relocate rather than eliminate system energy."
+    },
+    {
+      "id": "PGS-A012",
+      "source_id": "PGS-FND-006",
+      "observation": "Deferred work can produce recovery peaks that qualify claimed demand response."
+    },
+    {
+      "id": "PGS-A013",
+      "source_id": "PGS-FND-007",
+      "observation": "Measured pilots, modeled extrapolations, and architecture proposals belong to separate evidence tiers."
+    },
+    {
+      "id": "PGS-A014",
+      "source_id": "PGS-FND-007",
+      "observation": "Renewable matching and net energy reduction are distinct outcomes."
+    },
+    {
+      "id": "PGS-A015",
+      "source_id": "PGS-FND-008",
+      "observation": "Interconnection progresses through request, studies, agreement, construction, and operation."
+    },
+    {
+      "id": "PGS-A016",
+      "source_id": "PGS-FND-008",
+      "observation": "Active queue stock is developer interest, not operating or near-term supply."
+    },
+    {
+      "id": "PGS-A017",
+      "source_id": "PGS-FND-008",
+      "observation": "Historical withdrawals and elapsed connection time are necessary conversion context."
+    },
+    {
+      "id": "PGS-A018",
+      "source_id": "PGS-FND-008",
+      "observation": "Energy-only and capacity deliverability service should not be collapsed."
+    },
+    {
+      "id": "PGS-A019",
+      "source_id": "PGS-FND-008",
+      "observation": "Point-of-interconnection costs and broader network costs require separate labels."
+    },
+    {
+      "id": "PGS-A020",
+      "source_id": "PGS-FND-008",
+      "observation": "Connect-and-manage can trade faster access against congestion and curtailment exposure."
+    },
+    {
+      "id": "PGS-A021",
+      "source_id": "PGS-FND-009",
+      "observation": "Price separation is a marginal spatial-arbitrage signal, not a complete project valuation."
+    },
+    {
+      "id": "PGS-A022",
+      "source_id": "PGS-FND-009",
+      "observation": "Transmission value may be concentrated in a small number of tail hours."
+    },
+    {
+      "id": "PGS-A023",
+      "source_id": "PGS-FND-009",
+      "observation": "Transmission value can be bidirectional across the same interface."
+    },
+    {
+      "id": "PGS-A024",
+      "source_id": "PGS-FND-009",
+      "observation": "Network physics, losses, security, and saturation intervene between price gaps and feasible projects."
+    },
+    {
+      "id": "PGS-A025",
+      "source_id": "PGS-FND-010",
+      "observation": "Resource adequacy is probabilistic operational balance rather than nameplate comparison."
+    },
+    {
+      "id": "PGS-A026",
+      "source_id": "PGS-FND-010",
+      "observation": "Correlated heat, wind, solar, load, and outage conditions can dominate risk."
+    },
+    {
+      "id": "PGS-A027",
+      "source_id": "PGS-FND-010",
+      "observation": "Failure frequency and maximum failure severity can move in opposite directions."
+    },
+    {
+      "id": "PGS-A028",
+      "source_id": "PGS-FND-010",
+      "observation": "Weather-sample length and climate assumptions bound adequacy claims."
+    },
+    {
+      "id": "PGS-A029",
+      "source_id": "PGS-FND-011",
+      "observation": "Storage MW, MWh, and discharge duration are separate quantities."
+    },
+    {
+      "id": "PGS-A030",
+      "source_id": "PGS-FND-011",
+      "observation": "Valuable storage duration depends on resource mix and system conditions."
+    },
+    {
+      "id": "PGS-A031",
+      "source_id": "PGS-FND-011",
+      "observation": "Storage and transmission can substitute or complement one another conditionally."
+    },
+    {
+      "id": "PGS-A032",
+      "source_id": "PGS-FND-011",
+      "observation": "Optimization duals that include investment effects are not ordinary market prices."
+    },
+    {
+      "id": "PGS-A033",
+      "source_id": "PGS-FND-012",
+      "observation": "Deep-decarbonization designs trade overbuild and curtailment against storage."
+    },
+    {
+      "id": "PGS-A034",
+      "source_id": "PGS-FND-012",
+      "observation": "Reliability targets near but below 100 percent can materially alter modeled optima."
+    },
+    {
+      "id": "PGS-A035",
+      "source_id": "PGS-FND-012",
+      "observation": "Perfect foresight, spatial aggregation, and lossless transmission create favorable model boundaries."
+    },
+    {
+      "id": "PGS-A036",
+      "source_id": "PGS-FND-012",
+      "observation": "Storage use can shift from intraday toward longer horizons as economics change."
+    },
+    {
+      "id": "PGS-A037",
+      "source_id": "PGS-FND-013",
+      "observation": "Storage value is heterogeneous across generation mixes, policies, and operational flexibility."
+    },
+    {
+      "id": "PGS-A038",
+      "source_id": "PGS-FND-013",
+      "observation": "Round-trip efficiency alone does not determine storage deployment."
+    },
+    {
+      "id": "PGS-A039",
+      "source_id": "PGS-FND-013",
+      "observation": "Storage emissions effects depend on the marginal generation displaced or induced."
+    },
+    {
+      "id": "PGS-A040",
+      "source_id": "PGS-FND-013",
+      "observation": "Hourly models can omit subhourly operational services and constraints."
+    },
+    {
+      "id": "PGS-A041",
+      "source_id": "PGS-FND-014",
+      "observation": "Large-load stress depends on speed and geographic concentration as well as aggregate growth."
+    },
+    {
+      "id": "PGS-A042",
+      "source_id": "PGS-FND-014",
+      "observation": "A reliability feasibility gate should precede economic ranking of siting alternatives."
+    },
+    {
+      "id": "PGS-A043",
+      "source_id": "PGS-FND-014",
+      "observation": "Flexible-load envelopes must be measurable, auditable, and contractible."
+    },
+    {
+      "id": "PGS-A044",
+      "source_id": "PGS-FND-014",
+      "observation": "A conditional siting screen is not proof of interconnection or energization."
+    },
+    {
+      "id": "PGS-A045",
+      "source_id": "PGS-FND-015",
+      "observation": "Coordination can change the joint generation, storage, and transmission portfolio."
+    },
+    {
+      "id": "PGS-A046",
+      "source_id": "PGS-FND-015",
+      "observation": "Aggregate system benefits can be distributed unevenly among regions."
+    },
+    {
+      "id": "PGS-A047",
+      "source_id": "PGS-FND-015",
+      "observation": "Transmission-storage complementarity depends on trade rules and resource geography."
+    },
+    {
+      "id": "PGS-A048",
+      "source_id": "PGS-FND-015",
+      "observation": "Institutional feasibility is outside many physical-economic coordination models."
+    },
+    {
+      "id": "PGS-A049",
+      "source_id": "PGS-PWR-016",
+      "observation": "Load projections require income, population, price, weather, sector, and energy-carrier context."
+    },
+    {
+      "id": "PGS-A050",
+      "source_id": "PGS-PWR-016",
+      "observation": "Climate-model spread can dominate differences among socioeconomic scenarios."
+    },
+    {
+      "id": "PGS-A051",
+      "source_id": "PGS-PWR-016",
+      "observation": "Ex-ante demand shocks differ from ex-post use after price, substitution, rebound, and technology responses."
+    },
+    {
+      "id": "PGS-A052",
+      "source_id": "PGS-PWR-016",
+      "observation": "Electricity-demand change and emissions change are not one-to-one."
+    },
+    {
+      "id": "PGS-A053",
+      "source_id": "PGS-PWR-017",
+      "observation": "Annual electricity growth and peak-load growth are distinct planning quantities."
+    },
+    {
+      "id": "PGS-A054",
+      "source_id": "PGS-PWR-017",
+      "observation": "Peak changes can drive capacity investment disproportionately to annual energy changes."
+    },
+    {
+      "id": "PGS-A055",
+      "source_id": "PGS-PWR-017",
+      "observation": "Trade can separate the geography of demand change from the geography of investment."
+    },
+    {
+      "id": "PGS-A056",
+      "source_id": "PGS-PWR-017",
+      "observation": "Reserve margins and time-segment resolution are model assumptions, not measured outcomes."
+    },
+    {
+      "id": "PGS-A057",
+      "source_id": "PGS-PWR-018",
+      "observation": "A demand shock requires a weather- and calendar-adjusted counterfactual."
+    },
+    {
+      "id": "PGS-A058",
+      "source_id": "PGS-PWR-018",
+      "observation": "Cross-domain activity measures can improve short-run load interpretation."
+    },
+    {
+      "id": "PGS-A059",
+      "source_id": "PGS-PWR-018",
+      "observation": "Regional demand responses and rebound timing can differ materially."
+    },
+    {
+      "id": "PGS-A060",
+      "source_id": "PGS-PWR-018",
+      "observation": "Correlation, Granger ordering, and variance decomposition do not by themselves establish causal magnitude."
+    },
+    {
+      "id": "PGS-A061",
+      "source_id": "PGS-PWR-019",
+      "observation": "Invitation, participation, compliance, and measured response use different denominators."
+    },
+    {
+      "id": "PGS-A062",
+      "source_id": "PGS-PWR-019",
+      "observation": "Random assignment can identify invitation effects while IV identifies effects for compliers."
+    },
+    {
+      "id": "PGS-A063",
+      "source_id": "PGS-PWR-019",
+      "observation": "Demand-response potential varies with baseline load, appliance ownership, price, and household constraints."
+    },
+    {
+      "id": "PGS-A064",
+      "source_id": "PGS-PWR-019",
+      "observation": "Peak-response efficiency should be evaluated alongside equity and thermal-safety constraints."
+    },
+    {
+      "id": "PGS-A065",
+      "source_id": "PGS-PWR-020",
+      "observation": "Average resource conditions can conceal large changes in compound low-resource tails."
+    },
+    {
+      "id": "PGS-A066",
+      "source_id": "PGS-PWR-020",
+      "observation": "Shortage frequency, duration, and intensity are separate event properties."
+    },
+    {
+      "id": "PGS-A067",
+      "source_id": "PGS-PWR-020",
+      "observation": "A modeled shortage event is not an observed outage."
+    },
+    {
+      "id": "PGS-A068",
+      "source_id": "PGS-PWR-020",
+      "observation": "Reanalysis, technology, mix, and demand-profile assumptions bound weather-risk results."
+    },
+    {
+      "id": "PGS-A069",
+      "source_id": "PGS-GRD-021",
+      "observation": "Rare multi-week deficits can define storage energy investment despite low utilization."
+    },
+    {
+      "id": "PGS-A070",
+      "source_id": "PGS-GRD-021",
+      "observation": "Short-duration and long-duration resources may provide complementary power and energy roles."
+    },
+    {
+      "id": "PGS-A071",
+      "source_id": "PGS-GRD-021",
+      "observation": "Policy-feasible interconnection and unconstrained pooling are different scenarios."
+    },
+    {
+      "id": "PGS-A072",
+      "source_id": "PGS-GRD-021",
+      "observation": "Perfect-foresight long-duration storage is a benchmark rather than an operating forecast."
+    },
+    {
+      "id": "PGS-A073",
+      "source_id": "PGS-GRD-022",
+      "observation": "A design weather year should be separated from operational weather-year stress tests."
+    },
+    {
+      "id": "PGS-A074",
+      "source_id": "PGS-GRD-022",
+      "observation": "Annual-average conditions can conceal multi-day compound events."
+    },
+    {
+      "id": "PGS-A075",
+      "source_id": "PGS-GRD-022",
+      "observation": "Robustness should report adequacy, emissions, and cost separately."
+    },
+    {
+      "id": "PGS-A076",
+      "source_id": "PGS-GRD-022",
+      "observation": "Rarely used backup capacity raises cost-recovery and market-design questions outside physical adequacy."
+    },
+    {
+      "id": "PGS-A077",
+      "source_id": "PGS-GRD-023",
+      "observation": "Percent of demand served can coexist with material long-duration shortage gaps."
+    },
+    {
+      "id": "PGS-A078",
+      "source_id": "PGS-GRD-023",
+      "observation": "Overbuild, storage, and geographic pooling exhibit diminishing marginal reliability benefits."
+    },
+    {
+      "id": "PGS-A079",
+      "source_id": "PGS-GRD-023",
+      "observation": "Perfect geographic pooling is a geophysical counterfactual, not delivered transmission."
+    },
+    {
+      "id": "PGS-A080",
+      "source_id": "PGS-GRD-023",
+      "observation": "Technical reliability comparisons are incomplete without costs and network constraints."
+    },
+    {
+      "id": "PGS-A081",
+      "source_id": "PGS-GRD-024",
+      "observation": "Total battery stock, technically available energy, participating energy, and dispatched service are distinct states."
+    },
+    {
+      "id": "PGS-A082",
+      "source_id": "PGS-GRD-024",
+      "observation": "Driving reserve and connection timing are first-order constraints on vehicle-to-grid capacity."
+    },
+    {
+      "id": "PGS-A083",
+      "source_id": "PGS-GRD-024",
+      "observation": "Battery energy capacity does not establish power, location, or market qualification."
+    },
+    {
+      "id": "PGS-A084",
+      "source_id": "PGS-GRD-024",
+      "observation": "Second-use storage requires recovery, testing, integration, and utilization assumptions."
+    },
+    {
+      "id": "PGS-A085",
+      "source_id": "PGS-GRD-025",
+      "observation": "Extreme weather can create adequacy surplus and deficit within the same system period."
+    },
+    {
+      "id": "PGS-A086",
+      "source_id": "PGS-GRD-025",
+      "observation": "Upward ramp, downward ramp, cumulative energy, peak, and valley are separate flexibility dimensions."
+    },
+    {
+      "id": "PGS-A087",
+      "source_id": "PGS-GRD-025",
+      "observation": "Assumed reserve capacity is not necessarily available or deliverable response."
+    },
+    {
+      "id": "PGS-A088",
+      "source_id": "PGS-GRD-025",
+      "observation": "Idealized regional balancing should not be narrated as physical transfer capability."
+    },
+    {
+      "id": "PGS-A089",
+      "source_id": "PGS-INT-026",
+      "observation": "Electrified end use yields its modeled benefit only when incremental generation can be dispatched and delivered."
+    },
+    {
+      "id": "PGS-A090",
+      "source_id": "PGS-INT-026",
+      "observation": "A transmission bottleneck can separate available generation from usable marginal supply."
+    },
+    {
+      "id": "PGS-A091",
+      "source_id": "PGS-INT-026",
+      "observation": "An optimized sector-specific line upgrade is a lower-bound planning result, not an all-load build plan."
+    },
+    {
+      "id": "PGS-A092",
+      "source_id": "PGS-INT-026",
+      "observation": "DC power-flow feasibility should remain distinct from full stability and distribution feasibility."
+    },
+    {
+      "id": "PGS-A093",
+      "source_id": "PGS-INT-027",
+      "observation": "Technology-cost assumptions can materially reorganize a modeled generation and storage portfolio."
+    },
+    {
+      "id": "PGS-A094",
+      "source_id": "PGS-INT-027",
+      "observation": "Storage power capacity, storage use, duration, and reliability contribution are not interchangeable."
+    },
+    {
+      "id": "PGS-A095",
+      "source_id": "PGS-INT-027",
+      "observation": "Technical least-cost feasibility can be accelerated or blocked by policy, markets, stakeholders, and capital."
+    },
+    {
+      "id": "PGS-A096",
+      "source_id": "PGS-INT-027",
+      "observation": "Capital-intensive system transitions extend beyond the operating-cost signal used in a dispatch narrative."
+    },
+    {
+      "id": "PGS-A097",
+      "source_id": "PGS-INT-028",
+      "observation": "Geographic pooling can reduce aggregate curtailment while distributing costs unevenly across participants."
+    },
+    {
+      "id": "PGS-A098",
+      "source_id": "PGS-INT-028",
+      "observation": "Cross-border transfer requires physical corridors, market rules, ownership, pricing, and cost allocation."
+    },
+    {
+      "id": "PGS-A099",
+      "source_id": "PGS-INT-028",
+      "observation": "Full-year temporal sampling can reveal adequacy outcomes hidden by representative-day designs."
+    },
+    {
+      "id": "PGS-A100",
+      "source_id": "PGS-INT-028",
+      "observation": "Storage cannot substitute for imported energy when local resource potential is insufficient under the stated land constraint."
+    },
+    {
+      "id": "PGS-A101",
+      "source_id": "PGS-INT-029",
+      "observation": "Exploitable, accessible, interconnectable, and delivered renewable potential are successive filters rather than synonyms."
+    },
+    {
+      "id": "PGS-A102",
+      "source_id": "PGS-INT-029",
+      "observation": "Proximity to an existing line does not establish available transfer capacity or an interconnection right."
+    },
+    {
+      "id": "PGS-A103",
+      "source_id": "PGS-INT-029",
+      "observation": "Average historical resource conditions do not establish adequacy during extreme events."
+    },
+    {
+      "id": "PGS-A104",
+      "source_id": "PGS-INT-029",
+      "observation": "A globally optimized phased pathway remains a scenario until projects, institutions, and corridors advance through realization states."
+    },
+    {
+      "id": "PGS-A105",
+      "source_id": "PGS-INT-030",
+      "observation": "Coordination can change resource location and transmission topology more than region-wide nameplate totals."
+    },
+    {
+      "id": "PGS-A106",
+      "source_id": "PGS-INT-030",
+      "observation": "Aggregate coordination savings do not establish the distribution of benefits or political acceptance."
+    },
+    {
+      "id": "PGS-A107",
+      "source_id": "PGS-INT-030",
+      "observation": "Regional reserve sharing without local network detail does not establish deliverability."
+    },
+    {
+      "id": "PGS-A108",
+      "source_id": "PGS-INT-030",
+      "observation": "Transmission expansion claims depend on the policy, infrastructure, and coordination baseline used for comparison."
+    }
+  ],
+  "audit_blocked_candidates": [
+    {
+      "candidate": {
+        "title": "The design space for long-duration energy storage in decarbonized power systems",
+        "authors_short": "Sepulveda et al.",
+        "journal": "Nature Energy",
+        "year": 2021,
+        "doi": "10.1038/s41560-021-00796-8"
+      },
+      "state": "AUDIT_BLOCKED_INCOMPLETE_TEXT_ACCESS",
+      "reason": "The available interfaces did not reliably expose every substantive article section.",
+      "replacement": "PGS-FND-012",
+      "counted_as_admitted": false
+    },
+    {
+      "candidate": {
+        "title": "Role of Long-Duration Energy Storage in Variable Renewable Electricity Systems",
+        "authors_short": "Dowling et al.",
+        "journal": "Joule",
+        "year": 2020,
+        "doi": "10.1016/j.joule.2020.07.007"
+      },
+      "state": "AUDIT_BLOCKED_INCOMPLETE_TEXT_ACCESS",
+      "reason": "The available interfaces did not reliably expose every substantive article section.",
+      "replacement": "PGS-FND-013",
+      "counted_as_admitted": false
+    },
+    {
+      "candidate": {
+        "title": "The Value of Inter-Regional Coordination and Transmission in Decarbonizing the US Electricity System",
+        "authors_short": "Brown and Botterud",
+        "journal": "Joule",
+        "year": 2021,
+        "doi": "10.1016/j.joule.2020.11.013"
+      },
+      "state": "AUDIT_BLOCKED_INCOMPLETE_TEXT_ACCESS",
+      "reason": "The available interfaces did not reliably expose every substantive article section.",
+      "replacement": "PGS-FND-015",
+      "counted_as_admitted": false
+    }
+  ],
+  "universal_families": [
+    {
+      "family_id": "PGS-SHR-U01",
+      "label": "Realization-state ladder",
+      "scope": "shared",
+      "rule": "Distinguish announced or requested, studied, contracted, under construction, commissioned, and operating states."
+    },
+    {
+      "family_id": "PGS-SHR-U02",
+      "label": "Stock-flow and time-horizon discipline",
+      "scope": "shared",
+      "rule": "Separate installed stocks, additions, withdrawals, utilization flows, commitments, and forecast horizons."
+    },
+    {
+      "family_id": "PGS-SHR-U03",
+      "label": "Spatial and temporal heterogeneity",
+      "scope": "shared",
+      "rule": "Preserve regional, hourly, seasonal, and tail-event variation instead of promoting averages to universal conditions."
+    },
+    {
+      "family_id": "PGS-SHR-U04",
+      "label": "Model and scenario boundary",
+      "scope": "shared",
+      "rule": "Name objective, system boundary, resolution, foresight, uncertainty, and omitted constraints before using a modeled result."
+    },
+    {
+      "family_id": "PGS-PWR-U01",
+      "label": "Load attribution chain",
+      "scope": "power",
+      "rule": "Move from service or facility activity through utilization and efficiency to electricity; do not infer demand directly from upstream growth."
+    },
+    {
+      "family_id": "PGS-PWR-U02",
+      "label": "Available and delivered output",
+      "scope": "power",
+      "rule": "Separate nameplate, available, reliable, interconnected, and delivered generation."
+    },
+    {
+      "family_id": "PGS-PWR-U03",
+      "label": "Large-load flexibility conditionality",
+      "scope": "power",
+      "rule": "Qualify flexible demand by baseline, response, duration, recovery, availability, contractual control, and rebound."
+    },
+    {
+      "family_id": "PGS-GRD-U01",
+      "label": "Queue conversion",
+      "scope": "grid_storage",
+      "rule": "Treat queue capacity as developer interest and narrate progression, withdrawal, time, cost, service, and deliverability."
+    },
+    {
+      "family_id": "PGS-GRD-U02",
+      "label": "Transmission deliverability and value",
+      "scope": "grid_storage",
+      "rule": "Separate market signals, engineering feasibility, project cost, reliability value, and realized flow."
+    },
+    {
+      "family_id": "PGS-GRD-U03",
+      "label": "Probabilistic adequacy",
+      "scope": "grid_storage",
+      "rule": "Use operational and tail-weather risk concepts rather than nameplate arithmetic."
+    },
+    {
+      "family_id": "PGS-GRD-U04",
+      "label": "Storage service stack",
+      "scope": "grid_storage",
+      "rule": "Separate power, energy, duration, efficiency, capacity contribution, cycling, degradation, and service."
+    },
+    {
+      "family_id": "PGS-GRD-U05",
+      "label": "Conditional infrastructure interaction",
+      "scope": "grid_storage",
+      "rule": "Describe transmission, storage, generation, and flexible load as conditional complements or substitutes, never fixed ones."
+    },
+    {
+      "family_id": "PGS-PWR-U04",
+      "label": "Annual versus peak demand",
+      "scope": "power",
+      "rule": "Keep annual energy, hourly or seasonal peak, capacity requirement, and capital investment separate."
+    },
+    {
+      "family_id": "PGS-PWR-U05",
+      "label": "Observed-response evidence tier",
+      "scope": "power",
+      "rule": "State counterfactual, assignment, participation, compliance, denominator, interval, persistence, and external-validity boundaries before treating observed load change as system capability."
+    },
+    {
+      "family_id": "PGS-GRD-U06",
+      "label": "Bidirectional net-load flexibility",
+      "scope": "grid_storage",
+      "rule": "Keep upward reserve, downward reserve, ramp rate, cumulative energy, peak, valley, timing, and recovery separate; surplus and deficit must not be silently netted."
+    }
+  ],
+  "family_assignment": {
+    "shared": [
+      "PGS-SHR-U01",
+      "PGS-SHR-U02",
+      "PGS-SHR-U03",
+      "PGS-SHR-U04"
+    ],
+    "power": [
+      "PGS-SHR-U01",
+      "PGS-SHR-U02",
+      "PGS-SHR-U03",
+      "PGS-SHR-U04",
+      "PGS-PWR-U01",
+      "PGS-PWR-U02",
+      "PGS-PWR-U03",
+      "PGS-PWR-U04",
+      "PGS-PWR-U05"
+    ],
+    "grid_storage": [
+      "PGS-SHR-U01",
+      "PGS-SHR-U02",
+      "PGS-SHR-U03",
+      "PGS-SHR-U04",
+      "PGS-GRD-U01",
+      "PGS-GRD-U02",
+      "PGS-GRD-U03",
+      "PGS-GRD-U04",
+      "PGS-GRD-U05",
+      "PGS-GRD-U06"
+    ]
+  },
+  "domain_synthesis": {
+    "power": {
+      "reasoning_object": "The conversion of economic and facility activity into electricity demand, the distinction between annual energy and peak capacity, and the amount of generation that is available and deliverable at the relevant place and time.",
+      "required_sequence": [
+        "Identify the measured load or supply quantity and its time basis.",
+        "Separate observed demand from forecasts, plans, and upstream activity proxies.",
+        "If discussing large-load flexibility, state the baseline, response, duration, recovery, participation, and contractual control.",
+        "Separate nameplate generation from available, reliable, interconnected, and delivered output.",
+        "Connect annual energy growth to peak and capacity only when the runtime evidence supports that bridge.",
+        "Close on the demonstrated constraint or conversion step, not a generic energy-transition conclusion."
+      ],
+      "evidence_jobs": [
+        "demand_growth",
+        "commercial_growth",
+        "planned_net_gw",
+        "retail_price_growth",
+        "large_load_capacity_mw",
+        "pipeline_end_year"
+      ],
+      "boundary_rules": [
+        "Planned generation is not in service.",
+        "Annual load growth is not peak growth.",
+        "A large-load announcement is not energized demand.",
+        "A flexible-load estimate is not dispatchable capacity without observed or contracted response evidence.",
+        "Grid queue maturity belongs in Grid & Storage even when it limits Power realization."
+      ]
+    },
+    "grid_storage": {
+      "reasoning_object": "The conversion of requested generation and storage into agreements and operating assets; the deliverability, adequacy, and flexibility of the network; and the services storage can provide at a specified power, energy, duration, location, and market state.",
+      "required_sequence": [
+        "Identify the registry or operating state: requested, studied, contracted, under construction, commissioned, or operating.",
+        "Pair queue stock with maturity, historical outcomes, and timing without forecasting individual conversion.",
+        "Separate engineering feasibility, transfer capability, congestion, reliability value, project cost, and realized flow.",
+        "For adequacy, preserve weather tails, peak, cumulative energy, ramps, reserves, and deliverability.",
+        "For storage, state power, energy, duration, efficiency, cycling, degradation, service, and market qualification as available.",
+        "Close on the exact bottleneck between the current state and operating service."
+      ],
+      "evidence_jobs": [
+        "active_queue_gw",
+        "advanced_queue_share",
+        "storage_queue_gw",
+        "historical_operational_share",
+        "historical_withdrawn_share",
+        "request_to_cod_years",
+        "draft_executed_ia_gw",
+        "extreme_reserve_margin",
+        "operating_storage_duration",
+        "four_plus_hour_share",
+        "power_construction_growth"
+      ],
+      "boundary_rules": [
+        "Queue capacity is developer interest, not future operating supply.",
+        "An interconnection agreement is advanced but not operating status.",
+        "Storage duration does not solve transmission or interconnection.",
+        "Energy capacity does not establish power, location, availability, or accredited capacity.",
+        "Regional balancing does not establish local deliverability.",
+        "A modeled non-wire benefit is not compensated revenue or a financeable project."
+      ]
+    }
+  },
+  "cross_domain_synthesis": {
+    "allowed_bridges": [
+      "Power demand can increase the need for generation, peak capacity, flexibility, and deliverability.",
+      "Grid interconnection and transmission determine whether planned or available supply becomes usable power at load.",
+      "Storage can shift energy, contribute capacity, manage ramps, or relieve congestion only under service- and location-specific conditions.",
+      "Policy, market design, and financing affect realization but do not replace engineering state evidence."
+    ],
+    "prohibited_collapses": [
+      "planned generation into available supply",
+      "queue capacity into future operating capacity",
+      "annual energy into peak capacity",
+      "regional adequacy into campus-level deliverability",
+      "storage energy into dispatchable power",
+      "modeled system value into owner revenue",
+      "policy target into commissioned infrastructure"
+    ],
+    "macro_rollup_role": "Supply the AI Macro roll-up with bounded domain conclusions and their causal bridge: demand -> generation need -> interconnection and transmission -> operating capacity -> usable service. The roll-up may synthesize those outputs but must not invent a missing bridge."
+  },
+  "language_layer": {
+    "voice": [
+      "analytical, compact, and direct",
+      "causal rather than sing-song enumerative",
+      "specific about state, denominator, time horizon, and constraint",
+      "varied in sentence architecture without sacrificing traceability",
+      "willing to end on a bounded unresolved condition"
+    ],
+    "paragraph_architecture": [
+      "Lead with the domain conclusion, not the largest number.",
+      "Use the second sentence to establish the strongest causal or comparative support.",
+      "Use subsequent sentences to narrow, condition, or explain conversion—not to repeat the headline with synonyms.",
+      "End with the implication created by the evidence chain, naming the remaining realization step when material."
+    ],
+    "preferred_moves": [
+      "contrast stock with flow",
+      "contrast plan with operation",
+      "contrast aggregate potential with delivered local service",
+      "contrast modeled value with observed or compensated value",
+      "name the limiting conversion stage",
+      "use a statistic once, then interpret it",
+      "vary transition logic according to causality rather than a fixed therefore/however cadence"
+    ],
+    "prohibited_moves": [
+      "stacking multiple clauses before the main verb",
+      "repeating the title in the first body sentence",
+      "using a generic progress-versus-constraint template in every domain",
+      "turning every paragraph into statistic, statistic, caveat, therefore",
+      "using current, presently, remains, therefore, or while as mechanical rhythm markers",
+      "calling a quantity robust, substantial, significant, or broad without a comparator",
+      "ending with a conclusion that merely restates an earlier sentence",
+      "claiming certainty beyond the runtime evidence packet"
+    ],
+    "sentence_controls": {
+      "max_sentences_typical": 5,
+      "headline_body_separation": true,
+      "one_primary_claim_per_sentence": true,
+      "numeric_density_rule": "Prefer two or three decision-relevant quantities; additional values require a distinct analytical job.",
+      "title_rule": "Use a declarative title that does not repeat the domain label and does not contain a terminal period."
+    }
+  },
+  "long_form_rhetorical_analysis": {
+    "requirement": "Approximately fourteen passage analyses across two complete long-form technical texts, balanced between interconnection realization and storage valuation/integration",
+    "decision": "PASS",
+    "text_count": 2,
+    "passage_count": 14,
+    "source_selection": [
+      {
+        "source_id": "PGS-LF-T01",
+        "title": "Queued Up: 2025 Edition, Characteristics of Power Plants Seeking Transmission Interconnection As of the End of 2024",
+        "authors_short": "Rand et al.",
+        "publisher": "Lawrence Berkeley National Laboratory",
+        "year": 2025,
+        "complete_text_source": "https://emp.lbl.gov/publications/queued-2025-edition-characteristics",
+        "substantive_extent": "Complete 55-slide report plus official publication metadata and methodological notes",
+        "selection_basis": "An empirical production report that demonstrates how to move from a heterogeneous administrative registry to bounded statements about developer interest, process state, attrition, timing, and data completeness."
+      },
+      {
+        "source_id": "PGS-LF-T02",
+        "title": "Long-Duration Energy Storage Grid Integration-Valuation Framework and Incentive Gaps",
+        "authors_short": "Chen et al.",
+        "publisher": "National Renewable Energy Laboratory, Argonne National Laboratory, and Sandia National Laboratories",
+        "year": 2025,
+        "doi": "10.2172/2589162",
+        "complete_text_source": "https://docs.nlr.gov/docs/fy25osti/95548.pdf",
+        "substantive_extent": "Complete 41-page report including executive summary, literature synthesis, stakeholder methods, findings, future work, references, and survey appendix",
+        "selection_basis": "A technical synthesis that demonstrates how to separate physical service capability, model representation, operational scheduling, market compensation, bankability, and policy support."
+      }
+    ],
+    "passages": [
+      {
+        "passage_id": "PGS-LF-001",
+        "source_id": "PGS-LF-T01",
+        "section": "About this report and scope",
+        "locator": "slides 2-4",
+        "rhetorical_job": "Defines the registry, observation date, system boundary, and non-policy purpose before reporting scale.",
+        "claim_move": "Frames the queue as an annual snapshot of requests to connect to the bulk-power system.",
+        "evidence_move": "Names the transmission-provider sources, date cutoff, and distinction from distribution-connected or behind-the-meter projects.",
+        "qualification_move": "States that later updates are outside the report and that the report describes trends rather than recommending policy.",
+        "production_use": "Start a queue claim by defining what entered the registry, which grid layer it covers, and when the snapshot was taken.",
+        "anti_pattern": "Do not open with queue gigawatts while leaving the request, date, and transmission-only denominator unstated."
+      },
+      {
+        "passage_id": "PGS-LF-002",
+        "source_id": "PGS-LF-T01",
+        "section": "Interconnection study process and realization states",
+        "locator": "slide 7",
+        "rhetorical_job": "Turns a vague project pipeline into an ordered process with distinct contractual and operating states.",
+        "claim_move": "Moves from interconnection request through studies and cost assignment to an interconnection agreement and commercial operation.",
+        "evidence_move": "Defines the interconnection agreement as a contract governing operational terms and cost responsibility.",
+        "qualification_move": "Keeps withdrawal possible at any stage and notes that the observed data predate full implementation of the newest reform.",
+        "production_use": "Use a realization ladder and identify the exact state supported by the evidence.",
+        "anti_pattern": "Do not collapse request, study, agreement, construction, and operation into one project count."
+      },
+      {
+        "passage_id": "PGS-LF-003",
+        "source_id": "PGS-LF-T01",
+        "section": "Data collection, cleaning, and hybrid estimation",
+        "locator": "slides 8-9",
+        "rhetorical_job": "Explains how heterogeneous operator records become a comparable national dataset and where inference enters.",
+        "claim_move": "Standardizes fields, technology labels, status labels, dates, locations, and hybrid components across unlike source files.",
+        "evidence_move": "Describes QA/QC, auxiliary data, hybrid matching, and imputation of missing storage components.",
+        "qualification_move": "Discloses that some values are inferred or imputed and that the sample can change as historical gaps are filled.",
+        "production_use": "Differentiate reported, standardized, matched, and estimated fields in any pipeline-derived metric.",
+        "anti_pattern": "Do not present cleaned or imputed registry values as uniformly operator-reported ground truth."
+      },
+      {
+        "passage_id": "PGS-LF-004",
+        "source_id": "PGS-LF-T01",
+        "section": "Notable interconnection data gaps",
+        "locator": "slide 9",
+        "rhetorical_job": "Makes denominator loss part of the result rather than a footnote after the conclusion.",
+        "claim_move": "Lists which fields are materially incomplete, including study phase, agreement date, commercial date, and withdrawal date.",
+        "evidence_move": "Quantifies missingness by field and links some gaps to absent interoperable identifiers.",
+        "qualification_move": "Restricts each downstream duration or stage analysis to records with the necessary fields.",
+        "production_use": "Attach field completeness and eligible-record coverage to every stage or timing statistic.",
+        "anti_pattern": "Do not let national queue coverage imply complete agreement, status, or timing data."
+      },
+      {
+        "passage_id": "PGS-LF-005",
+        "source_id": "PGS-LF-T01",
+        "section": "Completion, withdrawal, and post-agreement outcomes",
+        "locator": "slides 32-35",
+        "rhetorical_job": "Converts a stock of proposals into outcome-conditioned evidence without predicting individual projects.",
+        "claim_move": "Compares operational, active, suspended, and withdrawn outcomes for mature request cohorts and signed agreements.",
+        "evidence_move": "Uses older cohorts to reduce unresolved censoring and reports project-count and capacity-weighted outcomes separately.",
+        "qualification_move": "Notes regional sample composition, missing agreement dates, and the fact that recent cohorts have unresolved outcomes.",
+        "production_use": "Narrate queue volume as developer interest, then use mature-cohort attrition to bound conversion rather than applying a deterministic haircut.",
+        "anti_pattern": "Do not multiply the active queue by a historical completion rate and call the result a forecast."
+      },
+      {
+        "passage_id": "PGS-LF-006",
+        "source_id": "PGS-LF-T01",
+        "section": "Duration decomposition",
+        "locator": "slides 36-51",
+        "rhetorical_job": "Separates request-to-withdrawal, request-to-agreement, agreement-to-operation, and request-to-operation timelines.",
+        "claim_move": "Shows that process duration depends on endpoint, cohort, region, technology, project size, and service type.",
+        "evidence_move": "Uses box plots, sample tables, endpoint definitions, and regional notes rather than one national average.",
+        "qualification_move": "Flags sample dominance, inaccessible dates, field coverage, and cohort composition whenever a trend can be distorted.",
+        "production_use": "Name both endpoints and the eligible sample before describing interconnection time.",
+        "anti_pattern": "Do not call request-to-agreement time, agreement-to-operation time, or request-to-operation time simply the queue wait."
+      },
+      {
+        "passage_id": "PGS-LF-007",
+        "source_id": "PGS-LF-T01",
+        "section": "Conclusion and reform boundary",
+        "locator": "slide 52",
+        "rhetorical_job": "Closes by reconciling queue scale, attrition, timing, and the limits of reform evidence.",
+        "claim_move": "Summarizes what is active, how composition changed, how much has advanced, and how long completed projects took.",
+        "evidence_move": "Pairs the current stock with historical outcomes and stage-specific evidence.",
+        "qualification_move": "States that current reforms may matter but are too new for the report to assess fully.",
+        "production_use": "End a Grid & Storage Read with the bottleneck demonstrated by current evidence and the outcome that remains unmeasured.",
+        "anti_pattern": "Do not attribute a recent queue change entirely to reform when finance, permitting, transmission, and market conditions remain plausible drivers."
+      },
+      {
+        "passage_id": "PGS-LF-008",
+        "source_id": "PGS-LF-T02",
+        "section": "Executive summary and value-to-deployment gap",
+        "locator": "report pp. v-vi",
+        "rhetorical_job": "Opens with a service portfolio, then immediately separates potential value from scaled deployment.",
+        "claim_move": "Defines LDES as a bidirectional asset capable of energy, capacity, ancillary, congestion, and multi-day services.",
+        "evidence_move": "Contrasts mature pumped storage with newer technologies and organizes barriers around cost, modeling, planning, operations, markets, and policy.",
+        "qualification_move": "Uses potential language and identifies missing valuation and compensation mechanisms instead of declaring universal economic viability.",
+        "production_use": "Describe storage through the services and durations evidenced, followed by the specific mechanism that blocks realization.",
+        "anti_pattern": "Do not infer deployment or bankability from a list of technically possible services."
+      },
+      {
+        "passage_id": "PGS-LF-009",
+        "source_id": "PGS-LF-T02",
+        "section": "Stakeholder method and evidence tier",
+        "locator": "report pp. 1-2 and appendix pp. 17-30",
+        "rhetorical_job": "Discloses who supplied judgment evidence and preserves the distinction between survey perception, operator practice, and observed performance.",
+        "claim_move": "Synthesizes an online survey, structured operator outreach, and literature review across grid-integration topics.",
+        "evidence_move": "Reports respondent categories, response count, question structure, and coverage of U.S. and Canadian system operators.",
+        "qualification_move": "Treats stakeholder rankings as reported gaps and priorities, not measured technology outcomes or representative population estimates.",
+        "production_use": "Label stakeholder evidence as perception, practice, or priority and keep it below observed operational evidence.",
+        "anti_pattern": "Do not translate survey agreement into a measured market value or deployment forecast."
+      },
+      {
+        "passage_id": "PGS-LF-010",
+        "source_id": "PGS-LF-T02",
+        "section": "Technology maturity, service stack, and market readiness",
+        "locator": "report pp. 2-4",
+        "rhetorical_job": "Prevents one storage label from erasing differences in technology, duration, readiness, configuration, and service value.",
+        "claim_move": "Separates mature pumped storage from emerging technologies and short-duration arbitrage from prolonged reliability services.",
+        "evidence_move": "Compares current deployment, queue visibility, operator concerns, expected market saturation, and uncompensated services.",
+        "qualification_move": "Notes that some services exist only in pilot markets and that local resource mixes determine value.",
+        "production_use": "State technology, duration, power/energy role, readiness, and market mechanism before making a storage claim.",
+        "anti_pattern": "Do not use storage capacity as a technology-neutral proxy for duration, reliability contribution, or revenue."
+      },
+      {
+        "passage_id": "PGS-LF-011",
+        "source_id": "PGS-LF-T02",
+        "section": "Chronology, uncertainty, and state-of-charge modeling",
+        "locator": "report pp. 4-8",
+        "rhetorical_job": "Explains why model architecture can create or erase long-duration value.",
+        "claim_move": "Shows that unlinked representative periods, short look-ahead windows, perfect foresight, and missing operational data can misstate multi-day adequacy.",
+        "evidence_move": "Connects temporal resolution, event order, state of charge, forecast error, degradation, ramping, reserves, and transmission constraints to valuation.",
+        "qualification_move": "Acknowledges the computational tradeoffs among chronology, spatial detail, integer constraints, and nonlinear physics.",
+        "production_use": "Attach each modeled storage result to chronology, foresight, operational horizon, weather coverage, and network representation.",
+        "anti_pattern": "Do not present a storage result without stating whether the model can carry energy and uncertainty across the relevant event duration."
+      },
+      {
+        "passage_id": "PGS-LF-012",
+        "source_id": "PGS-LF-T02",
+        "section": "Reliability metrics and integrated planning",
+        "locator": "report pp. 6-8",
+        "rhetorical_job": "Keeps cost minimization, resource adequacy, resilience, and infrastructure substitution as separate valuation axes.",
+        "claim_move": "Calls for reliability metrics and co-optimization of generation, transmission, storage, and operations.",
+        "evidence_move": "Names loss-of-load and unserved-energy metrics alongside production cost, power flow, market clearing, and expansion tools.",
+        "qualification_move": "States that modeling outputs influence investment and policy while current tools and operational data remain incomplete.",
+        "production_use": "Specify which value axis a storage metric supports and which adjacent axes remain untested.",
+        "anti_pattern": "Do not use lower modeled system cost as proof of adequacy, resilience, congestion relief, or project economics."
+      },
+      {
+        "passage_id": "PGS-LF-013",
+        "source_id": "PGS-LF-T02",
+        "section": "Market design, compensation, and bankability",
+        "locator": "report pp. 8-10",
+        "rhetorical_job": "Separates system value from owner revenue and from an investable contract.",
+        "claim_move": "Shows that short-horizon energy, capacity, and ancillary markets may not compensate multi-day availability, resilience, or non-wire value.",
+        "evidence_move": "Compares capacity accreditation, situational-awareness scheduling, absent multi-day products, transmission-asset treatment, and revenue mechanisms.",
+        "qualification_move": "Notes forecast, pricing, settlement, and scheduling barriers and variation across system operators.",
+        "production_use": "When discussing storage economics, move explicitly from physical service to accreditation, product eligibility, dispatch, price, contract duration, and revenue certainty.",
+        "anti_pattern": "Do not call a system-beneficial storage asset financeable without identifying who pays, under what rule, and for how long."
+      },
+      {
+        "passage_id": "PGS-LF-014",
+        "source_id": "PGS-LF-T02",
+        "section": "Policy sequencing and future-work closure",
+        "locator": "report pp. 10-13",
+        "rhetorical_job": "Ends with a bounded implementation agenda rather than converting recognized gaps into promised deployment.",
+        "claim_move": "Organizes needs across demonstrations, operational data, modeling, adequacy, market products, contracts, and open evaluation tools.",
+        "evidence_move": "Links each proposed intervention to a specific missing capability or incentive identified in outreach and literature.",
+        "qualification_move": "Warns that targeted support may be insufficient and can distort later markets if policy sequencing is poor; storage value also changes with transmission and the resource mix.",
+        "production_use": "Close a storage argument with the missing decision infrastructure and the evidence needed to move the realization state forward.",
+        "anti_pattern": "Do not present a target, grant, pilot, or procurement mandate as proof of operational scale or durable market value."
+      }
+    ],
+    "cross_text_production_rules": [
+      "State the object and realization state before the quantity: request, study, agreement, construction, operation, technical potential, accredited capacity, dispatched service, compensated product, or contracted revenue.",
+      "Separate power, energy, duration, timing, location, state of charge, network deliverability, and market qualification.",
+      "Attach every timing statement to both endpoints, cohort, region, and eligible-record coverage.",
+      "Treat missingness, standardization, matching, and imputation as part of the result, not implementation trivia.",
+      "Use mature-cohort outcomes to bound conversion, never as a deterministic forecast haircut.",
+      "Keep physical capability, modeled system value, owner revenue, policy support, and bankability distinct.",
+      "Qualify model results by chronology, foresight, weather coverage, spatial detail, operational horizon, and network representation.",
+      "End with the demonstrated bottleneck and the next realization evidence required; do not fill an evidence gap with a forecast."
+    ]
+  },
+  "saturation_audit": {
+    "challenge_1": {
+      "challenge_id": "PGS-CHALLENGE-01-POWER",
+      "sources": 5,
+      "new_atomic_observations": 20,
+      "new_universal_families": 2,
+      "foundation_gap_reopened": false,
+      "decision": "PASS",
+      "reason": "The batch deepened existing load-attribution, heterogeneity, flexibility, scenario, and tail-risk families and added only the annual-versus-peak and observed-response evidence distinctions."
+    },
+    "challenge_2": {
+      "challenge_id": "PGS-CHALLENGE-02-GRID-STORAGE",
+      "sources": 5,
+      "new_atomic_observations": 20,
+      "new_universal_families": 1,
+      "foundation_gap_reopened": false,
+      "decision": "PASS",
+      "reason": "The batch added bidirectional net-load flexibility while deepening existing weather-tail, model-boundary, transmission, storage-service, adequacy, and realization-state families."
+    },
+    "integrated_confirmation": {
+      "batch_id": "PGS-INTEGRATED-SYNTHESIS-01",
+      "sources": 5,
+      "new_atomic_observations": 20,
+      "new_universal_families": 0,
+      "foundation_gap_reopened": false,
+      "decision": "PASS_WITHOUT_FRAMEWORK_EXPANSION",
+      "reason": "Electrification, congestion, cross-border exchange, resource-potential screening, and coordination all resolve through the existing realization-state, stock-flow, heterogeneity, model-boundary, delivered-output, queue-conversion, transmission, adequacy, storage-service, conditional-interaction, and bidirectional-flexibility families. Policy and institutional feasibility are treated as realization and model-boundary conditions rather than a new catch-all family."
+    },
+    "decision": "PASS"
+  },
+  "integrity_audit": {
+    "expected_admissions": 30,
+    "actual_admissions": 30,
+    "unique_source_ids": 30,
+    "expected_observations": 108,
+    "actual_observations": 108,
+    "unique_observation_ids": 108,
+    "orphan_observations": [],
+    "expected_families": 15,
+    "actual_families": 15,
+    "unique_family_ids": 15,
+    "complete_audits": 30,
+    "journal_gate_passes": 30,
+    "long_form_texts": 2,
+    "long_form_passages": 14,
+    "blocked_candidates_counted_as_admitted": 0,
+    "decision": "PASS"
+  },
+  "residual_gaps": [
+    "Academic saturation does not eliminate future changes in market rules, queue reforms, technology costs, or runtime data definitions.",
+    "Campus-level deliverability still requires local utility, transmission, interconnection, and construction evidence.",
+    "Emerging storage technologies still lack broad operational, reliability, degradation, and bankability histories.",
+    "The corpus guides expression and reasoning; quality still depends on the completeness and consistency of the runtime evidence packet."
+  ],
+  "integration_contract": {
+    "source_profiles": [
+      "power",
+      "grid_storage"
+    ],
+    "shared_corpus_file": "AI_MACRO_POWER_GRID_STORAGE_CORPUS_COMPLETE_v1.0.json",
+    "compiler_target": "AI_MACRO_LANGUAGE_LAYER_v1.0.json",
+    "generation_order": [
+      "power",
+      "grid_storage",
+      "ai_macro_rollup"
+    ],
+    "no_post_generation_rewrite": true,
+    "no_hidden_api_calls": true
+  }
+}

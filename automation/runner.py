@@ -2,7 +2,7 @@
 
 The Git repository is the publication boundary: this command updates only the
 working tree.  The GitHub Actions workflow commits research state only when this
-runner reports a fully validated, publish-ready result.
+runner reports a completed, publishable result.
 """
 
 from __future__ import annotations
@@ -132,10 +132,7 @@ def _current_artifact_valid(context: Any) -> tuple[bool, str, dict[str, Any]]:
     packets = build_evidence_packets(context)
     snapshot = evidence_snapshot_id(packets)
     _, commentary = build_platform_reads(context)
-    strict_evidence_match = bool(
-        commentary.get("artifact_validated")
-        and commentary.get("evidence_current")
-    )
+    strict_evidence_match = bool(commentary.get("artifact_publishable") and commentary.get("evidence_current"))
     return strict_evidence_match, snapshot, dict(commentary)
 
 
@@ -260,33 +257,68 @@ def main() -> int:
         _log("START evidence comparison")
         evidence_started = time.perf_counter()
         artifact_valid, evidence_snapshot, commentary = _current_artifact_valid(bundle.context)
+        from analytics.read_materiality import compare_evidence_materiality
+        from analytics.read_store import load_read_artifact
+
+        stored_artifact = load_read_artifact()
+        materiality = compare_evidence_materiality(
+            stored_artifact.get("evidence_packets"),
+            commentary.get("packets"),
+            previous_snapshot_id=str(stored_artifact.get("evidence_snapshot_id") or ""),
+            current_snapshot_id=evidence_snapshot,
+        )
+        reusable_artifact = bool(
+            commentary.get("artifact_publishable")
+            and not materiality.get("material")
+        )
         evidence_elapsed = max(0.0, time.perf_counter() - evidence_started)
         status["evidence_snapshot_id"] = evidence_snapshot
         status["phases"]["evidence"] = {
             "status": "passed",
             "artifact_current": artifact_valid,
+            "artifact_materially_current": reusable_artifact,
             "artifact_status": str(commentary.get("status") or "unknown"),
+            "materiality": materiality,
             "elapsed_sec": round(evidence_elapsed, 3),
         }
-        _log(f"DONE  evidence comparison · {evidence_elapsed:.1f}s · current={artifact_valid}")
+        _log(
+            f"DONE  evidence comparison · {evidence_elapsed:.1f}s · "
+            f"exact={artifact_valid} · material={bool(materiality.get('material'))}"
+        )
 
-        if artifact_valid:
+        if reusable_artifact:
+            reuse_reason = (
+                "evidence_snapshot_already_has_publishable_artifact"
+                if artifact_valid
+                else "evidence_change_below_materiality_threshold"
+            )
             status["phases"]["openai"] = {
                 "status": "skipped",
-                "reason": "evidence_snapshot_already_has_validated_artifact",
+                "reason": reuse_reason,
             }
             if config.auto_publish:
                 from analytics.read_service import reapply_last_read
 
-                renewed = reapply_last_read(persist=True, source="automation_reapply")
+                renewal_source = "automation_reapply" if artifact_valid else "automation_immaterial_reapply"
+                renewed = reapply_last_read(
+                    persist=True,
+                    source=renewal_source,
+                    current_evidence_snapshot_id=evidence_snapshot,
+                    materiality=materiality,
+                    evidence_packets=commentary.get("packets") if artifact_valid else None,
+                )
                 publication = dict(renewed.get("publication") or {})
                 status["phases"]["publication_lease"] = {
                     "status": "renewed",
-                    "reason": "validated_evidence_unchanged_no_paid_call",
+                    "reason": (
+                        "publishable_evidence_unchanged_no_paid_call"
+                        if artifact_valid
+                        else "publishable_evidence_change_immaterial_no_paid_call"
+                    ),
                     "published_at": str(publication.get("published_at") or ""),
                     "expires_at": str(publication.get("expires_at") or ""),
                 }
-                _log("publication lease renewed · no OpenAI call")
+                _log(f"publication lease renewed · no OpenAI call · {reuse_reason}")
             else:
                 status["phases"]["publication_lease"] = {
                     "status": "withheld",
@@ -331,17 +363,17 @@ def main() -> int:
                 "elapsed_sec": round(openai_elapsed, 3),
             }
             _log(f"DONE  bounded OpenAI generation · {openai_elapsed:.1f}s · status={generation.get('status')}")
-            if generation.get("status") != "validated":
+            if generation.get("status") not in {"validated", "published_with_warnings", "published_raw_response"}:
                 status["errors"].append(
-                    f"Commentary publication gate rejected the paid attempt at {generation.get('stage', 'unknown')} stage."
+                    f"OpenAI generation did not return a publishable response at {generation.get('stage', 'unknown')} stage."
                 )
-                _finish(status, result="commentary_validation_failed")
+                _finish(status, result="commentary_generation_failed")
                 return 2
 
             artifact_valid, regenerated_snapshot, commentary = _current_artifact_valid(bundle.context)
             if not artifact_valid or regenerated_snapshot != evidence_snapshot:
                 status["errors"].append(
-                    "Validated generation did not produce a current artifact for the refreshed evidence snapshot."
+                    "Generation did not produce a current publishable artifact for the refreshed evidence snapshot."
                 )
                 _finish(status, result="publication_verification_failed")
                 return 2
@@ -359,14 +391,14 @@ def main() -> int:
                 "status": "withheld",
                 "reason": "AUTO_PUBLISH is false or manual publish opt-in is absent",
             }
-            _finish(status, result="validated_publication_withheld")
+            _finish(status, result="publication_withheld")
             return 0
 
         status["phases"]["publication"] = {
             "status": "ready",
             "transaction_boundary": "git_commit",
         }
-        _finish(status, result="validated_publish_ready", publish_ready=True)
+        _finish(status, result="publish_ready", publish_ready=True)
         return 0
     except Exception as exc:
         status["errors"].append(f"{type(exc).__name__}: {exc}")

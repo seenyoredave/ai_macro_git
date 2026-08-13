@@ -1,0 +1,119 @@
+{
+  "checkpoint": "ai_macro_platform_language_canonical_status",
+  "status_date": "2026-08-12",
+  "timezone": "America/Los_Angeles",
+  "authority": "live_v8.2.0_code_over_stale_narrative_docs",
+  "platform": {
+    "app_version": "v8.2.0",
+    "read_service_version": "3.2.0",
+    "generator_version": "3.1.0",
+    "validator_version": "3.1.0",
+    "artifact_version": "2.2.0",
+    "retained_release_id": "a5594de5a6c43ac65576"
+  },
+  "language_engine": {
+    "version": "language-engine-2.0.0",
+    "payload_sha256": "4266548a8452d0a067a227965cea12bafe39b6f4d8b59895bc82b6a87f1c4d34",
+    "compiled_file_sha256": "aa3ff03d61a55f9a0f826dd13b465b0f4064d8e2aa8e12401310c998746ad35a",
+    "domain_profiles": 11,
+    "corpus_backed_profiles": 5,
+    "platform_native_profiles": 6,
+    "planned_full_generation_calls": 6,
+    "planned_macro_only_calls": 3,
+    "sdk_retries": 0,
+    "validation_triggered_calls": 0,
+    "publication_policy": "publish_completed_typed_output_with_diagnostics"
+  },
+  "corpus_status": {
+    "completed": {
+      "market": {
+        "artifact": "AI_MACRO_MARKET_CORPUS_COMPLETE_v1.0.json",
+        "admissions": 38,
+        "atomic_observations": 153,
+        "status": "COMPLETE_SATURATED"
+      },
+      "finance": {
+        "artifact": "AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json",
+        "admissions": 40,
+        "atomic_observations": 191,
+        "status": "COMPLETE_CANONICALLY_SATURATED"
+      },
+      "compute": {
+        "artifact": "AI_MACRO_COMPUTE_CORPUS_COMPLETE_v1.0.json",
+        "sources": 40,
+        "atomic_observations": 184,
+        "status": "COMPLETE_SATURATED"
+      },
+      "data_center": {
+        "artifact": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json",
+        "admissions": 25,
+        "atomic_observations": 128,
+        "status": "COMPLETE_CORRECTIVE_REAUDIT"
+      },
+      "connectivity": {
+        "artifact": "AI_MACRO_CONNECTIVITY_CORPUS_COMPLETE_v1.0.json",
+        "admissions": 25,
+        "audit_blocked": 2,
+        "rejected": 3,
+        "atomic_observations": 102,
+        "status": "COMPLETE_MACHINE_VALIDATED"
+      }
+    },
+    "incomplete": [
+      "power",
+      "grid_storage",
+      "water",
+      "adoption",
+      "workforce",
+      "economic_impact"
+    ],
+    "neuroscience_bonus": {
+      "status": "FULLY_INGESTED",
+      "sources_fully_reviewed": 16,
+      "atomic_observations": 70,
+      "canonical_families": 22,
+      "mathematical_motifs": 14,
+      "boundary": "systems_reasoning_only_never_economic_evidence"
+    }
+  },
+  "current_diagnosis": {
+    "primary_refinement_source": "engine_retooling",
+    "reason": "completed corpus range is compressed into compact three-architecture profiles and a shared sentence-job sequence",
+    "observed_quality": "materially_improved_but_cross_domain_cadence_remains_templated",
+    "corpus_acquisition": "paused_until_engine_baseline_is_stable"
+  },
+  "critical_open_issue": {
+    "id": "automation_two_call_six_call_incompatibility",
+    "severity": "BLOCKING_FOR_SCHEDULED_PAID_GENERATION",
+    "engine_required_calls": 6,
+    "automation_hard_max_calls_per_run": 2,
+    "automation_hard_max_calls_per_day": 4,
+    "automation_accepts_status": "validated_only",
+    "engine_publishable_statuses": [
+      "validated",
+      "published_with_warnings"
+    ],
+    "modified_in_this_work": false,
+    "required_handling": "separate_explicitly_authorized_compatibility_patch"
+  },
+  "verification": {
+    "compiled_engine_freshness": "PASS",
+    "language_engine_contract": "PASS",
+    "editorial_quality_contract": "PASS",
+    "six_call_architecture_smoke": "PASS",
+    "critical_integrity_contracts": "9_OF_9_PASS"
+  },
+  "next_steps": [
+    "freeze_latest_user_supplied_reads_as_an_evaluation_fixture",
+    "add_set_level_architecture_planning_inside_existing_domain_draft_call",
+    "expand_corpus_derived_architecture_inventory_and_strengthen_provenance_validation",
+    "make_domain_editing_preservation_aware",
+    "add_cross_domain_repetition_diagnostics_and_set_level_critic_output",
+    "evaluate_on_fixed_evidence_without_extra_calls_or_retries",
+    "repair_automation_compatibility_only_after_explicit_authorization",
+    "resume_power_and_grid_storage_as_a_coordinated_but_domain_tagged_corpus_block",
+    "complete_water_adoption_workforce_and_economic_outcomes",
+    "rebuild_final_cross_domain_framework_after_all_eleven_corpora_are_complete"
+  ],
+  "canonical_status_document": "docs/AI_MACRO_PLATFORM_LANGUAGE_ENGINE_CANONICAL_STATUS_v8.2.0.md"
+}

@@ -1,15 +1,14 @@
-"""Four-workspace Developer Tools panel for v7."""
+"""Four-workspace Developer Tools panel for v8."""
 
 from __future__ import annotations
-
-import json
 
 import streamlit as st
 
 from analytics.dashboard_context import DashboardContext
-from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_evidence_packets, evidence_snapshot_id, model_evidence_packets
-from analytics.read_prompts import DOMAIN_PROMPT_VERSION, MACRO_PROMPT_VERSION
-from analytics.read_service import READ_SERVICE_COMPATIBLE_VERSIONS, generate_validated_read_artifact, reapply_last_read, regenerate_macro_read, resume_saved_read_attempt
+from analytics.language_layer import language_layer_identity
+from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_evidence_packets, evidence_snapshot_id
+from analytics.read_prompts import DOMAIN_PROMPT_VERSION
+from analytics.read_service import PUBLISHABLE_STATUSES, READ_SERVICE_COMPATIBLE_VERSIONS, generate_validated_read_artifact, reapply_last_read, recovery_call_plan, regenerate_macro_read, resume_saved_read_attempt
 from analytics.read_store import latest_recoverable_attempt, load_read_artifact
 from automation.config import AUTOMATION_START_LOCAL, AUTOMATION_TIMEZONE
 from automation.status import load_automation_status
@@ -249,8 +248,12 @@ def _render_ai_result(result: dict) -> None:
     status = str(result.get("status") or "unknown")
     if status == "validated":
         st.success("Validated commentary artifact")
+    elif status == "published_with_warnings":
+        st.warning("New commentary published with validation diagnostics")
+    elif status == "published_raw_response":
+        st.warning("OpenAI response published without a complete structured parse")
     elif status == "reapplied":
-        st.success("Last validated Read reapplied for 24 hours")
+        st.success("Last published Read reapplied for 24 hours")
     elif status == "validation_failed":
         st.error(f"Validation failed at {result.get('stage', 'unknown')} stage")
     else:
@@ -291,68 +294,73 @@ def _render_ai_result(result: dict) -> None:
     if isinstance(generated_output, dict) and generated_output:
         with st.expander("Generated output", expanded=False):
             st.json(generated_output)
+    raw_responses = result.get("raw_responses")
+    if isinstance(raw_responses, dict) and raw_responses:
+        with st.expander("Raw OpenAI responses", expanded=False):
+            st.json(raw_responses)
     with st.expander("Generation metadata", expanded=False):
         st.json(generation)
 
 
 def _ai_workspace(context: DashboardContext | None) -> None:
     config = load_openai_config()
-    if config.configured:
-        st.success("OpenAI API configured")
-    else:
-        st.warning("OPENAI_API_KEY is not configured.")
+    identity = language_layer_identity()
+    packets = build_evidence_packets(context) if context is not None else {}
+    current_snapshot = evidence_snapshot_id(packets) if packets else ""
+    fact_count = sum(len(packet.facts) for packet in packets.values()) if packets else 0
+
+    st.markdown("**Runtime**")
+    st.write(f"API: `{'configured' if config.configured else 'not configured'}`")
     st.write(f"Model: `{config.model}`")
     st.write(f"Reasoning: `{config.reasoning_effort}`")
-    st.caption(f"Prompts: {DOMAIN_PROMPT_VERSION} · {MACRO_PROMPT_VERSION}")
-    st.caption(f"Evidence schema: {EVIDENCE_ARCHITECTURE_VERSION}")
-    st.caption("Paid attempts persist in `openai_artifacts/attempts/`; only validated output is promoted to `openai_artifacts/current.json`.")
-
-    packets = build_evidence_packets(context) if context is not None else {}
-    current_snapshot = ""
-    recoverable = {}
-    if packets:
-        fact_count = sum(len(packet.facts) for packet in packets.values())
-        current_snapshot = evidence_snapshot_id(packets)
-        st.caption(f"Current evidence: `{current_snapshot}` · {fact_count:,} facts")
-        model_packets = model_evidence_packets(packets)
-        model_chars = len(json.dumps(model_packets, ensure_ascii=False, separators=(",", ":")))
-        st.caption(f"Model evidence projection: {model_chars:,} compact JSON characters · actual billed tokens reported after generation")
-        recoverable = latest_recoverable_attempt(evidence_snapshot_id=current_snapshot, domain_prompt_version=DOMAIN_PROMPT_VERSION)
-        if recoverable:
-            generated = dict(recoverable.get("generated_output") or {})
-            resume_cost = "no new API call" if generated.get("macro") else "Macro call only"
-            st.info(
-                f"Saved failed attempt available: `{recoverable.get('attempt_id', '')}` · resume uses {resume_cost}."
-            )
-        with st.expander("Model evidence packet", expanded=False):
-            st.json(model_packets)
+    st.write(f"Language layer: `{identity['layer_version']}` · `{identity['payload_sha256'][:16]}`")
+    st.write(f"Evidence: `{current_snapshot or 'unavailable'}` · `{fact_count:,}` facts")
 
     disabled = context is None or not config.configured
-    if recoverable and st.button("Revalidate / resume saved attempt", use_container_width=True, key="dev-resume-commentary", disabled=disabled):
+    current_artifact = load_read_artifact()
+    publishable = bool(
+        current_artifact
+        and str(current_artifact.get("status") or "") in PUBLISHABLE_STATUSES
+        and str(current_artifact.get("service_version") or "") in READ_SERVICE_COMPATIBLE_VERSIONS
+        and isinstance(current_artifact.get("reads"), dict)
+    )
+    macro_ready = bool(
+        publishable
+        and str(current_artifact.get("evidence_snapshot_id") or "") == current_snapshot
+        and str((current_artifact.get("prompt_versions") or {}).get("language_layer_sha256") or "") == identity["payload_sha256"]
+    )
+    recoverable = latest_recoverable_attempt(
+        evidence_snapshot_id=current_snapshot,
+        domain_prompt_version=DOMAIN_PROMPT_VERSION,
+        language_layer_sha256=identity["payload_sha256"],
+    ) if current_snapshot else {}
+
+    st.markdown("**Actions**")
+    if st.button("Generate commentary", use_container_width=True, key="dev-generate-commentary-v9", disabled=disabled):
         try:
-            with st.spinner("Revalidating saved output and resuming from the next unpaid stage…"):
-                result = resume_saved_read_attempt(
-                    context,
-                    config,
-                    str(recoverable.get("attempt_id") or ""),
-                    persist=True,
-                )
+            with st.spinner("Generating domain Reads and AI Macro roll-up…"):
+                result = generate_validated_read_artifact(context, config, persist=True)
             st.session_state.developer_last_ai_result = result
-            if result.get("status") == "validated":
+            if result.get("status") in PUBLISHABLE_STATUSES:
                 st.session_state.force_rebuild = True
-                st.session_state.developer_last_operation = {"kind": "ai", "label": "Commentary resume", "status": "validated"}
+                st.session_state.developer_last_operation = {"kind": "ai", "label": "Commentary", "status": str(result.get("status"))}
                 st.rerun()
         except Exception as exc:
             st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
 
-    current_artifact = load_read_artifact()
-    reapply_ready = bool(
-        current_artifact
-        and bool((current_artifact.get("validation") or {}).get("passed"))
-        and str(current_artifact.get("service_version") or "") in READ_SERVICE_COMPATIBLE_VERSIONS
-        and isinstance(current_artifact.get("reads"), dict)
-    )
-    if st.button("Apply last Read", use_container_width=True, key="dev-apply-last-read", disabled=not reapply_ready):
+    if st.button("Regenerate AI Macro", use_container_width=True, key="dev-regenerate-macro-v9", disabled=disabled or not macro_ready):
+        try:
+            with st.spinner("Generating AI Macro roll-up…"):
+                result = regenerate_macro_read(context, config, persist=True)
+            st.session_state.developer_last_ai_result = result
+            if result.get("status") in PUBLISHABLE_STATUSES:
+                st.session_state.force_rebuild = True
+                st.session_state.developer_last_operation = {"kind": "ai", "label": "AI Macro", "status": str(result.get("status"))}
+                st.rerun()
+        except Exception as exc:
+            st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
+
+    if st.button("Apply last Read", use_container_width=True, key="dev-apply-last-read-v9", disabled=not publishable):
         try:
             renewed = reapply_last_read(persist=True, source="manual_reapply")
             st.session_state.developer_last_ai_result = {
@@ -366,71 +374,38 @@ def _ai_workspace(context: DashboardContext | None) -> None:
             st.rerun()
         except Exception as exc:
             st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
-    st.caption("No OpenAI call. Republishes the most recent validated commentary for another 24 hours while preserving its original evidence snapshot and generation time.")
 
-    macro_only_ready = bool(
-        current_artifact
-        and str(current_artifact.get("evidence_snapshot_id") or "") == current_snapshot
-        and bool(((current_artifact.get("validation") or {}).get("domain") or {}).get("passed"))
-        and isinstance(current_artifact.get("reads"), dict)
-    )
-    if st.button("Regenerate AI Macro Read only", use_container_width=True, key="dev-regenerate-macro", disabled=disabled or not macro_only_ready):
-        try:
-            with st.spinner("Synthesizing and validating AI Macro Read…"):
-                result = regenerate_macro_read(context, config, persist=True)
-            st.session_state.developer_last_ai_result = result
-            if result.get("status") == "validated":
-                st.session_state.force_rebuild = True
-                st.session_state.developer_last_operation = {"kind": "ai", "label": "AI Macro Read", "status": "validated"}
-                st.rerun()
-        except Exception as exc:
-            st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
-    st.caption("Macro-only regeneration reuses the current validated domain Reads and spends one Macro API call.")
-
-    if st.button("Generate new commentary", use_container_width=True, key="dev-generate-commentary", disabled=disabled):
-        try:
-            with st.spinner("Generating and validating commentary…"):
-                result = generate_validated_read_artifact(context, config, persist=True)
-            st.session_state.developer_last_ai_result = result
-            if result.get("status") == "validated":
-                st.session_state.force_rebuild = True
-                st.session_state.developer_last_operation = {"kind": "ai", "label": "Commentary", "status": "validated"}
-                st.rerun()
-        except Exception as exc:
-            st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
+    if recoverable:
+        plan = recovery_call_plan(recoverable)
+        st.write(f"Recoverable attempt: `{recoverable.get('attempt_id', '')}` · `{int(plan.get('api_calls_required', 0) or 0)}` calls")
+        if st.button("Resume attempt", use_container_width=True, key="dev-resume-commentary-v9", disabled=disabled):
+            try:
+                with st.spinner("Resuming commentary generation…"):
+                    result = resume_saved_read_attempt(context, config, str(recoverable.get("attempt_id") or ""), persist=True)
+                st.session_state.developer_last_ai_result = result
+                if result.get("status") in PUBLISHABLE_STATUSES:
+                    st.session_state.force_rebuild = True
+                    st.session_state.developer_last_operation = {"kind": "ai", "label": "Commentary resume", "status": str(result.get("status"))}
+                    st.rerun()
+            except Exception as exc:
+                st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
 
     result = dict(st.session_state.get("developer_last_ai_result") or {})
     if result.get("status") == "error":
         st.error(result.get("error", "OpenAI request failed."))
     else:
         _render_ai_result(result)
-        if result.get("status") == "validated" and isinstance(result.get("reads"), dict):
-            with st.expander("Generated Reads", expanded=False):
+        if result.get("status") in PUBLISHABLE_STATUSES and isinstance(result.get("reads"), dict):
+            with st.expander("Reads", expanded=False):
                 st.json(result.get("reads"))
 
     commentary = dict(st.session_state.get("commentary_status") or {})
     if commentary:
-        st.markdown("**Published artifact**")
+        st.markdown("**Published**")
         st.write(f"Status: `{commentary.get('status', 'unknown')}`")
-        if commentary.get("model"):
-            st.write(f"Model: `{commentary.get('model')}`")
-        if commentary.get("generated_at"):
-            st.caption(f"Generated: {commentary.get('generated_at')}")
+        st.write(f"Generated: `{commentary.get('generated_at', '') or 'unknown'}`")
         publication = dict(commentary.get("publication") or {})
-        if publication.get("published_at"):
-            st.caption(f"Applied: {publication.get('published_at')}")
-        if publication.get("expires_at"):
-            st.caption(f"Published through: {publication.get('expires_at')}")
-        if commentary.get("evidence_snapshot_id"):
-            st.caption(f"Current evidence: `{commentary.get('evidence_snapshot_id')}`")
-        artifact_snapshot = commentary.get("artifact_evidence_snapshot_id")
-        if commentary.get("publication_active") and artifact_snapshot and not commentary.get("evidence_current"):
-            st.warning(
-                f"The published Read targets `{artifact_snapshot}` while current evidence is `{commentary.get('evidence_snapshot_id')}`. "
-                "Its 24-hour publication lease remains active; generate new commentary if the evidence change is material."
-            )
-        elif commentary.get("status") == "expired":
-            st.warning("The last validated Read is retained but its 24-hour publication lease has expired. Apply last Read or generate new commentary.")
+        st.write(f"Expires: `{publication.get('expires_at', '') or 'unknown'}`")
 
 
 def _diagnostics_workspace() -> None:

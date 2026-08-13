@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 import types
+import warnings
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -13,6 +14,11 @@ if "streamlit" not in sys.modules:
     fake_streamlit = types.ModuleType("streamlit")
     fake_streamlit.cache_data = lambda *args, **kwargs: (args[0] if args and callable(args[0]) else (lambda fn: fn))
     sys.modules["streamlit"] = fake_streamlit
+if "requests" not in sys.modules:
+    try:
+        import requests  # noqa: F401
+    except ModuleNotFoundError:
+        sys.modules["requests"] = types.ModuleType("requests")
 
 from config.current_context_policy import recent_development_copy_issues
 import loaders.current_context_grounding as grounding
@@ -28,6 +34,15 @@ def require(condition: bool, message: str) -> None:
 def main() -> None:
     # HTML/entity furniture must never leak into Reader copy.
     require(grounding._spaces("&quot;Deployment Inc&quot;") == '"Deployment Inc"', "HTML entities were not normalized")
+
+    # Plain URL-shaped JSON-LD values and publisher timezone abbreviations are
+    # parsed deliberately; neither may leak third-party parser warnings.
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        grounding._clean_paragraph("https://example.com/articles/a-very-long-url-shaped-jsonld-value-that-is-not-html")
+        terminal_date = grounding._date_only("Thu Aug 6, 11:56AM CDT")
+    require(terminal_date.endswith("-08-06"), f"CDT publication date parsed incorrectly: {terminal_date}")
+    require(not caught, "Current Context emitted parser warnings: " + "; ".join(str(item.message) for item in caught))
 
     # The old v7.3 failure mode mechanically chopped at word 36. A complete
     # source sentence inside the new 70-word ceiling must survive intact.

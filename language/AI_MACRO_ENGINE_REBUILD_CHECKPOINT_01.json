@@ -1,0 +1,43 @@
+{
+  "checkpoint_version": "1.0",
+  "recorded_at": "2026-08-12",
+  "target_release": "v9.0.0",
+  "mission": "Replace the post-generation editorial engine with a portable language layer supplied to OpenAI.",
+  "completed": [
+    "Compiled full language-layer payload with 11 domain profiles and corpus provenance",
+    "Preserved the audited neuroscience systems-dynamics bonus: 16 sources, 70 observations, 22 families, 14 motifs",
+    "Expanded the language architecture inventory and set-level composition guidance",
+    "Replaced draft/editor/critic generation functions with one domain call and one Macro call",
+    "Passed complete domain Reads into the Macro call",
+    "Disabled SDK retries and added no validation-triggered calls",
+    "Made deterministic validation diagnostic-only",
+    "Added exact raw OpenAI response retention and raw-response publication status",
+    "Aligned the approved scheduled worker with the two-call and publish-with-diagnostics contract",
+    "Rebuilt the active Developer Tools AI workspace",
+    "Fixed URL-shaped BeautifulSoup input and explicit U.S. timezone abbreviation parsing"
+  ],
+  "in_progress": [
+    "Contract test migration and execution",
+    "Documentation and release-manifest update",
+    "Final package construction"
+  ],
+  "paid_call_contract": {
+    "full_generation": 2,
+    "macro_only": 1,
+    "sdk_retries": 0,
+    "editor_calls": 0,
+    "critic_calls": 0,
+    "repair_calls": 0
+  },
+  "publication_contract": {
+    "validated": "publish",
+    "published_with_warnings": "publish",
+    "published_raw_response": "publish exact returned raw text",
+    "transport_failure_without_response": "generation_failed"
+  },
+  "open_items": [
+    "Run focused tests and correct discovered defects",
+    "Run the integrity and release-manifest checks",
+    "Create the canonical v9 status document and complete upgrade archive"
+  ]
+}

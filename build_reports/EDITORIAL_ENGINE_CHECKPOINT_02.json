@@ -1,0 +1,82 @@
+{
+  "checkpoint": "six_stage_editorial_pipeline_passes_contract_tests",
+  "recorded_on": "2026-08-12",
+  "source_failure": {
+    "attempt_id": "20260812T234208665912Z_5e12ee24_d0906652",
+    "artifact_sha256": "715a82fdde78300f98c6ca68ca6cfd3c7872bf5d8a4b87a4c496cb4dbdf00c49",
+    "verified_v8_pipeline": true,
+    "failed_sentence": "Operating cash covers current capital spending at covered companies, but the 5.04-times commitment load pushes funding needs well beyond today's build."
+  },
+  "correction": {
+    "app_version": "v8.1.0",
+    "engine_version": "language-engine-2.0.0",
+    "engine_payload_sha256": "4266548a8452d0a067a227965cea12bafe39b6f4d8b59895bc82b6a87f1c4d34",
+    "generator_version": "3.0.0",
+    "validator_version": "3.1.0",
+    "paid_stages": [
+      "domain_draft",
+      "domain_final",
+      "domain_critic",
+      "macro_draft",
+      "macro_final",
+      "macro_critic"
+    ]
+  },
+  "publication_requirements": [
+    "draft factual validation passes",
+    "revision factual validation passes",
+    "revision passes general structural quality floor",
+    "revision measurably improves a failed draft",
+    "independent critic accepts every Read",
+    "every critic dimension is at least 4 of 5",
+    "critic reports no remaining material defect"
+  ],
+  "anti_overfit_evidence": {
+    "failed_sentence_visible_to_editor": false,
+    "general_failure_classes_visible_to_editor": true,
+    "exact_production_failure_rejected": true,
+    "unseen_paraphrase_absent_from_failure_registry_rejected": true,
+    "unseen_paraphrase_rejection_reasons": [
+      "abstract noun stack",
+      "overloaded time contrast",
+      "spoken sentence length"
+    ],
+    "concrete_revision_passed": true,
+    "deterministic_score_improvement": 63
+  },
+  "failed_artifact_replay": {
+    "macro": {"score": 0, "passed": false},
+    "rejected_domains": {
+      "finance": 13,
+      "compute": 33,
+      "data_center": 31,
+      "connectivity": 55,
+      "grid_storage": 52,
+      "workforce": 68,
+      "economic_impact": 50
+    },
+    "passing_domains": {
+      "market": 94,
+      "power": 100,
+      "water": 82,
+      "adoption": 100
+    },
+    "passing_with_warnings": ["market", "water"]
+  },
+  "tests": {
+    "language_engine_contract": "PASS",
+    "editorial_quality_contract": "PASS",
+    "six_stage_read_architecture": "PASS",
+    "public_copy_12_tabs": "PASS",
+    "read_divider_12_tabs": "PASS",
+    "evidence_reader_ux": "PASS",
+    "retained_state_reconciliation": "PASS",
+    "layout_rollout_52_sections": "PASS"
+  },
+  "remaining_before_release": [
+    "release manifest",
+    "nine-contract platform integrity gate",
+    "archive exclusion and content verification",
+    "corrected overwrite package"
+  ]
+}

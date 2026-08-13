@@ -1,25 +1,46 @@
-"""v7 commentary orchestration: evidence -> OpenAI -> validation -> publication."""
+"""Two-call commentary orchestration and nonblocking publication diagnostics."""
 
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Callable
 
 from analytics.dashboard_context import DashboardContext
 from analytics.read_context import attach_current_context
-from analytics.read_evidence import DOMAIN_LABELS, DOMAIN_ORDER, EvidencePacket, build_evidence_packets, evidence_fact_index, evidence_snapshot_id, model_evidence_packets
-from analytics.read_generation import generate_domain_reads, generate_macro_read, prompt_versions
-from analytics.read_models import GeneratedDomainReadSet, GeneratedMacroRead
-from analytics.read_store import load_read_artifact, load_read_attempt, new_attempt_id, persist_read_artifact, persist_read_attempt
+from analytics.read_evidence import (
+    DOMAIN_LABELS,
+    DOMAIN_ORDER,
+    EvidencePacket,
+    build_evidence_packets,
+    evidence_fact_index,
+    evidence_snapshot_id,
+    model_evidence_packets,
+)
+from analytics.read_generation import (
+    GenerationStageError,
+    generate_domain_reads,
+    generate_macro_read,
+    prompt_versions,
+)
+from analytics.read_models import GeneratedDomainRead, GeneratedDomainReadSet, GeneratedMacroRead, SupportedSentence
+from analytics.read_store import (
+    load_read_artifact,
+    load_read_attempt,
+    new_attempt_id,
+    persist_read_artifact,
+    persist_read_attempt,
+)
 from analytics.read_validation import VALIDATOR_VERSION, validate_domain_read_set, validate_macro_read
 from config.openai_config import OpenAIConfig
 
-READ_SERVICE_VERSION = "2.2.0"
-READ_SERVICE_COMPATIBLE_VERSIONS = {"2.1.0", READ_SERVICE_VERSION}
+READ_SERVICE_VERSION = "4.4.0"
+READ_SERVICE_COMPATIBLE_VERSIONS = {READ_SERVICE_VERSION, "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0"}
 COMMENTARY_PUBLICATION_LEASE_HOURS = 24
 UNAVAILABLE_HEADLINE = "Commentary temporarily unavailable."
 UNAVAILABLE_ANALYSIS = "The analyst has wandered off. The data have not."
 MAX_MACRO_REFERENCES = 6
+PUBLISHABLE_STATUSES = {"validated", "published_with_warnings", "published_raw_response"}
+_PAID_PIPELINE_STAGES = ("domain_reads", "macro_read")
 
 
 def _packet_dicts(packets: dict[str, EvidencePacket]) -> dict[str, dict]:
@@ -30,18 +51,20 @@ def _model_packet_dicts(packets: dict[str, EvidencePacket]) -> dict[str, dict]:
     return model_evidence_packets(packets)
 
 
-def _claim_rows(read_model) -> list[dict[str, Any]]:
+def _claim_rows(read_model: Any) -> list[dict[str, Any]]:
     rows = [{"field": "headline", **read_model.headline.model_dump()}]
     rows.extend({"field": f"analysis[{index}]", **item.model_dump()} for index, item in enumerate(read_model.analysis))
     return rows
 
 
-def _domain_public_read(read_model, packet: dict) -> dict[str, Any]:
+def _domain_public_read(read_model: GeneratedDomainRead, packet: dict[str, Any]) -> dict[str, Any]:
+    sentences = [item.text for item in read_model.analysis]
     return {
         "domain": read_model.domain,
         "label": DOMAIN_LABELS[read_model.domain],
-        "headline": read_model.headline.text.strip(),
-        "analysis": " ".join(item.text.strip() for item in read_model.analysis if item.text.strip()),
+        "headline": read_model.headline.text,
+        "analysis": " ".join(sentences),
+        "analysis_sentences": sentences,
         "references": [dict(item) for item in packet.get("references", []) or []],
         "claim_support": _claim_rows(read_model),
         "generator": "openai",
@@ -49,7 +72,7 @@ def _domain_public_read(read_model, packet: dict) -> dict[str, Any]:
     }
 
 
-def _macro_public_read(read_model, packets: dict[str, dict]) -> dict[str, Any]:
+def _macro_public_read(read_model: GeneratedMacroRead, packets: dict[str, dict]) -> dict[str, Any]:
     selected = list(read_model.selected_domains)
     references: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
@@ -61,8 +84,6 @@ def _macro_public_read(read_model, packets: dict[str, dict]) -> dict[str, Any]:
         seen.add(key)
         references.append(dict(reference))
 
-    # Preserve cross-domain provenance: every selected domain contributes a
-    # source before any one domain can fill the remaining reference slots.
     for domain in selected:
         for reference in packets.get(domain, {}).get("references", []) or []:
             if str(reference.get("source_label") or "").strip():
@@ -75,6 +96,7 @@ def _macro_public_read(read_model, packets: dict[str, dict]) -> dict[str, Any]:
                 break
         if len(references) >= MAX_MACRO_REFERENCES:
             break
+
     fact_index = evidence_fact_index(packets)
     fact_ids: list[str] = []
     for sentence in [read_model.headline, *read_model.analysis]:
@@ -90,18 +112,16 @@ def _macro_public_read(read_model, packets: dict[str, dict]) -> dict[str, Any]:
             "value": str(fact.get("display") or "n/a"),
             "context": str(fact.get("context") or ""),
         })
-    analysis_sentences = [item.text.strip() for item in read_model.analysis if item.text.strip()]
-    analysis_paragraphs = [
-        " ".join(analysis_sentences[:2]).strip(),
-        " ".join(analysis_sentences[2:4]).strip(),
-    ]
-    analysis_paragraphs = [item for item in analysis_paragraphs if item]
+
+    sentences = [item.text for item in read_model.analysis]
+    paragraphs = [" ".join(sentence.text for sentence in paragraph.sentences) for paragraph in read_model.paragraphs]
     return {
         "domain": "macro",
         "label": DOMAIN_LABELS["macro"],
-        "headline": read_model.headline.text.strip(),
-        "analysis": " ".join(analysis_sentences),
-        "analysis_paragraphs": analysis_paragraphs,
+        "headline": read_model.headline.text,
+        "analysis": " ".join(sentences),
+        "analysis_sentences": sentences,
+        "analysis_paragraphs": paragraphs,
         "selected_domains": selected,
         "references": references,
         "claim_support": _claim_rows(read_model),
@@ -111,7 +131,25 @@ def _macro_public_read(read_model, packets: dict[str, dict]) -> dict[str, Any]:
     }
 
 
-def _unavailable_read(domain: str, packet: dict) -> dict[str, Any]:
+def _raw_public_read(text: str) -> dict[str, Any]:
+    return {
+        "domain": "macro",
+        "label": DOMAIN_LABELS["macro"],
+        "headline": "OpenAI response",
+        "analysis": text,
+        "analysis_sentences": [text],
+        "analysis_paragraphs": [text],
+        "selected_domains": [],
+        "references": [],
+        "claim_support": [],
+        "evidence": [],
+        "generator": "openai_raw",
+        "raw_response": True,
+        "version": READ_SERVICE_VERSION,
+    }
+
+
+def _unavailable_read(domain: str, packet: dict[str, Any]) -> dict[str, Any]:
     return {
         "domain": domain,
         "label": DOMAIN_LABELS.get(domain, domain.replace("_", " ").title()),
@@ -138,30 +176,22 @@ def _utc_datetime(value: Any) -> datetime | None:
 
 
 def publication_lease_state(artifact: dict[str, Any] | None, *, now: datetime | None = None) -> dict[str, Any]:
-    """Return the 24-hour Reader publication lease for one validated artifact.
-
-    v7.1.3 and earlier artifacts did not carry explicit publication metadata.
-    During migration, their generated_at timestamp is treated as the initial
-    publication time so an already-fresh Read does not disappear on upgrade.
-    """
     stored = dict(artifact or {})
     publication = dict(stored.get("publication") or {})
     published_at = _utc_datetime(publication.get("published_at") or stored.get("published_at") or stored.get("generated_at"))
-    # The lease duration is a code contract, not mutable artifact metadata.
-    # Always derive expiry from the publication timestamp so a stale/tampered
-    # expires_at field cannot silently lengthen the Reader publication window.
-    expires_at = published_at + timedelta(hours=COMMENTARY_PUBLICATION_LEASE_HOURS) if published_at is not None else None
+    expires_at = published_at + timedelta(hours=COMMENTARY_PUBLICATION_LEASE_HOURS) if published_at else None
     current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     active = bool(published_at and expires_at and current < expires_at)
-    remaining_seconds = max(0, int((expires_at - current).total_seconds())) if expires_at else 0
     return {
         "active": active,
         "lease_hours": COMMENTARY_PUBLICATION_LEASE_HOURS,
         "published_at": published_at.isoformat() if published_at else "",
         "expires_at": expires_at.isoformat() if expires_at else "",
-        "remaining_seconds": remaining_seconds,
+        "remaining_seconds": max(0, int((expires_at - current).total_seconds())) if expires_at else 0,
         "renewal_count": int(publication.get("renewal_count", 0) or 0),
         "source": str(publication.get("source") or ("legacy_generated_at" if published_at else "")),
+        "current_evidence_snapshot_id": str(publication.get("current_evidence_snapshot_id") or ""),
+        "materiality": dict(publication.get("materiality") or {}),
     }
 
 
@@ -174,60 +204,90 @@ def _artifact_is_validated(stored: dict[str, Any]) -> bool:
     )
 
 
-def _with_publication_lease(artifact: dict[str, Any], *, source: str, now: datetime | None = None) -> dict[str, Any]:
+def _artifact_is_publishable(stored: dict[str, Any]) -> bool:
+    return bool(
+        stored
+        and str(stored.get("status") or "") in PUBLISHABLE_STATUSES
+        and str(stored.get("service_version") or "") in READ_SERVICE_COMPATIBLE_VERSIONS
+        and isinstance(stored.get("reads"), dict)
+    )
+
+
+def _with_publication_lease(
+    artifact: dict[str, Any],
+    *,
+    source: str,
+    now: datetime | None = None,
+    current_evidence_snapshot_id: str = "",
+    materiality: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     previous = dict(artifact.get("publication") or {})
-    renewal = source in {"manual_reapply", "automation_reapply"}
-    renewal_count = int(previous.get("renewal_count", 0) or 0) + (1 if renewal else 0)
+    renewal = source in {"manual_reapply", "automation_reapply", "automation_immaterial_reapply"}
     output = dict(artifact)
     output["publication"] = {
         "lease_hours": COMMENTARY_PUBLICATION_LEASE_HOURS,
         "published_at": current.isoformat(),
         "expires_at": (current + timedelta(hours=COMMENTARY_PUBLICATION_LEASE_HOURS)).isoformat(),
-        "renewal_count": renewal_count if renewal else 0,
+        "renewal_count": int(previous.get("renewal_count", 0) or 0) + (1 if renewal else 0) if renewal else 0,
         "source": source,
+        "current_evidence_snapshot_id": str(current_evidence_snapshot_id or artifact.get("evidence_snapshot_id") or ""),
+        "materiality": dict(materiality or {}),
     }
     return output
 
 
-def reapply_last_read(*, persist: bool = True, source: str = "manual_reapply", now: datetime | None = None) -> dict[str, Any]:
-    """Republish the most recent validated Read artifact without an OpenAI call.
-
-    Reapplication preserves the original generated_at, attempt_id, evidence
-    snapshot, claims, references, and validation record. Only the publication
-    lease is renewed for another 24 hours.
-    """
+def reapply_last_read(
+    *,
+    persist: bool = True,
+    source: str = "manual_reapply",
+    now: datetime | None = None,
+    current_evidence_snapshot_id: str = "",
+    materiality: dict[str, Any] | None = None,
+    evidence_packets: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     stored = load_read_artifact()
     if not stored:
-        raise ValueError("No validated commentary artifact is available to reapply.")
-    if not _artifact_is_validated(stored):
-        raise ValueError("The most recent commentary artifact is not compatible with the current validated Reader schema.")
-    renewed = _with_publication_lease(stored, source=source, now=now)
+        raise ValueError("No published commentary artifact is available to reapply.")
+    if not _artifact_is_publishable(stored):
+        raise ValueError("The most recent commentary artifact is not compatible with the current Reader schema.")
+    renewed = _with_publication_lease(
+        stored,
+        source=source,
+        now=now,
+        current_evidence_snapshot_id=current_evidence_snapshot_id,
+        materiality=materiality,
+    )
+    if evidence_packets is not None:
+        current_snapshot = str(current_evidence_snapshot_id or "")
+        generated_snapshot = str(stored.get("evidence_snapshot_id") or "")
+        if not current_snapshot or current_snapshot != generated_snapshot:
+            raise ValueError("Evidence packets may be backfilled only for the artifact's exact generated snapshot.")
+        renewed["evidence_packets"] = dict(evidence_packets)
     if persist:
         persist_read_artifact(renewed)
     return renewed
 
 
 def build_platform_reads(context: DashboardContext, *, artifact: dict | None = None) -> tuple[dict[str, dict], dict[str, Any]]:
-    """Load validated commentary under a bounded Reader publication lease.
-
-    Reader visibility and evidence currency are intentionally separate. A
-    validated artifact remains publishable for 24 hours even if a later data
-    refresh changes the analytical evidence snapshot. Evidence mismatch is still
-    surfaced explicitly and remains a strict trigger for new automated or owner-
-    initiated generation.
-    """
     packets = build_evidence_packets(context)
     packet_dicts = _packet_dicts(packets)
     snapshot = evidence_snapshot_id(packets)
     stored = dict(artifact if artifact is not None else load_read_artifact())
     artifact_validated = _artifact_is_validated(stored)
-    evidence_current = bool(
-        artifact_validated
-        and str(stored.get("evidence_snapshot_id") or "") == snapshot
-    )
+    artifact_publishable = _artifact_is_publishable(stored)
+    evidence_current = bool(artifact_publishable and str(stored.get("evidence_snapshot_id") or "") == snapshot)
     publication = publication_lease_state(stored)
-    publication_active = bool(artifact_validated and publication.get("active"))
+    publication_materiality = dict(publication.get("materiality") or {})
+    evidence_materially_current = bool(
+        evidence_current
+        or (
+            artifact_publishable
+            and str(publication.get("current_evidence_snapshot_id") or "") == snapshot
+            and publication_materiality.get("material") is False
+        )
+    )
+    publication_active = bool(artifact_publishable and publication.get("active"))
 
     if publication_active:
         reads = {
@@ -235,13 +295,13 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
             for domain in DOMAIN_ORDER
         }
         reads["macro"] = dict((stored.get("reads") or {}).get("macro") or _unavailable_read("macro", {}))
-        status_name = "validated"
+        status_name = "validated" if artifact_validated else str(stored.get("status") or "published_with_warnings")
     else:
         reads = {domain: _unavailable_read(domain, packet_dicts[domain]) for domain in DOMAIN_ORDER}
         reads["macro"] = _unavailable_read("macro", {})
         if not stored:
             status_name = "missing"
-        elif artifact_validated and publication.get("published_at"):
+        elif artifact_publishable and publication.get("published_at"):
             status_name = "expired"
         else:
             status_name = "stale"
@@ -250,7 +310,9 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
         "status": status_name,
         "artifact_present": bool(stored),
         "artifact_validated": artifact_validated,
+        "artifact_publishable": artifact_publishable,
         "evidence_current": evidence_current,
+        "evidence_materially_current": evidence_materially_current,
         "publication_active": publication_active,
         "publication": publication,
         "evidence_snapshot_id": snapshot,
@@ -264,9 +326,7 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
     by_domain = (context.current_context or {}).get("by_domain", {}) or {}
     for domain in DOMAIN_ORDER:
         reads[domain] = attach_current_context(reads[domain], by_domain.get(domain, {}), limit=2)
-    # Macro gets the diverse top three verified events across Current Context.
-    macro_context = context.current_context or {}
-    reads["macro"] = attach_current_context(reads["macro"], macro_context, limit=3)
+    reads["macro"] = attach_current_context(reads["macro"], context.current_context or {}, limit=3)
     status["packets"] = packet_dicts
     return reads, status
 
@@ -275,18 +335,21 @@ def _attempt_base(*, attempt_id: str, snapshot: str, packets: dict[str, dict], m
     return {
         "attempt_id": attempt_id,
         "status": "started",
-        "stage": "domain",
+        "stage": "domain_reads",
         "evidence_snapshot_id": snapshot,
         "started_at": datetime.now(timezone.utc).isoformat(),
         "model": config.model,
         "reasoning_effort": config.reasoning_effort,
         "prompt_versions": prompt_versions(),
+        "stage_prompt_versions": {},
         "evidence_packets": packets,
         "model_evidence_packets": model_packets,
         "generation": {},
         "generated_output": {},
+        "raw_responses": {},
         "validation": {},
         "service_version": READ_SERVICE_VERSION,
+        "api_call_contract": {"domain_calls": 1, "macro_calls": 1, "retries": 0},
     }
 
 
@@ -295,242 +358,296 @@ def _save_attempt(attempt: dict[str, Any], *, persist: bool) -> None:
         persist_read_attempt(attempt, attempt_id=str(attempt.get("attempt_id") or ""))
 
 
-def _domain_orientation_for_macro(domain_set: GeneratedDomainReadSet) -> dict[str, dict[str, Any]]:
-    """Expose domain conclusions to Macro without exposing reusable prose paragraphs."""
-    orientation: dict[str, dict[str, Any]] = {}
-    for read in domain_set.reads:
-        fact_ids: list[str] = []
-        for sentence in [read.headline, *read.analysis]:
-            for fact_id in sentence.fact_ids:
-                if fact_id not in fact_ids:
-                    fact_ids.append(fact_id)
-        orientation[read.domain] = {
-            "headline": read.headline.text.strip(),
-            "fact_ids_used": fact_ids,
-        }
-    return orientation
+def _store_stage(attempt: dict[str, Any], *, key: str, model: Any, metadata: Any, persist: bool) -> None:
+    generated = dict(attempt.get("generated_output") or {})
+    generated[key] = model.model_dump(mode="json")
+    attempt["generated_output"] = generated
+    generation = dict(attempt.get("generation") or {})
+    generation[key] = metadata.to_dict()
+    attempt["generation"] = generation
+    raw = dict(attempt.get("raw_responses") or {})
+    raw[key] = metadata.response_payload
+    attempt["raw_responses"] = raw
+    attempt["stage_prompt_versions"] = {
+        **dict(attempt.get("stage_prompt_versions") or {}),
+        key: str((attempt.get("prompt_versions") or {}).get("domain" if key == "domain_reads" else "macro") or ""),
+    }
+    attempt["status"] = f"{key}_generated"
+    attempt["stage"] = key
+    _save_attempt(attempt, persist=persist)
+
+
+def _record_failure(attempt: dict[str, Any], *, stage: str, error: Exception, persist: bool) -> str:
+    metadata = getattr(error, "metadata", None)
+    if metadata is not None:
+        attempt["generation"] = {**dict(attempt.get("generation") or {}), stage: metadata.to_dict()}
+        attempt["raw_responses"] = {**dict(attempt.get("raw_responses") or {}), stage: metadata.response_payload}
+    response_payload = getattr(error, "response_payload", None)
+    if response_payload is not None:
+        attempt["raw_responses"] = {**dict(attempt.get("raw_responses") or {}), stage: response_payload}
+    attempt["stage"] = stage
+    attempt["error"] = {
+        "type": type(error).__name__,
+        "message": str(error),
+        "paid_response_preserved": response_payload is not None,
+    }
+    _save_attempt(attempt, persist=persist)
+    return _raw_output_text(response_payload)
+
+
+def _raw_output_text(payload: Any) -> str:
+    if not isinstance(payload, dict):
+        return ""
+    value = payload.get("_ai_macro_output_text")
+    return value if isinstance(value, str) else ""
+
+
+def _generation_failure(attempt: dict[str, Any], *, stage: str, persist: bool) -> dict[str, Any]:
+    attempt["status"] = "generation_failed"
+    attempt["stage"] = stage
+    attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
+    _save_attempt(attempt, persist=persist)
+    return {
+        "status": "generation_failed",
+        "stage": stage,
+        "attempt_id": str(attempt.get("attempt_id") or ""),
+        "evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
+        "error": dict(attempt.get("error") or {}),
+        "validation": dict(attempt.get("validation") or {}),
+        "generation": dict(attempt.get("generation") or {}),
+        "generated_output": dict(attempt.get("generated_output") or {}),
+        "raw_responses": dict(attempt.get("raw_responses") or {}),
+    }
+
+
+def _call_stage(
+    attempt: dict[str, Any],
+    *,
+    key: str,
+    call: Callable[[], tuple[Any, Any]],
+    persist: bool,
+) -> tuple[Any | None, str]:
+    try:
+        model, metadata = call()
+    except Exception as exc:
+        return None, _record_failure(attempt, stage=key, error=exc, persist=persist)
+    _store_stage(attempt, key=key, model=model, metadata=metadata, persist=persist)
+    return model, ""
 
 
 def _domain_texts_from_models(domain_set: GeneratedDomainReadSet) -> dict[str, list[str]]:
+    return {read.domain: [read.headline.text, *[item.text for item in read.analysis]] for read in domain_set.reads}
+
+
+def _domain_models_from_public_reads(reads: dict[str, Any]) -> GeneratedDomainReadSet:
+    models: list[GeneratedDomainRead] = []
+    for domain in DOMAIN_ORDER:
+        read = dict(reads.get(domain) or {})
+        claims = [item for item in (read.get("claim_support") or []) if isinstance(item, dict)]
+        headline = next((item for item in claims if item.get("field") == "headline"), None)
+        analysis = [item for item in claims if str(item.get("field") or "").startswith("analysis[")]
+        if headline is None or len(analysis) not in {3, 4}:
+            raise ValueError(f"Published {domain} Read lacks its complete typed OpenAI output.")
+        models.append(GeneratedDomainRead(
+            domain=domain,
+            headline=SupportedSentence.model_validate({key: headline[key] for key in ("text", "fact_ids", "inference")}),
+            analysis=[SupportedSentence.model_validate({key: item[key] for key in ("text", "fact_ids", "inference")}) for item in analysis],
+        ))
+    return GeneratedDomainReadSet(reads=models)
+
+
+def _validation_summary(domain_report: dict[str, Any] | None, macro_report: dict[str, Any] | None, *, raw_stage: str = "") -> dict[str, Any]:
+    domain = dict(domain_report or {})
+    macro = dict(macro_report or {})
+    gates = {
+        "domain_grounding": bool(domain.get("passed")) if domain else False,
+        "macro_grounding": bool(macro.get("passed")) if macro else False,
+    }
+    checked = int(domain.get("checked_claims", 0) or 0) + int(macro.get("checked_claims", 0) or 0)
+    grounded = int(domain.get("grounded_claims", 0) or 0) + int(macro.get("grounded_claims", 0) or 0)
     return {
-        read.domain: [read.headline.text, *[item.text for item in read.analysis]]
-        for read in domain_set.reads
+        "domain": domain,
+        "macro": macro,
+        "gate_results": gates,
+        "passed": bool(gates["domain_grounding"] and gates["macro_grounding"] and not raw_stage),
+        "checked_claims": checked,
+        "grounded_claims": grounded,
+        "raw_stage": raw_stage,
+        "publication_policy": "publish_every_completed_openai_response_with_diagnostics",
+        "validator_version": VALIDATOR_VERSION,
     }
 
 
-def _domain_orientation_from_public_reads(reads: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    orientation: dict[str, dict[str, Any]] = {}
-    for domain in DOMAIN_ORDER:
-        read = dict(reads.get(domain) or {})
-        headline = str(read.get("headline") or "").strip()
-        fact_ids: list[str] = []
-        for claim in read.get("claim_support") or []:
-            if not isinstance(claim, dict):
-                continue
-            for fact_id in claim.get("fact_ids") or []:
-                fact_id = str(fact_id)
-                if fact_id and fact_id not in fact_ids:
-                    fact_ids.append(fact_id)
-        if not headline or not fact_ids:
-            raise ValueError(f"Published {domain} Read lacks grounded orientation data for Macro regeneration.")
-        orientation[domain] = {"headline": headline, "fact_ids_used": fact_ids}
-    return orientation
-
-
-def _domain_texts_from_public_reads(reads: dict[str, Any]) -> dict[str, list[str]]:
-    result: dict[str, list[str]] = {}
-    for domain in DOMAIN_ORDER:
-        read = dict(reads.get(domain) or {})
-        texts: list[str] = []
-        headline = str(read.get("headline") or "").strip()
-        if headline:
-            texts.append(headline)
-        for claim in read.get("claim_support") or []:
-            if isinstance(claim, dict):
-                text = str(claim.get("text") or "").strip()
-                if text and text not in texts:
-                    texts.append(text)
-        result[domain] = texts
-    return result
-
-
-def _publish_validated_attempt(
+def _publish_artifact(
     *,
     attempt: dict[str, Any],
-    domain_set: GeneratedDomainReadSet,
-    macro_model: GeneratedMacroRead,
-    domain_validation,
-    macro_validation,
-    packet_dicts: dict[str, dict],
+    reads: dict[str, dict],
+    validation: dict[str, Any],
     config: OpenAIConfig,
+    status: str,
+    source: str,
     persist: bool,
+    base: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    domain_models = {read.domain: read for read in domain_set.reads}
-    reads = {domain: _domain_public_read(domain_models[domain], packet_dicts[domain]) for domain in DOMAIN_ORDER}
-    reads["macro"] = _macro_public_read(macro_model, packet_dicts)
-    validation = {
-        "passed": True,
-        "validator_version": VALIDATOR_VERSION,
-        "domain": domain_validation.to_dict(),
-        "macro": macro_validation.to_dict(),
-        "checked_claims": domain_validation.checked_claims + macro_validation.checked_claims,
-        "grounded_claims": domain_validation.grounded_claims + macro_validation.grounded_claims,
-    }
-    artifact = {
-        "status": "validated",
+    artifact = dict(base or {})
+    artifact.update({
+        "status": status,
         "attempt_id": str(attempt.get("attempt_id") or ""),
         "evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "model": config.model,
         "reasoning_effort": config.reasoning_effort,
-        "prompt_versions": attempt.get("prompt_versions") or prompt_versions(),
+        "prompt_versions": dict(attempt.get("prompt_versions") or prompt_versions()),
+        "stage_prompt_versions": dict(attempt.get("stage_prompt_versions") or {}),
         "validation": validation,
         "generation": dict(attempt.get("generation") or {}),
+        "raw_responses": dict(attempt.get("raw_responses") or {}),
+        "evidence_packets": dict(attempt.get("evidence_packets") or {}),
         "reads": reads,
         "service_version": READ_SERVICE_VERSION,
-    }
-
-    attempt["status"] = "validated_unpublished"
+    })
+    attempt["status"] = "completed_unpublished"
     attempt["stage"] = "publication"
     attempt["validation"] = validation
-    attempt["validated_artifact"] = artifact
+    attempt["published_artifact"] = artifact
     attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
     _save_attempt(attempt, persist=persist)
     if persist:
-        artifact = _with_publication_lease(artifact, source="generation")
+        artifact = _with_publication_lease(artifact, source=source)
         persist_read_artifact(artifact)
-        attempt["validated_artifact"] = artifact
-        attempt["status"] = "validated_published"
-        attempt["published_at"] = artifact["publication"]["published_at"]
-        attempt["publication_expires_at"] = artifact["publication"]["expires_at"]
+        attempt["published_artifact"] = artifact
+        attempt["status"] = "validated_published" if status == "validated" else status
         _save_attempt(attempt, persist=True)
     return artifact
 
 
-def _finish_after_domain_validation(
+def _execute_two_call_pipeline(
     *,
     attempt: dict[str, Any],
-    domain_set: GeneratedDomainReadSet,
-    domain_validation,
     packet_dicts: dict[str, dict],
     model_packet_dicts: dict[str, dict],
     config: OpenAIConfig,
     client: Any | None,
     persist: bool,
 ) -> dict[str, Any]:
-    current_versions = prompt_versions()
-    saved_macro = ((attempt.get("generated_output") or {}).get("macro"))
-    saved_macro_version = str((attempt.get("prompt_versions") or {}).get("macro") or "")
-    if saved_macro and saved_macro_version == current_versions["macro"]:
-        macro_model = GeneratedMacroRead.model_validate(saved_macro)
+    generated = dict(attempt.get("generated_output") or {})
+    domain_set: GeneratedDomainReadSet | None = None
+    domain_raw = ""
+    if generated.get("domain_reads"):
+        domain_set = GeneratedDomainReadSet.model_validate(generated["domain_reads"])
     else:
-        macro_model, macro_meta = generate_macro_read(
-            model_packet_dicts,
-            _domain_orientation_for_macro(domain_set),
-            config,
-            client=client,
+        domain_set, domain_raw = _call_stage(
+            attempt,
+            key="domain_reads",
+            call=lambda: generate_domain_reads(model_packet_dicts, config, client=client),
+            persist=persist,
         )
-        attempt["status"] = "macro_generated"
-        attempt["stage"] = "macro_validation"
-        versions = dict(attempt.get("prompt_versions") or {})
-        versions["macro"] = current_versions["macro"]
-        versions["generator"] = current_versions["generator"]
-        attempt["prompt_versions"] = versions
-        generation = dict(attempt.get("generation") or {})
-        generation["macro"] = macro_meta.to_dict()
-        attempt["generation"] = generation
-        generated = dict(attempt.get("generated_output") or {})
-        generated["macro"] = macro_model.model_dump(mode="json")
-        attempt["generated_output"] = generated
-        # The paid Macro response is durable before validation.
-        _save_attempt(attempt, persist=persist)
+    if domain_set is None and not domain_raw:
+        return _generation_failure(attempt, stage="domain_reads", persist=persist)
 
-    macro_validation = validate_macro_read(macro_model, packet_dicts, domain_texts=_domain_texts_from_models(domain_set))
-    attempt["validation"] = {
-        "domain": domain_validation.to_dict(),
-        "macro": macro_validation.to_dict(),
-    }
-    if not macro_validation.passed:
-        attempt["status"] = "validation_failed"
-        attempt["stage"] = "macro"
-        attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
-        _save_attempt(attempt, persist=persist)
-        return {
-            "status": "validation_failed",
-            "stage": "macro",
-            "attempt_id": str(attempt.get("attempt_id") or ""),
-            "evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
-            "validation": {
-                "passed": False,
-                "domain": domain_validation.to_dict(),
-                "macro": macro_validation.to_dict(),
-            },
-            "generation": dict(attempt.get("generation") or {}),
-            "generated_output": dict(attempt.get("generated_output") or {}),
-        }
+    domain_report = validate_domain_read_set(domain_set, packet_dicts).to_dict() if domain_set is not None else {}
+    attempt["validation"] = {"domain": domain_report}
+    macro_input: GeneratedDomainReadSet | dict[str, Any]
+    macro_input = domain_set if domain_set is not None else {"raw_openai_domain_response": domain_raw}
 
-    return _publish_validated_attempt(
+    generated = dict(attempt.get("generated_output") or {})
+    macro_model: GeneratedMacroRead | None = None
+    macro_raw = ""
+    if generated.get("macro_read"):
+        macro_model = GeneratedMacroRead.model_validate(generated["macro_read"])
+    else:
+        macro_model, macro_raw = _call_stage(
+            attempt,
+            key="macro_read",
+            call=lambda: generate_macro_read(model_packet_dicts, macro_input, config, client=client),
+            persist=persist,
+        )
+    if macro_model is None and not macro_raw:
+        return _generation_failure(attempt, stage="macro_read", persist=persist)
+
+    macro_report = (
+        validate_macro_read(
+            macro_model,
+            packet_dicts,
+            domain_texts=_domain_texts_from_models(domain_set) if domain_set is not None else {},
+        ).to_dict()
+        if macro_model is not None
+        else {}
+    )
+    raw_stage = "domain_reads" if domain_set is None else "macro_read" if macro_model is None else ""
+    validation = _validation_summary(domain_report, macro_report, raw_stage=raw_stage)
+
+    if domain_set is not None:
+        domain_models = {read.domain: read for read in domain_set.reads}
+        reads = {domain: _domain_public_read(domain_models[domain], packet_dicts[domain]) for domain in DOMAIN_ORDER}
+    else:
+        reads = {domain: _unavailable_read(domain, packet_dicts[domain]) for domain in DOMAIN_ORDER}
+    reads["macro"] = _macro_public_read(macro_model, packet_dicts) if macro_model is not None else _raw_public_read(macro_raw)
+    unparsed_outputs: list[dict[str, str]] = []
+    if domain_raw:
+        unparsed_outputs.append({"stage": "Domain", "text": domain_raw})
+    if macro_raw and macro_model is not None:
+        unparsed_outputs.append({"stage": "AI Macro", "text": macro_raw})
+    if unparsed_outputs:
+        reads["macro"]["unparsed_openai_responses"] = unparsed_outputs
+    status = "published_raw_response" if raw_stage else "validated" if validation["passed"] else "published_with_warnings"
+    return _publish_artifact(
         attempt=attempt,
-        domain_set=domain_set,
-        macro_model=macro_model,
-        domain_validation=domain_validation,
-        macro_validation=macro_validation,
-        packet_dicts=packet_dicts,
+        reads=reads,
+        validation=validation,
         config=config,
+        status=status,
+        source="generation",
         persist=persist,
     )
 
 
-def generate_validated_read_artifact(context: DashboardContext, config: OpenAIConfig, *, client: Any | None = None, persist: bool = True) -> dict[str, Any]:
-    """Generate, preserve, validate, and optionally publish one commentary attempt."""
+def generate_validated_read_artifact(
+    context: DashboardContext,
+    config: OpenAIConfig,
+    *,
+    client: Any | None = None,
+    persist: bool = True,
+) -> dict[str, Any]:
+    """Run exactly one domain call followed by exactly one Macro call."""
     packets = build_evidence_packets(context)
     packet_dicts = _packet_dicts(packets)
     model_packet_dicts = _model_packet_dicts(packets)
     snapshot = evidence_snapshot_id(packets)
-    attempt_id = new_attempt_id(evidence_snapshot_id=snapshot)
     attempt = _attempt_base(
-        attempt_id=attempt_id,
+        attempt_id=new_attempt_id(evidence_snapshot_id=snapshot),
         snapshot=snapshot,
         packets=packet_dicts,
         model_packets=model_packet_dicts,
         config=config,
     )
-
-    domain_set, domain_meta = generate_domain_reads(model_packet_dicts, config, client=client)
-    attempt["status"] = "domain_generated"
-    attempt["stage"] = "domain_validation"
-    attempt["generation"] = {"domain": domain_meta.to_dict()}
-    attempt["generated_output"] = {"domain": domain_set.model_dump(mode="json")}
-    # Durability boundary: the paid domain response is on disk before validation.
-    _save_attempt(attempt, persist=persist)
-
-    domain_validation = validate_domain_read_set(domain_set, packet_dicts)
-    attempt["validation"] = {"domain": domain_validation.to_dict()}
-    if not domain_validation.passed:
-        attempt["status"] = "validation_failed"
-        attempt["stage"] = "domain"
-        attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
-        _save_attempt(attempt, persist=persist)
-        return {
-            "status": "validation_failed",
-            "stage": "domain",
-            "attempt_id": attempt_id,
-            "evidence_snapshot_id": snapshot,
-            "validation": domain_validation.to_dict(),
-            "generation": {"domain": domain_meta.to_dict()},
-            "generated_output": {"domain": domain_set.model_dump(mode="json")},
-        }
-
-    return _finish_after_domain_validation(
+    return _execute_two_call_pipeline(
         attempt=attempt,
-        domain_set=domain_set,
-        domain_validation=domain_validation,
         packet_dicts=packet_dicts,
         model_packet_dicts=model_packet_dicts,
         config=config,
         client=client,
         persist=persist,
     )
+
+
+def recovery_call_plan(attempt: dict[str, Any], packet_dicts: dict[str, dict] | None = None) -> dict[str, Any]:
+    generated = dict(attempt.get("generated_output") or {})
+    reusable: list[str] = []
+    for key, contract in (("domain_reads", GeneratedDomainReadSet), ("macro_read", GeneratedMacroRead)):
+        if not generated.get(key):
+            break
+        try:
+            contract.model_validate(generated[key])
+        except (TypeError, ValueError):
+            break
+        reusable.append(key)
+    return {
+        "reused_outputs": reusable,
+        "discarded_outputs": [key for key in _PAID_PIPELINE_STAGES if generated.get(key) and key not in reusable],
+        "api_calls_required": len(_PAID_PIPELINE_STAGES) - len(reusable),
+        "source_attempt_id": str(attempt.get("attempt_id") or ""),
+    }
 
 
 def resume_saved_read_attempt(
@@ -541,58 +658,41 @@ def resume_saved_read_attempt(
     client: Any | None = None,
     persist: bool = True,
 ) -> dict[str, Any]:
-    """Revalidate preserved paid output and continue only from the missing stage.
-
-    A domain-only failed attempt spends at most one new API call (Macro).  An
-    attempt that already contains both paid responses can be revalidated and
-    published without another API call.  Replay is refused when the current
-    evidence snapshot differs from the snapshot that produced the saved output.
-    """
     packets = build_evidence_packets(context)
     packet_dicts = _packet_dicts(packets)
     model_packet_dicts = _model_packet_dicts(packets)
     snapshot = evidence_snapshot_id(packets)
-    attempt = load_read_attempt(attempt_id)
-    if not attempt:
+    source = load_read_attempt(attempt_id)
+    if not source:
         raise ValueError(f"Saved OpenAI attempt not found: {attempt_id}")
-    if str(attempt.get("evidence_snapshot_id") or "") != snapshot:
-        raise ValueError("Saved OpenAI attempt targets a different evidence snapshot and cannot be resumed.")
-    if str(attempt.get("model") or config.model) != config.model:
-        raise ValueError("Saved OpenAI attempt was generated with a different model and cannot be mixed with the current model configuration.")
-    if str(attempt.get("reasoning_effort") or config.reasoning_effort) != config.reasoning_effort:
-        raise ValueError("Saved OpenAI attempt used a different reasoning effort and cannot be mixed with the current model configuration.")
-    current_versions = prompt_versions()
-    saved_domain_version = str((attempt.get("prompt_versions") or {}).get("domain") or "")
-    if saved_domain_version != current_versions["domain"]:
-        raise ValueError("Saved OpenAI attempt uses an incompatible domain commentary schema and cannot be resumed under the current prompt version.")
+    if str(source.get("evidence_snapshot_id") or "") != snapshot:
+        raise ValueError("Saved OpenAI attempt targets a different evidence snapshot.")
+    versions = dict(source.get("prompt_versions") or {})
+    current = prompt_versions()
+    if str(versions.get("language_layer_sha256") or "") != str(current.get("language_layer_sha256") or ""):
+        raise ValueError("Saved OpenAI attempt uses a different language layer.")
+    if str(source.get("model") or config.model) != config.model or str(source.get("reasoning_effort") or config.reasoning_effort) != config.reasoning_effort:
+        raise ValueError("Saved OpenAI attempt uses a different model configuration.")
 
-    domain_payload = ((attempt.get("generated_output") or {}).get("domain"))
-    if not domain_payload:
-        raise ValueError("Saved OpenAI attempt does not contain a domain response to revalidate.")
-    domain_set = GeneratedDomainReadSet.model_validate(domain_payload)
-    domain_validation = validate_domain_read_set(domain_set, packet_dicts)
+    plan = recovery_call_plan(source)
+    attempt = _attempt_base(
+        attempt_id=new_attempt_id(evidence_snapshot_id=snapshot),
+        snapshot=snapshot,
+        packets=packet_dicts,
+        model_packets=model_packet_dicts,
+        config=config,
+    )
+    source_output = dict(source.get("generated_output") or {})
+    source_generation = dict(source.get("generation") or {})
+    source_raw = dict(source.get("raw_responses") or {})
+    attempt["generated_output"] = {key: source_output[key] for key in plan["reused_outputs"]}
+    attempt["generation"] = {key: source_generation[key] for key in plan["reused_outputs"] if key in source_generation}
+    attempt["raw_responses"] = {key: source_raw[key] for key in plan["reused_outputs"] if key in source_raw}
+    attempt["recovery"] = {**plan, "source_attempt_preserved": True}
     attempt["resumed_at"] = datetime.now(timezone.utc).isoformat()
-    attempt["resumed_validator_version"] = VALIDATOR_VERSION
-    attempt["validation"] = {"domain": domain_validation.to_dict()}
-    if not domain_validation.passed:
-        attempt["status"] = "validation_failed"
-        attempt["stage"] = "domain"
-        _save_attempt(attempt, persist=persist)
-        return {
-            "status": "validation_failed",
-            "stage": "domain",
-            "attempt_id": str(attempt.get("attempt_id") or attempt_id),
-            "evidence_snapshot_id": snapshot,
-            "validation": domain_validation.to_dict(),
-            "generation": dict(attempt.get("generation") or {}),
-            "generated_output": {"domain": domain_set.model_dump(mode="json")},
-            "resumed": True,
-        }
-
-    return _finish_after_domain_validation(
+    _save_attempt(attempt, persist=persist)
+    return _execute_two_call_pipeline(
         attempt=attempt,
-        domain_set=domain_set,
-        domain_validation=domain_validation,
         packet_dicts=packet_dicts,
         model_packet_dicts=model_packet_dicts,
         config=config,
@@ -608,122 +708,55 @@ def regenerate_macro_read(
     client: Any | None = None,
     persist: bool = True,
 ) -> dict[str, Any]:
-    """Regenerate only AI Macro from the current validated domain Reads.
-
-    This is the cost-aware editorial iteration path: validated domain commentary
-    remains unchanged, while Macro is independently regenerated from current
-    evidence plus compact domain orientation.  Exactly one paid API call is made.
-    """
+    """Run one explicit Macro call using the complete published domain Reads."""
     packets = build_evidence_packets(context)
     packet_dicts = _packet_dicts(packets)
     model_packet_dicts = _model_packet_dicts(packets)
     snapshot = evidence_snapshot_id(packets)
     stored = load_read_artifact()
-    if not stored:
-        raise ValueError("No validated commentary artifact is available for Macro-only regeneration.")
+    if not _artifact_is_publishable(stored):
+        raise ValueError("No compatible published commentary artifact is available.")
     if str(stored.get("evidence_snapshot_id") or "") != snapshot:
-        raise ValueError("Published commentary targets a different evidence snapshot; regenerate all commentary instead.")
-    validation = dict(stored.get("validation") or {})
-    domain_validation = dict(validation.get("domain") or {})
-    if not domain_validation.get("passed"):
-        raise ValueError("Published domain Reads do not carry a passing domain validation record.")
+        raise ValueError("Published commentary targets a different evidence snapshot.")
+    domain_set = _domain_models_from_public_reads(dict(stored.get("reads") or {}))
+    attempt = _attempt_base(
+        attempt_id=new_attempt_id(evidence_snapshot_id=snapshot),
+        snapshot=snapshot,
+        packets=packet_dicts,
+        model_packets=model_packet_dicts,
+        config=config,
+    )
+    attempt["mode"] = "macro_only"
+    attempt["stage"] = "macro_read"
+    attempt["source_artifact_attempt_id"] = str(stored.get("attempt_id") or "")
+
+    macro_model, macro_raw = _call_stage(
+        attempt,
+        key="macro_read",
+        call=lambda: generate_macro_read(model_packet_dicts, domain_set, config, client=client),
+        persist=persist,
+    )
+    if macro_model is None and not macro_raw:
+        return _generation_failure(attempt, stage="macro_read", persist=persist)
+
+    domain_report = validate_domain_read_set(domain_set, packet_dicts).to_dict()
+    macro_report = (
+        validate_macro_read(macro_model, packet_dicts, domain_texts=_domain_texts_from_models(domain_set)).to_dict()
+        if macro_model is not None
+        else {}
+    )
+    raw_stage = "macro_read" if macro_model is None else ""
+    validation = _validation_summary(domain_report, macro_report, raw_stage=raw_stage)
     reads = dict(stored.get("reads") or {})
-    if any(not isinstance(reads.get(domain), dict) for domain in DOMAIN_ORDER):
-        raise ValueError("Published artifact is missing one or more domain Reads required for Macro synthesis.")
-
-    orientation = _domain_orientation_from_public_reads(reads)
-    domain_texts = _domain_texts_from_public_reads(reads)
-    attempt_id = new_attempt_id(evidence_snapshot_id=snapshot)
-    versions = dict(stored.get("prompt_versions") or {})
-    current_versions = prompt_versions()
-    versions["macro"] = current_versions["macro"]
-    versions["generator"] = current_versions["generator"]
-
-    macro_model, macro_meta = generate_macro_read(model_packet_dicts, orientation, config, client=client)
-    attempt: dict[str, Any] = {
-        "attempt_id": attempt_id,
-        "status": "macro_generated",
-        "stage": "macro_validation",
-        "mode": "macro_only",
-        "evidence_snapshot_id": snapshot,
-        "started_at": datetime.now(timezone.utc).isoformat(),
-        "model": config.model,
-        "reasoning_effort": config.reasoning_effort,
-        "prompt_versions": versions,
-        "evidence_packets": packet_dicts,
-        "model_evidence_packets": model_packet_dicts,
-        "domain_orientation": orientation,
-        "source_artifact_attempt_id": str(stored.get("attempt_id") or ""),
-        "generation": {"macro": macro_meta.to_dict()},
-        "generated_output": {"macro": macro_model.model_dump(mode="json")},
-        "validation": {},
-        "service_version": READ_SERVICE_VERSION,
-    }
-    # Preserve the paid Macro response before validating it.
-    _save_attempt(attempt, persist=persist)
-
-    macro_validation = validate_macro_read(macro_model, packet_dicts, domain_texts=domain_texts)
-    attempt["validation"] = {"domain": domain_validation, "macro": macro_validation.to_dict()}
-    if not macro_validation.passed:
-        attempt["status"] = "validation_failed"
-        attempt["stage"] = "macro"
-        attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
-        _save_attempt(attempt, persist=persist)
-        return {
-            "status": "validation_failed",
-            "stage": "macro",
-            "attempt_id": attempt_id,
-            "evidence_snapshot_id": snapshot,
-            "validation": {
-                "passed": False,
-                "domain": domain_validation,
-                "macro": macro_validation.to_dict(),
-            },
-            "generation": {"macro": macro_meta.to_dict()},
-            "generated_output": {"macro": macro_model.model_dump(mode="json")},
-            "mode": "macro_only",
-        }
-
-    updated_reads = dict(reads)
-    updated_reads["macro"] = _macro_public_read(macro_model, packet_dicts)
-    combined_validation = {
-        "passed": True,
-        "validator_version": VALIDATOR_VERSION,
-        "domain": domain_validation,
-        "macro": macro_validation.to_dict(),
-        "checked_claims": int(domain_validation.get("checked_claims", 0) or 0) + macro_validation.checked_claims,
-        "grounded_claims": int(domain_validation.get("grounded_claims", 0) or 0) + macro_validation.grounded_claims,
-    }
-    generation = dict(stored.get("generation") or {})
-    generation["macro"] = macro_meta.to_dict()
-    artifact = dict(stored)
-    artifact.update({
-        "status": "validated",
-        "attempt_id": attempt_id,
-        "evidence_snapshot_id": snapshot,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "model": config.model,
-        "reasoning_effort": config.reasoning_effort,
-        "prompt_versions": versions,
-        "validation": combined_validation,
-        "generation": generation,
-        "reads": updated_reads,
-        "service_version": READ_SERVICE_VERSION,
-        "macro_refreshed_from_attempt_id": str(stored.get("attempt_id") or ""),
-    })
-
-    attempt["status"] = "validated_unpublished"
-    attempt["stage"] = "publication"
-    attempt["validation"] = combined_validation
-    attempt["validated_artifact"] = artifact
-    attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
-    _save_attempt(attempt, persist=persist)
-    if persist:
-        artifact = _with_publication_lease(artifact, source="macro_regeneration")
-        persist_read_artifact(artifact)
-        attempt["validated_artifact"] = artifact
-        attempt["status"] = "validated_published"
-        attempt["published_at"] = artifact["publication"]["published_at"]
-        attempt["publication_expires_at"] = artifact["publication"]["expires_at"]
-        _save_attempt(attempt, persist=True)
-    return artifact
+    reads["macro"] = _macro_public_read(macro_model, packet_dicts) if macro_model is not None else _raw_public_read(macro_raw)
+    status = "published_raw_response" if raw_stage else "validated" if validation["passed"] else "published_with_warnings"
+    return _publish_artifact(
+        attempt=attempt,
+        reads=reads,
+        validation=validation,
+        config=config,
+        status=status,
+        source="macro_regeneration",
+        persist=persist,
+        base=stored,
+    )

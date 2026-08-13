@@ -1,0 +1,52 @@
+{
+  "artifact_type": "ai_macro_working_checkpoint",
+  "schema_version": "1.0",
+  "checkpoint": "neutral-scope-proportional-language-v0.1",
+  "application_target": "v9.4.3",
+  "status": "IMPLEMENTED_AND_TESTED",
+  "observed_sentence": "Minority current business use and aggregate productivity data leave the breadth of AI's production impact unresolved.",
+  "diagnosis": {
+    "social_or_partisan_claim": false,
+    "intended_meaning": "Fewer than half of measured businesses report current AI use.",
+    "failure": "Minority was used as a malformed modifier for an abstract measure, leaving the counted population implicit and inviting a demographic interpretation.",
+    "classification": "ambiguous proportional sentence construction"
+  },
+  "correction": {
+    "rule": "Make the counted population the grammatical subject.",
+    "preferred_forms": [
+      "State the measured percentage.",
+      "Use fewer than half when the threshold matters.",
+      "Use most when a supported above-half distinction matters."
+    ],
+    "prohibited_forms": [
+      "minority current business use",
+      "minority adoption",
+      "majority participation"
+    ]
+  },
+  "neutral_scope": {
+    "domain_and_macro_reads": "Nonpartisan and outside social-identity debates",
+    "do_not_introduce": [
+      "race",
+      "ethnicity",
+      "religion",
+      "sexuality",
+      "gender identity",
+      "partisan affiliation",
+      "ideological identity"
+    ]
+  },
+  "diagnostic_behavior": {
+    "malformed_example_warns": true,
+    "population_first_control_passes": true,
+    "control": "Fewer than half of businesses currently report AI use.",
+    "rewrites": false,
+    "suppresses": false,
+    "retries": false,
+    "adds_paid_call": false
+  },
+  "language_layer": {
+    "version": "language-layer-1.4.2",
+    "payload_digest_prefix": "2edb810e3bc49782"
+  }
+}

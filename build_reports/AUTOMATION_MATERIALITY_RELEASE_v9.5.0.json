@@ -1,0 +1,78 @@
+{
+  "release": "AI Macro v9.5.0",
+  "scope": "ordered weekday automation with deterministic OpenAI materiality gating",
+  "schedule": {
+    "cron": "7 9 * * 1-5",
+    "timezone": "America/New_York",
+    "meaning": "09:07 Eastern, Monday through Friday"
+  },
+  "transaction_order": [
+    "domain_sources",
+    "market_sources",
+    "current_context",
+    "assemble_and_persist_exact_evidence",
+    "materiality_comparison",
+    "two_openai_calls_if_material",
+    "git_commit_and_push_if_publish_ready"
+  ],
+  "materiality": {
+    "version": "1.0.0",
+    "baseline": "complete evidence packets saved with the last generated Read",
+    "exact_fingerprint_retained": true,
+    "relative_numeric_threshold": 0.1,
+    "percentage_point_threshold": 2.0,
+    "categorical_changes_are_material": true,
+    "fact_or_domain_additions_and_removals_are_material": true,
+    "semantic_evidence_changes_are_material": true,
+    "renewals_advance_baseline": false,
+    "consequence": "sub-threshold changes accumulate until generation becomes material"
+  },
+  "openai": {
+    "model_default": "gpt-5.6-sol",
+    "reasoning_default": "xhigh",
+    "calls_when_material": 2,
+    "calls_when_immaterial": 0,
+    "hard_calls_per_run": 2,
+    "hard_calls_per_day": 4,
+    "sdk_retries": 0,
+    "validation_calls": 0,
+    "replacement_calls": 0
+  },
+  "current_context": {
+    "refresh_position": "after analytical domain and market sources; before evidence decision and publication",
+    "openai_trigger": false,
+    "reason": "Current Context is a separately attached sourced Reader layer, not analytical model evidence"
+  },
+  "publication": {
+    "boundary": "Git commit and fast-forward push to main",
+    "refresh_lock": "refs/tags/ai-macro-automation-refresh-lock",
+    "force_push_main": false,
+    "remote_head_rechecked_before_commit_and_push": true,
+    "public_streamlit_provider_calls": 0
+  },
+  "versions": {
+    "app": "v9.5.0",
+    "read_service": "4.4.0",
+    "read_artifact": "3.1.0",
+    "language_layer": "language-layer-1.4.2"
+  },
+  "verification": {
+    "language_layer_contract": "PASS",
+    "read_architecture": "PASS",
+    "editorial_quality": "PASS",
+    "automation_contract": "PASS weekdays 09:07 Eastern; ordered refresh; 10% materiality; two-call ceiling; zero SDK retries",
+    "retained_automation_build": "PASS 11 evidence domains; zero retained-file changes",
+    "stack_completion_fidelity": "PASS 7 contracts",
+    "release_manifest_contract": "PASS 134 critical files",
+    "integrity_gate": "PASS 9 critical integrity contracts",
+    "release_fingerprint_in_scratch": "5360ec9e8c5f679a579d",
+    "live_github_run": "pending owner push and one manual publish run"
+  },
+  "package_policy": {
+    "type": "code-only overlay",
+    "retained_data_included": false,
+    "openai_artifacts_included": false,
+    "automation_artifacts_included": false,
+    "secrets_included": false
+  }
+}

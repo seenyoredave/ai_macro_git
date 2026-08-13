@@ -106,6 +106,23 @@ def _macro_evidence_html(payload: dict) -> str:
     return '<div class="rm-domain-read-evidence-grid">' + ''.join(cards) + '</div>'
 
 
+def _unparsed_openai_html(payload: dict) -> str:
+    responses = [item for item in payload.get("unparsed_openai_responses", []) or [] if isinstance(item, dict)]
+    rendered: list[str] = []
+    for item in responses:
+        text = item.get("text")
+        if not isinstance(text, str) or not text:
+            continue
+        stage = str(item.get("stage") or "OpenAI").strip()
+        rendered.append(
+            '<div class="rm-domain-read-context-row">'
+            f'<div class="rm-domain-read-context-heading">Unparsed OpenAI response · {html.escape(stage)}</div>'
+            f'<div class="rm-domain-read-copy">{html.escape(text)}</div>'
+            '</div>'
+        )
+    return "".join(rendered)
+
+
 def build_domain_read_html(
     read: dict | None,
     *,
@@ -142,11 +159,13 @@ def build_domain_read_html(
         for paragraph in paragraph_values
     )
     macro_html = _macro_evidence_html(payload) if macro else ""
+    raw_html = _unparsed_openai_html(payload)
     return "".join([
         f'<div class="{classes}" style="--rm-read-accent:{html.escape(accent_color, quote=True)};">',
         f'<div class="rm-domain-read-kicker">{html.escape(domain_label)}</div>',
         f'<div class="rm-domain-read-title">{html.escape(headline)}</div>',
         analysis_html,
+        raw_html,
         macro_html,
         context_html,
         refs_html,

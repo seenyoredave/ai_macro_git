@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0",
+  "artifact_type": "AI_MACRO_COMBINED_DOMAIN_CORPUS_CHECKPOINT",
+  "corpus_name": "AI Diffusion and Economic Transmission",
+  "domains": ["adoption", "workforce", "economic_impact"],
+  "status": "IN_PROGRESS_SCOPE_AND_AUDIT_CONTRACT_COMPLETE",
+  "created_at": "2026-08-12",
+  "decision": "One shared acquisition, decomposition, saturation, and long-form process will support three separately bounded production profiles and three separate Reads.",
+  "corpus_purpose": "Teach OpenAI how to reason and write about who uses AI, how use becomes workflow integration, how firms capture value, how tasks and workers are affected, and whether those changes appear in productivity, output, income, and distribution. Academic material supplies prompt-time analytical and rhetorical guidance only and never runtime facts.",
+  "transmission_chain": [
+    "access and awareness",
+    "trial and reported use",
+    "frequency and task breadth",
+    "workflow and organizational integration",
+    "complementary investment and process redesign",
+    "firm productivity, cost, revenue, and innovation",
+    "task, skill, hiring, wage, and employment effects",
+    "diffusion across firms, sectors, and workers",
+    "aggregate productivity, output, income, and distribution"
+  ],
+  "domain_ownership": {
+    "adoption": {
+      "reasoning_object": "Who has access to AI, who reports using it, for which tasks, how often, with what depth of organizational integration, and whether use diffuses across people, firms, sectors, and firm sizes.",
+      "runtime_evidence_jobs": [
+        "current_business_use_pct",
+        "expected_business_use_pct",
+        "expected_adoption_gap_ppts",
+        "annual_change_ppts",
+        "consumer_overall_pct",
+        "consumer_personal_pct",
+        "consumer_work_pct",
+        "consumer_active_pct",
+        "consumer_daily_pct",
+        "consumer_change_ppts",
+        "sector_coverage",
+        "leading_sector",
+        "leading_sector_use_pct",
+        "chatgpt_subscribers_m",
+        "implied_subscriber_share_pct",
+        "openai_paying_business_users_m",
+        "gemini_enterprise_paid_seats_m"
+      ]
+    },
+    "workforce": {
+      "reasoning_object": "How AI changes tasks, skill demand, hiring, work quality, worker productivity, employment, wages, bargaining power, and the distribution of gains and losses across workers and occupations.",
+      "runtime_evidence_jobs": [
+        "employment_breadth",
+        "real_earnings_breadth",
+        "strongest_channel",
+        "strongest_channel_growth",
+        "weakest_channel",
+        "weakest_channel_growth",
+        "max_layoff_rate",
+        "max_openings_rate",
+        "occupation_exposure_count",
+        "median_llm_software_exposure_pct",
+        "high_exposure_occupation_share_pct"
+      ]
+    },
+    "economic_impact": {
+      "reasoning_object": "Whether AI investment and use become monetized products, firm value, productivity, output, lower costs, innovation, income, labor compensation, and broadly distributed aggregate gains.",
+      "runtime_evidence_jobs": [
+        "productivity_growth",
+        "real_output_growth",
+        "real_compensation_growth",
+        "unit_labor_cost_growth",
+        "information_investment_growth",
+        "productivity_since_2020",
+        "real_compensation_since_2020",
+        "productivity_real_comp_gap",
+        "labor_share_since_2020",
+        "median_real_earnings_growth",
+        "group_growth_spread_ppts",
+        "microsoft_ai_arr_b",
+        "openai_arr_b",
+        "alphabet_cloud_growth_pct",
+        "openai_enterprise_share_pct"
+      ]
+    }
+  },
+  "hard_boundaries": [
+    "Awareness is not access, access is not trial, trial is not use, and any use is not deep integration.",
+    "Expected future use is intent and not deployed use.",
+    "A provider subscriber, seat, or business-user count is vendor scale and not a national adoption rate.",
+    "Task exposure measures work AI could affect; it does not measure actual use, automation, displacement, or jobs lost.",
+    "A job posting measures desired hiring and not a filled job, employment stock, wage outcome, or realized task change.",
+    "Worker-level task speed or quality in a bounded experiment is not firm productivity without workflow, demand, quality-control, and organizational evidence.",
+    "Firm productivity is not necessarily worker benefit, higher compensation, lower work intensity, or better job quality.",
+    "Cost reduction is not automatically higher output, revenue, profit, consumer welfare, or aggregate productivity.",
+    "Provider revenue establishes monetization for the reporting company and not economy-wide return on AI investment.",
+    "Firm value, stock-market response, patenting, and product announcements are distinct from realized operating productivity.",
+    "A firm-level or occupation-level estimate does not automatically aggregate to the economy.",
+    "Economy-wide productivity, output, compensation, and labor-share measures do not identify AI as their cause.",
+    "Average effects must not erase heterogeneity by prior skill, experience, occupation, firm size, sector, task, worker status, or adoption intensity.",
+    "Short-run measured gains do not establish long-run equilibrium effects, demand responses, entry, competition, wage incidence, employment, or distribution.",
+    "Complementarity and substitution can coexist across tasks within the same job and across workers within the same firm.",
+    "Academic quantities are never current platform facts."
+  ],
+  "evidence_ladder": [
+    "observed production use linked to task, worker, workflow, firm, and outcome",
+    "randomized or credible quasi-experimental use and outcome evidence",
+    "representative firm or worker survey with defined use and frequency",
+    "administrative employment, wage, revenue, output, or productivity evidence linked to adoption",
+    "job-posting, patent, software, or investment proxy with a calibrated transmission link",
+    "task or occupational exposure estimate",
+    "provider aggregate or stated customer metric",
+    "economy-wide contemporaneous outcome without AI attribution"
+  ],
+  "foundation_targets": [
+    "consumer and worker diffusion",
+    "firm adoption and organizational integration",
+    "task-level productivity and quality",
+    "heterogeneous worker effects",
+    "skills, hiring, occupations, and task composition",
+    "employment, wages, job quality, and bargaining incidence",
+    "firm cost, revenue, profit, innovation, and value capture",
+    "complementary capital, management, and process redesign",
+    "diffusion lags and productivity J-curves",
+    "aggregation, general equilibrium, demand, competition, and distribution",
+    "measurement, proxy, denominator, time-horizon, and causal-identification discipline"
+  ],
+  "batch_design": {
+    "foundation": "Fifteen complete-text, journal-qualified admissions spanning the full transmission chain.",
+    "challenge_one": "Five independent sources selected to attack adoption depth, worker heterogeneity, and organizational integration.",
+    "challenge_two": "Five independent sources selected to attack employment, wages, value capture, aggregation, and distribution.",
+    "integrated_confirmation": "Five sources reconnect adoption, work, firm outcomes, and aggregate transmission without collapsing the three production domains.",
+    "long_form": "Two complete long-form technical texts and approximately fourteen passage analyses focused on causal sequencing, qualification, and prose transfer.",
+    "completion_rule": "At least 30 unique complete-text admissions; two consecutive independent challenges each add no more than two universal families and reopen no material gap; integrated confirmation adds no unresolved contradiction; all identifiers reconcile."
+  },
+  "provisional_transfer_families": [
+    "access-use-integration state separation",
+    "frequency, intensity, task breadth, and organizational depth",
+    "exposure-use-outcome non-equivalence",
+    "task-job-occupation-firm-economy aggregation discipline",
+    "augmentation, substitution, automation, and new-task separation",
+    "worker and firm heterogeneity",
+    "skill-biased, experience-biased, and distributional incidence",
+    "experimental treatment versus production deployment",
+    "speed-quality-cost-output multi-outcome accounting",
+    "complementary capital, workflow redesign, and managerial capability",
+    "firm value capture, monetization, competition, and consumer surplus",
+    "diffusion lag, J-curve, and time-horizon alignment",
+    "partial-equilibrium versus general-equilibrium transmission",
+    "proxy, selection, measurement, and causal-identification ladder",
+    "observed outcome versus scenario, forecast, and modeled potential"
+  ],
+  "integration_contract": {
+    "source_profiles": ["adoption", "workforce", "economic_impact"],
+    "shared_corpus_file": "AI_MACRO_DIFFUSION_ECONOMIC_TRANSMISSION_CORPUS_COMPLETE_v1.0.json",
+    "production_outputs_remain_separate": true,
+    "compiler_target": "AI_MACRO_LANGUAGE_LAYER_v1.0.json",
+    "no_post_generation_rewrite": true,
+    "no_hidden_api_calls": true,
+    "automation_changed": false
+  },
+  "next_action": "Acquire and completely audit the fifteen-source foundation, record four atomic observations per source, and test whether the provisional family map covers the full platform evidence contract."
+}

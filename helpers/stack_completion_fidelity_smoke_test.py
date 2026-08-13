@@ -29,7 +29,7 @@ class _FakeStreamlit(types.ModuleType):
 sys.modules.setdefault("streamlit", _FakeStreamlit())
 
 from analytics.read_evidence import DOMAIN_ORDER, DOMAIN_REFERENCES  # noqa: E402
-from analytics.read_models import GeneratedMacroRead, SupportedSentence  # noqa: E402
+from analytics.read_models import GeneratedMacroParagraph, GeneratedMacroRead, SupportedSentence  # noqa: E402
 from analytics.read_service import _macro_public_read  # noqa: E402
 from config.metric_definitions import METRIC_DEFINITIONS  # noqa: E402
 from loaders import commercialization_loader  # noqa: E402
@@ -139,7 +139,7 @@ def check_commercialization_parser_contract() -> None:
 
 
 def check_macro_reference_alignment() -> None:
-    selected = ["finance", "data_center", "power", "adoption", "workforce", "economic_impact"]
+    selected = ["finance", "data_center", "power", "adoption", "economic_impact"]
     packets = {
         domain: {
             "importance": 20,
@@ -150,12 +150,23 @@ def check_macro_reference_alignment() -> None:
     }
     macro_model = GeneratedMacroRead(
         selected_domains=selected,
-        headline=SupportedSentence(text="Capital and buildout are meeting the diffusion and outcomes test.", fact_ids=["finance.anchor", "data_center.anchor", "power.anchor", "adoption.anchor", "workforce.anchor", "economic_impact.anchor"], inference="interpretation"),
-        analysis=[
-            SupportedSentence(text="Financing and physical buildout establish the upstream capacity for the broader AI lifecycle.", fact_ids=["finance.anchor", "data_center.anchor", "power.anchor"], inference="interpretation"),
-            SupportedSentence(text="Adoption and economic outcomes test whether that upstream commitment is diffusing into realized use.", fact_ids=["adoption.anchor", "workforce.anchor", "economic_impact.anchor"], inference="interpretation"),
-            SupportedSentence(text="The selected domains therefore connect capital, delivery, diffusion, and outcomes rather than describing one stage in isolation.", fact_ids=["finance.anchor", "data_center.anchor", "power.anchor", "adoption.anchor", "workforce.anchor", "economic_impact.anchor"], inference="interpretation"),
-            SupportedSentence(text="That cross-domain relationship is more informative than a single-stage metric.", fact_ids=["data_center.anchor", "economic_impact.anchor"], inference="interpretation"),
+        headline=SupportedSentence(text="Capital and buildout are meeting the adoption and outcomes test.", fact_ids=["finance.anchor", "data_center.anchor", "power.anchor", "adoption.anchor", "economic_impact.anchor"], inference="interpretation"),
+        paragraphs=[
+            GeneratedMacroParagraph(sentences=[
+                SupportedSentence(text="Financing gives infrastructure developers the resources to begin building.", fact_ids=["finance.anchor", "data_center.anchor"], inference="interpretation"),
+                SupportedSentence(text="Data centers turn that funding into facilities that can house computing equipment.", fact_ids=["finance.anchor", "data_center.anchor"], inference="interpretation"),
+                SupportedSentence(text="Power supply then determines whether those facilities can operate.", fact_ids=["data_center.anchor", "power.anchor"], inference="interpretation"),
+            ]),
+            GeneratedMacroParagraph(sentences=[
+                SupportedSentence(text="Operating capacity gives businesses access to more computing services.", fact_ids=["power.anchor", "adoption.anchor"], inference="interpretation"),
+                SupportedSentence(text="Firms must adopt those services before infrastructure can change production.", fact_ids=["adoption.anchor", "economic_impact.anchor"], inference="interpretation"),
+                SupportedSentence(text="Daily business processes determine whether new tools become regular production inputs.", fact_ids=["adoption.anchor", "economic_impact.anchor"], inference="interpretation"),
+            ]),
+            GeneratedMacroParagraph(sentences=[
+                SupportedSentence(text="Economic measures capture the final stage of that progression.", fact_ids=["adoption.anchor", "economic_impact.anchor"], inference="interpretation"),
+                SupportedSentence(text="The selected domains connect capital, delivery, use, and outcomes in sequence.", fact_ids=["finance.anchor", "economic_impact.anchor"], inference="interpretation"),
+                SupportedSentence(text="That complete relationship is more useful than any single-stage metric.", fact_ids=["data_center.anchor", "economic_impact.anchor"], inference="interpretation"),
+            ]),
         ],
     )
     macro = _macro_public_read(macro_model, packets)

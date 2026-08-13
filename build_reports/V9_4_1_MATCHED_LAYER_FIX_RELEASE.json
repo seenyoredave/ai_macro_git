@@ -1,0 +1,61 @@
+{
+  "artifact_type": "ai_macro_hotfix_release_report",
+  "schema_version": "1.0",
+  "application_version": "v9.4.1",
+  "release_manifest_id": "941d4aba6577d346a116",
+  "critical_file_count": 131,
+  "status": "PASS",
+  "observed_failures": [
+    {
+      "failure": "ValueError: Reader pedagogy is missing",
+      "cause": "The v9.4.0 compiler was present on the owner machine while the language-layer source on disk did not contain the matching reader_pedagogy object.",
+      "classification": "split-version local overwrite",
+      "archive_audit": "The shipped v9.4.0 archive does contain language-layer-1.4.0 and reader_pedagogy in its source file."
+    },
+    {
+      "failure": "GeneratedMacroRead selected_domains list has six items but the production schema permits at most five",
+      "cause": "The v9.4.0 stack-completion test fixture was converted to the paragraph schema without reducing its legacy six-domain selection.",
+      "classification": "release test-fixture defect"
+    }
+  ],
+  "corrections": [
+    "Reapply the matched language-layer source, compiler, compiled payload, and language contract test together.",
+    "Reduce the Macro reference-alignment fixture to finance, data_center, power, adoption, and economic_impact.",
+    "Update the fixture headline and sentences so their fact IDs match the five selected domains.",
+    "Advance the application version to v9.4.1.",
+    "Include a machine-readable matched-overwrite manifest and preflight verification."
+  ],
+  "matched_language_layer": {
+    "version": "language-layer-1.4.0",
+    "payload_sha256": "997a44aa7caa98536ebcad43b6bb19c81cef19d541eb44ae79f4b1f4f53fb4a5",
+    "source_has_reader_pedagogy": true
+  },
+  "verification": [
+    "PASS language-layer-1.4.0 compilation and checksum",
+    "PASS eleven-domain, eleven-corpus-backed language contract",
+    "PASS two-call commentary architecture with zero retries",
+    "PASS editorial regression contract",
+    "PASS all seven stack-completion fidelity contracts, including Macro reference alignment",
+    "PASS release manifest contract with 131 files",
+    "PASS all nine critical integrity contracts"
+  ],
+  "files_sha256": {
+    "ai_macro.py": "aea7b2b31656b3f2d13fc972143967ebe83ad015d9c449ba38eb454df34c08e7",
+    "language/AI_MACRO_LANGUAGE_LAYER_SOURCE_v1.0.json": "e0773d4481a3b72cc2bad87c2e99155a5d64594035e36717b6b14b41a8201930",
+    "language/AI_MACRO_LANGUAGE_LAYER_v1.0.json": "1b1b7f5984f1b09d73866b93a3377bf1a6036bdb5974472cc2236a6b2bf80a9c",
+    "tooling/compile_language_layer.py": "ee9196fe4ffcecc136d775a986a6d7bb0502dd2ba2e1274319b950d18c36767d",
+    "helpers/language_layer_contract_test.py": "c11fd56f5ba247b29d0652d6f19d171106ede57dc940dfe4384bd930f5d13776",
+    "helpers/stack_completion_fidelity_smoke_test.py": "f2ef2dea6e4db3e5bb7163f188f9776043993e5f654590e2bac49a74866430fd",
+    "build_reports/V9_4_1_MATCHED_OVERWRITE_MANIFEST.json": "cbeda4f4aa2f281d5fdb49b56ccd47bd46717aea9049ffd4be5656fd0bd7a160",
+    "build_reports/OVERWRITE_INSTRUCTIONS_v9.4.1.md": "7c33401a5243e1640ac4b70884279b5124c702ad4248ac410e290d5228ccdbce"
+  },
+  "unchanged": [
+    "Explanatory Reader design",
+    "Research corpora",
+    "Runtime facts and evidence packets",
+    "Exactly two full-generation paid calls",
+    "Zero retries",
+    "Automation and scheduling",
+    "Retained data and paid generation artifacts"
+  ]
+}

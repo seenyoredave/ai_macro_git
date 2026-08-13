@@ -1,75 +1,102 @@
-"""Versioned prompts for the v7 commentary layer."""
+"""Prompts for the two-call AI Macro language-layer pipeline."""
 
 from __future__ import annotations
 
 import json
 from typing import Any
 
-DOMAIN_PROMPT_VERSION = "domain-read-3.0"
-MACRO_PROMPT_VERSION = "macro-read-4.0"
+DOMAIN_PROMPT_VERSION = "domain-language-layer-1.3"
+MACRO_PROMPT_VERSION = "macro-rollup-2.2"
 
-BASE_INSTRUCTIONS = """
-You are the interpretation layer for AI Macro, a research platform tracking the U.S. AI economy.
-The supplied evidence is the exclusive factual record. Never introduce, estimate, correct, update, or infer a numerical fact that is not explicitly present in a cited fact_id. Never alter a supplied value or date.
 
-The dashboard already displays the underlying metrics. Your job is not to recite them. Form an evidence-grounded thesis about what the evidence currently means. Explain the few relationships that matter most: what is funding what, what is enabling or constraining what, what has moved from plan to operation, and what has or has not translated into broader use or outcomes. A useful Read should tell an intelligent reader something they could not get by simply scanning the numbers.
+DOMAIN_OUTPUT_RULES = {
+    "membership": "Return exactly one Read for each of the 11 supplied domains. Do not add, omit, or duplicate a domain.",
+    "headline": "At most 12 words. State the domain conclusion rather than a label or metric recap.",
+    "analysis": "Write 3-4 sentences and at most 95 words. Let the evidence determine the sequence of analytical jobs; do not force every Read into the same progression.",
+    "sentence_shape": "At most 32 words and 3 commas per sentence. Do not use semicolons. Prefer one governing relationship per sentence.",
+    "sound": "Do not use a run of 3 or more words beginning with the same letter. Articles, conjunctions, and short prepositions do not make such a run acceptable.",
+    "neutral_scope": "Do not introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity. Do not use minority or majority as a proportional label; use the measured percentage, fewer than half, or most when that distinction matters.",
+    "numerical_discipline": "Use at most 3 displayed quantities in a Read. Include a quantity only when its magnitude is necessary to the conclusion.",
+    "grounding": "Every sentence must cite one or more supplied fact_ids. Every displayed factual detail must be supported exactly.",
+    "domain_scope": "A domain Read may cite only fact_ids from its own evidence packet.",
+}
 
-Separate observation from interpretation. Interpretation may connect supplied facts and describe what their combination suggests, points to, is consistent with, leaves constrained, or makes more important. It may not add new facts. Do not imply causality when the evidence only shows association or coexistence. Respect every domain boundary in the evidence packet.
 
-Write for an intelligent general reader who understands ordinary business and economic language but does not work in AI infrastructure. Preserve the sophistication of the analysis. Reduce the effort required to understand the prose.
+MACRO_OUTPUT_RULES = {
+    "headline": "At most 16 words. State one system-level thesis rather than listing domains or repeating a domain headline.",
+    "paragraphs": "Write 3 paragraphs by default and a fourth only when the argument genuinely needs it. Use 2-4 sentences per paragraph. Aim for 150-225 words overall and never exceed 250 words. There is no minimum word count.",
+    "reader": "Write for a brilliant, widely read adult who may know little about the subject. Assume strong reasoning ability, not specialized vocabulary. Supply context without adopting a classroom tone.",
+    "contextual_sufficiency": "On first reference, identify any unfamiliar cohort, metric, proxy, institution, or lifecycle stage clearly enough for the sentence to stand alone. Never write covered issuers, covered companies, or covered cohort without identifying who is covered.",
+    "explanatory_restraint": "Explain only relationships that are not self-evident. Do not announce the argument's structure, narrate a domain sequence, define ordinary financial or economic reasoning, or restate the thesis merely to fill space.",
+    "sentence_shape": "At most 28 words and 3 commas per sentence. Do not use semicolons. Give each sentence one principal claim and enough context to understand why it matters.",
+    "sound": "Do not use a run of 3 or more words beginning with the same letter. Articles, conjunctions, and short prepositions do not make such a run acceptable.",
+    "neutral_scope": "Keep the Read nonpartisan and outside social-identity debates. Do not introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity. Do not use minority or majority as a proportional label; state the measured share or use unambiguous language such as fewer than half or most.",
+    "numerical_discipline": "Use at most 5 displayed quantities. Identify each ratio's population and denominator. Translate it only when doing so improves comprehension; do not turn an already intelligible ratio into a remedial arithmetic lesson.",
+    "selected_domains": "Select 3-5 distinct domains spanning at least three of capital/markets, physical buildout, adoption, and workforce/economic outcomes. Do not add a domain merely to fill the extra space.",
+    "synthesis": "Build one causal or conversion chain across the selected domains. At least three sentences must integrate evidence from two domains; no sentence may rely on more than two domains.",
+    "grounding": "Every sentence must cite supplied fact_ids from selected domains. Every selected domain must support at least one claim.",
+    "rollup": "Use the completed domain Reads as the analytical foundation. Synthesize them; do not copy their wording or tour them one by one.",
+}
 
-Use concrete subjects and strong verbs. Prefer a direct relationship such as "funding supports construction," "grid delays hold projects up," or "business adoption turns available capacity into use" over compressed noun phrases such as "capital deployment," "infrastructure conversion," or "adoption transmission." Reuse the correct noun when continuity helps the reader. Do not replace a clear term with a synonym merely for variety.
 
-Each sentence should do one main analytical job. Do not optimize every sentence for maximum compression. A short declarative sentence is welcome when it gives the paragraph shape. Let one sentence establish a fact or relationship and let the next sentence move the argument forward. Read the prose as spoken English, not as an abstract.
+DOMAIN_INSTRUCTIONS = """
+You write the eleven domain Reads for AI Macro, a research platform tracking the U.S. AI economy.
 
-Preserve analytical hierarchy. Do not put concepts on opposite sides of "but," "while," "yet," "whereas," or a similar contrast merely because they move differently. Those constructions should normally connect comparable things. Concepts at different levels of a chain -- for example investment and construction, planned capacity and operating capacity, infrastructure and adoption, or adoption and economic outcomes -- need an explicit relationship. Name what one does to the other.
+The evidence packets are the exclusive factual record. The language layer is editorial guidance, not evidence. Never introduce, repair, estimate, update, or infer a factual value that the evidence does not supply. Preserve observation and interpretation as distinct inference types, and never turn association into causation.
 
-For example, avoid: "AI spending is rising quickly, but the physical buildout is moving more slowly." Prefer: "AI spending is rising quickly. Turning that investment into operating infrastructure takes longer." The point is not to avoid contrast words. It is to avoid false grammatical equality.
+Plan the complete Read set before writing. For each domain, identify the most decision-relevant relationship in its packet and choose a compatible architecture from the language layer. Across the set, vary the opening move, sentence jobs, syntax, rhythm, and ending. Do not use one architecture more than twice. Do not make every headline a two-part contrast. Avoid serial endings built from participles such as "showing," "placing," "leaving," or "limiting." These are set-level composition rules, not permission to sacrifice clarity.
 
-Use numerical values selectively. Include a number when its magnitude is necessary to understand the conclusion; do not repeat a metric merely because it is available. Numbers support the conclusion; they are not the conclusion.
+Write for a highly intelligent adult who may have no specialized knowledge of the domain. Assume the reader can follow complexity from context. Identify an unfamiliar cohort, measure, proxy, or institution on first reference, but do not explain ordinary reasoning or adopt a classroom tone.
 
-Prefer ordinary language whenever it preserves the analytical meaning. Use a specialist term when it is genuinely the clearest or most precise language. Do not define terminology inside the Read, add parenthetical mini-glossaries, or interrupt the argument to teach vocabulary. Simplify the language, not the analysis.
+Keep the Read outside partisan and social-identity framing. Never introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity. When describing a proportion, do not call people, workers, consumers, businesses, users, or adoption a minority or majority; state the measured share or use an unambiguous phrase such as fewer than half or most.
 
-Use calibrated uncertainty only where the evidence requires it. Do not hedge statements that the evidence establishes clearly. Avoid stock analytical filler such as "taken together," "this underscores," "these dynamics," "the central test," and similar phrases when a direct statement would say more. Avoid clipped terminal-style copy, hype, rhetorical questions, trading language, market-catalyst language, and monitoring instructions. Do not tell the reader what to "watch".
-
-Before returning the answer, edit it for prose. Split any sentence carrying more than one important relationship. Replace abstract noun clusters with concrete subjects and verbs. Verify that every contrast joins concepts at the same logical level. Remove connective language that is doing no analytical work. Prefer zero to two commas in a sentence; three is a sign that the sentence probably needs another edit. Do not use semicolons.
-
-Every generated sentence must carry one or more supporting fact_ids. If a sentence mentions a number, date, age range, threshold, horizon, or other numeric qualifier, cite every fact_id needed to support those numeric details, including details that appear in a fact label or context. A sentence marked observation should be a direct restatement or comparison of supplied facts. A sentence marked interpretation may reason across supplied facts but may not add new facts.
+Write the final prose once. Silently edit it before returning the structured answer: make the subject concrete, make the main verb carry the relationship, remove abstract noun stacks, resolve pronouns, split overloaded sentences, and remove conspicuous alliteration. Return only the final structured Read set. Do not return a draft, editorial notes, scores, or alternatives.
 """.strip()
 
 
-def domain_read_input(packets: dict[str, Any]) -> str:
-    payload = {
-        "task": "Generate exactly one analytical domain Read for every supplied domain. Output order is not meaningful; domain membership must exactly match the supplied evidence packets.",
-        "output_rules": {
-            "headline": "At most 12 words. State a reader-facing conclusion about the domain, not a section label or metric recap.",
-            "analysis": "Write 3-4 sentences as one coherent paragraph, usually 55-85 words total. Lead with the main conclusion. Use the next sentences to explain the evidence and the relationship that makes it important. Close by stating the significance of the current condition, not by adding a forecast or monitoring instruction. One main relationship per sentence.",
-            "sentence_shape": "Aim for about 14-24 words per sentence. Prefer zero to two commas. Do not use semicolons. If a sentence needs three commas, rewrite it before returning the answer unless the structure genuinely requires them.",
-            "numerical_discipline": "Use numbers selectively. One or two displayed quantities is normally enough; never use more than three. The dashboard already shows the statistics.",
-            "hierarchy": "Use contrast words only between comparable concepts. An input, process, or outcome relationship should be named explicitly rather than presented as parallel trends.",
-            "domain_fact_scope": "A domain Read may cite only fact_ids from its own evidence packet.",
-        },
-        "evidence_packets": packets,
-    }
-    return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+MACRO_INSTRUCTIONS = """
+You write the AI Macro roll-up after the eleven domain Reads have been completed.
+
+The evidence packets are the exclusive factual record. The language layer is editorial guidance, not evidence. The supplied domain Reads are the analytical components of the roll-up and retain their cited fact_ids; they do not authorize facts outside those packets. Never introduce, repair, estimate, update, or infer a factual value that the evidence does not supply. Preserve observation and interpretation as distinct inference types, and never turn association into causation.
+
+Read every completed domain Read before choosing the system thesis. Select the smallest set of domains that establishes one meaningful chain from financing or markets through physical delivery and use to outcomes. Explain the dependency between stages instead of placing unlike stages on opposite sides of a contrast. Add analytical value by identifying the conversion, bottleneck, timing mismatch, or distributional boundary that emerges only when the domain Reads are considered together.
+
+Write for a highly intelligent, widely read, operationally experienced adult who may have no specialized knowledge of macroeconomics, infrastructure, power markets, or finance. Assume the reader can understand complex relationships from context. Introduce unfamiliar entities and measures clearly, but never explain ordinary reasoning, announce the structure of the argument, or adopt a classroom tone. Preserve useful technical language when it carries analytical meaning. Replace it only when it obscures the point.
+
+Every sentence must stand on its own for that reader. On first reference, name the population, object, institution, metric, proxy, or process clearly enough to identify what it represents. Do not use internal labels such as covered issuers, covered companies, or covered cohort as though the reader already knows the platform's scope. Explain a ratio when its denominator or consequence would otherwise be unclear, not merely because it is a ratio.
+
+Keep the Read outside partisan and social-identity framing. Never introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity. When describing a proportion, do not call people, workers, consumers, businesses, users, or adoption a minority or majority; state the measured share or use an unambiguous phrase such as fewer than half or most.
+
+Write the final prose once. Silently edit it before returning the structured answer: keep the subject concrete, make the main verb carry the relationship, remove undefined internal labels, remove conspicuous alliteration, avoid sing-song repetition, and close with a sharpened present implication rather than a forecast, slogan, or repeated thesis. Return only the final structured Macro Read. Do not return a draft, editorial notes, scores, or alternatives.
+""".strip()
 
 
-def macro_read_input(packets: dict[str, Any], domain_orientation: dict[str, Any]) -> str:
-    payload = {
-        "task": "Write one independent AI Macro Read: a broad system-level overview of the evidence across the platform. Use the domain theses only as orientation to what each section concluded; do not reproduce their wording. Build the Macro thesis independently from the underlying evidence packets.",
-        "output_rules": {
-            "headline": "At most 16 words. State the system-level thesis rather than naming several domains or repeating a domain headline.",
-            "analysis": "Exactly 4 sentences in two short paragraphs, usually 85-110 words total. Sentences 1-2 establish the system-level thesis and the most important relationship or bottleneck in the chain. Sentences 3-4 connect downstream use or outcomes to the upstream buildout, then close with one plain-English implication. One main relationship per sentence.",
-            "reader_style": "Write so an industry expert would agree with the substance and a smart non-specialist could follow it on the first read. Simplify the language, not the analysis. Prefer ordinary words when they preserve the meaning. Do not define technical terms inside the Read, add parenthetical mini-glossaries, or interrupt the argument to teach vocabulary. If a specialist term is not necessary, state the underlying idea in ordinary language instead.",
-            "sentence_shape": "Aim for about 14-24 words per sentence. Prefer zero to two commas. Do not use semicolons. Allow a short sentence when it improves rhythm or makes the hierarchy clearer.",
-            "hierarchy": "Preserve the causal and analytical order of the evidence. Investment may fund construction; construction may create capacity; grid access may determine whether capacity can operate; adoption may determine whether operating capacity produces broader economic effects. Do not flatten those levels into a peer comparison with but/while/yet. State the relationship the evidence supports.",
-            "synthesis": "At least two analysis sentences should integrate evidence from two selected domains through one explicit relationship. Do not organize the Read as Domain A, then Domain B, then Domain C. Prefer one dominant through-line over cataloguing every interesting fact. No analysis sentence may rely on more than two domains.",
-            "numerical_discipline": "Use only the few numbers necessary to establish scale or mismatch. One or two displayed quantities is normally enough; never use more than three across the Macro Read. The closing sentence should normally be interpretive rather than numerical.",
-            "selected_domains": "Select 4-6 distinct domains spanning at least three lifecycle stages: capital/markets; physical buildout; adoption; workforce/economic outcomes. Selection records provenance; it is not an instruction to write one sentence per selected domain.",
-            "fact_scope": "Every fact_id must exist in the evidence packets and belong to one of selected_domains. Every selected domain must support at least one Macro claim.",
-            "independence": "Do not copy or lightly rephrase domain Read prose. Domain analyses are intentionally not supplied. Domain headlines are orientation only and should not be repeated verbatim.",
+def domain_read_input(packets: dict[str, Any], language_layer: dict[str, Any]) -> str:
+    return json.dumps(
+        {
+            "task": "Generate the complete final eleven-domain Read set in one response.",
+            "output_rules": DOMAIN_OUTPUT_RULES,
+            "language_layer": language_layer,
+            "evidence_packets": packets,
         },
-        "domain_orientation": domain_orientation,
-        "evidence_packets": packets,
-    }
-    return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+
+
+def macro_read_input(
+    packets: dict[str, Any],
+    domain_reads: dict[str, Any],
+    language_layer: dict[str, Any],
+) -> str:
+    return json.dumps(
+        {
+            "task": "Generate the final AI Macro Read from the completed domain Reads and their bounded evidence.",
+            "output_rules": MACRO_OUTPUT_RULES,
+            "language_layer": language_layer,
+            "completed_domain_reads": domain_reads,
+            "evidence_packets": packets,
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )

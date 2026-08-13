@@ -28,7 +28,7 @@ from loaders.current_context_daily import finalize_context_report, load_retained
 from loaders.current_context_loader import load_current_context
 from loaders.debt_markets_loader import load_debt_markets_data
 from loaders.economic_impact_loader import load_economic_impact_data
-from loaders.energy_loader import load_energy_data
+from loaders.energy_loader import attach_power_series, load_energy_data
 from loaders.fred_loader import describe_fred_load, load_fred
 from loaders.infrastructure_loader import load_infrastructure_data
 from loaders.market_loader import load_market_universe
@@ -38,9 +38,7 @@ from loaders.water_loader import load_water_utilization_data
 from loaders.workforce_loader import load_workforce_data
 
 
-AUTOMATED_SOURCES = frozenset(RefreshSource)
-AUTOMATED_DOMAINS = frozenset({
-    RefreshSource.CURRENT_CONTEXT,
+AUTOMATED_DOMAIN_SOURCES = frozenset({
     RefreshSource.COMPUTE,
     RefreshSource.DATA_CENTERS,
     RefreshSource.CONNECTIVITY,
@@ -50,6 +48,17 @@ AUTOMATED_DOMAINS = frozenset({
     RefreshSource.ADOPTION,
     RefreshSource.WORKFORCE,
     RefreshSource.ECONOMIC_OUTCOMES,
+})
+AUTOMATED_MARKET_SOURCES = frozenset({
+    RefreshSource.YFINANCE,
+    RefreshSource.EDGAR,
+    RefreshSource.FRED,
+    RefreshSource.NYFED,
+})
+AUTOMATED_SOURCES = frozenset({
+    *AUTOMATED_DOMAIN_SOURCES,
+    *AUTOMATED_MARKET_SOURCES,
+    RefreshSource.CURRENT_CONTEXT,
 })
 
 
@@ -77,10 +86,13 @@ def _phase_end(label: str, started: float, timings: dict[str, float]) -> None:
 
 
 def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
-    """Refresh all authorized retained research inputs once.
+    """Refresh and assemble one publication candidate in dependency order.
 
     The automation worker is the only non-developer runtime permitted to call
-    this function.  Public Streamlit never reaches this path.
+    this function. Public Streamlit never reaches this path. Live automation
+    deliberately executes domain-owned providers first, shared market sources
+    second, and Current Context third. The final context is assembled only
+    after every preceding phase completes, so OpenAI cannot see a partial run.
     """
     if not automation_mode():
         raise PermissionError("Headless research refresh requires AI_MACRO_MODE=automation.")
@@ -91,7 +103,73 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
     policy = LoadPolicy.refresh(AUTOMATED_SOURCES) if live else LoadPolicy.retained()
     ticker_map = {ticker: ticker for ticker in all_tickers()}
 
-    phase_started = _phase_start("market + EDGAR")
+    # Phase 1: refresh every domain-owned provider. Power can be refreshed from
+    # its own providers using retained FRED inputs; the fresh shared FRED values
+    # are joined after the market-source phase without repeating domain I/O.
+    phase_started = _phase_start("domain sources")
+    retained_fred_data = load_fred(force_refresh=False, refresh_token=0, allow_live=False)
+
+    infrastructure_data = load_infrastructure_data(
+        refresh_token=token,
+        force_construction_refresh=force,
+        force_facility_refresh=force,
+        force_compute_refresh=force,
+        allow_construction_live=live,
+        allow_facility_live=live,
+        allow_compute_live=live,
+    )
+    connectivity_data = load_connectivity_data(
+        infrastructure_data.get("campus_registry"),
+        force_refresh=force,
+        refresh_token=token,
+        allow_live=live,
+    )
+    infrastructure_data["connectivity"] = connectivity_data
+
+    energy_data = load_energy_data(
+        fred_data=retained_fred_data,
+        force_refresh=force,
+        refresh_token=token,
+        force_fred_refresh=False,
+        fred_refresh_token=0,
+        force_market_refresh=force,
+        market_refresh_token=token,
+        market_refresh_scope="all",
+        allow_supply_live=live,
+        allow_fred_live=False,
+        allow_market_live=live,
+    )
+    water_data = load_water_utilization_data(
+        force_refresh=force,
+        refresh_token=token,
+        allow_live=live,
+    )
+    infrastructure_data, water_data = attach_water_context(infrastructure_data, water_data)
+    adoption_data = load_adoption_data(
+        force_refresh=force,
+        refresh_token=token,
+        allow_live=live,
+    )
+    workforce_data = load_workforce_data(
+        force_refresh=force,
+        refresh_token=token,
+        allow_live=live,
+    )
+    economic_impact_data = load_economic_impact_data(
+        force_refresh=force,
+        refresh_token=token,
+        allow_live=live,
+    )
+    commercialization_data = load_commercialization_data(
+        force_refresh=force,
+        refresh_token=token,
+        allow_live=live,
+    )
+    _phase_end("domain sources", phase_started, timings)
+
+    # Phase 2: refresh the shared market/finance providers, then compute every
+    # market-derived frame from that one resolved universe.
+    phase_started = _phase_start("market sources")
     raw_universe_data = load_market_universe(
         ticker_map,
         force_yfinance_refresh=force,
@@ -102,7 +180,6 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         allow_edgar_live=live,
     )
     market_report = dict(raw_universe_data.get("_load_report", {}) or {})
-    _phase_end("market + EDGAR", phase_started, timings)
     benchmark_metrics = get_benchmark_metrics_from_market_frame(
         "QQQ", raw_universe_data.get("yfinance")
     )
@@ -119,7 +196,6 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         sector_data[sector] = frame
         sector_metrics[sector] = build_sector_metrics(factors, frame)
 
-    phase_started = _phase_start("FRED + finance")
     fred_started = time.perf_counter()
     fred_data = load_fred(
         force_refresh=force,
@@ -141,48 +217,12 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         refresh_token=token,
         allow_live=live,
     )
-    _phase_end("FRED + finance", phase_started, timings)
-
-    phase_started = _phase_start("power + grid")
-    energy_data = load_energy_data(
-        fred_data=fred_data,
-        force_refresh=force,
-        refresh_token=token,
-        force_fred_refresh=force,
-        fred_refresh_token=token,
-        force_market_refresh=force,
-        market_refresh_token=token,
-        market_refresh_scope="all",
-        allow_supply_live=live,
-        allow_fred_live=live,
-        allow_market_live=live,
-    )
-    _phase_end("power + grid", phase_started, timings)
-
-    phase_started = _phase_start("infrastructure + connectivity")
-    infrastructure_data = load_infrastructure_data(
-        refresh_token=token,
-        force_construction_refresh=force,
-        force_facility_refresh=force,
-        force_compute_refresh=force,
-        allow_construction_live=live,
-        allow_facility_live=live,
-        allow_compute_live=live,
-    )
-    connectivity_data = load_connectivity_data(
-        infrastructure_data.get("campus_registry"),
-        force_refresh=force,
-        refresh_token=token,
-        allow_live=live,
-    )
-    infrastructure_data["connectivity"] = connectivity_data
+    energy_data = attach_power_series(energy_data, fred_data)
     construction_data = load_data_center_construction(
         force_refresh=False,
         refresh_token=token,
         allow_live=False,
     )
-    _phase_end("infrastructure + connectivity", phase_started, timings)
-
     fred_history = load_fred_history()
     macro_history = load_macro_history()
     regime_metrics = build_regime_metrics(
@@ -193,50 +233,11 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         construction_data=construction_data,
         macro_history=macro_history,
     )
+    _phase_end("market sources", phase_started, timings)
 
-    phase_started = _phase_start("water")
-    water_data = load_water_utilization_data(
-        force_refresh=force,
-        refresh_token=token,
-        allow_live=live,
-    )
-    infrastructure_data, water_data = attach_water_context(infrastructure_data, water_data)
-    _phase_end("water", phase_started, timings)
-
-    phase_started = _phase_start("adoption")
-    adoption_data = load_adoption_data(
-        force_refresh=force,
-        refresh_token=token,
-        allow_live=live,
-    )
-    _phase_end("adoption", phase_started, timings)
-
-    phase_started = _phase_start("workforce")
-    workforce_data = load_workforce_data(
-        force_refresh=force,
-        refresh_token=token,
-        allow_live=live,
-    )
-    _phase_end("workforce", phase_started, timings)
-
-    phase_started = _phase_start("economic outcomes")
-    economic_impact_data = load_economic_impact_data(
-        force_refresh=force,
-        refresh_token=token,
-        allow_live=live,
-    )
-    _phase_end("economic outcomes", phase_started, timings)
-
-    phase_started = _phase_start("commercialization")
-    commercialization_data = load_commercialization_data(
-        force_refresh=force,
-        refresh_token=token,
-        allow_live=live,
-    )
-
-    _phase_end("commercialization", phase_started, timings)
-
-    phase_started = _phase_start("Current Context")
+    # Phase 3: refresh contextual developments only after the retained domain
+    # and market source state has resolved.
+    phase_started = _phase_start("current context")
     if live:
         context_refresh = refresh_current_context_once_daily(
             as_of=as_of or market_date(),
@@ -255,9 +256,11 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         retained_context = load_retained_context_snapshot(as_of=as_of or market_date())
         context_refresh = dict(retained_context.get("report") or {})
         current_context = dict(retained_context.get("current_context") or {})
-    _phase_end("Current Context", phase_started, timings)
+    _phase_end("current context", phase_started, timings)
 
-    phase_started = _phase_start("assemble + persist snapshots")
+    # Phase 4: assemble and persist the exact evidence state that generation
+    # will receive. No provider calls occur beyond this point.
+    phase_started = _phase_start("assemble + persist")
     dashboard_data = build_macro_dashboard_data(
         sector_metrics=sector_metrics,
         regime_metrics=regime_metrics,
@@ -311,7 +314,7 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         "current_context": context_refresh,
         "snapshot_write": snapshot_write_report,
     }
-    _phase_end("assemble + persist snapshots", phase_started, timings)
+    _phase_end("assemble + persist", phase_started, timings)
     return RefreshBundle(
         context=context,
         reports=reports,

@@ -1,0 +1,71 @@
+{
+  "checkpoint": "ai_macro_language_layer_mission_confirmation",
+  "version": "1.0",
+  "date": "2026-08-12",
+  "status": "AWAITING_USER_CONFIRMATION",
+  "production_code_changed": false,
+  "mission": "Provide a portable corpus-derived language-guidance layer inside one authorized OpenAI request; persist and publish the exact returned prose without downstream rewriting.",
+  "runtime_pipeline": [
+    "owner_action_or_approved_schedule_authorizes_generation",
+    "deterministic_platform_builds_current_evidence_bundle",
+    "platform_loads_versioned_language_layer",
+    "request_composer_combines_evidence_language_layer_and_output_contract",
+    "one_openai_api_call_generates_all_domain_and_macro_reads",
+    "exact_response_is_persisted_before_parsing_or_diagnostics",
+    "structure_is_parsed_without_changing_returned_text",
+    "exact_returned_prose_is_published",
+    "optional_diagnostics_are_attached_separately"
+  ],
+  "paid_call_contract": {
+    "calls_per_authorized_generation": 1,
+    "sdk_retries": 0,
+    "editor_calls": 0,
+    "critic_calls": 0,
+    "repair_calls": 0,
+    "replacement_calls": 0,
+    "validation_triggered_calls": 0,
+    "fallback_generation_calls": 0
+  },
+  "publication_contract": {
+    "publish_every_returned_response": true,
+    "persist_exact_response_before_handling": true,
+    "rewrite_after_response": false,
+    "validator_can_block": false,
+    "validator_can_trigger_call": false,
+    "prior_read_can_replace_new_response": false,
+    "malformed_but_usable_prose_remains_visible": true,
+    "no_response_transport_failure": "record_failure_without_unauthorized_second_call"
+  },
+  "language_layer_contains": [
+    "universal_voice_and_reasoning_principles",
+    "domain_conditioned_vocabulary_and_relationship_structures",
+    "evidence_conditioned_expression_rules",
+    "argument_and_sentence_architecture_inventory",
+    "cross_domain_macro_synthesis_guidance",
+    "cadence_and_nonrepetition_guidance",
+    "uncertainty_causal_null_heterogeneity_and_limitation_discipline",
+    "bounded_neuroscience_systems_reasoning",
+    "generalized_editorial_antipatterns"
+  ],
+  "language_layer_excludes": [
+    "current_facts",
+    "provider_access",
+    "api_credentials",
+    "billing_authority",
+    "scheduling_or_automation",
+    "publication_control",
+    "post_generation_rewrite_logic",
+    "retry_or_replacement_logic"
+  ],
+  "offline_corpus_pipeline": [
+    "audit_domain_corpora",
+    "extract_traceable_rhetorical_knowledge",
+    "classify_universal_domain_and_evidence_conditioned_rules",
+    "build_human_auditable_and_machine_readable_layer",
+    "evaluate_on_fixed_evidence_fixtures",
+    "version_and_release_layer",
+    "supply_layer_inside_runtime_request"
+  ],
+  "rebuild_not_authorized_until_confirmation": true,
+  "canonical_specification": "docs/AI_MACRO_LANGUAGE_LAYER_MISSION_CONFIRMATION_v1.0.md"
+}

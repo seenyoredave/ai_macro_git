@@ -1,9 +1,9 @@
-"""Deterministic evidence packets for the v7 commentary layer.
+"""Deterministic evidence packets for the AI Macro commentary layer.
 
 This module owns facts, boundaries, importance heuristics, and source lineage.
 It deliberately does not write Reader prose.  OpenAI receives these packets as
-its exclusive factual record; generated commentary is validated against the
-fact identifiers before it may be published.
+its exclusive factual record; generated commentary is audited against the fact
+identifiers before it is published with those diagnostics.
 """
 
 from __future__ import annotations

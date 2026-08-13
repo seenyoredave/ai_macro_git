@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import os
 
 DEFAULT_OPENAI_MODEL = "gpt-5.6-sol"
-DEFAULT_REASONING_EFFORT = "medium"
+DEFAULT_REASONING_EFFORT = "xhigh"
 
 
 def _streamlit_secret(name: str) -> str:

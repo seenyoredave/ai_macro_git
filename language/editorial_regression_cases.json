@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "source_attempt_id": "20260812T234208665912Z_5e12ee24_d0906652",
+  "source_artifact_sha256": "715a82fdde78300f98c6ca68ca6cfd3c7872bf5d8a4b87a4c496cb4dbdf00c49",
+  "purpose": "Production failures that every later editorial engine must reject rather than imitate.",
+  "cases": [
+    {
+      "id": "REG-001",
+      "scope": "macro",
+      "text": "Operating cash covers current capital spending at covered companies, but the 5.04-times commitment load pushes funding needs well beyond today's build.",
+      "failures": ["overloaded sentence", "abstract noun stack", "awkward ratio rendering", "unclear temporal referent", "poor spoken cadence"],
+      "instruction": "Split current funding capacity from future obligations. Name commitments directly and remove the undefined phrase today's build."
+    },
+    {
+      "id": "REG-002",
+      "scope": "macro",
+      "text": "AI investment is advancing faster than its conversion into capacity and broad economic gains.",
+      "failures": ["abstract conversion language", "two downstream stages compressed into one comparison"],
+      "instruction": "Name the physical and economic transitions separately."
+    },
+    {
+      "id": "REG-003",
+      "scope": "finance",
+      "text": "Internal cash funds current spending, not the full commitment pipeline.",
+      "failures": ["negative-identity headline", "mechanical current-versus-future contrast"],
+      "instruction": "State what cash covers and what commitments require as a forward relationship."
+    },
+    {
+      "id": "REG-004",
+      "scope": "compute",
+      "text": "Those commitments expand supply options but do not yet represent delivered or operating compute capacity.",
+      "failures": ["recycled plan-is-not-operation ending", "binary distinction substitutes for analysis"],
+      "instruction": "Explain the work or transition between announced projects and usable supply."
+    },
+    {
+      "id": "REG-005",
+      "scope": "data_center",
+      "text": "The registry therefore shows considerable option value, not an equivalent amount of energized load.",
+      "failures": ["finance metaphor in infrastructure prose", "negative-identity ending", "abstract conclusion"],
+      "instruction": "Describe what the registry establishes and what conversion remains without option-value language."
+    },
+    {
+      "id": "REG-006",
+      "scope": "connectivity",
+      "text": "Broad network reach therefore does not establish usable capacity at each campus, especially where private connections remain unobserved.",
+      "failures": ["recycled does-not-establish ending", "caveat carries the conclusion"],
+      "instruction": "Lead with the uneven local connection picture and keep the measurement boundary subordinate."
+    }
+  ],
+  "abstract_phrases": [
+    "commitment load",
+    "funding needs",
+    "today's build",
+    "conversion into capacity",
+    "broader outcomes",
+    "carries the buildout",
+    "definition-matched",
+    "option value",
+    "financing capacity",
+    "current condition"
+  ],
+  "mechanical_distinction_phrases": [
+    "does not establish",
+    "do not yet represent",
+    "not an equivalent amount",
+    "cannot by itself show",
+    "does not remove"
+  ]
+}

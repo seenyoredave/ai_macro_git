@@ -1,0 +1,38 @@
+{
+  "artifact_type": "ai_macro_matched_overwrite_manifest",
+  "schema_version": "1.0",
+  "application_version": "v9.4.1",
+  "purpose": "Prevent a split-version installation between the explanatory language source, compiler, and compiled payload, and correct the five-domain test fixture.",
+  "required_files": {
+    "ai_macro.py": {
+      "required_marker": "APP_VERSION = \"v9.4.1\""
+    },
+    "language/AI_MACRO_LANGUAGE_LAYER_SOURCE_v1.0.json": {
+      "layer_version": "language-layer-1.4.0",
+      "required_top_level_key": "reader_pedagogy"
+    },
+    "language/AI_MACRO_LANGUAGE_LAYER_v1.0.json": {
+      "layer_version": "language-layer-1.4.0",
+      "payload_sha256": "997a44aa7caa98536ebcad43b6bb19c81cef19d541eb44ae79f4b1f4f53fb4a5"
+    },
+    "tooling/compile_language_layer.py": {
+      "required_marker": "Reader pedagogy is missing"
+    },
+    "helpers/language_layer_contract_test.py": {
+      "required_marker": "Reader teaching sequence is incomplete"
+    },
+    "helpers/stack_completion_fidelity_smoke_test.py": {
+      "selected_domain_count": 5,
+      "selected_domains": [
+        "finance",
+        "data_center",
+        "power",
+        "adoption",
+        "economic_impact"
+      ]
+    }
+  },
+  "automation_changed": false,
+  "paid_call_contract_changed": false,
+  "retained_state_included": false
+}

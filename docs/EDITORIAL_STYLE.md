@@ -52,13 +52,23 @@ Statistics support those points; they are not the points themselves. Avoid strin
 
 Use one or two numbers when they sharpen an interpretation. Prefer comparisons and implications over recitation.
 
-The readability target is expert-valid, non-specialist-readable. A domain expert should agree with the substance, while a smart reader outside the field should be able to follow the argument without learning a new vocabulary first. Simplify words and sentence structure rather than inserting definitions. Do not turn the Read into a glossary, add parenthetical mini-lessons, or define technical terms mid-sentence; if a specialist term is unnecessary, state the underlying idea in ordinary language instead.
+The readability target is expert-valid and sophisticated-non-specialist-readable. Write for a highly intelligent, widely read, operationally experienced adult who may know little about the specific field. Assume strong reasoning ability. Supply enough context to identify an unfamiliar subject or measure, but do not simplify the analysis, announce the lesson, or adopt a classroom tone. Preserve a useful specialist term when it carries analytical meaning; explain it naturally from context when necessary.
 
 Elegance comes from logical order, not compression. Each sentence should do one main analytical job. Prefer concrete subjects and verbs, and allow a short sentence when it gives the paragraph shape. Reuse the correct noun instead of reaching for a synonym merely to vary the prose.
 
 Preserve analytical hierarchy. Investment, construction, operating capacity, adoption, and economic outcomes may belong in the same argument without being peers. Use **but, while, yet, whereas,** and similar contrast words only when the concepts are genuinely comparable. When one concept funds, enables, constrains, produces, or translates into another, state that relationship directly.
 
-Prefer zero to two commas in a Read sentence. Three is a warning that the sentence may be carrying too much. Four or more fails the publication style gate. Semicolons are not used in Reader commentary. Domain Reads should usually be 55–85 words and must stay at or below 95. AI Macro should usually be 85–110 words and must stay at or below 120. Individual analysis sentences must stay at or below 32 words.
+Every sentence must supply enough context to stand on its own. On first reference, identify an unfamiliar population, cohort, company set, metric, proxy, institution, lifecycle stage, or process. Do not use internal labels such as `covered issuers`, `covered companies`, or `covered cohort` without saying what group they describe.
+
+Explain only what the reader needs to follow the argument. Do not give a roadmap of domains, define ordinary financial or economic reasoning, or turn an intelligible ratio into an arithmetic lesson. Name the denominator and explain the consequence when they are not already clear. Use additional space for context, mechanism, or implication rather than padding.
+
+Read sentences for sound as well as meaning. Do not use three or more successive words beginning with the same letter. Articles, conjunctions, and short prepositions neither contribute to nor excuse an otherwise conspicuous run. Rewrite phrases such as `Covered companies can` or `cash covers current` even when they are grammatically correct.
+
+Keep the analytical Read nonpartisan and outside social-identity debates. Do not introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity into domain or Macro commentary.
+
+Do not use **minority** or **majority** as a modifier for a measured proportion of people, businesses, workers, consumers, users, adoption, participation, or employment. That construction is both ambiguous and clumsy. Make the counted population the grammatical subject: `Fewer than half of businesses currently report AI use`, or state the measured percentage. Do not write `minority current business use`.
+
+Prefer zero to two commas in a Read sentence. Three is a warning that the sentence may be carrying too much. Four or more fails the publication style gate. Semicolons are not used in Reader commentary. Domain Reads should usually be 55–85 words and must stay at or below 95. AI Macro uses three paragraphs by default and a fourth only when analytically necessary. Each paragraph contains two to four sentences. The Read should usually contain 150–225 words, has no minimum word count, must stay at or below 250, and uses no more than 28 words in an individual analysis sentence.
 
 Examples of the intended distinction:
 

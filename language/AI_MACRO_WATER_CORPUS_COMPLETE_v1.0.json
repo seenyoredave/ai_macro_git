@@ -1,0 +1,2294 @@
+{
+  "schema_version": "1.0-water-complete",
+  "artifact_type": "AI_MACRO_DOMAIN_CORPUS_COMPLETE",
+  "domain": "water",
+  "status": "COMPLETE",
+  "created_at": "2026-08-12T23:45:00-07:00",
+  "supersedes": [
+    "AI_MACRO_WATER_CORPUS_WORKING_v0.1.json",
+    "AI_MACRO_WATER_CORPUS_WORKING_v0.2.json",
+    "AI_MACRO_WATER_CORPUS_WORKING_v0.3.json",
+    "AI_MACRO_WATER_CORPUS_WORKING_v0.4.json",
+    "AI_MACRO_WATER_CORPUS_WORKING_v0.5.json",
+    "AI_MACRO_WATER_CORPUS_WORKING_v0.6.json"
+  ],
+  "corpus_purpose": "A prompt-time reasoning and language corpus for OpenAI generation. It teaches the Water domain how to distinguish water fates, evidence classes, spatial scales, infrastructure conditions and operating regimes. It does not provide runtime facts and must not deterministically rewrite generated prose.",
+  "runtime_boundary": {
+    "academic_sources": "Analytical and rhetorical guidance only; never substitute paper quantities for current platform evidence.",
+    "long_form_sources": "Production-form and boundary guidance only; paper quantities are not injected as current facts unless independently present in the runtime evidence packet.",
+    "generation_contract": "All corpus rules and current evidence are supplied to OpenAI before generation. Domain Reads are generated first; accepted domain outputs and evidence then feed the AI Macro roll-up. No hidden replacement call, automatic retry, fallback generation, or post-generation prose mutation is authorized.",
+    "water_boundary": "Withdrawal, consumption, delivery, discharge and return flow remain distinct. National and state exposure context does not establish facility availability, cooling design, source, rights, utility service or operating demand."
+  },
+  "methodology": {
+    "journal_gate": {
+      "minimum_current_jif": 2.0,
+      "decision_rule": "The journal's current verified impact factor must meet or exceed 2.0; a qualifying journal does not waive the complete-text audit.",
+      "admitted_source_passes": 30
+    },
+    "counting_rules": {
+      "found": "A bibliographically identified candidate, including blocked candidates and replacements.",
+      "screened": "Identity, relevance, current journal gate and prospective full-text route checked.",
+      "full_text_accessed": "Complete framing, methods, results, discussion and limitations or genre-equivalent sections were available.",
+      "fully_analyzed": "Every substantive section was reviewed and a bounded extraction was recorded.",
+      "admitted": "Journal gate passed, complete-text audit passed and the source contributed a transferable analytical observation.",
+      "transfers": "Previously complete audits are not described as newly read; original provenance is retained."
+    },
+    "full_text_rule": "Admission required complete substantive access and review of framing, methods, results, discussion, limitations and genre-equivalent sections.",
+    "saturation_rule": "Two consecutive independent five-paper challenge batches must add no more than two universal families each and reopen no foundation gap.",
+    "long_form_rule": "Two complete technical texts and approximately fourteen passage analyses; store learned moves, not copied passages.",
+    "rights_boundary": "Store structured observations, provenance and learned form rather than copyrighted prose."
+  },
+  "progress": {
+    "found": 32,
+    "screened": 32,
+    "full_text_accessed": 30,
+    "fully_analyzed": 30,
+    "admitted": 30,
+    "audit_blocked": 2,
+    "rejected": 0,
+    "verified_atomic_observations": 120,
+    "universal_families": 12,
+    "long_form_texts": 2,
+    "long_form_passages": 14,
+    "saturation_challenges_passed": 2,
+    "integrated_confirmation_passed": true
+  },
+  "verified_admissions": [
+    {
+      "source_id": "WTR-FND-001",
+      "prior_source_id": "DC-FND-002",
+      "transfer_status": "TRANSFERRED_COMPLETE_AUDIT_NOT_NEWLY_READ",
+      "title": "Data centre water consumption",
+      "authors_short": "Mytton",
+      "journal": "npj Clean Water",
+      "year": 2021,
+      "doi": "10.1038/s41545-021-00101-w",
+      "journal_gate": {
+        "current_jif": 11.0,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/npjcleanwater/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41545-021-00101-w",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json / DC-FND-002"
+      },
+      "water_extraction": "Separates direct cooling water from electricity-source water; distinguishes withdrawal from consumption; defines site WUE and source-inclusive WUE; treats sparse, inconsistent operator disclosure as a measurement limitation.",
+      "limits": [
+        "No universal facility intensity follows from heterogeneous cooling, climate, source and grid conditions.",
+        "WUE is denominator-sensitive and incomplete when used without source-energy water.",
+        "Secondary synthesis supports accounting language, not facility-specific causal claims."
+      ],
+      "decision": "ADMITTED_BY_VERIFIED_TRANSFER"
+    },
+    {
+      "source_id": "WTR-FND-002",
+      "prior_source_id": "DC-FND-003",
+      "transfer_status": "TRANSFERRED_COMPLETE_AUDIT_NOT_NEWLY_READ",
+      "title": "Using life cycle assessment to drive innovation for sustainable cool clouds",
+      "authors_short": "Alissa et al.",
+      "journal": "Nature",
+      "year": 2025,
+      "doi": "10.1038/s41586-025-08832-3",
+      "journal_gate": {
+        "current_jif": 56.1,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/nature/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete 14-page publisher-provided PDF mirror",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json / DC-FND-003"
+      },
+      "water_extraction": "Uses cradle-to-grave functional units to compare air, cold-plate and immersion cooling; shows that water savings can coexist with energy, refrigerant, material, spill, safety and end-of-life tradeoffs.",
+      "limits": [
+        "Comparative savings are conditional on engineering and lifecycle assumptions.",
+        "Inventory proxies and missing uncertainty distributions constrain precision.",
+        "No cooling technology is universally superior."
+      ],
+      "decision": "ADMITTED_BY_VERIFIED_TRANSFER"
+    },
+    {
+      "source_id": "WTR-FND-003",
+      "prior_source_id": "DC-FND-014",
+      "transfer_status": "TRANSFERRED_COMPLETE_AUDIT_NOT_NEWLY_READ",
+      "title": "The environmental footprint of data centers in the United States",
+      "authors_short": "Siddik et al.",
+      "journal": "Environmental Research Letters",
+      "year": 2021,
+      "doi": "10.1088/1748-9326/abfba1",
+      "journal_gate": {
+        "current_jif": 5.4,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "verification": "Current metric crosschecked; publisher metrics page crawler-inaccessible."
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete IOP CC BY full text",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json / DC-FND-014"
+      },
+      "water_extraction": "Links facilities, grids, utilities and watersheds to distinguish direct water, electricity-related water and scarcity-weighted impact; demonstrates that favorable national siting averages do not establish local infrastructure headroom.",
+      "limits": [
+        "Facility energy and direct water are modeled, not metered comprehensively.",
+        "Annual grid attribution cannot resolve marginal or hourly supply.",
+        "A uniform cooling-water factor suppresses facility heterogeneity."
+      ],
+      "decision": "ADMITTED_BY_VERIFIED_TRANSFER"
+    },
+    {
+      "source_id": "WTR-FND-004",
+      "prior_source_id": "DC-GAP-016",
+      "transfer_status": "TRANSFERRED_COMPLETE_AUDIT_NOT_NEWLY_READ",
+      "title": "Environmental footprints of the data center service sector in Sweden",
+      "authors_short": "Jerléus et al.",
+      "journal": "Heliyon",
+      "year": 2024,
+      "doi": "10.1016/j.heliyon.2024.e31290",
+      "journal_gate": {
+        "current_jif": 3.6,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.sciencedirect.com/journal/heliyon"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete PubMed Central JATS full text",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json / DC-GAP-016"
+      },
+      "water_extraction": "Shows how mixed public evidence and imputation can produce a useful inventory while leaving modeled electricity and water totals distinct from a metered census; exposes mixed-scale proxy problems in siting scores.",
+      "limits": [
+        "Uniform water factors erase cooling differences.",
+        "Suitability scores are not realized performance.",
+        "Municipal or county context does not prove facility connection or supply."
+      ],
+      "decision": "ADMITTED_BY_VERIFIED_TRANSFER"
+    },
+    {
+      "source_id": "WTR-FND-005",
+      "prior_source_id": "DC-GAP-018",
+      "transfer_status": "TRANSFERRED_COMPLETE_AUDIT_NOT_NEWLY_READ",
+      "title": "The relationship between data centers and the climate is a systems challenge: a spatial analysis of United States data centers",
+      "authors_short": "Kollar and Grady",
+      "journal": "Environmental Research Communications",
+      "year": 2025,
+      "doi": "10.1088/2515-7620/ae193a",
+      "journal_gate": {
+        "current_jif": 2.7,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "verification": "Current JIF crosschecked; publisher metrics page crawler-inaccessible."
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete IOP open-access full text",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json / DC-GAP-018"
+      },
+      "water_extraction": "Treats water stress, heat and grid emissions as distinct spatial layers whose burdens may not align; supports exposure-screen language while rejecting conversion of ordinal risk categories into site probabilities.",
+      "limits": [
+        "The location registry lacks capacity, operating state and cooling design.",
+        "Water, heat and grid measures have different periods and spatial units.",
+        "Spatial association is not facility-level causation or service availability."
+      ],
+      "decision": "ADMITTED_BY_VERIFIED_TRANSFER"
+    },
+    {
+      "source_id": "WTR-FND-006",
+      "prior_source_id": "DC-GAP-023",
+      "transfer_status": "TRANSFERRED_COMPLETE_AUDIT_NOT_NEWLY_READ",
+      "title": "Environmental impact and net-zero pathways for sustainable artificial intelligence servers in the USA",
+      "authors_short": "Xiao et al.",
+      "journal": "Nature Sustainability",
+      "year": 2025,
+      "doi": "10.1038/s41893-025-01681-y",
+      "journal_gate": {
+        "current_jif": 32.1,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/natsustain/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete 21-page publisher article",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json / DC-GAP-023"
+      },
+      "water_extraction": "Separates facility and grid water in a state-level scenario model; shows that efficiency, siting and grid decarbonization have different water effects and that carbon optimization can increase hydrologic burden.",
+      "limits": [
+        "Scenario ranges are conditional outputs, not forecasts with known probabilities.",
+        "Cooling configurations and future geographic allocation are modeled.",
+        "Corporate instruments are not direct physical water reductions."
+      ],
+      "decision": "ADMITTED_BY_VERIFIED_TRANSFER"
+    },
+    {
+      "source_id": "WTR-FND-007",
+      "prior_source_id": "DC-GAP-025",
+      "transfer_status": "TRANSFERRED_COMPLETE_AUDIT_NOT_NEWLY_READ",
+      "title": "Global data center expansion and human health: A call for empirical research",
+      "authors_short": "Tao and Gao",
+      "journal": "Eco-Environment & Health",
+      "year": 2025,
+      "doi": "10.1016/j.eehl.2025.100157",
+      "journal_gate": {
+        "current_jif": 13.4,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.sciencedirect.com/journal/eco-environment-and-health"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete PubMed Central JATS article",
+        "provenance": "AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json / DC-GAP-025"
+      },
+      "water_extraction": "Defines plausible community and public-health pathways but makes clear that withdrawal examples alone do not establish exposure, disease incidence or facility causation.",
+      "limits": [
+        "It is a research agenda, not original epidemiology.",
+        "Cited values have different denominators.",
+        "Health claims require a population, exposure, counterfactual and outcome design."
+      ],
+      "decision": "ADMITTED_BY_VERIFIED_TRANSFER"
+    },
+    {
+      "source_id": "WTR-FND-008",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Indicator metrics and temporal aggregations introduce ambiguities in water scarcity estimates",
+      "authors_short": "Wolkeba et al.",
+      "journal": "Scientific Reports",
+      "year": 2024,
+      "doi": "10.1038/s41598-024-65155-5",
+      "journal_gate": {
+        "current_jif": 3.9,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/srep/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41598-024-65155-5",
+        "extent": "Complete framing, seven indicators, eleven environmental-flow requirements, spatial and temporal aggregation methods, results, discussion, limitations, data and disclosures reviewed."
+      },
+      "water_extraction": "Using one model and common inputs, estimates change materially with indicator, environmental-flow requirement, grid versus basin aggregation, and annual versus monthly treatment. Scarcity is therefore a constructed measurement result, not a context-free site fact.",
+      "limits": [
+        "Global hydrologic-model outputs do not resolve utility or facility deliverability.",
+        "Monthly, annual, basin and grid estimates answer different questions.",
+        "A single scarcity method can conceal disagreement and seasonality."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-FND-009",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Future global urban water scarcity and potential solutions",
+      "authors_short": "He et al.",
+      "journal": "Nature Communications",
+      "year": 2021,
+      "doi": "10.1038/s41467-021-25026-3",
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/ncomms/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41467-021-25026-3",
+        "extent": "Complete scenarios, city-demand and availability methods, solution screens, results, discussion, uncertainty, limitations, data and disclosures reviewed."
+      },
+      "water_extraction": "Potential supply responses—efficiency, desalination, groundwater, reservoirs, transfers and virtual-water trade—are geographically and economically conditional and can carry large investment, environmental and social consequences.",
+      "limits": [
+        "Modeled feasibility is not a funded, permitted or operating project.",
+        "Scenario and input uncertainty is substantial.",
+        "A broad city-level option does not establish a campus contract or utility headroom."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-FND-010",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Hotspots for social and ecological impacts from freshwater stress and storage loss",
+      "authors_short": "Huggins et al.",
+      "journal": "Nature Communications",
+      "year": 2022,
+      "doi": "10.1038/s41467-022-28029-w",
+      "journal_gate": {
+        "current_jif": 18.1,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/ncomms/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41467-022-28029-w",
+        "extent": "Complete stress, storage, vulnerability, ecological-sensitivity and adaptive-capacity construction; results; discussion; reductionist-proxy limits; methods; data and disclosures reviewed."
+      },
+      "water_extraction": "Freshwater stress, storage loss, exposure, sensitivity and adaptive capacity are separate constructs. Basin hotspot status indicates potential vulnerability and prioritization need, not a deterministic local impact.",
+      "limits": [
+        "Basin totals are upper-bound exposure contexts, not universal effects.",
+        "Adaptive capacity and ecological sensitivity are proxy constructs.",
+        "Global basin analysis cannot establish facility-level availability or harm."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-FND-011",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Guiding urban water management towards 1.5 °C",
+      "authors_short": "Parkinson",
+      "journal": "npj Clean Water",
+      "year": 2021,
+      "doi": "10.1038/s41545-021-00126-1",
+      "journal_gate": {
+        "current_jif": 11.0,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/npjcleanwater/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41545-021-00126-1",
+        "extent": "Complete perspective, scenario synthesis, supply-to-end-use boundaries, conservation, decentralized systems, river-basin allocation, sequencing, equity and research limitations reviewed."
+      },
+      "water_extraction": "Water-system changes must be assessed from supply through end use and over infrastructure lifecycles; end-use conservation, decentralization and basin allocation can shift energy, emissions, cost and equity outcomes.",
+      "limits": [
+        "Perspective scenarios do not prove realized project performance.",
+        "Static marginal rankings can miss sequencing and cross-sector effects.",
+        "Carbon-aware water management can create affordability burdens."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-FND-012",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Decision making for implementing non-traditional water sources: a review of challenges and potential solutions",
+      "authors_short": "Quon and Jiang",
+      "journal": "npj Clean Water",
+      "year": 2023,
+      "doi": "10.1038/s41545-023-00273-7",
+      "journal_gate": {
+        "current_jif": 11.0,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/npjcleanwater/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41545-023-00273-7",
+        "extent": "Complete review of source definitions, quantity, quality, health, energy, cost, governance, implementation models, local externalities, research gaps and disclosures reviewed."
+      },
+      "water_extraction": "Rain, condensate, stormwater, recycled wastewater, greywater and desalinated water differ in quality, reliability, treatment, energy, cost, governance and infrastructure. Reclaimed-water labels alone do not establish suitability or availability.",
+      "limits": [
+        "There is no one-size-fits-all alternative source.",
+        "Model comparisons must retain local permitting, financing, health and externality conditions.",
+        "Potential volume is not delivered fit-for-purpose supply."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-FND-013",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Pathways to a net-zero-carbon water sector through energy-extracting wastewater technologies",
+      "authors_short": "Rani et al.",
+      "journal": "npj Clean Water",
+      "year": 2022,
+      "doi": "10.1038/s41545-022-00197-8",
+      "journal_gate": {
+        "current_jif": 11.0,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/npjcleanwater/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41545-022-00197-8",
+        "extent": "Complete review of wastewater-energy pathways, readiness levels, membrane and catalyst constraints, methane and leakage, resource recovery, scale-up, conclusions and disclosures."
+      },
+      "water_extraction": "Wastewater can contain recoverable energy, water and nutrients, but recovery technologies occupy different readiness stages and introduce membrane, catalyst, leakage, chemical, energy and operating constraints.",
+      "limits": [
+        "Embedded theoretical energy is not recoverable net energy.",
+        "Many pathways remain low-readiness or cost-constrained.",
+        "Recovery and reuse must account for methane leakage, water quality and additional process burdens."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-FND-014",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Water use in the United States energy system: A national assessment and unit process inventory of water consumption and withdrawals",
+      "authors_short": "Grubert and Sanders",
+      "journal": "Environmental Science & Technology",
+      "year": 2018,
+      "doi": "10.1021/acs.est.8b00139",
+      "journal_gate": {
+        "current_jif": 12.2,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://pubs.acs.org/page/esthag/about.html"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete 35-page accepted author manuscript",
+        "source": "https://emilygrubert.org/wp-content/uploads/2018/10/PREPRINT-Grubert-Sanders-Water-for-US-Energy.pdf",
+        "extent": "Complete system boundary, 17 fuel-cycle methods, source and quality classifications, withdrawal/consumption/return-flow definitions, results, data hierarchy, assumptions, limitations and supporting-information structure reviewed."
+      },
+      "water_extraction": "Mass-transfer definitions separate withdrawal, return flow and consumption across fuel cycles, water sources and qualities; inconsistent definitions, incomplete metering and ambiguous units are major barriers to energy-water comparison.",
+      "limits": [
+        "The inventory is a 2014 national system estimate, not current plant or campus evidence.",
+        "Embodied water, foreign flows and water-quality impacts are excluded.",
+        "Data confidence varies by fuel cycle and reporting regime."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-FND-015",
+      "transfer_status": "NEW_WATER_AUDIT",
+      "title": "Using water and wastewater decentralization to enhance the resilience and sustainability of cities",
+      "authors_short": "Garrido-Baserba et al.",
+      "journal": "Nature Water",
+      "year": 2024,
+      "doi": "10.1038/s44221-024-00303-9",
+      "journal_gate": {
+        "current_jif": 24.1,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/natwater/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML plus supplementary-method register",
+        "source": "https://www.nature.com/articles/s44221-024-00303-9",
+        "extent": "Complete unit-process model, source separation, centralized/decentralized boundary, water-energy-nutrient flows, technical/economic/environmental outputs, feasibility limits, quality constraints, conclusion and disclosures reviewed."
+      },
+      "water_extraction": "Decentralized source separation can enable fit-for-purpose reuse and local resource recovery, but comparison requires functional equivalence, treatment-quality constraints, network costs, operating capability and local institutional fit.",
+      "limits": [
+        "A modeled representative block is not evidence for every city or campus.",
+        "Centralized and decentralized systems cannot be compared without common service functions.",
+        "Reuse potential requires treatment, storage, distribution, monitoring and acceptance."
+      ],
+      "decision": "ADMITTED_AFTER_NEW_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-016",
+      "title": "The water use of data center workloads: A review and assessment of key determinants",
+      "authors_short": "Lei et al.",
+      "journal": "Resources, Conservation and Recycling",
+      "year": 2025,
+      "doi": "10.1016/j.resconrec.2025.108310",
+      "journal_gate": {
+        "current_jif": 10.4,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.sciencedirect.com/journal/resources-conservation-and-recycling"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete 60-page LBNL/UC accepted manuscript with supporting information",
+        "source": "https://escholarship.org/content/qt1vx545q7/qt1vx545q7.pdf",
+        "extent": "Complete framing, workload metric, direct and indirect boundary, server benchmark model, ten cooling configurations, nineteen climate zones, grid water factors, decomposition, sensitivity ranking, implications, limitations and supporting-information sections reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The paper decomposes liters consumed per workload into server workload efficiency, facility WUE, PUE and electricity water-consumption factors, then tests interacting determinants across server, cooling, climate and grid conditions.",
+        "measurement_and_denominator": "Workload water equals direct facility water plus electricity use times a grid water factor. WUE-site and WUE-source are per IT-energy metrics; they do not measure computing output and therefore cannot compare unlike workload efficiencies by themselves.",
+        "heterogeneity_and_regime": "Server efficiency and utilization, grid water factor, cooling configuration, facility efficiency, climate, inactive-server share and refresh cycle interact. No single cooling or siting recipe minimizes water everywhere.",
+        "limitations": [
+          "SPECpower_ssj is a server benchmark rather than an observed universal workload.",
+          "Generation-weighted U.S. water factors suppress regional plant, cooling and allocation differences.",
+          "Cooling archetypes are simulated and real operator PUE/WUE disclosure remains sparse.",
+          "Workload metrics require a defined service and performance benchmark."
+        ],
+        "anti_patterns": [
+          "Do not compare sites on WUE alone when workload efficiency differs.",
+          "Do not treat liters per workload as model-independent.",
+          "Do not infer one globally optimal cooling design from a sensitivity ranking."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-017",
+      "title": "The carbon and water footprints of data centers and what this could mean for artificial intelligence",
+      "authors_short": "de Vries-Gao",
+      "journal": "Patterns",
+      "year": 2025,
+      "issue_year": 2026,
+      "doi": "10.1016/j.patter.2025.101430",
+      "journal_gate": {
+        "current_jif": 10.8,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.cell.com/patterns/faq"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access author-uploaded article",
+        "source": "https://www.researchgate.net/publication/398789093_The_carbon_and_water_footprints_of_data_centers_and_what_this_could_mean_for_artificial_intelligence",
+        "extent": "Complete operational boundary, company disclosure matrix, equations, location-level examples, direct and indirect water estimates, AI allocation, discussion, uncertainty, policy proposal, data and disclosures reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study inventories which operators disclose company, data-center, facility and AI-specific electricity, PUE, WUE, direct water and indirect water, then demonstrates how missing layers force progressively weaker approximations.",
+        "measurement_and_denominator": "Direct WUE requires direct consumed water and IT electricity; deriving it from facility electricity additionally requires PUE. Indirect water requires workload location, electricity and grid water intensity. Company-wide values are not facility or AI values.",
+        "heterogeneity_and_regime": "Disclosure varies by company and metric; local-grid water intensity varies widely; AI is usually not separated from non-AI load. The paper's global AI figures are explicitly high-uncertainty approximations.",
+        "limitations": [
+          "The genre is a Perspective using public company reports and secondary estimates.",
+          "Operational impact excludes embodied and manufacturing water.",
+          "AI allocation uses general data-center performance because AI-specific operating data are absent.",
+          "Some electricity and water factors are inferred rather than reported."
+        ],
+        "anti_patterns": [
+          "Do not narrate a company-wide sustainability metric as a facility value.",
+          "Do not present the modeled AI range as a measured total.",
+          "Do not omit indirect electricity water merely because an operator does not control the generator."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-018",
+      "title": "Optimized data center site selection—mesoclimatic effects on data center energy consumption and costs",
+      "authors_short": "Turek and Radgen",
+      "journal": "Energy Efficiency",
+      "year": 2021,
+      "doi": "10.1007/s12053-021-09947-y",
+      "journal_gate": {
+        "current_jif": 3.4,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://link.springer.com/journal/12053"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://link.springer.com/article/10.1007/s12053-021-09947-y",
+        "extent": "Complete reference-facility load model, free and compression cooling modes, dry and sprayed hybrid recooler regimes, kilometer-scale weather treatment, site-radius experiments, results, extrapolation assumptions, discussion, land-use limits and conclusion reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "A reference data center with temperature-dependent hybrid cooling is evaluated on a one-kilometer grid to show how small mesoclimatic differences alter cooling operation, energy and water-assist regimes.",
+        "measurement_and_denominator": "The model uses an observed annual IT-load profile, a reference UPS and one assumed hybrid cooling system. Spraying begins above modeled temperature thresholds and trades direct water for fan or chiller electricity.",
+        "heterogeneity_and_regime": "Dry free cooling, partial spray, full spray and compression cooling are distinct operating modes. Local temperature and humidity, system setpoints and equipment curves govern the time spent in each mode.",
+        "limitations": [
+          "Humidity is generalized rather than modeled at each grid cell.",
+          "The reference hybrid plant does not represent the heterogeneous installed fleet.",
+          "Energy results do not provide a complete water balance.",
+          "Fiber, power, land, permitting and construction timing constrain candidate sites."
+        ],
+        "anti_patterns": [
+          "Do not treat cooling design as a static annual label.",
+          "Do not transfer a modeled temperature threshold across equipment and climates.",
+          "Do not call an energetically favorable grid cell a feasible data-center site."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-019",
+      "title": "Expert and operator perspectives on barriers to energy efficiency in data centers",
+      "authors_short": "Newkirk et al.",
+      "journal": "Energy Efficiency",
+      "year": 2024,
+      "doi": "10.1007/s12053-024-10244-7",
+      "journal_gate": {
+        "current_jif": 3.4,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://link.springer.com/journal/12053"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://link.springer.com/article/10.1007/s12053-024-10244-7",
+        "extent": "Complete 16-interview protocol, sampling, coding, procurement, metrics including WUE, reliability, organizational barriers, data-center-type heterogeneity, siting, limitations, policy implications and conclusion reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "Semi-structured interviews test whether technical efficiency advice survives procurement, reliability, staffing, metering, organizational and siting constraints in operating data centers.",
+        "measurement_and_denominator": "Operators use heterogeneous metrics tied to facility missions. WUE appeared among metrics, but no advanced measure converged across the small sample; collecting trusted real-time data requires non-universal technical capacity.",
+        "heterogeneity_and_regime": "Embedded, colocation, government, enterprise, hyperscale and HPC facilities face different incentives and constraints. Reliability, vendor trust, split incentives, legacy chillers and regulatory boundaries can dominate a theoretical optimum.",
+        "limitations": [
+          "Convenience sample of 16 cannot support statistical industry-wide claims.",
+          "Response bias likely favors high-performing, efficiency-interested facilities.",
+          "The sample is not weighted to the data-center population.",
+          "Water was one component of a broader efficiency and operations study."
+        ],
+        "anti_patterns": [
+          "Do not assume a technically available cooling option is implementable.",
+          "Do not describe a metric as collected because it exists in a standard.",
+          "Do not generalize hyperscale capabilities to embedded or legacy facilities."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-020",
+      "title": "Assessing the environmental costs of multi-scale recurrent neural networks for sustainable extreme rainfall nowcasting",
+      "authors_short": "Brum et al.",
+      "journal": "Scientific Reports",
+      "year": 2026,
+      "doi": "10.1038/s41598-026-43029-2",
+      "journal_gate": {
+        "current_jif": 3.9,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/srep/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41598-026-43029-2",
+        "extent": "Complete model and dataset framing, five-run experiment design, GPU monitoring, CodeCarbon method, direct and off-site WUE assumptions, results, predictive-quality tradeoffs, discussion, limitations, project-wide estimate, data and disclosures reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "Measured GPU energy and modeled location factors are combined to compare the estimated operational water of baseline and compressed recurrent neural-network training runs.",
+        "measurement_and_denominator": "GPU power is monitored; energy is measured for the instrumented stage. Water is then estimated as energy times assumed on-site and off-site WUE with PUE fixed at one for the small cluster. The cluster is declared to use no cooling water on site.",
+        "heterogeneity_and_regime": "Relative water savings largely follow energy savings when a common fixed water factor is applied. Absolute water depends on assumed national factors and excluded facility overhead, and differs from a facility meter reading.",
+        "limitations": [
+          "PUE=1 and national grid WUE are simplifying assumptions.",
+          "Only part of the full project runtime is instrumented directly.",
+          "The experimental workload is rainfall nowcasting, not a general AI workload.",
+          "Data reductions and predictive performance vary by dataset."
+        ],
+        "anti_patterns": [
+          "Do not call factor-derived water a measured facility quantity.",
+          "Do not generalize a workload's relative savings to all AI.",
+          "Do not omit the model, location, PUE and WUE assumptions when reporting water."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH2-021",
+      "title": "Drought and climate change impacts on cooling water shortages and electricity prices in Great Britain",
+      "authors_short": "Byers et al.",
+      "journal": "Nature Communications",
+      "year": 2020,
+      "doi": "10.1038/s41467-020-16012-2",
+      "journal_gate": {
+        "current_jif": 15.7,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/ncomms/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML",
+        "source": "https://www.nature.com/articles/s41467-020-16012-2",
+        "extent": "Complete abstract, coupled hydroclimate and electricity-market framework, plant sample, regulatory flow constraints, capacity and price results, sensitivity, discussion, limitations and methods reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "A coupled probabilistic model links regional climate and hydrological drought to plant cooling-water availability, then to contracted generation and electricity prices rather than assuming unavailable nameplate capacity equals realized system loss.",
+        "measurement_and_denominator": "Plant availability is evaluated daily against simulated river flows, environmental-flow requirements and sectoral allocations; system cost includes only capacity that would otherwise be contracted.",
+        "heterogeneity_and_regime": "Freshwater thermal units, cooling systems, flow rules, merit-order position and season determine whether a hydrological shock becomes curtailment or price impact.",
+        "limitations": [
+          "The empirical system is Great Britain and cannot provide U.S. facility facts.",
+          "Model outcomes depend on climate-hydrology ensembles and abstraction-rule assumptions.",
+          "Coastal plants and water-temperature constraints are outside parts of the modeled boundary.",
+          "Uncontracted capacity loss is not an electricity-market loss."
+        ],
+        "anti_patterns": [
+          "Do not translate drought exposure directly into outage or price impact.",
+          "Do not aggregate nameplate capacity without dispatch and network context.",
+          "Do not ignore environmental-flow and allocation rules when evaluating usable supply."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH2-022",
+      "title": "A framework to assess multi-hazard physical climate risk for power generation projects from publicly-accessible sources",
+      "authors_short": "Luo et al.",
+      "journal": "Communications Earth & Environment",
+      "year": 2023,
+      "doi": "10.1038/s43247-023-00782-w",
+      "journal_gate": {
+        "current_jif": 8.9,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/commsenv/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML",
+        "source": "https://www.nature.com/articles/s43247-023-00782-w",
+        "extent": "Complete hazard-exposure-vulnerability framework, global data inputs, 80-plant EBRD portfolio application, cooling-specific modules, validation, uncertainty, scalability and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study converts plant-specific exposure to generation-loss risk through transparent hazard modules and cooling-technology vulnerability factors, separating screening from impact estimation.",
+        "measurement_and_denominator": "Risk is reported as estimated generation loss by plant and portfolio; water temperature, stress, drought, flood and air temperature remain distinct drivers.",
+        "heterogeneity_and_regime": "Once-through, recirculating and dry cooling respond differently to temperature, discharge rules, water stress and drought, while local calibration can replace global vulnerability factors when evidence exists.",
+        "limitations": [
+          "Public gridded data are scalable but less precise than local observations.",
+          "Thermal validation is constrained by confidential plant generation records.",
+          "Global vulnerability factors are proxies, not site-specific operating curves.",
+          "Financial loss requires project-specific revenue and financing assumptions."
+        ],
+        "anti_patterns": [
+          "Do not label hazard exposure as realized physical risk.",
+          "Do not merge water stress, drought and water temperature into one score.",
+          "Do not convert modeled generation loss into financial loss without a project model."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH2-023",
+      "title": "Urban water crises driven by elites' unsustainable consumption",
+      "authors_short": "Savelli et al.",
+      "journal": "Nature Sustainability",
+      "year": 2023,
+      "doi": "10.1038/s41893-023-01100-0",
+      "journal_gate": {
+        "current_jif": 27.1,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/natsustain/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML",
+        "source": "https://www.nature.com/articles/s41893-023-01100-0",
+        "extent": "Complete social-environmental framing, Cape Town case, group-disaggregated system-dynamics model, five scenarios, results, policy discussion and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The paper models drought crisis as a product of hydroclimate, unequal access, heterogeneous consumption and political-economic power rather than a uniform citywide supply-demand balance.",
+        "measurement_and_denominator": "Household demand is disaggregated into social groups before reaggregation to the urban balance; group access to public and private supply is explicitly differentiated.",
+        "heterogeneity_and_regime": "High-income discretionary consumption, unequal adaptive capacity and exclusion can change both aggregate depletion and distribution of harm during the same drought.",
+        "limitations": [
+          "Cape Town is an illustrative case rather than a universal urban coefficient.",
+          "Modeled social-group parameters require local calibration elsewhere.",
+          "Domestic demand does not represent all industrial or agricultural competition.",
+          "Distributional causation cannot be inferred from citywide averages."
+        ],
+        "anti_patterns": [
+          "Do not describe urban water scarcity as a homogeneous population exposure.",
+          "Do not attribute a water crisis to climate alone when demand and access are structured unequally.",
+          "Do not treat aggregate conservation as proof of equitable burden sharing."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH2-024",
+      "title": "A triple increase in global river basins with water scarcity due to future pollution",
+      "authors_short": "Wang et al.",
+      "journal": "Nature Communications",
+      "year": 2024,
+      "doi": "10.1038/s41467-024-44947-3",
+      "journal_gate": {
+        "current_jif": 15.7,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/ncomms/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML with public data reference",
+        "source": "https://www.nature.com/articles/s41467-024-44947-3",
+        "extent": "Complete clean-water scarcity definition, integrated land-hydrology-water-quality model, more than 10,000 sub-basins, scenarios, hotspot results, sensitivity, data availability and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study expands scarcity from quantity alone to usable clean-water availability by coupling river discharge with nitrogen concentrations and sectoral water-quality thresholds.",
+        "measurement_and_denominator": "Sub-basin scarcity is classified under quantity-only and quantity-plus-quality definitions; the reported affected area and population depend on that explicit definition and scenario.",
+        "heterogeneity_and_regime": "Pollution can create scarcity in basins with adequate physical runoff, and the responsible sources, quality thresholds and downstream effects vary spatially.",
+        "limitations": [
+          "The modeled pollutant is nitrogen and does not represent all quality constraints.",
+          "Global sub-basin results are scenario outputs, not facility water-quality measurements.",
+          "Sectoral thresholds and model resolution shape the usable-water result.",
+          "Projected counts cannot be imported as current U.S. operating facts."
+        ],
+        "anti_patterns": [
+          "Do not equate gross water quantity with usable supply.",
+          "Do not transfer a basin pollution result to a facility without source and treatment evidence.",
+          "Do not combine present observations and 2050 scenarios as one time state."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH2-025",
+      "title": "Resilient water infrastructure partnerships in institutionally complex systems face challenging supply and financial risk tradeoffs",
+      "authors_short": "Hamilton et al.",
+      "journal": "Nature Communications",
+      "year": 2024,
+      "doi": "10.1038/s41467-024-51660-8",
+      "journal_gate": {
+        "current_jif": 15.7,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/ncomms/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML",
+        "source": "https://www.nature.com/articles/s41467-024-51660-8",
+        "extent": "Complete California canal-rehabilitation and groundwater-banking case, ensemble water-system model, approximately 300,000 partnership designs, multiobjective tradeoffs, financial-risk allocation, discussion and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study shows that physical infrastructure benefits depend on partner composition, hydrologic variability, institutional rules, cost allocation and which entity captures delivered water, not on engineering capacity alone.",
+        "measurement_and_denominator": "Candidate partnerships are evaluated on water deliveries, partner count, cost of gains and partner-level financial risk across an ensemble of hydrologic futures.",
+        "heterogeneity_and_regime": "The same project can deliver unequal supply gains and debt burdens across providers; diversified demand and supply portfolios can improve utilization but do not eliminate institutional constraints.",
+        "limitations": [
+          "The case concerns California agricultural and urban water providers, not data centers.",
+          "Optimization cannot encode every legal, fiscal, historical or interpersonal constraint.",
+          "Modeled partnerships still require iterative local operator review.",
+          "Infrastructure capacity does not guarantee equal realized deliveries."
+        ],
+        "anti_patterns": [
+          "Do not treat announced infrastructure as automatically usable by every participant.",
+          "Do not report pooled supply benefit without partner-level allocation and financial exposure.",
+          "Do not infer institutional feasibility from an engineering optimum."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-INT-026",
+      "title": "The Water Footprint of Data Centers",
+      "authors_short": "Ristic, Madani and Makuch",
+      "journal": "Sustainability",
+      "year": 2015,
+      "doi": "10.3390/su70811260",
+      "journal_gate": {
+        "current_jif": 3.3,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.mdpi.com/journal/sustainability"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete 25-page open-access publisher article",
+        "source": "https://www.mdpi.com/2071-1050/7/8/11260",
+        "extent": "Complete water-footprint framework, data-center archetypes, direct cooling and electricity-mediated accounting, source factors, results, sensitivity, discussion and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study builds a preliminary data-center water footprint by joining on-site cooling demand to the water embodied in electricity, then varies data-center size, efficiency, climate and generation technology.",
+        "measurement_and_denominator": "Reported footprint intensities are per unit of data-center energy under specified archetypes and water-footprint factors; the range is model-derived rather than a facility inventory.",
+        "heterogeneity_and_regime": "Cooling configuration, PUE, climate and electricity source widen the result by orders of magnitude, demonstrating why a single generic data-center factor is unstable.",
+        "limitations": [
+          "The analysis is preliminary and relies on archetypes and literature factors.",
+          "Global-average electricity water factors suppress plant and watershed variation.",
+          "The denominator is energy rather than computing service.",
+          "Results are not a current facility-level national estimate."
+        ],
+        "anti_patterns": [
+          "Do not quote the modeled range as observed facility performance.",
+          "Do not omit indirect electricity water when claiming a footprint boundary includes operations.",
+          "Do not compare unlike data-center archetypes without efficiency and climate controls."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-INT-027",
+      "title": "United States Water Withdrawals Database",
+      "authors_short": "Naseri and Marston",
+      "journal": "Scientific Data",
+      "year": 2025,
+      "doi": "10.1038/s41597-025-06300-1",
+      "journal_gate": {
+        "current_jif": 6.9,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/sdata/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML and data descriptor",
+        "source": "https://www.nature.com/articles/s41597-025-06300-1",
+        "extent": "Complete nationwide state-data acquisition, user and point definitions, standardization, measurement-method metadata, anomaly flags, coverage comparison, validation and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The database harmonizes state-reported user-level withdrawals while preserving source, point of diversion or use, reporting period, measurement method and known anomalies instead of treating all records as uniform observations.",
+        "measurement_and_denominator": "Records represent self-supplied withdrawals, not consumptive use and not municipal deliveries; annual and monthly volumes coexist with heterogeneous reporting thresholds and vintages.",
+        "heterogeneity_and_regime": "State law, agency practice, privacy, public accessibility and whether data attach to a user or diversion point determine coverage and comparability.",
+        "limitations": [
+          "Eight states and portions of covered states lack shareable user-level data.",
+          "Self-supplied records omit water delivered by public suppliers.",
+          "Withdrawal volumes combine direct measurements and estimation methods.",
+          "Historical vintages and reporting thresholds differ across jurisdictions."
+        ],
+        "anti_patterns": [
+          "Do not label withdrawal records as consumption.",
+          "Do not infer zero use from an absent public record.",
+          "Do not merge point-of-diversion and place-of-use coordinates without provenance."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-INT-028",
+      "title": "Evaluating the economic impact of water scarcity in a changing world",
+      "authors_short": "Dolan et al.",
+      "journal": "Nature Communications",
+      "year": 2021,
+      "doi": "10.1038/s41467-021-22194-0",
+      "journal_gate": {
+        "current_jif": 15.7,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/ncomms/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML",
+        "source": "https://www.nature.com/articles/s41467-021-22194-0",
+        "extent": "Complete coupled basin hydrology and global economic model, scarcity-cost definition, multisector adaptation, deeply uncertain scenarios, results, sensitivity, discussion and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study defines economic scarcity impact through the cost of adapting consumption and production when usable water becomes binding, allowing trade and sector substitution to transmit effects beyond the source basin.",
+        "measurement_and_denominator": "Economic surplus change is modeled by basin and sector across uncertain futures; physical shortfall is an input, not the economic outcome itself.",
+        "heterogeneity_and_regime": "Agriculture, thermal generation and other sectors differ in substitution cost, while trade can relocate both water demand and welfare effects.",
+        "limitations": [
+          "The coupled global model is not a local rate or permit forecast.",
+          "Economic structure, trade and adaptation elasticities drive modeled welfare effects.",
+          "Basin resolution cannot identify a data-center facility burden.",
+          "Scenario outcomes should remain conditional rather than predictive."
+        ],
+        "anti_patterns": [
+          "Do not equate physical scarcity volume with economic loss.",
+          "Do not analyze a basin-sector shock as economically isolated.",
+          "Do not assume every sector can conserve or substitute at the same cost."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-INT-029",
+      "title": "The challenge of closing the climate adaptation gap for water supply utilities",
+      "authors_short": "Becher et al.",
+      "journal": "Communications Earth & Environment",
+      "year": 2024,
+      "doi": "10.1038/s43247-024-01272-3",
+      "journal_gate": {
+        "current_jif": 8.9,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://www.nature.com/commsenv/journal-impact"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher HTML",
+        "source": "https://www.nature.com/articles/s43247-024-01272-3",
+        "extent": "Complete approximately 5,600-utility drought-risk framework, demand and climate scenarios, adaptation options, benefit-cost and tariff-finance screen, results, sensitivity and limitations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study separates technically cost-effective drought adaptation from the smaller subset that utilities can finance through projected tariff revenue, exposing a bankability gap behind modeled resilience benefits.",
+        "measurement_and_denominator": "Risk is unsustainable or disrupted supply by utility under scenario; adaptation benefit and benefit-cost ratio are calculated separately for each option and utility.",
+        "heterogeneity_and_regime": "Supply portfolios, storage, demand growth, climate and household revenue bases produce different adaptation choices and financing constraints across utilities.",
+        "limitations": [
+          "Global utility modeling uses standardized abstractions rather than local engineering plans.",
+          "Tariff revenue is not the only possible financing source.",
+          "Modeled benefit does not establish approval, construction or operation.",
+          "Household supply risk does not directly measure industrial service capacity."
+        ],
+        "anti_patterns": [
+          "Do not call a technically beneficial adaptation financed.",
+          "Do not use regional drought exposure as proof of a utility outage.",
+          "Do not treat all utilities as having equal balance-sheet or tariff capacity."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-INT-030",
+      "title": "Data Centers Water Footprint: The Need for More Transparency",
+      "authors_short": "Privette, Barros and Cai",
+      "journal": "AGU Advances",
+      "year": 2026,
+      "doi": "10.1029/2025AV002140",
+      "journal_gate": {
+        "current_jif": 4.7,
+        "metric_year": 2025,
+        "threshold": 2.0,
+        "decision": "PASS",
+        "source": "https://agupubs.onlinelibrary.wiley.com/journal/2576604x"
+      },
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access publisher commentary",
+        "source": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2025AV002140",
+        "extent": "Complete direct, electricity-mediated and supply-chain boundary discussion, facility and corporate disclosure critique, spatial and temporal context, community planning implications and recommendations reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The commentary organizes data-center water dependence across direct cooling, electricity generation and supply-chain stages, then shows that aggregated voluntary reporting prevents communities and regulators from evaluating local capacity and tradeoffs.",
+        "measurement_and_denominator": "Facility withdrawals, consumption, WUE, electricity-mediated water and corporate totals answer different questions and require source, location, time and boundary metadata.",
+        "heterogeneity_and_regime": "Cooling technology, climate, water source, grid mix, workload and disclosure boundary determine both physical use and what can be inferred publicly.",
+        "limitations": [
+          "The article is a synthesis and policy commentary, not a new facility census.",
+          "Illustrative reported figures retain company and study boundary differences.",
+          "Transparency enables evaluation but does not itself reduce use.",
+          "Supply-chain water remains especially difficult to allocate."
+        ],
+        "anti_patterns": [
+          "Do not compare corporate water totals without aligning organizational and operational boundaries.",
+          "Do not call WUE complete water-footprint disclosure.",
+          "Do not replace absent facility evidence with national rhetoric."
+        ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    }
+  ],
+  "verified_atomic_observations": [
+    {
+      "observation_id": "WTR-O001",
+      "source_id": "WTR-FND-001",
+      "family": "WTR-U01",
+      "statement": "Withdrawal and consumption are different physical quantities and must not be used interchangeably."
+    },
+    {
+      "observation_id": "WTR-O002",
+      "source_id": "WTR-FND-001",
+      "family": "WTR-U02",
+      "statement": "A facility water account can include direct cooling water and indirect electricity-generation water."
+    },
+    {
+      "observation_id": "WTR-O003",
+      "source_id": "WTR-FND-001",
+      "family": "WTR-U03",
+      "statement": "WUE and source-inclusive WUE use different numerators and answer different questions."
+    },
+    {
+      "observation_id": "WTR-O004",
+      "source_id": "WTR-FND-001",
+      "family": "WTR-U08",
+      "statement": "Sparse operator disclosure prevents confident facility-to-facility comparison."
+    },
+    {
+      "observation_id": "WTR-O005",
+      "source_id": "WTR-FND-002",
+      "family": "WTR-U06",
+      "statement": "Cooling choices shift burdens among water, electricity, materials, fluids, reliability and end of life."
+    },
+    {
+      "observation_id": "WTR-O006",
+      "source_id": "WTR-FND-002",
+      "family": "WTR-U03",
+      "statement": "Cooling comparisons require a common functional unit and lifecycle boundary."
+    },
+    {
+      "observation_id": "WTR-O007",
+      "source_id": "WTR-FND-002",
+      "family": "WTR-U11",
+      "statement": "Modeled percentage improvements remain conditional on engineering assumptions."
+    },
+    {
+      "observation_id": "WTR-O008",
+      "source_id": "WTR-FND-002",
+      "family": "WTR-U06",
+      "statement": "Lower operational water does not by itself establish lower total environmental burden."
+    },
+    {
+      "observation_id": "WTR-O009",
+      "source_id": "WTR-FND-003",
+      "family": "WTR-U02",
+      "statement": "Grid water can materially exceed direct site cooling water within an operational footprint."
+    },
+    {
+      "observation_id": "WTR-O010",
+      "source_id": "WTR-FND-003",
+      "family": "WTR-U05",
+      "statement": "Ordinary water volume and scarcity-weighted water impact are distinct metrics."
+    },
+    {
+      "observation_id": "WTR-O011",
+      "source_id": "WTR-FND-003",
+      "family": "WTR-U04",
+      "statement": "Watershed and grid geography determine the meaning of a national footprint estimate."
+    },
+    {
+      "observation_id": "WTR-O012",
+      "source_id": "WTR-FND-003",
+      "family": "WTR-U11",
+      "statement": "Siting scenarios are counterfactual models, not delivered infrastructure outcomes."
+    },
+    {
+      "observation_id": "WTR-O013",
+      "source_id": "WTR-FND-004",
+      "family": "WTR-U08",
+      "statement": "A heterogeneous public registry can support screening while remaining incomplete and imputation-heavy."
+    },
+    {
+      "observation_id": "WTR-O014",
+      "source_id": "WTR-FND-004",
+      "family": "WTR-U03",
+      "statement": "Uniform water factors suppress facility cooling heterogeneity."
+    },
+    {
+      "observation_id": "WTR-O015",
+      "source_id": "WTR-FND-004",
+      "family": "WTR-U07",
+      "statement": "A favorable municipal proxy does not prove a compatible utility connection or water source."
+    },
+    {
+      "observation_id": "WTR-O016",
+      "source_id": "WTR-FND-004",
+      "family": "WTR-U11",
+      "statement": "Composite suitability scores preserve their meaning only with criteria, weights and spatial scales attached."
+    },
+    {
+      "observation_id": "WTR-O017",
+      "source_id": "WTR-FND-005",
+      "family": "WTR-U04",
+      "statement": "Water stress, heat and grid emissions can be spatially misaligned."
+    },
+    {
+      "observation_id": "WTR-O018",
+      "source_id": "WTR-FND-005",
+      "family": "WTR-U11",
+      "statement": "Ordinal exposure categories are not outage or harm probabilities."
+    },
+    {
+      "observation_id": "WTR-O019",
+      "source_id": "WTR-FND-005",
+      "family": "WTR-U07",
+      "statement": "A data-center map without capacity, status and cooling design cannot establish water demand."
+    },
+    {
+      "observation_id": "WTR-O020",
+      "source_id": "WTR-FND-005",
+      "family": "WTR-U04",
+      "statement": "Mixed temporal and spatial units constrain compound-risk claims."
+    },
+    {
+      "observation_id": "WTR-O021",
+      "source_id": "WTR-FND-006",
+      "family": "WTR-U02",
+      "statement": "Facility and electricity water respond differently to siting, efficiency and grid change."
+    },
+    {
+      "observation_id": "WTR-O022",
+      "source_id": "WTR-FND-006",
+      "family": "WTR-U06",
+      "statement": "Carbon-minimizing electricity choices can increase water burden."
+    },
+    {
+      "observation_id": "WTR-O023",
+      "source_id": "WTR-FND-006",
+      "family": "WTR-U11",
+      "statement": "Future server and footprint ranges are scenario outputs rather than probability-weighted forecasts."
+    },
+    {
+      "observation_id": "WTR-O024",
+      "source_id": "WTR-FND-006",
+      "family": "WTR-U12",
+      "statement": "Certificates, offsets and restoration claims are not direct physical reductions at the site."
+    },
+    {
+      "observation_id": "WTR-O025",
+      "source_id": "WTR-FND-007",
+      "family": "WTR-U10",
+      "statement": "Water withdrawal creates a potential exposure pathway but not a demonstrated health outcome."
+    },
+    {
+      "observation_id": "WTR-O026",
+      "source_id": "WTR-FND-007",
+      "family": "WTR-U03",
+      "statement": "Cited water values with unlike denominators cannot be combined."
+    },
+    {
+      "observation_id": "WTR-O027",
+      "source_id": "WTR-FND-007",
+      "family": "WTR-U08",
+      "statement": "A research agenda must not be narrated as empirical causal evidence."
+    },
+    {
+      "observation_id": "WTR-O028",
+      "source_id": "WTR-FND-007",
+      "family": "WTR-U10",
+      "statement": "Community-impact claims require exposure, population, counterfactual and outcome evidence."
+    },
+    {
+      "observation_id": "WTR-O029",
+      "source_id": "WTR-FND-008",
+      "family": "WTR-U04",
+      "statement": "Annual aggregation can conceal seasonal scarcity visible at monthly resolution."
+    },
+    {
+      "observation_id": "WTR-O030",
+      "source_id": "WTR-FND-008",
+      "family": "WTR-U11",
+      "statement": "Scarcity estimates depend on indicator choice and environmental-flow treatment."
+    },
+    {
+      "observation_id": "WTR-O031",
+      "source_id": "WTR-FND-008",
+      "family": "WTR-U04",
+      "statement": "Grid and basin aggregation can produce materially different exposed-population estimates."
+    },
+    {
+      "observation_id": "WTR-O032",
+      "source_id": "WTR-FND-008",
+      "family": "WTR-U07",
+      "statement": "Modeled scarcity context does not establish utility deliverability to a facility."
+    },
+    {
+      "observation_id": "WTR-O033",
+      "source_id": "WTR-FND-009",
+      "family": "WTR-U09",
+      "statement": "Desalination, groundwater, reservoirs and transfers require different geography and infrastructure."
+    },
+    {
+      "observation_id": "WTR-O034",
+      "source_id": "WTR-FND-009",
+      "family": "WTR-U10",
+      "statement": "Supply expansion can impose environmental and socioeconomic consequences outside the beneficiary site."
+    },
+    {
+      "observation_id": "WTR-O035",
+      "source_id": "WTR-FND-009",
+      "family": "WTR-U11",
+      "statement": "A modeled feasible option is not a funded, permitted or operating project."
+    },
+    {
+      "observation_id": "WTR-O036",
+      "source_id": "WTR-FND-009",
+      "family": "WTR-U07",
+      "statement": "City-level supply options do not establish campus contracts or utility headroom."
+    },
+    {
+      "observation_id": "WTR-O037",
+      "source_id": "WTR-FND-010",
+      "family": "WTR-U04",
+      "statement": "Freshwater stress and freshwater storage loss are non-equivalent basin conditions."
+    },
+    {
+      "observation_id": "WTR-O038",
+      "source_id": "WTR-FND-010",
+      "family": "WTR-U10",
+      "statement": "Exposure becomes vulnerability only when combined with sensitivity and adaptive capacity."
+    },
+    {
+      "observation_id": "WTR-O039",
+      "source_id": "WTR-FND-010",
+      "family": "WTR-U11",
+      "statement": "Hotspot totals indicate potential exposure and can be upper bounds rather than realized impacts."
+    },
+    {
+      "observation_id": "WTR-O040",
+      "source_id": "WTR-FND-010",
+      "family": "WTR-U07",
+      "statement": "Basin vulnerability is not proof of a facility shortage, price event or permit constraint."
+    },
+    {
+      "observation_id": "WTR-O041",
+      "source_id": "WTR-FND-011",
+      "family": "WTR-U09",
+      "statement": "Urban water analysis should cover supply through end use over infrastructure lifecycles."
+    },
+    {
+      "observation_id": "WTR-O042",
+      "source_id": "WTR-FND-011",
+      "family": "WTR-U06",
+      "statement": "Water conservation and decentralization can shift energy, emissions and material burdens."
+    },
+    {
+      "observation_id": "WTR-O043",
+      "source_id": "WTR-FND-011",
+      "family": "WTR-U11",
+      "statement": "Static marginal rankings can miss project sequencing and cross-sector reallocation."
+    },
+    {
+      "observation_id": "WTR-O044",
+      "source_id": "WTR-FND-011",
+      "family": "WTR-U10",
+      "statement": "Water and carbon policies can create affordability and distributional burdens."
+    },
+    {
+      "observation_id": "WTR-O045",
+      "source_id": "WTR-FND-012",
+      "family": "WTR-U09",
+      "statement": "Alternative sources differ in quality, reliability, treatment, energy, cost and governance."
+    },
+    {
+      "observation_id": "WTR-O046",
+      "source_id": "WTR-FND-012",
+      "family": "WTR-U07",
+      "statement": "Potential reclaimed or harvested volume is not delivered fit-for-purpose supply."
+    },
+    {
+      "observation_id": "WTR-O047",
+      "source_id": "WTR-FND-012",
+      "family": "WTR-U10",
+      "statement": "Local permitting, financing, health and externalities condition source adoption."
+    },
+    {
+      "observation_id": "WTR-O048",
+      "source_id": "WTR-FND-012",
+      "family": "WTR-U09",
+      "statement": "There is no universally suitable non-traditional water source."
+    },
+    {
+      "observation_id": "WTR-O049",
+      "source_id": "WTR-FND-013",
+      "family": "WTR-U06",
+      "statement": "Wastewater recovery technologies shift burdens through membranes, catalysts, chemicals, leakage and energy."
+    },
+    {
+      "observation_id": "WTR-O050",
+      "source_id": "WTR-FND-013",
+      "family": "WTR-U09",
+      "statement": "Theoretical embedded energy differs from practically recoverable net energy."
+    },
+    {
+      "observation_id": "WTR-O051",
+      "source_id": "WTR-FND-013",
+      "family": "WTR-U07",
+      "statement": "Technology readiness and scale-up constraints separate laboratory potential from operating supply."
+    },
+    {
+      "observation_id": "WTR-O052",
+      "source_id": "WTR-FND-013",
+      "family": "WTR-U12",
+      "statement": "Resource recovery does not automatically equal net water, carbon or energy improvement."
+    },
+    {
+      "observation_id": "WTR-O053",
+      "source_id": "WTR-FND-014",
+      "family": "WTR-U01",
+      "statement": "Withdrawal is removal from a proximate source; consumption is the share not returned to that source."
+    },
+    {
+      "observation_id": "WTR-O054",
+      "source_id": "WTR-FND-014",
+      "family": "WTR-U01",
+      "statement": "Discharge and return flow are not identical because water can be returned to a different source."
+    },
+    {
+      "observation_id": "WTR-O055",
+      "source_id": "WTR-FND-014",
+      "family": "WTR-U03",
+      "statement": "Energy-water inventories need aligned fuel-cycle, source, quality, geography and year boundaries."
+    },
+    {
+      "observation_id": "WTR-O056",
+      "source_id": "WTR-FND-014",
+      "family": "WTR-U08",
+      "statement": "Incomplete metering and inconsistent definitions can dominate national energy-water uncertainty."
+    },
+    {
+      "observation_id": "WTR-O057",
+      "source_id": "WTR-FND-015",
+      "family": "WTR-U09",
+      "statement": "Source separation can improve fit-for-purpose reuse and resource recovery at an intermediate scale."
+    },
+    {
+      "observation_id": "WTR-O058",
+      "source_id": "WTR-FND-015",
+      "family": "WTR-U03",
+      "statement": "Centralized and decentralized systems require common service functions for fair comparison."
+    },
+    {
+      "observation_id": "WTR-O059",
+      "source_id": "WTR-FND-015",
+      "family": "WTR-U07",
+      "statement": "Reuse requires treatment, storage, distribution, monitoring and operating capability."
+    },
+    {
+      "observation_id": "WTR-O060",
+      "source_id": "WTR-FND-015",
+      "family": "WTR-U11",
+      "statement": "A representative block model does not establish feasibility for every city or campus."
+    },
+    {
+      "observation_id": "WTR-O061",
+      "source_id": "WTR-CH1-016",
+      "family": "WTR-U03",
+      "statement": "WUE per IT energy cannot compare unlike computing outputs without a workload-efficiency denominator."
+    },
+    {
+      "observation_id": "WTR-O062",
+      "source_id": "WTR-CH1-016",
+      "family": "WTR-U02",
+      "statement": "Workload water combines direct facility water and electricity water through an explicit additive boundary."
+    },
+    {
+      "observation_id": "WTR-O063",
+      "source_id": "WTR-CH1-016",
+      "family": "WTR-U06",
+      "statement": "Cooling, climate and infrastructure efficiency interact rather than produce one universal technology ranking."
+    },
+    {
+      "observation_id": "WTR-O064",
+      "source_id": "WTR-CH1-016",
+      "family": "WTR-U11",
+      "statement": "Sensitivity rankings are conditional on benchmark, archetype and grid-factor assumptions."
+    },
+    {
+      "observation_id": "WTR-O065",
+      "source_id": "WTR-CH1-017",
+      "family": "WTR-U08",
+      "statement": "Environmental disclosure must be indexed by company, data-center fleet, facility and workload scope."
+    },
+    {
+      "observation_id": "WTR-O066",
+      "source_id": "WTR-CH1-017",
+      "family": "WTR-U02",
+      "statement": "Indirect electricity water is rarely disclosed even where direct facility water is reported."
+    },
+    {
+      "observation_id": "WTR-O067",
+      "source_id": "WTR-CH1-017",
+      "family": "WTR-U03",
+      "statement": "Deriving WUE from facility electricity requires PUE and direct consumed water with aligned periods."
+    },
+    {
+      "observation_id": "WTR-O068",
+      "source_id": "WTR-CH1-017",
+      "family": "WTR-U11",
+      "statement": "AI footprint ranges based on general fleet metrics remain approximations, not measured AI totals."
+    },
+    {
+      "observation_id": "WTR-O069",
+      "source_id": "WTR-CH1-018",
+      "family": "WTR-U06",
+      "statement": "Hybrid cooling moves through dry, partial-spray, full-spray and compression regimes as weather changes."
+    },
+    {
+      "observation_id": "WTR-O070",
+      "source_id": "WTR-CH1-018",
+      "family": "WTR-U04",
+      "statement": "Mesoclimatic differences can change cooling operating hours within a small geographic radius."
+    },
+    {
+      "observation_id": "WTR-O071",
+      "source_id": "WTR-CH1-018",
+      "family": "WTR-U11",
+      "statement": "Equipment curves and temperature thresholds are reference-system assumptions, not universal constants."
+    },
+    {
+      "observation_id": "WTR-O072",
+      "source_id": "WTR-CH1-018",
+      "family": "WTR-U07",
+      "statement": "A modeled efficient location still requires power, fiber, suitable land, permits and acceptable schedule."
+    },
+    {
+      "observation_id": "WTR-O073",
+      "source_id": "WTR-CH1-019",
+      "family": "WTR-U07",
+      "statement": "Vendor relationships, procurement and legacy plant can determine whether a cooling improvement is implemented."
+    },
+    {
+      "observation_id": "WTR-O074",
+      "source_id": "WTR-CH1-019",
+      "family": "WTR-U08",
+      "statement": "Metric availability in standards does not establish facility collection capacity or data quality."
+    },
+    {
+      "observation_id": "WTR-O075",
+      "source_id": "WTR-CH1-019",
+      "family": "WTR-U03",
+      "statement": "Facility missions produce heterogeneous performance denominators and priorities."
+    },
+    {
+      "observation_id": "WTR-O076",
+      "source_id": "WTR-CH1-019",
+      "family": "WTR-U11",
+      "statement": "A small convenience sample supports mechanism discovery, not prevalence estimates."
+    },
+    {
+      "observation_id": "WTR-O077",
+      "source_id": "WTR-CH1-020",
+      "family": "WTR-U08",
+      "statement": "Measured GPU power and factor-derived water must retain different evidence labels."
+    },
+    {
+      "observation_id": "WTR-O078",
+      "source_id": "WTR-CH1-020",
+      "family": "WTR-U03",
+      "statement": "Estimated workload water depends on workload, runtime, PUE, direct WUE and grid WUE boundaries."
+    },
+    {
+      "observation_id": "WTR-O079",
+      "source_id": "WTR-CH1-020",
+      "family": "WTR-U11",
+      "statement": "A fixed national factor makes relative water change track energy change by construction."
+    },
+    {
+      "observation_id": "WTR-O080",
+      "source_id": "WTR-CH1-020",
+      "family": "WTR-U02",
+      "statement": "Zero on-site cooling water does not imply zero operational water when electricity water is included."
+    },
+    {
+      "observation_id": "WTR-O081",
+      "source_id": "WTR-CH2-021",
+      "family": "WTR-U04",
+      "statement": "Daily low-flow coincidence across plants matters more than annual-average water availability for system curtailment."
+    },
+    {
+      "observation_id": "WTR-O082",
+      "source_id": "WTR-CH2-021",
+      "family": "WTR-U07",
+      "statement": "Environmental-flow requirements and sectoral allocation rules convert physical flow into legally usable cooling water."
+    },
+    {
+      "observation_id": "WTR-O083",
+      "source_id": "WTR-CH2-021",
+      "family": "WTR-U11",
+      "statement": "Unavailable nameplate capacity is not realized market impact unless the affected capacity would have been dispatched."
+    },
+    {
+      "observation_id": "WTR-O084",
+      "source_id": "WTR-CH2-021",
+      "family": "WTR-U10",
+      "statement": "The economic burden of cooling-water shortage depends on replacement supply and merit-order position."
+    },
+    {
+      "observation_id": "WTR-O085",
+      "source_id": "WTR-CH2-022",
+      "family": "WTR-U11",
+      "statement": "Hazard exposure becomes risk only after technology-specific vulnerability converts it into an operational loss metric."
+    },
+    {
+      "observation_id": "WTR-O086",
+      "source_id": "WTR-CH2-022",
+      "family": "WTR-U06",
+      "statement": "Once-through, recirculating and dry cooling shift exposure among water temperature, water stress and air-temperature regimes."
+    },
+    {
+      "observation_id": "WTR-O087",
+      "source_id": "WTR-CH2-022",
+      "family": "WTR-U04",
+      "statement": "Chronic water temperature and stress can dominate acute drought even when all are labeled climate hazards."
+    },
+    {
+      "observation_id": "WTR-O088",
+      "source_id": "WTR-CH2-022",
+      "family": "WTR-U08",
+      "statement": "Global gridded screening should yield to locally observed vulnerability and generation data when available."
+    },
+    {
+      "observation_id": "WTR-O089",
+      "source_id": "WTR-CH2-023",
+      "family": "WTR-U10",
+      "statement": "A shared drought can produce unequal scarcity because consumption, access and adaptive capacity differ by social group."
+    },
+    {
+      "observation_id": "WTR-O090",
+      "source_id": "WTR-CH2-023",
+      "family": "WTR-U03",
+      "statement": "Citywide average demand can conceal the groups driving depletion and the groups losing basic access."
+    },
+    {
+      "observation_id": "WTR-O091",
+      "source_id": "WTR-CH2-023",
+      "family": "WTR-U07",
+      "statement": "Private supply access and political-economic power alter how nominal public supply is distributed during crisis."
+    },
+    {
+      "observation_id": "WTR-O092",
+      "source_id": "WTR-CH2-023",
+      "family": "WTR-U11",
+      "statement": "Climate, population and aggregate demand scenarios are incomplete when social heterogeneity is omitted."
+    },
+    {
+      "observation_id": "WTR-O093",
+      "source_id": "WTR-CH2-024",
+      "family": "WTR-U09",
+      "statement": "Adequate gross flow does not establish usable supply when pollutant concentration exceeds the relevant quality threshold."
+    },
+    {
+      "observation_id": "WTR-O094",
+      "source_id": "WTR-CH2-024",
+      "family": "WTR-U03",
+      "statement": "Scarcity counts change materially when the definition includes water quality rather than quantity alone."
+    },
+    {
+      "observation_id": "WTR-O095",
+      "source_id": "WTR-CH2-024",
+      "family": "WTR-U04",
+      "statement": "Sub-basin quality effects can propagate downstream and cannot be inferred from national annual withdrawal totals."
+    },
+    {
+      "observation_id": "WTR-O096",
+      "source_id": "WTR-CH2-024",
+      "family": "WTR-U11",
+      "statement": "Scenario-specific pollution hotspots are modeled conditions, not direct observations of facility availability."
+    },
+    {
+      "observation_id": "WTR-O097",
+      "source_id": "WTR-CH2-025",
+      "family": "WTR-U07",
+      "statement": "Infrastructure usefulness depends on institutional participation, operating rules and allocation of captured water."
+    },
+    {
+      "observation_id": "WTR-O098",
+      "source_id": "WTR-CH2-025",
+      "family": "WTR-U10",
+      "statement": "Pooled supply gains can coexist with unequal partner-level debt burdens and delivery benefits."
+    },
+    {
+      "observation_id": "WTR-O099",
+      "source_id": "WTR-CH2-025",
+      "family": "WTR-U11",
+      "statement": "Engineering feasibility does not establish an institutionally viable or financially stable partnership."
+    },
+    {
+      "observation_id": "WTR-O100",
+      "source_id": "WTR-CH2-025",
+      "family": "WTR-U08",
+      "statement": "Optimization results require local legal, fiscal and operator knowledge before they support a project claim."
+    },
+    {
+      "observation_id": "WTR-O101",
+      "source_id": "WTR-INT-026",
+      "family": "WTR-U02",
+      "statement": "A data-center operational footprint can be dominated by electricity water even when site cooling is the visible use."
+    },
+    {
+      "observation_id": "WTR-O102",
+      "source_id": "WTR-INT-026",
+      "family": "WTR-U03",
+      "statement": "Energy-normalized water factors do not normalize computing service or utilization."
+    },
+    {
+      "observation_id": "WTR-O103",
+      "source_id": "WTR-INT-026",
+      "family": "WTR-U06",
+      "statement": "Efficiency, cooling, climate and generation mix interact strongly enough to make a generic factor unstable."
+    },
+    {
+      "observation_id": "WTR-O104",
+      "source_id": "WTR-INT-026",
+      "family": "WTR-U11",
+      "statement": "An archetype range is model evidence and should not be narrated as an observed fleet distribution."
+    },
+    {
+      "observation_id": "WTR-O105",
+      "source_id": "WTR-INT-027",
+      "family": "WTR-U01",
+      "statement": "User-level self-supplied withdrawals exclude both consumptive loss and water delivered by a public supplier."
+    },
+    {
+      "observation_id": "WTR-O106",
+      "source_id": "WTR-INT-027",
+      "family": "WTR-U08",
+      "statement": "Measurement method, anomaly status, record vintage and state reporting rules belong in the evidence rank."
+    },
+    {
+      "observation_id": "WTR-O107",
+      "source_id": "WTR-INT-027",
+      "family": "WTR-U04",
+      "statement": "A point of diversion and a place of use can occupy different locations and cannot be spatially merged by convenience."
+    },
+    {
+      "observation_id": "WTR-O108",
+      "source_id": "WTR-INT-027",
+      "family": "WTR-U07",
+      "statement": "Public-record coverage reflects state law and agency access as well as physical water use."
+    },
+    {
+      "observation_id": "WTR-O109",
+      "source_id": "WTR-INT-028",
+      "family": "WTR-U10",
+      "statement": "The same physical water constraint imposes different economic costs on sectors with different substitution options."
+    },
+    {
+      "observation_id": "WTR-O110",
+      "source_id": "WTR-INT-028",
+      "family": "WTR-U04",
+      "statement": "Trade transmits water-scarcity effects beyond the basin where the hydrologic constraint originates."
+    },
+    {
+      "observation_id": "WTR-O111",
+      "source_id": "WTR-INT-028",
+      "family": "WTR-U11",
+      "statement": "Economic impact requires a behavioral adaptation model rather than a volumetric shortfall multiplier."
+    },
+    {
+      "observation_id": "WTR-O112",
+      "source_id": "WTR-INT-028",
+      "family": "WTR-U07",
+      "statement": "Abundant physical water may remain economically unavailable when infrastructure or institutional barriers bind."
+    },
+    {
+      "observation_id": "WTR-O113",
+      "source_id": "WTR-INT-029",
+      "family": "WTR-U07",
+      "statement": "A technically cost-effective supply adaptation may remain unavailable when tariffs cannot support its finance."
+    },
+    {
+      "observation_id": "WTR-O114",
+      "source_id": "WTR-INT-029",
+      "family": "WTR-U11",
+      "statement": "Modeled risk reduction is not an implementation forecast unless financing, approval and delivery are represented."
+    },
+    {
+      "observation_id": "WTR-O115",
+      "source_id": "WTR-INT-029",
+      "family": "WTR-U10",
+      "statement": "Utility adaptation capacity is distributed unevenly through supply portfolios, revenue bases and household affordability."
+    },
+    {
+      "observation_id": "WTR-O116",
+      "source_id": "WTR-INT-029",
+      "family": "WTR-U09",
+      "statement": "Demand management, new supply, storage and transfers solve different physical and financial failure modes."
+    },
+    {
+      "observation_id": "WTR-O117",
+      "source_id": "WTR-INT-030",
+      "family": "WTR-U08",
+      "statement": "Corporate totals cannot establish facility conditions without site, source, period and organizational-boundary disclosure."
+    },
+    {
+      "observation_id": "WTR-O118",
+      "source_id": "WTR-INT-030",
+      "family": "WTR-U03",
+      "statement": "WUE, withdrawals, consumption and full footprint are not interchangeable measures of performance."
+    },
+    {
+      "observation_id": "WTR-O119",
+      "source_id": "WTR-INT-030",
+      "family": "WTR-U12",
+      "statement": "Transparency, replenishment and physical demand reduction are distinct actions and outcomes."
+    },
+    {
+      "observation_id": "WTR-O120",
+      "source_id": "WTR-INT-030",
+      "family": "WTR-U10",
+      "statement": "Local planning requires peak demand and source-capacity information that annual corporate reporting usually omits."
+    }
+  ],
+  "audit_blocked_candidates": [
+    {
+      "title": "Limitations to air free cooling in data centers under rising heat and humidity",
+      "doi": "10.1038/s41598-026-56926-3",
+      "reason": "The publisher exposed an unedited early-access abstract and front matter but not the substantive methods and results body. Complete-text gate not met; zero observations counted.",
+      "status": "AUDIT_BLOCKED_NOT_COUNTED"
+    },
+    {
+      "title": "Water-energy tradeoffs in data centers: A case study in hot-arid climates",
+      "doi": "10.1016/j.resconrec.2022.106194",
+      "reason": "Publisher abstract and secondary excerpts were accessible, but a complete substantive text was not obtained in this challenge. Complete-text gate not met; zero observations counted.",
+      "status": "AUDIT_BLOCKED_NOT_COUNTED"
+    }
+  ],
+  "universal_families": [
+    {
+      "family_id": "WTR-U01",
+      "name": "Withdrawal-consumption-return-flow separation",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 4
+    },
+    {
+      "family_id": "WTR-U02",
+      "name": "Direct-site versus indirect electricity water",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 7
+    },
+    {
+      "family_id": "WTR-U03",
+      "name": "Functional unit, denominator and system-boundary discipline",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 14
+    },
+    {
+      "family_id": "WTR-U04",
+      "name": "Spatial, temporal and hydrologic-scale alignment",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 12
+    },
+    {
+      "family_id": "WTR-U05",
+      "name": "Volume versus scarcity-weighted impact",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 1
+    },
+    {
+      "family_id": "WTR-U06",
+      "name": "Cooling and water-energy-material burden shifting",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 9
+    },
+    {
+      "family_id": "WTR-U07",
+      "name": "Local realization from source through infrastructure and rights",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 16
+    },
+    {
+      "family_id": "WTR-U08",
+      "name": "Disclosure and evidence-quality ladder",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 11
+    },
+    {
+      "family_id": "WTR-U09",
+      "name": "Source quality, technology readiness and infrastructure fit",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 8
+    },
+    {
+      "family_id": "WTR-U10",
+      "name": "Competition, public effects, ecology and distribution",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 12
+    },
+    {
+      "family_id": "WTR-U11",
+      "name": "Scenario, proxy, score and model calibration",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 23
+    },
+    {
+      "family_id": "WTR-U12",
+      "name": "Physical reduction versus recovery, restoration and claims",
+      "status": "SATURATED_AND_CONFIRMED",
+      "observation_count": 3
+    }
+  ],
+  "family_assignment": {
+    "water": [
+      "WTR-U01",
+      "WTR-U02",
+      "WTR-U03",
+      "WTR-U04",
+      "WTR-U05",
+      "WTR-U06",
+      "WTR-U07",
+      "WTR-U08",
+      "WTR-U09",
+      "WTR-U10",
+      "WTR-U11",
+      "WTR-U12"
+    ]
+  },
+  "domain_synthesis": {
+    "reasoning_object": "The amount, source, fate and local availability of water supporting AI infrastructure directly at facilities and indirectly through electricity, and the evidence required to convert broad hydrologic exposure into an operating constraint.",
+    "required_sequence": [
+      "Identify the measured quantity and fate: withdrawal, consumption, delivery, discharge or return flow.",
+      "State the time, geography, source and denominator before comparing quantities.",
+      "Separate observed facility evidence from company totals, national benchmarks, modeled factors and scenarios.",
+      "If electricity-mediated water is relevant, keep it separate from on-site cooling and align the power boundary.",
+      "Treat drought and scarcity indicators as exposure screens until source, rights, utility capacity and operating evidence establish local availability.",
+      "Close on the exact missing conversion condition—facility source, cooling design, peak demand, utility service, permit, right, treatment or grid factor—rather than a generic water-risk conclusion."
+    ],
+    "evidence_jobs": [
+      "irrigation_withdrawal_bgal_day_2020",
+      "thermoelectric_withdrawal_bgal_day_2020",
+      "public_supply_withdrawal_bgal_day_2020",
+      "reported_thermoelectric_withdrawal_bgal_day_2024",
+      "reported_thermoelectric_consumption_bgal_day_2024",
+      "mapped_data_center_facilities",
+      "facilities_with_direct_water_evidence",
+      "quantified_withdrawal_or_consumption_records",
+      "direct_evidence_share",
+      "mapped_states_with_d2_plus_drought_area",
+      "mapped_states_with_25pct_d2_plus_drought",
+      "published_data_center_capacity_in_d2_plus_states",
+      "published_capacity_in_25pct_d2_plus_states",
+      "highest_d2_state_and_share"
+    ],
+    "boundary_rules": [
+      "Withdrawal is not consumption, and either may differ from delivery, discharge and return flow.",
+      "A state drought map is an exposure screen, not proof of facility water availability or curtailment.",
+      "Published data-center capacity in a drought-affected state is not water demand and is not evidence of operating exposure.",
+      "A missing public facility record is missing evidence, not zero water use.",
+      "National irrigation, public-supply and thermoelectric quantities provide context but cannot be allocated to data centers.",
+      "USGS national comparison and reported thermoelectric records retain their own years, sources and definitions.",
+      "Corporate water totals and WUE do not establish facility source, peak demand, cooling design or local utility capacity.",
+      "Reclaimed or alternative water changes source quality and infrastructure needs; it does not make water use disappear.",
+      "A replenishment or restoration claim is not physical reduction at the facility or in the same watershed and period."
+    ],
+    "evidence_ladder": [
+      "metered or permitted facility withdrawal and consumption with source and period",
+      "utility delivery or service evidence linked to a named facility",
+      "facility disclosure with explicit boundary and denominator",
+      "company aggregate with site allocation limits",
+      "modeled facility or workload estimate with calibrated determinants",
+      "state or watershed exposure screen",
+      "national sector context"
+    ]
+  },
+  "cross_domain_synthesis": {
+    "allowed_bridges": [
+      "Data-center development creates potential water demand only when cooling design, operating scale and source are known.",
+      "Power generation can create indirect water dependence, but the relevant factor depends on generation, cooling, dispatch, geography and time.",
+      "Grid constraints and water constraints can interact through cooling and generation availability without becoming the same bottleneck.",
+      "Compute efficiency and utilization can reduce water per workload through the electricity and cooling chain when the workload denominator is valid.",
+      "Utility infrastructure, rights, source quality, treatment and finance determine whether hydrologic supply becomes usable service."
+    ],
+    "prohibited_collapses": [
+      "state drought exposure into facility scarcity",
+      "published campus capacity into water demand",
+      "withdrawal into consumption",
+      "site WUE into full water footprint",
+      "company aggregate into facility evidence",
+      "annual volume into peak utility capacity",
+      "gross flow into usable clean water",
+      "reclaimed water into zero impact",
+      "replenishment claim into same-place physical reduction",
+      "modeled scenario into observed operation"
+    ],
+    "macro_rollup_role": "Supply the AI Macro roll-up with a bounded Water conclusion and causal bridge: development or operation -> cooling and electricity demand -> water source and fate -> utility, rights and hydrologic availability -> usable service. The roll-up may synthesize that output but must not invent a missing facility or local-availability bridge."
+  },
+  "language_layer": {
+    "voice": [
+      "analytical, compact and direct",
+      "physical and causal rather than atmospheric",
+      "specific about fate, source, denominator, time and geography",
+      "skeptical of aggregate proxies without sounding reflexively negative",
+      "willing to end on the exact evidence needed to resolve exposure"
+    ],
+    "paragraph_architecture": [
+      "Lead with the supported Water conclusion, not the largest national number.",
+      "Use the second sentence for the strongest facility or comparison evidence.",
+      "Use the next sentence to explain the source, cooling, electricity or utility mechanism that connects the evidence.",
+      "Use drought or national context to bound the conclusion, not to replace facility evidence.",
+      "End with the remaining local conversion condition only when it materially changes interpretation."
+    ],
+    "preferred_moves": [
+      "contrast withdrawal with consumption",
+      "contrast direct facility evidence with contextual exposure",
+      "contrast site cooling water with electricity-mediated water",
+      "contrast gross availability with usable supply",
+      "contrast annual volume with peak service capacity",
+      "name the missing local conversion condition",
+      "use one statistic once and interpret it",
+      "vary transition logic according to causality rather than a fixed cadence"
+    ],
+    "prohibited_moves": [
+      "opening with three sector totals before stating the conclusion",
+      "stacking source, fate, year and caveat clauses before the main verb",
+      "using water use as a catch-all after distinct fates are available",
+      "turning every paragraph into national context, facility gap, drought caveat, therefore",
+      "using remains, while, therefore, current or significant as mechanical rhythm markers",
+      "calling a footprint large, efficient or sustainable without a comparator and boundary",
+      "ending by restating that water is a local constraint",
+      "claiming facility risk from a state exposure screen"
+    ],
+    "sentence_controls": {
+      "max_sentences_typical": 5,
+      "headline_body_separation": true,
+      "one_primary_claim_per_sentence": true,
+      "max_quantitative_clauses_per_sentence": 2,
+      "numeric_density_rule": "Prefer two or three decision-relevant quantities. Additional values require a distinct analytical job and should not be packed into one sentence.",
+      "title_rule": "Use a declarative title that does not repeat the domain label and does not contain a terminal period.",
+      "terminology_rule": "Use withdrawal, consumption, delivery, discharge, return flow, exposure, estimate, scenario and observed only when the evidence packet supports that exact term."
+    }
+  },
+  "long_form_rhetorical_analysis": [
+    {
+      "text_id": "WTR-LF-A",
+      "admission_source_id": "WTR-FND-014",
+      "title": "Water use in the United States energy system: A national assessment and unit process inventory of water consumption and withdrawals",
+      "authors_short": "Grubert and Sanders",
+      "journal": "Environmental Science & Technology",
+      "doi": "10.1021/acs.est.8b00139",
+      "audited_version": "complete 35-page accepted author manuscript",
+      "source": "https://emilygrubert.org/wp-content/uploads/2018/10/PREPRINT-Grubert-Sanders-Water-for-US-Energy.pdf",
+      "passages": [
+        {
+          "passage_id": "WTR-LF-A01",
+          "location": "pp. 1-6, abstract and problem definition",
+          "analytical_focus": "Establish the gap before presenting scale.",
+          "argument_move": "The passage begins with incomplete national understanding, defines the base year and system coverage, and only then reports absolute and share-based results.",
+          "evidence_structure": "coverage -> definitions -> aggregate result -> dominant processes",
+          "qualification_discipline": "Results are tied to 2014, commercially traded primary energy and the stated accounting boundary.",
+          "language_transfer": "Lead a Water Read with what the evidence can measure, then state the bottleneck; do not open with an unbounded national number.",
+          "anti_pattern": "Headline scale without year, coverage and fate definition."
+        },
+        {
+          "passage_id": "WTR-LF-A02",
+          "location": "pp. 3-6, fragmentation and decision-use gap",
+          "analytical_focus": "Explain why an apparently mature field still lacks a decision-ready total.",
+          "argument_move": "The authors connect outdated process factors, fragmented state reporting, inconsistent definitions and agency scope to the inability to co-manage water and energy.",
+          "evidence_structure": "institutional gap -> data-age problem -> classification mismatch -> decision consequence",
+          "qualification_discipline": "The critique distinguishes missing data from data that exist but cannot be combined safely.",
+          "language_transfer": "When disclosure is sparse, name the specific missing linkage rather than calling the entire domain opaque.",
+          "anti_pattern": "Treating fragmented evidence as no evidence or as a complete national inventory."
+        },
+        {
+          "passage_id": "WTR-LF-A03",
+          "location": "pp. 7-10, system boundary and mass-transfer definitions",
+          "analytical_focus": "Make categories physical before comparing them.",
+          "argument_move": "The methods define withdrawal, consumption, source, quality, lifecycle stage and geographic boundary, then apply those definitions consistently to unusual flows such as produced water and inter-source transfers.",
+          "evidence_structure": "definition -> boundary -> classification example -> implication",
+          "qualification_discipline": "Discharge and return flow are explicitly separated; embodied and foreign water are excluded.",
+          "language_transfer": "Use one plain definitional sentence when the Read turns on withdrawal versus consumption, then proceed to the comparison.",
+          "anti_pattern": "Using water use as a synonym for withdrawal, consumption, delivery and discharge."
+        },
+        {
+          "passage_id": "WTR-LF-A04",
+          "location": "p. 8, evidence hierarchy and scaling proxies",
+          "analytical_focus": "Rank evidence and choose causal proxies.",
+          "argument_move": "Observed base-year data outrank recent compilations, operator communication, pre-operational estimates and physical calculations; scaling uses a process driver rather than a convenient output variable.",
+          "evidence_structure": "evidence rank -> missing-data fallback -> causal proxy -> validation",
+          "qualification_discipline": "A proxy is accepted only where its relationship to the water-using process is stated.",
+          "language_transfer": "Prefer direct facility evidence; if a proxy is unavoidable, state what physical relationship makes it relevant.",
+          "anti_pattern": "Scaling water by revenue, output or capacity merely because that denominator is available."
+        },
+        {
+          "passage_id": "WTR-LF-A05",
+          "location": "pp. 13-16, withdrawal concentration and technology regimes",
+          "analytical_focus": "Locate the dominant mechanism rather than flattening a sector average.",
+          "argument_move": "The results separate groundwater production-stage consumption from surface-water conversion-stage withdrawals and identify a small once-through fleet as the dominant withdrawal mechanism.",
+          "evidence_structure": "fate split -> source split -> lifecycle split -> technology concentration",
+          "qualification_discipline": "Withdrawal dominance is not narrated as consumption dominance or local scarcity.",
+          "language_transfer": "Move from national context to the mechanism responsible for it, then stop before inferring facility availability.",
+          "anti_pattern": "Calling a withdrawal-intensive technology the largest consumer."
+        },
+        {
+          "passage_id": "WTR-LF-A06",
+          "location": "pp. 14-17, low-carbon water heterogeneity",
+          "analytical_focus": "Prevent one environmental attribute from standing in for another.",
+          "argument_move": "The authors compare water outcomes within low-carbon resources and show that generation technology and cooling create large divergence despite a shared carbon label.",
+          "evidence_structure": "common category -> internal heterogeneity -> technology explanation -> transition implication",
+          "qualification_discipline": "The comparison preserves separate withdrawal and consumption intensities and excludes local stress claims.",
+          "language_transfer": "When linking Power to Water, describe the particular cooling and generation regime instead of equating low carbon with low water.",
+          "anti_pattern": "Using renewable, clean or low-carbon as a proxy for water performance."
+        },
+        {
+          "passage_id": "WTR-LF-A07",
+          "location": "pp. 17-20, uncertainty, maintenance and definitions",
+          "analytical_focus": "Turn limitations into evidence-handling rules.",
+          "argument_move": "The paper explains why single-year totals can outrank their allocated subtotals, how repeatedly transformed legacy factors lose provenance, and why ambiguous definitions create impossible national comparisons.",
+          "evidence_structure": "uncertainty source -> propagation mechanism -> reporting failure -> corrective rule",
+          "qualification_discipline": "Uncertainty is attached to specific allocations and data lineages rather than used as a blanket disclaimer.",
+          "language_transfer": "Qualify the exact inferential step that is weak; do not bury the whole Read under generalized uncertainty language.",
+          "anti_pattern": "Treating an old, repeatedly cited estimate as stronger because it appears in many secondary sources."
+        }
+      ]
+    },
+    {
+      "text_id": "WTR-LF-B",
+      "admission_source_id": "WTR-CH1-016",
+      "title": "The water use of data center workloads: A review and assessment of key determinants",
+      "authors_short": "Lei et al.",
+      "journal": "Resources, Conservation and Recycling",
+      "doi": "10.1016/j.resconrec.2025.108310",
+      "audited_version": "complete 60-page accepted manuscript with supporting information",
+      "source": "https://escholarship.org/content/qt1vx545q7/qt1vx545q7.pdf",
+      "passages": [
+        {
+          "passage_id": "WTR-LF-B01",
+          "location": "pp. 2-5, metric critique and workload denominator",
+          "analytical_focus": "Match the denominator to the service being compared.",
+          "argument_move": "The authors show that site and source WUE per IT energy omit hardware performance, then introduce liters per benchmarked workload to compare unlike server efficiencies.",
+          "evidence_structure": "popular metric -> omitted variable -> comparison failure -> revised denominator",
+          "qualification_discipline": "The proposed workload metric is tied to a named benchmark and is not presented as universal computing output.",
+          "language_transfer": "State what a platform metric normalizes before using it to compare facilities or trends.",
+          "anti_pattern": "Calling lower WUE proof of lower water per digital service."
+        },
+        {
+          "passage_id": "WTR-LF-B02",
+          "location": "pp. 6-9, direct and indirect decomposition",
+          "analytical_focus": "Expose the multiplicative pathways behind total water per workload.",
+          "argument_move": "Overall water is decomposed into direct facility water plus facility electricity multiplied by a grid water factor, with server efficiency and PUE feeding the electricity term.",
+          "evidence_structure": "system boundary -> equation -> component definitions -> determinant mapping",
+          "qualification_discipline": "Upstream, point-of-generation and on-site consumption remain inside named sub-boundaries.",
+          "language_transfer": "Build causal sentences around one conversion chain—workload, electricity, cooling or grid—not a list of disconnected water facts.",
+          "anti_pattern": "Adding site and grid water figures whose energy, time or geographic boundaries do not match."
+        },
+        {
+          "passage_id": "WTR-LF-B03",
+          "location": "pp. 9-15, cooling-climate-efficiency interaction",
+          "analytical_focus": "Preserve interaction effects.",
+          "argument_move": "Ten cooling configurations across nineteen climate zones show overlapping PUE and WUE outcomes, so no cooling label determines performance independently of climate and operating efficiency.",
+          "evidence_structure": "technology regimes -> climate regimes -> overlapping outcomes -> system-level implication",
+          "qualification_discipline": "Annual averages and modeled configuration ranges are not described as live facility measurements.",
+          "language_transfer": "Use cooling technology as a conditional mechanism: its effect depends on climate, controls and operating point.",
+          "anti_pattern": "Declaring liquid, evaporative, dry or free cooling categorically water-optimal."
+        },
+        {
+          "passage_id": "WTR-LF-B04",
+          "location": "pp. 10-13, utilization and inactive servers",
+          "analytical_focus": "Separate infrastructure efficiency from useful work.",
+          "argument_move": "The server model shows that efficiency quantile, utilization, refresh cycle and inactive share can produce the same electricity per workload through different combinations.",
+          "evidence_structure": "server state -> useful throughput -> energy per workload -> water implication",
+          "qualification_discipline": "The analysis notes diminishing inactive-server effects as newer servers lower idle power.",
+          "language_transfer": "When workload evidence is absent, do not infer service efficiency from facility PUE or total electricity alone.",
+          "anti_pattern": "Treating installed servers, nameplate IT capacity or electricity as delivered compute."
+        },
+        {
+          "passage_id": "WTR-LF-B05",
+          "location": "pp. 17-23, grid water factor and source WUE",
+          "analytical_focus": "Keep location-dependent indirect water visible.",
+          "argument_move": "The analysis varies the grid water-consumption factor and shows that a low site WUE can coexist with high source WUE, while a water-using site can have a lower total under a low-water grid.",
+          "evidence_structure": "site metric -> grid factor -> combined metric -> reversal case",
+          "qualification_discipline": "Generation-weighted resource factors are identified as averages rather than dispatch-resolved attribution.",
+          "language_transfer": "Contrast on-site cooling and electricity-mediated water directly when the evidence supports both; never let one silently substitute for the other.",
+          "anti_pattern": "Ranking facilities on site WUE while omitting their electricity water boundary."
+        },
+        {
+          "passage_id": "WTR-LF-B06",
+          "location": "pp. 23-26, Sobol sensitivity and no-silver-bullet result",
+          "analytical_focus": "Use sensitivity rankings as conditional decision support.",
+          "argument_move": "Variance decomposition ranks server efficiency, grid water factor and utilization while retaining cooling, climate and infrastructure as nontrivial interacting determinants; the policy section rejects a universal recipe.",
+          "evidence_structure": "global sensitivity -> ranked determinants -> constrained cases -> tailored action",
+          "qualification_discipline": "A variance contribution is not converted into a guaranteed savings percentage.",
+          "language_transfer": "Name the leading constraint for the observed case, then identify what would have to change; avoid generic solution lists.",
+          "anti_pattern": "Turning a modeled sensitivity rank into a universal causal effect size."
+        },
+        {
+          "passage_id": "WTR-LF-B07",
+          "location": "pp. 27-28, limitations and boundary repair",
+          "analytical_focus": "End with the exact boundary that controls interpretation.",
+          "argument_move": "The authors identify benchmark representativeness, omitted GPUs and networks, average grid factors, and consumption-only scope, then recommend separate withdrawal consideration and standardized footprint definitions.",
+          "evidence_structure": "model contribution -> omitted systems -> direction of bias -> next measurement need",
+          "qualification_discipline": "Each limitation is tied to how it could change the result rather than appended as ritual caveat.",
+          "language_transfer": "If a Water Read lacks facility evidence, conclude with the missing measurement that would change the inference—source, peak withdrawal, consumption, cooling or grid factor.",
+          "anti_pattern": "Ending with a broad call for more data without naming the decision-relevant missing field."
+        }
+      ]
+    }
+  ],
+  "long_form_transfer": {
+    "texts_completed": 2,
+    "passages_completed": 14,
+    "minimum_required": 14,
+    "decision": "PASS_LONG_FORM_REQUIREMENT",
+    "reusable_reasoning_moves": [
+      "Define fate and boundary before reporting scale.",
+      "Move from aggregate context to the mechanism that creates it.",
+      "Rank evidence and preserve provenance through every proxy.",
+      "Match the denominator to useful service before comparing performance.",
+      "Treat cooling, climate, workload and grid water as interacting regimes.",
+      "Attach uncertainty to the weak inferential link, not the entire paragraph.",
+      "End on the measurement or conversion condition that would change the conclusion."
+    ],
+    "prose_controls": [
+      "One causal move per sentence.",
+      "No more than two quantitative clauses in one sentence.",
+      "Use withdrawal, consumption, delivery, discharge and return flow only in their defined senses.",
+      "Avoid repeated thesis-restatement at paragraph endings.",
+      "Prefer mechanism verbs: withdraws, consumes, returns, supplies, constrains, converts, discloses.",
+      "Use exposure, estimate, scenario and observed only when the evidence class supports the term."
+    ]
+  },
+  "saturation_audit": {
+    "challenge_1": {
+      "challenge": "WTR-CH1",
+      "independence": "Five sources are distinct from the 15-source foundation and from one another by author set and analytical design.",
+      "new_universal_families": [],
+      "new_family_count": 0,
+      "families_deepened": [
+        "WTR-U02",
+        "WTR-U03",
+        "WTR-U04",
+        "WTR-U06",
+        "WTR-U07",
+        "WTR-U08",
+        "WTR-U11"
+      ],
+      "material_gap_reopened": false,
+      "decision": "PASS_FIRST_SATURATION_CHALLENGE",
+      "rule_evaluation": "Adds zero new universal families and reopens no material gap; satisfies the <=2-family challenge threshold. A second independent challenge remains mandatory."
+    },
+    "challenge_2": {
+      "challenge": "WTR-CH2",
+      "independence": "Five sources are distinct from all prior admissions and from one another by author set, geography and analytical design: coupled hydro-economic simulation, multi-hazard asset modeling, social-hydrological modeling, global water-quality modeling and infrastructure-partnership optimization.",
+      "new_universal_families": [],
+      "new_family_count": 0,
+      "families_deepened": [
+        "WTR-U03",
+        "WTR-U04",
+        "WTR-U06",
+        "WTR-U07",
+        "WTR-U08",
+        "WTR-U09",
+        "WTR-U10",
+        "WTR-U11"
+      ],
+      "material_gap_reopened": false,
+      "decision": "PASS_SECOND_SATURATION_CHALLENGE",
+      "rule_evaluation": "Adds zero new universal families and reopens no material gap; satisfies the <=2-family challenge threshold. Both independent saturation challenges now pass. Integrated confirmation remains mandatory."
+    },
+    "integrated_confirmation": {
+      "new_universal_families": [],
+      "new_family_count": 0,
+      "families_confirmed": [
+        "WTR-U01",
+        "WTR-U02",
+        "WTR-U03",
+        "WTR-U04",
+        "WTR-U06",
+        "WTR-U07",
+        "WTR-U08",
+        "WTR-U09",
+        "WTR-U10",
+        "WTR-U11",
+        "WTR-U12"
+      ],
+      "material_gap_reopened": false,
+      "decision": "PASS_INTEGRATED_CONFIRMATION",
+      "rule_evaluation": "The integrated batch adds no universal family, preserves all hard boundaries and reconnects facility, grid, watershed, utility, economic and disclosure evidence without contradiction. Source admission is complete."
+    },
+    "decision": "PASS"
+  },
+  "integrity_audit": {
+    "expected_admissions": 30,
+    "actual_admissions": 30,
+    "unique_source_ids": 30,
+    "unique_dois": 30,
+    "expected_observations": 120,
+    "actual_observations": 120,
+    "unique_observation_ids": 120,
+    "orphan_observations": [],
+    "expected_families": 12,
+    "actual_families": 12,
+    "unique_family_ids": 12,
+    "complete_audits": 30,
+    "journal_gate_passes": 30,
+    "long_form_texts": 2,
+    "long_form_passages": 14,
+    "blocked_candidates_counted_as_admitted": 0,
+    "abstract_only_admissions": 0,
+    "decision": "PASS"
+  },
+  "residual_gaps": [
+    "Academic saturation does not provide current facility water disclosures, utility service agreements, permits, rights or cooling configurations.",
+    "Public facility evidence remains sparse enough that a national data-center withdrawal or consumption total should not be inferred from the platform registry.",
+    "State drought exposure does not resolve watershed, utility or facility availability and cannot substitute for local evidence.",
+    "Electricity-mediated water remains sensitive to generation, cooling, dispatch, geography and time.",
+    "The corpus guides expression and reasoning; quality still depends on the completeness and consistency of the runtime evidence packet."
+  ],
+  "integration_contract": {
+    "source_profiles": [
+      "water"
+    ],
+    "corpus_file": "AI_MACRO_WATER_CORPUS_COMPLETE_v1.0.json",
+    "compiler_target": "AI_MACRO_LANGUAGE_LAYER_v1.0.json",
+    "generation_order": [
+      "water",
+      "ai_macro_rollup"
+    ],
+    "no_post_generation_rewrite": true,
+    "no_hidden_api_calls": true
+  }
+}

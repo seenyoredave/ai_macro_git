@@ -1,4 +1,4 @@
-"""Attach Current Context to validated commentary without regenerating prose."""
+"""Attach Current Context to published commentary without regenerating prose."""
 
 from __future__ import annotations
 

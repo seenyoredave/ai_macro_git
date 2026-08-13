@@ -1,0 +1,47 @@
+{
+  "checkpoint_type": "maintenance_release",
+  "release": "v9.0.1",
+  "created_at_utc": "2026-08-13T03:02:04Z",
+  "failure": {
+    "exception": "FileNotFoundError",
+    "message": "Release input is missing: AGENTS.md",
+    "stage": "developer explicit-refresh release-manifest rebuild"
+  },
+  "root_cause": "AGENTS.md was declared as a mandatory runtime release input even though it is an agent-maintenance instruction file and was not included in the delivered application package.",
+  "resolution": [
+    "Removed AGENTS.md from RELEASE_FILES.",
+    "Added helpers/build_release_manifest.py to RELEASE_FILES so the publication-boundary builder fingerprints itself.",
+    "Incremented APP_VERSION from v9.0.0 to v9.0.1.",
+    "Added a focused regression contract for runtime-safe manifest inputs."
+  ],
+  "overwrite_files": [
+    "ai_macro.py",
+    "helpers/build_release_manifest.py",
+    "helpers/release_manifest_contract_test.py",
+    "build_reports/RELEASE_MANIFEST_FIX_v9.0.1.json"
+  ],
+  "intentionally_excluded": [
+    "data/",
+    "archive/",
+    "openai_artifacts/",
+    "automation configuration",
+    "secrets",
+    "virtual environments",
+    "temporary files"
+  ],
+  "post_overwrite_command": "python helpers/build_release_manifest.py",
+  "validation": {
+    "release_manifest_contract": "passed",
+    "release_manifest_file_count": 125,
+    "release_id_in_build_tree": "5eec6ebd06c289a83c79",
+    "integrity_gate": "passed_9_of_9",
+    "language_layer_contract": "passed",
+    "editorial_quality_contract": "passed",
+    "python_compile": "passed"
+  },
+  "sha256": {
+    "ai_macro.py": "f4d9b86617e45606a3ea44a0c2b15682a6a29ca6de8eeb2b0c881317630e4b61",
+    "helpers/build_release_manifest.py": "26a76b85ad7ebf06aa183ac439669c80869bb70d64d2c7a4bedb14b41f4d4469",
+    "helpers/release_manifest_contract_test.py": "9c51a6a5bbfc01ec5214958677b46749c414c96d5b15fec30dc0757e58974919"
+  }
+}

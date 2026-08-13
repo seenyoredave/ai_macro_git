@@ -490,7 +490,14 @@ def _append_observation(history: pd.DataFrame, name: str, value, date) -> pd.Dat
     row = pd.DataFrame([{"Date": parsed_date, "Series": name, "Value": float(numeric)}])
     return _merge_histories(history, row)
 
-def _attach_power_series(snapshot: dict, fred_data: dict | None) -> dict:
+def attach_power_series(snapshot: dict, fred_data: dict | None) -> dict:
+    """Attach the current retained/FRED power observations to an energy snapshot.
+
+    Automation refreshes domain-owned providers before shared market sources.
+    Keeping this deterministic join public lets the worker refresh the FRED
+    inputs later and then assemble one internally consistent final snapshot
+    without contacting a domain provider twice.
+    """
     power_history = _load_power_history()
     for name, spec in ENERGY_POWER_SERIES.items():
         fred_item = _fred_item(fred_data, spec["fred_name"])
@@ -573,7 +580,7 @@ def load_energy_data(
         clock_token=(clock_token or energy_cache_token()) if supply_live_enabled else "retained-snapshot",
         allow_live=supply_live_enabled,
     )
-    snapshot = _attach_power_series(dict(supply_snapshot), fred_data)
+    snapshot = attach_power_series(dict(supply_snapshot), fred_data)
     market = load_energy_market_data(
         force_refresh=market_refresh,
         refresh_token=int(market_refresh_token),

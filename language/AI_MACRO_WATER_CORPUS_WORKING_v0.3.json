@@ -1,0 +1,195 @@
+{
+  "schema_version": "0.3-water-working",
+  "artifact_type": "AI_MACRO_DOMAIN_CORPUS_WORKING",
+  "domain": "water",
+  "status": "IN_PROGRESS_CHALLENGE_ONE_PASSED",
+  "created_at": "2026-08-12T21:35:00-07:00",
+  "inherits": "AI_MACRO_WATER_CORPUS_WORKING_v0.2.json",
+  "checkpoint_scope": "Independent facility, cooling, workload and disclosure saturation challenge WTR-CH1-016 through WTR-CH1-020.",
+  "cumulative_progress": {
+    "unique_qualifying_admissions": 20,
+    "complete_foundation_admissions": 15,
+    "complete_challenge_one_admissions": 5,
+    "verified_atomic_observations": 80,
+    "abstract_only_admissions": 0,
+    "audit_blocked_not_counted": 2,
+    "saturation_challenges_passed": 1,
+    "long_form_texts": 0,
+    "long_form_passages": 0
+  },
+  "challenge_one_admissions": [
+    {
+      "source_id": "WTR-CH1-016",
+      "title": "The water use of data center workloads: A review and assessment of key determinants",
+      "authors_short": "Lei et al.",
+      "journal": "Resources, Conservation and Recycling",
+      "year": 2025,
+      "doi": "10.1016/j.resconrec.2025.108310",
+      "journal_gate": {"current_jif": 10.4, "metric_year": 2025, "threshold": 2.0, "decision": "PASS", "source": "https://www.sciencedirect.com/journal/resources-conservation-and-recycling"},
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete 60-page LBNL/UC accepted manuscript with supporting information",
+        "source": "https://escholarship.org/content/qt1vx545q7/qt1vx545q7.pdf",
+        "extent": "Complete framing, workload metric, direct and indirect boundary, server benchmark model, ten cooling configurations, nineteen climate zones, grid water factors, decomposition, sensitivity ranking, implications, limitations and supporting-information sections reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The paper decomposes liters consumed per workload into server workload efficiency, facility WUE, PUE and electricity water-consumption factors, then tests interacting determinants across server, cooling, climate and grid conditions.",
+        "measurement_and_denominator": "Workload water equals direct facility water plus electricity use times a grid water factor. WUE-site and WUE-source are per IT-energy metrics; they do not measure computing output and therefore cannot compare unlike workload efficiencies by themselves.",
+        "heterogeneity_and_regime": "Server efficiency and utilization, grid water factor, cooling configuration, facility efficiency, climate, inactive-server share and refresh cycle interact. No single cooling or siting recipe minimizes water everywhere.",
+        "limitations": ["SPECpower_ssj is a server benchmark rather than an observed universal workload.", "Generation-weighted U.S. water factors suppress regional plant, cooling and allocation differences.", "Cooling archetypes are simulated and real operator PUE/WUE disclosure remains sparse.", "Workload metrics require a defined service and performance benchmark."],
+        "anti_patterns": ["Do not compare sites on WUE alone when workload efficiency differs.", "Do not treat liters per workload as model-independent.", "Do not infer one globally optimal cooling design from a sensitivity ranking."]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-017",
+      "title": "The carbon and water footprints of data centers and what this could mean for artificial intelligence",
+      "authors_short": "de Vries-Gao",
+      "journal": "Patterns",
+      "year": 2025,
+      "issue_year": 2026,
+      "doi": "10.1016/j.patter.2025.101430",
+      "journal_gate": {"current_jif": 10.8, "metric_year": 2025, "threshold": 2.0, "decision": "PASS", "source": "https://www.cell.com/patterns/faq"},
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "complete open-access author-uploaded article",
+        "source": "https://www.researchgate.net/publication/398789093_The_carbon_and_water_footprints_of_data_centers_and_what_this_could_mean_for_artificial_intelligence",
+        "extent": "Complete operational boundary, company disclosure matrix, equations, location-level examples, direct and indirect water estimates, AI allocation, discussion, uncertainty, policy proposal, data and disclosures reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "The study inventories which operators disclose company, data-center, facility and AI-specific electricity, PUE, WUE, direct water and indirect water, then demonstrates how missing layers force progressively weaker approximations.",
+        "measurement_and_denominator": "Direct WUE requires direct consumed water and IT electricity; deriving it from facility electricity additionally requires PUE. Indirect water requires workload location, electricity and grid water intensity. Company-wide values are not facility or AI values.",
+        "heterogeneity_and_regime": "Disclosure varies by company and metric; local-grid water intensity varies widely; AI is usually not separated from non-AI load. The paper's global AI figures are explicitly high-uncertainty approximations.",
+        "limitations": ["The genre is a Perspective using public company reports and secondary estimates.", "Operational impact excludes embodied and manufacturing water.", "AI allocation uses general data-center performance because AI-specific operating data are absent.", "Some electricity and water factors are inferred rather than reported."],
+        "anti_patterns": ["Do not narrate a company-wide sustainability metric as a facility value.", "Do not present the modeled AI range as a measured total.", "Do not omit indirect electricity water merely because an operator does not control the generator."]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-018",
+      "title": "Optimized data center site selection—mesoclimatic effects on data center energy consumption and costs",
+      "authors_short": "Turek and Radgen",
+      "journal": "Energy Efficiency",
+      "year": 2021,
+      "doi": "10.1007/s12053-021-09947-y",
+      "journal_gate": {"current_jif": 3.4, "metric_year": 2025, "threshold": 2.0, "decision": "PASS", "source": "https://link.springer.com/journal/12053"},
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://link.springer.com/article/10.1007/s12053-021-09947-y",
+        "extent": "Complete reference-facility load model, free and compression cooling modes, dry and sprayed hybrid recooler regimes, kilometer-scale weather treatment, site-radius experiments, results, extrapolation assumptions, discussion, land-use limits and conclusion reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "A reference data center with temperature-dependent hybrid cooling is evaluated on a one-kilometer grid to show how small mesoclimatic differences alter cooling operation, energy and water-assist regimes.",
+        "measurement_and_denominator": "The model uses an observed annual IT-load profile, a reference UPS and one assumed hybrid cooling system. Spraying begins above modeled temperature thresholds and trades direct water for fan or chiller electricity.",
+        "heterogeneity_and_regime": "Dry free cooling, partial spray, full spray and compression cooling are distinct operating modes. Local temperature and humidity, system setpoints and equipment curves govern the time spent in each mode.",
+        "limitations": ["Humidity is generalized rather than modeled at each grid cell.", "The reference hybrid plant does not represent the heterogeneous installed fleet.", "Energy results do not provide a complete water balance.", "Fiber, power, land, permitting and construction timing constrain candidate sites."],
+        "anti_patterns": ["Do not treat cooling design as a static annual label.", "Do not transfer a modeled temperature threshold across equipment and climates.", "Do not call an energetically favorable grid cell a feasible data-center site."]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-019",
+      "title": "Expert and operator perspectives on barriers to energy efficiency in data centers",
+      "authors_short": "Newkirk et al.",
+      "journal": "Energy Efficiency",
+      "year": 2024,
+      "doi": "10.1007/s12053-024-10244-7",
+      "journal_gate": {"current_jif": 3.4, "metric_year": 2025, "threshold": 2.0, "decision": "PASS", "source": "https://link.springer.com/journal/12053"},
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://link.springer.com/article/10.1007/s12053-024-10244-7",
+        "extent": "Complete 16-interview protocol, sampling, coding, procurement, metrics including WUE, reliability, organizational barriers, data-center-type heterogeneity, siting, limitations, policy implications and conclusion reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "Semi-structured interviews test whether technical efficiency advice survives procurement, reliability, staffing, metering, organizational and siting constraints in operating data centers.",
+        "measurement_and_denominator": "Operators use heterogeneous metrics tied to facility missions. WUE appeared among metrics, but no advanced measure converged across the small sample; collecting trusted real-time data requires non-universal technical capacity.",
+        "heterogeneity_and_regime": "Embedded, colocation, government, enterprise, hyperscale and HPC facilities face different incentives and constraints. Reliability, vendor trust, split incentives, legacy chillers and regulatory boundaries can dominate a theoretical optimum.",
+        "limitations": ["Convenience sample of 16 cannot support statistical industry-wide claims.", "Response bias likely favors high-performing, efficiency-interested facilities.", "The sample is not weighted to the data-center population.", "Water was one component of a broader efficiency and operations study."],
+        "anti_patterns": ["Do not assume a technically available cooling option is implementable.", "Do not describe a metric as collected because it exists in a standard.", "Do not generalize hyperscale capabilities to embedded or legacy facilities."]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "WTR-CH1-020",
+      "title": "Assessing the environmental costs of multi-scale recurrent neural networks for sustainable extreme rainfall nowcasting",
+      "authors_short": "Brum et al.",
+      "journal": "Scientific Reports",
+      "year": 2026,
+      "doi": "10.1038/s41598-026-43029-2",
+      "journal_gate": {"current_jif": 3.9, "metric_year": 2025, "threshold": 2.0, "decision": "PASS", "source": "https://www.nature.com/srep/journal-impact"},
+      "whole_text_audit": {
+        "status": "COMPLETE",
+        "format": "publisher full HTML",
+        "source": "https://www.nature.com/articles/s41598-026-43029-2",
+        "extent": "Complete model and dataset framing, five-run experiment design, GPU monitoring, CodeCarbon method, direct and off-site WUE assumptions, results, predictive-quality tradeoffs, discussion, limitations, project-wide estimate, data and disclosures reviewed."
+      },
+      "verified_extraction": {
+        "claim_path": "Measured GPU energy and modeled location factors are combined to compare the estimated operational water of baseline and compressed recurrent neural-network training runs.",
+        "measurement_and_denominator": "GPU power is monitored; energy is measured for the instrumented stage. Water is then estimated as energy times assumed on-site and off-site WUE with PUE fixed at one for the small cluster. The cluster is declared to use no cooling water on site.",
+        "heterogeneity_and_regime": "Relative water savings largely follow energy savings when a common fixed water factor is applied. Absolute water depends on assumed national factors and excluded facility overhead, and differs from a facility meter reading.",
+        "limitations": ["PUE=1 and national grid WUE are simplifying assumptions.", "Only part of the full project runtime is instrumented directly.", "The experimental workload is rainfall nowcasting, not a general AI workload.", "Data reductions and predictive performance vary by dataset."],
+        "anti_patterns": ["Do not call factor-derived water a measured facility quantity.", "Do not generalize a workload's relative savings to all AI.", "Do not omit the model, location, PUE and WUE assumptions when reporting water." ]
+      },
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    }
+  ],
+  "challenge_one_atomic_observations": [
+    {"observation_id":"WTR-O061","source_id":"WTR-CH1-016","family":"WTR-U03","statement":"WUE per IT energy cannot compare unlike computing outputs without a workload-efficiency denominator."},
+    {"observation_id":"WTR-O062","source_id":"WTR-CH1-016","family":"WTR-U02","statement":"Workload water combines direct facility water and electricity water through an explicit additive boundary."},
+    {"observation_id":"WTR-O063","source_id":"WTR-CH1-016","family":"WTR-U06","statement":"Cooling, climate and infrastructure efficiency interact rather than produce one universal technology ranking."},
+    {"observation_id":"WTR-O064","source_id":"WTR-CH1-016","family":"WTR-U11","statement":"Sensitivity rankings are conditional on benchmark, archetype and grid-factor assumptions."},
+    {"observation_id":"WTR-O065","source_id":"WTR-CH1-017","family":"WTR-U08","statement":"Environmental disclosure must be indexed by company, data-center fleet, facility and workload scope."},
+    {"observation_id":"WTR-O066","source_id":"WTR-CH1-017","family":"WTR-U02","statement":"Indirect electricity water is rarely disclosed even where direct facility water is reported."},
+    {"observation_id":"WTR-O067","source_id":"WTR-CH1-017","family":"WTR-U03","statement":"Deriving WUE from facility electricity requires PUE and direct consumed water with aligned periods."},
+    {"observation_id":"WTR-O068","source_id":"WTR-CH1-017","family":"WTR-U11","statement":"AI footprint ranges based on general fleet metrics remain approximations, not measured AI totals."},
+    {"observation_id":"WTR-O069","source_id":"WTR-CH1-018","family":"WTR-U06","statement":"Hybrid cooling moves through dry, partial-spray, full-spray and compression regimes as weather changes."},
+    {"observation_id":"WTR-O070","source_id":"WTR-CH1-018","family":"WTR-U04","statement":"Mesoclimatic differences can change cooling operating hours within a small geographic radius."},
+    {"observation_id":"WTR-O071","source_id":"WTR-CH1-018","family":"WTR-U11","statement":"Equipment curves and temperature thresholds are reference-system assumptions, not universal constants."},
+    {"observation_id":"WTR-O072","source_id":"WTR-CH1-018","family":"WTR-U07","statement":"A modeled efficient location still requires power, fiber, suitable land, permits and acceptable schedule."},
+    {"observation_id":"WTR-O073","source_id":"WTR-CH1-019","family":"WTR-U07","statement":"Vendor relationships, procurement and legacy plant can determine whether a cooling improvement is implemented."},
+    {"observation_id":"WTR-O074","source_id":"WTR-CH1-019","family":"WTR-U08","statement":"Metric availability in standards does not establish facility collection capacity or data quality."},
+    {"observation_id":"WTR-O075","source_id":"WTR-CH1-019","family":"WTR-U03","statement":"Facility missions produce heterogeneous performance denominators and priorities."},
+    {"observation_id":"WTR-O076","source_id":"WTR-CH1-019","family":"WTR-U11","statement":"A small convenience sample supports mechanism discovery, not prevalence estimates."},
+    {"observation_id":"WTR-O077","source_id":"WTR-CH1-020","family":"WTR-U08","statement":"Measured GPU power and factor-derived water must retain different evidence labels."},
+    {"observation_id":"WTR-O078","source_id":"WTR-CH1-020","family":"WTR-U03","statement":"Estimated workload water depends on workload, runtime, PUE, direct WUE and grid WUE boundaries."},
+    {"observation_id":"WTR-O079","source_id":"WTR-CH1-020","family":"WTR-U11","statement":"A fixed national factor makes relative water change track energy change by construction."},
+    {"observation_id":"WTR-O080","source_id":"WTR-CH1-020","family":"WTR-U02","statement":"Zero on-site cooling water does not imply zero operational water when electricity water is included."}
+  ],
+  "screened_not_admitted": [
+    {
+      "title": "Limitations to air free cooling in data centers under rising heat and humidity",
+      "doi": "10.1038/s41598-026-56926-3",
+      "reason": "The publisher exposed an unedited early-access abstract and front matter but not the substantive methods and results body. Complete-text gate not met; zero observations counted.",
+      "status": "AUDIT_BLOCKED_NOT_COUNTED"
+    },
+    {
+      "title": "Water-energy tradeoffs in data centers: A case study in hot-arid climates",
+      "doi": "10.1016/j.resconrec.2022.106194",
+      "reason": "Publisher abstract and secondary excerpts were accessible, but a complete substantive text was not obtained in this challenge. Complete-text gate not met; zero observations counted.",
+      "status": "AUDIT_BLOCKED_NOT_COUNTED"
+    }
+  ],
+  "saturation_assessment": {
+    "challenge": "WTR-CH1",
+    "independence": "Five sources are distinct from the 15-source foundation and from one another by author set and analytical design.",
+    "new_universal_families": [],
+    "new_family_count": 0,
+    "families_deepened": ["WTR-U02", "WTR-U03", "WTR-U04", "WTR-U06", "WTR-U07", "WTR-U08", "WTR-U11"],
+    "material_gap_reopened": false,
+    "decision": "PASS_FIRST_SATURATION_CHALLENGE",
+    "rule_evaluation": "Adds zero new universal families and reopens no material gap; satisfies the <=2-family challenge threshold. A second independent challenge remains mandatory."
+  },
+  "integrity_check": {
+    "cumulative_unique_source_ids": 20,
+    "cumulative_unique_dois": 20,
+    "cumulative_unique_observations": 80,
+    "challenge_observations": 20,
+    "orphan_challenge_observations": 0,
+    "blocked_sources_counted": 0,
+    "abstract_only_counted": 0,
+    "decision": "PASS_CHECKPOINT_INTEGRITY"
+  },
+  "next_action": "Run WTR-CH2-021 through WTR-CH2-025 as an independent watershed, drought, competition, rights and infrastructure challenge. Save v0.4 and test whether the second consecutive challenge adds no more than two new universal families and reopens no material gap."
+}

@@ -1,0 +1,61 @@
+{
+  "artifact_type": "ai_macro_working_checkpoint",
+  "schema_version": "1.0",
+  "checkpoint": "informed-general-reader-v0.1",
+  "application_target": "v9.4.2",
+  "status": "IMPLEMENTED_AND_TESTED",
+  "audience": "A highly intelligent, widely read, operationally experienced adult who may have no specialized knowledge of the subject.",
+  "language_layer": {
+    "version": "language-layer-1.4.1",
+    "payload_digest": "e7019e1bed12d3266e5c6e5e8df6a02372ffd1cdf2b5cd3e4ad5deb779623cf2",
+    "reader_pedagogy_removed": true,
+    "reader_calibration_added": true
+  },
+  "macro_contract": {
+    "paragraphs_default": 3,
+    "paragraphs_max": 4,
+    "sentences_per_paragraph_min": 2,
+    "sentences_per_paragraph_max": 4,
+    "target_words_min": 150,
+    "target_words_max": 225,
+    "minimum_word_count": null,
+    "hard_word_ceiling": 250,
+    "sentence_word_ceiling": 28,
+    "selected_domains_min": 3,
+    "selected_domains_max": 5
+  },
+  "contextual_sufficiency": {
+    "first_reference_identifies_unfamiliar_subject": true,
+    "undefined_internal_cohort_labels_warn": true,
+    "demonstrated_warning": "covered issuers",
+    "reader_sufficient_control": "the companies tracked in this analysis",
+    "useful_technical_language_preserved": true
+  },
+  "explanatory_restraint": [
+    "No domain or lifecycle roadmap.",
+    "No classroom tone.",
+    "No explanation of ordinary financial, economic, or causal reasoning.",
+    "No mandatory translation of every ratio.",
+    "No repeated thesis used as padding."
+  ],
+  "paid_call_contract": {
+    "domain_calls": 1,
+    "macro_calls": 1,
+    "retries": 0,
+    "additional_calls": 0,
+    "diagnostics_rewrite_or_suppress": false,
+    "automation_changed": false
+  },
+  "verification": [
+    "PASS compiled language-layer checksum",
+    "PASS eleven-domain language contract",
+    "PASS two-call and paragraph-preservation architecture",
+    "PASS contextual-sufficiency diagnostic and control sentence",
+    "PASS no-word-floor contract",
+    "PASS editorial regression contract",
+    "PASS seven stack-completion fidelity contracts",
+    "PASS 131-file manifest contract",
+    "PASS nine critical integrity contracts"
+  ],
+  "release_manifest_id": "a2ed4797c15137174479"
+}

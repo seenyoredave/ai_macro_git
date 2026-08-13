@@ -1,5 +1,7 @@
 # AI Macro
 
+The v9 Reader uses a compiled, integrity-checked 11-domain language layer supplied directly to OpenAI. See `docs/LANGUAGE_LAYER.md` for the production contract.
+
 AI Macro is a Streamlit research platform for tracking the U.S. AI economy from capital investment and physical buildout through adoption, labor markets, and broader economic outcomes. It brings public market, company, infrastructure, labor, and government data into one place.
 
 ## Coverage
@@ -23,14 +25,14 @@ AI Macro requires Python 3.11 or newer. Release artifacts for this version were 
 
 ## Commentary
 
-AI Macro separates deterministic research from probabilistic interpretation. Retained data and local analytics build bounded evidence packets; OpenAI generates grounded analytical domain Reads and a cross-domain Macro synthesis; a deterministic validator decides whether the result may be published. Reader sessions never call OpenAI.
+AI Macro separates deterministic research from probabilistic interpretation. Retained data and local analytics build bounded evidence packets; OpenAI generates all domain Reads in one call, then receives those completed Reads in a second call to write the cross-domain Macro synthesis. Reader sessions never call OpenAI.
 
-Commentary is generated from bounded evidence packets and published only after deterministic validation. A validated Read remains published for 24 hours; the owner can reapply the last validated Read for another 24 hours without an OpenAI call. If commentary is unavailable, the underlying dashboard data remain available.
+The complete portable language layer is supplied to both calls. Returned prose is not rewritten locally. Deterministic checks attach diagnostics only; completed output publishes as `validated`, `published_with_warnings`, or `published_raw_response`. A published Read remains available for 24 hours and can be reapplied without an OpenAI call.
 
 
 ## Automation
 
-The hosted Reader remains read-only. A single scheduled GitHub Actions worker runs at 09:07 Eastern, may refresh retained research, update Current Context, generate commentary when analytical evidence changes, renew an unchanged validated Read at zero API cost, and publish only after deterministic validation passes. Paid automation is bounded by hard call ceilings and has no automatic API retry loop. Desktop-to-Git reconciliation preserves newer online retained state while keeping desktop code/configuration authoritative.
+The hosted Reader remains read-only. A single scheduled GitHub Actions worker runs at 09:07 Eastern on weekdays. It refreshes domain sources, then shared market sources, then Current Context before it makes one publication decision. Commentary is regenerated only when a curated evidence fact changes materially relative to the last generated Read; smaller changes accumulate against that baseline while the existing Read is renewed at zero API cost. Full generation is bounded to two calls, the SDK retry count is zero, and diagnostics never trigger a replacement call. Desktop-to-Git reconciliation preserves newer online retained state while keeping desktop code/configuration authoritative.
 
 ## Current Context
 

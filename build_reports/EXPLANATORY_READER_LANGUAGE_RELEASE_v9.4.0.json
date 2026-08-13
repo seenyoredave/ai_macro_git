@@ -1,0 +1,129 @@
+{
+  "artifact_type": "ai_macro_language_release_report",
+  "schema_version": "1.0",
+  "release": {
+    "application_version": "v9.4.0",
+    "language_layer_version": "language-layer-1.4.0",
+    "language_layer_payload_digest": "997a44aa7caa98536ebcad43b6bb19c81cef19d541eb44ae79f4b1f4f53fb4a5",
+    "release_manifest_id": "0fad062f42f19e852ac3",
+    "critical_file_count": 131,
+    "status": "PASS"
+  },
+  "purpose": "Give the AI Macro roll-up enough structured space to teach a large cross-domain argument in precise, friendly language without changing the evidence, adding a paid call, or rewriting OpenAI's response.",
+  "macro_structured_output": {
+    "paragraphs_min": 3,
+    "paragraphs_max": 4,
+    "sentences_per_paragraph_min": 3,
+    "sentences_per_paragraph_max": 4,
+    "target_words": "200-300",
+    "diagnostic_floor_words": 180,
+    "hard_ceiling_words": 300,
+    "analysis_sentence_ceiling_words": 28,
+    "selected_domains": "3-5",
+    "minimum_lifecycle_stages": 3,
+    "minimum_cross_domain_sentences": 3,
+    "maximum_displayed_quantities": 5,
+    "paragraph_boundaries_authored_by_openai": true,
+    "paragraph_boundaries_preserved_by_reader": true
+  },
+  "reader_pedagogy": {
+    "audience": "Intelligent general reader without platform-specific vocabulary",
+    "sequence": [
+      "Orient the reader with the main conclusion.",
+      "Identify the actor or system before its mechanism.",
+      "Translate the important quantity into ordinary language.",
+      "Explain the next required step in the chain.",
+      "State why the relationship matters and what remains unproved."
+    ],
+    "ratio_translation": true,
+    "technical_term_translation": true,
+    "familiar_verb_preference": true,
+    "paired_revision_examples": 3
+  },
+  "sound_diagnostic": {
+    "rule": "No run of three or more successive words beginning with the same letter.",
+    "ignored_without_resetting": [
+      "articles",
+      "conjunctions",
+      "short prepositions"
+    ],
+    "demonstrated_detection": "Covered companies can",
+    "content_warning_only": true,
+    "rewrites_output": false,
+    "suppresses_output": false,
+    "triggers_retry": false,
+    "triggers_paid_call": false
+  },
+  "version_contract": {
+    "domain_prompt": "domain-language-layer-1.1",
+    "macro_prompt": "macro-rollup-2.0",
+    "generator": "4.1.0",
+    "read_service": "4.1.0",
+    "validator": "3.2.0"
+  },
+  "unchanged": [
+    "All eight completed research corpora",
+    "All eleven corpus-backed domain profiles",
+    "Neuroscience systems-dynamics contributor",
+    "Deterministic evidence packets and facts",
+    "Domain-first then Macro two-call order",
+    "Zero SDK retries",
+    "Publication of paid output with diagnostics",
+    "Raw-response visibility",
+    "Automation, schedules, and paid-call ceilings",
+    "Retained runtime data and OpenAI artifacts"
+  ],
+  "verification": {
+    "executed_and_passed": [
+      "python tooling/compile_language_layer.py --check",
+      "python helpers/language_layer_contract_test.py",
+      "python helpers/read_architecture_smoke_test.py",
+      "python helpers/editorial_quality_contract_test.py",
+      "python helpers/build_release_manifest.py",
+      "python helpers/release_manifest_contract_test.py",
+      "python helpers/integrity_gate.py"
+    ],
+    "integrity_contracts_passed": 9,
+    "not_runnable_in_scratch": [
+      {
+        "command": "python helpers/automation_contract_smoke_test.py",
+        "reason": "Scratch runtime does not have the project requests dependency installed; import stopped before assertions."
+      },
+      {
+        "command": "python helpers/stack_completion_fidelity_smoke_test.py",
+        "reason": "Scratch runtime does not have the project requests dependency installed; import stopped before assertions."
+      }
+    ],
+    "owner_action": "Run both dependency-complete smoke programs inside the project .venv after applying the overlay."
+  },
+  "overlay_files_sha256": {
+    "ai_macro.py": "9ff6f3e8405af48db40b91ccfec2a70e83df987ee9b950e5e58c744dcd0bb1af",
+    "analytics/read_models.py": "89d7adada076f37345bc519108c6664cdfe2a44869123c6ee0882fb9aba96c38",
+    "analytics/read_prompts.py": "a4abb1c2890cd8eae1be6dab272233be706bb6c93ca0b4c6ecc1b2cd5bfb4eb0",
+    "analytics/read_generation.py": "93ae0fd94a5c0c8fa6741549c25948999c0bd1144e9ef39578e452d00e675022",
+    "analytics/read_service.py": "02edc3d098663caf01a76b85e49db7d0cb0da023a44503731063fc15928b99e6",
+    "analytics/read_validation.py": "2cbb5096bce3f8acc2a431ed063a6fbde8ff7764d44e236b62c84c90d4ef0038",
+    "language/AI_MACRO_LANGUAGE_LAYER_SOURCE_v1.0.json": "e0773d4481a3b72cc2bad87c2e99155a5d64594035e36717b6b14b41a8201930",
+    "language/AI_MACRO_LANGUAGE_LAYER_v1.0.json": "1b1b7f5984f1b09d73866b93a3377bf1a6036bdb5974472cc2236a6b2bf80a9c",
+    "tooling/compile_language_layer.py": "ee9196fe4ffcecc136d775a986a6d7bb0502dd2ba2e1274319b950d18c36767d",
+    "helpers/language_layer_contract_test.py": "c11fd56f5ba247b29d0652d6f19d171106ede57dc940dfe4384bd930f5d13776",
+    "helpers/read_architecture_smoke_test.py": "ef96fede341da8fcc1357b2d575f92d659c2431fa57ff50a203f1c2b85700444",
+    "helpers/editorial_quality_contract_test.py": "53958e4f7bc996e1772bb85a0eaad917fbb0408b9efeab19038204d020cd0b62",
+    "helpers/stack_completion_fidelity_smoke_test.py": "bd31c5e9dddd9a54ea0e20d0e439f0691f398d7314d8518ce0ad7792c037a430",
+    "docs/EDITORIAL_STYLE.md": "dd85ad058db395655c6b63be5ddebc0d3a6721b95af192bc57a9b2af92baeaf0",
+    "docs/COMMENTARY_ARCHITECTURE.md": "889ea2d84a6032dac6199c9b0831ed678de92178cc8300c13fa12cf25b5aab84",
+    "docs/LANGUAGE_LAYER.md": "70fcd68a05921a2d9f514a45a6142b034c14e768db47d7373e9f4750d30e64a9",
+    "docs/AI_MACRO_PLATFORM_CANONICAL_STATUS_v9.4.0.md": "0ff284907cdded7cf670ddd74344c79cc5c80c7d99e89d617d629c67cfbb97f7",
+    "build_reports/OVERWRITE_INSTRUCTIONS_v9.4.0.md": "1e275ad23f8c74e8c138ae6a62807cc8e866836c97f45426883d65fad5221ef7",
+    "build_reports/EXPLANATORY_READER_LANGUAGE_WORKING_v0.1.json": "1678f38b5723bc041f717dfa94341e5b67ab9dd6519460e82f987f3c9e4cc534"
+  },
+  "protected_state_excluded_from_overlay": [
+    "data/",
+    "archive/",
+    "openai_artifacts/",
+    "secrets and environment files",
+    ".venv/ and venv/",
+    "automation configuration and schedules"
+  ],
+  "next_step": "Apply the overlay, run the full verification set in the project .venv, then make one explicit paid full generation and assess its teaching quality."
+}

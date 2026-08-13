@@ -1,4 +1,4 @@
-"""Deterministic publication gate for generated v7 commentary."""
+"""Deterministic quality audit for generated v8 commentary."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from typing import Any, Iterable
 from analytics.read_evidence import DOMAIN_ORDER, evidence_fact_index
 from analytics.read_models import GeneratedDomainRead, GeneratedDomainReadSet, GeneratedMacroRead, SupportedSentence
 
-VALIDATOR_VERSION = "2.6.1"
+VALIDATOR_VERSION = "3.4.0"
 _NUMBER_RE = re.compile(
     r"(?<![A-Za-z0-9])"
     r"[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
@@ -30,9 +30,32 @@ MAX_ANALYSIS_SENTENCE_WORDS = 32
 MAX_SENTENCE_COMMAS = 3
 MAX_DISPLAYED_QUANTITIES = 3
 MAX_DOMAIN_ANALYSIS_WORDS = 95
-MAX_MACRO_ANALYSIS_WORDS = 120
+MAX_MACRO_ANALYSIS_WORDS = 250
 MAX_MACRO_SENTENCE_DOMAINS = 2
-MAX_MACRO_CLOSING_WORDS = 28
+MAX_MACRO_SENTENCE_WORDS = 28
+MAX_REPEATED_HEADLINE_ARCHITECTURE = 2
+_STOCK_FILLER_RE = re.compile(
+    r"\b(?:taken together|this underscores|these dynamics|the central test|it is worth noting|going forward)\b",
+    re.IGNORECASE,
+)
+_NEGATIVE_IDENTITY_RE = re.compile(r"\b(?:is|are|was|were)\s+not\b", re.IGNORECASE)
+_UNDEFINED_COHORT_RE = re.compile(r"\bcovered\s+(?:issuers?|compan(?:y|ies)|cohorts?)\b", re.IGNORECASE)
+_AMBIGUOUS_PROPORTION_RE = re.compile(
+    r"\b(?:a\s+)?(?:minority|majority)\s+(?:of\s+)?(?:current\s+)?"
+    r"(?:adults?|business(?:es)?|companies|consumers?|employees?|firms?|people|population|"
+    r"users?|use|usage|adoption|employment|participation|workers?|workplaces?)\b",
+    re.IGNORECASE,
+)
+_SOCIAL_PARTISAN_FRAME_RE = re.compile(
+    r"\b(?:race|racial|ethnic(?:ity)?|religion|religious|sexuality|sexual\s+orientation|"
+    r"gender\s+identity|partisan(?:ship)?|democrats?|republicans?|political\s+party|"
+    r"political\s+ideology|ideological\s+identity)\b",
+    re.IGNORECASE,
+)
+_ALLITERATION_IGNORED_WORDS = {
+    "a", "an", "the", "and", "or", "but", "nor", "for", "so", "yet",
+    "as", "at", "by", "in", "of", "on", "per", "to", "up", "via", "with",
+}
 
 _SCALE = {
     "k": Decimal("1000"),
@@ -101,6 +124,24 @@ def _grammatical_comma_count(text: str) -> int:
     return prose.count(",")
 
 
+def _alliterative_run(text: str, *, minimum: int = 3) -> list[str]:
+    """Return the first conspicuous same-initial word run, if present."""
+    run: list[str] = []
+    initial = ""
+    for word in re.findall(r"[A-Za-z]+(?:['’][A-Za-z]+)?", str(text or "")):
+        if word.casefold() in _ALLITERATION_IGNORED_WORDS:
+            continue
+        current = word[0].casefold()
+        if current == initial:
+            run.append(word)
+        else:
+            initial = current
+            run = [word]
+        if len(run) >= minimum:
+            return run
+    return []
+
+
 def _validate_prose_shape(sentence: SupportedSentence, *, label: str) -> tuple[list[str], list[dict[str, Any]]]:
     errors: list[str] = []
     failures: list[dict[str, Any]] = []
@@ -113,6 +154,35 @@ def _validate_prose_shape(sentence: SupportedSentence, *, label: str) -> tuple[l
         message = f"{label}: semicolons are not allowed in Reader commentary"
         errors.append(message)
         failures.append(_failure(label, "semicolon", sentence, message))
+    filler = _STOCK_FILLER_RE.search(str(sentence.text or ""))
+    if filler:
+        message = f"{label}: stock analytical filler is not allowed: {filler.group(0)}"
+        errors.append(message)
+        failures.append(_failure(label, "stock_filler", sentence, message, phrase=filler.group(0)))
+    undefined_cohort = _UNDEFINED_COHORT_RE.search(str(sentence.text or ""))
+    if undefined_cohort:
+        phrase = undefined_cohort.group(0)
+        message = f"{label}: internal cohort label is undefined for the reader: {phrase}"
+        errors.append(message)
+        failures.append(_failure(label, "undefined_cohort", sentence, message, phrase=phrase))
+    ambiguous_proportion = _AMBIGUOUS_PROPORTION_RE.search(str(sentence.text or ""))
+    if ambiguous_proportion:
+        phrase = ambiguous_proportion.group(0)
+        message = f"{label}: minority/majority proportion is ambiguous in neutral Reader prose: {phrase}"
+        errors.append(message)
+        failures.append(_failure(label, "ambiguous_proportion", sentence, message, phrase=phrase))
+    social_partisan_frame = _SOCIAL_PARTISAN_FRAME_RE.search(str(sentence.text or ""))
+    if social_partisan_frame:
+        phrase = social_partisan_frame.group(0)
+        message = f"{label}: social-identity or partisan framing is outside Reader scope: {phrase}"
+        errors.append(message)
+        failures.append(_failure(label, "social_partisan_frame", sentence, message, phrase=phrase))
+    alliterative = _alliterative_run(sentence.text)
+    if alliterative:
+        phrase = " ".join(alliterative)
+        message = f"{label}: conspicuous same-initial word run is not allowed: {phrase}"
+        errors.append(message)
+        failures.append(_failure(label, "alliterative_run", sentence, message, words=alliterative))
     return errors, failures
 
 
@@ -338,6 +408,17 @@ def validate_domain_read_set(read_set: GeneratedDomainReadSet, packets: dict[str
         message = "domain Read set contains duplicate domains"
         errors.append(message)
         failures.append(_failure("domain_set", "duplicate_domains", None, message, domains=domains))
+    negative_identity_domains = [read.domain for read in read_set.reads if _NEGATIVE_IDENTITY_RE.search(read.headline.text)]
+    if len(negative_identity_domains) > MAX_REPEATED_HEADLINE_ARCHITECTURE:
+        message = "domain Read set repeats the 'is/are not' headline architecture more than twice"
+        errors.append(message)
+        failures.append(_failure(
+            "domain_set",
+            "repeated_headline_architecture",
+            None,
+            message,
+            domains=negative_identity_domains,
+        ))
     for read in read_set.reads:
         read_errors, read_failures, read_checked, read_grounded = _validate_domain_read(read, fact_index)
         errors.extend(read_errors)
@@ -415,8 +496,8 @@ def validate_macro_read(
     failures: list[dict[str, Any]] = []
     checked = grounded = 0
     selected = list(read.selected_domains)
-    if not 4 <= len(selected) <= 6 or len(selected) != len(set(selected)):
-        message = "macro selected_domains must contain 4-6 distinct domains"
+    if not 3 <= len(selected) <= 5 or len(selected) != len(set(selected)):
+        message = "macro selected_domains must contain 3-5 distinct domains"
         errors.append(message)
         failures.append(_failure("macro.selected_domains", "domain_selection", None, message, selected_domains=selected))
 
@@ -446,8 +527,8 @@ def validate_macro_read(
         errors.append(message)
         failures.append(_failure("macro.analysis", "word_limit", None, message, word_count=macro_words))
     numeric_occurrences = _read_numeric_occurrence_count(read.analysis)
-    if numeric_occurrences > MAX_DISPLAYED_QUANTITIES:
-        message = f"macro: analysis uses more than {MAX_DISPLAYED_QUANTITIES} displayed quantities"
+    if numeric_occurrences > 5:
+        message = "macro: analysis uses more than 5 displayed quantities"
         errors.append(message)
         failures.append(_failure("macro.analysis", "numeric_density", None, message, numeric_occurrences=numeric_occurrences))
 
@@ -472,8 +553,8 @@ def validate_macro_read(
 
     for index, sentence in enumerate(read.analysis):
         words = _word_count(sentence.text)
-        if words > MAX_ANALYSIS_SENTENCE_WORDS:
-            message = f"macro.analysis[{index}]: sentence exceeds {MAX_ANALYSIS_SENTENCE_WORDS} words"
+        if words > MAX_MACRO_SENTENCE_WORDS:
+            message = f"macro.analysis[{index}]: sentence exceeds {MAX_MACRO_SENTENCE_WORDS} words"
             errors.append(message)
             failures.append(_failure(f"macro.analysis[{index}]", "sentence_length", sentence, message, word_count=words))
         sentence_domains = _sentence_domains(sentence)
@@ -487,15 +568,9 @@ def validate_macro_read(
                 message,
                 domains=sorted(sentence_domains),
             ))
-    final_words = _word_count(read.analysis[-1].text) if read.analysis else 0
-    if final_words > MAX_MACRO_CLOSING_WORDS:
-        message = f"macro.analysis[3]: closing sentence exceeds {MAX_MACRO_CLOSING_WORDS} words"
-        errors.append(message)
-        failures.append(_failure("macro.analysis[3]", "closing_sentence_length", read.analysis[-1], message, word_count=final_words))
-
     cross_domain_sentences = sum(1 for sentence in read.analysis if len(_sentence_domains(sentence)) >= 2)
-    if cross_domain_sentences < 2:
-        message = "macro analysis must contain at least two cross-domain synthesis sentences"
+    if cross_domain_sentences < 3:
+        message = "macro analysis must contain at least three cross-domain synthesis sentences"
         errors.append(message)
         failures.append(
             _failure(

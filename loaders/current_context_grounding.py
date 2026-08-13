@@ -552,7 +552,15 @@ def _walk_jsonld(value):
 
 
 def _clean_paragraph(value: object) -> str:
-    text = _spaces(BeautifulSoup(str(value or ""), "lxml").get_text(" ", strip=True))
+    raw = str(value or "")
+    if "<" in raw and ">" in raw:
+        text = BeautifulSoup(raw, "lxml").get_text(" ", strip=True)
+    else:
+        # JSON-LD fields are often already plain text. Passing a URL-shaped
+        # value to BeautifulSoup raises MarkupResemblesLocatorWarning and does
+        # no useful parsing, so decode entities without invoking an HTML parser.
+        text = html_lib.unescape(raw)
+    text = _spaces(text)
     if len(text) < 45:
         return ""
     lower = text.casefold()
@@ -569,6 +577,30 @@ def _date_only(value: object) -> str:
         return ""
     try:
         import pandas as pd
+        timezone_match = re.search(r"\b(EST|EDT|CST|CDT|MST|MDT|PST|PDT)\s*$", text, flags=re.IGNORECASE)
+        if timezone_match:
+            zone = {
+                "EST": "America/New_York", "EDT": "America/New_York",
+                "CST": "America/Chicago", "CDT": "America/Chicago",
+                "MST": "America/Denver", "MDT": "America/Denver",
+                "PST": "America/Los_Angeles", "PDT": "America/Los_Angeles",
+            }[timezone_match.group(1).upper()]
+            local_text = text[:timezone_match.start()].rstrip(" ,")
+            if not re.search(r"\b20\d{2}\b", local_text):
+                current_year = datetime.now(timezone.utc).year
+                local_text = re.sub(
+                    r"(,\s*\d{1,2}:\d{2}\s*[AP]M)\s*$",
+                    rf", {current_year}\1",
+                    local_text,
+                    flags=re.IGNORECASE,
+                )
+            stamp = pd.Timestamp(local_text)
+            if stamp.tzinfo is None:
+                stamp = stamp.tz_localize(zone)
+            now_local = pd.Timestamp.now(tz=zone)
+            if stamp > now_local + pd.Timedelta(days=2):
+                stamp = stamp.replace(year=stamp.year - 1)
+            return stamp.date().isoformat()
         stamp = pd.Timestamp(text)
         if stamp.tzinfo is not None:
             stamp = stamp.tz_convert("UTC").tz_localize(None)

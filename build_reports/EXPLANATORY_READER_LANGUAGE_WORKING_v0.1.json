@@ -1,0 +1,58 @@
+{
+  "artifact_type": "ai_macro_working_checkpoint",
+  "schema_version": "1.0",
+  "checkpoint": "explanatory-reader-language-v0.1",
+  "application_target": "v9.4.0",
+  "status": "IMPLEMENTED_AND_FOCUSED_TESTS_PASS",
+  "language_layer": {
+    "version": "language-layer-1.4.0",
+    "payload_digest": "997a44aa7caa98536ebcad43b6bb19c81cef19d541eb44ae79f4b1f4f53fb4a5",
+    "reader_pedagogy_added": true,
+    "paired_plain_language_revisions": 3,
+    "domain_profiles": 11,
+    "corpus_backed_profiles": 11
+  },
+  "macro_contract": {
+    "paragraphs_min": 3,
+    "paragraphs_max": 4,
+    "sentences_per_paragraph_min": 3,
+    "sentences_per_paragraph_max": 4,
+    "target_words_min": 200,
+    "diagnostic_words_min": 180,
+    "words_max": 300,
+    "sentence_words_max": 28,
+    "selected_domains_min": 3,
+    "selected_domains_max": 5,
+    "minimum_lifecycle_stages": 3,
+    "paragraph_boundaries_preserved": true
+  },
+  "sound_contract": {
+    "same_initial_run_limit": 2,
+    "three_word_run_warns": true,
+    "example_caught": "Covered companies can",
+    "articles_conjunctions_short_prepositions_ignored": true,
+    "post_generation_rewrite": false,
+    "retry_trigger": false,
+    "suppression_trigger": false
+  },
+  "paid_call_contract": {
+    "domain_calls": 1,
+    "macro_calls": 1,
+    "retries": 0,
+    "additional_calls": 0,
+    "automation_changed": false
+  },
+  "focused_verification": [
+    "PASS two-call commentary architecture",
+    "PASS language-layer compilation and checksum",
+    "PASS eleven-domain language-layer contract",
+    "PASS editorial regression contract",
+    "PASS parsed-response serializer regression"
+  ],
+  "remaining_release_work": [
+    "Canonical documentation and release report",
+    "Release manifest rebuild",
+    "Integrity gate",
+    "Code-only overlay packaging"
+  ]
+}

@@ -1,7 +1,7 @@
-"""Assemble one Reader snapshot from validated commentary plus Current Context.
+"""Assemble one Reader snapshot from published commentary plus Current Context.
 
-Commentary is generated only from retained analytical evidence and persisted as a
-validated artifact. Current Context remains a separate, faster-moving sourced
+Commentary is generated only from retained analytical evidence and persisted with
+nonblocking diagnostics. Current Context remains a separate, faster-moving sourced
 layer that is attached when the Reader snapshot is assembled. Public sessions never
 call OpenAI.
 """
@@ -32,7 +32,7 @@ def _artifact_cache_token() -> str:
 
 def _cached_snapshot_usable(snapshot: dict) -> bool:
     commentary = dict(snapshot.get("commentary") or {})
-    if commentary.get("status") != "validated":
+    if commentary.get("status") not in {"validated", "published_with_warnings", "published_raw_response"}:
         return True
     lease = publication_lease_state({
         "publication": commentary.get("publication") or {},

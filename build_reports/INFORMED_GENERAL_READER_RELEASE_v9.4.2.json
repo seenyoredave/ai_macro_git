@@ -1,0 +1,129 @@
+{
+  "artifact_type": "ai_macro_language_release_report",
+  "schema_version": "1.0",
+  "release": {
+    "application_version": "v9.4.2",
+    "language_layer_version": "language-layer-1.4.1",
+    "language_layer_payload_digest": "e7019e1bed12d3266e5c6e5e8df6a02372ffd1cdf2b5cd3e4ad5deb779623cf2",
+    "release_manifest_id": "a2ed4797c15137174479",
+    "critical_file_count": 131,
+    "status": "PASS"
+  },
+  "audience_contract": {
+    "reader": "A highly intelligent, widely read, operationally experienced adult who may have no specialized knowledge of the subject.",
+    "assume": "Strong reasoning ability",
+    "do_not_assume": "Specialized vocabulary or prior knowledge of AI Macro's internal labels",
+    "objective": "Supply enough context for the reader to infer the system without simplifying the analysis or adopting a classroom tone."
+  },
+  "correction_from_v9_4_0": {
+    "reader_pedagogy_removed": true,
+    "reader_calibration_added": true,
+    "mandatory_teaching_sequence_removed": true,
+    "mandatory_paragraph_jobs_removed": true,
+    "word_minimum_removed": true,
+    "mandatory_ratio_translation_removed": true,
+    "classroom_voice_prohibited": true,
+    "argument_roadmap_prohibited": true,
+    "ordinary_reasoning_explanation_prohibited": true
+  },
+  "macro_contract": {
+    "paragraphs_default": 3,
+    "paragraphs_max": 4,
+    "sentences_per_paragraph_min": 2,
+    "sentences_per_paragraph_max": 4,
+    "normal_word_range": "150-225",
+    "minimum_word_count": null,
+    "hard_word_ceiling": 250,
+    "analysis_sentence_ceiling": 28,
+    "selected_domains": "3-5",
+    "minimum_lifecycle_stages": 3,
+    "maximum_displayed_quantities": 5
+  },
+  "contextual_sufficiency": {
+    "first_reference_requirement": "Identify an unfamiliar population, cohort, company set, metric, proxy, institution, lifecycle stage, or process clearly enough for the sentence to stand alone.",
+    "undefined_internal_labels_warn": [
+      "covered issuer",
+      "covered issuers",
+      "covered company",
+      "covered companies",
+      "covered cohort"
+    ],
+    "reader_sufficient_control": "the companies tracked in this analysis",
+    "useful_technical_language_preserved": true,
+    "ratio_rule": "Name what the ratio compares and explain the consequence only when the denominator or implication would otherwise be unclear."
+  },
+  "diagnostic_boundary": {
+    "undefined_cohort_is_warning": true,
+    "alliteration_is_warning": true,
+    "post_generation_rewrite": false,
+    "suppression": false,
+    "retry": false,
+    "replacement": false,
+    "additional_paid_call": false
+  },
+  "version_contract": {
+    "domain_prompt": "domain-language-layer-1.2",
+    "macro_prompt": "macro-rollup-2.1",
+    "generator": "4.2.0",
+    "read_service": "4.2.0",
+    "validator": "3.3.0"
+  },
+  "verification": {
+    "executed_and_passed": [
+      "python tooling/compile_language_layer.py --check",
+      "python helpers/language_layer_contract_test.py",
+      "python helpers/read_architecture_smoke_test.py",
+      "python helpers/editorial_quality_contract_test.py",
+      "all seven stack-completion fidelity contracts",
+      "python helpers/build_release_manifest.py",
+      "python helpers/release_manifest_contract_test.py",
+      "python helpers/integrity_gate.py"
+    ],
+    "stack_test_environment_note": "The complete stack test body ran with inert import shims because scratch lacks requests and Plotly; no assertion or test function was skipped.",
+    "owner_environment_required": [
+      "python helpers/automation_contract_smoke_test.py",
+      "python helpers/stack_completion_fidelity_smoke_test.py"
+    ],
+    "integrity_contracts_passed": 9
+  },
+  "unchanged": [
+    "Exactly two paid calls for a full generation",
+    "Zero retries",
+    "Domain-first then Macro order",
+    "Complete language layer supplied to both calls",
+    "OpenAI-authored paragraph boundaries",
+    "All eleven corpus-backed profiles",
+    "All eight completed corpora",
+    "Neuroscience systems-dynamics contributor",
+    "Automation, schedules, and call ceilings",
+    "Retained data and paid-generation artifacts"
+  ],
+  "files_sha256": {
+    "ai_macro.py": "ff4142362e696eb22b07989435bb48f1cfbd2293de6b97075cc7ec6335f52501",
+    "analytics/read_models.py": "2efbc2a333c65f48e2d145c68fc95c5da13a4e778244fd183b7caa980fc21cdc",
+    "analytics/read_prompts.py": "929d219ee81a6df1704f98090d85fb10c9faa9d14002b33573d7e4d8048fa778",
+    "analytics/read_generation.py": "bf9371f1ed7c5e12d4210839039e82cb8f156858430620c9765f86f81b11a34c",
+    "analytics/read_service.py": "7176b1d145781699daebb3e27a823972009806cc92a7136699ac6704572d9cc7",
+    "analytics/read_validation.py": "c2a8852dde77f8f61dac5eba7328272a245f8eed0120a420f5813f1e1c2c4cbf",
+    "language/AI_MACRO_LANGUAGE_LAYER_SOURCE_v1.0.json": "79f437c7885071504264930c59bdd6a4bd3f26cb6835be471d07a232ec2a5406",
+    "language/AI_MACRO_LANGUAGE_LAYER_v1.0.json": "b42b5547c141ba1e11ce428183d74616212ed5983bacc4f7b2f560a74af7a0ad",
+    "tooling/compile_language_layer.py": "4e697fe94655dc431e3e5cdd652826470841c2bc5a548b49f8b2e17f069d461a",
+    "helpers/language_layer_contract_test.py": "874b6ab721249a44e9ecc6f0cd105810cc899391d79bc7fbe0d1c2c3a399c168",
+    "helpers/read_architecture_smoke_test.py": "87b3264a13bbc24858d7fbde443123a2bcd6b9611c039f623a4ba41bad8eae3a",
+    "docs/EDITORIAL_STYLE.md": "c98005d1369a98edca08427179855a03b52f6ca3010591e2fa535536ea8bba83",
+    "docs/COMMENTARY_ARCHITECTURE.md": "0534a812b2822cae16a0230bc07779f46e50031d15924e900dc0696135c29eac",
+    "docs/LANGUAGE_LAYER.md": "d81a11397611fc3637e83f11a1cf626305ba1c055d509f57cc0d0dfac65eb969",
+    "docs/AI_MACRO_PLATFORM_CANONICAL_STATUS_v9.4.2.md": "66bf749a226c8356d369251a4362fd2273a4a80a357b2ec630fda7a1d22766b0",
+    "build_reports/INFORMED_GENERAL_READER_WORKING_v0.1.json": "6ffcf280152e946ba6d3e29c6b75e8ba8909ce9cf2eacb91d02bc9b2a11ea255",
+    "build_reports/OVERWRITE_INSTRUCTIONS_v9.4.2.md": "64c2e34eb7059296cca5b620a45bebc17e1b51b283b95946f7c25defb5f31d45"
+  },
+  "protected_state_excluded": [
+    "data/",
+    "archive/",
+    "openai_artifacts/",
+    "secrets and environment files",
+    ".venv/ and venv/",
+    "automation configuration and schedules"
+  ],
+  "next_step": "Apply the matched overlay, run all nine verification commands in the project .venv, then make one explicit paid full generation."
+}

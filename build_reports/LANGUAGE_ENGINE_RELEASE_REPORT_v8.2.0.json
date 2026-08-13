@@ -1,0 +1,62 @@
+{
+  "release": {
+    "app_version": "v8.2.0",
+    "read_service_version": "3.2.0",
+    "generator_version": "3.1.0",
+    "validator_version": "3.1.0",
+    "artifact_version": "2.2.0",
+    "domain_pipeline": "domain-pipeline-5.1",
+    "domain_editor": "domain-editor-1.1",
+    "macro_pipeline": "macro-pipeline-6.1",
+    "macro_editor": "macro-editor-1.1",
+    "language_engine": "language-engine-2.0.0",
+    "language_engine_sha256": "4266548a8452d0a067a227965cea12bafe39b6f4d8b59895bc82b6a87f1c4d34",
+    "retained_release_id": "a5594de5a6c43ac65576"
+  },
+  "source_failure": {
+    "attempt_id": "20260813T002112542657Z_5e12ee24_e4c0e486",
+    "interrupted_stage": "domain_revision",
+    "domain_draft_audit": "passed",
+    "domain_revision_audit": "19 warnings across all 11 domains",
+    "paid_outputs_reused": [
+      "domain_draft",
+      "domain_final"
+    ],
+    "remaining_planned_calls": 4,
+    "replacement_calls": 0
+  },
+  "implemented": [
+    "The domain and Macro editor requests now receive every deterministic hard output rule before generation.",
+    "Every completed typed six-stage run publishes its newly generated final prose.",
+    "Validation and critic findings remain attached diagnostics and never suppress paid typed output.",
+    "Warned output is labeled published_with_warnings and never mislabeled validated.",
+    "Recovery discovers v8 staged output keys and reuses every structurally readable paid stage.",
+    "Mixed-version recovery records per-stage prompt provenance without altering the source attempt.",
+    "The direct OpenAI client sets max_retries=0.",
+    "No validation-triggered repair, replacement, retry, or fallback call path exists.",
+    "A structurally empty or unparsable response is persisted as generation_failed with response diagnostics; it is never silently discarded.",
+    "Scheduled automation authorization and behavior were left unchanged."
+  ],
+  "planned_call_contract": {
+    "full_generation": 6,
+    "macro_only_generation": 3,
+    "attached_attempt_resume": 4,
+    "sdk_retries": 0,
+    "validation_triggered_calls": 0
+  },
+  "verification": {
+    "exact_attached_attempt_replay": "passed",
+    "editorial_quality_contract": "passed",
+    "read_architecture_contract": "passed",
+    "language_engine_contract": "passed",
+    "critical_integrity_gate": "9 of 9 passed",
+    "python_compile": "passed",
+    "unrelated_smoke_failures_not_modified": [
+      "current_context_smoke_test temporary-directory path heuristic",
+      "domain_refresh_smoke_test live FRED fixture response",
+      "integrity_linked_state_smoke_test missing retained TECfusions fixture",
+      "workforce_economic_impact_smoke_test pre-2020 retained observations",
+      "automation_contract_smoke_test cannot run because the supplied project copy excludes .github/workflows"
+    ]
+  }
+}

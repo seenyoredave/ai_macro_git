@@ -1,4 +1,4 @@
-"""Persistence boundary for paid OpenAI attempts and validated Reader artifacts."""
+"""Persistence boundary for paid OpenAI responses and published Reader artifacts."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from uuid import uuid4
 from config.deployment import PROJECT_ROOT, repository_writes_enabled
 from helpers.atomic_io import atomic_write_json, synchronized_path
 
-READ_ARTIFACT_VERSION = "2.1.0"
+READ_ARTIFACT_VERSION = "3.1.0"
 OPENAI_ARTIFACT_ROOT = PROJECT_ROOT / "openai_artifacts"
 READ_ARTIFACT_PATH = OPENAI_ARTIFACT_ROOT / "current.json"
 READ_ATTEMPT_DIR = OPENAI_ARTIFACT_ROOT / "attempts"
@@ -42,7 +42,12 @@ def load_read_attempt(attempt_id: str) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
-def latest_recoverable_attempt(*, evidence_snapshot_id: str = "", domain_prompt_version: str = "") -> dict[str, Any]:
+def latest_recoverable_attempt(
+    *,
+    evidence_snapshot_id: str = "",
+    domain_prompt_version: str = "",
+    language_layer_sha256: str = "",
+) -> dict[str, Any]:
     """Return the newest failed paid attempt that still contains model output.
 
     Attempt filenames begin with a UTC timestamp, so reverse lexical order is
@@ -51,6 +56,7 @@ def latest_recoverable_attempt(*, evidence_snapshot_id: str = "", domain_prompt_
     """
     snapshot = str(evidence_snapshot_id or "").strip()
     prompt_version = str(domain_prompt_version or "").strip()
+    layer_digest = str(language_layer_sha256 or "").strip()
     if not READ_ATTEMPT_DIR.exists():
         return {}
     for path in sorted(READ_ATTEMPT_DIR.glob("*.json"), reverse=True):
@@ -61,18 +67,27 @@ def latest_recoverable_attempt(*, evidence_snapshot_id: str = "", domain_prompt_
                 continue
         if not isinstance(payload, dict):
             continue
+        if str(payload.get("mode") or "") == "macro_only":
+            continue
         if snapshot and str(payload.get("evidence_snapshot_id") or "") != snapshot:
             continue
         if prompt_version and str((payload.get("prompt_versions") or {}).get("domain") or "") != prompt_version:
             continue
+        if layer_digest and str((payload.get("prompt_versions") or {}).get("language_layer_sha256") or "") != layer_digest:
+            continue
         generated = payload.get("generated_output") or {}
-        if str(payload.get("status") or "") == "validation_failed" and isinstance(generated, dict) and generated.get("domain"):
+        staged_output = any(
+            generated.get(key)
+            for key in ("domain_reads", "macro_read")
+        ) if isinstance(generated, dict) else False
+        raw_output = bool(payload.get("raw_responses"))
+        if str(payload.get("status") or "") == "generation_failed" and (staged_output or raw_output):
             return payload
     return {}
 
 
 def persist_read_artifact(payload: dict[str, Any], path: Path = READ_ARTIFACT_PATH) -> None:
-    """Promote one fully validated result to the Reader's current artifact."""
+    """Publish one completed typed model result with its validation diagnostics."""
     if not repository_writes_enabled():
         raise PermissionError("Validated commentary artifacts may be written only by an authorized research writer.")
     artifact = dict(payload)

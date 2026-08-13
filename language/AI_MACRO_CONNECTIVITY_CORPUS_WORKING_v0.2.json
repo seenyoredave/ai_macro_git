@@ -1,0 +1,1003 @@
+{
+  "schema_version": "0.2-connectivity-foundation-audit",
+  "artifact_type": "AI_MACRO_DOMAIN_CORPUS_WORKING_CHECKPOINT",
+  "domain": "connectivity",
+  "created_at": "2026-08-12T12:34:29-07:00",
+  "status": "FOUNDATION_AUDIT_IN_PROGRESS_3_SCREENED_1_ADMITTED_2_ACCESS_BLOCKED",
+  "authority": "WORKING_CHECKPOINT",
+  "continuity": {
+    "canonical_handoff": "AI_MACRO_CORPUS_PROJECT_CANONICAL_HANDOFF_v1.1(3).md",
+    "prior_domain_state": "Data Centers corrective re-audit paused at 9 fully analyzed/admitted sources out of 25 candidates at user direction.",
+    "neuroscience_state": "Previously audited and user-designated complete; not reopened.",
+    "connectivity_prior_corpus_found": false,
+    "rule": "No admissions or completion claims are inherited from discovery notes or prior chatbot narration."
+  },
+  "production_scope": {
+    "production_evidence_targets": [
+      "active U.S. Internet exchange points",
+      "reported IXP membership",
+      "U.S. international submarine cable systems and catalog entries",
+      "future or current-year cable entries",
+      "public interconnection facilities and coverage",
+      "federally supported middle-mile fiber",
+      "states with data-center development but limited visible public interconnection depth",
+      "campuses screened for connectivity context",
+      "large population centers with an IXP"
+    ],
+    "core_themes": [
+      "interconnection",
+      "Internet exchange points",
+      "peering",
+      "submarine cable connectivity",
+      "middle-mile networks",
+      "data-center network access",
+      "route diversity",
+      "public versus private connectivity visibility",
+      "local usable capacity versus national route totals"
+    ],
+    "production_boundaries": [
+      "Public IXP and cable records do not capture every private route or bilateral connection.",
+      "National route totals do not establish usable capacity at a specific campus."
+    ]
+  },
+  "audit_contract": {
+    "admission_sequence": [
+      "found",
+      "screened",
+      "full_text_accessed",
+      "fully_analyzed",
+      "admitted"
+    ],
+    "required_substantive_sections": [
+      "framing/theory/literature where present",
+      "methods",
+      "results",
+      "discussion/implications",
+      "limitations/conclusion"
+    ],
+    "journal_gate": "Current Journal Impact Factor >= 2.0, used only as a binary gate.",
+    "source_rule": "Abstracts, snippets, search results, metadata pages, previews and partial text do not count as whole-text review.",
+    "blocked_rule": "If every substantive section cannot be reviewed, mark the source audit-blocked and do not admit it.",
+    "extraction_rule": "Discovery notes are hypotheses only; every retained claim must be reconstructed from the complete substantive text.",
+    "batching_rule": "15-source broad foundation, then 10, then 5, then optional 5.",
+    "saturation_rule": "Saturation begins only after coverage is complete. Two consecutive post-foundation five-source batches must each add no more than two new universals and reopen no material gap.",
+    "long_form_rule": "Use only genuinely accessible academic texts; target approximately 10-15 passage analyses after complete substantive reading."
+  },
+  "progress": {
+    "found": 15,
+    "screened": 3,
+    "full_text_accessed": 1,
+    "fully_analyzed": 1,
+    "admitted": 1,
+    "audit_blocked": 2,
+    "rejected": 0,
+    "verified_atomic_observations": 6,
+    "long_form_passages": 0,
+    "saturation_challenges_passed": 0
+  },
+  "candidate_population": [
+    {
+      "source_id": "CON-FND-001",
+      "title": "A Comprehensive Survey on ISP Peering",
+      "authors_short": "Mahmood et al.",
+      "journal": "ACM Computing Surveys",
+      "year": 2025,
+      "doi": "10.1145/3715906",
+      "durable_source": "https://doi.org/10.1145/3715906",
+      "candidate_whole_text_source": "https://dl.acm.org/doi/full/10.1145/3715906",
+      "candidate_role": [
+        "interconnection",
+        "peering",
+        "peering decision frameworks",
+        "public versus private visibility"
+      ],
+      "candidate_study_type": "survey and synthesis",
+      "identity_state": "VERIFIED",
+      "journal_impact_factor_gate": {
+        "state": "VERIFIED_CURRENT_METRIC",
+        "current_jif": 30.4,
+        "metric_year": 2025,
+        "evidence_source": "https://dl.acm.org/journal/csur/indexing",
+        "decision": "PASS"
+      },
+      "audit_state": "SCREENED_JIF_PASS_FULL_TEXT_AUDIT_BLOCKED",
+      "full_text_access_state": "AUDIT_BLOCKED_NO_COMPLETE_ACCESS",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY",
+      "access_attempts": [
+        {
+          "route": "https://dl.acm.org/doi/full/10.1145/3715906",
+          "result": "Publisher full-text page returned an internal/403 access failure in the available research environment."
+        },
+        {
+          "route": "https://dl.acm.org/doi/pdf/10.1145/3715906",
+          "result": "Publisher PDF returned HTTP 403."
+        },
+        {
+          "route": "https://www.researchgate.net/publication/388513704_Resource_Sharing_on_the_Internet_A_Comprehensive_Survey_on_ISP_Peering",
+          "result": "Metadata and abstract only; page states no full text is available and offers an author request."
+        }
+      ],
+      "blocking_reason": "No route supplied the complete substantive text. Abstract and snippets were not used for extraction.",
+      "retriable": true
+    },
+    {
+      "source_id": "CON-FND-002",
+      "title": "Importance of Internet Exchange Point (IXP) infrastructure for 5G: Estimating the impact of 5G use cases",
+      "authors_short": "Hoeschele et al.",
+      "journal": "Telecommunications Policy",
+      "year": 2021,
+      "doi": "10.1016/j.telpol.2020.102091",
+      "durable_source": "https://doi.org/10.1016/j.telpol.2020.102091",
+      "candidate_whole_text_source": "FULL_TEXT_ROUTE_NOT_YET_VERIFIED",
+      "candidate_role": [
+        "IXPs",
+        "latency",
+        "edge requirements",
+        "local usable capacity"
+      ],
+      "candidate_study_type": "scenario modeling and infrastructure analysis",
+      "identity_state": "VERIFIED",
+      "journal_impact_factor_gate": {
+        "state": "VERIFIED_CURRENT_METRIC",
+        "current_jif": 6.5,
+        "metric_year": 2025,
+        "evidence_source": "https://www.sciencedirect.com/journal/telecommunications-policy/about/insights",
+        "decision": "PASS"
+      },
+      "audit_state": "SCREENED_JIF_PASS_FULL_TEXT_AUDIT_BLOCKED",
+      "full_text_access_state": "AUDIT_BLOCKED_NO_COMPLETE_ACCESS",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY",
+      "access_attempts": [
+        {
+          "route": "https://www.sciencedirect.com/science/article/pii/S0308596120301837",
+          "result": "Publisher route was access-protected in the available research environment."
+        },
+        {
+          "route": "https://www.researchgate.net/publication/349067325_Importance_of_Internet_Exchange_Point_IXP_infrastructure_for_5G_Estimating_the_impact_of_5G_use_cases",
+          "result": "Metadata and abstract only; page offers an author request rather than a complete text."
+        },
+        {
+          "route": "TU Dresden extended technical report record",
+          "result": "An extended-report citation was discovered, but no complete downloadable text was exposed through the available route."
+        }
+      ],
+      "blocking_reason": "No route supplied the complete substantive text. Abstract and metadata were not used for extraction.",
+      "retriable": true
+    },
+    {
+      "source_id": "CON-FND-003",
+      "title": "Reshaping the African Internet: From scattered islands to a connected continent",
+      "authors_short": "Fanou et al.",
+      "journal": "Computer Communications",
+      "year": 2017,
+      "doi": "10.1016/j.comcom.2017.09.006",
+      "durable_source": "https://doi.org/10.1016/j.comcom.2017.09.006",
+      "candidate_whole_text_source": "https://www.caida.org/catalog/papers/2017_reshaping_african_internet/reshaping_african_internet.pdf",
+      "candidate_role": [
+        "IXP development",
+        "path locality",
+        "interconnection policy",
+        "latency"
+      ],
+      "candidate_study_type": "measurement study and simulation",
+      "identity_state": "VERIFIED",
+      "journal_impact_factor_gate": {
+        "state": "VERIFIED_CURRENT_METRIC",
+        "current_jif": 4.2,
+        "metric_year": 2025,
+        "evidence_source": "https://www.sciencedirect.com/journal/computer-communications/about/insights",
+        "decision": "PASS"
+      },
+      "audit_state": "FULLY_ANALYZED_ADMITTED",
+      "full_text_access_state": "COMPLETE_TEXT_ACCESSED",
+      "whole_text_analysis_state": "COMPLETE",
+      "admission_status": "ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "COMPLETE",
+        "methods": "COMPLETE",
+        "results": "COMPLETE",
+        "discussion_and_implications": "COMPLETE",
+        "limitations_and_conclusion": "COMPLETE"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY",
+      "verified_extraction": {
+        "claim_path": "The paper starts from poor African traffic locality and low peering participation, shows that a distance-minimizing IXP topology is not practically realizable, parameterizes political, geographic, fiber and investment constraints, and simulates a four-step distributed-IXP build-out to estimate best-case path and latency changes.",
+        "measurement_and_denominator": "Evidence combines a survey sent to all 37 identified African IXP operators with 22 responses, public IXP/member/fiber/cable/investment/security datasets, a March 2016 CAIDA topology of 53,537 ASes and 215,628 links, traceroute-derived AS-link RTT distributions, an analysis subgraph of 1,389 ASes and 10,756 links, and 1,725 propagated prefixes. IXP membership data were validated by responding operators where possible.",
+        "quantitative_behavior": "In the simulation, continental intra-African paths rise from 40% initially to 51.2%, 69.5%, and 94% after steps 1-3; the mode of intra-African AS-path length falls from 4 to 2; the modeled median of mean intra-African RTT falls from 144.1 ms initially to 58.92 ms after step 1 and 61.1 ms after step 3. These are counterfactual topology and estimated-RTT results, not observed production traffic outcomes.",
+        "heterogeneity_and_regime": "Feasible links and benefits depend on existing submarine and terrestrial fiber, country security classification, investment, geography, IXP membership, sub-regional cooperation, ISP incentives and content-provider presence. A five-year security threshold was tested against one-, three- and ten-year windows, but transfer to other regions requires new domain-specific data and constraints.",
+        "causal_calibration": "The design compares simulated counterfactual topologies rather than identifying a causal effect from a realized deployment. Customer-cone rules approximate willingness to peer; the authors explicitly expect fewer real peering links because pricing, competition and bilateral strategy are omitted.",
+        "limitations": [
+          "No interdomain traffic-volume data are included, so the analysis cannot say how much traffic would actually shift onto shorter paths.",
+          "Each AS is modeled as a single router; intradomain topology and routing are excluded.",
+          "RTTs on AS links are inferred from traceroute samples and are acknowledged as approximations rather than precise values.",
+          "Political and socioeconomic factors are incomplete and time-varying; the analysis requires periodic refresh.",
+          "Public IXP membership data are not uniformly operator-validated.",
+          "Peering economics are reduced to a customer-cone constraint; real adoption and link creation can be materially lower.",
+          "The step-3 spanning tree is not redundant and would require added links, a ring/full mesh and backup hubs for outage robustness.",
+          "Cost estimates are back-of-the-envelope and economic sustainability is left for future work."
+        ],
+        "anti_patterns": [
+          "Do not equate IXP presence or listed membership with an active peering relationship or carried traffic.",
+          "Do not present modeled best-case RTT and path improvements as observed deployment effects.",
+          "Do not optimize route length without political, commercial, fiber and repair feasibility constraints.",
+          "Do not treat multiple logical links or a spanning tree as independent physical redundancy.",
+          "Do not infer traffic volume, usable local capacity or campus-level service from AS-path counts.",
+          "Do not transfer the Africa-specific topology solution to another region without rebuilding its constraints and datasets."
+        ]
+      }
+    },
+    {
+      "source_id": "CON-FND-004",
+      "title": "A worldwide study on the geographic locality of Internet routes",
+      "authors_short": "Candela et al.",
+      "journal": "Computer Networks",
+      "year": 2021,
+      "doi": "10.1016/j.comnet.2021.108555",
+      "durable_source": "https://doi.org/10.1016/j.comnet.2021.108555",
+      "candidate_whole_text_source": "https://arxiv.org/pdf/2307.08120",
+      "candidate_role": [
+        "route locality",
+        "international detours",
+        "geolocation uncertainty",
+        "measurement bias"
+      ],
+      "candidate_study_type": "large-scale active measurement and route-geolocation analysis",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-005",
+      "title": "IXP dependencies: Measuring the role of IXPs in the Internet topology",
+      "authors_short": "Tashiro et al.",
+      "journal": "Computer Communications",
+      "year": 2026,
+      "doi": "10.1016/j.comcom.2026.108541",
+      "durable_source": "https://doi.org/10.1016/j.comcom.2026.108541",
+      "candidate_whole_text_source": "FULL_TEXT_ROUTE_NOT_YET_VERIFIED",
+      "candidate_role": [
+        "IXP dependency",
+        "topology",
+        "membership versus dependency",
+        "resilience"
+      ],
+      "candidate_study_type": "Internet topology measurement",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-006",
+      "title": "Meta-Peering: Automating ISP Peering Decision Process",
+      "authors_short": "Alam et al.",
+      "journal": "IEEE Transactions on Network and Service Management",
+      "year": 2024,
+      "doi": "10.1109/TNSM.2024.3459796",
+      "durable_source": "https://doi.org/10.1109/TNSM.2024.3459796",
+      "candidate_whole_text_source": "https://sites.ecse.rpi.edu/~koushik/mypapers/tnsm2024.pdf",
+      "candidate_role": [
+        "peering decisions",
+        "policy",
+        "economic incentives",
+        "automation"
+      ],
+      "candidate_study_type": "decision framework and empirical evaluation",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-007",
+      "title": "GAFA's information infrastructure distribution: Interconnection dynamics in the global North versus global South",
+      "authors_short": "Rosa and Hauge",
+      "journal": "Policy & Internet",
+      "year": 2022,
+      "doi": "10.1002/poi3.278",
+      "durable_source": "https://doi.org/10.1002/poi3.278",
+      "candidate_whole_text_source": "https://onlinelibrary.wiley.com/doi/full/10.1002/poi3.278",
+      "candidate_role": [
+        "private infrastructure visibility",
+        "interconnection geography",
+        "data-center network access",
+        "global inequality"
+      ],
+      "candidate_study_type": "infrastructure-distribution and policy analysis",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-008",
+      "title": "Nautilus: A Framework for Cross-Layer Cartography of Submarine Cables and IP Links",
+      "authors_short": "Ramanathan and Jyothi",
+      "journal": "Proceedings of the ACM on Measurement and Analysis of Computing Systems",
+      "year": 2023,
+      "doi": "10.1145/3626777",
+      "durable_source": "https://doi.org/10.1145/3626777",
+      "candidate_whole_text_source": "https://arxiv.org/pdf/2302.14201",
+      "candidate_role": [
+        "submarine cable mapping",
+        "physical versus logical topology",
+        "route inference uncertainty"
+      ],
+      "candidate_study_type": "cross-layer measurement framework and validation",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-009",
+      "title": "Climate change hotspots and implications for the global subsea telecommunications network",
+      "authors_short": "Clare et al.",
+      "journal": "Earth-Science Reviews",
+      "year": 2023,
+      "doi": "10.1016/j.earscirev.2022.104296",
+      "durable_source": "https://doi.org/10.1016/j.earscirev.2022.104296",
+      "candidate_whole_text_source": "FULL_TEXT_ROUTE_NOT_YET_VERIFIED",
+      "candidate_role": [
+        "submarine cable hazards",
+        "route diversity",
+        "shared-risk exposure",
+        "resilience"
+      ],
+      "candidate_study_type": "global review and hazard synthesis",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-010",
+      "title": "The diversity, frequency and severity of natural hazard impacts on global subsea telecommunications cables",
+      "authors_short": "Bricheno et al.",
+      "journal": "Earth-Science Reviews",
+      "year": 2025,
+      "doi": "DOI_NOT_YET_VERIFIED",
+      "durable_source": "PUBLISHER_RECORD_NOT_YET_VERIFIED",
+      "candidate_whole_text_source": "FULL_TEXT_ROUTE_NOT_YET_VERIFIED",
+      "candidate_role": [
+        "submarine cable failures",
+        "hazard frequency",
+        "correlated risk",
+        "network resilience"
+      ],
+      "candidate_study_type": "global event database and review",
+      "identity_state": "DISCOVERED_IDENTITY_REQUIRES_CONFIRMATION",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-011",
+      "title": "Evaluating and refining undersea cable path planning algorithms: A comparative study",
+      "authors_short": "Wang et al.",
+      "journal": "PLOS ONE",
+      "year": 2024,
+      "doi": "10.1371/journal.pone.0315074",
+      "durable_source": "https://doi.org/10.1371/journal.pone.0315074",
+      "candidate_whole_text_source": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0315074",
+      "candidate_role": [
+        "cable path planning",
+        "cost-risk tradeoffs",
+        "route diversity",
+        "algorithm validation"
+      ],
+      "candidate_study_type": "comparative algorithm evaluation",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-012",
+      "title": "Global submarine cable network and digital divide",
+      "authors_short": "Ma and Jiang",
+      "journal": "Journal of Geographical Sciences",
+      "year": 2025,
+      "doi": "10.1007/s11442-025-2364-x",
+      "durable_source": "https://doi.org/10.1007/s11442-025-2364-x",
+      "candidate_whole_text_source": "https://link.springer.com/content/pdf/10.1007/s11442-025-2364-x.pdf",
+      "candidate_role": [
+        "submarine cable network",
+        "capacity distribution",
+        "national aggregation",
+        "digital divide"
+      ],
+      "candidate_study_type": "global network and spatial inequality analysis",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-013",
+      "title": "Persistence of the middle mile problem for rural local exchange carriers",
+      "authors_short": "Glass et al.",
+      "journal": "Government Information Quarterly",
+      "year": 2014,
+      "doi": "10.1016/j.giq.2013.02.005",
+      "durable_source": "https://doi.org/10.1016/j.giq.2013.02.005",
+      "candidate_whole_text_source": "FULL_TEXT_ROUTE_NOT_YET_VERIFIED",
+      "candidate_role": [
+        "middle mile",
+        "rural networks",
+        "backhaul constraints",
+        "public policy"
+      ],
+      "candidate_study_type": "survey-based infrastructure and policy analysis",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-014",
+      "title": "Access to and adoption of a municipal broadband middle-mile network: The case of the Community Access Network in Washington, D.C.",
+      "authors_short": "Menon",
+      "journal": "Government Information Quarterly",
+      "year": 2016,
+      "doi": "10.1016/j.giq.2016.08.010",
+      "durable_source": "https://doi.org/10.1016/j.giq.2016.08.010",
+      "candidate_whole_text_source": "FULL_TEXT_ROUTE_NOT_YET_VERIFIED",
+      "candidate_role": [
+        "middle mile",
+        "municipal infrastructure",
+        "availability versus adoption",
+        "institutional barriers"
+      ],
+      "candidate_study_type": "case study and adoption analysis",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    },
+    {
+      "source_id": "CON-FND-015",
+      "title": "Volcanic eruptions and the global subsea telecommunications network",
+      "authors_short": "Clare et al.",
+      "journal": "Bulletin of Volcanology",
+      "year": 2025,
+      "doi": "10.1007/s00445-025-01832-1",
+      "durable_source": "https://doi.org/10.1007/s00445-025-01832-1",
+      "candidate_whole_text_source": "https://link.springer.com/article/10.1007/s00445-025-01832-1",
+      "candidate_role": [
+        "submarine cable hazards",
+        "route planning",
+        "repair and restoration",
+        "low-frequency high-impact risk"
+      ],
+      "candidate_study_type": "global hazard review and case synthesis",
+      "identity_state": "DISCOVERED_METADATA_NOT_YET_SCREENED",
+      "journal_impact_factor_gate": {
+        "state": "NOT_YET_VERIFIED",
+        "current_jif": null,
+        "metric_year": null,
+        "evidence_source": null,
+        "decision": "PENDING"
+      },
+      "audit_state": "FOUND_NOT_SCREENED",
+      "full_text_access_state": "NOT_YET_TESTED",
+      "whole_text_analysis_state": "NOT_STARTED",
+      "admission_status": "NOT_ADMITTED",
+      "audit_sections": {
+        "framing_theory_and_literature": "NOT_REVIEWED",
+        "methods": "NOT_REVIEWED",
+        "results": "NOT_REVIEWED",
+        "discussion_and_implications": "NOT_REVIEWED",
+        "limitations_and_conclusion": "NOT_REVIEWED"
+      },
+      "candidate_notes_status": "DISCOVERY_HYPOTHESIS_ONLY_NO_EVIDENTIARY_AUTHORITY"
+    }
+  ],
+  "verified_admissions": [
+    {
+      "source_id": "CON-FND-003",
+      "citation": {
+        "title": "Reshaping the African Internet: From scattered islands to a connected continent",
+        "authors_short": "Fanou et al.",
+        "journal": "Computer Communications",
+        "year": 2017,
+        "doi": "10.1016/j.comcom.2017.09.006"
+      },
+      "study_type": "mixed stakeholder survey, public-data integration, AS-topology construction and C-BGP counterfactual simulation",
+      "journal_gate": {
+        "current_jif": 4.2,
+        "metric_year": 2025,
+        "evidence_source": "https://www.sciencedirect.com/journal/computer-communications/about/insights",
+        "decision": "PASS"
+      },
+      "whole_text_evidence": {
+        "public_source": "https://www.caida.org/catalog/papers/2017_reshaping_african_internet/reshaping_african_internet.pdf",
+        "local_pdf": "sources/connectivity/CON-FND-003.pdf",
+        "local_text": "sources/connectivity/CON-FND-003.txt",
+        "pdf_sha256": "bdc0e17726426ec59ae256a34640d8892c47fb97b00b3104ce4c654c281d2d53",
+        "extracted_text_sha256": "a2c74695c617e25b6bf22c2b60621d1fd3a7026cf54941da4a5c04f0bb527fea",
+        "pages": 21,
+        "extracted_words": 18705,
+        "substantive_sections_reviewed": [
+          "Introduction and contribution framing",
+          "regional background, related work and 37-operator IXP survey",
+          "naive graph approaches and feasibility failures",
+          "four-step interconnection design",
+          "geographic, political, economic, fiber, cable, topology and RTT data construction",
+          "AS geolocation, topology downscaling and route validation",
+          "stepwise C-BGP simulation results",
+          "sensitivity analysis",
+          "limitations, peering economics and implementation options",
+          "conclusions and future work"
+        ],
+        "review_state": "COMPLETE_SUBSTANTIVE_TEXT_REVIEW"
+      },
+      "rhetoric": {
+        "claim_path": "The paper starts from poor African traffic locality and low peering participation, shows that a distance-minimizing IXP topology is not practically realizable, parameterizes political, geographic, fiber and investment constraints, and simulates a four-step distributed-IXP build-out to estimate best-case path and latency changes.",
+        "measurement_and_denominator": "Evidence combines a survey sent to all 37 identified African IXP operators with 22 responses, public IXP/member/fiber/cable/investment/security datasets, a March 2016 CAIDA topology of 53,537 ASes and 215,628 links, traceroute-derived AS-link RTT distributions, an analysis subgraph of 1,389 ASes and 10,756 links, and 1,725 propagated prefixes. IXP membership data were validated by responding operators where possible.",
+        "quantitative_behavior": "In the simulation, continental intra-African paths rise from 40% initially to 51.2%, 69.5%, and 94% after steps 1-3; the mode of intra-African AS-path length falls from 4 to 2; the modeled median of mean intra-African RTT falls from 144.1 ms initially to 58.92 ms after step 1 and 61.1 ms after step 3. These are counterfactual topology and estimated-RTT results, not observed production traffic outcomes.",
+        "heterogeneity_and_regime": "Feasible links and benefits depend on existing submarine and terrestrial fiber, country security classification, investment, geography, IXP membership, sub-regional cooperation, ISP incentives and content-provider presence. A five-year security threshold was tested against one-, three- and ten-year windows, but transfer to other regions requires new domain-specific data and constraints.",
+        "causal_calibration": "The design compares simulated counterfactual topologies rather than identifying a causal effect from a realized deployment. Customer-cone rules approximate willingness to peer; the authors explicitly expect fewer real peering links because pricing, competition and bilateral strategy are omitted.",
+        "limitations": [
+          "No interdomain traffic-volume data are included, so the analysis cannot say how much traffic would actually shift onto shorter paths.",
+          "Each AS is modeled as a single router; intradomain topology and routing are excluded.",
+          "RTTs on AS links are inferred from traceroute samples and are acknowledged as approximations rather than precise values.",
+          "Political and socioeconomic factors are incomplete and time-varying; the analysis requires periodic refresh.",
+          "Public IXP membership data are not uniformly operator-validated.",
+          "Peering economics are reduced to a customer-cone constraint; real adoption and link creation can be materially lower.",
+          "The step-3 spanning tree is not redundant and would require added links, a ring/full mesh and backup hubs for outage robustness.",
+          "Cost estimates are back-of-the-envelope and economic sustainability is left for future work."
+        ],
+        "anti_patterns": [
+          "Do not equate IXP presence or listed membership with an active peering relationship or carried traffic.",
+          "Do not present modeled best-case RTT and path improvements as observed deployment effects.",
+          "Do not optimize route length without political, commercial, fiber and repair feasibility constraints.",
+          "Do not treat multiple logical links or a spanning tree as independent physical redundancy.",
+          "Do not infer traffic volume, usable local capacity or campus-level service from AS-path counts.",
+          "Do not transfer the Africa-specific topology solution to another region without rebuilding its constraints and datasets."
+        ]
+      },
+      "admission_decision": "ADMIT",
+      "admission_basis": "Identity and current journal gate verified; complete 21-page manuscript accessed and all substantive sections analyzed; claims retained with explicit simulation, measurement and external-validity limits."
+    }
+  ],
+  "verified_atomic_observations": [
+    {
+      "observation_id": "CON-O001",
+      "source_id": "CON-FND-003",
+      "observation": "IXP existence and membership do not complete the interconnection realization chain: operator willingness, peering policy, transport, cost and bilateral economics determine whether a route exchange and carried traffic materialize.",
+      "supports": [
+        "CON-U06"
+      ],
+      "status": "VERIFIED_ONE_SOURCE"
+    },
+    {
+      "observation_id": "CON-O002",
+      "source_id": "CON-FND-003",
+      "observation": "Geographically intra-regional endpoints can use intercontinental AS paths; route locality is an outcome of topology and peering structure, not endpoint proximity alone.",
+      "supports": [
+        "CON-U04"
+      ],
+      "status": "VERIFIED_ONE_SOURCE"
+    },
+    {
+      "observation_id": "CON-O003",
+      "source_id": "CON-FND-003",
+      "observation": "Reported path and RTT improvements are conditional counterfactual simulation results whose magnitude depends on topology, peering assumptions, geolocation, RTT inference and the absence of traffic-volume weighting.",
+      "supports": [
+        "CON-U07"
+      ],
+      "status": "VERIFIED_ONE_SOURCE"
+    },
+    {
+      "observation_id": "CON-O004",
+      "source_id": "CON-FND-003",
+      "observation": "A graph-theoretically short or inexpensive interconnection plan can be physically or institutionally infeasible when fiber availability, borders, security, investment and operator incentives are applied.",
+      "supports": [],
+      "candidate_new_universal": "Optimization objective versus deployment feasibility",
+      "status": "VERIFIED_ONE_SOURCE_PROVISIONAL_UNIVERSAL"
+    },
+    {
+      "observation_id": "CON-O005",
+      "source_id": "CON-FND-003",
+      "observation": "Public IXP/member datasets required operator validation and still contained unvalidated or estimated membership counts, establishing a measurable visibility boundary around public registries.",
+      "supports": [
+        "CON-U01"
+      ],
+      "status": "VERIFIED_ONE_SOURCE"
+    },
+    {
+      "observation_id": "CON-O006",
+      "source_id": "CON-FND-003",
+      "observation": "A minimum-link spanning-tree solution provides connectivity without redundancy; independent resilience requires additional links, backup hubs and shared-risk analysis.",
+      "supports": [
+        "CON-U05"
+      ],
+      "status": "VERIFIED_ONE_SOURCE"
+    }
+  ],
+  "provisional_universal_hypotheses": [
+    {
+      "hypothesis_id": "CON-U01",
+      "label": "Visible infrastructure versus effective interconnection",
+      "proposition": "Public registries and membership lists may understate private, bilateral, remote or indirect interconnection, so observed infrastructure is a lower-bound view of effective connectivity.",
+      "status": "SUPPORTED_ONE_SOURCE_NOT_STABILIZED",
+      "supporting_observations": [
+        "CON-O005"
+      ]
+    },
+    {
+      "hypothesis_id": "CON-U02",
+      "label": "Physical route versus logical path",
+      "proposition": "IP paths cannot be mapped to physical terrestrial or submarine routes without cross-layer inference and explicit uncertainty.",
+      "status": "PROVISIONAL_UNTESTED"
+    },
+    {
+      "hypothesis_id": "CON-U03",
+      "label": "National route totals versus local usable capacity",
+      "proposition": "A national cable, route or facility count does not establish bandwidth, port availability, latency, redundancy or commercial access at a specific campus.",
+      "status": "PROVISIONAL_UNTESTED"
+    },
+    {
+      "hypothesis_id": "CON-U04",
+      "label": "Geographic proximity versus path locality",
+      "proposition": "Geographically local endpoints may traverse distant networks because topology, peering policy and economics mediate route choice.",
+      "status": "SUPPORTED_ONE_SOURCE_NOT_STABILIZED",
+      "supporting_observations": [
+        "CON-O002"
+      ]
+    },
+    {
+      "hypothesis_id": "CON-U05",
+      "label": "Route count versus independent resilience",
+      "proposition": "Multiple apparent routes can share landing stations, conduits, hazards, providers or repair dependencies and therefore need not provide independent redundancy.",
+      "status": "SUPPORTED_ONE_SOURCE_NOT_STABILIZED",
+      "supporting_observations": [
+        "CON-O006"
+      ]
+    },
+    {
+      "hypothesis_id": "CON-U06",
+      "label": "Interconnection realization ladder",
+      "proposition": "Facility or IXP presence must be separated from physical access, provisioning, peering agreement, route exchange, carried traffic and realized performance.",
+      "status": "SUPPORTED_ONE_SOURCE_NOT_STABILIZED",
+      "supporting_observations": [
+        "CON-O001"
+      ]
+    },
+    {
+      "hypothesis_id": "CON-U07",
+      "label": "Conditional capacity and performance",
+      "proposition": "Connectivity performance is conditional on topology, routing policy, congestion, time, measurement point and failure regime.",
+      "status": "SUPPORTED_ONE_SOURCE_NOT_STABILIZED",
+      "supporting_observations": [
+        "CON-O003"
+      ]
+    },
+    {
+      "hypothesis_id": "CON-U08",
+      "label": "Availability versus adoption and use",
+      "proposition": "Public or municipal infrastructure availability does not guarantee institutional adoption, affordable service or realized traffic.",
+      "status": "PROVISIONAL_UNTESTED"
+    },
+    {
+      "hypothesis_id": "CON-U09",
+      "label": "Membership versus dependency footprint",
+      "proposition": "Reported IXP membership is not equivalent to the set of networks, customers or traffic flows that depend directly or indirectly on the exchange.",
+      "status": "PROVISIONAL_UNTESTED"
+    }
+  ],
+  "provisional_coverage_map": [
+    {
+      "coverage_area": "IXP structure and peering",
+      "candidate_sources": [
+        "CON-FND-001",
+        "CON-FND-002",
+        "CON-FND-003",
+        "CON-FND-005",
+        "CON-FND-006"
+      ],
+      "verified_status": "PARTIAL_1_ADMISSION_2_ACCESS_BLOCKED"
+    },
+    {
+      "coverage_area": "route locality, latency and detours",
+      "candidate_sources": [
+        "CON-FND-002",
+        "CON-FND-003",
+        "CON-FND-004"
+      ],
+      "verified_status": "PARTIAL_1_ADMISSION"
+    },
+    {
+      "coverage_area": "public, private and remote visibility",
+      "candidate_sources": [
+        "CON-FND-001",
+        "CON-FND-005",
+        "CON-FND-007"
+      ],
+      "verified_status": "PARTIAL_PUBLIC_REGISTRY_BOUNDARY_ONLY"
+    },
+    {
+      "coverage_area": "submarine physical-logical mapping",
+      "candidate_sources": [
+        "CON-FND-008"
+      ],
+      "verified_status": "NOT_YET_EVALUATED"
+    },
+    {
+      "coverage_area": "submarine hazards and independent route diversity",
+      "candidate_sources": [
+        "CON-FND-009",
+        "CON-FND-010",
+        "CON-FND-011",
+        "CON-FND-015"
+      ],
+      "verified_status": "PARTIAL_REDUNDANCY_PRINCIPLE_ONLY"
+    },
+    {
+      "coverage_area": "global cable distribution and national aggregation",
+      "candidate_sources": [
+        "CON-FND-012"
+      ],
+      "verified_status": "NOT_YET_EVALUATED"
+    },
+    {
+      "coverage_area": "middle-mile constraints and public investment",
+      "candidate_sources": [
+        "CON-FND-013",
+        "CON-FND-014"
+      ],
+      "verified_status": "NOT_YET_EVALUATED"
+    },
+    {
+      "coverage_area": "data-center interconnection geography and network access",
+      "candidate_sources": [
+        "CON-FND-007"
+      ],
+      "verified_status": "THIN_CANDIDATE_COVERAGE"
+    },
+    {
+      "coverage_area": "local usable capacity at campus or facility level",
+      "candidate_sources": [
+        "CON-FND-002",
+        "CON-FND-007"
+      ],
+      "verified_status": "THIN_CANDIDATE_COVERAGE"
+    },
+    {
+      "coverage_area": "registry, geolocation and sampling bias",
+      "candidate_sources": [
+        "CON-FND-004",
+        "CON-FND-005",
+        "CON-FND-008"
+      ],
+      "verified_status": "PARTIAL_1_ADMISSION"
+    }
+  ],
+  "known_foundation_risks": [
+    "Two of the first three screened candidates pass the JIF gate but remain audit-blocked because complete substantive text was not accessible.",
+    "The current Journal Impact Factor gate remains unchecked for the other twelve candidates.",
+    "One discovered source identity and DOI still require confirmation.",
+    "Candidate coverage for campus-level usable capacity and data-center interconnection geography remains thin.",
+    "The only admission so far is Africa-specific and simulation-based; it cannot establish U.S. production conditions or observed deployment effects.",
+    "U.S.-specific production records will be added separately and will not be confused with peer-reviewed admissions."
+  ],
+  "audit_log": [
+    {
+      "event_id": "CON-E001",
+      "event": "CONNECTIVITY_FOUNDATION_OPENED",
+      "detail": "Created a broad 15-source candidate map. No source was counted as screened, fully accessed, analyzed or admitted."
+    },
+    {
+      "event_id": "CON-E002",
+      "event": "CHECKPOINT_TIMESTAMP_CORRECTED",
+      "detail": "The v0.1 created_at hour was corrected to the filesystem-recorded creation time; corpus state and counts were unchanged."
+    },
+    {
+      "event_id": "CON-E003",
+      "event": "FIRST_THREE_SOURCES_SCREENED",
+      "detail": "All three passed the current JIF gate. CON-FND-001 and CON-FND-002 were audit-blocked for lack of complete-text access; neither was extracted or admitted."
+    },
+    {
+      "event_id": "CON-E004",
+      "event": "FIRST_SOURCE_FULLY_ANALYZED_AND_ADMITTED",
+      "detail": "CON-FND-003 was read across all substantive sections from a complete 21-page manuscript and admitted with six verified atomic observations and explicit simulation and measurement boundaries."
+    }
+  ],
+  "next_action": "Screen CON-FND-004 through CON-FND-006 for identity, current JIF and complete-text access; audit every passing accessible source across all substantive sections and save the next JSON checkpoint."
+}

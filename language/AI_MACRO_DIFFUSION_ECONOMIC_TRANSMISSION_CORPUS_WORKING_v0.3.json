@@ -1,0 +1,147 @@
+{
+  "schema_version": "0.3-diffusion-economic-transmission-challenge-one",
+  "artifact_type": "AI_MACRO_COMBINED_DOMAIN_CORPUS_WORKING_CHECKPOINT",
+  "corpus_name": "AI Diffusion and Economic Transmission",
+  "domains": ["adoption", "workforce", "economic_impact"],
+  "status": "CHALLENGE_ONE_COMPLETE",
+  "created_at": "2026-08-13T01:42:00-07:00",
+  "base_checkpoint": "AI_MACRO_DIFFUSION_ECONOMIC_TRANSMISSION_CORPUS_WORKING_v0.2.json",
+  "integrity_statement": "This is an append-only delta checkpoint. The fifteen admissions, sixty observations, and fifteen universal families in v0.2 remain controlling. Five independent challenge sources were reviewed from complete publisher text or complete author or institutional manuscripts reconciled to the published DOI. They contribute twenty atomic observations and one new universal family. Abstract-only records, search snippets, press summaries, and unqualified working papers do not count. Academic quantities remain prompt-time reasoning examples and never become current platform facts.",
+  "journal_metric_registry_delta": {
+    "Organization Science": {"current_jif": 5.7, "metric_year": 2025, "source": "https://pubsonline.informs.org/journal/orsc", "verification": "PUBLISHER_VERIFIED"},
+    "Journal of Management Studies": {"current_jif": 7.8, "metric_year": 2025, "source": "https://onlinelibrary.wiley.com/journal/14676486", "verification": "PUBLISHER_VERIFIED"}
+  },
+  "challenge_design": {
+    "challenge_id": "ADET-CHALLENGE-01",
+    "question": "Does an independent set of evidence on task-boundary failure, short-run labor substitution, organizational skill redesign, employee job quality, and managerial demand add more than two universal reasoning families or reopen a foundation gap?",
+    "attack_surface": [
+      "positive task-productivity evidence may conceal failures on adjacent tasks",
+      "task assistance may reduce market demand for exposed workers even when individual productivity rises",
+      "organizational redesign may change skill demand before realized production outcomes appear",
+      "employee welfare may be nonlinear in adoption intensity",
+      "AI may increase demand for some managerial capabilities while deprioritizing others"
+    ],
+    "independence_controls": [
+      "five sources not admitted in the foundation batch",
+      "randomized, difference-in-differences, longitudinal panel, vacancy, and mixed-method designs represented",
+      "worker, firm, task, and organizational-function units represented",
+      "positive, negative, nonlinear, and statistically stable or null outcomes represented",
+      "no academic quantity is authorized as a live platform observation"
+    ]
+  },
+  "verified_admissions_delta": [
+    {
+      "source_id": "ADET-CH1-016",
+      "title": "Navigating the Jagged Technological Frontier: Field Experimental Evidence of the Effects of Artificial Intelligence on Knowledge Worker Productivity and Quality",
+      "authors_short": "Dell'Acqua et al.",
+      "journal": "Organization Science",
+      "year": 2026,
+      "doi": "10.1287/orsc.2025.21838",
+      "domain_weight": ["workforce", "adoption", "economic_impact"],
+      "journal_gate": "PASS",
+      "whole_text_audit": {"access": "Complete INFORMS article HTML and online-appendix record", "sections_reviewed": ["preregistered design", "consulting-task construction", "random assignment", "inside-frontier completion, speed, and quality", "outside-frontier correctness", "behavioral modes", "heterogeneity", "discussion", "limitations", "appendix references"]},
+      "verified_extraction": {"claim_path": "random GPT-4 access with or without an overview -> behavior on realistic consulting tasks -> completion, speed, quality, and correctness on opposite sides of a task frontier", "measurement_and_denominator": "758 BCG consultants split across two nonoverlapping experimental arms; the inside-frontier arm contains eighteen subtasks and the outside-frontier arm contains one objectively scored strategic recommendation", "heterogeneity_and_regime": "AI raised completion, speed, and quality inside the tested frontier but reduced correctness outside it; effects depend on task position, workflow behavior, evaluation metric, and incentive setting", "limitations": ["One elite professional-services workforce", "Only one deliberately selected outside-frontier task", "Subjective rubrics are necessary for several inside-frontier outputs", "A laboratory-in-the-field task bundle is not a full production deployment", "The tested GPT-4 capability frontier can move over time"], "decision": "ADMIT"},
+      "anti_patterns": ["Do not report an average AI productivity effect without identifying the task side of the capability frontier.", "Do not infer reliable judgment from gains in ideation, writing, or analysis.", "Do not treat a prompt overview as proof that training eliminates automation bias."],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "ADET-CH1-017",
+      "title": "The Short-Term Effects of Generative Artificial Intelligence on Employment: Evidence from an Online Labor Market",
+      "authors_short": "Hui, Reshef, and Zhou",
+      "journal": "Organization Science",
+      "year": 2024,
+      "doi": "10.1287/orsc.2023.18441",
+      "domain_weight": ["workforce", "economic_impact", "adoption"],
+      "journal_gate": "PASS",
+      "whole_text_audit": {"access": "Complete 24-page CESifo institutional manuscript reconciled to the Organization Science publication", "sections_reviewed": ["platform setting", "worker sample construction", "difference-in-differences design", "ChatGPT treatment definition", "employment and earnings margins", "image-model replication", "worker-quality heterogeneity", "robustness", "conclusion", "appendix tables"]},
+      "verified_extraction": {"claim_path": "public generative-AI release -> relative change for freelancers in more- versus less-affected occupations -> platform jobs, employment probability, conditional jobs, and earnings", "measurement_and_denominator": "92,547 searchable single-occupation Upwork freelancers observed monthly from January 2022 through April 2023, with a separate image-occupation analysis around image-model releases", "heterogeneity_and_regime": "Short-run adverse platform outcomes extend across measured prior-quality groups and may be larger for top workers; writing and image markets provide separate shocks", "limitations": ["The design observes platform work rather than total employment or off-platform income", "The sample is a flexible spot market, not conventional payroll employment", "Profiles are observed as an April 2023 snapshot and terminated or nonsearchable accounts are missing", "Occupation treatment depends on exposure classification and common-trend assumptions", "Short-run substitution need not predict longer-run complementarity, entry, demand, or equilibrium adjustment"], "decision": "ADMIT"},
+      "anti_patterns": ["Do not relabel fewer platform contracts as economy-wide job loss.", "Do not relabel platform earnings as hourly wages.", "Do not assume prior quality insulates workers from a technology shock.", "Do not extrapolate a short post-release window into a permanent labor-market effect."],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "ADET-CH1-018",
+      "title": "Skill Deprioritization: Reorganizing in the Age of Generative Artificial Intelligence",
+      "authors_short": "Devigili et al.",
+      "journal": "Management Science",
+      "year": 2026,
+      "doi": "10.1287/mnsc.2025.01859",
+      "domain_weight": ["workforce", "adoption", "economic_impact"],
+      "journal_gate": "PASS",
+      "whole_text_audit": {"access": "Complete open-access INFORMS article HTML and supplemental-material record", "sections_reviewed": ["organizing-skill taxonomy", "queuing model", "job-posting data", "exposure construction", "difference-in-differences design", "ChatGPT and GPT-4 windows", "function-level results", "robustness", "discussion", "limitations"]},
+      "verified_extraction": {"claim_path": "firm occupational exposure and public GenAI availability -> changes in postings for organizing skills -> selective early skill deprioritization", "measurement_and_denominator": "Job-posting demand at 1,820 publicly listed U.S. companies in a plus-or-minus twelve-month window around ChatGPT, with comparisons between more- and less-exposed firms", "heterogeneity_and_regime": "Demand falls for task division, information provision, monitoring, and operational exceptions, while task allocation, incentive design, and conflict resolution remain statistically more stable; effects intensify after GPT-4", "limitations": ["Job postings measure desired hiring demand rather than filled jobs, incumbent tasks, or realized reorganization", "ChatGPT is treated as an availability shock and exposure is assigned from occupation composition", "The short window captures early response rather than long-run organizational equilibrium", "Public firms may not represent small or private employers", "Capability improvements and contemporaneous labor-demand changes may be difficult to isolate fully"], "decision": "ADMIT"},
+      "anti_patterns": ["Do not call a decline in a skill-tagged posting an observed elimination of that skill inside firms.", "Do not collapse all managerial functions into one automation category.", "Do not turn statistically stable categories into proof of permanent human exclusivity."],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "ADET-CH1-019",
+      "title": "Curse or Blessing: Investigating the Influence of Firms' Artificial Intelligence Adoption on Employee Job Satisfaction",
+      "authors_short": "Schulz et al.",
+      "journal": "Journal of Management Studies",
+      "year": 2026,
+      "doi": "10.1111/joms.70004",
+      "domain_weight": ["workforce", "adoption", "economic_impact"],
+      "journal_gate": "PASS",
+      "whole_text_audit": {"access": "Complete open-access Wiley article and author-repository record", "sections_reviewed": ["job-characteristics framework", "AI-adoption measure", "Glassdoor outcome construction", "longitudinal panel", "inverted-U specification", "exploration and data-governance moderators", "employee interviews", "robustness", "discussion", "limitations"]},
+      "verified_extraction": {"claim_path": "firm-level AI-adoption intensity -> changing balance of job enrichment and impairment -> employee job satisfaction, conditional on exploration orientation and data governance", "measurement_and_denominator": "509 publicly listed U.S. firms from 2009 through 2020 linked to more than 2.4 million Glassdoor reviews, supplemented by eleven follow-up employee interviews", "heterogeneity_and_regime": "Estimated job satisfaction rises at moderate adoption and declines at high adoption; exploration orientation moves the turning point and data governance dampens the curvature", "limitations": ["AI adoption is proxied from earnings-call discussion rather than direct system-use telemetry", "Glassdoor reviewers are self-selected and firm-level aggregation masks occupation and worker differences", "The panel predates mass-market generative AI", "The inverted-U estimate is observational and sensitive to functional form and measurement", "Eleven interviews illuminate mechanisms but are not population estimates"], "decision": "ADMIT"},
+      "anti_patterns": ["Do not assume more AI adoption monotonically improves employee welfare.", "Do not equate job satisfaction with productivity, pay, autonomy, or retention.", "Do not treat governance as a generic positive control without specifying what it moderates."],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    },
+    {
+      "source_id": "ADET-CH1-020",
+      "title": "Artificial Intelligence Adoption and the Demand for Managerial Expertise",
+      "authors_short": "Alekseeva et al.",
+      "journal": "Strategic Management Journal",
+      "year": 2026,
+      "doi": "10.1002/smj.70099",
+      "domain_weight": ["workforce", "adoption", "economic_impact"],
+      "journal_gate": "PASS",
+      "whole_text_audit": {"access": "Complete 27-page open-access Wiley article", "sections_reviewed": ["skills-based AI-adoption proxy", "Lightcast posting sample", "managerial-vacancy outcomes", "instrumental-variable design", "industry and R&D heterogeneity", "skill-level estimates", "cluster analysis", "robustness", "discussion", "limitations", "supporting-information record"]},
+      "verified_extraction": {"claim_path": "firm AI-skill hiring intensity -> managerial vacancy quantity and share -> changes in demanded managerial skills", "measurement_and_denominator": "U.S. firm job postings from 2010 through 2022 drawn from a universe of nearly 375 million vacancies; AI adoption is proxied by the share of vacancies requesting AI skills", "heterogeneity_and_regime": "Managerial demand rises most in manufacturing and R&D-intensive firms, while skill demand shifts from routine administration toward stakeholder management, creativity, sales management, and data analysis", "limitations": ["AI-skill vacancies proxy investment or adoption rather than installed systems or use intensity", "Vacancies are labor demand, not hiring, employment, task execution, or wages", "Firm matching and minimum-posting thresholds alter the estimation sample", "Instrumental-variable estimates depend on exclusion and relevance assumptions", "Associations through 2022 only begin to cover the generative-AI regime"], "decision": "ADMIT"},
+      "anti_patterns": ["Do not infer managerial displacement from automation of selected administrative skills.", "Do not infer filled employment from posted vacancies.", "Do not treat an AI-skill share as direct observation of deployment depth."],
+      "decision": "ADMITTED_AFTER_COMPLETE_AUDIT"
+    }
+  ],
+  "verified_atomic_observations_delta": [
+    {"observation_id":"ADET-O061","source_id":"ADET-CH1-016","family":"ADET-U16","statement":"AI assistance can improve and degrade performance on adjacent tasks within the same professional workflow."},
+    {"observation_id":"ADET-O062","source_id":"ADET-CH1-016","family":"ADET-U09","statement":"Completion, speed, subjective quality, and objective correctness can move differently under the same tool treatment."},
+    {"observation_id":"ADET-O063","source_id":"ADET-CH1-016","family":"ADET-U08","statement":"A realistic laboratory-in-the-field experiment remains distinct from sustained production integration and endogenous use."},
+    {"observation_id":"ADET-O064","source_id":"ADET-CH1-016","family":"ADET-U16","statement":"A capability frontier is model-, task-, workflow-, and time-specific, so it must be recalibrated rather than frozen."},
+    {"observation_id":"ADET-O065","source_id":"ADET-CH1-017","family":"ADET-U05","statement":"Worker-level productivity potential can coexist with short-run substitution in the market for exposed services."},
+    {"observation_id":"ADET-O066","source_id":"ADET-CH1-017","family":"ADET-U09","statement":"Employment probability, conditional job count, total contracts, and platform earnings are separate labor-market margins."},
+    {"observation_id":"ADET-O067","source_id":"ADET-CH1-017","family":"ADET-U07","statement":"High prior quality need not protect workers when the technology changes buyer demand for the service itself."},
+    {"observation_id":"ADET-O068","source_id":"ADET-CH1-017","family":"ADET-U13","statement":"A short-run online-platform response cannot determine total employment, wages, welfare, or long-run equilibrium adjustment."},
+    {"observation_id":"ADET-O069","source_id":"ADET-CH1-018","family":"ADET-U10","statement":"Organizational adaptation can begin through selective changes in demanded organizing skills before realized production effects are observable."},
+    {"observation_id":"ADET-O070","source_id":"ADET-CH1-018","family":"ADET-U05","statement":"Information provision, task division, monitoring, and operational exception handling are analytically distinct organizing functions."},
+    {"observation_id":"ADET-O071","source_id":"ADET-CH1-018","family":"ADET-U14","statement":"A job-posting response records intended labor demand rather than filled employment or completed organizational redesign."},
+    {"observation_id":"ADET-O072","source_id":"ADET-CH1-018","family":"ADET-U12","statement":"Stronger post-GPT-4 responses show that organizational adaptation depends on capability regime as well as elapsed time."},
+    {"observation_id":"ADET-O073","source_id":"ADET-CH1-019","family":"ADET-U02","statement":"Adoption intensity can matter nonlinearly even when the extensive margin simply records whether a firm uses AI."},
+    {"observation_id":"ADET-O074","source_id":"ADET-CH1-019","family":"ADET-U09","statement":"Employee job satisfaction is a distinct outcome from output, speed, pay, autonomy, retention, and firm value."},
+    {"observation_id":"ADET-O075","source_id":"ADET-CH1-019","family":"ADET-U10","statement":"Exploration orientation and data governance can change how adoption intensity translates into employee experience."},
+    {"observation_id":"ADET-O076","source_id":"ADET-CH1-019","family":"ADET-U14","statement":"Earnings-call AI language and self-selected employee reviews require explicit proxy and selection qualifications."},
+    {"observation_id":"ADET-O077","source_id":"ADET-CH1-020","family":"ADET-U05","statement":"AI adoption can increase demand for managers while reducing demand for selected routine managerial skills."},
+    {"observation_id":"ADET-O078","source_id":"ADET-CH1-020","family":"ADET-U10","statement":"Managerial skill demand can shift toward coordination, adaptation, creativity, growth, and data use as AI investment deepens."},
+    {"observation_id":"ADET-O079","source_id":"ADET-CH1-020","family":"ADET-U06","statement":"Managerial complementarity varies with industry and firm R&D intensity rather than applying uniformly."},
+    {"observation_id":"ADET-O080","source_id":"ADET-CH1-020","family":"ADET-U14","statement":"AI-skill vacancy share, managerial postings, filled jobs, and deployed AI are non-equivalent measurements."}
+  ],
+  "new_universal_families": [
+    {"family_id":"ADET-U16","label":"capability frontier and failure-boundary calibration","rule":"Condition every human-AI performance claim on the specific model, task, workflow, evaluation criterion, user behavior, incentive regime, and observation date; carry adverse performance outside the tested frontier and never average it away."}
+  ],
+  "challenge_coverage": {
+    "task_boundary_failure": ["ADET-CH1-016"],
+    "short_run_worker_substitution": ["ADET-CH1-017"],
+    "organizational_skill_reconfiguration": ["ADET-CH1-018", "ADET-CH1-020"],
+    "job_quality_and_worker_welfare": ["ADET-CH1-019"],
+    "positive_negative_nonlinear_and_null_results": ["ADET-CH1-016", "ADET-CH1-018", "ADET-CH1-019"]
+  },
+  "saturation_assessment": {
+    "challenge_id": "ADET-CHALLENGE-01",
+    "sources": 5,
+    "new_atomic_observations": 20,
+    "new_universal_families": 1,
+    "foundation_gap_reopened": false,
+    "decision": "PASS",
+    "reason": "The independent batch materially deepened task-outcome separation, substitution versus complementarity, organizational redesign, adoption intensity, worker welfare, managerial demand, proxy discipline, and time-regime alignment. Only the capability-frontier and failure-boundary rule was absent from the foundation architecture, so the challenge remains below the two-family saturation ceiling and reopens no foundation gap."
+  },
+  "cumulative_progress": {"found": 20, "screened": 20, "full_text_accessed": 20, "fully_analyzed": 20, "admitted": 20, "audit_blocked": 0, "rejected": 0, "verified_atomic_observations": 80, "universal_families": 16, "long_form_texts": 0, "long_form_passages": 0, "saturation_challenges_passed": 1},
+  "next_action": "Run a second independent five-source challenge against cross-country employment, wage and rent incidence, firm value capture, competition, complementary-investment thresholds, aggregate transmission, and negative or null evidence. Admit complete texts only and test whether more than two new universal families are required."
+}

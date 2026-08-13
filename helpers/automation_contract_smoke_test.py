@@ -37,6 +37,8 @@ from automation.config import (
 )
 from config.deployment import current_context_paths, repository_writes_enabled
 from automation.research_refresh import RefreshBundle, blocking_refresh_errors, refresh_warnings
+from analytics.read_materiality import compare_evidence_materiality
+from config.openai_config import DEFAULT_REASONING_EFFORT
 import loaders.current_context_daily as daily
 
 
@@ -62,12 +64,15 @@ def _check(condition: bool, message: str) -> None:
 def main() -> None:
     workflow = (ROOT / ".github" / "workflows" / "ai_macro_automation.yml").read_text(encoding="utf-8")
     runner = (ROOT / "automation" / "runner.py").read_text(encoding="utf-8")
+    refresh_source = (ROOT / "automation" / "research_refresh.py").read_text(encoding="utf-8")
+    read_service = (ROOT / "analytics" / "read_service.py").read_text(encoding="utf-8")
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
     daily_source = (ROOT / "loaders" / "current_context_daily.py").read_text(encoding="utf-8")
 
     _check(AUTOMATION_TIMEZONE == "America/New_York", "Automation timezone drifted from Eastern Time.")
     _check(AUTOMATION_START_LOCAL == "09:07", "Automation start time drifted from 09:07 Eastern.")
-    _check("cron: '7 9 * * *'" in workflow and "timezone: 'America/New_York'" in workflow, "Scheduled workflow is not 09:07 Eastern daily.")
+    _check("cron: '7 9 * * 1-5'" in workflow and "timezone: 'America/New_York'" in workflow, "Scheduled workflow is not 09:07 Eastern on weekdays.")
+    _check(DEFAULT_REASONING_EFFORT == "xhigh" and "AI_MACRO_OPENAI_REASONING: xhigh" in workflow, "Scheduled commentary is not pinned to xhigh reasoning.")
     _check("workflow_dispatch:" in workflow and "allow_paid:" in workflow and "publish:" in workflow, "Manual workflow lacks explicit paid/publish opt-ins.")
     _check("concurrency:" in workflow and "cancel-in-progress: false" in workflow, "Automation workflow can overlap or cancel active publication work.")
     _check("permissions:" in workflow and "contents: write" in workflow, "Workflow lacks explicit publication permission.")
@@ -81,13 +86,24 @@ def main() -> None:
     _check("max_retries=0" in runner, "Automation OpenAI client does not explicitly disable SDK retries.")
     _check("_configure_runtime_warnings" in runner and "Cannot parse header or footer" in runner, "Automation logs do not suppress the known non-data openpyxl warning.")
     _check("subphases" in runner and "bundle.timings" in runner, "Automation status does not retain refresh phase timings.")
+    phase_markers = [
+        '_phase_start("domain sources")',
+        '_phase_start("market sources")',
+        '_phase_start("current context")',
+        '_phase_start("assemble + persist")',
+    ]
+    _check(all(marker in refresh_source for marker in phase_markers), "Ordered refresh phases are incomplete.")
+    _check([refresh_source.index(marker) for marker in phase_markers] == sorted(refresh_source.index(marker) for marker in phase_markers), "Refresh phases do not execute domains → market → context → assembly.")
     _check("Refresh timings" in workflow, "GitHub run summary does not surface refresh phase timings.")
     _check("scheduled_paid_generation_requires_AUTO_PUBLISH" in runner, "Scheduled automation can spend on an unpublished draft.")
     _check("result=\"openai_disabled_for_changed_evidence\"" in runner and "return 0" in runner, "Expected zero-paid dry-run stop is still treated as a workflow failure.")
     _check("steps.decision.outputs.result != 'disabled'" in workflow, "Disabled scheduled runs can create no-op ledger commits.")
     _check("generate_validated_read_artifact" in runner, "Automation bypasses the validated commentary service.")
-    _check("artifact_validated" in runner and "evidence_current" in runner, "Automation no longer distinguishes Reader publication lease from strict evidence currency.")
-    _check("reapply_last_read" in runner and "validated_evidence_unchanged_no_paid_call" in runner, "Unchanged validated evidence does not renew the 24-hour commentary lease without an OpenAI call.")
+    _check("artifact_publishable" in runner and "evidence_current" in runner, "Automation no longer distinguishes Reader publication lease from strict evidence currency.")
+    _check("reapply_last_read" in runner and "publishable_evidence_unchanged_no_paid_call" in runner, "Unchanged publishable evidence does not renew the 24-hour commentary lease without an OpenAI call.")
+    _check("evidence_change_below_materiality_threshold" in runner and "automation_immaterial_reapply" in runner, "Immaterial evidence changes still force a paid OpenAI run.")
+    _check('"evidence_packets": dict(attempt.get("evidence_packets") or {})' in read_service, "Published Reads do not retain their generated evidence baseline.")
+    _check("published_with_warnings" in runner and "published_raw_response" in runner, "Automation suppresses a completed paid response because diagnostics did not validate.")
     _check("publish_ready" in runner and "transaction_boundary" in runner, "Runner lacks an explicit publication decision boundary.")
     _check("ai-macro-automation-refresh-lock" in workflow, "Workflow does not publish the owner-visible automation refresh lock.")
     _check("Release automation refresh lock" in workflow, "Workflow does not clean up the automation refresh lock.")
@@ -167,6 +183,34 @@ def main() -> None:
     )
     _check(blocking_refresh_errors(broken_write), "Snapshot transaction failure did not block publication.")
 
+    baseline = {
+        "market": {
+            "domain": "market",
+            "label": "Market",
+            "boundaries": ["boundary"],
+            "references": [{"source_label": "Source", "source_url": "https://example.com"}],
+            "facts": [
+                {"id": "market.return", "label": "Return", "value": 20.0, "display": "20.0%", "context": ""},
+                {"id": "market.regime", "label": "Regime", "value": "broad", "display": "broad", "context": ""},
+            ],
+        }
+    }
+    immaterial = {"market": {**baseline["market"], "facts": [
+        {**baseline["market"]["facts"][0], "value": 21.0, "display": "21.0%"},
+        baseline["market"]["facts"][1],
+    ]}}
+    material_relative = {"market": {**baseline["market"], "facts": [
+        {**baseline["market"]["facts"][0], "value": 22.5, "display": "22.5%"},
+        baseline["market"]["facts"][1],
+    ]}}
+    material_category = {"market": {**baseline["market"], "facts": [
+        baseline["market"]["facts"][0],
+        {**baseline["market"]["facts"][1], "value": "narrow", "display": "narrow"},
+    ]}}
+    _check(not compare_evidence_materiality(baseline, immaterial)["material"], "A 5% numeric move incorrectly triggered generation.")
+    _check(compare_evidence_materiality(baseline, material_relative)["material"], "A move above the 10% threshold did not trigger generation.")
+    _check(compare_evidence_materiality(baseline, material_category)["material"], "A categorical change did not trigger generation.")
+
     original_daily = budget.paid_calls_for_local_date
     original_reserve = budget.reserve_paid_call
     original_complete = budget.complete_paid_call
@@ -193,7 +237,7 @@ def main() -> None:
         budget.reserve_paid_call = original_reserve
         budget.complete_paid_call = original_complete
 
-    print("PASS  automation · retained-only public Reader · 09:07 Eastern · 2/run · 4/day · zero SDK retries")
+    print("PASS  automation · weekdays 09:07 Eastern · ordered refresh · 10% materiality · 2/run · zero SDK retries")
 
 
 if __name__ == "__main__":

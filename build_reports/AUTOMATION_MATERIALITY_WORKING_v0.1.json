@@ -1,0 +1,42 @@
+{
+  "checkpoint_version": "0.1",
+  "app_target": "v9.5.0",
+  "status": "implementation_in_progress",
+  "approved_sequence": [
+    "refresh_domain_sources",
+    "refresh_market_sources",
+    "refresh_current_context",
+    "assemble_and_persist_evidence",
+    "compare_with_last_generated_evidence",
+    "generate_two_call_read_only_if_material",
+    "publish_by_git_commit"
+  ],
+  "materiality_policy": {
+    "numeric_relative_change": 0.1,
+    "percentage_point_change": 2.0,
+    "categorical_change": "material",
+    "fact_or_domain_addition_or_removal": "material",
+    "semantic_evidence_change": "material",
+    "comparison_baseline": "evidence packets saved with the last generated Read",
+    "baseline_advances_on_renewal": false,
+    "exact_fingerprint_preserved": true
+  },
+  "api_policy": {
+    "calls_when_material": 2,
+    "calls_when_immaterial": 0,
+    "sdk_retries": 0,
+    "validation_replacement_calls": 0,
+    "reasoning_effort": "xhigh"
+  },
+  "schedule": {
+    "local_time": "09:07",
+    "timezone": "America/New_York",
+    "days": "Monday-Friday"
+  },
+  "current_context_boundary": "Current Context refreshes before the publication decision but remains a separately attached Reader layer and does not independently trigger analytical OpenAI generation.",
+  "verification": {
+    "python_compile": "passed",
+    "pure_materiality_examples": "passed",
+    "full_contract_suite": "pending dependency-enabled test runtime"
+  }
+}

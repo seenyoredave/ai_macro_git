@@ -1,0 +1,46 @@
+{
+  "artifact_type": "ai_macro_hotfix_report",
+  "schema_version": "1.0",
+  "application_version": "v9.3.1",
+  "status": "PASS",
+  "issue": {
+    "observed": "PydanticSerializationUnexpectedValue warning cascade after each OpenAI responses.parse call",
+    "scope": "Local serialization of the completed SDK response wrapper",
+    "generation_failed": false,
+    "structured_outputs_present": true,
+    "paid_calls_completed": 2,
+    "paid_calls_added_by_fix": 0
+  },
+  "root_cause": "The generic parsed Response wrapper contains the concrete GeneratedDomainReadSet or GeneratedMacroRead at runtime, while its unspecialized serialization union describes base response variants. Default Pydantic serialization reports the runtime value as unexpected even though the structured result is populated and usable.",
+  "correction": {
+    "file": "analytics/read_generation.py",
+    "function": "_response_payload",
+    "change": "Serialize the parsed SDK response with model_dump(mode='json', serialize_as_any=True).",
+    "reason": "Duck-typed serialization follows the concrete runtime Pydantic models, preserves the parsed payload, and eliminates the annotation-mismatch warning at its source.",
+    "global_warning_filter_added": false,
+    "exception_swallowed": false
+  },
+  "regression_contract": {
+    "file": "helpers/read_architecture_smoke_test.py",
+    "assertions": [
+      "A generic wrapper holding a concrete parsed model emits no serialization warning.",
+      "The serialized payload retains the concrete structured headline.",
+      "The full generation architecture remains two calls with zero retries.",
+      "Warnings from deterministic content validation still publish with paid output.",
+      "Raw responses remain visible when structured parsing fails."
+    ]
+  },
+  "unchanged": [
+    "OpenAI prompts",
+    "language layer",
+    "corpora",
+    "structured output schemas",
+    "validation rules",
+    "publication rules",
+    "raw-response retention",
+    "automation",
+    "API call ceilings",
+    "retry policy",
+    "retained runtime data"
+  ]
+}

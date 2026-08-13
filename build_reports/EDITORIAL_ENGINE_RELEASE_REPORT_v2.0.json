@@ -1,0 +1,71 @@
+{
+  "release": {
+    "app_version": "v8.1.0",
+    "release_id": "594de35a98aeea57a6e5",
+    "engine_version": "language-engine-2.0.0",
+    "engine_payload_sha256": "4266548a8452d0a067a227965cea12bafe39b6f4d8b59895bc82b6a87f1c4d34",
+    "generator_version": "3.0.0",
+    "validator_version": "3.1.0",
+    "service_version": "3.0.0",
+    "domain_pipeline": "domain-pipeline-5.0",
+    "macro_pipeline": "macro-pipeline-6.0"
+  },
+  "failure_reproduced": {
+    "artifact_attempt_id": "20260812T234208665912Z_5e12ee24_d0906652",
+    "artifact_sha256": "715a82fdde78300f98c6ca68ca6cfd3c7872bf5d8a4b87a4c496cb4dbdf00c49",
+    "artifact_provenance_confirmed_v8": true,
+    "macro_score_under_corrected_gate": 0,
+    "macro_passed": false,
+    "domains_rejected": ["finance", "compute", "data_center", "connectivity", "grid_storage", "workforce", "economic_impact"]
+  },
+  "active_pipeline": [
+    "domain_draft",
+    "domain_final",
+    "domain_critic",
+    "macro_draft",
+    "macro_final",
+    "macro_critic"
+  ],
+  "durability": {
+    "every_paid_stage_persisted_before_next_stage": true,
+    "raw_drafts_retained": true,
+    "raw_revisions_retained": true,
+    "critic_assessments_retained": true,
+    "response_ids_and_token_usage_retained": true,
+    "resume_continues_from_first_missing_stage": true,
+    "cross_engine_replay_blocked": true
+  },
+  "publication_gate": {
+    "draft_factual_validation": "REQUIRED",
+    "revision_factual_validation": "REQUIRED",
+    "deterministic_final_quality_floor": 80,
+    "failed_draft_minimum_improvement": 8,
+    "critic_minimum_each_dimension": 4,
+    "critic_remaining_material_defects": 0,
+    "critic_acceptance": "REQUIRED"
+  },
+  "anti_overfit_contract": {
+    "known_failed_prose_exposed_to_editor": false,
+    "general_failure_classes_exposed_to_editor": true,
+    "known_failure_exact_match_rejected": true,
+    "unseen_paraphrase_absent_from_failure_registry_rejected": true,
+    "structural_holdout_reasons": ["abstract noun stack", "overloaded time contrast", "spoken sentence length"],
+    "passing_concrete_revision_improvement_points": 63
+  },
+  "validated_tests": [
+    "compiled engine freshness and digest",
+    "11-domain language-engine contract",
+    "exact production-failure regression",
+    "unseen structural paraphrase holdout",
+    "six-call paid-stage architecture",
+    "stage-by-stage persistence and resume",
+    "public-copy contract across 12 Read-bearing tabs",
+    "Read-divider contract across 12 Read-bearing tabs",
+    "Evidence Reader UX and methodology copy",
+    "retained-state reconciliation",
+    "layout rollout across 52 classified sections",
+    "all nine platform integrity contracts",
+    "all Python and release JSON syntax"
+  ],
+  "honest_limit": "No paid unseen v8.1 generation was run in the build environment. The architecture and failure gates are verified; the first real generation remains the required product-quality acceptance test."
+}

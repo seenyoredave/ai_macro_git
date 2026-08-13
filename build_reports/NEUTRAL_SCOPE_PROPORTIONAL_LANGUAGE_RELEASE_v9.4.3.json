@@ -1,0 +1,65 @@
+{
+  "artifact_type": "ai_macro_language_hotfix_release",
+  "schema_version": "1.0",
+  "application_version": "v9.4.3",
+  "language_layer_version": "language-layer-1.4.2",
+  "language_layer_payload_digest": "2edb810e3bc497826ca7529ecb2204dcc2d4be8398e3a29a19ccdfa6aab986fa",
+  "release_manifest_id": "41cba5865af9200ae76a",
+  "critical_file_count": 131,
+  "status": "PASS",
+  "production_failure": {
+    "text": "Minority current business use and aggregate productivity data leave the breadth of AI's production impact unresolved.",
+    "intended_meaning": "Fewer than half of measured businesses report current AI use.",
+    "social_or_partisan_claim": false,
+    "root_cause": "Ambiguous proportional grammar used minority as a modifier for an abstract measure instead of making the counted population the subject."
+  },
+  "correction": {
+    "population_first_rule": "Make the counted population the grammatical subject and state the measured percentage, fewer than half, or most.",
+    "ambiguous_proportion_diagnostic": true,
+    "neutral_editorial_scope": true,
+    "do_not_introduce": [
+      "race",
+      "ethnicity",
+      "religion",
+      "sexuality",
+      "gender identity",
+      "partisan affiliation",
+      "ideological identity"
+    ],
+    "clear_control": "Fewer than half of businesses currently report AI use."
+  },
+  "diagnostic_boundary": {
+    "publishes_with_warning": true,
+    "rewrites": false,
+    "suppresses": false,
+    "retries": false,
+    "replaces": false,
+    "additional_paid_call": false
+  },
+  "versions": {
+    "domain_prompt": "domain-language-layer-1.3",
+    "macro_prompt": "macro-rollup-2.2",
+    "generator": "4.3.0",
+    "read_service": "4.3.0",
+    "validator": "3.4.0"
+  },
+  "verification": [
+    "PASS language-layer compilation and checksum",
+    "PASS eleven corpus-backed domain profiles",
+    "PASS malformed proportional sentence diagnostic",
+    "PASS population-first control sentence",
+    "PASS two-call architecture with zero retries",
+    "PASS editorial regression contract",
+    "PASS 131-file release manifest contract",
+    "PASS nine critical integrity contracts"
+  ],
+  "unchanged": [
+    "gpt-5.6-sol model selection",
+    "reasoning effort configuration",
+    "two paid calls per full generation",
+    "zero retries",
+    "all corpora and evidence packets",
+    "automation and schedules",
+    "retained data and OpenAI artifacts"
+  ]
+}

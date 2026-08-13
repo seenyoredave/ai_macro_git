@@ -1,0 +1,42 @@
+{
+  "checkpoint": "paid_output_publication_contract",
+  "target_release": "v8.2.0",
+  "source_attempt": "20260813T002112542657Z_5e12ee24_e4c0e486",
+  "source_attempt_status": "validation_failed_under_v8.1",
+  "interrupted_stage": "domain_revision",
+  "paid_outputs_present": [
+    "domain_draft",
+    "domain_final"
+  ],
+  "paid_outputs_reused": [
+    "domain_draft",
+    "domain_final"
+  ],
+  "paid_outputs_discarded": [],
+  "remaining_planned_calls": 4,
+  "audit": {
+    "domain_draft_factual_validation": "passed",
+    "domain_revision_factual_validation": "failed",
+    "domain_revision_error_count": 19,
+    "domains_with_revision_errors": 11,
+    "primary_failure_types": [
+      "headline word limit",
+      "displayed-quantity ceiling",
+      "semicolon prohibition"
+    ],
+    "publication_result_after_completion": "published_with_warnings"
+  },
+  "root_causes": [
+    "The editor request did not receive the hard output rules enforced by deterministic validation.",
+    "The v8.1 service treated validation as permission to suppress a completed paid output.",
+    "Recovery discovery still searched for retired output keys and could not resume the staged attempt correctly."
+  ],
+  "corrected_contract": [
+    "The editor receives every hard output limit before its planned paid call.",
+    "Every structurally readable paid response remains visible, auditable, and reusable.",
+    "A completed six-stage run always publishes its newly generated final prose.",
+    "Validation and critic failures are attached diagnostics, not publication vetoes.",
+    "A warned artifact is labeled published_with_warnings and is never mislabeled validated.",
+    "No automatic corrective calls are added and no prior Read substitutes for the new run."
+  ]
+}

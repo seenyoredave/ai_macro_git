@@ -1,0 +1,280 @@
+{
+  "schema_version": "1.0",
+  "layer_version": "language-layer-1.4.2",
+  "effective_date": "2026-08-13",
+  "purpose": "Compile the corpus-derived, portable editorial layer supplied in full to both OpenAI generation calls.",
+  "hard_boundaries": [
+    "Evidence packets are the exclusive factual record. The language engine may shape expression but may never supply a claim, number, date, entity, event, or forecast.",
+    "Observation and interpretation remain distinct. Interpretation may explain a supported relationship without inventing causality.",
+    "Domain profiles are selection constraints, not prose templates. Vary sentence architecture according to the evidence.",
+    "Prefer one governing relationship over a catalogue of metrics or domains.",
+    "Do not convert uncertainty, plans, queues, announcements, or capacity labels into operating outcomes."
+  ],
+  "runtime_contract": {
+    "role": "Portable editorial context supplied to OpenAI before it writes. It does not generate, revise, score, or replace prose outside the model call.",
+    "domain_phase": "The complete layer, all compact evidence packets, and the structured output contract enter one OpenAI call that returns all final domain Reads.",
+    "macro_phase": "The complete layer, all compact evidence packets, every completed domain Read, and the structured output contract enter one OpenAI call that returns the final Macro Read.",
+    "publication": "The returned prose is retained exactly. Deterministic checks attach diagnostics only and never rewrite, suppress, retry, or replace a paid response."
+  },
+  "read_set_composition": [
+    "Plan all eleven domain Reads as a set before composing them.",
+    "Select an architecture because it fits the evidence relationship, not because it creates superficial variety.",
+    "Do not use one architecture more than twice across a domain set.",
+    "Vary headline grammar, opening move, sentence length, and final analytical job across adjacent Reads.",
+    "Avoid a repeated four-beat cadence in which metric, metric, qualification, and implication appear in the same order.",
+    "A short declarative sentence may carry the hinge of the argument; every sentence need not have equal weight."
+  ],
+  "architecture_library": [
+    {"id": "conclusion_mechanism_boundary", "sequence": ["conclusion", "mechanism", "measurement boundary"], "best_for": "A clear state whose meaning depends on one constraint."},
+    {"id": "state_process_consequence", "sequence": ["observed state", "conversion process", "present consequence"], "best_for": "Evidence located along a delivery chain."},
+    {"id": "comparison_explanation_implication", "sequence": ["matched comparison", "explanation", "implication"], "best_for": "Comparable cohorts, periods, or measures."},
+    {"id": "stage_conversion_remaining_work", "sequence": ["current stage", "required conversion", "remaining work"], "best_for": "Pipelines, queues, plans, and construction records."},
+    {"id": "stock_flow_buffer_horizon", "sequence": ["flow", "stock or buffer", "commitment horizon"], "best_for": "Funding, inventories, or capacity reserves."},
+    {"id": "coverage_variation_boundary", "sequence": ["aggregate coverage", "local variation", "observability boundary"], "best_for": "Geographic reach and incomplete registries."},
+    {"id": "exposure_outcome_nonequivalence", "sequence": ["measured exposure", "observed outcome", "non-equivalence"], "best_for": "Adoption, workforce, and economic evidence."},
+    {"id": "mismatch_bottleneck_implication", "sequence": ["mismatch", "rate-limiting transition", "present implication"], "best_for": "Upstream and downstream stages moving at different rates."},
+    {"id": "population_typical_concentration", "sequence": ["population breadth", "typical result", "concentration"], "best_for": "Market or adoption distributions."},
+    {"id": "absence_alternative_known", "sequence": ["measured absence", "plausible unmeasured channel", "what remains established"], "best_for": "Null results and incomplete public visibility."},
+    {"id": "time_sequence_current_outcome", "sequence": ["earlier condition", "current state", "realized outcome"], "best_for": "Lagged conversions without causal overreach."},
+    {"id": "bottleneck_upstream_downstream", "sequence": ["binding bottleneck", "available upstream supply", "constrained downstream result"], "best_for": "Grid, power, connectivity, and commissioning constraints."}
+  ],
+  "sentence_craft": [
+    "Give the sentence a concrete subject and let its main verb carry the analytical relationship.",
+    "Prefer a repeated precise noun to a vague pronoun or decorative synonym.",
+    "Break noun clusters into actors, actions, and objects.",
+    "Do not end consecutive sentences with present participles such as showing, placing, leaving, limiting, or creating.",
+    "Do not force each paragraph to end with a mechanical X-is-not-Y distinction.",
+    "Let sentence length follow analytical work; cadence is a consequence of hierarchy, not a cosmetic quota.",
+    "Use contrast grammar only for concepts at the same logical level.",
+    "Resolve the claim before adding a number; never make the number perform the conclusion by itself.",
+    "Do not use three or more successive words with the same initial letter. Articles, conjunctions, and short prepositions do not excuse an otherwise conspicuous run."
+  ],
+  "uncertainty_calibration": [
+    "State directly what the evidence measures.",
+    "Use points to, suggests, or is consistent with only for an interpretation across facts.",
+    "Do not hedge a directly measured condition.",
+    "Do not turn missing public data into evidence of absence.",
+    "Do not convert plans, queues, announcements, or exposure measures into realized outcomes."
+  ],
+  "universal_guidance": [
+    {"id": "voice.lead_conclusion", "instruction": "Lead with the conclusion the evidence supports, then explain the relationship that makes it matter."},
+    {"id": "voice.relationship_first", "instruction": "Name the mechanism in concrete language: what funds, enables, delays, absorbs, constrains, or converts what."},
+    {"id": "voice.hierarchy", "instruction": "Preserve the level of the system. Inputs, buildout, operating capacity, use, and outcomes are linked stages rather than interchangeable trends."},
+    {"id": "voice.selectivity", "instruction": "Use the minimum evidence needed to establish scale, direction, or mismatch. Do not narrate the dashboard."},
+    {"id": "voice.rhythm", "instruction": "Alternate compact conclusions with explanatory sentences. One sentence should perform one analytical job."},
+    {"id": "voice.plain_precision", "instruction": "Prefer ordinary words and concrete subjects without flattening the analytical distinction."},
+    {"id": "voice.calibration", "instruction": "State established conditions directly. Use qualified verbs only when the evidence supports association rather than causation."},
+    {"id": "voice.nonrepetition", "instruction": "Do not repeat the same contrast frame, opening phrase, or conclusion pattern across domain Reads."},
+    {"id": "voice.context", "instruction": "Write for a highly intelligent non-specialist. Supply enough context to identify an unfamiliar subject, cohort, measure, or institution without explaining ordinary reasoning or adopting a classroom tone."},
+    {"id": "voice.neutral_scope", "instruction": "Keep the Read nonpartisan and outside social-identity debates. Never introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity."},
+    {"id": "voice.sound", "instruction": "Read each sentence for sound. Remove conspicuous alliteration, including any run of three or more successive words beginning with the same letter."}
+  ],
+  "evidence_conditioned_expression": [
+    {"when": "evidence shows two levels of one chain", "use": "State how the upstream condition changes the downstream conversion.", "avoid": "Place the levels on opposite sides of but or while as if they were peers."},
+    {"when": "evidence measures a pipeline, queue, plan, or announcement", "use": "Describe option value, intent, or the remaining conversion burden.", "avoid": "Treat it as operating capacity or realized output."},
+    {"when": "evidence shows a ratio or coverage measure", "use": "Explain what the numerator can support relative to the denominator.", "avoid": "Call the ratio strong, weak, healthy, or stressed without an evidence-grounded basis."},
+    {"when": "evidence shows growth without a level comparison", "use": "Describe direction and its role in the system.", "avoid": "Infer market share, sufficiency, acceleration, or economic impact."},
+    {"when": "evidence shows a bottleneck", "use": "Name the constrained transition and the capacity that cannot yet pass through it.", "avoid": "Use generic pressure, headwind, or challenge language."},
+    {"when": "evidence contains multiple valid facts", "use": "Choose the facts that resolve one thesis.", "avoid": "Give every metric equal narrative weight."},
+    {"when": "evidence reports a null or missing result", "use": "State the measured absence and its scope, then separate it from unobserved channels.", "avoid": "Treat a null measure as proof that the underlying activity does not exist."},
+    {"when": "evidence shows heterogeneity", "use": "Identify the aggregate, the typical case, and the concentration or tail only when each is supported.", "avoid": "Describe an average as the universal experience."},
+    {"when": "evidence uses a proxy", "use": "Name what the proxy directly measures and bound the interpretation to that link.", "avoid": "Rename the proxy as the desired outcome."},
+    {"when": "evidence mixes stocks and flows", "use": "State how the stock buffers or constrains the flow over a defined horizon.", "avoid": "Add or compare the measures as if their units and timing were interchangeable."},
+    {"when": "evidence spans different time horizons", "use": "Locate each fact in time and explain the lag or mismatch.", "avoid": "Treat contemporaneous movement as a completed transmission."},
+    {"when": "evidence has incomplete coverage", "use": "State the measured coverage before drawing the bounded conclusion.", "avoid": "Generalize the observed subset to the full system."}
+  ],
+  "reader_calibration": {
+    "audience": "A highly intelligent, widely read, operationally experienced adult who may have no specialized knowledge of macroeconomics, infrastructure, power markets, finance, or AI Macro's internal vocabulary.",
+    "stance": "Assume strong reasoning ability. Supply missing subject-matter context without simplifying the analysis, announcing the lesson, or writing down to the reader.",
+    "contextual_sufficiency": [
+      "On first reference, identify an unfamiliar population, cohort, company set, metric, proxy, institution, lifecycle stage, or process clearly enough for the sentence to stand alone.",
+      "Never use internal shorthand such as covered issuers, covered companies, covered cohort, transmission boundary, or development inventory as though the reader already knows what it denotes.",
+      "Preserve a useful technical term when it carries analytical meaning. Explain it naturally from context when necessary; do not replace it merely because it is specialized.",
+      "Name what a ratio compares. Explain its consequence only when the denominator or implication would otherwise remain unclear."
+    ],
+    "neutral_scope": [
+      "Do not introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity into domain or Macro Reads.",
+      "Do not use minority or majority as an adjective for use, adoption, participation, employment, businesses, workers, consumers, users, or another measured proportion.",
+      "Make the counted population the grammatical subject. Write fewer than half of businesses report current AI use, or state the measured percentage; never write minority current business use.",
+      "This scope rule does not alter the evidence. It governs selection and expression only."
+    ],
+    "explanatory_restraint": [
+      "Do not announce the order of the argument or give the reader a roadmap of domains and stages.",
+      "Do not explain ordinary financial, economic, or causal reasoning merely to sound accessible.",
+      "Do not turn an intelligible ratio into a remedial arithmetic lesson.",
+      "Do not repeat the thesis at the end of each paragraph or use the final paragraph to restate the introduction.",
+      "Use additional space for sharper context, mechanism, or implication, not for padding."
+    ],
+    "paragraph_guidance": [
+      "Use three paragraphs by default. Add a fourth only when it carries a distinct analytical development that would otherwise overload the argument.",
+      "Use two to four sentences per paragraph and let paragraph length follow the analytical work.",
+      "Each paragraph must advance the thesis through evidence, mechanism, consequence, or a precise boundary. It must not serve as a table of contents.",
+      "Close with the strongest present implication or unresolved attribution problem, not a summary of earlier paragraphs."
+    ]
+  },
+  "macro_guidance": [
+    "Choose one system-level through-line spanning capital, physical buildout, use, and outcomes.",
+    "Use selected domains as evidence roles in an argument, not as sections in a tour.",
+    "Identify the rate-limiting conversion when upstream investment and downstream outcomes do not move together.",
+    "Use three paragraphs by default and a fourth only when analytically necessary. Use two to four sentences per paragraph, with no minimum total word count.",
+    "Write for an intellectually sophisticated non-specialist. Supply identifying context, then let the evidence and reasoning carry the explanation without a classroom voice.",
+    "Select only three to five domains. Extra space is for explanation, not for adding more topics.",
+    "Close with the present implication of the evidence, not a forecast, watchlist, or call to action."
+  ],
+  "systems_dynamics_bonus": {
+    "name": "Neurobiology / Neurochemistry / Biophysics Systems-Dynamics Bonus",
+    "source_file": "AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json",
+    "source_object": "cross_disciplinary_bonus_layer",
+    "required_status": "FULLY_INGESTED",
+    "required_audit": {
+      "user_supplied_source_count": 16,
+      "sources_fully_reviewed": 16,
+      "bonus_atomic_observations": 70,
+      "canonical_bonus_families": 22,
+      "mathematical_motifs": 14
+    },
+    "hard_boundary": "Use the layer only as transferable systems reasoning. Biological observations are never factual evidence about AI, infrastructure, firms, markets, workers, or the economy, and similarity never establishes a shared mechanism."
+  },
+  "generalized_failure_lessons": [
+    "Do not compress several stages of a system into one syntactically balanced sentence.",
+    "Do not use abstract nouns where a concrete actor and verb can state the relationship.",
+    "Do not repeat a contrast-led headline or metric-led paragraph architecture across the Read set.",
+    "Do not finish every Read with a formulaic qualification that restates an evidence boundary.",
+    "Do not substitute synonym changes for a different analytical structure.",
+    "Do not let a validation rule become a prose template."
+  ],
+  "profiles": {
+    "market": {
+      "label": "Market",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_MARKET_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["U01", "U03", "U04", "U08", "U22", "U23"],
+      "objective": "Explain what listed-market evidence says about investor conviction, concentration, dispersion, and the price assigned to AI exposure.",
+      "relationship_chain": ["expectations shape valuation", "returns reveal breadth or concentration", "dispersion separates a theme from uniform repricing"],
+      "preferred_architectures": ["population_typical_concentration", "comparison_explanation_implication", "coverage_variation_boundary", "mismatch_bottleneck_implication", "conclusion_mechanism_boundary"],
+      "vocabulary": ["breadth", "concentration", "dispersion", "valuation", "conviction", "repricing"],
+      "anti_patterns": ["Treat equity returns as proof of operating performance.", "Use catalyst, momentum, risk-on, or trade setup language.", "Describe a basket average as a uniform company experience."],
+      "evidence_rules": ["Separate price evidence from business fundamentals.", "Name the cohort represented by any breadth or valuation conclusion."]
+    },
+    "finance": {
+      "label": "Finance",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json"],
+      "provenance_refs": ["FIN-A01", "FIN-A02", "FIN-A03", "FIN-A04"],
+      "objective": "Explain how internal cash, borrowing, and forward commitments fund the buildout and distribute financing strain.",
+      "relationship_chain": ["cash flow funds investment", "cash reserves absorb timing gaps", "borrowing supplements internal funding", "commitments pull future funding needs forward"],
+      "preferred_architectures": ["stock_flow_buffer_horizon", "comparison_explanation_implication", "time_sequence_current_outcome", "mismatch_bottleneck_implication", "conclusion_mechanism_boundary"],
+      "vocabulary": ["fund", "cover", "absorb", "supplement", "commit", "financing capacity"],
+      "anti_patterns": ["Equate debt issuance with distress.", "Describe cash balances without relating them to investment needs.", "Treat commitments as current cash spending."],
+      "evidence_rules": ["Preserve matched-period and matched-cohort boundaries.", "Distinguish stock measures, flow measures, and forward commitments."]
+    },
+    "compute": {
+      "label": "Compute",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_COMPUTE_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["BROAD-01", "BROAD-02", "CLOSE-01", "CLOSE-02"],
+      "objective": "Explain how semiconductor supply, manufacturing throughput, and accelerator deployment create usable computing capacity.",
+      "relationship_chain": ["manufacturing supplies components", "systems integrate accelerators", "deployed systems create compute capacity", "utilization turns capacity into work"],
+      "preferred_architectures": ["state_process_consequence", "stage_conversion_remaining_work", "time_sequence_current_outcome", "bottleneck_upstream_downstream", "conclusion_mechanism_boundary"],
+      "vocabulary": ["manufacture", "supply", "integrate", "deploy", "capacity", "throughput"],
+      "anti_patterns": ["Treat chip shipments as completed data-center capacity.", "Use compute as a synonym for all AI infrastructure.", "Infer utilization or productivity from installed hardware."],
+      "evidence_rules": ["Preserve unit and product-scope differences.", "Do not collapse manufacturing, delivery, installation, and operation into one event."]
+    },
+    "data_center": {
+      "label": "Data Centers",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_DATA_CENTER_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["DC-A001", "DC-A002", "DC-A003", "DC-A004"],
+      "objective": "Explain how projects move from announced pipeline to power-ready, operational facilities and where conversion remains incomplete.",
+      "relationship_chain": ["projects enter the pipeline", "sites secure infrastructure", "construction creates facilities", "commissioning creates operating capacity"],
+      "preferred_architectures": ["stage_conversion_remaining_work", "mismatch_bottleneck_implication", "time_sequence_current_outcome", "coverage_variation_boundary", "state_process_consequence"],
+      "vocabulary": ["pipeline", "site", "construct", "commission", "operate", "convert"],
+      "anti_patterns": ["Count announcements as operating capacity.", "Add incomparable capacity labels.", "Treat a registry total as a forecast."],
+      "evidence_rules": ["Preserve project status and capacity-label boundaries.", "Distinguish facilities, campuses, phases, and individual buildings where the evidence does."]
+    },
+    "connectivity": {
+      "label": "Connectivity",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_CONNECTIVITY_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["CON-E001", "CON-E002", "CON-FND-001", "CON-FND-002"],
+      "objective": "Explain whether network reach, capacity, latency, and redundancy allow compute resources and users to function as one system.",
+      "relationship_chain": ["routes connect locations", "capacity carries traffic", "latency shapes feasible workloads", "redundancy supports continuity"],
+      "preferred_architectures": ["coverage_variation_boundary", "absence_alternative_known", "state_process_consequence", "comparison_explanation_implication", "bottleneck_upstream_downstream"],
+      "vocabulary": ["connect", "carry", "route", "reach", "latency", "redundancy"],
+      "anti_patterns": ["Treat route miles as bandwidth.", "Treat coverage as service quality.", "Infer end-user adoption from infrastructure availability."],
+      "evidence_rules": ["Preserve geography, route, endpoint, and population definitions.", "Do not infer unmeasured congestion or resilience." ]
+    },
+    "power": {
+      "label": "Power",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_POWER_GRID_STORAGE_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["PGS-PWR-U01", "PGS-PWR-U02", "PGS-PWR-U04", "PGS-PWR-U05"],
+      "objective": "Explain how measured load becomes annual energy and peak demand, and whether available generation can become reliable, delivered supply at the relevant place and time.",
+      "relationship_chain": ["activity and utilization create load", "load shape creates energy and peak requirements", "available generation supplies the system", "interconnection and transmission deliver power", "observed or contracted flexibility changes timing"],
+      "preferred_architectures": ["mismatch_bottleneck_implication", "time_sequence_current_outcome", "comparison_explanation_implication", "state_process_consequence", "bottleneck_upstream_downstream"],
+      "vocabulary": ["load", "annual energy", "peak", "available generation", "deliver", "response", "timing"],
+      "anti_patterns": ["Treat planned additions as delivered generation.", "Infer peak or reliability from annual energy totals.", "Attribute all commercial-load growth to AI.", "Call a flexible-load estimate dispatchable capacity without baseline, duration, recovery, participation, and control evidence."],
+      "evidence_rules": ["Keep activity, load, annual energy, peak, capacity, generation, and price measures distinct.", "Preserve observation, forecast, and planning horizons.", "Separate nameplate, available, reliable, interconnected, and delivered output.", "Keep Grid & Storage queue maturity outside the Power evidence claim even when it limits Power realization."]
+    },
+    "grid_storage": {
+      "label": "Grid & Storage",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_POWER_GRID_STORAGE_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["PGS-GRD-U01", "PGS-GRD-U02", "PGS-GRD-U03", "PGS-GRD-U04", "PGS-GRD-U06"],
+      "objective": "Explain how requested generation and storage progress toward operation, whether the network can deliver them, and which power, energy, duration, adequacy, and flexibility services are actually available.",
+      "relationship_chain": ["projects request connection", "studies assign upgrades and costs", "agreements establish advanced contractual status", "construction and commissioning create operating assets", "transmission delivers power", "storage and reserves provide service under location and duration constraints"],
+      "preferred_architectures": ["stage_conversion_remaining_work", "bottleneck_upstream_downstream", "stock_flow_buffer_horizon", "coverage_variation_boundary", "time_sequence_current_outcome"],
+      "vocabulary": ["request", "study", "agreement", "withdraw", "deliver", "duration", "reserve", "state of charge"],
+      "anti_patterns": ["Treat queue capacity as installed supply.", "Treat an interconnection agreement as operating status.", "Add generation and storage queue capacity as equivalent energy.", "Describe storage power without energy and duration when service depends on them.", "Infer local deliverability from regional balancing or reserve totals.", "Treat modeled system value as compensated revenue or bankability."],
+      "evidence_rules": ["Preserve queue state, technology, region, cohort, endpoint, and eligible-record coverage.", "Use mature-cohort outcomes to bound conversion, never as a deterministic forecast haircut.", "Separate power, energy, duration, efficiency, cycling, degradation, location, market qualification, and operating service.", "Keep engineering feasibility, transfer capability, project cost, reliability value, realized flow, and compensation distinct."]
+    },
+    "water": {
+      "label": "Water",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_WATER_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["WTR-U01", "WTR-U02", "WTR-U04", "WTR-U07", "WTR-U08", "WTR-U10"],
+      "objective": "Explain the amount, source, fate, and local availability of water supporting AI infrastructure directly at facilities and indirectly through electricity, without converting broad exposure into an unsupported operating constraint.",
+      "relationship_chain": ["facilities and electricity supply create water demand", "cooling and generation determine withdrawal and consumption", "source quality, utility infrastructure, rights, and hydrology determine usable service", "facility evidence determines whether exposure becomes an operating constraint"],
+      "preferred_architectures": ["coverage_variation_boundary", "comparison_explanation_implication", "state_process_consequence", "conclusion_mechanism_boundary", "absence_alternative_known"],
+      "vocabulary": ["withdraw", "consume", "deliver", "return", "cool", "source", "exposure", "usable supply"],
+      "anti_patterns": ["Use withdrawal, consumption, delivery, discharge, and return flow interchangeably.", "Infer facility scarcity or curtailment from state drought exposure.", "Treat published campus capacity as water demand.", "Rank facilities on site WUE while omitting workload and electricity-water boundaries.", "Treat a missing public facility record as zero use.", "Describe reclaimed water or replenishment as physical demand elimination."],
+      "evidence_rules": ["Preserve year, geography, source, fate, denominator, and reporting boundary.", "Rank direct facility and utility evidence above company totals, modeled factors, state exposure, and national context.", "Keep on-site cooling water separate from electricity-mediated water.", "Do not infer unmeasured cooling technology, water source, rights, utility capacity, peak demand, or operating use.", "Use drought and scarcity indicators as exposure screens until local evidence supports an availability claim.", "Keep national USGS context and reported thermoelectric records in their own source, year, and definition boundaries."]
+    },
+    "adoption": {
+      "label": "Adoption",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_DIFFUSION_ECONOMIC_TRANSMISSION_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["ADET-U01", "ADET-U02", "ADET-U03", "ADET-U06", "ADET-U10", "ADET-U14"],
+      "objective": "Explain whether AI access is becoming repeated task use and organization-wide integration, preserving who uses it, how often, for which tasks, under what firm rules, and at what depth.",
+      "relationship_chain": ["awareness and access permit trial", "trial becomes observed use", "frequency and task breadth deepen use", "policy, training, data, and workflow govern integration", "integrated production can create outcomes"],
+      "preferred_architectures": ["stage_conversion_remaining_work", "population_typical_concentration", "exposure_outcome_nonequivalence", "time_sequence_current_outcome", "coverage_variation_boundary"],
+      "vocabulary": ["use", "repeat", "integrate", "diffuse", "routine", "frequency", "task breadth", "workflow"],
+      "anti_patterns": ["Treat awareness or access as adoption.", "Treat any use as frequent, core-task, or organization-wide use.", "Treat worker use as employer deployment.", "Treat exposure as observed use.", "Infer productivity from adoption alone."],
+      "evidence_rules": ["Preserve population, respondent, age, firm-size, sector, task, frequency, time window, and weighting definitions.", "Separate awareness, access, any use, recent use, work use, core-task use, frequency, intensity, and integration depth.", "Keep potential exposure and reported usefulness below observed use, and observed use below realized outcome.", "Name training, policy, privacy, data, workflow, or capability constraints only when the evidence supports them.", "Do not generalize beyond the measured population or convert conditional association into causal adoption effect."]
+    },
+    "workforce": {
+      "label": "Workforce",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_DIFFUSION_ECONOMIC_TRANSMISSION_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["ADET-U03", "ADET-U04", "ADET-U05", "ADET-U06", "ADET-U07", "ADET-U09", "ADET-U16"],
+      "objective": "Explain how AI capability and task exposure move through firm skill demand, human-AI work allocation, worker adaptation, employment, wages, job quality, and distributional incidence.",
+      "relationship_chain": ["capability changes the feasible task frontier", "firms choose automation, augmentation, substitution, or reallocation", "workers and roles adapt unevenly", "employment, hours, wages, and job quality register distinct outcomes"],
+      "preferred_architectures": ["exposure_outcome_nonequivalence", "comparison_explanation_implication", "absence_alternative_known", "time_sequence_current_outcome", "coverage_variation_boundary"],
+      "vocabulary": ["tasks", "skills", "roles", "allocate", "augment", "automate", "reallocate", "employment", "wages", "job quality"],
+      "anti_patterns": ["Treat exposure as displacement.", "Treat job postings as employment or hiring.", "Use automation, augmentation, substitution, and reallocation interchangeably.", "Count released labor as a benefit without evidence of productive reallocation.", "Attribute aggregate labor change to AI from coexistence alone."],
+      "evidence_rules": ["Preserve task, occupation, industry, geography, skill, experience, gender, firm, comparison group, and time-window definitions.", "Distinguish postings, employment stocks, flows, hours, wages, compensation, autonomy, and satisfaction.", "State the model, task frontier, workflow, user behavior, evaluation criterion, and observation date for human-AI performance evidence.", "Keep task performance below production deployment and production deployment below aggregate labor outcomes.", "Preserve positive, negative, null, and heterogeneous effects rather than averaging them into one workforce direction."]
+    },
+    "economic_impact": {
+      "label": "Economic Outcomes",
+      "source_state": "CORPUS_BACKED",
+      "corpus_sources": ["AI_MACRO_DIFFUSION_ECONOMIC_TRANSMISSION_CORPUS_COMPLETE_v1.0.json"],
+      "provenance_refs": ["ADET-U04", "ADET-U09", "ADET-U10", "ADET-U11", "ADET-U12", "ADET-U13", "ADET-U15", "ADET-U17"],
+      "objective": "Explain whether AI investment and adoption are becoming firm production, innovation, revenue, profit, measured productivity, output, income, consumer value, and economy-wide distribution over time.",
+      "relationship_chain": ["investment and access create potential", "adoption and complementary change alter tasks and production", "firm outcomes emerge under execution and competition", "affected shares and economic weights transmit into aggregate output", "value distributes across workers, firms, capital owners, consumers, and society"],
+      "preferred_architectures": ["exposure_outcome_nonequivalence", "time_sequence_current_outcome", "population_typical_concentration", "mismatch_bottleneck_implication", "absence_alternative_known"],
+      "vocabulary": ["translate", "produce", "innovate", "output", "productivity", "revenue", "profit", "income", "labor share", "consumer value", "welfare"],
+      "anti_patterns": ["Treat investment or adoption as realized productivity.", "Turn a task experiment into firm or economy-wide productivity.", "Turn selected firm growth into aggregate growth.", "Claim economy-wide causality from coexistence.", "Use aggregate output to imply worker, consumer, or social welfare.", "Present calibrated potential as an observed forecast path."],
+      "evidence_rules": ["Preserve real versus nominal, level versus growth, task versus firm versus sector versus economy, and observed versus modeled scope.", "Mark the boundary where observed evidence enters a model and retain affected share, economic weight, complementary investment, capital response, competition, and horizon assumptions.", "Keep productivity, output, revenue, profit, wages, labor share, capital income, consumer surplus, and welfare distinct.", "Separate partial-equilibrium firm effects from general-equilibrium prices, entry, business stealing, spillovers, and distribution.", "Keep outcome timing distinct from contemporaneous infrastructure spending and name the missing transmission link when attribution is not established."]
+    }
+  }
+}
