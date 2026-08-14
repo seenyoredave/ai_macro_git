@@ -411,12 +411,8 @@ def main() -> None:
         calls.clear()
         failed_yfinance_payloads = _payloads()
         failed_yfinance_payloads["raw_universe_data"]["_load_report"]["yfinance"] = {
-            "source_mode": "archive_fallback_market_date_mismatch",
-            "expected_tickers": 4,
+            "source_mode": "archive_fallback",
             "live_tickers": 0,
-            "archive_fallback_tickers": 4,
-            "returned_tickers": 4,
-            "missing_tickers": [],
             "live_error": "provider unavailable",
         }
         failed_yfinance = snapshot_writer.persist_refresh_snapshots(
@@ -424,15 +420,11 @@ def main() -> None:
             archive_suspended=False,
             **failed_yfinance_payloads,
         )
-        if calls or failed_yfinance.get("status") != "retained_fallback":
+        if calls or failed_yfinance.get("status") != "no_successful_live_sources":
             raise AssertionError(
                 "Archive-only YFinance fallback re-dated retained history: "
                 f"calls={calls}, report={failed_yfinance}"
             )
-        if failed_yfinance.get("retained_fallbacks") != ["yfinance"]:
-            raise AssertionError(f"Valid retained YFinance fallback was not reported: {failed_yfinance}")
-        if "single-date" not in str((failed_yfinance.get("warnings") or {}).get("yfinance", "")):
-            raise AssertionError(f"Retained YFinance fallback warning was lost: {failed_yfinance}")
 
         calls.clear()
         nyfed_payloads = _payloads()

@@ -31,19 +31,19 @@ from rendering.labels import sector_display_name
 EVIDENCE_STANDARDS = """
 **AI Macro applies a consistent evidence standard across its research.**
 
-The platform draws on public records, regulatory filings, official datasets, company disclosures, and selected business reporting to study the AI economy. Sources are evaluated according to the relevance, specificity, and quality of the evidence they provide.
+The platform draws on public records, regulatory filings, official datasets, company disclosures, and selected business reporting. Sources are evaluated according to the quality and specificity of the evidence they provide, with preference given to primary records when material claims can be traced directly to them.
 
-Secondary aggregators and specialist publications may help identify relevant developments. When practical, material claims are traced to primary records or corroborated through other approved sources.
+Secondary aggregators and specialist publications may identify relevant developments, but material claims are independently corroborated whenever practical.
 
-**Social media is excluded from the research pipeline.** Posts, threads, comments, and other user-generated social content are not used for discovery, corroboration, evidence, or citation.
+Social media is excluded from the research pipeline. Posts, threads, comments, and other user-generated social content are not used for discovery, corroboration, evidence, or citation.
 
-For consequential claims, AI Macro considers evidence that may support, qualify, narrow, or contradict an initial interpretation. Conclusions are based on the available evidence rather than automatically adopting the interpretation of any individual source.
+Consequential claims are evaluated against evidence that may support or challenge the initial interpretation. Conclusions reflect the available evidence rather than the interpretation of any individual source.
 
-Political and regulatory developments are included when they have a concrete economic or operational consequence. The platform preserves the identity of the acting institution or official, the nature of the action, and its legal or procedural status. Statements, requests, proposals, directives, orders, rules, and enacted laws are treated according to those distinctions.
+Political and regulatory developments are included when they produce a concrete economic or operational consequence. The platform identifies the acting institution or official and preserves the legal or procedural status of the action.
 
-**Corroboration requires independent evidence.** Multiple reports derived from the same filing, wire story, press release, or other upstream source are treated as a single underlying source rather than independent confirmation.
+Corroboration requires independent evidence. Multiple reports derived from the same root source are treated as a single source rather than independent confirmation.
 
-Current Context independently discovers and source-grounds recent developments, ranks them through a progressive quality ladder, and broadens qualification within a ten-day window as needed to maintain coverage across at least six analytical domains. The strongest seven-day candidates are preferred.
+Current Context independently discovers and grounds recent developments in source evidence. It favors the strongest developments from the preceding seven days and broadens its qualification criteria within a ten-day limit when necessary to maintain coverage across at least six analytical domains.
 """.strip()
 
 def _status_rows(regime_metrics):

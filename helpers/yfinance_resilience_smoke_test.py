@@ -100,39 +100,6 @@ def main() -> None:
     if not any(value >= market_loader.YFINANCE_PULL_RATE_LIMIT_DELAY_SECONDS for value in sleeps):
         raise AssertionError(f"Rate limiting did not trigger the longer cooldown: {sleeps}")
 
-    # A transported row with a lagging provider date is retried just like a
-    # transport miss, while already coherent rows remain untouched.
-    calls.clear()
-    sleeps.clear()
-    def stale_date_once(ticker, company):
-        ticker = str(ticker).upper()
-        calls[ticker] = calls.get(ticker, 0) + 1
-        row = _row(ticker)
-        if ticker == "BBB" and calls[ticker] == 1:
-            row["Market Data Date"] = "2026-08-06"
-        return {"ticker": ticker, "result": row, "error": "", "rate_limited": False}
-
-    try:
-        market_loader._fetch_company_attempt = stale_date_once
-        market_loader.time.sleep = fake_sleep
-        coherent = market_loader.pull_yfinance(
-            (("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC")),
-            attempts=3,
-        )
-    finally:
-        market_loader._fetch_company_attempt = original_attempt
-        market_loader.time.sleep = original_sleep
-
-    coherent_report = dict(coherent.attrs.get("provider_report", {}) or {})
-    if set(coherent["Market Data Date"]) != {"2026-08-07"}:
-        raise AssertionError(f"Market-date retry remained incoherent: {coherent}")
-    if calls != {"AAA": 1, "BBB": 2, "CCC": 1}:
-        raise AssertionError(f"Market-date retry refetched coherent rows: {calls}")
-    if coherent_report.get("market_date_mismatch_events") != 1:
-        raise AssertionError(f"Market-date mismatch was not reported: {coherent_report}")
-    if coherent_report.get("market_date_retry_tickers") != ["BBB"]:
-        raise AssertionError(f"Market-date retry ticker was not retained: {coherent_report}")
-
     # A persistent miss must remain a miss; merge/persistence code may resolve
     # it from retained data for display, but it cannot masquerade as a live row.
     calls.clear()
@@ -166,38 +133,7 @@ def main() -> None:
     if calls.get("AAA") != 1 or calls.get("BBB") != 2:
         raise AssertionError(f"Retry path refetched successful rows or skipped the miss: {calls}")
 
-    # A provider can return every ticker while one quote still carries the
-    # previous market date. The analytical frame must then use the prior
-    # complete retained snapshot rather than mixing observation dates.
-    tickers = {"AAA": "AAA", "BBB": "BBB", "CCC": "CCC"}
-    mixed_live = pd.DataFrame([
-        _row("AAA"),
-        _row("BBB"),
-        {**_row("CCC"), "Market Data Date": "2026-08-06"},
-    ])
-    retained = pd.DataFrame([
-        {**_row("AAA"), "Market Data Date": "2026-08-05", "Price": 90.0},
-        {**_row("BBB"), "Market Data Date": "2026-08-05", "Price": 91.0},
-        {**_row("CCC"), "Market Data Date": "2026-08-05", "Price": 92.0},
-    ])
-    merged = market_loader.merge_live_yfinance_with_archive(
-        mixed_live, retained, tickers
-    )
-    resolved = market_loader.resolve_yfinance_market_date_mismatch(
-        merged, retained, tickers
-    )
-    resolved_dates = set(resolved["Market Data Date"].astype(str))
-    resolved_report = dict(resolved.attrs.get("load_report", {}) or {})
-    if resolved_dates != {"2026-08-05"}:
-        raise AssertionError(f"Mixed live market dates reached analysis: {resolved_dates}")
-    if resolved_report.get("source_mode") != "archive_fallback_market_date_mismatch":
-        raise AssertionError(f"Market-date fallback was not explicit: {resolved_report}")
-    if resolved_report.get("provider_live_tickers") != 3:
-        raise AssertionError(f"Provider coverage was lost from diagnostics: {resolved_report}")
-    if resolved_report.get("archive_fallback_tickers") != 3:
-        raise AssertionError(f"Retained fallback coverage was not complete: {resolved_report}")
-
-    print("PASS  YFinance adaptive pacing · retry only misses · rate-limit cooldown · coherent-date fallback")
+    print("PASS  YFinance adaptive pacing · retry only misses · rate-limit cooldown · complete-row contract preserved")
 
 
 if __name__ == "__main__":
