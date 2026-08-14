@@ -93,20 +93,20 @@
       "sha256": "ce62654c27f618d5f34a9679963f0bb2eb698da38b974279f056df8268c06293"
     },
     "archive/edgar_history.csv": {
-      "bytes": 872684,
+      "bytes": 896450,
       "date_column": "Date",
-      "date_max": "2026-08-13",
+      "date_max": "2026-08-14",
       "date_min": "2026-06-14",
-      "rows": 7075,
-      "sha256": "ccecd7f8669e90b98f459bcd88cc178f244f6ccfb2e3deda65783c2d2d9ebb13"
+      "rows": 7266,
+      "sha256": "7f325cd86de1d50bba668fa7df7e91080ce58d12612c08d2d6f30fd1f65ebfa2"
     },
     "archive/fred_history.csv": {
-      "bytes": 12965,
+      "bytes": 13725,
       "date_column": "Date",
-      "date_max": "2026-08-13",
+      "date_max": "2026-08-14",
       "date_min": "2026-06-14",
-      "rows": 26,
-      "sha256": "98d2bb27688bf3b8004807662dcda0166b98bf4caf8ed9b901280ae476f7d5d1"
+      "rows": 27,
+      "sha256": "d6512b139308178f15776ea1c8c9caccc8c16045e0ed04c8345b1e77d1f0ae57"
     },
     "archive/macro_history.csv": {
       "bytes": 49252,
@@ -205,12 +205,12 @@
       "sha256": "3053dba0242a299d476f172af36d3c8b154acdd782f0f4753aa250039ba2400d"
     },
     "data/borrower_strain_fundamentals_history.csv": {
-      "bytes": 68761,
+      "bytes": 72744,
       "date_column": "Date",
-      "date_max": "2026-08-13",
+      "date_max": "2026-08-14",
       "date_min": "2014-12-31",
-      "rows": 210,
-      "sha256": "deaac5dd61d541a5f6ce988d00ae8bbc99ced9541b5017fda4587696f2cfd07a"
+      "rows": 220,
+      "sha256": "76febfe5c4303265ecac78b8565a78cb15b5a72d259a9f6867ac179b3f07672e"
     },
     "data/capital_commitment_components.csv": {
       "bytes": 9195,
@@ -264,7 +264,7 @@
     "data/infrastructure/source_manifest.csv": {
       "bytes": 11524,
       "rows": 11,
-      "sha256": "f42cc7d188a33ecda9cbe4b62682e700fc85de4fbd6800989727a9345a1579f0"
+      "sha256": "b95a1c83fddb5c20c3c03cc73d4c530b3cc6b0c03b371bce17c72adf430acccd"
     },
     "data/market_valuation_context.csv": {
       "bytes": 353,
@@ -273,12 +273,12 @@
     },
     "data/retained_state_manifest.json": {
       "bytes": 35674,
-      "sha256": "2dea5b25d41eb791117b54acd6ebe74142e039ddac794b41327a78a6b310c9c3"
+      "sha256": "c15e8f2a7e7440910cca00772db205b3fce759daa80e3d75615f177d56b4561c"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 26082,
+      "bytes": 26088,
       "rows": 22,
-      "sha256": "1478e1a2f0cacf943b6d2b676fce55d57be453e5a8c97fa2ed5451dcdf28e6fd"
+      "sha256": "9dfbee125cd7608c9060203e13457012cc629b1e09855afdf559311e5c69b773"
     },
     "developer/load_report.py": {
       "bytes": 8466,
@@ -557,7 +557,7 @@
       "sha256": "6a7ef2292e0df10ddca28de822faa1f0797f1a84f7f2501a233874ba99b2db09"
     }
   },
-  "generated_at_utc": "2026-08-13T23:40:18+00:00",
+  "generated_at_utc": "2026-08-14T14:32:45+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -568,6 +568,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "0627285548ca392a632c",
+  "release_id": "b425de3f6a047e985041",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }

@@ -1336,12 +1336,23 @@
   },
   "publication": {
     "current_evidence_snapshot_id": "96bd766384562323bf5e2bf5",
-    "expires_at": "2026-08-14T23:56:52.599805+00:00",
+    "expires_at": "2026-08-15T14:32:47.215607+00:00",
     "lease_hours": 24,
-    "materiality": {},
-    "published_at": "2026-08-13T23:56:52.599805+00:00",
-    "renewal_count": 0,
-    "source": "generation"
+    "materiality": {
+      "baseline_available": true,
+      "changes": [],
+      "current_snapshot_id": "96bd766384562323bf5e2bf5",
+      "decision": "reuse_exact_evidence",
+      "exact_match": true,
+      "material": false,
+      "percentage_point_threshold": 2.0,
+      "previous_snapshot_id": "96bd766384562323bf5e2bf5",
+      "relative_change_threshold": 0.1,
+      "version": "1.0.0"
+    },
+    "published_at": "2026-08-14T14:32:47.215607+00:00",
+    "renewal_count": 1,
+    "source": "automation_reapply"
   },
   "raw_responses": {
     "domain_reads": {

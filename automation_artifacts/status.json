@@ -2,16 +2,9 @@
   "auto_publish": true,
   "automation_enabled": true,
   "changed_paths": [
-    "archive/benchmark_history.csv",
     "archive/edgar_history.csv",
     "archive/fred_history.csv",
-    "archive/macro_history.csv",
-    "archive/sector_history.csv",
-    "archive/yf_history.csv",
-    "automation_artifacts/call_journal.jsonl",
     "automation_artifacts/status.json",
-    "data/adoption_national_history.csv",
-    "data/adoption_sector_snapshot.csv",
     "data/borrower_strain_fundamentals_history.csv",
     "data/commercialization/commercialization_ledger.csv",
     "data/connectivity/ixp_snapshot.csv",
@@ -25,141 +18,78 @@
     "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
     "data/water/derived/usgs_2015_county_summary.csv.gz",
     "data/water/derived/usgs_2015_reconciliation.csv.gz",
-    "data/water/derived/usgs_2015_state_category_summary.csv",
     "data/water/derived/water_national_summary.json",
     "data/water/derived/water_observations.csv.gz",
     "data/water/source_manifest.csv",
     "data/weekly_context_events.csv",
     "openai_artifacts/current.json"
   ],
-  "current_context_snapshot_id": "04154860be1d535e",
+  "current_context_snapshot_id": "4a964a54800a87f5",
   "errors": [],
   "evidence_snapshot_id": "96bd766384562323bf5e2bf5",
-  "finished_at_utc": "2026-08-13T23:56:55.147230+00:00",
+  "finished_at_utc": "2026-08-14T14:32:47.977474+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
-    "this_run": 2,
-    "today_after_run": 2,
+    "this_run": 0,
+    "today_after_run": 0,
     "today_before_run": 0
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 787.852,
+      "elapsed_sec": 815.983,
       "status": "passed",
       "subphases": {
-        "assemble + persist": 5.815,
-        "current context": 55.83,
-        "domain sources": 403.971,
-        "market sources": 322.235
+        "assemble + persist": 3.882,
+        "current context": 34.73,
+        "domain sources": 394.808,
+        "market sources": 382.563
       }
     },
     "evidence": {
-      "artifact_current": false,
-      "artifact_materially_current": false,
+      "artifact_current": true,
+      "artifact_materially_current": true,
       "artifact_status": "published_with_warnings",
-      "elapsed_sec": 1.734,
+      "elapsed_sec": 1.521,
       "materiality": {
-        "baseline_available": false,
-        "changes": [
-          {
-            "kind": "missing_generated_evidence_baseline",
-            "material": true
-          }
-        ],
+        "baseline_available": true,
+        "changes": [],
         "current_snapshot_id": "96bd766384562323bf5e2bf5",
-        "decision": "generate_missing_baseline",
-        "exact_match": false,
-        "material": true,
+        "decision": "reuse_exact_evidence",
+        "exact_match": true,
+        "material": false,
         "percentage_point_threshold": 2.0,
-        "previous_snapshot_id": "51d04468a8202dc0f293a847",
+        "previous_snapshot_id": "96bd766384562323bf5e2bf5",
         "relative_change_threshold": 0.1,
         "version": "1.0.0"
       },
       "status": "passed"
     },
     "openai": {
-      "attempt_id": "20260813T234022609352Z_96bd7663_117ac8d1",
-      "elapsed_sec": 991.877,
-      "stage": "",
-      "status": "published_with_warnings",
-      "validation": {
-        "checked_claims": 59,
-        "domain": {
-          "checked_claims": 48,
-          "errors": [
-            "data_center.analysis[2]: conspicuous same-initial word run is not allowed: capacity comparisons can"
-          ],
-          "failures": [
-            {
-              "fact_ids": [
-                "data_center.canonical_capacity_coverage"
-              ],
-              "label": "data_center.analysis[2]",
-              "message": "data_center.analysis[2]: conspicuous same-initial word run is not allowed: capacity comparisons can",
-              "reason": "alliterative_run",
-              "sentence": "Canonical published capacity exists for 35.6% of active campus records, which limits how far capacity comparisons can extend across the registry.",
-              "words": [
-                "capacity",
-                "comparisons",
-                "can"
-              ]
-            }
-          ],
-          "grounded_claims": 47,
-          "passed": false,
-          "version": "3.4.0"
-        },
-        "gate_results": {
-          "domain_grounding": false,
-          "macro_grounding": false
-        },
-        "grounded_claims": 57,
-        "macro": {
-          "checked_claims": 11,
-          "errors": [
-            "macro.analysis[8]: reuses domain Read language from economic_impact"
-          ],
-          "failures": [
-            {
-              "fact_ids": [
-                "economic_impact.productivity_since_2020",
-                "economic_impact.real_compensation_since_2020",
-                "economic_impact.productivity_real_comp_gap"
-              ],
-              "label": "macro.analysis[8]",
-              "message": "macro.analysis[8]: reuses domain Read language from economic_impact",
-              "reason": "domain_language_reuse",
-              "sentence": "Since 2020, productivity in the nonfarm business sector has outpaced real hourly compensation by 9.6 percentage points.",
-              "source_domain": "economic_impact",
-              "source_text": "Since 2020, nonfarm-business productivity rose 14.1%, outpacing real hourly compensation by 9.6 percentage points."
-            }
-          ],
-          "grounded_claims": 10,
-          "passed": false,
-          "version": "3.4.0"
-        },
-        "passed": false,
-        "publication_policy": "publish_every_completed_openai_response_with_diagnostics",
-        "raw_stage": "",
-        "validator_version": "3.4.0"
-      }
+      "reason": "evidence_snapshot_already_has_publishable_artifact",
+      "status": "skipped"
     },
     "publication": {
       "status": "ready",
       "transaction_boundary": "git_commit"
+    },
+    "publication_lease": {
+      "expires_at": "2026-08-15T14:32:47.215607+00:00",
+      "published_at": "2026-08-14T14:32:47.215607+00:00",
+      "reason": "publishable_evidence_unchanged_no_paid_call",
+      "status": "renewed"
     }
   },
   "publish_ready": true,
   "result": "publish_ready",
-  "run_id": "20260813T232709Z_bc4462cb",
+  "run_id": "20260814T141908Z_c163f2b5",
   "schedule": {
     "time": "09:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-13T23:27:09.833741+00:00",
-  "trigger": "workflow_dispatch",
+  "started_at_utc": "2026-08-14T14:19:08.597652+00:00",
+  "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
@@ -169,6 +99,7 @@
     "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
-    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth"
+    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
+    "snapshot yfinance: The live YFinance refresh did not produce one complete, single-date market snapshot. The last complete retained snapshot remained in use, and no YFinance-owned history was advanced. Mode=archive_fallback_market_date_mismatch; retained market date=2026-08-13."
   ]
 }
