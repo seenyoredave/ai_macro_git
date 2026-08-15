@@ -2,7 +2,7 @@ name: AI Macro scheduled publication
 
 on:
   schedule:
-    - cron: '7 9 * * 1-5'
+    - cron: '0 8 * * 1-5'
       timezone: 'America/New_York'
   workflow_dispatch:
     inputs:
