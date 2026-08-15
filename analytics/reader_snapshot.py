@@ -13,7 +13,7 @@ from threading import RLock
 
 from analytics.dashboard_context import DashboardContext
 from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION
-from analytics.read_service import READ_SERVICE_VERSION, build_platform_reads, publication_lease_state
+from analytics.read_service import READ_SERVICE_VERSION, build_platform_reads
 from analytics.read_store import READ_ARTIFACT_PATH
 from config.deployment import developer_mode
 
@@ -34,11 +34,10 @@ def _cached_snapshot_usable(snapshot: dict) -> bool:
     commentary = dict(snapshot.get("commentary") or {})
     if commentary.get("status") not in {"validated", "published_with_warnings", "published_raw_response"}:
         return True
-    lease = publication_lease_state({
-        "publication": commentary.get("publication") or {},
-        "generated_at": commentary.get("generated_at") or "",
-    })
-    return bool(lease.get("active"))
+    # A publishable artifact is last-known-good until a newer artifact replaces
+    # it. The 24-hour publication lease is freshness metadata only and must not
+    # invalidate an otherwise usable Reader cache after a weekend or failed run.
+    return bool(commentary.get("artifact_publishable"))
 
 
 def _decorate_reads(reads: dict, *, snapshot_id: str, retrieved_at: str) -> dict:
