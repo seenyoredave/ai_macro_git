@@ -10,7 +10,7 @@
     },
     ".github/workflows/ai_macro_automation.yml": {
       "bytes": 5526,
-      "sha256": "e9076910405cb08101b871d6b687a1bc6b6369dcb7a511ba721ab1a1802f7bd0"
+      "sha256": "afff333cd06033b9b4a1a800f11ae9a250232efc2fe824613888fb5cdb99b249"
     },
     "ai_macro.py": {
       "bytes": 27235,
@@ -57,8 +57,8 @@
       "sha256": "82003f26528f54f2ad27979e19cab3c99fb930105a5a04e08b54a31202d1d60e"
     },
     "analytics/read_service.py": {
-      "bytes": 31965,
-      "sha256": "45f824e53c1f1c5214b9641a23c7e1c9aa75a096ab6f0e86280dec74b7c08a13"
+      "bytes": 32523,
+      "sha256": "85d938c476c087f162136e829e0ab4607fb8b6cb177a5cc800e4681b0f38928d"
     },
     "analytics/read_store.py": {
       "bytes": 5349,
@@ -69,8 +69,8 @@
       "sha256": "11133f787ea0fadd81dde3b61fc0366605416d0c0ee0e4ba4c98fb55b84ee980"
     },
     "analytics/reader_snapshot.py": {
-      "bytes": 3508,
-      "sha256": "263f70d3423d716c6e157807c442ac3ccc2a7fdbf5a4a030d341e3c75a142d9d"
+      "bytes": 3576,
+      "sha256": "8cca17ff2fc70de27124d4c6b7a30cf48f18c5330ebce5c5d3a8e66dde33c03b"
     },
     "analytics/regime_engine.py": {
       "bytes": 11254,
@@ -85,52 +85,52 @@
       "sha256": "1681ceb9d25b09bcaf7c0cb9dbbb193abc4d2e46a79755f4933881aacfd4136d"
     },
     "archive/benchmark_history.csv": {
-      "bytes": 5511,
+      "bytes": 5709,
       "date_column": "Date",
-      "date_max": "2026-08-13",
+      "date_max": "2026-08-14",
       "date_min": "2026-06-12",
-      "rows": 30,
-      "sha256": "ce62654c27f618d5f34a9679963f0bb2eb698da38b974279f056df8268c06293"
+      "rows": 31,
+      "sha256": "321ed2a1a8bae8bfb67e44f0a3931f01d17b74c57f081f2e45b491f5a8e7a0fc"
     },
     "archive/edgar_history.csv": {
-      "bytes": 896450,
+      "bytes": 920217,
       "date_column": "Date",
-      "date_max": "2026-08-14",
+      "date_max": "2026-08-15",
       "date_min": "2026-06-14",
-      "rows": 7266,
-      "sha256": "7f325cd86de1d50bba668fa7df7e91080ce58d12612c08d2d6f30fd1f65ebfa2"
+      "rows": 7457,
+      "sha256": "22ebbae646b8d3859c9587fd44b473432a06f2348744ca3fb2f9057549ee1577"
     },
     "archive/fred_history.csv": {
-      "bytes": 13725,
+      "bytes": 14485,
       "date_column": "Date",
-      "date_max": "2026-08-14",
+      "date_max": "2026-08-15",
       "date_min": "2026-06-14",
-      "rows": 27,
-      "sha256": "d6512b139308178f15776ea1c8c9caccc8c16045e0ed04c8345b1e77d1f0ae57"
+      "rows": 28,
+      "sha256": "9a229d3b2d12ef8c4fa23dc0d44468718eb622290dbb7824d2ed4f023286413c"
     },
     "archive/macro_history.csv": {
-      "bytes": 49252,
+      "bytes": 49985,
       "date_column": "Date",
-      "date_max": "2026-08-13",
+      "date_max": "2026-08-14",
       "date_min": "2026-06-12",
-      "rows": 30,
-      "sha256": "6622e96bcc7212e5ce6e3503403951debc47415675eecc97496ad39102e2bf31"
+      "rows": 31,
+      "sha256": "0c165d2cac1ea1e5abf86110fdac49571d4d57ac611ee72fd388d83925eb7c67"
     },
     "archive/sector_history.csv": {
-      "bytes": 64318,
+      "bytes": 67136,
       "date_column": "Date",
-      "date_max": "2026-08-13",
+      "date_max": "2026-08-14",
       "date_min": "2026-06-12",
-      "rows": 450,
-      "sha256": "9482ca0cbe112d2fcbb84cb03b7923ca1b02145ec47ae72f06bb90845f68235e"
+      "rows": 465,
+      "sha256": "9e97e4d383b76659e41629a51ef68be0bc329f90548e8cdda93747c73b29e436"
     },
     "archive/yf_history.csv": {
-      "bytes": 2549374,
+      "bytes": 2662682,
       "date_column": "Date",
-      "date_max": "2026-08-13",
+      "date_max": "2026-08-15",
       "date_min": "2026-06-12",
-      "rows": 6120,
-      "sha256": "2e3196be4b529779c7df9dc522e15e147045703d8116dee6c537d9fef07ae03b"
+      "rows": 6324,
+      "sha256": "cc63d939af0ac8b6b67508ad322b138599c984acff02ea6e814b2f0386492ce2"
     },
     "automation/__init__.py": {
       "bytes": 61,
@@ -142,7 +142,7 @@
     },
     "automation/config.py": {
       "bytes": 2529,
-      "sha256": "0c812b5baacdc9a93cb999da2df2ec93fe2c13c16403150fafe8a0f6a6e6e95d"
+      "sha256": "b1a274d38bb4b08b6696b898a0935357d9ad99048acc07adcd077f0bbaeaa229"
     },
     "automation/git_transport.py": {
       "bytes": 5809,
@@ -193,8 +193,8 @@
       "sha256": "f85c328d3d937c8442cd906818fccc67a235abd7cb5b4a5382e4d9c753a19072"
     },
     "config/metric_definitions.py": {
-      "bytes": 47584,
-      "sha256": "09751c61f3bd99f5ded346491f49e2055c6400f4b61647301e25ecadcc8f3962"
+      "bytes": 47468,
+      "sha256": "318965b1134274bf6d29f73bf5a5d0a9903d66db94376577476d223d1672a8be"
     },
     "config/openai_config.py": {
       "bytes": 1261,
@@ -205,12 +205,12 @@
       "sha256": "3053dba0242a299d476f172af36d3c8b154acdd782f0f4753aa250039ba2400d"
     },
     "data/borrower_strain_fundamentals_history.csv": {
-      "bytes": 72744,
+      "bytes": 76727,
       "date_column": "Date",
-      "date_max": "2026-08-14",
+      "date_max": "2026-08-15",
       "date_min": "2014-12-31",
-      "rows": 220,
-      "sha256": "76febfe5c4303265ecac78b8565a78cb15b5a72d259a9f6867ac179b3f07672e"
+      "rows": 230,
+      "sha256": "331da0d1d1e99f87b57bfe74c6c36cd6dd8b7a96f18f63ccbb4c5a0dda75ce67"
     },
     "data/capital_commitment_components.csv": {
       "bytes": 9195,
@@ -264,7 +264,7 @@
     "data/infrastructure/source_manifest.csv": {
       "bytes": 11524,
       "rows": 11,
-      "sha256": "b95a1c83fddb5c20c3c03cc73d4c530b3cc6b0c03b371bce17c72adf430acccd"
+      "sha256": "4ecfceff67f5f33cffe0938253e9ea5279200698deafab7fdb11f41484aa6de9"
     },
     "data/market_valuation_context.csv": {
       "bytes": 353,
@@ -272,13 +272,13 @@
       "sha256": "0a9bd6c1ec8dc9bc9f9295f287f71c42f52a9d4a823c2c8bd3c76c08677f991c"
     },
     "data/retained_state_manifest.json": {
-      "bytes": 35674,
-      "sha256": "c15e8f2a7e7440910cca00772db205b3fce759daa80e3d75615f177d56b4561c"
+      "bytes": 35702,
+      "sha256": "ed0e943ff827fec7fa2daeb8d983b132f0b751e4f9768b9950b1366a6c621ff3"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 26088,
-      "rows": 22,
-      "sha256": "9dfbee125cd7608c9060203e13457012cc629b1e09855afdf559311e5c69b773"
+      "bytes": 27266,
+      "rows": 23,
+      "sha256": "5ad2f537181ff87cd565907f80e07bbb748c6a87e1cd1ff9287d71e3b5e0067a"
     },
     "developer/load_report.py": {
       "bytes": 8466,
@@ -309,8 +309,8 @@
       "sha256": "7535cb3b4e5b0c5d5b605113afe15f694096cfa641c299f3f913c41130686c70"
     },
     "docs/RUNTIME_DATA_CONTRACT.md": {
-      "bytes": 16751,
-      "sha256": "e285e2ef2757a5e2ed145525e58115f2a52fea4ec3bf3ce8d4e871fa5bc8ff60"
+      "bytes": 16172,
+      "sha256": "ed61f04a097c845a7e9450c5ce764ddae1a3af305fcad801e3f0fa80b9649e9b"
     },
     "helpers/atomic_io.py": {
       "bytes": 6224,
@@ -497,8 +497,8 @@
       "sha256": "033dc5cf34fe1d295ba8c2179180dcf21b735d8b3169e510faec81e7bf5caf04"
     },
     "rendering/evidence.py": {
-      "bytes": 63232,
-      "sha256": "9826010951df550ed15dad0653f3daa05ca931d60d87beb4f12312bd1a35acc8"
+      "bytes": 62991,
+      "sha256": "f5edb5795bac97ebcaea68e2a96783439b33cd286088de971df0c601c5257838"
     },
     "rendering/finance.py": {
       "bytes": 24250,
@@ -557,7 +557,7 @@
       "sha256": "6a7ef2292e0df10ddca28de822faa1f0797f1a84f7f2501a233874ba99b2db09"
     }
   },
-  "generated_at_utc": "2026-08-14T14:32:45+00:00",
+  "generated_at_utc": "2026-08-15T23:18:50+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -568,6 +568,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "b425de3f6a047e985041",
+  "release_id": "2ecbff0d0e97dd977fd5",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }
