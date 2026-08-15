@@ -33,8 +33,11 @@ from analytics.read_store import (
 from analytics.read_validation import VALIDATOR_VERSION, validate_domain_read_set, validate_macro_read
 from config.openai_config import OpenAIConfig
 
-READ_SERVICE_VERSION = "4.4.0"
-READ_SERVICE_COMPATIBLE_VERSIONS = {READ_SERVICE_VERSION, "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0"}
+READ_SERVICE_VERSION = "4.5.0"
+READ_SERVICE_COMPATIBLE_VERSIONS = {READ_SERVICE_VERSION, "4.4.0", "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0"}
+# The 24-hour lease is a freshness diagnostic, not a visibility cutoff. A
+# publishable artifact remains the last-known-good commentary until a newer
+# artifact successfully replaces it.
 COMMENTARY_PUBLICATION_LEASE_HOURS = 24
 UNAVAILABLE_HEADLINE = "Commentary temporarily unavailable."
 UNAVAILABLE_ANALYSIS = "The analyst has wandered off. The data have not."
@@ -287,7 +290,14 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
             and publication_materiality.get("material") is False
         )
     )
-    publication_active = bool(artifact_publishable and publication.get("active"))
+
+    # Visibility is last-known-good, not lease-based. The nested publication
+    # lease still tells callers whether the artifact was refreshed within the
+    # nominal 24-hour freshness window, but expiration alone never hides a
+    # publishable read. This lets Friday remain visible until Monday (or any
+    # later successful run) actually publishes a replacement.
+    publication_fresh = bool(artifact_publishable and publication.get("active"))
+    publication_active = bool(artifact_publishable)
 
     if publication_active:
         reads = {
@@ -301,8 +311,6 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
         reads["macro"] = _unavailable_read("macro", {})
         if not stored:
             status_name = "missing"
-        elif artifact_publishable and publication.get("published_at"):
-            status_name = "expired"
         else:
             status_name = "stale"
 
@@ -314,6 +322,7 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
         "evidence_current": evidence_current,
         "evidence_materially_current": evidence_materially_current,
         "publication_active": publication_active,
+        "publication_fresh": publication_fresh,
         "publication": publication,
         "evidence_snapshot_id": snapshot,
         "artifact_evidence_snapshot_id": stored.get("evidence_snapshot_id", "") if stored else "",
