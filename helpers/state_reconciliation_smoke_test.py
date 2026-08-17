@@ -1,11 +1,10 @@
-"""Focused contracts for newest-wins retained-state reconciliation."""
+"""Focused contracts for online-owned retained-state reconciliation."""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import json
 from pathlib import Path
-import shutil
+import subprocess
 import tempfile
 import sys
 
@@ -13,29 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from automation.retained_state import sha256_file
-from tooling.desktop_sync import _reconcile_openai, _reconcile_retained_state
-
-
-def _write_manifest(root: Path, rows: dict[str, tuple[str, str]]) -> None:
-    files = {}
-    for relative, (stamp, owner) in rows.items():
-        path = root / relative
-        files[relative] = {
-            "sha256": sha256_file(path),
-            "bytes": path.stat().st_size,
-            "updated_at_utc": stamp,
-            "updated_by": owner,
-            "run_id": "test",
-        }
-    path = root / "data" / "retained_state_manifest.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps({
-        "manifest_version": "1.0",
-        "generated_at_utc": "2026-08-11T12:00:00+00:00",
-        "source": "test",
-        "run_id": "test",
-        "files": files,
-    }, indent=2), encoding="utf-8")
+from tooling.desktop_sync import (
+    _copy_program_surface,
+    _reconcile_openai,
+    _reconcile_retained_state,
+)
+from tooling.git_guard import online_owned_paths_in_range
 
 
 def _artifact(stamp: str, text: str) -> dict:
@@ -48,6 +30,24 @@ def _artifact(stamp: str, text: str) -> dict:
     }
 
 
+def _git(args: list[str], cwd: Path) -> None:
+    proc = subprocess.run(args, cwd=cwd, text=True, capture_output=True)
+    if proc.returncode != 0:
+        raise AssertionError((proc.stderr or proc.stdout).strip())
+
+
+def _tree_hashes(root: Path) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for base in ("data", "archive"):
+        folder = root / base
+        if not folder.exists():
+            continue
+        for path in folder.rglob("*"):
+            if path.is_file():
+                result[f"{base}/{path.relative_to(folder).as_posix()}"] = sha256_file(path)
+    return result
+
+
 def main() -> None:
     with tempfile.TemporaryDirectory(prefix="ai_macro_state_reconcile_") as tmp:
         base = Path(tmp)
@@ -58,28 +58,90 @@ def main() -> None:
             (root / "archive").mkdir(parents=True)
             (root / "openai_artifacts" / "attempts").mkdir(parents=True)
 
-        # Online is newer for one file; desktop is newer for another.
-        (desktop / "data" / "alpha.csv").write_text("value\n1\n", encoding="utf-8")
+        # Git is authoritative even when the desktop copy looks "newer".
+        (desktop / "data" / "alpha.csv").write_text("value\n999\n", encoding="utf-8")
         (git / "data" / "alpha.csv").write_text("value\n2\n", encoding="utf-8")
-        (desktop / "archive" / "beta.csv").write_text("value\n9\n", encoding="utf-8")
+        (desktop / "archive" / "beta.csv").write_text("value\n999\n", encoding="utf-8")
         (git / "archive" / "beta.csv").write_text("value\n8\n", encoding="utf-8")
-        _write_manifest(desktop, {
-            "data/alpha.csv": ("2026-08-11T10:00:00+00:00", "desktop"),
-            "archive/beta.csv": ("2026-08-11T12:00:00+00:00", "desktop"),
-        })
-        _write_manifest(git, {
-            "data/alpha.csv": ("2026-08-11T11:00:00+00:00", "automation"),
-            "archive/beta.csv": ("2026-08-11T09:00:00+00:00", "automation"),
-        })
 
+        # Remote-only state must download; desktop-only state must disappear.
+        (git / "data" / "remote_only.json").write_text('{"owner":"git"}\n', encoding="utf-8")
+        (desktop / "archive" / "desktop_only.csv").write_text("stale\n1\n", encoding="utf-8")
+
+        git_before = _tree_hashes(git)
         counts = _reconcile_retained_state(desktop, git)
-        assert (git / "data" / "alpha.csv").read_text() == "value\n2\n"
-        assert (git / "archive" / "beta.csv").read_text() == "value\n9\n"
-        assert counts["remote"] == 1 and counts["desktop"] == 1
+        git_after = _tree_hashes(git)
 
-        # Paid attempts are append-only and the newer validated Read wins.
-        (desktop / "openai_artifacts" / "attempts" / "desktop.json").write_text('{"attempt":"desktop"}\n')
-        (git / "openai_artifacts" / "attempts" / "online.json").write_text('{"attempt":"online"}\n')
+        assert git_before == git_after, "Desktop reconciliation modified Git-owned state"
+        assert _tree_hashes(desktop) == git_after, "Desktop data/archive is not an exact Git mirror"
+        assert (desktop / "data" / "alpha.csv").read_text() == "value\n2\n"
+        assert (desktop / "archive" / "beta.csv").read_text() == "value\n8\n"
+        assert (desktop / "data" / "remote_only.json").exists()
+        assert not (desktop / "archive" / "desktop_only.csv").exists()
+        assert counts["copied"] >= 3
+        assert counts["removed"] >= 1
+
+        # Program synchronization must never copy desktop data/archive back into Git.
+        repo = base / "program_repo"
+        desktop_program = base / "program_desktop"
+        repo.mkdir()
+        desktop_program.mkdir()
+        _git(["git", "init", "-b", "main"], repo)
+        _git(["git", "config", "user.email", "test@example.com"], repo)
+        _git(["git", "config", "user.name", "AI Macro Test"], repo)
+        (repo / "data").mkdir()
+        (repo / "archive").mkdir()
+        (desktop_program / "data").mkdir()
+        (desktop_program / "archive").mkdir()
+        (repo / "code.py").write_text("VALUE = 1\n", encoding="utf-8")
+        (repo / "data" / "state.csv").write_text("remote\n", encoding="utf-8")
+        (repo / "archive" / "history.csv").write_text("remote\n", encoding="utf-8")
+        _git(["git", "add", "-A"], repo)
+        _git(["git", "commit", "-m", "base"], repo)
+
+        (desktop_program / "code.py").write_text("VALUE = 2\n", encoding="utf-8")
+        (desktop_program / "data" / "state.csv").write_text("desktop-stale\n", encoding="utf-8")
+        (desktop_program / "archive" / "history.csv").write_text("desktop-stale\n", encoding="utf-8")
+
+        program_counts = _copy_program_surface(desktop_program, repo)
+        assert program_counts["copied"] == 1
+        assert (repo / "code.py").read_text() == "VALUE = 2\n"
+        assert (repo / "data" / "state.csv").read_text() == "remote\n"
+        assert (repo / "archive" / "history.csv").read_text() == "remote\n"
+
+        # The push guard must inspect history, not merely the final net diff.
+        guard_repo = base / "guard_repo"
+        guard_repo.mkdir()
+        _git(["git", "init", "-b", "main"], guard_repo)
+        _git(["git", "config", "user.email", "test@example.com"], guard_repo)
+        _git(["git", "config", "user.name", "AI Macro Test"], guard_repo)
+        (guard_repo / "data").mkdir()
+        (guard_repo / "data" / "state.csv").write_text("remote\n", encoding="utf-8")
+        (guard_repo / "code.py").write_text("VALUE = 1\n", encoding="utf-8")
+        _git(["git", "add", "-A"], guard_repo)
+        _git(["git", "commit", "-m", "base"], guard_repo)
+        _git(["git", "tag", "base"], guard_repo)
+
+        (guard_repo / "data" / "state.csv").write_text("stale-desktop\n", encoding="utf-8")
+        _git(["git", "add", "-A"], guard_repo)
+        _git(["git", "commit", "-m", "bad retained state"], guard_repo)
+
+        (guard_repo / "data" / "state.csv").write_text("remote\n", encoding="utf-8")
+        (guard_repo / "code.py").write_text("VALUE = 2\n", encoding="utf-8")
+        _git(["git", "add", "-A"], guard_repo)
+        _git(["git", "commit", "-m", "restore data and change code"], guard_repo)
+
+        touched = online_owned_paths_in_range(guard_repo, "base")
+        assert touched, "Guard failed to detect protected paths in outgoing history"
+        assert any("data/state.csv" in paths for paths in touched.values())
+
+        # Existing OpenAI artifact policy remains unchanged.
+        (desktop / "openai_artifacts" / "attempts" / "desktop.json").write_text(
+            '{"attempt":"desktop"}\n', encoding="utf-8"
+        )
+        (git / "openai_artifacts" / "attempts" / "online.json").write_text(
+            '{"attempt":"online"}\n', encoding="utf-8"
+        )
         (desktop / "openai_artifacts" / "current.json").write_text(
             json.dumps(_artifact("2026-08-11T10:00:00+00:00", "desktop")), encoding="utf-8"
         )
@@ -93,7 +155,10 @@ def main() -> None:
         current = json.loads((git / "openai_artifacts" / "current.json").read_text())
         assert current["reads"]["macro"]["headline"] == "online"
 
-    print("PASS  retained-state reconciliation · per-file newest wins · attempts union · newest validated Read wins")
+    print(
+        "PASS  reconciliation · data/archive online-owned · exact desktop mirror · "
+        "program sync excludes retained state · push history guard"
+    )
 
 
 if __name__ == "__main__":

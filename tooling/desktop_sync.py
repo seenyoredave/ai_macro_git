@@ -1,9 +1,14 @@
-"""Reconcile the desktop master into the Git staging repository safely.
+"""Reconcile the desktop master with the Git staging repository safely.
 
-Code/config follows the desktop master. Mutable retained research state follows a
-per-file newest-wins ledger. Automation artifacts remain online-owned, paid
-attempts are unioned, and the currently published validated Read is selected by
-its own publication/generation timestamp.
+Authority is directional:
+
+* Program/config/documentation files flow from the desktop master to Git.
+* ``data/`` and ``archive/`` are online-owned and flow only from Git to desktop.
+* Automation artifacts remain online-owned.
+* Paid OpenAI attempts are unioned and the newest validated Read retains the
+  existing publication-time selection rule.
+
+The desktop must never publish retained ``data/`` or ``archive/`` state.
 """
 
 from __future__ import annotations
@@ -16,24 +21,20 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
-import tempfile
 from typing import Any
 
-from automation.retained_state import (
-    build_retained_state_manifest,
-    choose_newer_entry,
-    is_retained_state_path,
-    load_retained_state_manifest,
-    merged_manifest,
-    refresh_retained_state_manifest,
-    sha256_file,
-    write_manifest,
+from automation.retained_state import sha256_file
+from tooling.git_guard import (
+    GuardError,
+    automation_lock_active,
+    ensure_outgoing_history_preserves_online_state,
 )
-from tooling.git_guard import GuardError, automation_lock_active
 
 DEFAULT_DESKTOP = Path("/Users/Dave/desktop/vsc/ai_macro")
 DEFAULT_REMOTE = "origin"
 DEFAULT_BRANCH = "main"
+
+ONLINE_OWNED_PREFIXES = ("data/", "archive/")
 
 LOCAL_PRESERVE_PREFIXES = (
     ".git/",
@@ -49,6 +50,56 @@ SKIP_NAMES = {"__pycache__", ".DS_Store"}
 SKIP_SUFFIXES = {".pyc", ".pyo"}
 
 PRESERVED_AUDIT_HOLDINGS = {"remediation_backup_20260808", "current_context_retrospective"}
+
+
+class SyncError(RuntimeError):
+    pass
+
+
+def _run(args: list[str], *, cwd: Path, check: bool = False) -> subprocess.CompletedProcess[str]:
+    proc = subprocess.run(args, cwd=cwd, text=True, capture_output=True, check=False)
+    if check and proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout or "").strip()
+        raise SyncError(detail or f"Command failed: {' '.join(args)}")
+    return proc
+
+
+def _git_root() -> Path:
+    proc = _run(["git", "rev-parse", "--show-toplevel"], cwd=Path.cwd())
+    if proc.returncode != 0 or not proc.stdout.strip():
+        raise SyncError("Run this command from inside the AI Macro Git staging repository.")
+    return Path(proc.stdout.strip()).resolve()
+
+
+def _normalize(relative: str) -> str:
+    return str(relative or "").replace("\\", "/").lstrip("./")
+
+
+def _is_online_owned(relative: str) -> bool:
+    normalized = _normalize(relative)
+    return any(normalized.startswith(prefix) for prefix in ONLINE_OWNED_PREFIXES)
+
+
+def _is_local_preserved(relative: str) -> bool:
+    normalized = _normalize(relative)
+    return normalized in LOCAL_PRESERVE_EXACT or any(
+        normalized.startswith(prefix) for prefix in LOCAL_PRESERVE_PREFIXES
+    )
+
+
+def _skip_source_path(relative: str, path: Path) -> bool:
+    normalized = _normalize(relative)
+    if _is_online_owned(normalized):
+        return True
+    if _is_local_preserved(normalized):
+        return True
+    if normalized.startswith("openai_artifacts/"):
+        return True
+    if any(part in SKIP_NAMES for part in Path(normalized).parts):
+        return True
+    if path.suffix.casefold() in SKIP_SUFFIXES:
+        return True
+    return False
 
 
 def _clean_transient_and_audit(root: Path) -> dict[str, int]:
@@ -86,25 +137,6 @@ def _clean_transient_and_audit(root: Path) -> dict[str, int]:
     return counts
 
 
-class SyncError(RuntimeError):
-    pass
-
-
-def _run(args: list[str], *, cwd: Path, check: bool = False) -> subprocess.CompletedProcess[str]:
-    proc = subprocess.run(args, cwd=cwd, text=True, capture_output=True, check=False)
-    if check and proc.returncode != 0:
-        detail = (proc.stderr or proc.stdout or "").strip()
-        raise SyncError(detail or f"Command failed: {' '.join(args)}")
-    return proc
-
-
-def _git_root() -> Path:
-    proc = _run(["git", "rev-parse", "--show-toplevel"], cwd=Path.cwd())
-    if proc.returncode != 0 or not proc.stdout.strip():
-        raise SyncError("Run this command from inside the AI Macro Git staging repository.")
-    return Path(proc.stdout.strip()).resolve()
-
-
 def _require_clean(root: Path) -> None:
     proc = _run(["git", "status", "--porcelain", "--untracked-files=all"], cwd=root, check=True)
     meaningful: list[str] = []
@@ -113,12 +145,17 @@ def _require_clean(root: Path) -> None:
         if " -> " in relative:
             relative = relative.split(" -> ", 1)[1]
         parts = Path(relative).parts
-        if "__pycache__" in parts or Path(relative).suffix.casefold() in {".pyc", ".pyo"} or Path(relative).name == ".DS_Store":
+        if (
+            "__pycache__" in parts
+            or Path(relative).suffix.casefold() in {".pyc", ".pyo"}
+            or Path(relative).name == ".DS_Store"
+        ):
             continue
         meaningful.append(line)
     if meaningful:
         raise SyncError(
-            "The Git staging repository has uncommitted changes. Commit, discard, or move them before desktop reconciliation."
+            "The Git staging repository has uncommitted changes. Commit, discard, "
+            "or move them before desktop reconciliation."
         )
 
 
@@ -129,153 +166,202 @@ def _sync_remote_head(root: Path, *, remote: str, branch: str) -> None:
     remote_sha = _run(["git", "rev-parse", remote_ref], cwd=root, check=True).stdout.strip()
     if local_sha == remote_sha:
         return
-    remote_is_ancestor = _run(["git", "merge-base", "--is-ancestor", remote_ref, "HEAD"], cwd=root)
-    local_is_ancestor = _run(["git", "merge-base", "--is-ancestor", "HEAD", remote_ref], cwd=root)
+
+    remote_is_ancestor = _run(
+        ["git", "merge-base", "--is-ancestor", remote_ref, "HEAD"],
+        cwd=root,
+    )
+    local_is_ancestor = _run(
+        ["git", "merge-base", "--is-ancestor", "HEAD", remote_ref],
+        cwd=root,
+    )
     if local_is_ancestor.returncode == 0:
         _run(["git", "merge", "--ff-only", remote_ref], cwd=root, check=True)
         return
     if remote_is_ancestor.returncode == 0:
-        # Local commits are already ahead of origin. Preserve them and reconcile
-        # the desktop onto the current local staging state.
+        ensure_outgoing_history_preserves_online_state(
+            root,
+            remote=remote,
+            branch=branch,
+        )
         return
     raise SyncError(
-        "The local Git staging branch and origin/main have diverged. Resolve that Git history before running desktop reconciliation."
+        "The local Git staging branch and origin/main have diverged. Resolve that "
+        "Git history before running desktop reconciliation."
     )
 
 
-def _is_local_preserved(relative: str) -> bool:
-    normalized = relative.replace("\\", "/").lstrip("./")
-    return normalized in LOCAL_PRESERVE_EXACT or any(normalized.startswith(prefix) for prefix in LOCAL_PRESERVE_PREFIXES)
+def _tree_files(root: Path) -> dict[str, Path]:
+    if not root.exists():
+        return {}
+    return {
+        path.relative_to(root).as_posix(): path
+        for path in root.rglob("*")
+        if path.is_file() or path.is_symlink()
+    }
 
 
-def _skip_source_path(relative: str, path: Path) -> bool:
-    normalized = relative.replace("\\", "/").lstrip("./")
-    if _is_local_preserved(normalized):
-        return True
-    if normalized.startswith("openai_artifacts/"):
-        return True
-    if normalized.startswith("data/") and is_retained_state_path(normalized):
-        return True
-    if is_retained_state_path(normalized):
-        return True
-    if any(part in SKIP_NAMES for part in Path(normalized).parts):
-        return True
-    if path.suffix.casefold() in SKIP_SUFFIXES:
-        return True
-    return False
+def _remove_path(path: Path) -> None:
+    if path.is_symlink() or path.is_file():
+        path.unlink(missing_ok=True)
+    elif path.is_dir():
+        shutil.rmtree(path)
 
 
-def _copy_program_surface(desktop: Path, target: Path) -> int:
-    copied = 0
+def _mirror_directory(source: Path, destination: Path) -> dict[str, int]:
+    """Make ``destination`` an exact file mirror of ``source``."""
+
+    if not source.exists() or not source.is_dir():
+        raise SyncError(f"Online-owned source directory is missing: {source}")
+
+    if destination.exists() and not destination.is_dir():
+        _remove_path(destination)
+    destination.mkdir(parents=True, exist_ok=True)
+
+    source_files = _tree_files(source)
+    destination_files = _tree_files(destination)
+    counts = {"copied": 0, "removed": 0, "unchanged": 0}
+
+    for relative, path in sorted(destination_files.items(), reverse=True):
+        if relative in source_files:
+            continue
+        _remove_path(path)
+        counts["removed"] += 1
+
+    for relative in source_files:
+        target = destination / relative
+        if target.exists() and target.is_dir() and not target.is_symlink():
+            shutil.rmtree(target)
+            counts["removed"] += 1
+
+    for relative, source_path in source_files.items():
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+
+        if source_path.is_symlink():
+            link_target = os.readlink(source_path)
+            if target.is_symlink() and os.readlink(target) == link_target:
+                counts["unchanged"] += 1
+                continue
+            _remove_path(target)
+            target.symlink_to(link_target)
+            counts["copied"] += 1
+            continue
+
+        if target.exists() and target.is_file():
+            try:
+                if sha256_file(source_path) == sha256_file(target):
+                    counts["unchanged"] += 1
+                    continue
+            except OSError:
+                pass
+        elif target.exists():
+            _remove_path(target)
+
+        shutil.copy2(source_path, target)
+        counts["copied"] += 1
+
+    if destination.exists():
+        for path in sorted(
+            [item for item in destination.rglob("*") if item.is_dir()],
+            key=lambda item: len(item.parts),
+            reverse=True,
+        ):
+            try:
+                path.rmdir()
+            except OSError:
+                pass
+
+    source_after = _tree_files(source)
+    destination_after = _tree_files(destination)
+    if set(source_after) != set(destination_after):
+        raise SyncError(f"Mirror membership mismatch after syncing {source.name}.")
+
+    for relative, source_path in source_after.items():
+        target = destination_after[relative]
+        if source_path.is_symlink():
+            if not target.is_symlink() or os.readlink(source_path) != os.readlink(target):
+                raise SyncError(f"Mirror symlink mismatch: {source.name}/{relative}")
+        else:
+            if target.is_symlink() or sha256_file(source_path) != sha256_file(target):
+                raise SyncError(f"Mirror content mismatch: {source.name}/{relative}")
+
+    return counts
+
+
+def _protected_regular_hashes(root: Path) -> dict[str, str]:
+    hashes: dict[str, str] = {}
+    for root_name in ("data", "archive"):
+        for relative, path in _tree_files(root / root_name).items():
+            if path.is_file() and not path.is_symlink():
+                hashes[f"{root_name}/{relative}"] = sha256_file(path)
+    return hashes
+
+
+def _reconcile_retained_state(desktop: Path, target: Path) -> dict[str, int]:
+    """Mirror online-owned ``data/`` and ``archive/`` from Git to desktop."""
+
+    before = _protected_regular_hashes(target)
+    totals = {"copied": 0, "removed": 0, "unchanged": 0}
+    for root_name in ("data", "archive"):
+        counts = _mirror_directory(target / root_name, desktop / root_name)
+        for key in totals:
+            totals[key] += counts[key]
+    after = _protected_regular_hashes(target)
+    if before != after:
+        raise SyncError("Git-owned data/archive changed during desktop reconciliation.")
+    return totals
+
+
+def _copy_program_surface(desktop: Path, target: Path) -> dict[str, int]:
+    """Mirror the desktop-owned program surface into Git, including deletions."""
+
+    counts = {"copied": 0, "deleted": 0}
+
+    tracked = _run(["git", "ls-files", "-z"], cwd=target, check=True).stdout.split("\0")
+    for relative in [item for item in tracked if item]:
+        normalized = _normalize(relative)
+        target_path = target / normalized
+        source_path = desktop / normalized
+        if _skip_source_path(normalized, target_path):
+            continue
+        if source_path.exists() or source_path.is_symlink():
+            continue
+        if target_path.exists() or target_path.is_symlink():
+            _remove_path(target_path)
+            counts["deleted"] += 1
+
     for source in desktop.rglob("*"):
-        if not source.is_file():
+        if not source.is_file() and not source.is_symlink():
             continue
         relative = source.relative_to(desktop).as_posix()
         if _skip_source_path(relative, source):
             continue
+
         destination = target / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
-        if destination.exists() and sha256_file(source) == sha256_file(destination):
+
+        if source.is_symlink():
+            link_target = os.readlink(source)
+            if destination.is_symlink() and os.readlink(destination) == link_target:
+                continue
+            _remove_path(destination)
+            destination.symlink_to(link_target)
+            counts["copied"] += 1
             continue
+
+        if destination.exists() and destination.is_file():
+            try:
+                if sha256_file(source) == sha256_file(destination):
+                    continue
+            except OSError:
+                pass
+        elif destination.exists():
+            _remove_path(destination)
+
         shutil.copy2(source, destination)
-        copied += 1
-    return copied
+        counts["copied"] += 1
 
-
-def _git_path_time(root: Path, relative: str) -> datetime:
-    proc = _run(["git", "log", "-1", "--format=%cI", "--", relative], cwd=root)
-    text = proc.stdout.strip()
-    if text:
-        try:
-            parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
-            if parsed.tzinfo is None:
-                parsed = parsed.replace(tzinfo=timezone.utc)
-            return parsed.astimezone(timezone.utc)
-        except ValueError:
-            pass
-    path = root / relative
-    return datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
-
-
-def _remote_state_manifest(root: Path) -> dict[str, Any]:
-    from automation.retained_state import iter_retained_state_files
-
-    existing = load_retained_state_manifest(root)
-    actual = {path.relative_to(root).as_posix(): path for path in iter_retained_state_files(root)}
-    if existing:
-        # Validate both membership and hashes. If a file changed or appeared
-        # without advancing the ledger, use that path's Git commit time as the
-        # conservative repair timestamp. Removed files naturally fall out when
-        # the manifest is rebuilt.
-        prior_files = dict(existing.get("files") or {})
-        bootstrap: dict[str, datetime] = {}
-        needs_rebuild = set(actual) != set(prior_files)
-        for relative, path in actual.items():
-            entry = dict(prior_files.get(relative) or {})
-            if not entry or sha256_file(path) != entry.get("sha256"):
-                bootstrap[relative] = _git_path_time(root, relative)
-                needs_rebuild = True
-        if not needs_rebuild:
-            return existing
-        return build_retained_state_manifest(
-            root=root,
-            source="git_repair",
-            previous=existing,
-            bootstrap_times=bootstrap,
-        )
-
-    bootstrap: dict[str, datetime] = {}
-    for relative in actual:
-        bootstrap[relative] = _git_path_time(root, relative)
-    return build_retained_state_manifest(
-        root=root,
-        source="git_bootstrap",
-        previous={},
-        bootstrap_times=bootstrap,
-    )
-
-
-def _reconcile_retained_state(desktop: Path, target: Path) -> dict[str, int]:
-    # A reconciled desktop normally already has a ledger. This scan also catches any
-    # owner edits that changed retained content outside the normal refresh path.
-    desktop_manifest = refresh_retained_state_manifest(root=desktop, source="desktop_sync_scan")
-    remote_manifest = _remote_state_manifest(target)
-    desktop_entries = dict(desktop_manifest.get("files") or {})
-    remote_entries = dict(remote_manifest.get("files") or {})
-    selected: dict[str, dict[str, Any]] = {}
-    counts = {"desktop": 0, "remote": 0, "same": 0}
-
-    for relative in sorted(set(desktop_entries) | set(remote_entries)):
-        left = desktop_entries.get(relative)
-        right = remote_entries.get(relative)
-        decision = choose_newer_entry(relative, left, right)
-        desktop_path = desktop / relative
-        target_path = target / relative
-
-        if decision == "left":
-            if not desktop_path.exists():
-                raise SyncError(f"Desktop ledger references a missing retained file: {relative}")
-            target_path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(desktop_path, target_path)
-            selected[relative] = dict(left or {})
-            counts["desktop"] += 1
-        elif decision == "right":
-            if not target_path.exists():
-                raise SyncError(f"Git ledger references a missing retained file: {relative}")
-            selected[relative] = dict(right or {})
-            counts["remote"] += 1
-        else:
-            entry = dict(left or right or {})
-            if not target_path.exists() and desktop_path.exists():
-                target_path.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(desktop_path, target_path)
-            selected[relative] = entry
-            counts["same"] += 1
-
-    write_manifest(
-        target,
-        merged_manifest(selected_entries=selected, source="desktop_git_reconciliation"),
-    )
     return counts
 
 
@@ -311,7 +397,11 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 def _artifact_valid(payload: dict[str, Any]) -> bool:
-    return bool(payload and (payload.get("validation") or {}).get("passed") and isinstance(payload.get("reads"), dict))
+    return bool(
+        payload
+        and (payload.get("validation") or {}).get("passed")
+        and isinstance(payload.get("reads"), dict)
+    )
 
 
 def _reconcile_openai(desktop: Path, target: Path) -> str:
@@ -327,7 +417,9 @@ def _reconcile_openai(desktop: Path, target: Path) -> str:
             destination = target_attempts / source.name
             if destination.exists():
                 if sha256_file(source) != sha256_file(destination):
-                    raise SyncError(f"Paid-attempt identity collision with different content: {source.name}")
+                    raise SyncError(
+                        f"Paid-attempt identity collision with different content: {source.name}"
+                    )
                 continue
             shutil.copy2(source, destination)
 
@@ -344,8 +436,13 @@ def _reconcile_openai(desktop: Path, target: Path) -> str:
         return "remote"
     if not left_valid and not right_valid:
         return "none"
-    if source_current.exists() and target_current.exists() and sha256_file(source_current) == sha256_file(target_current):
+    if (
+        source_current.exists()
+        and target_current.exists()
+        and sha256_file(source_current) == sha256_file(target_current)
+    ):
         return "same"
+
     lt = _read_artifact_time(left)
     rt = _read_artifact_time(right)
     if lt and rt and lt > rt:
@@ -358,7 +455,10 @@ def _reconcile_openai(desktop: Path, target: Path) -> str:
         return "desktop"
     if rt and not lt:
         return "remote"
-    raise SyncError("Validated Read artifacts differ but do not have an unambiguous publication/generation ordering.")
+    raise SyncError(
+        "Validated Read artifacts differ but do not have an unambiguous "
+        "publication/generation ordering."
+    )
 
 
 def _python_for(root: Path) -> str:
@@ -369,11 +469,45 @@ def _python_for(root: Path) -> str:
     return sys.executable
 
 
+def _restore_release_manifest(root: Path, original: bytes | None) -> None:
+    path = root / "data" / "release_manifest.json"
+    if original is None:
+        path.unlink(missing_ok=True)
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(original)
+
+
 def _rebuild_and_test(root: Path) -> None:
+    """Run verification without leaving any ``data/`` or ``archive/`` writes."""
+
     python = _python_for(root)
+    before = _protected_regular_hashes(root)
+    release_manifest = root / "data" / "release_manifest.json"
+    original_release = release_manifest.read_bytes() if release_manifest.exists() else None
+
+    try:
+        build = subprocess.run(
+            [python, "helpers/build_release_manifest.py"],
+            cwd=root,
+            text=True,
+        )
+        if build.returncode != 0:
+            raise SyncError(
+                "Post-reconciliation verification failed: helpers/build_release_manifest.py"
+            )
+
+        integrity = subprocess.run(
+            [python, "helpers/integrity_gate.py"],
+            cwd=root,
+            text=True,
+        )
+        if integrity.returncode != 0:
+            raise SyncError("Post-reconciliation verification failed: helpers/integrity_gate.py")
+    finally:
+        _restore_release_manifest(root, original_release)
+
     commands = [
-        [python, "helpers/build_release_manifest.py"],
-        [python, "helpers/integrity_gate.py"],
         [python, "helpers/application_import_smoke_test.py"],
         [python, "helpers/read_architecture_smoke_test.py"],
         [python, "helpers/public_copy_smoke_test.py"],
@@ -386,8 +520,22 @@ def _rebuild_and_test(root: Path) -> None:
         if proc.returncode != 0:
             raise SyncError(f"Post-reconciliation verification failed: {' '.join(command[1:])}")
 
+    after = _protected_regular_hashes(root)
+    if before != after:
+        raise SyncError(
+            "Verification modified GitHub-owned data/archive state. "
+            "Reconciliation stopped before commit."
+        )
 
-def reconcile(desktop: Path, git_root: Path, *, remote: str, branch: str, run_tests: bool = True) -> None:
+
+def reconcile(
+    desktop: Path,
+    git_root: Path,
+    *,
+    remote: str,
+    branch: str,
+    run_tests: bool = True,
+) -> None:
     desktop = desktop.resolve()
     if not (desktop / "ai_macro.py").exists():
         raise SyncError(f"Desktop master is not an AI Macro project: {desktop}")
@@ -395,36 +543,50 @@ def reconcile(desktop: Path, git_root: Path, *, remote: str, branch: str, run_te
         raise SyncError("Desktop master and Git staging repository must be different directories.")
     if automation_lock_active(git_root, remote=remote):
         raise SyncError(
-            "AI Macro automated refresh is currently in progress. Desktop reconciliation is blocked until it finishes."
+            "AI Macro automated refresh is currently in progress. Desktop "
+            "reconciliation is blocked until it finishes."
         )
 
     _require_clean(git_root)
     _sync_remote_head(git_root, remote=remote, branch=branch)
 
-    copied = _copy_program_surface(desktop, git_root)
-    state_counts = _reconcile_retained_state(desktop, git_root)
+    ensure_outgoing_history_preserves_online_state(
+        git_root,
+        remote=remote,
+        branch=branch,
+    )
+
+    retained_counts = _reconcile_retained_state(desktop, git_root)
+    program_counts = _copy_program_surface(desktop, git_root)
     read_choice = _reconcile_openai(desktop, git_root)
     cleanup = _clean_transient_and_audit(git_root)
 
-    # automation_artifacts/ is intentionally never copied from desktop. The
-    # freshly fetched Git state remains authoritative for the online ledger.
     if run_tests:
         _rebuild_and_test(git_root)
 
     print("Desktop reconciliation complete.")
-    print(f"Program files updated from desktop: {copied}")
     print(
-        "Retained state: "
-        f"desktop newer {state_counts['desktop']} · online newer {state_counts['remote']} · unchanged {state_counts['same']}"
+        "Program surface from desktop: "
+        f"updated {program_counts['copied']} · deleted {program_counts['deleted']}"
+    )
+    print(
+        "Online-owned data/archive mirrored to desktop: "
+        f"copied {retained_counts['copied']} · removed local-only {retained_counts['removed']} "
+        f"· unchanged {retained_counts['unchanged']}"
     )
     print(f"Validated Read selection: {read_choice}")
     print("Automation ledger: preserved from Git/online state")
+    print("Push policy: outgoing desktop commits may not touch data/ or archive/")
     print(
         "Cleanup: "
         f"audit outputs {cleanup['audit']} · pycache {cleanup['pycache']} · "
         f"bytecode {cleanup['bytecode']} · .DS_Store {cleanup['ds_store']}"
     )
-    print("Review `git status`, then commit and push normally. The pre-push guard will re-check the automation lock and remote head.")
+    print(
+        "Review `git status`, then stage/commit the program changes. "
+        "The pre-push guard will re-check the automation lock, remote head, "
+        "and protected retained-state history."
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -432,11 +594,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--desktop", type=Path, default=DEFAULT_DESKTOP)
     parser.add_argument("--remote", default=DEFAULT_REMOTE)
     parser.add_argument("--branch", default=DEFAULT_BRANCH)
-    parser.add_argument("--skip-tests", action="store_true", help="Skip verification gates (not recommended).")
+    parser.add_argument(
+        "--skip-tests",
+        action="store_true",
+        help="Skip verification gates (not recommended).",
+    )
     args = parser.parse_args(argv)
     try:
         root = _git_root()
-        reconcile(args.desktop, root, remote=args.remote, branch=args.branch, run_tests=not args.skip_tests)
+        reconcile(
+            args.desktop,
+            root,
+            remote=args.remote,
+            branch=args.branch,
+            run_tests=not args.skip_tests,
+        )
         return 0
     except (SyncError, GuardError) as exc:
         print(f"Reconciliation stopped: {exc}", file=sys.stderr)

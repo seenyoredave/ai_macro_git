@@ -11,6 +11,7 @@ import sys
 AUTOMATION_LOCK_REF = "refs/tags/ai-macro-automation-refresh-lock"
 DEFAULT_REMOTE = "origin"
 DEFAULT_BRANCH = "main"
+ONLINE_OWNED_PREFIXES = ("data/", "archive/")
 
 
 class GuardError(RuntimeError):
@@ -75,6 +76,88 @@ def ensure_remote_not_ahead(
     raise GuardError("Unable to compare the local branch with the remote branch. The push is blocked.")
 
 
+def _normalize_path(value: str) -> str:
+    return str(value or "").replace("\\", "/").lstrip("./")
+
+
+def is_online_owned_path(relative: str) -> bool:
+    normalized = _normalize_path(relative)
+    return any(normalized.startswith(prefix) for prefix in ONLINE_OWNED_PREFIXES)
+
+
+def online_owned_paths_in_range(
+    root: Path,
+    base_ref: str,
+    *,
+    head_ref: str = "HEAD",
+) -> dict[str, list[str]]:
+    """Return protected paths touched by each commit in ``base_ref..head_ref``."""
+
+    revs = _run(
+        ["git", "rev-list", "--reverse", f"{base_ref}..{head_ref}"],
+        cwd=root,
+        check=True,
+    )
+    touched: dict[str, list[str]] = {}
+    for commit in [line.strip() for line in revs.stdout.splitlines() if line.strip()]:
+        diff = _run(
+            [
+                "git",
+                "diff-tree",
+                "--root",
+                "-m",
+                "--no-commit-id",
+                "--name-only",
+                "-r",
+                commit,
+                "--",
+                "data",
+                "archive",
+            ],
+            cwd=root,
+            check=True,
+        )
+        paths = sorted(
+            {
+                _normalize_path(line)
+                for line in diff.stdout.splitlines()
+                if is_online_owned_path(line)
+            }
+        )
+        if paths:
+            touched[commit] = paths
+    return touched
+
+
+def ensure_outgoing_history_preserves_online_state(
+    root: Path,
+    *,
+    remote: str = DEFAULT_REMOTE,
+    branch: str = DEFAULT_BRANCH,
+) -> None:
+    remote_ref = f"{remote}/{branch}"
+    touched = online_owned_paths_in_range(root, remote_ref)
+    if not touched:
+        return
+
+    examples: list[str] = []
+    for commit, paths in touched.items():
+        for path in paths:
+            examples.append(f"{commit[:8]} {path}")
+            if len(examples) >= 8:
+                break
+        if len(examples) >= 8:
+            break
+
+    detail = "\n  ".join(examples)
+    raise GuardError(
+        "Outgoing desktop commit history touches GitHub-owned retained state under "
+        "`data/` or `archive/`. The push is blocked. Those directories may only "
+        "flow from GitHub to the desktop during reconciliation."
+        + (f"\n  {detail}" if detail else "")
+    )
+
+
 def pre_push_check(
     root: Path,
     *,
@@ -87,6 +170,7 @@ def pre_push_check(
             "Wait for the workflow to complete, then run desktop reconciliation again before pushing."
         )
     ensure_remote_not_ahead(root, remote=remote, branch=branch)
+    ensure_outgoing_history_preserves_online_state(root, remote=remote, branch=branch)
 
 
 def install_guard(root: Path) -> Path:
@@ -105,7 +189,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
-    push = sub.add_parser("pre-push", help="Run the refresh-lock and remote-ahead checks.")
+    push = sub.add_parser("pre-push", help="Run refresh-lock, remote-ahead, and retained-state checks.")
     push.add_argument("--remote", default=DEFAULT_REMOTE)
     push.add_argument("--branch", default=DEFAULT_BRANCH)
 

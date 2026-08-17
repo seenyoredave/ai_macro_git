@@ -11,11 +11,11 @@ how the desktop and public versions of AI Macro obtain and retain data.
 | Desktop public mode | Never | Never | Preview the retained snapshot |
 | Desktop developer mode, ordinary rebuild | Never | Never | Recompute the app from retained inputs |
 | Desktop developer mode, explicit refresh | Selected source(s) only | Selected source(s) only | Owner-controlled research refresh |
-| Desktop developer mode, Generate commentary | OpenAI only | Local paid attempt history plus validated `openai_artifacts/current.json` | Owner-controlled commentary generation |
-| GitHub Actions automation worker | Approved providers + bounded OpenAI | Working-copy retained state; committed only after publication gates pass | Scheduled unattended publication |
+| Desktop developer mode, Generate commentary | OpenAI only | Local paid attempt history plus published `openai_artifacts/current.json` and diagnostics | Owner-controlled commentary generation |
+| GitHub Actions automation worker | Approved providers + bounded OpenAI | Working-copy retained state; committed after typed generation completes | Scheduled unattended publication |
 
 Git is the publication boundary. Public Streamlit is deliberately boring: it reads
-only committed retained data, committed Current Context, and the committed validated
+only committed retained data, committed Current Context, and the committed published
 commentary artifact. A viewer request cannot discover news, refresh a provider, call
 OpenAI, or change research state.
 
@@ -23,9 +23,9 @@ The desktop developer workflow and the scheduled automation worker use the same
 underlying loaders, Current Context discovery engine, evidence builder, commentary
 service, and deterministic validators. The automation worker operates in an
 expendable Git checkout. Provider refreshes and paid model output remain working-tree
-state until every required publication gate succeeds; only then may the workflow
-commit the complete research transaction. A failed run records its non-secret run
-ledger while the prior published research state remains unchanged.
+state until provider transactions and typed commentary generation complete. Commentary
+audit warnings are committed with the newly generated prose; they do not substitute the
+prior Read. A structurally failed run records its non-secret run ledger.
 
 ## Market refresh sequence
 
@@ -133,13 +133,13 @@ ledger while the prior published research state remains unchanged.
 
 - OpenAI is an interpretation service, not a data owner. Canonical facts, calculations, source provenance, and refresh authorization remain deterministic and local.
 - The API receives bounded domain evidence packets. It does not receive the raw retained-data universe merely because it fits in the model context window.
-- Developer mode owns the explicit **Generate commentary** action; the approved automation worker may invoke the same validated service under hard call ceilings. Public Reader sessions never call OpenAI.
+- Developer mode owns the explicit **Generate commentary** action and the zero-cost **Apply last Read** publication action; the approved automation worker may invoke the same two-call service under hard call ceilings. Public Reader sessions never call OpenAI.
 - The Responses API must return the Pydantic Structured Output contract. Every sentence must identify supporting evidence `fact_id` values.
-- A deterministic validator rejects unknown/out-of-domain fact IDs, unsupported numeric claims, interrogative filler, word-budget violations, schema/domain-membership failures, and invalid Macro domain scope. Numeric validation includes cited fact labels/context and normalizes formatting-equivalent values such as `300k` and `300,000`; it does not permit rounding or uncited numbers merely because they appear elsewhere in the domain.
-- Every completed paid API response is persisted before validation under `openai_artifacts/attempts/<attempt_id>.json`, together with its evidence snapshot, structured model output, generation metadata, prompt versions, and eventual validation result. Rejected attempts remain local audit history and are never Reader publication material.
-- A fully validated artifact is promoted atomically to `openai_artifacts/current.json` and records its evidence snapshot, model, reasoning effort, prompt versions, validation result, response metadata, and Reader payload. Neither attempt nor current artifacts contain an API credential.
-- Reader mode publishes the artifact only when its evidence snapshot exactly matches the evidence derived from the current retained analytical state. Missing or stale commentary fails closed to the canonical unavailable message while the dashboard data and qualified Current Context remain usable.
-- Current Context remains a separately sourced layer. It may add Recent developments to a validated or unavailable Read without mutating the retained commentary artifact. Current Context uses bounded deterministic mechanism synthesis after source-body grounding; this is not a fallback analytical Read engine and does not call OpenAI.
+- A deterministic validator diagnoses unknown/out-of-domain fact IDs, unsupported numeric claims, interrogative filler, word-budget violations, schema/domain-membership failures, and invalid Macro domain scope. Numeric validation includes cited fact labels/context and normalizes formatting-equivalent values such as `300k` and `300,000`; it does not permit rounding or uncited numbers merely because they appear elsewhere in the domain. Diagnostics never rewrite, suppress, retry, or replace a paid response.
+- Every completed paid API response is persisted before validation under `openai_artifacts/attempts/<attempt_id>.json`, together with its exact raw response, evidence snapshot, structured model output when available, generation metadata, prompt versions, and eventual validation result.
+- A completed artifact is promoted atomically to `openai_artifacts/current.json` and records its evidence snapshot, model, reasoning effort, per-stage prompt provenance, validation diagnostics, exact response metadata, Reader payload, and a 24-hour publication lease. Warned or raw output is labeled explicitly. Neither attempt nor current artifacts contain an API credential.
+- Reader mode publishes a completed artifact as `validated`, `published_with_warnings`, or `published_raw_response` while its 24-hour publication lease is active. The artifact remains bound to its original evidence snapshot: a later deterministic refresh may make `evidence_current=false` without immediately removing the Read. Evidence mismatch still triggers fresh automation generation and still blocks snapshot-bound resume/Macro-regeneration paths. Once the lease expires, the retained Read fails closed to the canonical unavailable message until new output is generated or the owner uses **Apply last Read** to renew it for another 24 hours.
+- Current Context remains a separately sourced layer. It may add Recent developments to a validated or unavailable Read without mutating the retained commentary artifact. After source grounding, its deterministic language engine may reconstruct a compact event frame and one same-event supporting detail; it does not generate analytical implications and does not call OpenAI.
 - Paid OpenAI artifacts are runtime/publication state, not retained-data source-release inputs. `helpers/build_release_manifest.py` deliberately excludes `openai_artifacts/`. `openai_artifacts/attempts/` stays local/private; `openai_artifacts/current.json` may be intentionally committed for hosted Reader publication until a later scheduler/storage path replaces Git publication.
 
 ## Archive invariants
@@ -182,8 +182,8 @@ Viewer-triggered provider calls and public Reader writes remain prohibited. The
 owner has approved one scheduled publication worker: `.github/workflows/ai_macro_automation.yml`
 running the deterministic `automation/` orchestrator. It is the only unattended
 writer and must retain the hard paid-call ceilings, zero automatic model retries,
-validator-controlled publication, Git transaction boundary, and fail-closed prior-state
-retention described above. Do not create a parallel refresh framework, second worker,
+diagnostic retention, Git transaction boundary, and structurally fail-closed behavior
+described above. Do not create a parallel refresh framework, second worker,
 or alternate publication path without explicit approval. Any approved change must
 update this document and the bounded runtime/snapshot/automation contract checks in
 the same change.
