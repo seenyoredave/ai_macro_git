@@ -4,12 +4,10 @@
   "changed_paths": [
     "archive/benchmark_history.csv",
     "archive/edgar_history.csv",
-    "archive/energy_history.csv",
     "archive/fred_history.csv",
     "archive/macro_history.csv",
     "archive/sector_history.csv",
     "archive/yf_history.csv",
-    "automation_artifacts/call_journal.jsonl",
     "automation_artifacts/status.json",
     "data/borrower_strain_fundamentals_history.csv",
     "data/commercialization/commercialization_ledger.csv",
@@ -30,190 +28,146 @@
     "data/weekly_context_events.csv",
     "openai_artifacts/current.json"
   ],
-  "current_context_snapshot_id": "7150a42ad927ef2e",
+  "current_context_snapshot_id": "e5652e8ba8bcf684",
   "errors": [],
-  "evidence_snapshot_id": "069b67e4df4b14693fe82ed1",
-  "finished_at_utc": "2026-08-15T23:28:42.295709+00:00",
+  "evidence_snapshot_id": "51964c6cf10383df148c408a",
+  "finished_at_utc": "2026-08-17T13:13:36.178267+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
     "run_ceiling": 2,
-    "this_run": 2,
-    "today_after_run": 2,
+    "this_run": 0,
+    "today_after_run": 0,
     "today_before_run": 0
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 809.355,
+      "elapsed_sec": 722.362,
       "status": "passed",
       "subphases": {
-        "assemble + persist": 6.06,
-        "current context": 35.479,
-        "domain sources": 402.719,
-        "market sources": 365.097
+        "assemble + persist": 6.088,
+        "current context": 36.142,
+        "domain sources": 401.212,
+        "market sources": 278.92
       }
     },
     "evidence": {
       "artifact_current": false,
-      "artifact_materially_current": false,
-      "artifact_status": "published_with_warnings",
-      "elapsed_sec": 1.718,
+      "artifact_materially_current": true,
+      "artifact_status": "validated",
+      "elapsed_sec": 1.746,
       "materiality": {
         "baseline_available": true,
-        "change_count": 9,
+        "change_count": 7,
         "changes": [
-          {
-            "domain": "connectivity",
-            "fact_id": "connectivity.interconnection_facilities_or_floor",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 1376.0,
-            "old_value": 1378.0,
-            "percentage_point_change": null,
-            "relative_change": 0.001451378809869376
-          },
           {
             "domain": "market",
             "fact_id": "market.aei",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 41.222391867514915,
-            "old_value": 41.61462442121338,
+            "new_value": 41.227164821531964,
+            "old_value": 41.222391867514915,
             "percentage_point_change": null,
-            "relative_change": 0.009425353686443927
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.crowded_sector_count",
-            "kind": "numeric_change",
-            "material": true,
-            "new_value": 3.0,
-            "old_value": 4.0,
-            "percentage_point_change": null,
-            "relative_change": 0.25
+            "relative_change": 0.00011578547000351667
           },
           {
             "domain": "market",
             "fact_id": "market.effective_firms",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 19.12291072081383,
-            "old_value": 19.169183827731242,
+            "new_value": 19.125199942987962,
+            "old_value": 19.12291072081383,
             "percentage_point_change": null,
-            "relative_change": 0.002413932034522504
+            "relative_change": 0.00011971096908585219
           },
           {
             "domain": "market",
             "fact_id": "market.equal_weight_return",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.5568019380988666,
-            "old_value": 0.5455783264119775,
-            "percentage_point_change": 1.1000000000000014,
-            "relative_change": 0.020146520146520172
+            "new_value": 0.5471939007839518,
+            "old_value": 0.5568019380988666,
+            "percentage_point_change": 1.0,
+            "relative_change": 0.017953321364452424
           },
           {
             "domain": "market",
             "fact_id": "market.median_return",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.2487280146047307,
-            "old_value": 0.26497231629374407,
-            "percentage_point_change": 1.6000000000000014,
-            "relative_change": 0.060377358490566094
+            "new_value": 0.24785718344022634,
+            "old_value": 0.2487280146047307,
+            "percentage_point_change": 0.09999999999999787,
+            "relative_change": 0.004016064257028027
           },
           {
             "domain": "market",
             "fact_id": "market.positive_breadth",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.696078431372549,
-            "old_value": 0.6911764705882353,
-            "percentage_point_change": 0.5,
-            "relative_change": 0.007235890014471781
+            "new_value": 0.6862745098039216,
+            "old_value": 0.696078431372549,
+            "percentage_point_change": 1.0,
+            "relative_change": 0.014367816091954025
           },
           {
             "domain": "market",
             "fact_id": "market.pressure",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 59.68220098865049,
-            "old_value": 59.64341102597685,
+            "new_value": 59.816791000841114,
+            "old_value": 59.68220098865049,
             "percentage_point_change": null,
-            "relative_change": 0.0006503645919369945
+            "relative_change": 0.0022551114060993757
           },
           {
             "domain": "market",
             "fact_id": "market.top_10_share",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.633965101562435,
-            "old_value": 0.6344453944595774,
+            "new_value": 0.6339167746964217,
+            "old_value": 0.633965101562435,
             "percentage_point_change": 0.0,
             "relative_change": 0.0
           }
         ],
-        "current_snapshot_id": "069b67e4df4b14693fe82ed1",
-        "decision": "generate_material_change",
+        "current_snapshot_id": "51964c6cf10383df148c408a",
+        "decision": "reuse_immaterial_change",
         "exact_match": false,
-        "immaterial_change_count": 8,
-        "material": true,
-        "material_change_count": 1,
+        "immaterial_change_count": 7,
+        "material": false,
+        "material_change_count": 0,
         "percentage_point_threshold": 2.0,
-        "previous_snapshot_id": "96bd766384562323bf5e2bf5",
+        "previous_snapshot_id": "069b67e4df4b14693fe82ed1",
         "relative_change_threshold": 0.1,
         "version": "1.0.0"
       },
       "status": "passed"
     },
     "openai": {
-      "attempt_id": "20260815T231854249998Z_069b67e4_6f1887a6",
-      "elapsed_sec": 587.332,
-      "stage": "",
-      "status": "validated",
-      "validation": {
-        "checked_claims": 59,
-        "domain": {
-          "checked_claims": 48,
-          "errors": [],
-          "failures": [],
-          "grounded_claims": 48,
-          "passed": true,
-          "version": "3.4.0"
-        },
-        "gate_results": {
-          "domain_grounding": true,
-          "macro_grounding": true
-        },
-        "grounded_claims": 59,
-        "macro": {
-          "checked_claims": 11,
-          "errors": [],
-          "failures": [],
-          "grounded_claims": 11,
-          "passed": true,
-          "version": "3.4.0"
-        },
-        "passed": true,
-        "publication_policy": "publish_every_completed_openai_response_with_diagnostics",
-        "raw_stage": "",
-        "validator_version": "3.4.0"
-      }
+      "reason": "evidence_change_below_materiality_threshold",
+      "status": "skipped"
     },
     "publication": {
       "status": "ready",
       "transaction_boundary": "git_commit"
+    },
+    "publication_lease": {
+      "expires_at": "2026-08-18T13:13:36.075530+00:00",
+      "published_at": "2026-08-17T13:13:36.075530+00:00",
+      "reason": "publishable_evidence_change_immaterial_no_paid_call",
+      "status": "renewed"
     }
   },
   "publish_ready": true,
   "result": "publish_ready",
-  "run_id": "20260815T230519Z_426bd090",
+  "run_id": "20260817T130130Z_c5fb4faa",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-15T23:05:19.982145+00:00",
-  "trigger": "workflow_dispatch",
+  "started_at_utc": "2026-08-17T13:01:30.711523+00:00",
+  "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
