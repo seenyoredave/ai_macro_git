@@ -8,7 +8,7 @@ Deterministic research refreshes and Current Context run on schedule; OpenAI com
 
 ## Schedule
 
-The workflow pins the GitHub-owned checkout, Python-setup, and artifact-upload actions to reviewed full commit SHAs. It runs Monday through Friday at 09:07 in `America/New_York`, leaving more than 20 minutes before the regular U.S. market open while avoiding the top-of-hour scheduling hotspot. The IANA timezone is intentional so the schedule follows Eastern Standard and Eastern Daylight Time automatically. The same workflow also supports an explicit manual trigger.
+The workflow pins the GitHub-owned checkout, Python-setup, and artifact-upload actions to reviewed full commit SHAs. It runs Monday through Friday at 08:07 in `America/New_York`, leaving more than 80 minutes before the regular U.S. market open while avoiding the top-of-hour scheduling hotspot. The IANA timezone is intentional so the schedule follows Eastern Standard and Eastern Daylight Time automatically. The same workflow also supports an explicit manual trigger.
 
 ## Publication transaction
 

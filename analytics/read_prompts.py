@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 from typing import Any
 
-DOMAIN_PROMPT_VERSION = "domain-language-layer-1.3"
-MACRO_PROMPT_VERSION = "macro-rollup-2.2"
+DOMAIN_PROMPT_VERSION = "domain-language-layer-1.4"
+MACRO_PROMPT_VERSION = "macro-rollup-2.3"
 
 
 DOMAIN_OUTPUT_RULES = {
@@ -50,6 +50,10 @@ Write for a highly intelligent adult who may have no specialized knowledge of th
 
 Keep the Read outside partisan and social-identity framing. Never introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity. When describing a proportion, do not call people, workers, consumers, businesses, users, or adoption a minority or majority; state the measured share or use an unambiguous phrase such as fewer than half or most.
 
+Make the prose sound authored rather than compliance-shaped. Lead with the substantive economic, operational, market, or physical conclusion. Do not narrate evidence handling, validation, or methodology unless observability itself is the domain conclusion. Apply scope and measurement boundaries silently unless they materially change the interpretation; do not default to a standalone caveat sentence. Prefer the company set, funding need, project pipeline, grid, workforce, adoption measure, or other object being analyzed as the grammatical subject rather than "the evidence," "the record," "the data," or "the analysis."
+
+Use a number only when its magnitude changes the conclusion or makes the relationship materially clearer. The dashboard already carries the full state; the Read should carry the judgment. A short declarative sentence may serve as the hinge of the argument when that is more natural than another balanced explanatory sentence.
+
 Write the final prose once. Silently edit it before returning the structured answer: make the subject concrete, make the main verb carry the relationship, remove abstract noun stacks, resolve pronouns, split overloaded sentences, and remove conspicuous alliteration. Return only the final structured Read set. Do not return a draft, editorial notes, scores, or alternatives.
 """.strip()
 
@@ -67,7 +71,11 @@ Every sentence must stand on its own for that reader. On first reference, name t
 
 Keep the Read outside partisan and social-identity framing. Never introduce race, ethnicity, religion, sexuality, gender identity, partisan affiliation, or ideological identity. When describing a proportion, do not call people, workers, consumers, businesses, users, or adoption a minority or majority; state the measured share or use an unambiguous phrase such as fewer than half or most.
 
-Write the final prose once. Silently edit it before returning the structured answer: keep the subject concrete, make the main verb carry the relationship, remove undefined internal labels, remove conspicuous alliteration, avoid sing-song repetition, and close with a sharpened present implication rather than a forecast, slogan, or repeated thesis. Return only the final structured Macro Read. Do not return a draft, editorial notes, scores, or alternatives.
+State the thesis in economic, operational, market, or physical terms. Do not make evidence, records, data, analysis, validation, or attribution mechanics the protagonist unless evidence completeness itself is the thesis. Apply evidentiary boundaries as constraints on the reasoning before writing; surface them only when they change the conclusion. When a concrete bottleneck, mismatch, funding burden, delivery constraint, adoption gap, or operating condition is supported, name it directly instead of closing on what the records fail to connect.
+
+Use numbers selectively. The Macro Read should explain the system relationship rather than inventory its inputs. A quantity belongs when the magnitude is necessary to understand the mismatch, bottleneck, scale, or timing.
+
+Write the final prose once. Silently edit it before returning the structured answer: keep the subject concrete, make the main verb carry the relationship, remove undefined internal labels, remove conspicuous alliteration, avoid sing-song repetition, and close with the strongest supported present judgment rather than a forecast, slogan, repeated thesis, or methodological disclaimer. Return only the final structured Macro Read. Do not return a draft, editorial notes, scores, or alternatives.
 """.strip()
 
 

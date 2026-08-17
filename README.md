@@ -32,7 +32,7 @@ The complete portable language layer is supplied to both calls. Returned prose i
 
 ## Automation
 
-The hosted Reader remains read-only. A single scheduled GitHub Actions worker runs at 09:07 Eastern on weekdays. It refreshes domain sources, then shared market sources, then Current Context before it makes one publication decision. Commentary is regenerated only when a curated evidence fact changes materially relative to the last generated Read; smaller changes accumulate against that baseline while the existing Read is renewed at zero API cost. Full generation is bounded to two calls, the SDK retry count is zero, and diagnostics never trigger a replacement call. Desktop-to-Git reconciliation preserves newer online retained state while keeping desktop code/configuration authoritative.
+The hosted Reader remains read-only. A single scheduled GitHub Actions worker runs at 08:07 Eastern on weekdays. It refreshes domain sources, then shared market sources, then Current Context before it makes one publication decision. Commentary is regenerated only when a curated evidence fact changes materially relative to the last generated Read; smaller changes accumulate against that baseline while the existing Read is renewed at zero API cost. Full generation is bounded to two calls, the SDK retry count is zero, and diagnostics never trigger a replacement call. Desktop-to-Git reconciliation preserves newer online retained state while keeping desktop code/configuration authoritative.
 
 ## Current Context
 
