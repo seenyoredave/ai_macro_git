@@ -104,7 +104,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v9.6.0"
+APP_VERSION = "v9.6.1"
 APP_STATE_SCHEMA_VERSION = "71.0-universal-data-center-registry"
 
 st.set_page_config(

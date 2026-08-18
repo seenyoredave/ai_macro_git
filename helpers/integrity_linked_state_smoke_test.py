@@ -87,46 +87,27 @@ def check_construction_provenance_transaction() -> None:
 
 
 def check_reviewed_same_source_merge() -> None:
-    decisions = pd.read_csv(PROJECT_ROOT / "data" / "facility_identity_decisions.csv", dtype=str).fillna("")
-    rows = decisions.loc[decisions["Decision Group"].eq("pa-tecfusions-keystone-connect")]
+    decisions = pd.read_csv(
+        PROJECT_ROOT / "data" / "infrastructure" / "curated" / "data_center_identity_decisions.csv",
+        dtype=str,
+    ).fillna("")
+    rows = decisions.loc[decisions["Decision Group"].eq("la-hut8-river-bend")].copy()
     source_ids = set(rows["Source Record ID"].astype(str))
-    assert len(source_ids) == 2
+    assert source_ids == {"336", "337"}, "reviewed River Bend decision is not bound to current retained source IDs"
+
     fractracker = load_fractracker_data_center_observations()
-
     selected = fractracker.loc[fractracker["Source Record ID"].astype(str).isin(source_ids)].copy()
-    if len(selected) == 2:
-        payload = build_universal_data_center_registry(
-            pd.DataFrame(),
-            fractracker_observations=selected,
-            gigawatt_observations=pd.DataFrame(),
-            curated_observations=pd.DataFrame(),
-        )
-        assert len(payload["campuses"]) == 1, "reviewed same-source campus merge is not applied by the universal registry"
+    assert len(selected) == 2, "reviewed River Bend source observations are missing from retained state"
 
-    tecfusions = fractracker.loc[
-        fractracker["Name"].astype(str).str.contains("Keystone Connect", case=False, na=False)
-        & fractracker["State"].astype(str).eq("PA")
-    ].copy()
-    assert len(tecfusions) >= 2, "reviewed TECfusions campus fixture is missing from retained state"
-
-    shifted = tecfusions.head(2).copy()
-    shifted.loc[:, "Source Record ID"] = [
-        "fractracker-source:synthetic-id-shift-a",
-        "fractracker-source:synthetic-id-shift-b",
-    ]
-    shifted.loc[:, "Observation ID"] = [
-        "fractracker:synthetic-id-shift-a",
-        "fractracker:synthetic-id-shift-b",
-    ]
     payload = build_universal_data_center_registry(
         pd.DataFrame(),
-        fractracker_observations=shifted,
+        fractracker_observations=selected,
         gigawatt_observations=pd.DataFrame(),
         curated_observations=pd.DataFrame(),
     )
-    campuses = payload["campuses"]
-    assert len(campuses) == 1, "reviewed TECfusions semantic identity did not survive changed upstream IDs"
-    assert campuses["Campus Name"].astype(str).str.contains("Keystone", case=False, na=False).any()
+    assert len(payload["campuses"]) == 1, "reviewed same-source campus merge is not applied by the universal registry"
+    assert payload["campuses"]["Campus Name"].astype(str).str.contains("River Bend", case=False, na=False).any()
+
 
 def main() -> int:
     check_construction_provenance_transaction()

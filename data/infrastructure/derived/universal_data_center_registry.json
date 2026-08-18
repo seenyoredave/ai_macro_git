@@ -1,0 +1,38 @@
+{
+  "registry_version": "9.6.0",
+  "source_fingerprint": "ab22cfd26d9667d70e50545b",
+  "source_sha256": {
+    "data/data_center_locations.csv": "70136a854ce16a0051cea65a7ad33a42f8bacf32321a1b15c180a663c33efc6f",
+    "data/infrastructure/curated/data_center_identity_decisions.csv": "2c9ddbfe57941fdec698e34a92fc0636f8e776bfe51b0f113a922fe98c8aecdd",
+    "data/infrastructure/curated/data_center_primary_evidence.csv": "4654bc730c211ddc353599eb827df22cf29eaeedb79f7af766c72cb12036669d",
+    "data/infrastructure/raw/fractracker/data_center_facilities_latest.csv": "c8b9eeeb652eb525b9314920e7c94190597ca637c922af672c82034a5b22e9c5",
+    "data/infrastructure/raw/gigawattmap/datacenters.csv": "ad5e843b96a7667bd3851072daf8c870e1cf068a2b6cf5609792a20ad2d2a28a"
+  },
+  "summary": {
+    "active_campuses": 1155,
+    "building_entities": 730,
+    "campuses": 1482,
+    "facility_entities": 0,
+    "high_confidence_campuses": 1222,
+    "low_confidence_campuses": 0,
+    "mapped_campuses": 1482,
+    "medium_confidence_campuses": 260,
+    "operational_campuses": 509,
+    "registry_version": "9.6.0",
+    "source_observations": 3939,
+    "states": 45,
+    "unresolved_observations": 1474
+  },
+  "table_sha256": {
+    "data/infrastructure/derived/universal_data_center_entities.csv": "3ea7091a760f4fc9eb98dc186c66f3c0f95fe23a0d8c95ade1426e088467ae3e",
+    "data/infrastructure/derived/universal_data_center_membership.csv": "b4716a2ba76cf7e4e6018fec96dbeadef8c313bd80cf7d8adedcbc8c09155cea",
+    "data/infrastructure/derived/universal_data_center_observations.csv": "dfc44c7b56d6b74dcddd832814b3a53aa9d462af5da81a0a3676d7ae975b86c2",
+    "data/infrastructure/derived/universal_data_center_unresolved.csv": "092c32458a8efcf7225e8871d5e66c3e66515fad5660f0917c15e4eee2c6dc1d"
+  },
+  "tables": {
+    "data/infrastructure/derived/universal_data_center_entities.csv": 2212,
+    "data/infrastructure/derived/universal_data_center_membership.csv": 2465,
+    "data/infrastructure/derived/universal_data_center_observations.csv": 3939,
+    "data/infrastructure/derived/universal_data_center_unresolved.csv": 1474
+  }
+}

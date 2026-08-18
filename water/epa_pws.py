@@ -108,11 +108,6 @@ def normalize_cache(frame: pd.DataFrame | None) -> pd.DataFrame:
     if frame is None or not isinstance(frame,pd.DataFrame) or frame.empty:
         return pd.DataFrame(columns=CACHE_COLUMNS)
     output=frame.copy()
-    # Retained pre-v9.6 cache files used a generic ID column. It is treated only
-    # as cache provenance; canonical identity always comes from the registry.
-    legacy_id = "Facility ID"
-    if "Campus ID" not in output.columns and legacy_id in output.columns:
-        output = output.rename(columns={legacy_id:"Campus ID"})
     for column in CACHE_COLUMNS:
         if column not in output.columns: output[column]=""
     for column in ("Latitude","Longitude","Population Served","Service Connections"):

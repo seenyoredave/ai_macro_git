@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""Water presentation contract for the v9.6 universal-campus architecture."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -10,34 +13,33 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from analytics.water_competition import (
-    campus_water_dossier,
-    county_water_exposure_profile,
-    local_context_coverage_profile,
-)
+from analytics.water_campus import campus_water_dossier, county_water_exposure_profile
+from analytics.water_competition import local_context_coverage_profile
 from analytics.water_local import local_water_constraint_summary
-from rendering.charts_water import water_county_drought_map, water_local_context_coverage
+from rendering.charts_water import water_county_drought_map
 
 
-def _facilities(material_count: int) -> pd.DataFrame:
-    rows = []
+def _campuses(material_count: int) -> pd.DataFrame:
     points = [
-        ("01001", "AL", "Autauga", 32.54, -86.64),
-        ("01001", "AL", "Autauga", 32.56, -86.61),
-        ("01003", "AL", "Baldwin", 30.66, -87.75),
-        ("01003", "AL", "Baldwin", 30.70, -87.80),
-        ("01005", "AL", "Barbour", 31.87, -85.39),
-        ("48029", "TX", "Bexar", 29.42, -98.49),
-        ("48029", "TX", "Bexar", 29.47, -98.43),
-        ("48453", "TX", "Travis", 30.27, -97.74),
-        ("48453", "TX", "Travis", 30.31, -97.71),
-        ("48201", "TX", "Harris", 29.76, -95.37),
+        ("campus:al-1", "01001", "AL", "Autauga", 32.54, -86.64),
+        ("campus:al-2", "01001", "AL", "Autauga", 32.56, -86.61),
+        ("campus:al-3", "01003", "AL", "Baldwin", 30.66, -87.75),
+        ("campus:al-4", "01003", "AL", "Baldwin", 30.70, -87.80),
+        ("campus:al-5", "01005", "AL", "Barbour", 31.87, -85.39),
+        ("campus:tx-1", "48029", "TX", "Bexar", 29.42, -98.49),
+        ("campus:tx-2", "48029", "TX", "Bexar", 29.47, -98.43),
+        ("campus:tx-3", "48453", "TX", "Travis", 30.27, -97.74),
+        ("campus:tx-4", "48453", "TX", "Travis", 30.31, -97.71),
+        ("campus:tx-5", "48201", "TX", "Harris", 29.76, -95.37),
     ]
-    for index, (fips, state, county, lat, lon) in enumerate(points):
+    rows = []
+    for index, (campus_id, fips, state, county, lat, lon) in enumerate(points):
         material = index < material_count
+        label = f"Example Campus {index + 1} — {county}, {state}"
         rows.append({
-            "Facility ID": f"f-{index}",
-            "Facility": f"Campus {index}",
+            "Campus ID": campus_id,
+            "Campus Name": f"Example Campus {index + 1}",
+            "Campus Label": label,
             "Operator": "Example",
             "State": state,
             "County": county,
@@ -82,59 +84,50 @@ def _county_drought() -> pd.DataFrame:
     ])
 
 
-def _water_payload(frame: pd.DataFrame) -> dict:
-    summary = {
-        "facilities": len(frame),
-        "county_drought_context_records": int(frame["County D2+ Area Percent"].notna().sum()),
-        "pws_service_area_query_resolved_records": int(frame["PWS Service Area Query Resolved"].sum()),
-        "pws_service_area_overlap_records": int(frame["PWS Service Area Overlap"].sum()),
-        "direct_water_evidence_records": int(frame["Direct Water Evidence"].sum()),
-        "quantified_withdrawal_records": int(frame["Water Withdrawal Gallons/Year"].notna().sum()),
-        "quantified_consumption_records": 0,
-    }
-    return {
-        "facility_context": frame,
-        "facility_context_summary": summary,
-        "summary": {},
-        "usdm_county_drought": _county_drought(),
-        "usgs_2020_top_withdrawals": pd.DataFrame(),
-    }
+def main() -> int:
+    obsolete_phase2 = ROOT / "helpers" / "phase2_grid_water_smoke_test.py"
+    if obsolete_phase2.exists():
+        raise AssertionError("Obsolete facility-grain Phase 2 Water smoke test still exists")
 
-
-def main() -> None:
-    broad = _facilities(6)
+    broad = _campuses(6)
 
     local = local_water_constraint_summary(broad)
-    assert local["county_drought_resolved"] == 10
-    assert local["facilities_in_counties_with_25pct_d2"] == 6
-    assert abs(local["facilities_in_counties_with_25pct_d2_share"] - 0.6) < 1e-9
+    assert local["canonical_campuses"] == 10
+    assert local["county_drought_resolved_campuses"] == 10
+    assert local["campuses_in_counties_with_25pct_d2"] == 6
+    assert abs(local["campuses_in_counties_with_25pct_d2_share"] - 0.6) < 1e-9
 
-    coverage = local_context_coverage_profile(_water_payload(broad)["facility_context_summary"])
-    values = coverage.set_index("Coverage Layer")["Facilities"].to_dict()
+    coverage = local_context_coverage_profile({
+        "canonical_campuses": 10,
+        "county_drought_context_records": 10,
+        "pws_service_area_query_resolved_records": 10,
+        "pws_service_area_overlap_records": 1,
+        "direct_water_evidence_records": 1,
+        "quantified_withdrawal_records": 1,
+        "quantified_consumption_records": 0,
+    })
+    values = coverage.set_index("Coverage Layer")["Campuses"].to_dict()
     assert values["Current county drought"] == 10
     assert values["EPA service-area overlap"] == 1
 
     counties = county_water_exposure_profile(broad)
     assert set(counties["State"]) == {"AL", "TX"}
+    assert counties["FIPS"].nunique() == 6
+
     dossier = campus_water_dossier(broad)
+    assert len(dossier) == 10
+    assert dossier["Campus ID"].nunique() == 10
     assert "Local D2+ Area Percent" in dossier.columns
 
-
     national = water_county_drought_map(_county_drought(), broad)
-    assert len(national.data) == 1
-    assert national.data[0].type == "choropleth"
+    assert national.data and national.data[0].type == "choroplethmap"
     assert "01001" in set(national.data[0].locations)
+    assert not any(getattr(national.layout.map.bounds, field, None) is not None for field in ("west", "east", "south", "north"))
 
-    alabama = water_county_drought_map(_county_drought(), broad, state="AL")
-    assert alabama.data[0].type == "choropleth"
-    assert all(str(location).startswith("01") for location in alabama.data[0].locations)
-    assert any(trace.type == "scattergeo" for trace in alabama.data[1:])
-
-    geometry_path = ROOT / "assets" / "geo" / "us_counties.geojson"
-    assert geometry_path.exists()
-    assert geometry_path.stat().st_size > 500_000
-    manifest_source = (ROOT / "helpers" / "build_release_manifest.py").read_text(encoding="utf-8")
-    assert "assets/geo/us_counties.geojson" in manifest_source
+    texas = water_county_drought_map(_county_drought(), broad, state="TX")
+    assert [trace.type for trace in texas.data] == ["choroplethmap", "scattermap"]
+    assert all(str(location).startswith("48") for location in texas.data[0].locations)
+    assert len(texas.data[1].lat) == 5
 
     water_source = (ROOT / "rendering" / "water.py").read_text(encoding="utf-8")
     parsed = ast.parse(water_source)
@@ -147,18 +140,20 @@ def main() -> None:
     ranked_states = helper_ns["_state_exposure_order"](dossier)
     assert ranked_states[0] == "AL", ranked_states
     tx_priority = helper_ns["_campus_priority_frame"](dossier.loc[dossier["State"].eq("TX")])
-    assert float(tx_priority.iloc[0]["Local D2+ Area Percent"]) >= float(tx_priority.iloc[-1]["Local D2+ Area Percent"]), tx_priority[["Facility", "Local D2+ Area Percent"]]
+    assert float(tx_priority.iloc[0]["Local D2+ Area Percent"]) >= float(tx_priority.iloc[-1]["Local D2+ Area Percent"])
+
     required_copy = [
         "National county drought map",
         "Select a county to open its state.",
         "rm-water-profile-v3",
         "Local conditions",
         "Service area",
-        "Facility water",
+        "Campus water",
         "Water data coverage",
     ]
     for phrase in required_copy:
         assert phrase in water_source, phrase
+
     forbidden_copy = [
         "not a claim",
         "does not establish",
@@ -171,21 +166,24 @@ def main() -> None:
         assert phrase.casefold() not in lowered, phrase
 
     assert 'st.session_state["water-dossier-state"] = state' in water_source
-    assert 'key=f"water-dossier-campus-{state}"' in water_source
-    render_tab = water_source[water_source.index("def render_water_tab"): ]
+    assert 'campus_key = f"water-dossier-campus-{state}"' in water_source
+    render_tab = water_source[water_source.index("def render_water_tab"):]
     assert render_tab.index("_render_local_exposure(context)") < render_tab.index("_render_campus_dossier(context)")
     assert render_tab.index("_render_campus_dossier(context)") < render_tab.index("_render_system_context_workbench(context, infrastructure_data)")
     assert render_tab.index("_render_system_context_workbench(context, infrastructure_data)") < render_tab.index("_render_coverage(context)")
 
     chart_source = (ROOT / "rendering" / "charts_water.py").read_text(encoding="utf-8")
-    assert "go.Choropleth(" in chart_source
-    assert "fitbounds=\"locations\"" in chart_source
-    assert "go.Scattergeo(" in chart_source
+    assert "go.Choroplethmap(" in chart_source
+    assert "go.Scattermap(" in chart_source
+    assert "map_view(" in chart_source
+    assert "map_layers(" in chart_source
 
     print(
-        "PASS  Water sequence v4 · map-to-campus state continuity · exposure-first defaults · national context before data coverage"
+        "PASS  Water presentation · canonical campus grain · FIPS-first drought · "
+        "MapLibre drilldown · campus dossier continuity"
     )
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

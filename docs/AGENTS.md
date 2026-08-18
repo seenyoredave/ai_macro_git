@@ -36,7 +36,7 @@ protected project decision.
   factor for the complete universe and rebuilding sector and macro history on
   the retained raw market dates. Never splice a new universe onto old scores.
 - Ambiguous data-center identities belong in
-  `data/facility_identity_decisions.csv` with record-level evidence. Do not
+  `data/infrastructure/curated/data_center_identity_decisions.csv` with record-level evidence. Do not
   broaden fuzzy-match thresholds to resolve one named project, and do not
   combine published capacity values within a campus; the campus uses the
   strongest applicable observation rather than an additive total.

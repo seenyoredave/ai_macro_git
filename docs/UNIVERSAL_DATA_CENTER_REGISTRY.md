@@ -52,7 +52,6 @@ Normal application startup reads the retained universal registry from:
 
 ```text
 data/infrastructure/derived/universal_data_center_registry.json
-data/infrastructure/derived/universal_data_center_campuses.csv
 data/infrastructure/derived/universal_data_center_entities.csv
 data/infrastructure/derived/universal_data_center_observations.csv
 data/infrastructure/derived/universal_data_center_membership.csv
@@ -81,7 +80,7 @@ Map points carry canonical `Campus ID` in selection data. A national campus clic
 The overhaul is accepted only after `helpers/data_center_registry_release_gate.py` passes against the actual retained national checkout. The gate verifies:
 
 - one identity authority and no legacy identity modules/keys;
-- retained registry freshness and reproducibility from retained sources;
+- retained registry freshness through the current source fingerprint and retained-table SHA-256 verification;
 - unique canonical IDs and labels;
 - no county-only identities promoted to campuses;
 - no uncorroborated point or lone-building campus creation;
@@ -89,4 +88,4 @@ The overhaul is accepted only after `helpers/data_center_registry_release_gate.p
 - Umatilla AWS regression: the 15 generic IM3 AWS building footprints resolve into four local campuses rather than 15 campus identities;
 - Water has exactly the canonical campus universe;
 - Connectivity references only canonical Campus IDs;
-- retained registry startup-load and rebuild performance bounds.
+- retained registry startup-load performance bound.

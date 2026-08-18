@@ -14,6 +14,38 @@ ROOT = Path(__file__).resolve().parents[1]
 WATER_ROOT = ROOT / "data/water"
 DERIVED = WATER_ROOT / "derived"
 
+RETAINED_WATER_FILES = (
+    WATER_ROOT / "source_manifest.csv",
+    WATER_ROOT / "field_dictionary.csv",
+    DERIVED / "water_national_summary.json",
+    DERIVED / "usgs_2020_top_withdrawals.csv",
+    DERIVED / "usgs_2015_national_category_summary.csv",
+    DERIVED / "usgs_2015_state_category_summary.csv",
+    DERIVED / "usgs_2015_county_summary.csv.gz",
+    DERIVED / "usgs_2015_reconciliation.csv.gz",
+    DERIVED / "eia_2024_thermoelectric_plant_summary.csv.gz",
+    DERIVED / "eia_2024_thermoelectric_group_summary.csv",
+    DERIVED / "usdm_state_drought_snapshot.csv",
+    DERIVED / "usdm_county_drought_snapshot.csv.gz",
+    DERIVED / "epa_pws_facility_matches.csv.gz",
+)
+
+
+def retained_water_fingerprint() -> tuple[tuple[str, int, int], ...]:
+    """Return a cheap cache key for the retained Water bundle on disk."""
+    rows: list[tuple[str, int, int]] = []
+    for path in RETAINED_WATER_FILES:
+        try:
+            label = str(path.relative_to(ROOT))
+        except ValueError:
+            label = str(path)
+        try:
+            stat = path.stat()
+            rows.append((label, int(stat.st_mtime_ns), int(stat.st_size)))
+        except FileNotFoundError:
+            rows.append((label, -1, -1))
+    return tuple(rows)
+
 
 def _read_csv(name: str, **kwargs) -> pd.DataFrame:
     path = DERIVED / name
@@ -27,12 +59,13 @@ def _read_csv(name: str, **kwargs) -> pd.DataFrame:
 
 
 @st.cache_data(show_spinner=False)
-def load_water_utilization_data(
-    force_refresh: bool = False,
-    refresh_token: int = 0,
-    allow_live: bool = False,
+def _load_water_utilization_data_cached(
+    force_refresh: bool,
+    refresh_token: int,
+    allow_live: bool,
+    retained_fingerprint: tuple[tuple[str, int, int], ...],
 ) -> dict:
-    del refresh_token
+    del refresh_token, retained_fingerprint
     live_refresh = bool(force_refresh and allow_live)
     refresh_report = refresh_water_sources() if live_refresh else {}
     summary_path = DERIVED / "water_national_summary.json"
@@ -56,9 +89,9 @@ def load_water_utilization_data(
     return {
         "source_mode": str(refresh_report.get("source_mode") or "retained_local"),
         "refresh_report": refresh_report,
-        # Local sources need the facility registry, so their live refresh is
+        # Local sources need canonical campus coordinates, so their live refresh is
         # executed by analytics.spatial_context.attach_water_context after the
-        # infrastructure registry has been assembled.
+        # Universal Data Center Registry has been assembled.
         "local_context_refresh_requested": live_refresh,
         "source_health": source_health,
         "summary": summary,
@@ -81,8 +114,31 @@ def load_water_utilization_data(
         "usdm_county_drought": _read_csv("usdm_county_drought_snapshot.csv.gz", dtype={"FIPS": str}),
         "epa_pws_matches": _read_csv(
             "epa_pws_facility_matches.csv.gz",
-            dtype={"PWSID": str, "Facility ID": str, "Query Key": str},
+            dtype={"PWSID": str, "Campus ID": str, "Query Key": str},
         ),
         "observation_count": int(summary.get("observation_rows", 0) or 0),
         "active_source_count": int(len(active)),
     }
+
+def load_water_utilization_data(
+    force_refresh: bool = False,
+    refresh_token: int = 0,
+    allow_live: bool = False,
+) -> dict:
+    """Load Water data and invalidate Streamlit cache when retained files change."""
+    return _load_water_utilization_data_cached(
+        bool(force_refresh),
+        int(refresh_token),
+        bool(allow_live),
+        retained_water_fingerprint(),
+    )
+
+
+def _clear_water_loader_cache() -> None:
+    clear = getattr(_load_water_utilization_data_cached, "clear", None)
+    if callable(clear):
+        clear()
+
+
+load_water_utilization_data.clear = _clear_water_loader_cache
+

@@ -112,14 +112,14 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
     infrastructure_data = load_infrastructure_data(
         refresh_token=token,
         force_construction_refresh=force,
-        force_facility_refresh=force,
+        force_data_center_refresh=force,
         force_compute_refresh=force,
         allow_construction_live=live,
-        allow_facility_live=live,
+        allow_data_center_live=live,
         allow_compute_live=live,
     )
     connectivity_data = load_connectivity_data(
-        infrastructure_data.get("campus_registry"),
+        infrastructure_data.get("data_center_registry"),
         force_refresh=force,
         refresh_token=token,
         allow_live=live,

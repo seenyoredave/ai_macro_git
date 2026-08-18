@@ -715,10 +715,12 @@ def _anchor_strength(row) -> tuple[bool, str, str]:
 
 
 def _anchor_pair_match(left: dict, right: dict) -> tuple[bool, str]:
-    if not _same_jurisdiction_values(left, right) or _reviewed_separate_prepared(left, right):
+    if _reviewed_separate_prepared(left, right):
         return False, ""
     if _reviewed_merge_prepared(left, right):
         return True, "reviewed identity decision"
+    if not _same_jurisdiction_values(left, right):
+        return False, ""
     distance = _distance_prepared(left, right)
     if not math.isfinite(distance):
         return False, ""
@@ -820,10 +822,12 @@ def _cluster_anchors(records: list[dict], anchor_indexes: list[int]) -> list[dic
 
 
 def _child_anchor_score(child: dict, anchor: dict) -> tuple[float, str] | None:
-    if not _same_jurisdiction_values(child, anchor) or _reviewed_separate_prepared(child, anchor):
+    if _reviewed_separate_prepared(child, anchor):
         return None
     if _reviewed_merge_prepared(child, anchor):
         return 10000.0, "reviewed identity decision"
+    if not _same_jurisdiction_values(child, anchor):
+        return None
     distance = _distance_prepared(child, anchor)
     if not math.isfinite(distance):
         return None
@@ -907,10 +911,12 @@ def _attach_to_anchor_clusters(records: list[dict], clusters: list[dict], remain
 
 
 def _building_pair_match(left: dict, right: dict) -> bool:
-    if not _same_jurisdiction_values(left, right) or _reviewed_separate_prepared(left, right):
+    if _reviewed_separate_prepared(left, right):
         return False
     if _reviewed_merge_prepared(left, right):
         return True
+    if not _same_jurisdiction_values(left, right):
+        return False
     distance = _distance_prepared(left, right)
     if not math.isfinite(distance):
         return False
@@ -933,10 +939,12 @@ def _building_pair_match(left: dict, right: dict) -> bool:
 
 
 def _facility_pair_match(left: dict, right: dict) -> bool:
-    if not _same_jurisdiction_values(left, right) or _reviewed_separate_prepared(left, right):
+    if _reviewed_separate_prepared(left, right):
         return False
     if _reviewed_merge_prepared(left, right):
         return True
+    if not _same_jurisdiction_values(left, right):
+        return False
     distance = _distance_prepared(left, right)
     if not math.isfinite(distance) or distance > 1.0:
         return False
@@ -948,10 +956,12 @@ def _facility_pair_match(left: dict, right: dict) -> bool:
 
 
 def _point_pair_match(left: dict, right: dict) -> bool:
-    if not _same_jurisdiction_values(left, right) or _reviewed_separate_prepared(left, right):
+    if _reviewed_separate_prepared(left, right):
         return False
     if _reviewed_merge_prepared(left, right):
         return True
+    if not _same_jurisdiction_values(left, right):
+        return False
     distance = _distance_prepared(left, right)
     if not math.isfinite(distance) or distance > 0.20:
         return False

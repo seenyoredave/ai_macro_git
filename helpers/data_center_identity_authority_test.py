@@ -36,10 +36,10 @@ FORBIDDEN = (
     "allow_facility_live",
     "data/facility_registry_seed.csv",
     "data/facility_identity_decisions.csv",
+    "helpers/apply_v9_6_registry_overhaul.py",
 )
 
 EXEMPT = {
-    Path("helpers/apply_v9_6_registry_overhaul.py"),
     Path("helpers/data_center_identity_authority_test.py"),
 }
 
@@ -64,7 +64,7 @@ IDENTITY_FUNCTIONS = (
 
 def _python_paths() -> list[Path]:
     paths = [ROOT / "ai_macro.py"]
-    for directory in ("analytics", "loaders", "rendering", "water", "helpers", "developer"):
+    for directory in ("analytics", "automation", "config", "loaders", "rendering", "water", "helpers", "developer", "tooling"):
         base = ROOT / directory
         if base.exists():
             paths.extend(base.rglob("*.py"))

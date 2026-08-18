@@ -24,6 +24,10 @@ from loaders.connectivity_loader import load_connectivity_data  # noqa: E402
 from loaders.data_center_registry import (  # noqa: E402
     REGISTRY_VERSION,
     assert_campus_foreign_keys,
+    load_curated_data_center_observations,
+    load_data_center_identity_decisions,
+    load_fractracker_data_center_observations,
+    load_gigawatt_data_center_observations,
     load_retained_universal_data_center_registry,
 )
 from loaders.water_loader import load_water_utilization_data  # noqa: E402
@@ -211,6 +215,73 @@ def _umatilla_gate(payload: dict) -> None:
         raise AssertionError("A Umatilla generic building footprint became a one-building campus")
 
 
+
+
+def _identity_decision_gate(payload: dict) -> None:
+    decisions = load_data_center_identity_decisions()
+    if decisions.empty:
+        return
+
+    sources = pd.concat(
+        [
+            load_fractracker_data_center_observations(),
+            load_gigawatt_data_center_observations(verified_only=False),
+            load_curated_data_center_observations(),
+        ],
+        ignore_index=True,
+        sort=False,
+    )
+    available = set(sources.get("Source Record ID", pd.Series(dtype=str)).dropna().astype(str)) - {""}
+    decision_ids = set(decisions["Source Record ID"].dropna().astype(str)) - {""}
+    orphaned = sorted(decision_ids - available)
+    if orphaned:
+        raise AssertionError(
+            f"Identity decision ledger contains source records absent from retained evidence: {orphaned[:10]}"
+        )
+
+    group_sizes = decisions.groupby("Decision Group", sort=False)["Source Record ID"].nunique()
+    invalid_groups = group_sizes.loc[group_sizes.lt(2)].index.astype(str).tolist()
+    if invalid_groups:
+        raise AssertionError(
+            f"Identity decision groups must bind at least two retained source records: {invalid_groups[:10]}"
+        )
+
+    observations = payload["observations"][["Observation ID", "Source Record ID"]].copy()
+    membership = payload["membership"][["Observation ID", "Campus ID"]].copy()
+    resolved = observations.merge(membership, on="Observation ID", how="left", validate="one_to_one")
+    campuses_by_source = (
+        resolved.groupby("Source Record ID", sort=False)["Campus ID"]
+        .agg(lambda values: {str(value) for value in values if str(value).strip() and str(value) != "nan"})
+        .to_dict()
+    )
+
+    failures: list[str] = []
+    for group, rows in decisions.groupby("Decision Group", sort=False):
+        ids = rows["Source Record ID"].astype(str).tolist()
+        decision_values = {str(value).strip().casefold() for value in rows["Decision"]}
+        if len(decision_values) != 1:
+            failures.append(f"{group}: mixed decisions")
+            continue
+        decision = next(iter(decision_values))
+        assigned = {source_id: campuses_by_source.get(source_id, set()) for source_id in ids}
+        missing = [source_id for source_id, campus_ids in assigned.items() if not campus_ids]
+        if missing:
+            failures.append(f"{group}: unresolved source IDs {missing}")
+            continue
+        if decision == "merge":
+            union = set().union(*assigned.values())
+            if len(union) != 1:
+                failures.append(f"{group}: reviewed merge resolves to {len(union)} campuses")
+        elif decision == "separate":
+            flattened = [next(iter(campus_ids)) for campus_ids in assigned.values()]
+            if len(set(flattened)) != len(flattened):
+                failures.append(f"{group}: reviewed separation shares a canonical campus")
+        else:
+            failures.append(f"{group}: unsupported decision {decision!r}")
+    if failures:
+        raise AssertionError(f"Identity decisions are not honored by the retained registry: {failures[:10]}")
+
+
 def _domain_gate(payload: dict) -> None:
     campuses = payload["campuses"]
     canonical = _ids(campuses)
@@ -255,6 +326,7 @@ def main() -> int:
         )
     _quality_gate(retained)
     _umatilla_gate(retained)
+    _identity_decision_gate(retained)
 
     # The build command immediately preceding this gate already resolved the
     # complete retained national source universe. Rebuilding the same universe
