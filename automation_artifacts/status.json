@@ -1,37 +1,10 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "changed_paths": [
-    "archive/benchmark_history.csv",
-    "archive/edgar_history.csv",
-    "archive/fred_history.csv",
-    "archive/macro_history.csv",
-    "archive/sector_history.csv",
-    "archive/yf_history.csv",
-    "automation_artifacts/status.json",
-    "data/borrower_strain_fundamentals_history.csv",
-    "data/commercialization/commercialization_ledger.csv",
-    "data/connectivity/ixp_snapshot.csv",
-    "data/connectivity/national_summary.csv",
-    "data/current_context_candidate_audit.csv",
-    "data/current_context_refresh_manifest.json",
-    "data/debt_markets_metadata.json",
-    "data/infrastructure/source_manifest.csv",
-    "data/release_manifest.json",
-    "data/retained_state_manifest.json",
-    "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
-    "data/water/derived/usgs_2015_county_summary.csv.gz",
-    "data/water/derived/usgs_2015_reconciliation.csv.gz",
-    "data/water/derived/water_national_summary.json",
-    "data/water/derived/water_observations.csv.gz",
-    "data/water/source_manifest.csv",
-    "data/weekly_context_events.csv",
-    "openai_artifacts/current.json"
+  "errors": [
+    "TypeError: load_infrastructure_data() got an unexpected keyword argument 'force_facility_refresh'. Did you mean 'force_compute_refresh'?"
   ],
-  "current_context_snapshot_id": "e5652e8ba8bcf684",
-  "errors": [],
-  "evidence_snapshot_id": "51964c6cf10383df148c408a",
-  "finished_at_utc": "2026-08-17T13:13:36.178267+00:00",
+  "finished_at_utc": "2026-08-18T13:02:52.084598+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 4,
@@ -42,141 +15,28 @@
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 722.362,
-      "status": "passed",
-      "subphases": {
-        "assemble + persist": 6.088,
-        "current context": 36.142,
-        "domain sources": 401.212,
-        "market sources": 278.92
-      }
-    },
-    "evidence": {
-      "artifact_current": false,
-      "artifact_materially_current": true,
-      "artifact_status": "validated",
-      "elapsed_sec": 1.746,
-      "materiality": {
-        "baseline_available": true,
-        "change_count": 7,
-        "changes": [
-          {
-            "domain": "market",
-            "fact_id": "market.aei",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 41.227164821531964,
-            "old_value": 41.222391867514915,
-            "percentage_point_change": null,
-            "relative_change": 0.00011578547000351667
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.effective_firms",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 19.125199942987962,
-            "old_value": 19.12291072081383,
-            "percentage_point_change": null,
-            "relative_change": 0.00011971096908585219
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.equal_weight_return",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.5471939007839518,
-            "old_value": 0.5568019380988666,
-            "percentage_point_change": 1.0,
-            "relative_change": 0.017953321364452424
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.median_return",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.24785718344022634,
-            "old_value": 0.2487280146047307,
-            "percentage_point_change": 0.09999999999999787,
-            "relative_change": 0.004016064257028027
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.positive_breadth",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.6862745098039216,
-            "old_value": 0.696078431372549,
-            "percentage_point_change": 1.0,
-            "relative_change": 0.014367816091954025
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.pressure",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 59.816791000841114,
-            "old_value": 59.68220098865049,
-            "percentage_point_change": null,
-            "relative_change": 0.0022551114060993757
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.top_10_share",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.6339167746964217,
-            "old_value": 0.633965101562435,
-            "percentage_point_change": 0.0,
-            "relative_change": 0.0
-          }
-        ],
-        "current_snapshot_id": "51964c6cf10383df148c408a",
-        "decision": "reuse_immaterial_change",
-        "exact_match": false,
-        "immaterial_change_count": 7,
-        "material": false,
-        "material_change_count": 0,
-        "percentage_point_threshold": 2.0,
-        "previous_snapshot_id": "069b67e4df4b14693fe82ed1",
-        "relative_change_threshold": 0.1,
-        "version": "1.0.0"
-      },
-      "status": "passed"
-    },
-    "openai": {
-      "reason": "evidence_change_below_materiality_threshold",
-      "status": "skipped"
-    },
-    "publication": {
-      "status": "ready",
-      "transaction_boundary": "git_commit"
-    },
-    "publication_lease": {
-      "expires_at": "2026-08-18T13:13:36.075530+00:00",
-      "published_at": "2026-08-17T13:13:36.075530+00:00",
-      "reason": "publishable_evidence_change_immaterial_no_paid_call",
-      "status": "renewed"
+      "status": "running"
     }
   },
-  "publish_ready": true,
-  "result": "publish_ready",
-  "run_id": "20260817T130130Z_c5fb4faa",
+  "publish_ready": false,
+  "result": "exception",
+  "run_id": "20260818T130249Z_7740d0a4",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-17T13:01:30.711523+00:00",
-  "trigger": "schedule",
-  "warnings": [
-    "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
-    "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
-    "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
-    "connectivity: SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
-    "adoption: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
-    "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
-    "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
-    "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
-    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth"
-  ]
+  "started_at_utc": "2026-08-18T13:02:49.750592+00:00",
+  "traceback_tail": [
+    "Traceback (most recent call last):",
+    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/runner.py\", line 221, in main",
+    "    bundle = refresh_research_state()",
+    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/research_refresh.py\", line 112, in refresh_research_state",
+    "    infrastructure_data = load_infrastructure_data(",
+    "        refresh_token=token,",
+    "    ...<5 lines>...",
+    "        allow_compute_live=live,",
+    "    )",
+    "TypeError: load_infrastructure_data() got an unexpected keyword argument 'force_facility_refresh'. Did you mean 'force_compute_refresh'?"
+  ],
+  "trigger": "schedule"
 }
