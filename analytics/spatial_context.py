@@ -15,18 +15,148 @@ def _county_key(value) -> str:
     return text
 
 
+def _normalize_fips(value) -> str:
+    if value is None or pd.isna(value):
+        return ""
+    text = str(value).strip()
+    if text.endswith(".0"):
+        text = text[:-2]
+    digits = "".join(ch for ch in text if ch.isdigit())
+    return digits.zfill(5) if digits else ""
+
+
+def _text(value) -> str:
+    if value is None or pd.isna(value):
+        return ""
+    text = str(value).strip()
+    return "" if text.casefold() == "nan" else text
+
+
+def _pws_query_keys(registry: pd.DataFrame) -> pd.DataFrame:
+    from water.epa_pws import query_key
+
+    output = registry.copy()
+    facility_ids: list[str] = []
+    query_keys: list[str] = []
+    for index, row in output.iterrows():
+        facility_id = ""
+        for field in ("Facility ID", "Campus ID", "Canonical Facility ID", "site_id"):
+            facility_id = _text(row.get(field))
+            if facility_id:
+                break
+        if not facility_id:
+            parts = [
+                _text(row.get("State")),
+                _text(row.get("County")),
+                _text(row.get("Operator")),
+                _text(row.get("Facility")),
+            ]
+            facility_id = "|".join(part for part in parts if part) or f"row-{index}"
+        latitude = pd.to_numeric(row.get("Latitude"), errors="coerce")
+        longitude = pd.to_numeric(row.get("Longitude"), errors="coerce")
+        key = (
+            query_key(facility_id, float(latitude), float(longitude))
+            if pd.notna(latitude) and pd.notna(longitude)
+            else ""
+        )
+        facility_ids.append(facility_id)
+        query_keys.append(key)
+    output["_pws_facility_id"] = facility_ids
+    output["_pws_query_key"] = query_keys
+    return output
+
+
+def _pws_context(matches: pd.DataFrame | None) -> pd.DataFrame:
+    frame = matches.copy() if isinstance(matches, pd.DataFrame) else pd.DataFrame()
+    if frame.empty or "Query Key" not in frame.columns:
+        return pd.DataFrame()
+    for column in ("PWSID", "PWS Name", "Boundary Basis", "Query Status"):
+        if column not in frame.columns:
+            frame[column] = ""
+        frame[column] = frame[column].fillna("").astype(str).str.strip()
+
+    rows = []
+    for key, group in frame.groupby("Query Key", sort=False, dropna=False):
+        query_key_value = str(key or "").strip()
+        if not query_key_value:
+            continue
+        statuses = set(group["Query Status"].astype(str))
+        resolved = bool(statuses.intersection({"matched", "no_match"}))
+        matched = group.loc[group["Query Status"].eq("matched") & group["PWSID"].ne("")].copy()
+        pwsids = sorted(set(matched["PWSID"].tolist()))
+        names = sorted({name for name in matched["PWS Name"].tolist() if name})
+        bases = {value.casefold() for value in matched["Boundary Basis"].tolist() if value}
+        authoritative = "authoritative" in bases
+        modeled = "modeled" in bases
+        if authoritative and modeled:
+            basis = "mixed"
+        elif authoritative:
+            basis = "authoritative"
+        elif modeled:
+            basis = "modeled"
+        elif pwsids:
+            basis = "unclassified"
+        else:
+            basis = ""
+        rows.append(
+            {
+                "_pws_query_key": query_key_value,
+                "PWS Service Area Query Resolved": resolved,
+                "PWS Service Area Overlap": bool(pwsids),
+                "PWS Match Count": int(len(pwsids)),
+                "PWSIDs": "; ".join(pwsids),
+                "PWS Names": "; ".join(names),
+                "PWS Boundary Basis": basis,
+                "PWS Authoritative Boundary Overlap": authoritative,
+                "PWS Modeled Boundary Overlap": modeled,
+                "PWS Ambiguous Overlap": len(pwsids) > 1,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _merge_refresh_reports(water: dict, local_report: dict) -> None:
+    refresh = dict(water.get("refresh_report") or {})
+    refresh["local_context"] = dict(local_report or {})
+    existing_errors = dict(refresh.get("errors") or {})
+    local_errors = dict((local_report or {}).get("errors") or {})
+    for key, value in local_errors.items():
+        existing_errors[f"local_{key}"] = value
+    if existing_errors:
+        refresh["errors"] = existing_errors
+    datasets = list(refresh.get("refreshed_datasets") or [])
+    datasets.extend(list((local_report or {}).get("refreshed_datasets") or []))
+    if datasets:
+        refresh["refreshed_datasets"] = list(dict.fromkeys(datasets))
+
+    local_mode = str((local_report or {}).get("source_mode") or "")
+    current_mode = str(refresh.get("source_mode") or water.get("source_mode") or "retained_local")
+    if local_mode in {"failed", "partial_refresh"} or current_mode in {"failed", "retained_fallback", "partial_refresh"}:
+        refresh["source_mode"] = "partial_refresh"
+    elif local_mode == "live_refresh" or current_mode == "live_refresh":
+        refresh["source_mode"] = "live_refresh"
+    water["refresh_report"] = refresh
+    water["source_mode"] = str(refresh.get("source_mode") or water.get("source_mode") or "retained_local")
+
+
 def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[dict, dict]:
     infrastructure = dict(infrastructure_data or {})
     water = dict(water_data or {})
     registry = infrastructure.get("facility_registry")
     counties = water.get("usgs_counties")
-    drought = water.get("usdm_state_drought")
+    state_drought = water.get("usdm_state_drought")
+    county_drought = water.get("usdm_county_drought")
+    pws_matches = water.get("epa_pws_matches")
     if not isinstance(registry, pd.DataFrame):
         registry = pd.DataFrame()
     if not isinstance(counties, pd.DataFrame):
         counties = pd.DataFrame()
-    if not isinstance(drought, pd.DataFrame):
-        drought = pd.DataFrame()
+    if not isinstance(state_drought, pd.DataFrame):
+        state_drought = pd.DataFrame()
+    if not isinstance(county_drought, pd.DataFrame):
+        county_drought = pd.DataFrame()
+    if not isinstance(pws_matches, pd.DataFrame):
+        pws_matches = pd.DataFrame()
     registry = registry.copy()
     if registry.empty:
         water["facility_context"] = pd.DataFrame()
@@ -44,20 +174,101 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
             "Surface Water Withdrawal Mgal/d", "Freshwater Withdrawal Mgal/d",
             "Saline Withdrawal Mgal/d", "Total Withdrawal Mgal/d", "Partial Consumptive Use Mgal/d",
         ]
-        context = context[[column for column in keep if column in context.columns]].drop_duplicates(["_state_key", "_county_key"], keep="last")
+        context = context[[column for column in keep if column in context.columns]].drop_duplicates(
+            ["_state_key", "_county_key"], keep="last"
+        )
         registry = registry.merge(context, on=["_state_key", "_county_key"], how="left")
-    if not drought.empty and "State" in drought.columns:
-        drought_context = drought.copy()
+    registry["_fips_key"] = registry.get("FIPS", pd.Series("", index=registry.index)).map(_normalize_fips)
+    registry = _pws_query_keys(registry)
+
+    if bool(water.get("local_context_refresh_requested")):
+        try:
+            from water.local_context import refresh_local_water_context
+
+            local = refresh_local_water_context(registry)
+            refreshed_county = local.get("usdm_county_drought")
+            refreshed_pws = local.get("epa_pws_matches")
+            if isinstance(refreshed_county, pd.DataFrame) and not refreshed_county.empty:
+                county_drought = refreshed_county
+                water["usdm_county_drought"] = refreshed_county
+            if isinstance(refreshed_pws, pd.DataFrame) and not refreshed_pws.empty:
+                pws_matches = refreshed_pws
+                water["epa_pws_matches"] = refreshed_pws
+            manifest = local.get("source_manifest")
+            if isinstance(manifest, pd.DataFrame):
+                water["source_manifest"] = manifest
+                active = manifest.loc[manifest.get("ingestion_status", "").eq("active")]
+                water["active_source_count"] = int(len(active))
+            _merge_refresh_reports(water, dict(local.get("report") or {}))
+        except Exception as exc:
+            _merge_refresh_reports(
+                water,
+                {
+                    "source_mode": "failed",
+                    "refreshed_datasets": [],
+                    "errors": {"refresh": f"{type(exc).__name__}: {exc}"},
+                },
+            )
+
+    # Current county drought is joined by 5-digit FIPS.  It is deliberately
+    # separate from the legacy state fields so existing state charts do not
+    # silently change meaning.
+    if not county_drought.empty and "FIPS" in county_drought.columns:
+        local = county_drought.copy()
+        local["_fips_key"] = local["FIPS"].map(_normalize_fips)
+        rename = {
+            "Snapshot Date": "County Drought Snapshot Date",
+            "D0+ Area Percent": "County D0+ Area Percent",
+            "D1+ Area Percent": "County D1+ Area Percent",
+            "D2+ Area Percent": "County D2+ Area Percent",
+            "D3+ Area Percent": "County D3+ Area Percent",
+            "D4 Area Percent": "County D4 Area Percent",
+            "Source": "County Drought Source",
+            "Source URL": "County Drought Source URL",
+        }
+        local = local.rename(columns=rename)
+        keep = ["_fips_key", *rename.values()]
+        local = local[[column for column in keep if column in local.columns]].drop_duplicates("_fips_key", keep="last")
+        registry = registry.merge(local, on="_fips_key", how="left")
+
+    if not state_drought.empty and "State" in state_drought.columns:
+        drought_context = state_drought.copy()
         drought_context["_state_key"] = drought_context["State"].fillna("").astype(str).str.upper().str.strip()
         drought_columns = [
             "_state_key", "Snapshot Date", "D0+ Area Percent", "D1+ Area Percent",
             "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent",
             "Population in Drought", "Source", "Source URL",
         ]
-        drought_context = drought_context[[column for column in drought_columns if column in drought_context.columns]].drop_duplicates("_state_key", keep="last")
+        drought_context = drought_context[
+            [column for column in drought_columns if column in drought_context.columns]
+        ].drop_duplicates("_state_key", keep="last")
         registry = registry.merge(drought_context, on="_state_key", how="left", suffixes=("", " Drought"))
 
-    registry = registry.drop(columns=["_state_key", "_county_key"], errors="ignore")
+    pws_context = _pws_context(pws_matches)
+    if not pws_context.empty:
+        registry = registry.merge(pws_context, on="_pws_query_key", how="left")
+    for column, default in (
+        ("PWS Service Area Query Resolved", False),
+        ("PWS Service Area Overlap", False),
+        ("PWS Authoritative Boundary Overlap", False),
+        ("PWS Modeled Boundary Overlap", False),
+        ("PWS Ambiguous Overlap", False),
+    ):
+        if column not in registry.columns:
+            registry[column] = default
+        registry[column] = registry[column].map(lambda value: bool(value) if pd.notna(value) else default)
+    if "PWS Match Count" not in registry.columns:
+        registry["PWS Match Count"] = 0
+    registry["PWS Match Count"] = pd.to_numeric(registry["PWS Match Count"], errors="coerce").fillna(0).astype(int)
+    for column in ("PWSIDs", "PWS Names", "PWS Boundary Basis"):
+        if column not in registry.columns:
+            registry[column] = ""
+        registry[column] = registry[column].fillna("").astype(str)
+
+    registry = registry.drop(
+        columns=["_state_key", "_county_key", "_fips_key", "_pws_facility_id", "_pws_query_key"],
+        errors="ignore",
+    )
 
     direct_fields = [
         "Water Withdrawal Gallons/Year", "Water Consumption Gallons/Year", "Site WUE L/kWh",
@@ -73,20 +284,42 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
             values = registry[field].fillna("").astype(str).str.casefold().str.strip()
             direct_mask |= values.ne("") & ~values.str.contains("not disclosed|unknown|unavailable", regex=True)
     registry["Direct Water Evidence"] = direct_mask
-    registry["County Water Context Available"] = pd.to_numeric(registry.get("Total Withdrawal Mgal/d"), errors="coerce").notna()
+    registry["County Water Context Available"] = pd.to_numeric(
+        registry.get("Total Withdrawal Mgal/d"), errors="coerce"
+    ).notna()
+
+    county_d1 = pd.to_numeric(registry.get("County D1+ Area Percent"), errors="coerce")
+    county_d2 = pd.to_numeric(registry.get("County D2+ Area Percent"), errors="coerce")
+    state_d1 = pd.to_numeric(registry.get("D1+ Area Percent"), errors="coerce")
+    state_d2 = pd.to_numeric(registry.get("D2+ Area Percent"), errors="coerce")
 
     infrastructure["facility_registry"] = registry
     water["facility_context"] = registry
     water["facility_context_summary"] = {
         "facilities": int(len(registry)),
         "states": int(registry.get("State", pd.Series(dtype=object)).replace("", np.nan).nunique()),
-        "state_identified_records": int(registry.get("State", pd.Series("", index=registry.index)).fillna("").astype(str).str.strip().ne("").sum()),
+        "state_identified_records": int(
+            registry.get("State", pd.Series("", index=registry.index)).fillna("").astype(str).str.strip().ne("").sum()
+        ),
         "county_context_records": int(registry["County Water Context Available"].sum()),
+        "county_drought_context_records": int(county_d1.notna().sum()),
+        "state_drought_context_records": int(state_d1.notna().sum()),
         "direct_water_evidence_records": int(registry["Direct Water Evidence"].sum()),
-        "quantified_withdrawal_records": int(pd.to_numeric(registry.get("Water Withdrawal Gallons/Year"), errors="coerce").notna().sum()),
-        "quantified_consumption_records": int(pd.to_numeric(registry.get("Water Consumption Gallons/Year"), errors="coerce").notna().sum()),
-        "drought_context_records": int(pd.to_numeric(registry.get("D1+ Area Percent"), errors="coerce").notna().sum()),
-        "severe_drought_facilities": int(pd.to_numeric(registry.get("D2+ Area Percent"), errors="coerce").fillna(0).gt(0).sum()),
+        "quantified_withdrawal_records": int(
+            pd.to_numeric(registry.get("Water Withdrawal Gallons/Year", pd.Series(np.nan, index=registry.index)), errors="coerce").notna().sum()
+        ),
+        "quantified_consumption_records": int(
+            pd.to_numeric(registry.get("Water Consumption Gallons/Year", pd.Series(np.nan, index=registry.index)), errors="coerce").notna().sum()
+        ),
+        # Legacy keys remain state-based for chart compatibility.
+        "drought_context_records": int(state_d1.notna().sum()),
+        "severe_drought_facilities": int(state_d2.fillna(0).gt(0).sum()),
+        "county_severe_drought_facilities": int(county_d2.fillna(0).gt(0).sum()),
+        "pws_service_area_query_resolved_records": int(registry["PWS Service Area Query Resolved"].sum()),
+        "pws_service_area_overlap_records": int(registry["PWS Service Area Overlap"].sum()),
+        "pws_authoritative_overlap_records": int(registry["PWS Authoritative Boundary Overlap"].sum()),
+        "pws_modeled_overlap_records": int(registry["PWS Modeled Boundary Overlap"].sum()),
+        "pws_ambiguous_overlap_records": int(registry["PWS Ambiguous Overlap"].sum()),
     }
     return infrastructure, water
 

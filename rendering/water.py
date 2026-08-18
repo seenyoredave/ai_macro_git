@@ -6,17 +6,18 @@ import streamlit as st
 
 from analytics.water_competition import (
     campus_water_dossier,
+    county_water_exposure_profile,
     current_top_withdrawal_profile,
-    evidence_ladder,
+    local_context_coverage_profile,
     state_facility_evidence_profile,
     state_water_exposure_profile,
 )
+from analytics.water_local import local_water_constraint_summary
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_water import (
     thermoelectric_water_groups,
-    water_capacity_disclosure_scatter,
-    water_drought_exposure,
-    water_evidence_ladder,
+    water_county_drought_exposure,
+    water_local_context_coverage,
     water_state_evidence_profile,
     water_top_withdrawals_2020,
     wastewater_construction_history,
@@ -46,6 +47,8 @@ def _context(water_data: dict, infrastructure_data: dict) -> dict:
     if not isinstance(facilities, pd.DataFrame):
         facilities = pd.DataFrame()
     summary = water.get("facility_context_summary", {}) or {}
+    local_summary = local_water_constraint_summary(facilities)
+    county_profile = county_water_exposure_profile(facilities)
     state_profile = state_water_exposure_profile(facilities, water.get("usgs_state_categories"))
     dossier = campus_water_dossier(facilities)
     national_profile = current_top_withdrawal_profile(water.get("usgs_2020_top_withdrawals"))
@@ -53,66 +56,91 @@ def _context(water_data: dict, infrastructure_data: dict) -> dict:
         "water": water,
         "facilities": facilities,
         "summary": summary,
+        "local_summary": local_summary,
+        "county_profile": county_profile,
         "state_profile": state_profile,
         "dossier": dossier,
         "national_profile": national_profile,
     }
 
 
-def _state_exposure_stats(context: dict):
-    state_profile = context["state_profile"]
-    severe_mask = state_profile.get("D2+ Area Percent", pd.Series(dtype=float)).fillna(0).gt(0) if not state_profile.empty else pd.Series(dtype=bool)
-    severe_states = int(severe_mask.sum()) if not state_profile.empty else 0
-    severe_capacity = pd.to_numeric(
-        state_profile.loc[severe_mask, "Published Capacity MW"], errors="coerce"
-    ).sum(min_count=1) if not state_profile.empty else np.nan
-    highest = state_profile.iloc[0] if not state_profile.empty else pd.Series(dtype=object)
-    summary = context["summary"]
-    coverage = summary.get("direct_water_evidence_records", 0) / max(summary.get("facilities", 0), 1) * 100.0
+def _pct(value) -> str:
+    numeric = pd.to_numeric(value, errors="coerce")
+    return "n/a" if pd.isna(numeric) else f"{float(numeric) * 100.0:.1f}%"
+
+
+def _latest_county_snapshot(context: dict) -> str:
+    facilities = context["facilities"]
+    if facilities.empty or "County Drought Snapshot Date" not in facilities.columns:
+        return "current county snapshot"
+    dates = pd.to_datetime(facilities["County Drought Snapshot Date"], errors="coerce", format="mixed").dropna()
+    if dates.empty:
+        return "current county snapshot"
+    return dates.max().strftime("%Y-%m-%d")
+
+
+def _local_exposure_stats(context: dict):
+    local = context["local_summary"]
+    mapped = int(local.get("mapped_facilities", 0) or 0)
+    resolved = int(local.get("county_drought_resolved", 0) or 0)
+    d2 = int(local.get("facilities_in_counties_with_d2", 0) or 0)
+    material = int(local.get("facilities_in_counties_with_25pct_d2", 0) or 0)
+    highest_location = str(local.get("highest_county_d2_location") or "n/a")
+    highest_d2 = pd.to_numeric(local.get("highest_county_d2_area_pct"), errors="coerce")
     return [
-        ("States with D2+ area", f"{severe_states:,}", "among mapped facility states"),
-        ("Capacity in D2+ states", fmt_number(severe_capacity, 0, suffix=" MW"), "published campus capacity"),
-        ("Highest current overlap", str(highest.get("State") or "n/a"), fmt_number(highest.get("D2+ Area Percent"), 1, suffix="% D2+ area")),
-        ("Direct evidence coverage", fmt_number(coverage, 1, suffix="%"), "mapped facilities"),
+        ("County drought resolved", f"{resolved:,} / {mapped:,}", _pct(local.get("county_drought_resolution_share"))),
+        ("Facilities in D2+ counties", f"{d2:,}", f"{_pct(local.get('facilities_in_counties_with_d2_share'))} of county-resolved"),
+        ("Facilities in ≥25% D2+ counties", f"{material:,}", f"{_pct(local.get('facilities_in_counties_with_25pct_d2_share'))} of county-resolved"),
+        ("Highest current D2+ county", highest_location, "n/a" if pd.isna(highest_d2) else f"{float(highest_d2):.1f}% county area"),
     ]
 
 
-def _render_state_exposure(context: dict) -> None:
-    facilities = context["facilities"]
-    water = context["water"]
+def _render_local_exposure(context: dict) -> None:
     render_section(
-        "Current water exposure",
-        "Published data-center capacity, drought exposure, and facility-level water disclosure by state.",
+        "Local water constraint",
+        "Current county drought conditions around mapped campuses. Drought overlap is physical context, not a claim of campus shortage or curtailment.",
         first=True,
     )
-    render_statline(_state_exposure_stats(context), key_prefix="water-exposure-state")
-    with st.container(border=True, key="full-width-layout-water-state-exposure"):
-        view = st.radio(
-            "Water exposure view",
-            ["Drought overlap", "Capacity and disclosure"],
-            horizontal=True,
-            label_visibility="collapsed",
-            key="water-exposure-view",
-        )
-        if view == "Capacity and disclosure":
-            render_panel_heading("Capacity and water disclosure", "State footprint")
-            figure = water_capacity_disclosure_scatter(facilities, water.get("usgs_state_categories"), height=480)
-            chart_key = "water-capacity-disclosure"
-        else:
-            render_panel_heading("Data-center footprint and drought area", "July 2026")
-            figure = water_drought_exposure(facilities, water.get("usgs_state_categories"), height=480)
-            chart_key = "water-drought-exposure"
+    render_statline(_local_exposure_stats(context), key_prefix="water-local-exposure")
+    with st.container(border=True, key="full-width-layout-water-county-exposure"):
+        render_panel_heading("Mapped campuses in current drought", _latest_county_snapshot(context))
+        figure = water_county_drought_exposure(context["facilities"], height=490)
         render_plotly_chart(
             figure,
             width="stretch",
             config={"displayModeBar": False, "responsive": True},
-            key=chart_key,
+            key="water-county-drought-exposure",
         )
+
+
+def _service_area_status(row: pd.Series) -> tuple[str, str]:
+    resolved = bool(row.get("PWS Service Area Query Resolved", False))
+    overlap = bool(row.get("PWS Service Area Overlap", False))
+    ambiguous = bool(row.get("PWS Ambiguous Overlap", False))
+    basis = str(row.get("PWS Boundary Basis") or "").strip().casefold()
+    if not resolved:
+        return "Not resolved", "EPA point query"
+    if not overlap:
+        return "No boundary overlap", "resolved EPA point query"
+    if ambiguous:
+        return "Multiple overlaps", "geographic overlap only"
+    if basis == "authoritative":
+        return "Authoritative overlap", "state/system-sourced boundary"
+    if basis == "modeled":
+        return "Modeled overlap", "modeled service-area boundary"
+    if basis == "mixed":
+        return "Mixed overlap", "authoritative + modeled boundaries"
+    if basis == "unclassified":
+        return "Unclassified overlap", "EPA boundary provenance not populated"
+    return "Boundary overlap", "geographic overlap only"
 
 
 def _render_campus_dossier(context: dict) -> None:
     dossier = context["dossier"]
-    render_section("Campus water profile", "A campus-level view of project status, local drought exposure, cooling, water source, and available disclosure.")
+    render_section(
+        "Campus water profile",
+        "Facility-level local drought, public-water service-area context, cooling and water-source records, and direct disclosure.",
+    )
     if dossier.empty:
         st.info("No facility records are available for the campus profile.")
         return
@@ -129,10 +157,10 @@ def _render_campus_dossier(context: dict) -> None:
         st.info("No campus records are available for the selected state.")
         return
 
-    labels = subset.apply(lambda row: f"{row.get('Facility', 'Unnamed facility')} · {row.get('Operator', 'Unknown operator')}", axis=1).tolist()
-    if not labels:
-        st.info("No campus records are available for the selected state.")
-        return
+    labels = subset.apply(
+        lambda row: f"{row.get('Facility', 'Unnamed facility')} · {row.get('Operator', 'Unknown operator')}",
+        axis=1,
+    ).tolist()
     selected_label = st.selectbox("Campus", labels, key="water-dossier-campus")
     row = subset.iloc[labels.index(selected_label)] if selected_label in labels else subset.iloc[0]
 
@@ -144,15 +172,20 @@ def _render_campus_dossier(context: dict) -> None:
     capacity = fmt_number(row.get("Published Capacity MW"), 0, suffix=" MW")
     if capacity == "n/a":
         capacity = "Not published"
-    d1 = fmt_number(row.get("D1+ Area Percent"), 1, suffix="%")
-    d2 = fmt_number(row.get("D2+ Area Percent"), 1, suffix="%")
+    d1 = fmt_number(row.get("Local D1+ Area Percent"), 1, suffix="%")
+    d2 = fmt_number(row.get("Local D2+ Area Percent"), 1, suffix="%")
     quantified = (
         pd.notna(pd.to_numeric(row.get("Water Withdrawal Gallons/Year"), errors="coerce"))
         or pd.notna(pd.to_numeric(row.get("Water Consumption Gallons/Year"), errors="coerce"))
     )
     location = ", ".join(part for part in [text(row.get("County"), ""), text(row.get("State"), "")] if part)
     operator = text(row.get("Operator"), "Operator not reported")
-    snapshot = text(row.get("Snapshot Date"), "Snapshot date unavailable")
+    snapshot = text(row.get("Local Drought Snapshot Date"), "Snapshot date unavailable")
+    geography = text(row.get("Local Drought Geography"), "local context")
+    service_value, service_note = _service_area_status(row)
+    pws_names = text(row.get("PWS Names"), "No intersecting community-water boundary")
+    pws_count_value = pd.to_numeric(row.get("PWS Match Count"), errors="coerce")
+    pws_count = int(pws_count_value) if pd.notna(pws_count_value) else 0
 
     with st.container(key="water-campus-dossier-record"):
         render_detail_dossier(
@@ -160,73 +193,84 @@ def _render_campus_dossier(context: dict) -> None:
             subtitle=f"{operator} · {location}" if location else operator,
             badge=text(row.get("Status"), "Status not reported"),
             headline_facts=[
-                ("Published capacity", capacity, "public campus estimate"),
-                ("Current D2+ overlap", d2, text(row.get("Exposure Tier"), "current drought context")),
-                ("Evidence grade", text(row.get("Water Evidence Grade"), "Unrated"), "facility-level water disclosure"),
+                ("Current D2+ overlap", d2, f"{geography} drought context"),
+                ("EPA service-area context", service_value, service_note),
+                ("Direct water evidence", "Yes" if bool(row.get("Direct Water Evidence", False)) else "No", "facility-level public record"),
             ],
             groups=[
                 (
-                    "Physical exposure",
+                    "Local physical context",
                     [
                         ("D1+ area", d1, snapshot),
                         ("D2+ area", d2, snapshot),
-                        ("Cooling system", text(row.get("Cooling System")), "facility evidence"),
-                        ("Water source", text(row.get("Water Source")), "facility evidence"),
+                        ("Drought geography", geography.title(), "county preferred; state fallback only"),
+                        ("Published capacity", capacity, "public campus estimate"),
                     ],
                 ),
                 (
-                    "Evidence and disclosure",
+                    "Public-water service-area context",
                     [
+                        ("EPA query", "Resolved" if bool(row.get("PWS Service Area Query Resolved", False)) else "Not resolved", "point-in-polygon query"),
+                        ("Boundary overlap", service_value, "does not establish service or purchases"),
+                        ("Intersecting systems", pws_names, f"{pws_count} boundary record(s)"),
+                        ("Boundary basis", text(row.get("PWS Boundary Basis"), "No overlap"), "authoritative / modeled / mixed / unclassified"),
+                    ],
+                ),
+                (
+                    "Direct facility disclosure",
+                    [
+                        ("Cooling system", text(row.get("Cooling System")), "facility evidence"),
+                        ("Water source", text(row.get("Water Source")), "facility evidence"),
                         ("Quantified use", "Yes" if quantified else "No", "annual withdrawal or consumption"),
                         ("Withdrawal", fmt_number(row.get("Water Withdrawal Gallons/Year"), 0, suffix=" gal/year"), "published facility record"),
                         ("Consumption", fmt_number(row.get("Water Consumption Gallons/Year"), 0, suffix=" gal/year"), "published facility record"),
-                        ("Evidence status", text(row.get("Water Evidence Status"), "No direct record"), "public record"),
+                        ("Evidence grade", text(row.get("Water Evidence Grade"), "Unrated"), "facility-level disclosure"),
                     ],
                 ),
             ],
             key_prefix="water-campus-dossier",
         )
 
-def _disclosure_stats(context: dict):
-    facilities = context["facilities"]
+
+def _coverage_stats(context: dict):
     summary = context["summary"]
-    state_profile = state_facility_evidence_profile(facilities)
-    mapped_states = int(state_profile["State"].nunique()) if not state_profile.empty else 0
-    direct_states = int(state_profile.loc[state_profile["Direct Water Evidence"].gt(0), "State"].nunique()) if not state_profile.empty else 0
-    ladder = evidence_ladder(summary)
-    quantified = int(ladder.loc[ladder["Evidence Stage"].isin(["Quantified withdrawal", "Quantified consumption"]), "Facilities"].sum()) if not ladder.empty else 0
+    facilities = max(int(summary.get("facilities", 0) or 0), 1)
+    pws_resolved = int(summary.get("pws_service_area_query_resolved_records", 0) or 0)
+    pws_overlap = int(summary.get("pws_service_area_overlap_records", 0) or 0)
+    direct = int(summary.get("direct_water_evidence_records", 0) or 0)
+    quantified = int(summary.get("quantified_withdrawal_records", 0) or 0) + int(summary.get("quantified_consumption_records", 0) or 0)
     return [
-        ("Mapped facilities", f"{int(summary.get('facilities', 0) or 0):,}", f"{mapped_states} states"),
-        ("Direct evidence", f"{int(summary.get('direct_water_evidence_records', 0) or 0):,}", f"{direct_states} states"),
-        ("Quantified records", f"{quantified:,}", "withdrawal + consumption stages"),
-        ("County water context", f"{int(summary.get('county_context_records', 0) or 0):,}", "historical county context"),
+        ("Mapped facilities", f"{int(summary.get('facilities', 0) or 0):,}", "facility registry"),
+        ("EPA point queries resolved", f"{pws_resolved:,}", f"{pws_resolved / facilities * 100.0:.1f}% of mapped facilities"),
+        ("EPA boundary overlaps", f"{pws_overlap:,}", "geographic context only"),
+        ("Direct / quantified", f"{direct:,} / {quantified:,}", "facility evidence / quantified records"),
     ]
 
 
-def _render_disclosure(context: dict) -> None:
+def _render_coverage(context: dict) -> None:
     facilities = context["facilities"]
     summary = context["summary"]
     render_section(
-        "Water disclosure coverage",
-        "Facility records by disclosure level, from mapped location to quantified water use.",
+        "Water observability",
+        "Coverage of current physical context, EPA service-area geography, and direct facility water disclosure. These layers are independent rather than a single evidence funnel.",
     )
-    render_statline(_disclosure_stats(context), key_prefix="water-evidence-state")
-    with st.container(border=True, key="full-width-layout-water-evidence"):
+    render_statline(_coverage_stats(context), key_prefix="water-observability")
+    with st.container(border=True, key="full-width-layout-water-observability"):
         view = st.radio(
-            "Disclosure view",
-            ["Water disclosure coverage", "State coverage"],
+            "Water observability view",
+            ["Coverage layers", "Direct evidence by state"],
             horizontal=True,
             label_visibility="collapsed",
-            key="water-disclosure-view",
+            key="water-observability-view",
         )
-        if view == "State coverage":
-            render_panel_heading("Facility and disclosure coverage by state", "Operating and in-development campuses")
+        if view == "Direct evidence by state":
+            render_panel_heading("Direct facility water evidence by state", "Mapped campus records")
             figure = water_state_evidence_profile(facilities, height=450)
             chart_key = "water-state-evidence-profile"
         else:
-            render_panel_heading("Water disclosure coverage", "Facility records")
-            figure = water_evidence_ladder(summary, height=450)
-            chart_key = "water-evidence-ladder"
+            render_panel_heading("What the Water layer can observe", "Independent context and disclosure surfaces")
+            figure = water_local_context_coverage(summary, height=450)
+            chart_key = "water-local-context-coverage"
         render_plotly_chart(
             figure,
             width="stretch",
@@ -244,7 +288,7 @@ def _national_claim_stats(context: dict):
         ("Crop irrigation", fmt_number(values.get("Crop irrigation"), 1, suffix=" Bgal/day"), "USGS modeled withdrawal"),
         ("Thermoelectric power", fmt_number(values.get("Thermoelectric power"), 1, suffix=" Bgal/day"), "USGS modeled withdrawal"),
         ("Public supply", fmt_number(values.get("Public supply"), 1, suffix=" Bgal/day"), "USGS modeled withdrawal"),
-        ("Quantified facility records", f"{quantified:,}", "withdrawal or consumption"),
+        ("Quantified facility records", f"{quantified:,}", "not extrapolated nationally"),
     ]
 
 
@@ -275,13 +319,13 @@ def _wastewater_stats(context: dict, infrastructure_data: dict):
 def _render_system_context_workbench(context: dict, infrastructure_data: dict) -> None:
     water = context["water"]
     thermo_stats = _thermoelectric_stats(context)
-    views = ["National water claims"]
+    views = ["National water allocation"]
     if thermo_stats:
         views.append("Thermoelectric system")
     views.append("Wastewater investment")
     render_section(
-        "Other water demand and infrastructure",
-        "National water use, thermoelectric demand, and wastewater investment provide context for the site-level records above.",
+        "System context, not data-center use",
+        "National water allocation, thermoelectric demand, and wastewater investment provide scale and infrastructure context without estimating data-center water consumption.",
     )
     with st.container(border=True, key="water-system-workbench"):
         view = st.radio(
@@ -325,27 +369,28 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
     context = _context(water_data, infrastructure_data)
     render_tab_header(
         "Water",
-        "Data-center water exposure, cooling and water-source records, drought conditions, competing demand, and wastewater investment.",
-        "USGS / NOAA-NCEI / EIA / U.S. Census Bureau",
+        "Local drought exposure, public-water service-area context, facility disclosure, competing water demand, and water-system investment.",
+        "USGS / U.S. Drought Monitor / EPA / EIA / U.S. Census Bureau",
     )
     _render_floating_terms("water")
     render_domain_read(tab_read, label="Read", domain="water")
-    _render_state_exposure(context)
+    _render_local_exposure(context)
     _render_campus_dossier(context)
-    _render_disclosure(context)
+    _render_coverage(context)
     _render_system_context_workbench(context, infrastructure_data)
 
     with st.expander("Water data", expanded=False):
         view = st.radio(
             "Ledger",
-            ["Campus profile", "State exposure", "Drought snapshot", "Facility records", "Thermoelectric plants"],
+            ["Campus profile", "County exposure", "County drought snapshot", "EPA service-area matches", "Facility records", "Thermoelectric plants"],
             horizontal=True,
             key="water-ledger-view",
         )
         frames = {
             "Campus profile": context.get("dossier"),
-            "State exposure": context.get("state_profile"),
-            "Drought snapshot": context.get("water", {}).get("usdm_state_drought"),
+            "County exposure": context.get("county_profile"),
+            "County drought snapshot": context.get("water", {}).get("usdm_county_drought"),
+            "EPA service-area matches": context.get("water", {}).get("epa_pws_matches"),
             "Facility records": context.get("facilities"),
             "Thermoelectric plants": context.get("water", {}).get("eia_plants"),
         }

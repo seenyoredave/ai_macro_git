@@ -22,6 +22,18 @@ PARTY_ORDER = [
 ]
 
 
+def _numeric(frame: pd.DataFrame, column: str) -> pd.Series:
+    if column not in frame.columns:
+        return pd.Series(np.nan, index=frame.index, dtype=float)
+    return pd.to_numeric(frame[column], errors="coerce")
+
+
+def _boolean(frame: pd.DataFrame, column: str) -> pd.Series:
+    if column not in frame.columns:
+        return pd.Series(False, index=frame.index, dtype=bool)
+    return frame[column].fillna(False).astype(bool)
+
+
 def competing_freshwater_profile(category_frame: pd.DataFrame | None) -> pd.DataFrame:
     """Aggregate USGS categories into the parties competing for freshwater.
 
@@ -66,12 +78,7 @@ def competing_freshwater_profile(category_frame: pd.DataFrame | None) -> pd.Data
 
 
 def evidence_ladder(summary: dict | None) -> pd.DataFrame:
-    """Track current facility evidence without promoting stale county data.
-
-    State identification comes from the current facility registry. Older county
-    withdrawal records remain provenance-only and are not counted as a current
-    analytical evidence stage.
-    """
+    """Retained compatibility view of facility water-evidence depth."""
     payload = summary or {}
     facilities = int(payload.get("facilities", 0) or 0)
     state_identified = int(payload.get("state_identified_records", facilities) or 0)
@@ -85,6 +92,118 @@ def evidence_ladder(summary: dict | None) -> pd.DataFrame:
     frame = pd.DataFrame(rows, columns=["Evidence Stage", "Facilities"])
     frame["Coverage"] = frame["Facilities"] / facilities if facilities > 0 else np.nan
     return frame
+
+
+def local_context_coverage_profile(summary: dict | None) -> pd.DataFrame:
+    """Describe independent Water v2 observability layers without implying a funnel.
+
+    County drought, EPA service-area overlap, and direct facility disclosure are
+    separate evidence surfaces.  A facility does not need to intersect an EPA
+    polygon to have direct water evidence, and an EPA overlap does not establish
+    a customer relationship.
+    """
+    payload = summary or {}
+    facilities = int(payload.get("facilities", 0) or 0)
+    rows = [
+        ("Mapped facilities", facilities, "registry"),
+        ("Current county drought", int(payload.get("county_drought_context_records", 0) or 0), "physical context"),
+        ("EPA point query resolved", int(payload.get("pws_service_area_query_resolved_records", 0) or 0), "service-area context"),
+        ("EPA service-area overlap", int(payload.get("pws_service_area_overlap_records", 0) or 0), "service-area context"),
+        ("Direct facility water evidence", int(payload.get("direct_water_evidence_records", 0) or 0), "facility evidence"),
+        ("Quantified withdrawal", int(payload.get("quantified_withdrawal_records", 0) or 0), "facility evidence"),
+        ("Quantified consumption", int(payload.get("quantified_consumption_records", 0) or 0), "facility evidence"),
+    ]
+    frame = pd.DataFrame(rows, columns=["Coverage Layer", "Facilities", "Layer Type"])
+    frame["Coverage"] = frame["Facilities"] / facilities if facilities > 0 else np.nan
+    return frame
+
+
+def county_water_exposure_profile(facility_context: pd.DataFrame | None) -> pd.DataFrame:
+    """Aggregate mapped facilities by county using current USDM county statistics.
+
+    The output is physical exposure context only.  Drought area is not treated
+    as proof of campus-level shortage, available supply, or curtailment.
+    """
+    columns = [
+        "State", "County", "Facilities", "D1+ Area Percent", "D2+ Area Percent",
+        "D3+ Area Percent", "D4 Area Percent", "PWS Query Resolved",
+        "PWS Overlap Facilities", "Authoritative PWS Overlap",
+        "Modeled PWS Overlap", "Unclassified PWS Overlap", "Direct Water Evidence", "Quantified Use",
+        "County Drought Snapshot Date",
+    ]
+    if facility_context is None or not isinstance(facility_context, pd.DataFrame) or facility_context.empty:
+        return pd.DataFrame(columns=columns)
+
+    frame = facility_context.copy()
+    frame["State"] = frame.get("State", "").fillna("").astype(str).str.upper().str.strip()
+    frame["County"] = frame.get("County", "").fillna("").astype(str).str.strip()
+    frame = frame.loc[frame["State"].ne("") & frame["County"].ne("")].copy()
+    if frame.empty:
+        return pd.DataFrame(columns=columns)
+
+    for column in (
+        "County D1+ Area Percent", "County D2+ Area Percent",
+        "County D3+ Area Percent", "County D4 Area Percent",
+    ):
+        frame[column] = _numeric(frame, column)
+    frame["_pws_resolved"] = _boolean(frame, "PWS Service Area Query Resolved")
+    frame["_pws_overlap"] = _boolean(frame, "PWS Service Area Overlap")
+    frame["_pws_authoritative"] = _boolean(frame, "PWS Authoritative Boundary Overlap")
+    frame["_pws_modeled"] = _boolean(frame, "PWS Modeled Boundary Overlap")
+    frame["_pws_unclassified"] = frame["_pws_overlap"] & ~frame["_pws_authoritative"] & ~frame["_pws_modeled"]
+    frame["_direct"] = _boolean(frame, "Direct Water Evidence")
+    frame["_quantified"] = (
+        _numeric(frame, "Water Withdrawal Gallons/Year").notna()
+        | _numeric(frame, "Water Consumption Gallons/Year").notna()
+    )
+
+    grouped = frame.groupby(["State", "County"], dropna=False, sort=False)
+    out = grouped.agg(
+        Facilities=("County", "size"),
+        D1=("County D1+ Area Percent", "max"),
+        D2=("County D2+ Area Percent", "max"),
+        D3=("County D3+ Area Percent", "max"),
+        D4=("County D4 Area Percent", "max"),
+        PWS_Query_Resolved=("_pws_resolved", "sum"),
+        PWS_Overlap=("_pws_overlap", "sum"),
+        PWS_Authoritative=("_pws_authoritative", "sum"),
+        PWS_Modeled=("_pws_modeled", "sum"),
+        PWS_Unclassified=("_pws_unclassified", "sum"),
+        Direct_Evidence=("_direct", "sum"),
+        Quantified_Use=("_quantified", "sum"),
+    ).reset_index()
+    out = out.rename(columns={
+        "D1": "D1+ Area Percent",
+        "D2": "D2+ Area Percent",
+        "D3": "D3+ Area Percent",
+        "D4": "D4 Area Percent",
+        "PWS_Query_Resolved": "PWS Query Resolved",
+        "PWS_Overlap": "PWS Overlap Facilities",
+        "PWS_Authoritative": "Authoritative PWS Overlap",
+        "PWS_Modeled": "Modeled PWS Overlap",
+        "PWS_Unclassified": "Unclassified PWS Overlap",
+        "Direct_Evidence": "Direct Water Evidence",
+        "Quantified_Use": "Quantified Use",
+    })
+
+    snapshot = frame.get("County Drought Snapshot Date", pd.Series("", index=frame.index)).fillna("").astype(str).str.strip()
+    if snapshot.ne("").any():
+        dates = (
+            frame.assign(_snapshot=snapshot)
+            .groupby(["State", "County"], dropna=False)["_snapshot"]
+            .max()
+            .rename("County Drought Snapshot Date")
+            .reset_index()
+        )
+        out = out.merge(dates, on=["State", "County"], how="left")
+    else:
+        out["County Drought Snapshot Date"] = ""
+
+    return out.sort_values(
+        ["D2+ Area Percent", "Facilities", "State", "County"],
+        ascending=[False, False, True, True],
+        kind="stable",
+    ).reset_index(drop=True)
 
 
 def state_competition_exposure(
@@ -136,8 +255,6 @@ def state_competition_exposure(
     else:
         states = state_categories.copy()
         states["State"] = states.get("Geography", "").fillna("").astype(str).str.upper().str.strip()
-        profile = competing_freshwater_profile(states)
-        # competing_freshwater_profile aggregates all supplied geographies, so build per state.
         rows = []
         for state, subset in states.groupby("State", sort=False):
             parties = competing_freshwater_profile(subset)
@@ -165,12 +282,7 @@ def state_competition_exposure(
 
 
 def current_top_withdrawal_profile(frame: pd.DataFrame | None) -> pd.DataFrame:
-    """Normalize the retained USGS 2020 top-three withdrawal comparison.
-
-    The source covers crop irrigation, thermoelectric power, and public supply.
-    It is a current-window national allocation envelope, not a complete all-use
-    account and not an estimate of data-center withdrawal.
-    """
+    """Normalize the retained USGS 2020 top-three withdrawal comparison."""
     columns = [
         "Use Category", "Withdrawal Mgal/d", "Withdrawal Bgal/day",
         "Observation Year", "Source Name", "Source URL", "Publication Date",
@@ -193,11 +305,7 @@ def current_top_withdrawal_profile(frame: pd.DataFrame | None) -> pd.DataFrame:
 
 
 def state_facility_evidence_profile(facility_context: pd.DataFrame | None) -> pd.DataFrame:
-    """Summarize current facility concentration and direct water evidence by state.
-
-    No historic withdrawal data are joined here.  The output supports evidence
-    triage only and makes no claim about local water use, scarcity, or displacement.
-    """
+    """Summarize current facility concentration and direct water evidence by state."""
     columns = [
         "State", "Mapped Facilities", "Direct Water Evidence",
         "Quantified Use", "Direct Evidence Coverage", "Quantified Use Coverage",
@@ -209,11 +317,11 @@ def state_facility_evidence_profile(facility_context: pd.DataFrame | None) -> pd
     frame = frame.loc[frame["State"].ne("")].copy()
     if frame.empty:
         return pd.DataFrame(columns=columns)
-    direct = frame.get("Direct Water Evidence", pd.Series(False, index=frame.index))
-    frame["_direct"] = pd.Series(direct, index=frame.index).fillna(False).astype(bool)
-    withdrawal = pd.to_numeric(frame.get("Water Withdrawal Gallons/Year"), errors="coerce")
-    consumption = pd.to_numeric(frame.get("Water Consumption Gallons/Year"), errors="coerce")
-    frame["_quantified"] = withdrawal.notna() | consumption.notna()
+    frame["_direct"] = _boolean(frame, "Direct Water Evidence")
+    frame["_quantified"] = (
+        _numeric(frame, "Water Withdrawal Gallons/Year").notna()
+        | _numeric(frame, "Water Consumption Gallons/Year").notna()
+    )
     facility_id = "Facility ID" if "Facility ID" in frame.columns else None
     grouped = frame.groupby("State", sort=True, dropna=False)
     if facility_id:
@@ -238,19 +346,18 @@ def state_water_exposure_profile(
     facility_context: pd.DataFrame | None,
     state_categories: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
-    """Combine campus footprint, drought area, disclosure, and freshwater allocation by state."""
+    """Compatibility state view; Water v2 primary exposure uses county context."""
     if facility_context is None or not isinstance(facility_context, pd.DataFrame) or facility_context.empty:
         return pd.DataFrame()
     frame = facility_context.copy()
     frame["State"] = frame.get("State", "").fillna("").astype(str).str.upper().str.strip()
     frame = frame.loc[frame["State"].ne("")].copy()
-    published = pd.to_numeric(frame.get("Published Capacity Estimate MW"), errors="coerce")
-    planned = pd.to_numeric(frame.get("Planned Data Center Capacity MW"), errors="coerce")
+    published = _numeric(frame, "Published Capacity Estimate MW")
+    planned = _numeric(frame, "Planned Data Center Capacity MW")
     frame["Published MW"] = published.combine_first(planned)
-    frame["D1+ Area Percent"] = pd.to_numeric(frame.get("D1+ Area Percent"), errors="coerce")
-    frame["D2+ Area Percent"] = pd.to_numeric(frame.get("D2+ Area Percent"), errors="coerce")
-    direct = frame.get("Direct Water Evidence", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
-    frame["_direct"] = direct
+    frame["D1+ Area Percent"] = _numeric(frame, "D1+ Area Percent")
+    frame["D2+ Area Percent"] = _numeric(frame, "D2+ Area Percent")
+    frame["_direct"] = _boolean(frame, "Direct Water Evidence")
     grouped = frame.groupby("State", dropna=False)
     out = grouped.agg(
         Facilities=("State", "size"),
@@ -264,7 +371,9 @@ def state_water_exposure_profile(
         "D1_Area_Percent": "D1+ Area Percent",
         "D2_Area_Percent": "D2+ Area Percent",
     })
-    out["Direct Evidence Coverage Percent"] = out["Direct Water Evidence"] / out["Facilities"].where(out["Facilities"].gt(0)) * 100.0
+    out["Direct Evidence Coverage Percent"] = (
+        out["Direct Water Evidence"] / out["Facilities"].where(out["Facilities"].gt(0)) * 100.0
+    )
     allocation = state_competition_exposure(frame, state_categories)
     if not allocation.empty:
         keep = ["State", "Community + Agriculture Share", "Agriculture Share", "Household & Public Share", "Thermoelectric Share"]
@@ -278,28 +387,58 @@ def state_water_exposure_profile(
 
 
 def campus_water_dossier(facility_context: pd.DataFrame | None) -> pd.DataFrame:
+    """Return campus-level local context without upgrading overlap into service."""
     if facility_context is None or not isinstance(facility_context, pd.DataFrame) or facility_context.empty:
         return pd.DataFrame()
     frame = facility_context.copy()
     keep = [
         "Facility ID", "Facility", "Operator", "State", "County", "Status",
         "Published Capacity Estimate MW", "Planned Data Center Capacity MW", "Cooling System", "Water Source",
-        "Reclaimed Water Use", "Direct Water Evidence", "Water Evidence Grade",
+        "Reclaimed Water Use", "Direct Water Evidence", "Water Evidence Grade", "Water Evidence Status",
         "Water Withdrawal Gallons/Year", "Water Consumption Gallons/Year",
-        "D1+ Area Percent", "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent",
-        "Snapshot Date", "Freshwater Withdrawal Mgal/d", "Total Withdrawal Mgal/d",
+        "County D1+ Area Percent", "County D2+ Area Percent", "County D3+ Area Percent", "County D4 Area Percent",
+        "County Drought Snapshot Date", "County Drought Source", "County Drought Source URL",
+        "D1+ Area Percent", "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent", "Snapshot Date",
+        "Freshwater Withdrawal Mgal/d", "Total Withdrawal Mgal/d", "Year",
+        "PWS Service Area Query Resolved", "PWS Service Area Overlap", "PWS Match Count", "PWSIDs", "PWS Names",
+        "PWS Boundary Basis", "PWS Authoritative Boundary Overlap", "PWS Modeled Boundary Overlap", "PWS Ambiguous Overlap",
         "Water Evidence Source", "Water Evidence URL",
     ]
     out = frame[[column for column in keep if column in frame.columns]].copy()
-    published = pd.to_numeric(out.get("Published Capacity Estimate MW"), errors="coerce")
-    planned = pd.to_numeric(out.get("Planned Data Center Capacity MW"), errors="coerce")
+    published = _numeric(out, "Published Capacity Estimate MW")
+    planned = _numeric(out, "Planned Data Center Capacity MW")
     out["Published Capacity MW"] = published.combine_first(planned)
-    out["D1+ Area Percent"] = pd.to_numeric(out.get("D1+ Area Percent"), errors="coerce")
-    out["D2+ Area Percent"] = pd.to_numeric(out.get("D2+ Area Percent"), errors="coerce")
-    out["Direct Water Evidence"] = out.get("Direct Water Evidence", False).fillna(False).astype(bool)
+
+    county_d1 = _numeric(out, "County D1+ Area Percent")
+    county_d2 = _numeric(out, "County D2+ Area Percent")
+    state_d1 = _numeric(out, "D1+ Area Percent")
+    state_d2 = _numeric(out, "D2+ Area Percent")
+    out["Local D1+ Area Percent"] = county_d1.combine_first(state_d1)
+    out["Local D2+ Area Percent"] = county_d2.combine_first(state_d2)
+    out["Local Drought Geography"] = np.where(county_d2.notna() | county_d1.notna(), "county", "state fallback")
+    out["Local Drought Snapshot Date"] = out.get(
+        "County Drought Snapshot Date", pd.Series("", index=out.index)
+    ).fillna("").astype(str)
+    if "Snapshot Date" in out.columns:
+        fallback = out["Snapshot Date"].fillna("").astype(str)
+        out["Local Drought Snapshot Date"] = out["Local Drought Snapshot Date"].where(
+            out["Local Drought Snapshot Date"].str.strip().ne(""), fallback
+        )
+
+    out["Direct Water Evidence"] = _boolean(out, "Direct Water Evidence")
+    out["PWS Service Area Query Resolved"] = _boolean(out, "PWS Service Area Query Resolved")
+    out["PWS Service Area Overlap"] = _boolean(out, "PWS Service Area Overlap")
+    out["PWS Authoritative Boundary Overlap"] = _boolean(out, "PWS Authoritative Boundary Overlap")
+    out["PWS Modeled Boundary Overlap"] = _boolean(out, "PWS Modeled Boundary Overlap")
+    out["PWS Ambiguous Overlap"] = _boolean(out, "PWS Ambiguous Overlap")
+
     out["Exposure Tier"] = np.select(
-        [out["D2+ Area Percent"].fillna(0).ge(25), out["D1+ Area Percent"].fillna(0).ge(25)],
-        ["Severe drought overlap", "Drought overlap"],
+        [out["Local D2+ Area Percent"].fillna(0).ge(25), out["Local D1+ Area Percent"].fillna(0).ge(25)],
+        ["Material D2+ county overlap", "County drought overlap"],
         default="Limited current drought overlap",
     )
-    return out.sort_values(["D2+ Area Percent", "Published Capacity MW"], ascending=[False, False], kind="stable").reset_index(drop=True)
+    return out.sort_values(
+        ["Local D2+ Area Percent", "Published Capacity MW"],
+        ascending=[False, False],
+        kind="stable",
+    ).reset_index(drop=True)

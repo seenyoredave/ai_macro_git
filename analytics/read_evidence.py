@@ -22,9 +22,10 @@ from analytics.financial_conditions import nfci_snapshot
 from analytics.grid_deliverability import queue_outcome_snapshot, reserve_margin_profile, storage_duration_profile
 from analytics.market_ledger import build_market_ledger
 from analytics.private_capital import build_private_capital_realization
-from analytics.water_competition import current_top_withdrawal_profile, state_water_exposure_profile
+from analytics.water_competition import current_top_withdrawal_profile
+from analytics.water_local import local_water_constraint_summary
 
-EVIDENCE_ARCHITECTURE_VERSION = "1.1.0"
+EVIDENCE_ARCHITECTURE_VERSION = "1.2.0"
 DOMAIN_ORDER = (
     "market",
     "finance",
@@ -89,7 +90,8 @@ DOMAIN_REFERENCES: dict[str, tuple[dict[str, str], ...]] = {
     ),
     "water": (
         {"source_label": "USGS Water Use", "source_url": "https://www.usgs.gov/mission-areas/water-resources/science/water-use-united-states"},
-        {"source_label": "U.S. Drought Monitor / NOAA NCEI", "source_url": "https://www.ncei.noaa.gov/pub/data/nidis/geojson/state/stateranks/"},
+        {"source_label": "U.S. Drought Monitor county statistics", "source_url": "https://droughtmonitor.unl.edu/DmData/DataDownload/WebServiceInfo.aspx"},
+        {"source_label": "EPA Public Water System Service Areas", "source_url": "https://www.epa.gov/ground-water-and-drinking-water/public-water-system-service-areas"},
         {"source_label": "U.S. EIA", "source_url": "https://www.eia.gov/"},
         {"source_label": "Data-center campus records", "source_url": ""},
     ),
@@ -146,7 +148,8 @@ DOMAIN_BOUNDARIES: dict[str, tuple[str, ...]] = {
         "Storage duration can address short peaks but does not remove transmission or interconnection constraints.",
     ),
     "water": (
-        "State drought conditions do not establish campus-level water availability.",
+        "County drought exposure is local physical context; it does not establish campus water shortage, availability, or curtailment.",
+        "EPA service-area intersection is geographic overlap, not proof that a facility is served by or buys water from the intersecting system.",
         "Sparse facility disclosure prevents a national estimate of data-center water use.",
     ),
     "adoption": (
@@ -543,27 +546,50 @@ def build_grid_storage_evidence(context: DashboardContext) -> EvidencePacket:
 
 
 def build_water_evidence(context: DashboardContext) -> EvidencePacket:
-    water=context.water_data or {}; summary=water.get("summary",{}) or {}; eia=summary.get("eia_2024_thermoelectric",{}) or {}; linkage=water.get("facility_context_summary",{}) or {}; facilities_frame=water.get("facility_context")
-    state_profile=state_water_exposure_profile(facilities_frame if isinstance(facilities_frame,pd.DataFrame) else pd.DataFrame(),water.get("usgs_state_categories")); profile=current_top_withdrawal_profile(water.get("usgs_2020_top_withdrawals")); values=profile.set_index("Use Category")["Withdrawal Bgal/day"].to_dict() if not profile.empty else {}
-    irrigation=_num(values.get("Crop irrigation")); thermo=_num(values.get("Thermoelectric power")); public=_num(values.get("Public supply")); withdrawal=_num(eia.get("withdrawal_bgal_day")); consumption=_num(eia.get("consumption_bgal_day")); facilities=int(linkage.get("facilities",0) or 0); direct=int(linkage.get("direct_water_evidence_records",0) or 0); quantified=int(linkage.get("quantified_withdrawal_records",0) or 0)+int(linkage.get("quantified_consumption_records",0) or 0); direct_share=direct/facilities*100 if facilities else np.nan
-    d2=pd.to_numeric(state_profile.get("D2+ Area Percent"),errors="coerce") if not state_profile.empty else pd.Series(dtype=float); capacity=pd.to_numeric(state_profile.get("Published Capacity MW"),errors="coerce") if not state_profile.empty else pd.Series(dtype=float); severe=d2.gt(0); material=d2.ge(25); drought_states=int(severe.sum()); material_states=int(material.sum()); drought_capacity=_num(capacity.loc[severe].sum(min_count=1)/1000) if not capacity.empty else np.nan; material_capacity=_num(capacity.loc[material].sum(min_count=1)/1000) if not capacity.empty else np.nan; highest=state_profile.iloc[0] if not state_profile.empty else pd.Series(dtype=object); highest_state=str(highest.get("State") or ""); highest_d2=_num(highest.get("D2+ Area Percent"))
-    importance=max(48,min(80,material_capacity/150) if pd.notna(material_capacity) else 0,55+min(20,highest_d2/5) if pd.notna(highest_d2) else 0)
+    water=context.water_data or {}; summary=water.get("summary",{}) or {}; eia=summary.get("eia_2024_thermoelectric",{}) or {}; facilities_frame=water.get("facility_context")
+    profile=current_top_withdrawal_profile(water.get("usgs_2020_top_withdrawals")); values=profile.set_index("Use Category")["Withdrawal Bgal/day"].to_dict() if not profile.empty else {}
+    local=local_water_constraint_summary(facilities_frame if isinstance(facilities_frame,pd.DataFrame) else pd.DataFrame())
+    facilities=int(local.get("mapped_facilities",0) or 0); county_resolved=int(local.get("county_drought_resolved",0) or 0); county_share=_num(local.get("county_drought_resolution_share"))
+    d2_facilities=int(local.get("facilities_in_counties_with_d2",0) or 0); d2_share=_num(local.get("facilities_in_counties_with_d2_share")); material_facilities=int(local.get("facilities_in_counties_with_25pct_d2",0) or 0); material_share=_num(local.get("facilities_in_counties_with_25pct_d2_share")); highest_location=str(local.get("highest_county_d2_location") or ""); highest_d2=_num(local.get("highest_county_d2_area_pct"))
+    direct=int(local.get("direct_water_evidence",0) or 0); quantified_withdrawal=int(local.get("quantified_withdrawal",0) or 0); quantified_consumption=int(local.get("quantified_consumption",0) or 0); quantified=quantified_withdrawal+quantified_consumption; direct_share=direct/facilities*100 if facilities else np.nan
+    pws_resolved=int(local.get("service_area_query_resolved",0) or 0); pws_resolution_share=_num(local.get("service_area_query_resolution_share")); pws_overlap=int(local.get("service_area_overlap",0) or 0); pws_share=_num(local.get("service_area_overlap_share")); authoritative=int(local.get("authoritative_service_area_overlap",0) or 0); modeled=int(local.get("modeled_service_area_overlap",0) or 0); unclassified=int(local.get("unclassified_service_area_overlap",0) or 0); provenance_share=_num(local.get("service_area_provenance_classified_share")); ambiguous=int(local.get("ambiguous_service_area_overlap",0) or 0)
+    use_provenance_split=bool(pws_overlap>0 and pd.notna(provenance_share) and provenance_share>=0.8)
+    capacity_coverage=_num(local.get("published_capacity_coverage_share")); d2_capacity=_num(local.get("published_capacity_in_counties_with_d2_gw")); material_capacity=_num(local.get("published_capacity_in_counties_with_25pct_d2_gw"))
+    use_capacity=bool(pd.notna(capacity_coverage) and capacity_coverage>=0.25)
+    irrigation=_num(values.get("Crop irrigation")); thermo=_num(values.get("Thermoelectric power")); public=_num(values.get("Public supply")); withdrawal=_num(eia.get("withdrawal_bgal_day")); consumption=_num(eia.get("consumption_bgal_day"))
+    exposure_score=(35*(material_share if pd.notna(material_share) else 0))+(15*(d2_share if pd.notna(d2_share) else 0)); resolution_factor=min(1.0,(county_share/0.8)) if pd.notna(county_share) and county_share>0 else 0.0; disclosure_gap=(1-(direct/facilities)) if facilities else 0.0; importance=min(85,35+(exposure_score*resolution_factor)+(10*disclosure_gap))
     return _packet("water", [
+        _fact("water","mapped_facilities","Mapped data-center facilities",facilities),
+        _fact("water","county_drought_resolved_facilities","Mapped facilities resolved to current county drought statistics",county_resolved),
+        _fact("water","county_drought_resolution_share_pct","Mapped facilities resolved to current county drought statistics",county_share,unit="%",scale=100),
+        _fact("water","facilities_in_counties_with_d2_area","Mapped facilities in counties with some D2-or-worse drought area",d2_facilities),
+        _fact("water","facilities_in_counties_with_d2_share_pct","Share of county-resolved mapped facilities in counties with some D2-or-worse drought area",d2_share,unit="%",scale=100),
+        _fact("water","facilities_in_counties_with_25pct_d2_area","Mapped facilities in counties with at least 25% D2-or-worse drought area",material_facilities),
+        _fact("water","facilities_in_counties_with_25pct_d2_share_pct","Share of county-resolved mapped facilities in counties with at least 25% D2-or-worse drought area",material_share,unit="%",scale=100),
+        _fact("water","highest_county_d2_location","Mapped county with the highest D2-or-worse drought-area share",highest_location),
+        _fact("water","highest_county_d2_area_pct","Highest mapped county D2-or-worse drought-area share",highest_d2,unit="%"),
+        _fact("water","direct_evidence_records","Mapped facilities with direct water evidence",direct),
+        _fact("water","direct_evidence_share_pct","Mapped facilities with direct water evidence",direct_share,unit="%"),
+        _fact("water","quantified_withdrawal_records","Mapped facilities with quantified withdrawal records",quantified_withdrawal),
+        _fact("water","quantified_consumption_records","Mapped facilities with quantified consumption records",quantified_consumption),
+        _fact("water","quantified_use_records","Mapped facilities with quantified withdrawal or consumption records",quantified),
+        _fact("water","pws_query_resolved_facilities","Mapped facility points with a resolved EPA service-area query",pws_resolved),
+        _fact("water","pws_query_resolution_share_pct","Mapped facility points with a resolved EPA service-area query",pws_resolution_share,unit="%",scale=100),
+        _fact("water","pws_service_area_overlap_facilities","Mapped facility points intersecting at least one EPA community-water service-area boundary",pws_overlap),
+        _fact("water","pws_service_area_overlap_share_pct","Mapped facility points intersecting at least one EPA community-water service-area boundary",pws_share,unit="%",scale=100),
+        _fact("water","pws_provenance_classified_share_pct","Share of EPA-overlap facilities with authoritative-versus-modeled boundary provenance classified",provenance_share,unit="%",scale=100),
+        _fact("water","unclassified_pws_overlap_facilities","Mapped facility points with EPA service-area overlap but unclassified boundary provenance",unclassified),
+        _fact("water","authoritative_pws_overlap_facilities","Mapped facility points intersecting an EPA state/system-sourced community-water boundary",authoritative if use_provenance_split else np.nan),
+        _fact("water","modeled_pws_overlap_facilities","Mapped facility points intersecting an EPA-modeled community-water boundary",modeled if use_provenance_split else np.nan),
+        _fact("water","ambiguous_pws_overlap_facilities","Mapped facility points intersecting more than one EPA community-water boundary",ambiguous),
+        _fact("water","published_capacity_coverage_share_pct","Mapped facilities with usable published capacity",capacity_coverage if use_capacity else np.nan,unit="%",scale=100),
+        _fact("water","published_capacity_in_counties_with_d2_gw","Published data-center capacity in counties with D2-or-worse drought",d2_capacity if use_capacity else np.nan,unit="GW"),
+        _fact("water","published_capacity_in_counties_with_25pct_d2_gw","Published data-center capacity in counties with at least 25% D2-or-worse drought",material_capacity if use_capacity else np.nan,unit="GW"),
         _fact("water","irrigation_withdrawal_bgal_day_2020","U.S. crop-irrigation withdrawals in 2020",irrigation,unit="Bgal/day"),
         _fact("water","thermoelectric_withdrawal_bgal_day_2020","U.S. thermoelectric-power withdrawals in 2020",thermo,unit="Bgal/day"),
         _fact("water","public_supply_withdrawal_bgal_day_2020","U.S. public-supply withdrawals in 2020",public,unit="Bgal/day"),
         _fact("water","thermoelectric_reported_withdrawal_bgal_day_2024","Reported thermoelectric withdrawals in 2024",withdrawal,unit="Bgal/day"),
         _fact("water","thermoelectric_reported_consumption_bgal_day_2024","Reported thermoelectric consumption in 2024",consumption,unit="Bgal/day"),
-        _fact("water","mapped_facilities","Mapped data-center facilities",facilities),
-        _fact("water","direct_evidence_records","Mapped facilities with direct water evidence",direct),
-        _fact("water","quantified_use_records","Mapped facilities with quantified withdrawal or consumption records",quantified),
-        _fact("water","direct_evidence_share_pct","Mapped facilities with direct water evidence",direct_share,unit="%"),
-        _fact("water","states_with_d2_area","Mapped states with some D2-or-worse drought area",drought_states),
-        _fact("water","states_with_25pct_d2_area","Mapped states with at least 25% D2-or-worse drought area",material_states),
-        _fact("water","published_capacity_in_d2_states_gw","Published data-center capacity in mapped states with D2-or-worse drought",drought_capacity,unit="GW"),
-        _fact("water","published_capacity_in_25pct_d2_states_gw","Published data-center capacity in mapped states with at least 25% D2-or-worse drought",material_capacity,unit="GW"),
-        _fact("water","highest_d2_state","Mapped state with the highest D2-or-worse drought-area share",highest_state),
-        _fact("water","highest_d2_area_pct","Highest mapped state D2-or-worse drought-area share",highest_d2,unit="%"),
     ], importance=importance)
 
 
