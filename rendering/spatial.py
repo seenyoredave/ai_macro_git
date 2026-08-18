@@ -1,75 +1,81 @@
 from __future__ import annotations
 
-import html
-
 import pandas as pd
 import streamlit as st
 
-from rendering.visual_system import render_plotly_chart
-from rendering.charts_data_center import FACILITY_SIZE_METRICS, data_center_map, data_center_state_detail_map, facility_map_legend_items
-from rendering.components import render_panel_heading
+from rendering.charts_data_center import ACTIVE_CAMPUS_STATUSES, CAMPUS_SIZE_METRICS, data_center_map
+from rendering.components import fmt_number, render_panel_heading, render_statline
 from rendering.dataframe import arrow_safe_dataframe
+from rendering.visual_system import render_plotly_chart, selection_points
 
 
 LAYER_FILTERS = {
-    "Known footprint": "footprint",
-    "Operating projects": "operating",
-    "Active pipeline": "pipeline",
-    "Planned / announced": "planned",
+    "All campuses": "all",
+    "Operational": "operational",
+    "Development": "development",
     "Published capacity": "capacity",
-    "Power records": "power",
-    "Water records": "water_direct",
+    "Power evidence": "power",
+    "Water evidence": "water",
 }
 
 
 def _registry(infrastructure_data: dict | None) -> pd.DataFrame:
-    frame = (infrastructure_data or {}).get("facility_registry")
+    frame = (infrastructure_data or {}).get("data_center_registry")
     if not isinstance(frame, pd.DataFrame):
-        return pd.DataFrame()
+        raise ValueError("Spatial explorer requires the Universal Data Center Registry")
+    if "Campus ID" not in frame.columns:
+        raise ValueError("Universal Data Center Registry is missing Campus ID")
+    if frame["Campus ID"].astype(str).duplicated().any():
+        raise ValueError("Universal Data Center Registry contains duplicate Campus IDs")
     return frame.copy()
 
 
 def _layer_mask(frame: pd.DataFrame, layer: str) -> pd.Series:
     if frame.empty:
         return pd.Series(dtype=bool)
-    record_type = frame.get("Record Type", pd.Series("", index=frame.index)).fillna("").astype(str).str.casefold()
-    status = frame.get("Status", pd.Series("", index=frame.index)).fillna("").astype(str).str.casefold()
-    if layer == "footprint":
-        return pd.Series(True, index=frame.index)
-    if layer == "operating":
-        return record_type.eq("project") & status.isin({"operational", "operating", "online"})
-    if layer == "pipeline":
-        return record_type.eq("project") & status.isin({"approved / permitted / under construction", "under construction", "construction", "announced", "planned", "proposed", "expanding"})
-    if layer == "planned":
-        return record_type.eq("project") & status.isin({"announced", "planned", "proposed"})
+    status = frame.get("Status", pd.Series("", index=frame.index)).fillna("").astype(str)
+    if layer == "operational":
+        return status.eq("Operational")
+    if layer == "development":
+        return status.isin(ACTIVE_CAMPUS_STATUSES - {"Operational"})
     if layer == "capacity":
-        fields = [
-            "Published Capacity Estimate MW", "Planned Data Center Capacity MW",
-            "Contracted Utility Capacity MW", "Energized Capacity MW",
-        ]
+        fields = (
+            "Published Capacity Estimate MW",
+            "Planned Data Center Capacity MW",
+            "Contracted Utility Capacity MW",
+            "Energized Capacity MW",
+        )
+    elif layer == "power":
+        fields = (
+            "Contracted Utility Capacity MW",
+            "Energized Capacity MW",
+            "Annual Electricity Consumption MWh",
+            "Planned Onsite Generation MW",
+        )
+    elif layer == "water":
+        numeric_fields = ("Water Withdrawal Gallons/Year", "Water Consumption Gallons/Year", "Site WUE L/kWh")
+        text_fields = ("Water Permit or Utility Record", "Water Source", "Cooling System")
         mask = pd.Series(False, index=frame.index)
-        for field in fields:
+        for field in numeric_fields:
             if field in frame.columns:
-                mask |= pd.to_numeric(frame[field], errors="coerce").gt(0)
-        return mask
-    if layer == "power":
-        fields = [
-            "Contracted Utility Capacity MW", "Energized Capacity MW",
-            "Annual Electricity Consumption MWh", "Planned Onsite Generation MW",
-        ]
-        mask = pd.Series(False, index=frame.index)
-        for field in fields:
+                mask |= pd.to_numeric(frame[field], errors="coerce").notna()
+        for field in text_fields:
             if field in frame.columns:
-                mask |= pd.to_numeric(frame[field], errors="coerce").gt(0)
+                mask |= frame[field].fillna("").astype(str).str.strip().ne("")
         return mask
-    if layer == "water_direct":
-        return frame.get("Direct Water Evidence", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
-    return pd.Series(True, index=frame.index)
+    else:
+        return pd.Series(True, index=frame.index)
+
+    mask = pd.Series(False, index=frame.index)
+    for field in fields:
+        if field in frame.columns:
+            mask |= pd.to_numeric(frame[field], errors="coerce").gt(0)
+    return mask
 
 
 def _size_options(frame: pd.DataFrame) -> list[str]:
-    options = ["Facility count"]
-    for label, field in FACILITY_SIZE_METRICS.items():
+    options = ["Campus count"]
+    for label, field in CAMPUS_SIZE_METRICS.items():
         if field is None or field not in frame.columns:
             continue
         if pd.to_numeric(frame[field], errors="coerce").gt(0).any():
@@ -84,88 +90,135 @@ def _state_options(frame: pd.DataFrame) -> list[str]:
     return ["United States", *states]
 
 
+def _selected_campus_id(points: list[dict]) -> str:
+    if not points:
+        return ""
+    point = points[0]
+    custom = point.get("customdata")
+    if isinstance(custom, (list, tuple)) and custom:
+        return str(custom[0] or "").strip()
+    return ""
 
-def _render_map_key(frame: pd.DataFrame, *, size_by: str) -> None:
-    status_items = facility_map_legend_items(frame)
-    if not status_items:
-        return
-    status_html = "".join(
-        f'<span class="rm-map-key-item"><span class="rm-map-key-dot" style="background:{html.escape(color, quote=True)}"></span>{html.escape(label)}</span>'
-        for label, color in status_items
+
+def _selected_row(registry: pd.DataFrame, campus_id: str) -> pd.Series | None:
+    if not campus_id or registry.empty:
+        return None
+    matched = registry.loc[registry["Campus ID"].astype(str).eq(str(campus_id))]
+    return matched.iloc[0] if len(matched) == 1 else None
+
+
+def _render_selection(row: pd.Series) -> None:
+    label = str(row.get("Campus Label") or row.get("Campus Name") or "Selected campus").strip()
+    operator = str(row.get("Operator") or "Unreported operator").strip()
+    county = str(row.get("County") or "").strip()
+    state = str(row.get("State") or "").strip()
+    status = str(row.get("Status") or "Status unknown").strip()
+    capacity = pd.to_numeric(row.get("Planned Data Center Capacity MW"), errors="coerce")
+    if pd.isna(capacity) or capacity <= 0:
+        capacity = pd.to_numeric(row.get("Published Capacity Estimate MW"), errors="coerce")
+    buildings = pd.to_numeric(row.get("Building Count"), errors="coerce")
+    confidence = str(row.get("Identity Confidence") or "n/a").strip()
+    render_panel_heading(label, " · ".join(part for part in (operator, f"{county}, {state}".strip(", ")) if part))
+    render_statline(
+        [
+            ("Status", status, "canonical campus"),
+            ("Published / planned capacity", fmt_number(capacity, 0, suffix=" MW") if pd.notna(capacity) else "n/a", "campus grain"),
+            ("Buildings", f"{int(buildings):,}" if pd.notna(buildings) else "n/a", "child entities"),
+            ("Identity confidence", confidence.title(), str(row.get("Identity Basis") or "registry resolution")),
+        ],
+        key_prefix=f"spatial-selected-{str(row.get('Campus ID') or '')[-10:]}",
     )
-    metric_html = ""
-    if size_by != "Facility count":
-        metric_html = (
-            '<span class="rm-map-key-divider"></span>'
-            '<span class="rm-map-key-item"><span class="rm-map-key-dot rm-map-key-dot-filled"></span>Value reported</span>'
-            '<span class="rm-map-key-item"><span class="rm-map-key-dot rm-map-key-dot-outline"></span>Value unavailable</span>'
-        )
-    st.markdown(
-        '<div class="rm-map-key">'
-        '<span class="rm-map-key-label">Facility status</span>'
-        f'{status_html}{metric_html}'
-        '</div>',
-        unsafe_allow_html=True,
-    )
+
 
 def render_spatial_explorer(
     infrastructure_data: dict | None,
     *,
     key_prefix: str = "national-ai-landscape",
     title: str = "Project locations",
-    subtitle: str = "Facility geography with published capacity, power, water, and infrastructure records.",
-    default_layer: str = "Known footprint",
+    subtitle: str = "Canonical data-center campuses with published infrastructure evidence.",
+    default_layer: str = "All campuses",
     show_table: bool = True,
     show_heading: bool = True,
+    height: int = 575,
 ) -> None:
     registry = _registry(infrastructure_data)
     if show_heading:
         render_panel_heading(title, subtitle)
     if registry.empty:
-        st.info("No mapped facility records are available.")
+        st.info("No canonical campus records are available.")
         return
+
+    state_key = f"{key_prefix}-state"
+    pending_state_key = f"{key_prefix}-pending-state"
+    selected_key = f"{key_prefix}-selected-campus-id"
+    pending_state = str(st.session_state.pop(pending_state_key, "") or "").strip().upper()
+    if pending_state:
+        st.session_state[state_key] = pending_state
 
     layer_names = list(LAYER_FILTERS)
     default_index = layer_names.index(default_layer) if default_layer in layer_names else 0
-    controls = st.columns([1.25, 1, 1.25])
+    controls = st.columns([1.15, 0.9, 1.15], gap="medium")
     with controls[0]:
         layer_name = st.selectbox("Map layer", layer_names, index=default_index, key=f"{key_prefix}-layer")
     layer_frame = registry.loc[_layer_mask(registry, LAYER_FILTERS[layer_name])].copy()
     with controls[1]:
-        state_name = st.selectbox("Geography", _state_options(layer_frame), key=f"{key_prefix}-state")
-    size_options = _size_options(layer_frame)
+        geography = st.selectbox("Geography", _state_options(layer_frame), key=state_key)
     with controls[2]:
-        size_by = st.selectbox("Marker size", size_options, key=f"{key_prefix}-size")
+        size_by = st.selectbox("Marker size", _size_options(layer_frame), key=f"{key_prefix}-size")
 
-    if state_name != "United States":
-        plotted = layer_frame.loc[layer_frame.get("State", pd.Series(index=layer_frame.index, dtype=object)).fillna("").astype(str).str.upper().eq(state_name)]
-    else:
-        plotted = layer_frame
+    state = "" if geography == "United States" else geography
+    plotted = layer_frame
+    if state:
+        state_series = layer_frame.get("State", pd.Series("", index=layer_frame.index)).fillna("").astype(str).str.upper().str.strip()
+        plotted = layer_frame.loc[state_series.eq(state)].copy()
 
-    _render_map_key(plotted, size_by=size_by)
-    with st.container(border=True):
-        if state_name == "United States":
-            figure = data_center_map(plotted, size_by=size_by, height=550)
-        else:
-            figure = data_center_state_detail_map(pd.DataFrame(), plotted, state_code=state_name, size_by=size_by, height=550)
-        render_plotly_chart(
-            figure,
-            width="stretch",
-            config={"displayModeBar": True, "responsive": True},
-            key=f"{key_prefix}-map",
-            role="map",
-        )
+    selected_id = str(st.session_state.get(selected_key) or "").strip()
+    if selected_id and selected_id not in set(registry["Campus ID"].astype(str)):
+        st.session_state.pop(selected_key, None)
+        selected_id = ""
+
+    figure = data_center_map(
+        plotted,
+        state=state or None,
+        size_by=size_by,
+        selected_campus_id=selected_id,
+        height=height,
+    )
+    event = render_plotly_chart(
+        figure,
+        width="stretch",
+        key=f"{key_prefix}-map",
+        role="map",
+        on_select="rerun",
+        selection_mode="points",
+    )
+    clicked_id = _selected_campus_id(selection_points(event))
+    if clicked_id and clicked_id != selected_id:
+        row = _selected_row(registry, clicked_id)
+        if row is not None:
+            st.session_state[selected_key] = clicked_id
+            clicked_state = str(row.get("State") or "").strip().upper()
+            if geography == "United States" and clicked_state:
+                st.session_state[pending_state_key] = clicked_state
+            st.rerun()
+
+    row = _selected_row(registry, str(st.session_state.get(selected_key) or ""))
+    if row is not None:
+        _render_selection(row)
 
     if not show_table:
         return
     columns = [
-        "Facility", "Operator", "State", "County", "Status", "Record Type",
+        "Campus Label", "Campus ID", "Operator", "State", "County", "Status",
+        "Identity Confidence", "Facility Count", "Building Count",
         "Published Capacity Estimate MW", "Planned Data Center Capacity MW",
         "Contracted Utility Capacity MW", "Energized Capacity MW",
     ]
-    available = [column for column in columns if column in plotted.columns]
-    table = plotted[available].copy() if available else pd.DataFrame()
+    table = plotted[[column for column in columns if column in plotted.columns]].copy()
     if "Published Capacity Estimate MW" in table.columns:
         table = table.sort_values("Published Capacity Estimate MW", ascending=False, na_position="last", kind="stable")
-    with st.expander(f"Mapped records · {len(table):,}", expanded=False):
+    with st.expander(f"Mapped campuses · {len(table):,}", expanded=False):
         st.dataframe(arrow_safe_dataframe(table), width="stretch", hide_index=True)
+
+
+__all__ = ["LAYER_FILTERS", "render_spatial_explorer"]

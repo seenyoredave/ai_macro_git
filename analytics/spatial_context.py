@@ -5,6 +5,8 @@ import re
 import numpy as np
 import pandas as pd
 
+from loaders.data_center_registry import assert_campus_foreign_keys
+
 
 def _county_key(value) -> str:
     text = re.sub(r"[^a-z0-9]+", " ", str(value or "").casefold()).strip()
@@ -32,53 +34,61 @@ def _text(value) -> str:
     return "" if text.casefold() == "nan" else text
 
 
+def _numeric_series(frame: pd.DataFrame, column: str) -> pd.Series:
+    """Return an index-aligned numeric Series for an optional column."""
+    values = frame[column] if column in frame.columns else pd.Series(np.nan, index=frame.index, dtype=float)
+    return pd.to_numeric(values, errors="coerce")
+
+
+def _data_center_context_registry(infrastructure: dict) -> pd.DataFrame:
+    """Return the one program-wide canonical data-center campus universe."""
+    campuses = infrastructure.get("data_center_registry")
+    if not isinstance(campuses, pd.DataFrame):
+        raise ValueError("Infrastructure payload is missing the Universal Data Center Registry")
+    if "Campus ID" not in campuses.columns:
+        raise ValueError("Universal Data Center Registry is missing Campus ID")
+    if campuses["Campus ID"].astype(str).duplicated().any():
+        raise ValueError("Universal Data Center Registry contains duplicate Campus IDs")
+    return campuses.copy()
+
+
+def _pws_point_key(latitude, longitude) -> str:
+    lat = pd.to_numeric(latitude, errors="coerce")
+    lon = pd.to_numeric(longitude, errors="coerce")
+    if pd.isna(lat) or pd.isna(lon):
+        return ""
+    return f"{float(lat):.5f}|{float(lon):.5f}"
+
+
 def _pws_query_keys(registry: pd.DataFrame) -> pd.DataFrame:
     from water.epa_pws import query_key
 
     output = registry.copy()
-    facility_ids: list[str] = []
+    campus_ids: list[str] = []
     query_keys: list[str] = []
+    point_keys: list[str] = []
     for index, row in output.iterrows():
-        facility_id = ""
-        for field in ("Facility ID", "Campus ID", "Canonical Facility ID", "site_id"):
-            facility_id = _text(row.get(field))
-            if facility_id:
-                break
-        if not facility_id:
-            parts = [
-                _text(row.get("State")),
-                _text(row.get("County")),
-                _text(row.get("Operator")),
-                _text(row.get("Facility")),
-            ]
-            facility_id = "|".join(part for part in parts if part) or f"row-{index}"
+        campus_id = _text(row.get("Campus ID"))
+        if not campus_id:
+            raise ValueError(f"Water campus row {index} is missing Campus ID")
         latitude = pd.to_numeric(row.get("Latitude"), errors="coerce")
         longitude = pd.to_numeric(row.get("Longitude"), errors="coerce")
-        key = (
-            query_key(facility_id, float(latitude), float(longitude))
-            if pd.notna(latitude) and pd.notna(longitude)
-            else ""
-        )
-        facility_ids.append(facility_id)
+        point_key = _pws_point_key(latitude, longitude)
+        key = query_key(campus_id, float(latitude), float(longitude)) if point_key else ""
+        campus_ids.append(campus_id)
         query_keys.append(key)
-    output["_pws_facility_id"] = facility_ids
+        point_keys.append(point_key)
+    output["_pws_campus_id"] = campus_ids
     output["_pws_query_key"] = query_keys
+    output["_pws_point_key"] = point_keys
     return output
 
 
-def _pws_context(matches: pd.DataFrame | None) -> pd.DataFrame:
-    frame = matches.copy() if isinstance(matches, pd.DataFrame) else pd.DataFrame()
-    if frame.empty or "Query Key" not in frame.columns:
-        return pd.DataFrame()
-    for column in ("PWSID", "PWS Name", "Boundary Basis", "Query Status"):
-        if column not in frame.columns:
-            frame[column] = ""
-        frame[column] = frame[column].fillna("").astype(str).str.strip()
-
+def _pws_context_rows(frame: pd.DataFrame, key_column: str, prefix: str) -> pd.DataFrame:
     rows = []
-    for key, group in frame.groupby("Query Key", sort=False, dropna=False):
-        query_key_value = str(key or "").strip()
-        if not query_key_value:
+    for key, group in frame.groupby(key_column, sort=False, dropna=False):
+        source_key = str(key or "").strip()
+        if not source_key:
             continue
         statuses = set(group["Query Status"].astype(str))
         resolved = bool(statuses.intersection({"matched", "no_match"}))
@@ -100,7 +110,7 @@ def _pws_context(matches: pd.DataFrame | None) -> pd.DataFrame:
             basis = ""
         rows.append(
             {
-                "_pws_query_key": query_key_value,
+                "_pws_lookup_key": f"{prefix}:{source_key}",
                 "PWS Service Area Query Resolved": resolved,
                 "PWS Service Area Overlap": bool(pwsids),
                 "PWS Match Count": int(len(pwsids)),
@@ -113,6 +123,37 @@ def _pws_context(matches: pd.DataFrame | None) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
+
+
+def _pws_context(matches: pd.DataFrame | None) -> pd.DataFrame:
+    frame = matches.copy() if isinstance(matches, pd.DataFrame) else pd.DataFrame()
+    if frame.empty or "Query Key" not in frame.columns:
+        return pd.DataFrame()
+    for column in ("PWSID", "PWS Name", "Boundary Basis", "Query Status"):
+        if column not in frame.columns:
+            frame[column] = ""
+        frame[column] = frame[column].fillna("").astype(str).str.strip()
+    if "Latitude" not in frame.columns:
+        frame["Latitude"] = np.nan
+    if "Longitude" not in frame.columns:
+        frame["Longitude"] = np.nan
+    frame["_pws_point_key"] = [
+        _pws_point_key(latitude, longitude)
+        for latitude, longitude in zip(frame["Latitude"], frame["Longitude"])
+    ]
+
+    by_query = _pws_context_rows(frame, "Query Key", "q")
+    by_point = _pws_context_rows(
+        frame.loc[frame["_pws_point_key"].ne("")],
+        "_pws_point_key",
+        "p",
+    )
+    populated = [part for part in (by_query, by_point) if not part.empty]
+    if not populated:
+        return pd.DataFrame()
+    return pd.concat(populated, ignore_index=True, sort=False).drop_duplicates(
+        "_pws_lookup_key", keep="last"
+    )
 
 
 def _merge_refresh_reports(water: dict, local_report: dict) -> None:
@@ -142,13 +183,12 @@ def _merge_refresh_reports(water: dict, local_report: dict) -> None:
 def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[dict, dict]:
     infrastructure = dict(infrastructure_data or {})
     water = dict(water_data or {})
-    registry = infrastructure.get("facility_registry")
+    registry = _data_center_context_registry(infrastructure)
     counties = water.get("usgs_counties")
     state_drought = water.get("usdm_state_drought")
     county_drought = water.get("usdm_county_drought")
     pws_matches = water.get("epa_pws_matches")
-    if not isinstance(registry, pd.DataFrame):
-        registry = pd.DataFrame()
+    water["campus_context_source"] = "data_center_registry"
     if not isinstance(counties, pd.DataFrame):
         counties = pd.DataFrame()
     if not isinstance(state_drought, pd.DataFrame):
@@ -159,8 +199,8 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
         pws_matches = pd.DataFrame()
     registry = registry.copy()
     if registry.empty:
-        water["facility_context"] = pd.DataFrame()
-        water["facility_context_summary"] = {}
+        water["campus_context"] = registry
+        water["campus_context_summary"] = {"canonical_campuses": 0}
         return infrastructure, water
 
     registry["_state_key"] = registry.get("State", "").fillna("").astype(str).str.upper().str.strip()
@@ -177,7 +217,7 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
         context = context[[column for column in keep if column in context.columns]].drop_duplicates(
             ["_state_key", "_county_key"], keep="last"
         )
-        registry = registry.merge(context, on=["_state_key", "_county_key"], how="left")
+        registry = registry.merge(context, on=["_state_key", "_county_key"], how="left", validate="many_to_one")
     registry["_fips_key"] = registry.get("FIPS", pd.Series("", index=registry.index)).map(_normalize_fips)
     registry = _pws_query_keys(registry)
 
@@ -210,9 +250,7 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
                 },
             )
 
-    # Current county drought is joined by 5-digit FIPS.  It is deliberately
-    # separate from the legacy state fields so existing state charts do not
-    # silently change meaning.
+    # Current county drought is joined by 5-digit FIPS.
     if not county_drought.empty and "FIPS" in county_drought.columns:
         local = county_drought.copy()
         local["_fips_key"] = local["FIPS"].map(_normalize_fips)
@@ -229,7 +267,7 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
         local = local.rename(columns=rename)
         keep = ["_fips_key", *rename.values()]
         local = local[[column for column in keep if column in local.columns]].drop_duplicates("_fips_key", keep="last")
-        registry = registry.merge(local, on="_fips_key", how="left")
+        registry = registry.merge(local, on="_fips_key", how="left", validate="many_to_one")
 
     if not state_drought.empty and "State" in state_drought.columns:
         drought_context = state_drought.copy()
@@ -242,11 +280,22 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
         drought_context = drought_context[
             [column for column in drought_columns if column in drought_context.columns]
         ].drop_duplicates("_state_key", keep="last")
-        registry = registry.merge(drought_context, on="_state_key", how="left", suffixes=("", " Drought"))
+        registry = registry.merge(drought_context, on="_state_key", how="left", suffixes=("", " Drought"), validate="many_to_one")
 
+    pws_query_keys = set(
+        pws_matches.get("Query Key", pd.Series(dtype=str)).fillna("").astype(str).str.strip()
+    ) if isinstance(pws_matches, pd.DataFrame) and not pws_matches.empty else set()
+    registry["_pws_lookup_key"] = [
+        f"q:{query_key_value}"
+        if query_key_value and query_key_value in pws_query_keys
+        else f"p:{point_key_value}" if point_key_value else ""
+        for query_key_value, point_key_value in zip(
+            registry["_pws_query_key"], registry["_pws_point_key"]
+        )
+    ]
     pws_context = _pws_context(pws_matches)
     if not pws_context.empty:
-        registry = registry.merge(pws_context, on="_pws_query_key", how="left")
+        registry = registry.merge(pws_context, on="_pws_lookup_key", how="left", validate="many_to_one")
     for column, default in (
         ("PWS Service Area Query Resolved", False),
         ("PWS Service Area Overlap", False),
@@ -266,10 +315,12 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
         registry[column] = registry[column].fillna("").astype(str)
 
     registry = registry.drop(
-        columns=["_state_key", "_county_key", "_fips_key", "_pws_facility_id", "_pws_query_key"],
+        columns=[
+            "_state_key", "_county_key", "_fips_key", "_pws_campus_id",
+            "_pws_query_key", "_pws_point_key", "_pws_lookup_key",
+        ],
         errors="ignore",
     )
-
     direct_fields = [
         "Water Withdrawal Gallons/Year", "Water Consumption Gallons/Year", "Site WUE L/kWh",
         "Water Permit or Utility Record", "Cooling System", "Water Source",
@@ -284,37 +335,32 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
             values = registry[field].fillna("").astype(str).str.casefold().str.strip()
             direct_mask |= values.ne("") & ~values.str.contains("not disclosed|unknown|unavailable", regex=True)
     registry["Direct Water Evidence"] = direct_mask
-    registry["County Water Context Available"] = pd.to_numeric(
-        registry.get("Total Withdrawal Mgal/d"), errors="coerce"
+    registry["County Water Context Available"] = _numeric_series(
+        registry, "Total Withdrawal Mgal/d"
     ).notna()
 
-    county_d1 = pd.to_numeric(registry.get("County D1+ Area Percent"), errors="coerce")
-    county_d2 = pd.to_numeric(registry.get("County D2+ Area Percent"), errors="coerce")
-    state_d1 = pd.to_numeric(registry.get("D1+ Area Percent"), errors="coerce")
-    state_d2 = pd.to_numeric(registry.get("D2+ Area Percent"), errors="coerce")
+    county_d1 = _numeric_series(registry, "County D1+ Area Percent")
+    county_d2 = _numeric_series(registry, "County D2+ Area Percent")
+    state_d1 = _numeric_series(registry, "D1+ Area Percent")
 
-    infrastructure["facility_registry"] = registry
-    water["facility_context"] = registry
-    water["facility_context_summary"] = {
-        "facilities": int(len(registry)),
+    # Water owns an enriched domain view keyed by Campus ID. The canonical
+    # registry remains unchanged; every water row must resolve to that universe.
+    if registry["Campus ID"].astype(str).duplicated().any():
+        duplicate_ids = registry.loc[registry["Campus ID"].astype(str).duplicated(False), "Campus ID"].astype(str).unique().tolist()
+        raise ValueError(f"Water enrichment multiplied canonical Campus IDs: {duplicate_ids[:10]}")
+    assert_campus_foreign_keys(infrastructure["data_center_registry"], registry[["Campus ID"]], domain="water", allow_subset=False)
+    water["campus_context"] = registry
+    water["campus_context_summary"] = {
+        "canonical_campuses": int(len(registry)),
+        "mapped_campuses": int(pd.to_numeric(registry.get("Latitude"), errors="coerce").notna().sum()),
         "states": int(registry.get("State", pd.Series(dtype=object)).replace("", np.nan).nunique()),
-        "state_identified_records": int(
-            registry.get("State", pd.Series("", index=registry.index)).fillna("").astype(str).str.strip().ne("").sum()
-        ),
+        "state_identified_records": int(registry.get("State", pd.Series("", index=registry.index)).fillna("").astype(str).str.strip().ne("").sum()),
         "county_context_records": int(registry["County Water Context Available"].sum()),
         "county_drought_context_records": int(county_d1.notna().sum()),
         "state_drought_context_records": int(state_d1.notna().sum()),
         "direct_water_evidence_records": int(registry["Direct Water Evidence"].sum()),
-        "quantified_withdrawal_records": int(
-            pd.to_numeric(registry.get("Water Withdrawal Gallons/Year", pd.Series(np.nan, index=registry.index)), errors="coerce").notna().sum()
-        ),
-        "quantified_consumption_records": int(
-            pd.to_numeric(registry.get("Water Consumption Gallons/Year", pd.Series(np.nan, index=registry.index)), errors="coerce").notna().sum()
-        ),
-        # Legacy keys remain state-based for chart compatibility.
-        "drought_context_records": int(state_d1.notna().sum()),
-        "severe_drought_facilities": int(state_d2.fillna(0).gt(0).sum()),
-        "county_severe_drought_facilities": int(county_d2.fillna(0).gt(0).sum()),
+        "quantified_withdrawal_records": int(pd.to_numeric(registry.get("Water Withdrawal Gallons/Year", pd.Series(np.nan, index=registry.index)), errors="coerce").notna().sum()),
+        "quantified_consumption_records": int(pd.to_numeric(registry.get("Water Consumption Gallons/Year", pd.Series(np.nan, index=registry.index)), errors="coerce").notna().sum()),
         "pws_service_area_query_resolved_records": int(registry["PWS Service Area Query Resolved"].sum()),
         "pws_service_area_overlap_records": int(registry["PWS Service Area Overlap"].sum()),
         "pws_authoritative_overlap_records": int(registry["PWS Authoritative Boundary Overlap"].sum()),

@@ -14,7 +14,7 @@ import pandas as pd
 
 from loaders.census import clean_header, parse_census_month
 from loaders.data_center_inventory_loader import build_data_center_national_database, load_data_center_inventory
-from loaders.facility_registry_loader import normalize_us_state
+from loaders.data_center_registry import normalize_us_state
 from helpers.atomic_io import atomic_write_csv
 
 RAW = ROOT / "data" / "infrastructure" / "raw"

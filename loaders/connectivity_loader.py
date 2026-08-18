@@ -308,7 +308,7 @@ def _published_development_by_state(campuses: pd.DataFrame) -> pd.DataFrame:
     frame["Published Development MW"] = pd.to_numeric(frame[capacity_column], errors="coerce")
     frame = frame.loc[status.isin(allowed) & frame["Published Development MW"].gt(0)].copy()
     frame["State"] = frame["State"].fillna("").astype(str).str.strip().str.upper()
-    return frame.groupby("State", as_index=False).agg(**{"Published Development MW":("Published Development MW","sum"),"Published Campuses":("Published Development MW","size")})
+    return frame.groupby("State", as_index=False).agg(**{"Published Development MW":("Published Development MW","sum"),"Published Campuses":("Campus ID","nunique")})
 
 
 def _state_summary(ixps: pd.DataFrame, landing_markets: pd.DataFrame, middle_mile_awards: pd.DataFrame, campuses: pd.DataFrame, facilities: pd.DataFrame | None = None) -> pd.DataFrame:
@@ -389,7 +389,10 @@ def _ixp_market_coordinates(ixp_markets: pd.DataFrame, landing_markets: pd.DataF
 
 
 def _campus_connectivity_snapshot(campuses: pd.DataFrame, state_summary: pd.DataFrame, landing_markets: pd.DataFrame, facilities: pd.DataFrame | None = None) -> pd.DataFrame:
-    columns = ["Facility","Operator","City","State","Status","Published Capacity Estimate MW","Reported State IXP Memberships","State IXPs","Landing Markets","Middle-Mile Awards","Nearest Selected Landing Market","Miles to Selected Landing Market","Nearest PeeringDB Facility","Miles to PeeringDB Facility","Connectivity Presence","Capacity-Connectivity Flag","Screening Boundary"]
+    if isinstance(campuses, pd.DataFrame) and not campuses.empty:
+        if "Campus ID" not in campuses.columns or campuses["Campus ID"].astype(str).duplicated().any():
+            raise ValueError("Connectivity requires one row per Universal Data Center Registry Campus ID")
+    columns = ["Campus ID","Campus Name","Operator","City","State","Status","Published Capacity Estimate MW","Reported State IXP Memberships","State IXPs","Landing Markets","Middle-Mile Awards","Nearest Selected Landing Market","Miles to Selected Landing Market","Nearest PeeringDB Facility","Miles to PeeringDB Facility","Connectivity Presence","Capacity-Connectivity Flag","Screening Boundary"]
     if not isinstance(campuses, pd.DataFrame) or campuses.empty or not isinstance(state_summary, pd.DataFrame):
         return pd.DataFrame(columns=columns)
     frame = campuses.copy()
@@ -421,7 +424,7 @@ def _campus_connectivity_snapshot(campuses: pd.DataFrame, state_summary: pd.Data
     frame["Miles to Selected Landing Market"] = nearest_landing_miles
     frame["Nearest PeeringDB Facility"] = nearest_facility
     frame["Miles to PeeringDB Facility"] = nearest_facility_miles
-    for column in ["Facility","Operator","City","Status"]:
+    for column in ["Campus Name","Operator","City","Status"]:
         if column not in frame.columns:
             frame[column] = ""
     frame["Screening Boundary"] = "Proximity and state-level public evidence only; no direct campus route, latency, capacity, or path-diversity claim."

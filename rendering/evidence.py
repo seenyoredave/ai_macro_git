@@ -202,38 +202,48 @@ def _water_evidence_summary_rows(water_data):
     return pd.DataFrame(rows)
 
 
-def _facility_coverage_tables(infrastructure_data):
-    coverage = (infrastructure_data or {}).get("facility_coverage", {}) or {}
-    grades = pd.DataFrame(
-        [
-            {"Evidence grade": grade, "Records": int(count or 0)}
-            for grade, count in (coverage.get("evidence_grades", {}) or {}).items()
-        ]
-    )
-    fields = pd.DataFrame(
-        [
-            {
-                "Field": field,
-                "Records": int((payload or {}).get("records", 0) or 0),
-                "Coverage": fmt_number(float((payload or {}).get("share", 0) or 0) * 100.0, 1, suffix="%"),
-            }
-            for field, payload in (coverage.get("fields", {}) or {}).items()
-        ]
-    )
-    return grades, fields
+def _data_center_registry_coverage_tables(infrastructure_data):
+    registry = (infrastructure_data or {}).get("data_center_registry")
+    if not isinstance(registry, pd.DataFrame):
+        registry = pd.DataFrame()
 
+    grades = pd.DataFrame()
+    if not registry.empty:
+        values = registry.get("Evidence Grade", pd.Series("", index=registry.index)).fillna("").astype(str).str.upper().str.strip()
+        counts = values.loc[values.ne("")].value_counts().sort_index()
+        grades = pd.DataFrame([{"Evidence grade": grade, "Campuses": int(count)} for grade, count in counts.items()])
 
-def _facility_registry_summary(infrastructure_data):
-    registry = (infrastructure_data or {}).get("facility_registry")
-    if not isinstance(registry, pd.DataFrame) or registry.empty:
-        return pd.DataFrame(
-            [
-                {"Measure": "Mapped records", "Value": "0"},
-                {"Measure": "States", "Value": "0"},
-                {"Measure": "Capacity coverage", "Value": "0.0%"},
-                {"Measure": "Higher-grade evidence", "Value": "0"},
-            ]
-        )
+    fields_to_measure = [
+        "Published Capacity Estimate MW",
+        "Planned Data Center Capacity MW",
+        "Contracted Utility Capacity MW",
+        "Energized Capacity MW",
+        "Annual Electricity Consumption MWh",
+        "Water Withdrawal Gallons/Year",
+        "Water Consumption Gallons/Year",
+        "Source URL",
+    ]
+    rows = []
+    for field in fields_to_measure:
+        if field not in registry.columns:
+            continue
+        series = registry[field]
+        if field == "Source URL":
+            present = series.fillna("").astype(str).str.strip().ne("")
+        else:
+            present = pd.to_numeric(series, errors="coerce").notna()
+        rows.append({
+            "Field": field,
+            "Campuses": int(present.sum()),
+            "Coverage": fmt_number(float(present.mean()) * 100.0 if len(present) else 0.0, 1, suffix="%"),
+        })
+    return grades, pd.DataFrame(rows)
+
+def _data_center_registry_summary(infrastructure_data):
+    infrastructure = infrastructure_data or {}
+    registry = infrastructure.get("data_center_registry")
+    registry = registry if isinstance(registry, pd.DataFrame) else pd.DataFrame()
+    summary = dict(infrastructure.get("data_center_registry_summary", {}) or {})
 
     capacity = pd.Series(False, index=registry.index)
     for field in [
@@ -244,85 +254,87 @@ def _facility_registry_summary(infrastructure_data):
     ]:
         if field in registry.columns:
             capacity |= pd.to_numeric(registry[field], errors="coerce").gt(0)
-
     grades = registry.get("Evidence Grade", pd.Series("", index=registry.index)).fillna("").astype(str).str.upper()
-    states = registry.get("State", pd.Series("", index=registry.index)).fillna("").astype(str).str.strip()
-    state_count = states.mask(states.eq("")).nunique()
 
-    return pd.DataFrame(
-        [
-            {"Measure": "Mapped records", "Value": f"{len(registry):,}"},
-            {"Measure": "States", "Value": f"{state_count:,}"},
-            {"Measure": "Capacity coverage", "Value": fmt_number(float(capacity.mean()) * 100.0, 1, suffix="%")},
-            {"Measure": "Higher-grade evidence", "Value": f"{int(grades.isin({'A', 'B'}).sum()):,}"},
-        ]
-    )
-
+    return pd.DataFrame([
+        {"Measure": "Canonical campuses", "Value": f"{int(summary.get('campuses', len(registry)) or 0):,}"},
+        {"Measure": "Mapped campuses", "Value": f"{int(summary.get('mapped_campuses', 0) or 0):,}"},
+        {"Measure": "States", "Value": f"{int(summary.get('states', 0) or 0):,}"},
+        {"Measure": "Facility entities", "Value": f"{int(summary.get('facility_entities', 0) or 0):,}"},
+        {"Measure": "Building entities", "Value": f"{int(summary.get('building_entities', 0) or 0):,}"},
+        {"Measure": "Source observations", "Value": f"{int(summary.get('source_observations', 0) or 0):,}"},
+        {"Measure": "Capacity coverage", "Value": fmt_number(float(capacity.mean()) * 100.0 if len(capacity) else 0.0, 1, suffix="%")},
+        {"Measure": "Higher-grade evidence", "Value": f"{int(grades.isin({'A', 'B'}).sum()):,}"},
+    ])
 
 def _direct_project_evidence_rows(infrastructure_data):
-    registry = (infrastructure_data or {}).get("facility_registry")
+    campuses = (infrastructure_data or {}).get("data_center_registry")
     compute = ((infrastructure_data or {}).get("compute_manufacturing", {}) or {}).get("projects")
     rows = []
-    if isinstance(registry, pd.DataFrame) and not registry.empty:
-        record_type = registry.get("Record Type", pd.Series("", index=registry.index)).fillna("").astype(str).str.casefold()
-        projects = registry.loc[record_type.eq("project")].copy()
-        rows.append({"Project class": "Data-center projects", "Records": len(projects), "Evidence basis": "Deduplicated campus records"})
-        power = pd.Series(False, index=projects.index)
+    if isinstance(campuses, pd.DataFrame) and not campuses.empty:
+        rows.append({
+            "Project class": "Data-center campuses",
+            "Records": int(campuses["Campus ID"].nunique()) if "Campus ID" in campuses.columns else len(campuses),
+            "Evidence basis": "Universal Data Center Registry",
+        })
+        power = pd.Series(False, index=campuses.index)
         for field in ["Contracted Utility Capacity MW", "Energized Capacity MW", "Planned Onsite Generation MW"]:
-            if field in projects.columns:
-                power |= pd.to_numeric(projects[field], errors="coerce").gt(0)
-        rows.append({"Project class": "Data-center projects with structured power evidence", "Records": int(power.sum()), "Evidence basis": "Deduplicated campus records"})
+            if field in campuses.columns:
+                power |= pd.to_numeric(campuses[field], errors="coerce").gt(0)
+        rows.append({
+            "Project class": "Data-center campuses with structured power evidence",
+            "Records": int(power.sum()),
+            "Evidence basis": "Universal Data Center Registry",
+        })
     if isinstance(compute, pd.DataFrame):
         rows.append({"Project class": "Compute-manufacturing projects", "Records": len(compute), "Evidence basis": "CHIPS project ledger"})
     return pd.DataFrame(rows)
 
-
-def _active_facility_power_rows(infrastructure_data):
-    registry = (infrastructure_data or {}).get("facility_registry")
-    if not isinstance(registry, pd.DataFrame) or registry.empty:
+def _active_campus_power_rows(infrastructure_data):
+    campuses = (infrastructure_data or {}).get("data_center_registry")
+    if not isinstance(campuses, pd.DataFrame) or campuses.empty:
         return pd.DataFrame()
-    record_type = registry.get("Record Type", pd.Series("", index=registry.index)).fillna("").astype(str).str.casefold()
-    projects = registry.loc[record_type.eq("project")].copy()
-    if projects.empty:
-        return pd.DataFrame()
-    status = projects.get("Status", pd.Series("", index=projects.index)).fillna("").astype(str).str.casefold()
+    status = campuses.get("Status", pd.Series("", index=campuses.index)).fillna("").astype(str).str.casefold()
     active_statuses = {
         "approved / permitted / under construction", "under construction", "construction",
         "announced", "planned", "proposed", "expanding",
     }
-    table = projects.loc[status.isin(active_statuses)].copy()
+    table = campuses.loc[status.isin(active_statuses)].copy()
+    if table.empty:
+        return pd.DataFrame()
+    power = pd.Series(False, index=table.index)
+    for field in [
+        "Published Capacity Estimate MW", "Planned Data Center Capacity MW",
+        "Contracted Utility Capacity MW", "Energized Capacity MW", "Planned Onsite Generation MW",
+    ]:
+        if field in table.columns:
+            power |= pd.to_numeric(table[field], errors="coerce").gt(0)
+    table = table.loc[power].copy()
     columns = [
-        "Facility", "Operator", "State", "Status", "Expected Service Date", "Utility",
+        "Campus ID", "Campus Name", "Operator", "State", "Status", "Expected Service Date", "Utility",
         "Published Capacity Estimate MW", "Planned Data Center Capacity MW",
         "Contracted Utility Capacity MW", "Energized Capacity MW",
         "Planned Onsite Generation MW", "Evidence Grade", "Source URL",
     ]
     columns = [column for column in columns if column in table.columns]
-    table = table[columns]
-    if "Published Capacity Estimate MW" in table.columns:
-        table = table.sort_values("Published Capacity Estimate MW", ascending=False, na_position="last", kind="stable")
-    return table
+    return table[columns].reset_index(drop=True)
 
-
-def _facility_water_rows(water_data, infrastructure_data):
-    context = (water_data or {}).get("facility_context")
+def _campus_water_rows(water_data, infrastructure_data):
+    context = (water_data or {}).get("campus_context")
     if not isinstance(context, pd.DataFrame):
-        context = (infrastructure_data or {}).get("facility_registry")
+        context = (infrastructure_data or {}).get("data_center_registry")
     if not isinstance(context, pd.DataFrame) or context.empty:
         return pd.DataFrame()
     columns = [
-        "Facility", "Operator", "State", "County", "Status",
+        "Campus ID", "Campus Name", "Operator", "State", "County", "Status",
         "Total Withdrawal Mgal/d", "Freshwater Withdrawal Mgal/d", "Groundwater Withdrawal Mgal/d",
+        "County D1+ Area Percent", "County D2+ Area Percent", "PWS Service Area Overlap",
+        "PWS Match Count", "PWS Boundary Basis", "Direct Water Evidence",
         "Water Withdrawal Gallons/Year", "Water Consumption Gallons/Year", "Site WUE L/kWh",
         "Cooling System", "Water Source", "Water Permit or Utility Record",
-        "Direct Water Evidence", "Evidence Grade", "Source URL",
     ]
-    columns = [column for column in columns if column in context.columns]
-    table = context[columns].copy()
-    if "Total Withdrawal Mgal/d" in table.columns:
-        table = table.sort_values("Total Withdrawal Mgal/d", ascending=False, na_position="last", kind="stable")
-    return table
-
+    available = [column for column in columns if column in context.columns]
+    return context[available].copy().reset_index(drop=True)
 
 def _render_component_evidence(regime_metrics):
     adi_result = (regime_metrics or {}).get("ADI Components", {}) or {}
@@ -502,25 +514,25 @@ def _render_compute_data_center_evidence(infrastructure_data):
     )
     inventory = infrastructure.get("data_center_inventory", {}) or {}
     national_database = inventory.get("database")
-    grades, fields = _facility_coverage_tables(infrastructure)
-    with st.expander("Facility registry summary", expanded=False):
-        render_static_table(_facility_registry_summary(infrastructure))
-    with st.expander("Facility evidence grades", expanded=False):
+    grades, fields = _data_center_registry_coverage_tables(infrastructure)
+    with st.expander("Universal data-center registry", expanded=False):
+        render_static_table(_data_center_registry_summary(infrastructure))
+    with st.expander("Campus evidence grades", expanded=False):
         render_static_table(grades)
-    with st.expander("Facility field coverage", expanded=False):
+    with st.expander("Campus field coverage", expanded=False):
         render_static_table(fields)
     with st.expander("Reviewed identity decisions", expanded=False):
-        decisions = infrastructure.get("facility_identity_decisions")
+        decisions = infrastructure.get("data_center_identity_decisions")
         render_static_table(decisions if isinstance(decisions, pd.DataFrame) else pd.DataFrame())
     with st.expander("National data-center evidence database", expanded=False):
         render_static_table(national_database if isinstance(national_database, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Detailed data-center facilities", expanded=False):
-        registry = infrastructure.get("facility_registry")
+    with st.expander("Canonical data-center campuses", expanded=False):
+        registry = infrastructure.get("data_center_registry")
         if registry is None or not isinstance(registry, pd.DataFrame):
             registry = infrastructure.get("locations")
         render_static_table(registry if isinstance(registry, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Active facility power records", expanded=False):
-        render_static_table(_active_facility_power_rows(infrastructure))
+    with st.expander("Active campus power records", expanded=False):
+        render_static_table(_active_campus_power_rows(infrastructure))
 
     render_section(
         "Construction and infrastructure evidence",
@@ -657,7 +669,7 @@ def _render_water_evidence(water_data, infrastructure_data):
     water = _water_evidence_payload(water_data or {})
     render_static_table(_water_evidence_summary_rows(water))
     with st.expander("AI facility water records", expanded=False):
-        render_static_table(_facility_water_rows(water_data or {}, infrastructure_data or {}))
+        render_static_table(_campus_water_rows(water_data or {}, infrastructure_data or {}))
     with st.expander("Water source register", expanded=False):
         manifest = water.get("source_manifest")
         if isinstance(manifest, pd.DataFrame) and not manifest.empty:

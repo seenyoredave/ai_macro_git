@@ -20,13 +20,7 @@ DEFAULT_PLOTLY_CONFIG: dict[str, Any] = {
 
 
 def apply_platform_chart_contract(figure: go.Figure, *, key: str, role: str | None = None) -> go.Figure:
-    """Apply the shared chart grammar without replacing a chart's analytical form.
-
-    The function intentionally preserves trace types, axis ranges, annotations,
-    map projections, and domain-specific encodings.  It standardizes only the
-    platform shell: typography, hover treatment, backgrounds, legend text,
-    state persistence, and transition behavior.
-    """
+    """Apply the shared chart grammar without changing analytical meaning."""
     fig = go.Figure(figure)
     current_font = dict(fig.layout.font.to_plotly_json()) if fig.layout.font else {}
     current_font.setdefault("family", "Inter, ui-sans-serif, system-ui")
@@ -47,6 +41,7 @@ def apply_platform_chart_contract(figure: go.Figure, *, key: str, role: str | No
 
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
         font=current_font,
         hoverlabel=hoverlabel,
         legend=legend,
@@ -54,14 +49,6 @@ def apply_platform_chart_contract(figure: go.Figure, *, key: str, role: str | No
         transition={"duration": 0},
         separators=".,",
     )
-
-    # Streamlit owns responsive width through ``width="stretch"`` below.
-    # Do not also set Plotly's autosize or width here: competing geometry
-    # owners can leave a figure at Plotly's 700 px fallback until the browser
-    # emits a later resize event (most visibly in Firefox and inactive tabs).
-
-    # Cartesian axes inherit the same quiet grid and label treatment.  Geo,
-    # ternary, polar, and treemap layouts are left intact.
     fig.update_xaxes(
         gridcolor=COLORS["grid"],
         linecolor="rgba(148,163,184,0.25)",
@@ -76,7 +63,6 @@ def apply_platform_chart_contract(figure: go.Figure, *, key: str, role: str | No
         title_font={"color": COLORS["muted"], "size": 11},
         automargin=True,
     )
-
     if role == "map":
         fig.update_layout(transition={"duration": 0})
     return fig
@@ -89,6 +75,21 @@ def _signature_description(key: str) -> str | None:
     return " ".join(tool.analytical_job for tool in matches)
 
 
+def selection_points(event) -> list[dict]:
+    """Normalize Streamlit Plotly selection events in one shared place."""
+    if event is None:
+        return []
+    try:
+        return list(event.selection.points or [])
+    except Exception:
+        pass
+    try:
+        selection = event.get("selection", {})
+        return list(selection.get("points", []) or [])
+    except Exception:
+        return []
+
+
 def render_plotly_chart(
     figure: go.Figure,
     *,
@@ -97,14 +98,21 @@ def render_plotly_chart(
     config: dict[str, Any] | None = None,
     role: str | None = None,
     description: str | None = None,
-) -> None:
-    """Render a Plotly surface through the shared platform contract."""
+    on_select: str | None = None,
+    selection_mode: str | tuple[str, ...] | list[str] | None = None,
+):
+    """Render a Plotly surface through the shared platform interaction contract."""
     merged = copy.deepcopy(DEFAULT_PLOTLY_CONFIG)
     merged.update(config or {})
-    # Every analytical figure keeps Plotly's interaction tools. Compact card
-    # sparklines are the sole exception: a mode bar is visual noise there.
-    merged["displayModeBar"] = role != "trend"
+    merged["displayModeBar"] = role != "trend" if "displayModeBar" not in (config or {}) else bool((config or {})["displayModeBar"])
     merged["responsive"] = True
+    if role == "map":
+        # One interaction contract for every analytical map. Plotly's
+        # scrollZoom config enables wheel/two-finger zoom; geographic freedom
+        # itself is controlled by the absence of layout.map.bounds.
+        merged["scrollZoom"] = True
+        merged["displayModeBar"] = True
+
     chart_description = str(description or _signature_description(key) or "").strip()
     if chart_description:
         st.markdown(
@@ -112,9 +120,25 @@ def render_plotly_chart(
             f'{html.escape(chart_description)}</div>',
             unsafe_allow_html=True,
         )
-    st.plotly_chart(
+
+    kwargs: dict[str, Any] = {
+        "width": width,
+        "config": merged,
+        "key": key,
+    }
+    if on_select is not None:
+        kwargs["on_select"] = on_select
+    if selection_mode is not None:
+        kwargs["selection_mode"] = selection_mode
+    return st.plotly_chart(
         apply_platform_chart_contract(figure, key=key, role=role),
-        width=width,
-        config=merged,
-        key=key,
+        **kwargs,
     )
+
+
+__all__ = [
+    "DEFAULT_PLOTLY_CONFIG",
+    "apply_platform_chart_contract",
+    "render_plotly_chart",
+    "selection_points",
+]

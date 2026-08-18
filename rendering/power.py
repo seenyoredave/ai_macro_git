@@ -126,16 +126,18 @@ def _latest_date(frame, column="Date"):
 
 
 def _active_campuses(infrastructure_data):
-    campuses = (infrastructure_data or {}).get("campus_registry")
-    if not isinstance(campuses, pd.DataFrame):
-        campuses = (infrastructure_data or {}).get("facility_registry")
+    campuses = (infrastructure_data or {}).get("data_center_registry")
     if not isinstance(campuses, pd.DataFrame):
         return pd.DataFrame()
+    if not campuses.empty:
+        if "Campus ID" not in campuses.columns:
+            raise ValueError("Power requires Universal Data Center Registry Campus IDs")
+        if campuses["Campus ID"].astype(str).duplicated().any():
+            raise ValueError("Power requires one row per Universal Data Center Registry Campus ID")
     clean = campuses.copy()
     status = clean.get("Status", pd.Series("", index=clean.index)).fillna("").astype(str).str.casefold()
     active_statuses = {value.casefold() for value in ACTIVE_CAMPUS_STATUSES}
     return clean.loc[status.eq("operational") | status.isin(active_statuses)].copy()
-
 
 def _inject_power_page_theme() -> None:
     st.markdown(

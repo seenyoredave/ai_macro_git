@@ -333,14 +333,14 @@ def _assert_force_without_authorization_is_retained() -> None:
         load_debt_markets_data(force_refresh=True, allow_live=False)
         infrastructure = load_infrastructure_data(
             force_construction_refresh=True,
-            force_facility_refresh=True,
+            force_data_center_refresh=True,
             force_compute_refresh=True,
             allow_construction_live=False,
-            allow_facility_live=False,
+            allow_data_center_live=False,
             allow_compute_live=False,
         )
         load_connectivity_data(
-            infrastructure.get("campus_registry"),
+            infrastructure.get("data_center_registry"),
             force_refresh=True,
             allow_live=False,
         )
@@ -416,7 +416,7 @@ def main() -> None:
         infrastructure = _timed("infrastructure", load_infrastructure_data, timings)
         connectivity = _timed(
             "connectivity",
-            lambda: load_connectivity_data(infrastructure.get("campus_registry")),
+            lambda: load_connectivity_data(infrastructure.get("data_center_registry")),
             timings,
         )
         construction = _timed(
@@ -519,7 +519,7 @@ def main() -> None:
         "benchmark_source_mode": benchmark.get("source_mode"),
         "energy_source_mode": (energy.get("load_report", {}) or {}).get("source_mode"),
         "nyfed_source_mode": (debt.get("load_report", {}) or {}).get("source_mode"),
-        "infrastructure_records": int(len(infrastructure.get("facility_registry", []))),
+        "infrastructure_records": int(len(infrastructure.get("data_center_registry", []))),
         "connectivity_records": int(
             len(connectivity.get("submarine_cable_systems", []))
         ),

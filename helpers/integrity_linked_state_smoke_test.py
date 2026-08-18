@@ -24,8 +24,7 @@ except ModuleNotFoundError:
     sys.modules["streamlit"] = stub
 
 from loaders import infrastructure_loader
-from loaders.facility_registry_loader import build_campus_registry, load_fractracker_facility_records
-from loaders.facility_identity import _assign_canonical_ids
+from loaders.data_center_registry import build_universal_data_center_registry, load_fractracker_data_center_observations
 
 
 def check_construction_provenance_transaction() -> None:
@@ -92,43 +91,42 @@ def check_reviewed_same_source_merge() -> None:
     rows = decisions.loc[decisions["Decision Group"].eq("pa-tecfusions-keystone-connect")]
     source_ids = set(rows["Source Record ID"].astype(str))
     assert len(source_ids) == 2
-    fractracker = load_fractracker_facility_records()
+    fractracker = load_fractracker_data_center_observations()
 
-    # When the historical reviewed IDs are still present, prove the decision
-    # ledger directly merges same-source records before generic spatial logic.
     selected = fractracker.loc[fractracker["Source Record ID"].astype(str).isin(source_ids)].copy()
     if len(selected) == 2:
-        assigned = _assign_canonical_ids(selected)
-        assert assigned["Canonical Facility ID"].nunique() == 1, (
-            "reviewed same-source campus merge is not being applied by the production matcher"
+        payload = build_universal_data_center_registry(
+            pd.DataFrame(),
+            fractracker_observations=selected,
+            gigawatt_observations=pd.DataFrame(),
+            curated_observations=pd.DataFrame(),
         )
+        assert len(payload["campuses"]) == 1, "reviewed same-source campus merge is not applied by the universal registry"
 
-    # Upstream edits may change a content-derived Source Record ID.  Find the
-    # reviewed campus semantically and verify the current production campus
-    # matcher still resolves it once.
     tecfusions = fractracker.loc[
-        fractracker["Facility"].astype(str).str.contains("Keystone Connect", case=False, na=False)
+        fractracker["Name"].astype(str).str.contains("Keystone Connect", case=False, na=False)
         & fractracker["State"].astype(str).eq("PA")
     ].copy()
     assert len(tecfusions) >= 2, "reviewed TECfusions campus fixture is missing from retained state"
 
-    # Prove the semantic review survives the exact failure mode seen in live
-    # operation: content-derived upstream IDs churn and therefore no longer
-    # match the historical decision ledger.
     shifted = tecfusions.head(2).copy()
     shifted.loc[:, "Source Record ID"] = [
         "fractracker-source:synthetic-id-shift-a",
         "fractracker-source:synthetic-id-shift-b",
     ]
-    assigned = _assign_canonical_ids(shifted)
-    assert assigned["Canonical Facility ID"].nunique() == 1, (
-        "reviewed TECfusions semantic alias did not survive changed upstream Source Record IDs"
+    shifted.loc[:, "Observation ID"] = [
+        "fractracker:synthetic-id-shift-a",
+        "fractracker:synthetic-id-shift-b",
+    ]
+    payload = build_universal_data_center_registry(
+        pd.DataFrame(),
+        fractracker_observations=shifted,
+        gigawatt_observations=pd.DataFrame(),
+        curated_observations=pd.DataFrame(),
     )
-
-    campuses = build_campus_registry(tecfusions)
-    matches = campuses["Facility"].astype(str).str.contains("Keystone Connect", case=False, na=False)
-    assert int(matches.sum()) == 1, "reviewed TECfusions alias did not survive current upstream record identities"
-
+    campuses = payload["campuses"]
+    assert len(campuses) == 1, "reviewed TECfusions semantic identity did not survive changed upstream IDs"
+    assert campuses["Campus Name"].astype(str).str.contains("Keystone", case=False, na=False).any()
 
 def main() -> int:
     check_construction_provenance_transaction()

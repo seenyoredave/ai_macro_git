@@ -509,39 +509,24 @@ def check_universal_aei_backfill():
         )
 
 def check_named_campus_deduplication():
-    # The loader imports requests for optional refreshes; no network is used here.
+    # Exercise the production registry payload rather than reconstructing identity
+    # through a second test-only implementation.
     if "requests" not in sys.modules:
         try:
             __import__("requests")
         except ModuleNotFoundError:
             sys.modules["requests"] = types.ModuleType("requests")
-    from loaders.facility_registry_loader import (
-        build_campus_registry,
-        build_facility_observations,
-        canonicalize_facility_observations,
-        load_fractracker_facility_records,
-        load_gigawatt_facility_records,
-    )
+    from loaders.infrastructure_loader import load_infrastructure_data
 
-    supplemental = pd.concat(
-        [load_fractracker_facility_records(), load_gigawatt_facility_records()],
-        ignore_index=True,
-        sort=False,
-    )
-    decisions = pd.read_csv(PROJECT_ROOT / "data" / "facility_identity_decisions.csv", dtype=str).fillna("")
-    decision_ids = set(decisions["Source Record ID"].astype(str))
-    # Restrict the fixture to reviewed identities and the original six named
-    # collisions so the gate stays bounded while using the production path.
-    pattern = "Homer|Rowan|Colossus|Caprock|CoreWeave|Gregory|Keystone|TECfusions"
-    relevant = supplemental["Source Record ID"].astype(str).isin(decision_ids)
-    for column in ("Facility", "Operator", "Developer", "Address", "City", "Notes"):
-        if column in supplemental.columns:
-            relevant |= supplemental[column].astype(str).str.contains(
-                pattern, case=False, na=False
-            )
-    supplemental = supplemental.loc[relevant].copy()
-    observations = build_facility_observations(pd.DataFrame(), supplemental)
-    campuses = build_campus_registry(canonicalize_facility_observations(observations))
+    infrastructure = load_infrastructure_data()
+    campuses = infrastructure.get("data_center_registry")
+    membership = infrastructure.get("data_center_membership")
+    decisions = infrastructure.get("data_center_identity_decisions")
+    _check(isinstance(campuses, pd.DataFrame) and not campuses.empty, "Universal Data Center Registry is unavailable")
+    _check("Campus ID" in campuses.columns, "Universal Data Center Registry lost Campus ID")
+    _check(not campuses["Campus ID"].astype(str).duplicated().any(), "Universal Data Center Registry contains duplicate Campus IDs")
+
+    names = campuses.get("Campus Name", pd.Series("", index=campuses.index)).fillna("").astype(str)
     needles = (
         "Homer City",
         "Rowan Digital",
@@ -551,67 +536,33 @@ def check_named_campus_deduplication():
         "Gregory Road",
     )
     for needle in needles:
-        matches = campuses["Facility"].str.contains(needle, case=False, na=False)
-        _check(int(matches.sum()) == 1, f"Named campus did not resolve once: {needle}")
+        _check(int(names.str.contains(needle, case=False, na=False).sum()) == 1, f"Named campus did not resolve once: {needle}")
 
-    # Keystone/TECfusions is a reviewed semantic identity whose upstream
-    # content-derived FracTracker IDs can legitimately change.  Assert the
-    # reviewed campus itself resolves once without coupling the gate to one
-    # historical display-name spelling or source-record ID.
-    keystone = campuses.apply(
-        lambda row: (
-            str(row.get("State") or "").strip().upper() == "PA"
-            and "tecfusions" in " ".join(
-                str(row.get(column) or "")
-                for column in ("Facility", "Operator", "Developer", "Notes")
-            ).casefold()
-            and (
-                "keystone" in " ".join(
-                    str(row.get(column) or "")
-                    for column in ("Facility", "Operator", "Developer", "Notes")
-                ).casefold()
-                or "upper burrell" in " ".join(
-                    str(row.get(column) or "")
-                    for column in ("Facility", "Operator", "Developer", "Notes")
-                ).casefold()
-            )
-        ),
-        axis=1,
-    )
+    keystone_text = campuses[[column for column in ("Campus Name", "Operator", "Developer") if column in campuses.columns]].fillna("").astype(str).agg(" ".join, axis=1).str.casefold()
+    keystone = campuses.get("State", pd.Series("", index=campuses.index)).fillna("").astype(str).str.upper().eq("PA") & keystone_text.str.contains("tecfusions", na=False) & (keystone_text.str.contains("keystone", na=False) | keystone_text.str.contains("upper burrell", na=False))
     _check(int(keystone.sum()) == 1, "Named campus did not resolve once: Keystone Connect / TECfusions")
 
-    campus_source_sets = campuses["Source Record ID"].map(
-        lambda value: {item.strip() for item in str(value).split("|") if item.strip()}
-    )
-    observed_source_ids = set().union(*campus_source_sets.tolist()) if len(campus_source_sets) else set()
+    if not isinstance(membership, pd.DataFrame) or not isinstance(decisions, pd.DataFrame):
+        raise AssertionError("Universal registry identity ledger is unavailable")
+    present_source_ids = set(membership.get("Source Record ID", pd.Series(dtype=str)).dropna().astype(str))
     for decision_group, rows in decisions.groupby("Decision Group", sort=False):
         source_ids = set(rows["Source Record ID"].astype(str))
-        # Upstream open trackers may edit/delete records, and FracTracker rows
-        # without an OBJECTID use a content-derived fallback ID.  A reviewed
-        # historical ID therefore cannot be required to exist forever.  Apply
-        # the merge/separate assertion to the reviewed members still present in
-        # the current retained source universe.
-        present_source_ids = source_ids.intersection(observed_source_ids)
-        if len(present_source_ids) < 2:
+        present = source_ids.intersection(present_source_ids)
+        if len(present) < 2:
             continue
-        member_rows = [
-            index for index, observed in campus_source_sets.items()
-            if observed.intersection(present_source_ids)
-        ]
+        mapped = {
+            source_id: set(
+                membership.loc[membership["Source Record ID"].astype(str).eq(source_id), "Campus ID"].dropna().astype(str)
+            )
+            for source_id in present
+        }
         decision = str(rows["Decision"].iloc[0]).casefold()
         if decision == "merge":
-            _check(
-                len(set(member_rows)) == 1
-                and present_source_ids.issubset(campus_source_sets.loc[member_rows[0]]),
-                f"Reviewed campus merge failed: {decision_group}",
-            )
+            resolved = set().union(*mapped.values()) if mapped else set()
+            _check(len(resolved) == 1, f"Reviewed campus merge failed: {decision_group}")
         elif decision == "separate":
-            _check(
-                len(member_rows) == len(present_source_ids)
-                and len(set(member_rows)) == len(present_source_ids),
-                f"Reviewed distinct campuses were combined: {decision_group}",
-            )
-
+            _check(all(len(value) == 1 for value in mapped.values()), f"Reviewed separation lost a campus mapping: {decision_group}")
+            _check(len({next(iter(value)) for value in mapped.values()}) == len(mapped), f"Reviewed distinct campuses were combined: {decision_group}")
 
 def main():
     checks = (

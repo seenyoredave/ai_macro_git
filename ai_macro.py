@@ -104,8 +104,8 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v9.5.1"
-APP_STATE_SCHEMA_VERSION = "70.3-automation-reconciliation"
+APP_VERSION = "v9.6.0"
+APP_STATE_SCHEMA_VERSION = "71.0-universal-data-center-registry"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -266,17 +266,17 @@ if st.session_state.force_rebuild:
     infrastructure_data = load_infrastructure_data(
         refresh_token=combined_domain_token("compute", "data_centers", "grid_storage"),
         force_construction_refresh=refreshing("data_centers") or refreshing("grid_storage"),
-        force_facility_refresh=refreshing("data_centers"),
+        force_data_center_refresh=refreshing("data_centers"),
         force_compute_refresh=refreshing("compute"),
         allow_construction_live=(
             load_policy.allows_live(RefreshSource.DATA_CENTERS)
             or load_policy.allows_live(RefreshSource.GRID_STORAGE)
         ),
-        allow_facility_live=load_policy.allows_live(RefreshSource.DATA_CENTERS),
+        allow_data_center_live=load_policy.allows_live(RefreshSource.DATA_CENTERS),
         allow_compute_live=load_policy.allows_live(RefreshSource.COMPUTE),
     )
     connectivity_data = load_connectivity_data(
-        infrastructure_data.get("campus_registry"),
+        infrastructure_data.get("data_center_registry"),
         force_refresh=refreshing("connectivity"),
         refresh_token=domain_token("connectivity"),
         allow_live=load_policy.allows_live(RefreshSource.CONNECTIVITY),

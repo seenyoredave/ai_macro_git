@@ -107,8 +107,7 @@ def main() -> None:
     infrastructure = {
         "construction_history": _read_csv("infrastructure_construction_history.csv"),
         "series": {},
-        "facility_registry": pd.DataFrame(),
-        "campus_registry": pd.DataFrame(),
+        "data_center_registry": pd.DataFrame(),
     }
     history = infrastructure["construction_history"]
     history["Observation Date"] = pd.to_datetime(history["Observation Date"], errors="coerce", format="mixed")

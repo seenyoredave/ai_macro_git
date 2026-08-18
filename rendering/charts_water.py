@@ -1,20 +1,18 @@
 from __future__ import annotations
 
+from functools import lru_cache
+import json
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-from analytics.water_competition import (
-    competing_freshwater_profile,
-    county_water_exposure_profile,
-    current_top_withdrawal_profile,
-    evidence_ladder,
-    local_context_coverage_profile,
-    state_competition_exposure,
-    state_facility_evidence_profile,
-    state_water_exposure_profile,
-)
-from rendering.charts_common import COLORS, _base_layout, add_axis_headroom, add_stacked_axis_headroom
+from loaders.data_center_registry import campus_display_labels
+from analytics.water_campus import state_campus_evidence_profile
+from analytics.water_competition import current_top_withdrawal_profile, local_context_coverage_profile
+from rendering.charts_common import COLORS, _base_layout, add_axis_headroom
+from rendering.map_geometry import map_layers, map_view
 
 WATER_COLORS = {
     "ground": "#2563eb",
@@ -26,6 +24,12 @@ WATER_COLORS = {
     "plot": "rgba(15,23,42,0.28)",
 }
 
+_LATITUDE_CANDIDATES = (
+    "Latitude", "Campus Latitude", "Lat", "latitude", "lat",
+)
+_LONGITUDE_CANDIDATES = (
+    "Longitude", "Campus Longitude", "Lon", "Lng", "longitude", "lon", "lng",
+)
 
 def _water_layout(fig, *, height=360, margin=None, legend=False):
     fig = _base_layout(fig, height=height, margin=margin, legend=legend)
@@ -35,64 +39,134 @@ def _water_layout(fig, *, height=360, margin=None, legend=False):
     )
     return fig
 
+def _resolve_coordinate_column(frame: pd.DataFrame, candidates: tuple[str, ...]) -> str | None:
+    for column in candidates:
+        if column in frame.columns:
+            return column
+    return None
 
-def water_competing_uses(category_frame, *, height=410):
-    profile = competing_freshwater_profile(category_frame)
-    fig = go.Figure()
-    if not profile.empty:
-        for column, label, color in (
-            ("Fresh Groundwater Bgal/day", "Fresh groundwater", WATER_COLORS["ground"]),
-            ("Fresh Surface Water Bgal/day", "Fresh surface water", WATER_COLORS["surface"]),
-        ):
-            fig.add_trace(go.Bar(
-                x=profile[column],
-                y=profile["Party"],
-                orientation="h",
-                name=label,
-                marker={"color": color, "line": {"width": 0.6, "color": "rgba(15,23,42,0.55)"}},
-                customdata=np.stack([
-                    profile["Freshwater Bgal/day"],
-                    profile["Freshwater Share"] * 100.0,
-                ], axis=-1),
-                hovertemplate=(
-                    "%{y}<br>" + label + ": %{x:,.1f} Bgal/day"
-                    "<br>Total freshwater: %{customdata[0]:,.1f} Bgal/day"
-                    "<br>Share of represented freshwater: %{customdata[1]:.1f}%<extra></extra>"
-                ),
-            ))
-    fig.update_layout(barmode="stack", bargap=0.28)
-    fig.update_xaxes(title="Freshwater withdrawal · billion gallons per day")
-    fig.update_yaxes(title="", categoryorder="array", categoryarray=list(reversed(profile["Party"].tolist())) if not profile.empty else None)
-    fig = _water_layout(fig, height=height, margin=dict(l=190, r=26, t=58, b=50), legend=True)
-    fig.update_layout(legend={"orientation": "h", "y": 1.13, "x": 0, "xanchor": "left", "yanchor": "bottom"})
-    return add_stacked_axis_headroom(fig, upper=0.18, lower=0.0, include_zero=True)
+def _normalize_fips(value) -> str:
+    if value is None or pd.isna(value):
+        return ""
+    text = str(value).strip()
+    if text.endswith(".0"):
+        text = text[:-2]
+    digits = "".join(ch for ch in text if ch.isdigit())
+    return digits.zfill(5) if digits else ""
 
+def _county_geojson() -> dict:
+    path = Path(__file__).resolve().parents[1] / "assets" / "geo" / "us_counties.geojson"
+    if not path.exists():
+        return {"type": "FeatureCollection", "features": []}
+    with path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
 
-def water_evidence_ladder(summary: dict | None, *, height=410):
-    """Compatibility evidence-depth chart retained for older callers."""
-    frame = evidence_ladder(summary)
-    fig = go.Figure()
-    if not frame.empty:
-        shades = ["#8b5cf6", "#6366f1", "#3b82f6", "#64748b", "#475569"]
-        fig.add_trace(go.Bar(
-            x=frame["Facilities"],
-            y=frame["Evidence Stage"],
-            orientation="h",
-            marker={"color": shades[: len(frame)], "line": {"width": 0.7, "color": "rgba(15,23,42,0.55)"}},
-            text=[f"{int(value):,}" for value in frame["Facilities"]],
-            textposition="outside",
-            cliponaxis=False,
-            customdata=frame["Coverage"] * 100.0,
-            hovertemplate="%{y}<br>Facilities: %{x:,.0f}<br>Coverage: %{customdata:.1f}%<extra></extra>",
-        ))
-    fig.update_xaxes(title="Facilities")
-    fig.update_yaxes(title="", categoryorder="array", categoryarray=list(reversed(frame["Evidence Stage"].tolist())) if not frame.empty else None)
-    fig = _water_layout(fig, height=height, margin=dict(l=175, r=48, t=26, b=48))
-    return add_axis_headroom(fig, axis="x", upper=0.22, lower=0.0, include_zero=True)
+def _county_geometry_frame() -> pd.DataFrame:
+    rows = []
+    for feature in _county_geojson().get("features", []):
+        properties = feature.get("properties") or {}
+        fips = _normalize_fips(feature.get("id"))
+        if not fips:
+            continue
+        rows.append({
+            "FIPS": fips,
+            "State": str(properties.get("STATE") or "").strip().upper(),
+            "County": str(properties.get("NAME") or "").strip(),
+        })
+    return pd.DataFrame(rows)
 
+def county_state_for_fips(fips) -> str:
+    key = _normalize_fips(fips)
+    if not key:
+        return ""
+    frame = _county_geometry_frame()
+    if frame.empty:
+        return ""
+    match = frame.loc[frame["FIPS"].eq(key), "State"]
+    return str(match.iloc[0]) if not match.empty else ""
+
+def _county_drought_frame(county_drought: pd.DataFrame | None) -> pd.DataFrame:
+    geometry = _county_geometry_frame().copy()
+    if geometry.empty:
+        return geometry
+    drought = county_drought.copy() if isinstance(county_drought, pd.DataFrame) else pd.DataFrame()
+    if drought.empty or "FIPS" not in drought.columns:
+        for column in ("D0+ Area Percent", "D1+ Area Percent", "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent"):
+            geometry[column] = np.nan
+        geometry["Snapshot Date"] = ""
+        geometry["Has Current Drought Data"] = False
+        return geometry
+
+    drought = drought.copy()
+    drought["FIPS"] = drought["FIPS"].map(_normalize_fips)
+    drought = drought.loc[drought["FIPS"].ne("")].drop_duplicates("FIPS", keep="last")
+    keep = [
+        "FIPS", "Snapshot Date", "D0+ Area Percent", "D1+ Area Percent",
+        "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent",
+    ]
+    drought = drought[[column for column in keep if column in drought.columns]].copy()
+    for column in ("D0+ Area Percent", "D1+ Area Percent", "D2+ Area Percent", "D3+ Area Percent", "D4 Area Percent"):
+        if column not in drought.columns:
+            drought[column] = np.nan
+        drought[column] = pd.to_numeric(drought[column], errors="coerce")
+    drought["Has Current Drought Data"] = drought["D2+ Area Percent"].notna()
+    merged = geometry.merge(drought, on="FIPS", how="left")
+    merged["Has Current Drought Data"] = merged["Has Current Drought Data"].eq(True)
+    if "Snapshot Date" not in merged.columns:
+        merged["Snapshot Date"] = ""
+    merged["Snapshot Date"] = merged["Snapshot Date"].fillna("").astype(str)
+    return merged
+
+def _campus_fips_counts(campus_context: pd.DataFrame | None) -> pd.DataFrame:
+    if campus_context is None or not isinstance(campus_context, pd.DataFrame) or campus_context.empty:
+        return pd.DataFrame(columns=["FIPS", "Mapped Campuses"])
+    frame = campus_context.copy()
+    if "FIPS" not in frame.columns:
+        return pd.DataFrame(columns=["FIPS", "Mapped Campuses"])
+    frame["FIPS"] = frame["FIPS"].map(_normalize_fips)
+    frame = frame.loc[frame["FIPS"].ne("")].copy()
+    if frame.empty:
+        return pd.DataFrame(columns=["FIPS", "Mapped Campuses"])
+    if "Campus ID" in frame.columns:
+        counts = frame.groupby("FIPS")["Campus ID"].nunique().rename("Mapped Campuses")
+    else:
+        counts = frame.groupby("FIPS").size().rename("Mapped Campuses")
+    return counts.reset_index()
+
+def _campus_points(campus_context: pd.DataFrame | None, state: str) -> pd.DataFrame:
+    if campus_context is None or not isinstance(campus_context, pd.DataFrame) or campus_context.empty:
+        return pd.DataFrame()
+    lat_col = _resolve_coordinate_column(campus_context, _LATITUDE_CANDIDATES)
+    lon_col = _resolve_coordinate_column(campus_context, _LONGITUDE_CANDIDATES)
+    if not lat_col or not lon_col:
+        return pd.DataFrame()
+    frame = campus_context.copy()
+    frame["State"] = frame.get("State", pd.Series("", index=frame.index)).fillna("").astype(str).str.upper().str.strip()
+    frame = frame.loc[frame["State"].eq(str(state or "").upper().strip())].copy()
+    if frame.empty:
+        return frame
+    frame["Latitude"] = pd.to_numeric(frame.get(lat_col), errors="coerce")
+    frame["Longitude"] = pd.to_numeric(frame.get(lon_col), errors="coerce")
+    frame = frame.dropna(subset=["Latitude", "Longitude"]).copy()
+    if frame.empty:
+        return frame
+
+    published = pd.to_numeric(frame.get("Published Capacity Estimate MW", pd.Series(np.nan, index=frame.index)), errors="coerce")
+    planned = pd.to_numeric(frame.get("Planned Data Center Capacity MW", pd.Series(np.nan, index=frame.index)), errors="coerce")
+    frame["Published Capacity MW"] = published.combine_first(planned)
+    frame["Marker Size"] = np.clip(7.5 + np.sqrt(frame["Published Capacity MW"].fillna(0).clip(lower=0)) * 0.22, 7.5, 18)
+    frame["Campus Name"] = campus_display_labels(frame)
+    frame["Operator"] = frame.get("Operator", pd.Series("", index=frame.index)).fillna("").astype(str)
+    frame["County"] = frame.get("County", pd.Series("", index=frame.index)).fillna("").astype(str)
+    frame["Status"] = frame.get("Status", pd.Series("", index=frame.index)).fillna("").astype(str)
+    frame["County D2+ Area Percent"] = pd.to_numeric(
+        frame.get("County D2+ Area Percent", pd.Series(np.nan, index=frame.index)), errors="coerce"
+    )
+    frame["EPA Overlap"] = frame.get("PWS Service Area Overlap", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
+    frame["Direct Evidence"] = frame.get("Direct Water Evidence", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
+    return frame
 
 def water_local_context_coverage(summary: dict | None, *, height: int = 450):
-    """Show independent Water v2 context and disclosure coverage surfaces."""
     frame = local_context_coverage_profile(summary)
     fig = go.Figure()
     if not frame.empty:
@@ -100,25 +174,25 @@ def water_local_context_coverage(summary: dict | None, *, height: int = 450):
             "registry": "#475569",
             "physical context": WATER_COLORS["primary"],
             "service-area context": WATER_COLORS["secondary"],
-            "facility evidence": WATER_COLORS["surface"],
+            "campus evidence": WATER_COLORS["surface"],
         }
         colors = [color_map.get(str(value), WATER_COLORS["neutral"]) for value in frame["Layer Type"]]
         fig.add_trace(go.Bar(
-            x=frame["Facilities"],
+            x=frame["Campuses"],
             y=frame["Coverage Layer"],
             orientation="h",
             marker={"color": colors, "line": {"width": 0.7, "color": "rgba(15,23,42,0.55)"}},
-            text=[f"{int(value):,}" for value in frame["Facilities"]],
+            text=[f"{int(value):,}" for value in frame["Campuses"]],
             textposition="outside",
             cliponaxis=False,
             customdata=np.stack([frame["Coverage"] * 100.0, frame["Layer Type"]], axis=-1),
             hovertemplate=(
-                "%{y}<br>Facilities: %{x:,.0f}"
+                "%{y}<br>Campuses: %{x:,.0f}"
                 "<br>Coverage: %{customdata[0]:.1f}%"
                 "<br>Layer: %{customdata[1]}<extra></extra>"
             ),
         ))
-    fig.update_xaxes(title="Facility records")
+    fig.update_xaxes(title="Campus records")
     fig.update_yaxes(
         title="",
         categoryorder="array",
@@ -127,142 +201,162 @@ def water_local_context_coverage(summary: dict | None, *, height: int = 450):
     fig = _water_layout(fig, height=height, margin=dict(l=205, r=54, t=24, b=48))
     return add_axis_headroom(fig, axis="x", upper=0.20, lower=0.0, include_zero=True)
 
+def water_county_drought_map(
+    county_drought: pd.DataFrame | None,
+    campus_context: pd.DataFrame | None = None,
+    *,
+    state: str | None = None,
+    height: int = 560,
+):
+    """Render current D2+ drought as filled county polygons.
 
-def water_county_drought_exposure(facility_context: pd.DataFrame | None, *, height: int = 490, top_n: int = 18):
-    """Rank mapped counties by current D2+ exposure without capacity weighting."""
-    frame = county_water_exposure_profile(facility_context)
+    National view colors every county with a current observation. State view
+    keeps the county surface and adds mapped campus points for local detail.
+    """
+    geojson = _county_geojson()
+    frame = _county_drought_frame(county_drought)
     fig = go.Figure()
-    if not frame.empty:
-        selection = frame.loc[pd.to_numeric(frame["D2+ Area Percent"], errors="coerce").notna()].copy()
-        selection = selection.sort_values(
-            ["D2+ Area Percent", "Facilities", "State", "County"],
-            ascending=[False, False, True, True],
-            kind="stable",
-        ).head(max(int(top_n), 1))
-        selection["Label"] = selection["County"].astype(str) + ", " + selection["State"].astype(str)
-        selection = selection.sort_values(["D2+ Area Percent", "Facilities"], ascending=[True, True], kind="stable")
-        custom = np.stack([
-            pd.to_numeric(selection["D2+ Area Percent"], errors="coerce").fillna(0),
-            pd.to_numeric(selection["D3+ Area Percent"], errors="coerce").fillna(0),
-            pd.to_numeric(selection["Facilities"], errors="coerce").fillna(0),
-            pd.to_numeric(selection["PWS Overlap Facilities"], errors="coerce").fillna(0),
-            pd.to_numeric(selection["Direct Water Evidence"], errors="coerce").fillna(0),
-        ], axis=-1)
-        fig.add_trace(go.Bar(
-            x=pd.to_numeric(selection["D1+ Area Percent"], errors="coerce"),
-            y=selection["Label"],
-            orientation="h",
-            name="D1+ area",
-            marker_color=WATER_COLORS["secondary"],
-            customdata=custom,
-            hovertemplate=(
-                "%{y}<br>D1+ county area: %{x:.1f}%"
-                "<br>D2+ county area: %{customdata[0]:.1f}%"
-                "<br>D3+ county area: %{customdata[1]:.1f}%"
-                "<br>Mapped facilities: %{customdata[2]:,.0f}"
-                "<br>EPA service-area overlaps: %{customdata[3]:,.0f}"
-                "<br>Direct water evidence: %{customdata[4]:,.0f}<extra></extra>"
-            ),
-        ))
-        fig.add_trace(go.Scatter(
-            x=pd.to_numeric(selection["D2+ Area Percent"], errors="coerce"),
-            y=selection["Label"],
-            mode="markers",
-            name="D2+ area",
-            marker={"size": 10, "color": WATER_COLORS["primary"], "line": {"width": 1, "color": "rgba(248,250,252,0.7)"}},
-            hovertemplate="%{y}<br>D2+ county area: %{x:.1f}%<extra></extra>",
-        ))
-    fig.update_xaxes(title="Share of county area in drought", ticksuffix="%", range=[0, 105])
-    fig.update_yaxes(title="")
-    fig = _water_layout(fig, height=height, legend=True, margin=dict(l=170, r=30, t=70, b=48))
-    fig.update_layout(legend={"orientation": "h", "y": 1.13, "x": 0, "yanchor": "bottom"})
-    return fig
+    if frame.empty or not geojson.get("features"):
+        fig = _water_layout(fig, height=height, margin=dict(l=16, r=16, t=16, b=16), legend=False)
+        fig.add_annotation(
+            text="County boundary geometry is unavailable.",
+            showarrow=False,
+            x=0.5,
+            y=0.5,
+            xref="paper",
+            yref="paper",
+            font={"size": 13, "color": COLORS["muted"]},
+        )
+        return fig
 
+    selected_state = str(state or "").upper().strip()
+    if selected_state:
+        frame = frame.loc[frame["State"].eq(selected_state)].copy()
+        feature_ids = set(frame["FIPS"].tolist())
+        map_geojson = {
+            "type": "FeatureCollection",
+            "features": [feature for feature in geojson.get("features", []) if _normalize_fips(feature.get("id")) in feature_ids],
+        }
+    else:
+        map_geojson = geojson
 
-def water_state_exposure(facility_context, state_categories, *, height=410, top_n=16):
-    frame = state_competition_exposure(facility_context, state_categories)
-    fig = go.Figure()
-    if not frame.empty:
-        frame = frame.head(max(int(top_n), 1)).copy()
-        direct = pd.to_numeric(frame["Direct_Evidence"], errors="coerce").fillna(0)
-        size = np.clip(10 + np.sqrt(direct) * 5, 10, 34)
-        color = pd.to_numeric(frame["County Context Coverage"], errors="coerce").fillna(0) * 100.0
-        custom = np.stack([
-            frame["Agriculture Share"] * 100.0,
-            frame["Household & Public Share"] * 100.0,
-            frame["Thermoelectric Share"] * 100.0,
-            frame["County_Context"],
-            frame["Direct_Evidence"],
-        ], axis=-1)
-        fig.add_trace(go.Scatter(
-            x=frame["Mapped Facilities"],
-            y=frame["Community + Agriculture Share"] * 100.0,
-            mode="markers+text",
-            text=frame["State"],
-            textposition="top center",
-            textfont={"size": 10, "color": COLORS["muted"]},
-            marker={
-                "size": size,
-                "color": color,
-                "colorscale": [[0, "#334155"], [0.45, "#2563eb"], [1, "#a78bfa"]],
-                "cmin": 0,
-                "cmax": 100,
-                "showscale": True,
-                "colorbar": {"title": {"text": "County context<br>coverage", "font": {"size": 10}}, "ticksuffix": "%", "thickness": 10, "len": 0.68, "x": 1.02},
-                "line": {"width": 1.0, "color": "rgba(226,232,240,0.42)"},
-                "opacity": 0.9,
-            },
-            customdata=custom,
-            hovertemplate=(
-                "<b>%{text}</b><br>Mapped facilities: %{x:,.0f}"
-                "<br>Household + agriculture share: %{y:.1f}%"
-                "<br>Agriculture: %{customdata[0]:.1f}%"
-                "<br>Households & public systems: %{customdata[1]:.1f}%"
-                "<br>Thermoelectric power: %{customdata[2]:.1f}%"
-                "<br>County-context records: %{customdata[3]:,.0f}"
-                "<br>Direct-evidence records: %{customdata[4]:,.0f}<extra></extra>"
-            ),
-        ))
-    fig.update_xaxes(title="Mapped data-center facilities")
-    fig.update_yaxes(title="Household + agriculture share of freshwater withdrawals", ticksuffix="%")
-    fig = _water_layout(fig, height=height, margin=dict(l=72, r=88, t=34, b=54))
-    return add_axis_headroom(fig, upper=0.18, lower=0.06, include_zero=True)
+    counts = _campus_fips_counts(campus_context)
+    if not counts.empty:
+        frame = frame.merge(counts, on="FIPS", how="left")
+    if "Mapped Campuses" not in frame.columns:
+        frame["Mapped Campuses"] = 0
+    frame["Mapped Campuses"] = pd.to_numeric(frame["Mapped Campuses"], errors="coerce").fillna(0)
 
+    # -1 is reserved for counties without a current observation. Zero is a
+    # valid D2+ reading and receives its own neutral fill.
+    frame["Map D2"] = pd.to_numeric(frame["D2+ Area Percent"], errors="coerce").fillna(-1.0)
+    d1 = pd.to_numeric(frame["D1+ Area Percent"], errors="coerce")
+    d2 = pd.to_numeric(frame["D2+ Area Percent"], errors="coerce")
+    d3 = pd.to_numeric(frame["D3+ Area Percent"], errors="coerce")
+    d1_text = d1.map(lambda value: "n/a" if pd.isna(value) else f"{float(value):.1f}%")
+    d2_text = d2.map(lambda value: "n/a" if pd.isna(value) else f"{float(value):.1f}%")
+    d3_text = d3.map(lambda value: "n/a" if pd.isna(value) else f"{float(value):.1f}%")
+    snapshot_text = frame["Snapshot Date"].map(lambda value: str(value).strip() or "n/a")
+    custom = np.column_stack([
+        frame["County"].astype(str),
+        frame["State"].astype(str),
+        d1_text.astype(str),
+        d2_text.astype(str),
+        d3_text.astype(str),
+        frame["Mapped Campuses"].astype(float),
+        snapshot_text.astype(str),
+    ])
 
-def water_withdrawal_components(category_frame, *, height=390):
-    frame = category_frame.copy() if isinstance(category_frame, pd.DataFrame) else pd.DataFrame()
-    label_map = {
-        "public_supply": "Public supply", "domestic_self_supply": "Domestic self-supply",
-        "industrial_self_supply": "Industrial self-supply", "irrigation": "Irrigation",
-        "livestock": "Livestock", "aquaculture": "Aquaculture", "mining": "Mining",
-        "thermoelectric_power": "Thermoelectric power",
-    }
-    components = [
-        ("Fresh Groundwater Mgal/d", "Fresh groundwater", COLORS["blue_deep"]),
-        ("Fresh Surface Water Mgal/d", "Fresh surface water", COLORS["blue"]),
-        ("Saline Groundwater Mgal/d", "Saline groundwater", COLORS["violet_deep"]),
-        ("Saline Surface Water Mgal/d", "Saline surface water", COLORS["violet"]),
-    ]
-    fig = go.Figure()
-    if not frame.empty and "Use Category" in frame.columns:
-        frame = frame.copy()
-        frame["Display"] = frame["Use Category"].map(label_map).fillna(frame["Use Category"])
-        frame["Total Withdrawal Mgal/d"] = pd.to_numeric(frame.get("Total Withdrawal Mgal/d"), errors="coerce")
-        frame = frame.sort_values("Total Withdrawal Mgal/d", ascending=True, kind="stable")
-        for column, label, color in components:
-            values = pd.to_numeric(frame.get(column), errors="coerce").fillna(0)
-            fig.add_trace(go.Bar(
-                x=values / 1000.0, y=frame["Display"], orientation="h", name=label,
-                marker_color=color, customdata=values,
-                hovertemplate=f"%{{y}}<br>{label}: %{{customdata:,.1f}} Mgal/d<extra></extra>",
+    fig.add_trace(go.Choroplethmap(
+        geojson=map_geojson,
+        locations=frame["FIPS"],
+        z=frame["Map D2"],
+        featureidkey="id",
+        zmin=-1,
+        zmax=100,
+        colorscale=[
+            [0.0000, "#111827"],
+            [0.0098, "#111827"],
+            [0.0099, "#263244"],
+            [0.0101, "#fde047"],
+            [0.2550, "#facc15"],
+            [0.5050, "#fb923c"],
+            [0.7525, "#ef4444"],
+            [1.0000, "#7f1d1d"],
+        ],
+        marker={"line": {"color": "rgba(203,213,225,0.30)", "width": 0.35}},
+        colorbar={
+            "title": {"text": "D2+ county area", "font": {"size": 10}},
+            "tickvals": [0, 25, 50, 75, 100],
+            "ticktext": ["0%", "25%", "50%", "75%", "100%"],
+            "thickness": 11,
+            "len": 0.72,
+            "x": 1.015,
+        },
+        customdata=custom,
+        hovertemplate=(
+            "<b>%{customdata[0]}, %{customdata[1]}</b>"
+            "<br>D1+ county area: %{customdata[2]}"
+            "<br>D2+ county area: %{customdata[3]}"
+            "<br>D3+ county area: %{customdata[4]}"
+            "<br>Mapped campuses: %{customdata[5]:,.0f}"
+            "<br>Snapshot: %{customdata[6]}<extra></extra>"
+        ),
+        selected={"marker": {"opacity": 1.0}},
+        unselected={"marker": {"opacity": 1.0}},
+        name="County drought",
+    ))
+
+    if selected_state:
+        points = _campus_points(campus_context, selected_state)
+        if not points.empty:
+            capacity = points["Published Capacity MW"]
+            capacity_text = capacity.map(lambda value: "Not published" if pd.isna(value) else f"{float(value):,.0f} MW")
+            d2_text = points["County D2+ Area Percent"].map(lambda value: "n/a" if pd.isna(value) else f"{float(value):.1f}%")
+            custom_points = np.column_stack([
+                points.get("Campus ID", pd.Series("", index=points.index)).astype(str),
+                points["Operator"].astype(str),
+                points["County"].astype(str),
+                points["Status"].astype(str),
+                capacity_text.astype(str),
+                d2_text.astype(str),
+                points["EPA Overlap"].map({True: "Yes", False: "No"}).astype(str),
+                points["Direct Evidence"].map({True: "Yes", False: "No"}).astype(str),
+            ])
+            fig.add_trace(go.Scattermap(
+                lon=points["Longitude"],
+                lat=points["Latitude"],
+                text=points["Campus Name"],
+                mode="markers",
+                marker={
+                    "size": points["Marker Size"],
+                    "color": "#f8fafc",
+                    "opacity": 0.94,
+                },
+                customdata=custom_points,
+                hovertemplate=(
+                    "<b>%{text}</b>"
+                    "<br>%{customdata[1]}"
+                    "<br>%{customdata[2]}"
+                    "<br>Status: %{customdata[3]}"
+                    "<br>Published capacity: %{customdata[4]}"
+                    "<br>County D2+: %{customdata[5]}"
+                    "<br>EPA boundary overlap: %{customdata[6]}"
+                    "<br>Direct water evidence: %{customdata[7]}<extra></extra>"
+                ),
+                name="Campuses",
+                showlegend=False,
             ))
-    fig.update_layout(barmode="stack")
-    fig.update_xaxes(title="Billion gallons per day")
-    fig.update_yaxes(title="")
-    fig = _water_layout(fig, height=height, legend=True, margin=dict(l=158, r=28, t=70, b=48))
-    fig.update_layout(legend={"orientation": "h", "y": 1.12, "x": 0, "yanchor": "bottom"})
-    return add_stacked_axis_headroom(fig, upper=0.18, lower=0.0, include_zero=True)
 
+    fig = _water_layout(fig, height=height, margin=dict(l=0, r=0, t=0, b=0), legend=False)
+    view = map_view(selected_state or None, height=height)
+    view["layers"] = map_layers(selected_state or None)
+    fig.update_layout(
+        map=view,
+        dragmode="pan",
+        uirevision=f"water-county-map:{selected_state or 'US'}",
+    )
+    return fig
 
 def thermoelectric_water_groups(group_frame, *, metric="Withdrawal", height=360):
     frame = group_frame.copy() if isinstance(group_frame, pd.DataFrame) else pd.DataFrame()
@@ -288,7 +382,6 @@ def thermoelectric_water_groups(group_frame, *, metric="Withdrawal", height=360)
     fig = _water_layout(fig, height=height, margin=dict(l=125, r=34, t=26, b=48))
     return add_axis_headroom(fig, axis="x", upper=0.20, lower=0.0, include_zero=True)
 
-
 def water_top_withdrawals_2020(frame: pd.DataFrame | None, *, height: int = 390):
     profile = current_top_withdrawal_profile(frame)
     fig = go.Figure()
@@ -312,18 +405,17 @@ def water_top_withdrawals_2020(frame: pd.DataFrame | None, *, height: int = 390)
     fig = _water_layout(fig, height=height, margin=dict(l=165, r=58, t=26, b=50))
     return add_axis_headroom(fig, axis="x", upper=0.18, lower=0.0, include_zero=True)
 
-
-def water_state_evidence_profile(facility_context: pd.DataFrame | None, *, height: int = 430, top_n: int = 16):
-    frame = state_facility_evidence_profile(facility_context)
+def water_state_evidence_profile(campus_context: pd.DataFrame | None, *, height: int = 430, top_n: int = 16):
+    frame = state_campus_evidence_profile(campus_context)
     fig = go.Figure()
     if not frame.empty:
-        frame = frame.head(max(int(top_n), 1)).sort_values("Mapped Facilities", ascending=True, kind="stable")
+        frame = frame.head(max(int(top_n), 1)).sort_values("Mapped Campuses", ascending=True, kind="stable")
         fig.add_trace(go.Bar(
-            x=frame["Mapped Facilities"], y=frame["State"], orientation="h", name="Mapped facilities",
+            x=frame["Mapped Campuses"], y=frame["State"], orientation="h", name="Mapped campuses",
             marker={"color": "#475569", "line": {"width": 0.6, "color": "rgba(15,23,42,0.55)"}},
             customdata=np.stack([frame["Direct Water Evidence"], frame["Quantified Use"], frame["Direct Evidence Coverage"] * 100.0], axis=-1),
             hovertemplate=(
-                "%{y}<br>Mapped facilities: %{x:,.0f}"
+                "%{y}<br>Mapped campuses: %{x:,.0f}"
                 "<br>Direct water evidence: %{customdata[0]:,.0f}"
                 "<br>Quantified use records: %{customdata[1]:,.0f}"
                 "<br>Direct-evidence coverage: %{customdata[2]:.1f}%<extra></extra>"
@@ -332,20 +424,19 @@ def water_state_evidence_profile(facility_context: pd.DataFrame | None, *, heigh
         fig.add_trace(go.Scatter(
             x=frame["Direct Water Evidence"], y=frame["State"], mode="markers", name="Direct water evidence",
             marker={"size": 9, "color": WATER_COLORS["primary"], "line": {"width": 1.0, "color": "rgba(248,250,252,0.65)"}},
-            customdata=np.stack([frame["Mapped Facilities"], frame["Quantified Use"], frame["Direct Evidence Coverage"] * 100.0], axis=-1),
+            customdata=np.stack([frame["Mapped Campuses"], frame["Quantified Use"], frame["Direct Evidence Coverage"] * 100.0], axis=-1),
             hovertemplate=(
                 "%{y}<br>Direct water evidence: %{x:,.0f}"
-                "<br>Mapped facilities: %{customdata[0]:,.0f}"
+                "<br>Mapped campuses: %{customdata[0]:,.0f}"
                 "<br>Quantified use records: %{customdata[1]:,.0f}"
                 "<br>Direct-evidence coverage: %{customdata[2]:.1f}%<extra></extra>"
             ),
         ))
-    fig.update_xaxes(title="Facility records")
+    fig.update_xaxes(title="Campus records")
     fig.update_yaxes(title="")
     fig = _water_layout(fig, height=height, margin=dict(l=56, r=42, t=72, b=48), legend=True)
     fig.update_layout(legend={"orientation": "h", "y": 1.13, "x": 0, "yanchor": "bottom"}, bargap=0.28)
     return add_axis_headroom(fig, axis="x", upper=0.18, lower=0.0, include_zero=True)
-
 
 def wastewater_construction_history(history: pd.DataFrame | None, *, height: int = 390):
     if history is None or not isinstance(history, pd.DataFrame) or history.empty:
@@ -358,71 +449,25 @@ def wastewater_construction_history(history: pd.DataFrame | None, *, height: int
             subset=["Observation Date", "Public Sewage and Waste Disposal Construction"]
         ).sort_values("Observation Date", kind="stable")
     fig = go.Figure(go.Scatter(
-        x=clean.get("Observation Date", []),
-        y=clean.get("Public Sewage and Waste Disposal Construction", pd.Series(dtype=float)) / 1000.0,
-        mode="lines", name="Public wastewater construction",
-        line={"color": WATER_COLORS["primary"], "width": 2.7},
-        hovertemplate="%{x|%Y-%m}<br>$%{y:,.1f}B SAAR<extra></extra>",
+        x=clean.get("Observation Date"),
+        y=clean.get("Public Sewage and Waste Disposal Construction") / 1000.0 if not clean.empty else None,
+        mode="lines",
+        line={"color": "#8b5cf6", "width": 2.4},
+        fill="tozeroy",
+        fillcolor="rgba(139,92,246,0.16)",
+        hovertemplate="%{x|%Y-%m}<br>$%{y:,.1f}B<extra></extra>",
     ))
-    fig.update_yaxes(tickprefix="$", ticksuffix="B")
-    fig = _water_layout(fig, height=height, margin=dict(l=54, r=22, t=24, b=40))
-    return add_axis_headroom(fig, upper=0.12, lower=0.05)
+    fig.update_xaxes(title="Observation date")
+    fig.update_yaxes(title="SAAR · billions of dollars")
+    fig = _water_layout(fig, height=height, margin=dict(l=56, r=22, t=26, b=48))
+    return add_axis_headroom(fig, axis="y", upper=0.16, lower=0.0, include_zero=True)
 
-
-def water_drought_exposure(facility_context: pd.DataFrame | None, state_categories: pd.DataFrame | None = None, *, height: int = 470, top_n: int = 16):
-    """Legacy state-level drought chart retained for compatibility."""
-    frame = state_water_exposure_profile(facility_context, state_categories)
-    fig = go.Figure()
-    if not frame.empty:
-        selection = frame.loc[frame["Facilities"].gt(0)].copy()
-        selection = selection.sort_values(["D2+ Area Percent", "Published Capacity MW"], ascending=False, kind="stable").head(top_n)
-        selection = selection.sort_values("D2+ Area Percent", ascending=True, kind="stable")
-        fig.add_trace(go.Bar(
-            x=selection["D1+ Area Percent"], y=selection["State"], orientation="h", name="D1+ area",
-            marker_color=WATER_COLORS["secondary"],
-            customdata=np.stack([
-                selection["D2+ Area Percent"].fillna(0), selection["Facilities"].fillna(0),
-                selection["Published Capacity MW"].fillna(0), selection["Direct Evidence Coverage Percent"].fillna(0),
-            ], axis=-1),
-            hovertemplate=(
-                "%{y}<br>D1+ area: %{x:.1f}%<br>D2+ area: %{customdata[0]:.1f}%"
-                "<br>Facilities: %{customdata[1]:,.0f}<br>Published capacity: %{customdata[2]:,.0f} MW"
-                "<br>Direct-evidence coverage: %{customdata[3]:.1f}%<extra></extra>"
-            ),
-        ))
-        fig.add_trace(go.Scatter(
-            x=selection["D2+ Area Percent"], y=selection["State"], mode="markers", name="D2+ area",
-            marker={"size": 10, "color": WATER_COLORS["primary"], "line": {"width": 1, "color": "rgba(248,250,252,0.7)"}},
-            hovertemplate="%{y}<br>D2+ area: %{x:.1f}%<extra></extra>",
-        ))
-    fig.update_xaxes(title="Share of state area in drought", ticksuffix="%", range=[0, 105])
-    fig.update_yaxes(title="")
-    fig = _water_layout(fig, height=height, legend=True, margin=dict(l=55, r=30, t=70, b=48))
-    fig.update_layout(legend={"orientation":"h", "y":1.13, "x":0, "yanchor":"bottom"})
-    return fig
-
-
-def water_capacity_disclosure_scatter(facility_context: pd.DataFrame | None, state_categories: pd.DataFrame | None = None, *, height: int = 430):
-    """Legacy capacity-weighted state chart retained for compatibility only."""
-    frame = state_water_exposure_profile(facility_context, state_categories)
-    fig = go.Figure()
-    if not frame.empty:
-        fig.add_trace(go.Scatter(
-            x=frame["Published Capacity MW"], y=frame["Direct Evidence Coverage Percent"],
-            mode="markers+text", text=frame["State"], textposition="top center",
-            marker={
-                "size": np.clip(7 + np.sqrt(frame["Facilities"].fillna(0)) * 2.5, 8, 24),
-                "color": frame["D2+ Area Percent"].fillna(0), "colorscale": "Purples", "showscale": True,
-                "colorbar": {"title": "D2+ area", "ticksuffix": "%"},
-                "line": {"width": 0.8, "color": "rgba(248,250,252,0.55)"},
-            },
-            customdata=np.stack([frame["Facilities"].fillna(0), frame["D1+ Area Percent"].fillna(0), frame["D2+ Area Percent"].fillna(0)], axis=-1),
-            hovertemplate=(
-                "%{text}<br>Published capacity: %{x:,.0f} MW<br>Direct-evidence coverage: %{y:.1f}%"
-                "<br>Facilities: %{customdata[0]:,.0f}<br>D1+ area: %{customdata[1]:.1f}%"
-                "<br>D2+ area: %{customdata[2]:.1f}%<extra></extra>"
-            ),
-        ))
-    fig.update_xaxes(title="Published data-center capacity", ticksuffix=" MW")
-    fig.update_yaxes(title="Direct water-evidence coverage", ticksuffix="%", range=[-5, 105])
-    return _water_layout(fig, height=height, margin=dict(l=64, r=80, t=30, b=55))
+__all__ = [
+    "county_state_for_fips",
+    "water_local_context_coverage",
+    "water_county_drought_map",
+    "thermoelectric_water_groups",
+    "water_top_withdrawals_2020",
+    "water_state_evidence_profile",
+    "wastewater_construction_history",
+]

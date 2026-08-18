@@ -78,24 +78,19 @@ sys.modules["streamlit"] = FAKE_ST
 from analytics.dashboard_context import DashboardContext  # noqa: E402
 from analytics.read_evidence import build_connectivity_evidence  # noqa: E402
 from loaders import connectivity_loader  # noqa: E402
-from loaders.facility_registry_loader import (  # noqa: E402
-    build_campus_registry,
-    canonicalize_facility_observations,
-    load_curated_facility_records,
-    load_gigawatt_facility_records,
-)
+from loaders.infrastructure_loader import load_infrastructure_data  # noqa: E402
 from rendering.common import TAB_METRIC_REGISTRIES  # noqa: E402
 from rendering.connectivity import render_connectivity_tab  # noqa: E402
 
 
 def _campuses() -> pd.DataFrame:
-    records = pd.concat(
-        [load_curated_facility_records(), load_gigawatt_facility_records()],
-        ignore_index=True,
-        sort=False,
-    )
-    return build_campus_registry(canonicalize_facility_observations(records))
-
+    payload = load_infrastructure_data()
+    campuses = payload.get("data_center_registry")
+    if not isinstance(campuses, pd.DataFrame):
+        raise AssertionError("Universal Data Center Registry is unavailable")
+    if not campuses.empty and campuses["Campus ID"].astype(str).duplicated().any():
+        raise AssertionError("Universal Data Center Registry contains duplicate Campus IDs")
+    return campuses.copy()
 
 def _assert_retained_contract(data: dict) -> None:
     expected = {
@@ -166,7 +161,7 @@ def main() -> None:
 
     packet = build_connectivity_evidence(DashboardContext(
         connectivity_data=data,
-        infrastructure_data={"campus_registry": campuses, "connectivity": data},
+        infrastructure_data={"data_center_registry": campuses, "connectivity": data},
     )).to_dict()
     if not packet.get("references"):
         raise AssertionError("Connectivity evidence packet lost its source references.")
