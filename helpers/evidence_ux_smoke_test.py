@@ -46,7 +46,7 @@ def main() -> None:
     require(standards_pos < trace_pos < technical_pos, "Evidence hierarchy must place Research standards directly before Trace a Read and Technical records.")
 
     require("claim_support" in evidence and "_packet_fact_index" in evidence, "Evidence trace no longer binds published claims to deterministic fact IDs.")
-    require("build_evidence_packets(context)" in dashboard, "Evidence tab no longer receives deterministic evidence packets.")
+    require("with_domain_states(context)" in dashboard and "build_evidence_packets(evidence_context)" in dashboard, "Evidence tab no longer assembles canonical deterministic state before formatting evidence packets.")
     require("if tabs[12].open" in dashboard, "Evidence packets are no longer scoped to the Evidence tab render path.")
 
     # The large technical warehouse must not be the default visible surface.

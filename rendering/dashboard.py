@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from analytics.dashboard_context import DashboardContext
+from analytics.domain_state import with_domain_states
 from analytics.macro_dataframe import build_macro_dashboard_data
 from analytics.read_evidence import build_evidence_packets
 from rendering.adoption import render_adoption_tab
@@ -130,9 +131,10 @@ def render_research_dashboard(tabs, context: DashboardContext):
             )
     if tabs[12].open:
         with tabs[12]:
+            evidence_context = with_domain_states(context)
             evidence_packets = {
                 domain: packet.to_dict()
-                for domain, packet in build_evidence_packets(context).items()
+                for domain, packet in build_evidence_packets(evidence_context).items()
             }
             render_evidence_tab(
                 context.fred_data,

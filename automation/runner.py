@@ -122,12 +122,14 @@ def _finish(status: dict[str, Any], *, result: str, publish_ready: bool = False)
 
 
 def _current_artifact_valid(context: Any) -> tuple[bool, str, dict[str, Any]]:
+    from analytics.domain_state import with_domain_states
     from analytics.read_evidence import build_evidence_packets, evidence_snapshot_id
     from analytics.read_service import build_platform_reads
 
-    packets = build_evidence_packets(context)
+    prepared_context = with_domain_states(context)
+    packets = build_evidence_packets(prepared_context)
     snapshot = evidence_snapshot_id(packets)
-    _, commentary = build_platform_reads(context)
+    _, commentary = build_platform_reads(prepared_context)
     strict_evidence_match = bool(commentary.get("artifact_publishable") and commentary.get("evidence_current"))
     return strict_evidence_match, snapshot, dict(commentary)
 
@@ -145,6 +147,7 @@ def _runtime_configuration_errors() -> list[str]:
 def _generate_commentary(context: Any, config: AutomationConfig, run_id: str) -> dict[str, Any]:
     from openai import OpenAI
 
+    from analytics.domain_state import with_domain_states
     from analytics.read_service import generate_validated_read_artifact
     from automation.budget import BudgetedOpenAIClient, PaidCallGuard
     from config.openai_config import load_openai_config
@@ -173,8 +176,9 @@ def _generate_commentary(context: Any, config: AutomationConfig, run_id: str) ->
         max_per_day=config.max_paid_calls_per_day,
     )
     client = BudgetedOpenAIClient(raw_client, guard)
+    prepared_context = with_domain_states(context)
     return generate_validated_read_artifact(
-        context,
+        prepared_context,
         openai_config,
         client=client,
         persist=True,

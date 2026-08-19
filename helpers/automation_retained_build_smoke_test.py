@@ -29,6 +29,7 @@ except ModuleNotFoundError:
 from helpers.streamlit_runtime_stub import install_streamlit_stub
 install_streamlit_stub()
 
+from analytics.domain_state import with_domain_states
 from analytics.read_evidence import build_evidence_packets
 from automation.research_refresh import refresh_research_state
 
@@ -52,7 +53,7 @@ def main() -> None:
         raise AssertionError(f"Retained automation build did not stay in read mode: {bundle.snapshot_write_report}")
     if (bundle.reports.get("current_context") or {}).get("source_mode") != "retained":
         raise AssertionError("Headless retained build did not use retained Current Context.")
-    packets = build_evidence_packets(bundle.context)
+    packets = build_evidence_packets(with_domain_states(bundle.context))
     if len(packets) != 11:
         raise AssertionError(f"Headless automation build did not produce 11 evidence domains: {len(packets)}")
     print("PASS  headless retained automation build · 11 evidence domains · zero retained-file changes")

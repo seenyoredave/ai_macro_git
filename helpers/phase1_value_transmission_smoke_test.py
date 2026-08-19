@@ -28,6 +28,7 @@ class _FakeStreamlit(types.ModuleType):
 sys.modules.setdefault("streamlit", _FakeStreamlit())
 
 from analytics.dashboard_context import DashboardContext  # noqa: E402
+from analytics.domain_state import with_domain_state  # noqa: E402
 from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_economic_impact_evidence, build_workforce_evidence  # noqa: E402
 from analytics.read_prompts import BASE_INSTRUCTIONS  # noqa: E402
 from config.visual_design import signature_tool  # noqa: E402
@@ -67,8 +68,8 @@ def main() -> int:
 
     workforce_data = load_workforce_data()
     outcomes_data = load_economic_impact_data()
-    workforce_packet = build_workforce_evidence(DashboardContext(workforce_data=workforce_data)).to_dict()
-    outcomes_packet = build_economic_impact_evidence(DashboardContext(economic_impact_data=outcomes_data)).to_dict()
+    workforce_packet = build_workforce_evidence(with_domain_state(DashboardContext(workforce_data=workforce_data), "workforce")).to_dict()
+    outcomes_packet = build_economic_impact_evidence(with_domain_state(DashboardContext(economic_impact_data=outcomes_data), "economic_impact")).to_dict()
     workforce_ids = {str(item.get("id") or "").split(".", 1)[-1] for item in workforce_packet.get("facts", [])}
     outcomes_facts = {str(item.get("id") or "").split(".", 1)[-1]: item for item in outcomes_packet.get("facts", [])}
     require("occupation_exposure_count" in workforce_ids, "Workforce evidence lost its occupation-exposure fact.")

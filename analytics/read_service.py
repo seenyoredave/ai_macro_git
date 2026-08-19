@@ -273,14 +273,33 @@ def reapply_last_read(
 
 
 def build_platform_reads(context: DashboardContext, *, artifact: dict | None = None) -> tuple[dict[str, dict], dict[str, Any]]:
-    packets = build_evidence_packets(context)
-    packet_dicts = _packet_dicts(packets)
-    snapshot = evidence_snapshot_id(packets)
     stored = dict(artifact if artifact is not None else load_read_artifact())
     artifact_validated = _artifact_is_validated(stored)
     artifact_publishable = _artifact_is_publishable(stored)
-    evidence_current = bool(artifact_publishable and str(stored.get("evidence_snapshot_id") or "") == snapshot)
     publication = publication_lease_state(stored)
+
+    # Normal Reader rendering must not reconstruct analytical state for the
+    # language subsystem. Published artifacts already carry the exact evidence
+    # packets used to generate them. Fresh evidence is assembled only when a
+    # caller explicitly supplies canonical deterministic domain state.
+    if context.domain_states:
+        packets = build_evidence_packets(context)
+        packet_dicts = _packet_dicts(packets)
+        snapshot = evidence_snapshot_id(packets)
+    else:
+        packet_dicts = dict(stored.get("evidence_packets") or {})
+        snapshot = str(
+            publication.get("current_evidence_snapshot_id")
+            or stored.get("evidence_snapshot_id")
+            or ""
+        )
+
+    generated_snapshot = str(stored.get("evidence_snapshot_id") or "")
+    evidence_current = bool(
+        artifact_publishable
+        and generated_snapshot
+        and generated_snapshot == snapshot
+    )
     publication_materiality = dict(publication.get("materiality") or {})
     evidence_materially_current = bool(
         evidence_current
@@ -294,25 +313,27 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
     # Visibility is last-known-good, not lease-based. The nested publication
     # lease still tells callers whether the artifact was refreshed within the
     # nominal 24-hour freshness window, but expiration alone never hides a
-    # publishable read. This lets Friday remain visible until Monday (or any
-    # later successful run) actually publishes a replacement.
+    # publishable read.
     publication_fresh = bool(artifact_publishable and publication.get("active"))
     publication_active = bool(artifact_publishable)
 
     if publication_active:
         reads = {
-            domain: dict((stored.get("reads") or {}).get(domain) or _unavailable_read(domain, packet_dicts[domain]))
+            domain: dict(
+                (stored.get("reads") or {}).get(domain)
+                or _unavailable_read(domain, packet_dicts.get(domain, {}))
+            )
             for domain in DOMAIN_ORDER
         }
         reads["macro"] = dict((stored.get("reads") or {}).get("macro") or _unavailable_read("macro", {}))
         status_name = "validated" if artifact_validated else str(stored.get("status") or "published_with_warnings")
     else:
-        reads = {domain: _unavailable_read(domain, packet_dicts[domain]) for domain in DOMAIN_ORDER}
+        reads = {
+            domain: _unavailable_read(domain, packet_dicts.get(domain, {}))
+            for domain in DOMAIN_ORDER
+        }
         reads["macro"] = _unavailable_read("macro", {})
-        if not stored:
-            status_name = "missing"
-        else:
-            status_name = "stale"
+        status_name = "missing" if not stored else "stale"
 
     status = {
         "status": status_name,
@@ -325,7 +346,7 @@ def build_platform_reads(context: DashboardContext, *, artifact: dict | None = N
         "publication_fresh": publication_fresh,
         "publication": publication,
         "evidence_snapshot_id": snapshot,
-        "artifact_evidence_snapshot_id": stored.get("evidence_snapshot_id", "") if stored else "",
+        "artifact_evidence_snapshot_id": generated_snapshot,
         "generated_at": stored.get("generated_at", "") if stored else "",
         "model": stored.get("model", "") if stored else "",
         "prompt_versions": stored.get("prompt_versions", {}) if stored else {},

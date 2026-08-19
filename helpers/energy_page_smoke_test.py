@@ -62,6 +62,7 @@ FAKE_ST = _FakeStreamlit()
 sys.modules["streamlit"] = FAKE_ST
 
 from analytics.dashboard_context import DashboardContext  # noqa: E402
+from analytics.domain_state import with_domain_state  # noqa: E402
 from analytics.read_evidence import build_power_evidence  # noqa: E402
 from rendering.power import (  # noqa: E402
     _power_context,
@@ -125,7 +126,10 @@ def main() -> None:
     if not np.isclose(power["development"]["planned_net_gw"], 227.0018, atol=1e-4):
         raise AssertionError("Planned generation balance changed unexpectedly.")
     power_evidence = build_power_evidence(
-        DashboardContext(energy_data=power_data, infrastructure_data=infrastructure)
+        with_domain_state(
+            DashboardContext(energy_data=power_data, infrastructure_data=infrastructure),
+            "power",
+        )
     )
     fact_ids = {fact.id for fact in power_evidence.facts}
     if any("queue" in fact_id or "interconnection" in fact_id for fact_id in fact_ids):

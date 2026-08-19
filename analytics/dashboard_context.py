@@ -29,6 +29,7 @@ class DashboardContext:
     economic_impact_data: dict = field(default_factory=dict)
     commercialization_data: dict = field(default_factory=dict)
     current_context: dict = field(default_factory=dict)
+    domain_states: dict = field(default_factory=dict)
     market_universe_summary: dict = field(default_factory=dict)
     dashboard_data: dict | None = None
     platform_reads: dict = field(default_factory=dict)

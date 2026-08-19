@@ -76,6 +76,7 @@ FAKE_ST = _FakeStreamlit()
 sys.modules["streamlit"] = FAKE_ST
 
 from analytics.dashboard_context import DashboardContext  # noqa: E402
+from analytics.domain_state import with_domain_state  # noqa: E402
 from analytics.read_evidence import build_connectivity_evidence  # noqa: E402
 from loaders import connectivity_loader  # noqa: E402
 from loaders.infrastructure_loader import load_infrastructure_data  # noqa: E402
@@ -159,10 +160,14 @@ def main() -> None:
     _assert_mismatch_contract(data)
     _assert_fallback_contract(campuses)
 
-    packet = build_connectivity_evidence(DashboardContext(
-        connectivity_data=data,
-        infrastructure_data={"data_center_registry": campuses, "connectivity": data},
-    )).to_dict()
+    evidence_context = with_domain_state(
+        DashboardContext(
+            connectivity_data=data,
+            infrastructure_data={"data_center_registry": campuses, "connectivity": data},
+        ),
+        "connectivity",
+    )
+    packet = build_connectivity_evidence(evidence_context).to_dict()
     if not packet.get("references"):
         raise AssertionError("Connectivity evidence packet lost its source references.")
     fact_ids = {str(item.get("id") or "").split(".", 1)[-1] for item in packet.get("facts", [])}

@@ -2,6 +2,8 @@
 
 AI Macro’s language system is portable context supplied to OpenAI. It is not a deterministic prose generator and it does not alter OpenAI’s answer after generation.
 
+The language/OpenAI subsystem is an overlay. It consumes finished deterministic state and may only format, label, constrain, serialize, and validate the prose generated from that state. It must never calculate or recalculate analytical state, rank or aggregate research data, resolve records, choose analytical fallbacks, or influence any metric, chart, domain state, refresh result, or application decision. Removing the subsystem must leave deterministic AI Macro unchanged except that Reader prose is unavailable.
+
 ## Production contract
 
 A full commentary run uses two explicit Responses API calls:

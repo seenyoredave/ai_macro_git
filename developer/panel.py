@@ -5,8 +5,9 @@ from __future__ import annotations
 import streamlit as st
 
 from analytics.dashboard_context import DashboardContext
+from analytics.domain_state import with_domain_states
 from analytics.language_layer import language_layer_identity
-from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION, build_evidence_packets, evidence_snapshot_id
+from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION
 from analytics.read_prompts import DOMAIN_PROMPT_VERSION
 from analytics.read_service import PUBLISHABLE_STATUSES, READ_SERVICE_COMPATIBLE_VERSIONS, generate_validated_read_artifact, reapply_last_read, recovery_call_plan, regenerate_macro_read, resume_saved_read_attempt
 from analytics.read_store import latest_recoverable_attempt, load_read_artifact
@@ -305,19 +306,19 @@ def _render_ai_result(result: dict) -> None:
 def _ai_workspace(context: DashboardContext | None) -> None:
     config = load_openai_config()
     identity = language_layer_identity()
-    packets = build_evidence_packets(context) if context is not None else {}
-    current_snapshot = evidence_snapshot_id(packets) if packets else ""
-    fact_count = sum(len(packet.facts) for packet in packets.values()) if packets else 0
+    current_artifact = load_read_artifact()
+    stored_packets = dict(current_artifact.get("evidence_packets") or {}) if current_artifact else {}
+    current_snapshot = str(current_artifact.get("evidence_snapshot_id") or "") if current_artifact else ""
+    fact_count = sum(len((packet or {}).get("facts", []) or []) for packet in stored_packets.values())
 
     st.markdown("**Runtime**")
     st.write(f"API: `{'configured' if config.configured else 'not configured'}`")
     st.write(f"Model: `{config.model}`")
     st.write(f"Reasoning: `{config.reasoning_effort}`")
     st.write(f"Language layer: `{identity['layer_version']}` · `{identity['payload_sha256'][:16]}`")
-    st.write(f"Evidence: `{current_snapshot or 'unavailable'}` · `{fact_count:,}` facts")
+    st.write(f"Published evidence: `{current_snapshot or 'unavailable'}` · `{fact_count:,}` facts")
 
     disabled = context is None or not config.configured
-    current_artifact = load_read_artifact()
     publishable = bool(
         current_artifact
         and str(current_artifact.get("status") or "") in PUBLISHABLE_STATUSES
@@ -326,7 +327,6 @@ def _ai_workspace(context: DashboardContext | None) -> None:
     )
     macro_ready = bool(
         publishable
-        and str(current_artifact.get("evidence_snapshot_id") or "") == current_snapshot
         and str((current_artifact.get("prompt_versions") or {}).get("language_layer_sha256") or "") == identity["payload_sha256"]
     )
     recoverable = latest_recoverable_attempt(
@@ -339,7 +339,8 @@ def _ai_workspace(context: DashboardContext | None) -> None:
     if st.button("Generate commentary", use_container_width=True, key="dev-generate-commentary-v9", disabled=disabled):
         try:
             with st.spinner("Generating domain Reads and AI Macro roll-up…"):
-                result = generate_validated_read_artifact(context, config, persist=True)
+                prepared_context = with_domain_states(context)
+                result = generate_validated_read_artifact(prepared_context, config, persist=True)
             st.session_state.developer_last_ai_result = result
             if result.get("status") in PUBLISHABLE_STATUSES:
                 st.session_state.force_rebuild = True
@@ -351,7 +352,8 @@ def _ai_workspace(context: DashboardContext | None) -> None:
     if st.button("Regenerate AI Macro", use_container_width=True, key="dev-regenerate-macro-v9", disabled=disabled or not macro_ready):
         try:
             with st.spinner("Generating AI Macro roll-up…"):
-                result = regenerate_macro_read(context, config, persist=True)
+                prepared_context = with_domain_states(context)
+                result = regenerate_macro_read(prepared_context, config, persist=True)
             st.session_state.developer_last_ai_result = result
             if result.get("status") in PUBLISHABLE_STATUSES:
                 st.session_state.force_rebuild = True
@@ -381,7 +383,8 @@ def _ai_workspace(context: DashboardContext | None) -> None:
         if st.button("Resume attempt", use_container_width=True, key="dev-resume-commentary-v9", disabled=disabled):
             try:
                 with st.spinner("Resuming commentary generation…"):
-                    result = resume_saved_read_attempt(context, config, str(recoverable.get("attempt_id") or ""), persist=True)
+                    prepared_context = with_domain_states(context)
+                    result = resume_saved_read_attempt(prepared_context, config, str(recoverable.get("attempt_id") or ""), persist=True)
                 st.session_state.developer_last_ai_result = result
                 if result.get("status") in PUBLISHABLE_STATUSES:
                     st.session_state.force_rebuild = True
