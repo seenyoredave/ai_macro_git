@@ -124,6 +124,55 @@ def signal_rail_html(
 
 
 
+def transmission_board_html(
+    *,
+    headline: object,
+    breakpoints: Sequence[object],
+    measurement_gaps: Sequence[object],
+    stages: Sequence[Sequence[object]],
+    namespace: str,
+) -> str:
+    """Build the flagship six-stage AI economic transmission board."""
+    if len(stages) != 6:
+        raise ValueError("transmission board requires exactly six stages")
+    clean_namespace = html.escape(str(namespace), quote=True)
+
+    breakpoint_text = " · ".join(str(item) for item in breakpoints if item not in (None, "")) or "No measured breakpoint"
+    gap_text = " · ".join(str(item) for item in measurement_gaps if item not in (None, "")) or "None"
+
+    items: list[str] = []
+    for index, stage in enumerate(stages, start=1):
+        if len(stage) != 3:
+            raise ValueError("transmission stages must contain label, value, and note")
+        label, value, note = stage
+        items.append(
+            '<li class="rm-transmission-stage">'
+            f'<div class="rm-transmission-index">{index:02d}</div>'
+            '<div class="rm-transmission-stage-copy">'
+            f'<div class="rm-transmission-label">{html.escape(str(label).upper())}</div>'
+            f'<div class="rm-transmission-value">{html.escape(str(value))}</div>'
+            f'<div class="rm-transmission-note">{html.escape(str(note))}</div>'
+            '</div>'
+            '</li>'
+        )
+
+    return (
+        f'<section class="rm-transmission-board" data-rm-transmission="{clean_namespace}">'
+        '<header class="rm-transmission-header">'
+        '<div class="rm-transmission-kicker">AI ECONOMIC TRANSMISSION</div>'
+        f'<div class="rm-transmission-headline">{html.escape(str(headline))}</div>'
+        '<div class="rm-transmission-meta">'
+        f'<span><b>Measured breakpoints</b> {html.escape(breakpoint_text)}</span>'
+        f'<span><b>Measurement gap</b> {html.escape(gap_text)}</span>'
+        '</div>'
+        '</header>'
+        '<ol class="rm-transmission-track">'
+        + ''.join(items)
+        + '</ol>'
+        '</section>'
+    )
+
+
 def deliverability_screen_html(
     stages: Sequence[Sequence[object]],
     *,

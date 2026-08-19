@@ -4,14 +4,25 @@ import pandas as pd
 import streamlit as st
 
 from analytics.gaps import industrial_growth_gap
+from analytics.transmission import MacroTransmissionState
 from rendering.visual_system import render_plotly_chart
 from rendering.labels import adoption_label, power_capacity_gap_label, speculation_label, validation_label
 from rendering.charts_common import history_from_frame
 from rendering.charts_finance import current_gap_bars
 from rendering.charts_infrastructure import infrastructure_leadership_rotation
 from rendering.common import _fallback, _fred_value, _metric_context, _render_floating_terms, _value
-from rendering.components import fmt_number, metric_card, render_domain_read, render_panel_heading, render_section, render_statline, render_tab_header
+from rendering.components import fmt_number, metric_card, render_domain_read, render_section, render_statline, render_tab_header, render_transmission_board
 from rendering.spatial import render_spatial_explorer
+
+def _render_transmission(state: MacroTransmissionState) -> None:
+    render_transmission_board(
+        headline=state.headline,
+        breakpoints=state.breakpoints,
+        measurement_gaps=state.measurement_gaps,
+        stages=[(stage.label, stage.value, stage.note) for stage in state.stages],
+        key_prefix="macro-economic-transmission",
+    )
+
 
 def _render_primary_macro_cards(regime_metrics, trends, adoption_data):
     consumer_history = (adoption_data or {}).get("consumer_history")
@@ -146,16 +157,33 @@ def _render_buildout_rotation(infrastructure_data):
             role="pipeline",
         )
 
-def render_macro_tab(sector_metrics, sector_data, fred_data, regime_metrics, dashboard_data, adoption_data, infrastructure_data, tab_read=None):
+def render_macro_tab(
+    sector_metrics,
+    sector_data,
+    fred_data,
+    regime_metrics,
+    dashboard_data,
+    adoption_data,
+    infrastructure_data,
+    *,
+    transmission_state: MacroTransmissionState,
+    tab_read=None,
+):
     del sector_metrics, sector_data
     render_tab_header(
         "AI Macro",
-        "Markets, construction, infrastructure constraints, adoption, and economic results across the AI economy.",
+        "Whether capital is converting into usable AI infrastructure, adoption, and economic return before financing pressure catches up.",
         "YFinance / SEC / FRED / Census / EIA",
     )
     _render_floating_terms("macro")
+    render_section(
+        "Economic transmission",
+        "Expectations → funding → buildout → deliverability → adoption → economic return.",
+        first=True,
+    )
+    _render_transmission(transmission_state)
     render_domain_read(tab_read, label="Read", domain="macro", macro=True)
-    render_section("Regime board", "Current top-level indicators and their recent history.", first=True)
+    render_section("Regime board", "Current top-level indicators and their recent history.")
     _render_primary_macro_cards(regime_metrics, dashboard_data["trends"], adoption_data)
     render_section("Buildout leadership", "Construction growth across data centers, manufacturing, power, communications, and water systems.")
     _render_buildout_rotation(infrastructure_data)

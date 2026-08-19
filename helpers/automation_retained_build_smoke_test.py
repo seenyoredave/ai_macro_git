@@ -32,6 +32,7 @@ install_streamlit_stub()
 from analytics.domain_state import with_domain_states
 from analytics.read_evidence import build_evidence_packets
 from automation.research_refresh import refresh_research_state
+import loaders.infrastructure_loader as infrastructure_loader
 
 
 def _tree_hash() -> str:
@@ -44,9 +45,23 @@ def _tree_hash() -> str:
 
 
 def main() -> None:
-    before = _tree_hash()
-    bundle = refresh_research_state(as_of="2026-08-10", live=False)
-    after = _tree_hash()
+    original_loader = infrastructure_loader.load_retained_universal_data_center_registry
+    calls = []
+
+    def _probe_retained_registry(*, require_current=True):
+        calls.append(bool(require_current))
+        return original_loader(require_current=require_current)
+
+    infrastructure_loader.load_retained_universal_data_center_registry = _probe_retained_registry
+    try:
+        before = _tree_hash()
+        bundle = refresh_research_state(as_of="2026-08-10", live=False)
+        after = _tree_hash()
+    finally:
+        infrastructure_loader.load_retained_universal_data_center_registry = original_loader
+
+    if calls != [False]:
+        raise AssertionError(f"Retained infrastructure read must use the published derived registry without source-freshness repair: {calls}")
     if before != after:
         raise AssertionError("Retained headless automation build mutated retained research files.")
     if bundle.snapshot_write_report.get("reason") != "retained_read_mode":

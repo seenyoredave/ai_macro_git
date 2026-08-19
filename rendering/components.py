@@ -18,6 +18,7 @@ from rendering.layout_contracts import (
     normalize_summary_item,
     signal_rail_html,
     summary_card_html,
+    transmission_board_html,
     summary_row_html,
     summary_stack_html,
 )
@@ -315,6 +316,31 @@ def render_metric_stack(
     st.markdown(
         summary_stack_html(cards, namespace=namespace),
         unsafe_allow_html=True,
+    )
+
+
+def render_transmission_board(
+    *,
+    headline: str,
+    breakpoints: Iterable[str],
+    measurement_gaps: Iterable[str],
+    stages: Iterable[tuple[str, str, str]],
+    key_prefix: str,
+) -> None:
+    """Render the deterministic flagship transmission chain."""
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_transmission_board requires a non-empty key_prefix")
+    st.markdown(
+        transmission_board_html(
+            headline=headline,
+            breakpoints=list(breakpoints),
+            measurement_gaps=list(measurement_gaps),
+            stages=list(stages),
+            namespace=namespace,
+        ),
+        unsafe_allow_html=True,
+        width="stretch",
     )
 
 

@@ -248,31 +248,38 @@ def load_infrastructure_data(
     map_refreshed = False
     fractracker_report = {"source_mode": "retained_registry", "error": ""}
 
-    # The retained Universal Data Center Registry is the runtime authority.
-    # Normal startup does not reload or reinterpret its raw identity sources.
-    # Source loaders run only when the retained registry is absent/stale or an
-    # explicit Data Centers refresh is authorized.
-    registry_payload = None if data_center_refresh else load_retained_universal_data_center_registry(require_current=True)
+    # The published derived registry is authoritative in retained mode. Raw-source
+    # freshness is evaluated only during an explicitly authorized Data Centers
+    # refresh; a retained read must never rebuild or repair repository state.
+    if data_center_refresh:
+        registry_payload = None
+    else:
+        registry_payload = load_retained_universal_data_center_registry(require_current=False)
+        if registry_payload is None:
+            raise RuntimeError(
+                "Retained Universal Data Center Registry is unavailable or internally invalid; "
+                "run an explicit Data Centers refresh instead of repairing it during retained read mode."
+            )
+
     if registry_payload is None:
         locations = _load_local_locations()
-        if data_center_refresh:
-            try:
-                refreshed_locations = _load_live_locations()
-                if not refreshed_locations.empty:
-                    locations = refreshed_locations
-                    _persist_locations(locations)
-                    map_refreshed = True
-                    refreshed_datasets.append("im3_locations")
-            except Exception as exc:
-                debug_print(f"Data-center map refresh failed -> {exc}")
-                refresh_errors["im3_locations"] = f"{type(exc).__name__}: {exc}"
+        try:
+            refreshed_locations = _load_live_locations()
+            if not refreshed_locations.empty:
+                locations = refreshed_locations
+                _persist_locations(locations)
+                map_refreshed = True
+                refreshed_datasets.append("im3_locations")
+        except Exception as exc:
+            debug_print(f"Data-center map refresh failed -> {exc}")
+            refresh_errors["im3_locations"] = f"{type(exc).__name__}: {exc}"
 
         fractracker, fractracker_report = load_fractracker_data_center_observations(
             force_refresh=data_center_requested,
             allow_live=allow_data_center_live,
             return_report=True,
         )
-        if data_center_refresh and fractracker_report.get("source_mode") == "live_refresh":
+        if fractracker_report.get("source_mode") == "live_refresh":
             refreshed_datasets.append("fractracker")
         if fractracker_report.get("error"):
             refresh_errors["fractracker"] = str(fractracker_report["error"])
