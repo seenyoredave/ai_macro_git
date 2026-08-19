@@ -1,5 +1,6 @@
 #!/bin/sh
+remote="${1:-origin}"
 if command -v python3 >/dev/null 2>&1; then
-    exec python3 -m tooling.git_guard pre-push
+    exec python3 -m tooling.git_guard pre-push --remote "$remote"
 fi
-exec python -m tooling.git_guard pre-push
+exec python -m tooling.git_guard pre-push --remote "$remote"

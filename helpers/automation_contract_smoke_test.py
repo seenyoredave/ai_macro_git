@@ -40,6 +40,11 @@ from config.deployment import current_context_paths, repository_writes_enabled
 from automation.research_refresh import RefreshBundle, blocking_refresh_errors, refresh_warnings
 from analytics.read_materiality import compare_evidence_materiality
 from config.openai_config import DEFAULT_REASONING_EFFORT
+from tooling.repository_policy import (
+    automation_stage_paths,
+    is_automation_allowed_change,
+    is_owner_protected_path,
+)
 import loaders.current_context_daily as daily
 
 
@@ -77,6 +82,8 @@ def main() -> None:
     read_service = (ROOT / "analytics" / "read_service.py").read_text(encoding="utf-8")
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
     daily_source = (ROOT / "loaders" / "current_context_daily.py").read_text(encoding="utf-8")
+    transport = (ROOT / "automation" / "git_transport.py").read_text(encoding="utf-8")
+    guard = (ROOT / "tooling" / "git_guard.py").read_text(encoding="utf-8")
 
     _check(AUTOMATION_TIMEZONE == "America/New_York", "Automation timezone drifted from Eastern Time.")
     _check(AUTOMATION_START_LOCAL == "09:07", "Automation start time drifted from 09:07 Eastern.")
@@ -120,10 +127,19 @@ def main() -> None:
     _check("git push --force origin refs/tags/ai-macro-automation-refresh-lock" in workflow, "Refresh lock is not published before provider work begins.")
     _check("git push --force origin HEAD:main" not in workflow, "Workflow contains a force push to main.")
     _check("retained_state_manifest.json" in workflow, "Automation diagnostics omit retained-state freshness metadata.")
+    _check((ROOT / ".githooks" / "pre-commit").exists(), "Local pre-commit guard is missing.")
     _check((ROOT / ".githooks" / "pre-push").exists(), "Local pre-push guard is missing.")
-    _check((ROOT / "tooling" / "desktop_sync.py").exists(), "Desktop-to-Git reconciliation command is missing.")
+    _check(not (ROOT / "tooling" / "desktop_sync.py").exists(), "Retired two-directory desktop sync engine returned.")
+    _check((ROOT / "tooling" / "repository_policy.py").exists(), "Repository path policy is missing.")
     _check((ROOT / "automation" / "retained_state.py").exists(), "Retained-state freshness ledger is missing.")
     _check((ROOT / "automation" / "git_transport.py").exists(), "Fail-closed automation Git transport is missing.")
+    _check(is_owner_protected_path("data/example.csv") and is_owner_protected_path("archive/example.csv"), "Owner protected retained-state boundary drifted.")
+    _check(not is_owner_protected_path("automation_artifacts/status.json"), "Owner protection expanded beyond data/archive without an explicit contract change.")
+    _check(is_automation_allowed_change("openai_artifacts/attempts/example.json"), "Paid-attempt diagnostics are incorrectly rejected as unexpected automation changes.")
+    _check(automation_stage_paths("publication") == ("data/", "archive/", "openai_artifacts/current.json", "automation_artifacts/"), "Automation publication staging contract drifted.")
+    _check("is_automation_allowed_change" in runner, "Automation runner bypasses the shared repository path policy.")
+    _check("automation_stage_paths" in transport, "Automation Git transport bypasses the shared repository path policy.")
+    _check("owner_stage_exclusions" in guard and "ensure_index_preserves_repository_state" in guard, "Owner Git guard bypasses the shared repository path policy.")
 
     _check("load_public_shared_context_snapshot" not in app, "Public app still contains live Current Context refresh logic.")
     _check("load_public_shared_context_snapshot" not in daily_source, "Retired public Current Context refresher still exists.")

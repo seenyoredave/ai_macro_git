@@ -1,0 +1,5 @@
+#!/bin/sh
+if command -v python3 >/dev/null 2>&1; then
+    exec python3 -m tooling.git_guard pre-commit
+fi
+exec python -m tooling.git_guard pre-commit

@@ -1,13 +1,11 @@
 """Durable freshness ledger for mutable retained research state.
 
-The application has two independent writers: the desktop developer workspace and
-GitHub automation.  Git commit time and filesystem mtime are not reliable enough
-for deciding which retained dataset is newer after ZIP extraction or directory
-copies.  This module records a per-file timestamp only when the file's content
-hash actually changes.
+GitHub automation owns publication of retained production state. Local developer
+refreshes may update working copies, while this module records a per-file timestamp
+only when content actually changes.
 
-The ledger itself is retained state.  It does not authorize provider access and
-never performs network I/O.
+The ledger itself is retained state. It does not choose between local and remote
+copies, authorize provider access, or perform network I/O.
 """
 
 from __future__ import annotations
@@ -16,7 +14,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from config.deployment import PROJECT_ROOT
 from helpers.atomic_io import atomic_write_json
@@ -25,7 +23,7 @@ STATE_MANIFEST_VERSION = "1.0"
 STATE_MANIFEST_PATH = PROJECT_ROOT / "data" / "retained_state_manifest.json"
 
 # release_manifest fingerprints the final application/data tree and is rebuilt
-# after reconciliation; it must not participate in newest-wins state selection.
+# separately; it does not participate in retained-state freshness tracking.
 _STATE_EXACT_EXCLUDES = {
     "data/release_manifest.json",
     "data/retained_state_manifest.json",
@@ -186,65 +184,3 @@ def refresh_retained_state_manifest(
     atomic_write_json(manifest, output)
     return manifest
 
-
-def entry_time(entry: dict[str, Any] | None) -> datetime | None:
-    return _parse_time((entry or {}).get("updated_at_utc"))
-
-
-def choose_newer_entry(
-    relative: str,
-    left: dict[str, Any] | None,
-    right: dict[str, Any] | None,
-) -> str:
-    """Return ``left``, ``right`` or ``same`` for one retained-state path.
-
-    Equal timestamps with unequal hashes are intentionally an error: silently
-    choosing one would violate the newest-wins contract.
-    """
-
-    a = dict(left or {})
-    b = dict(right or {})
-    if not a and not b:
-        return "same"
-    if a and not b:
-        return "left"
-    if b and not a:
-        return "right"
-    if a.get("sha256") == b.get("sha256"):
-        return "same"
-    at = entry_time(a)
-    bt = entry_time(b)
-    if at and bt:
-        if at > bt:
-            return "left"
-        if bt > at:
-            return "right"
-    elif at:
-        return "left"
-    elif bt:
-        return "right"
-    raise RuntimeError(
-        f"Retained-state conflict for {relative}: different content has no unambiguous freshness ordering."
-    )
-
-
-def merged_manifest(
-    *,
-    selected_entries: dict[str, dict[str, Any]],
-    source: str,
-    run_id: str = "",
-    now: datetime | None = None,
-) -> dict[str, Any]:
-    return {
-        "manifest_version": STATE_MANIFEST_VERSION,
-        "generated_at_utc": _iso((now or utc_now()).astimezone(timezone.utc)),
-        "source": str(source or "reconciliation"),
-        "run_id": str(run_id or ""),
-        "files": dict(sorted(selected_entries.items())),
-    }
-
-
-def write_manifest(root: Path, manifest: dict[str, Any]) -> None:
-    output = root / "data" / "retained_state_manifest.json"
-    output.parent.mkdir(parents=True, exist_ok=True)
-    atomic_write_json(manifest, output)

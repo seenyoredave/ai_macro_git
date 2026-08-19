@@ -19,6 +19,7 @@ import sys
 from typing import Any
 
 from automation.ledger import STATUS_PATH, write_status
+from tooling.repository_policy import automation_stage_paths
 
 
 class TransportError(RuntimeError):
@@ -83,12 +84,10 @@ def _verify_base_unchanged(root: Path, *, remote: str, branch: str, base_sha: st
 
 
 def _stage(root: Path, mode: str) -> None:
-    if mode == "publication":
-        paths = ["data/", "archive/", "openai_artifacts/current.json", "automation_artifacts/"]
-    elif mode == "ledger":
-        paths = ["automation_artifacts/"]
-    else:
-        raise TransportError(f"Unknown transport mode: {mode}")
+    try:
+        paths = automation_stage_paths(mode)
+    except ValueError as exc:
+        raise TransportError(str(exc)) from exc
     _run(["git", "add", "--", *paths], root=root, check=True)
 
 

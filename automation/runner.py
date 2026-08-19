@@ -32,6 +32,7 @@ from automation.ledger import (
     today_local_date,
     write_status,
 )
+from tooling.repository_policy import is_automation_allowed_change
 
 
 def _configure_runtime_warnings() -> None:
@@ -79,12 +80,7 @@ def _git_changed_paths(root: Path) -> list[str]:
 
 
 def _unexpected_changes(paths: list[str]) -> list[str]:
-    allowed_prefixes = ("data/", "archive/", "automation_artifacts/")
-    allowed_exact = {"openai_artifacts/current.json"}
-    return [
-        path for path in paths
-        if path not in allowed_exact and not path.startswith(allowed_prefixes)
-    ]
+    return [path for path in paths if not is_automation_allowed_change(path)]
 
 
 def _base_status(*, run_id: str, config: AutomationConfig, started_at: str) -> dict[str, Any]:
@@ -243,8 +239,8 @@ def main() -> int:
         )
 
         # Retained-state freshness advances only for files whose content hash
-        # actually changed during this deterministic refresh.  This ledger is
-        # later used by desktop-to-Git reconciliation; it never authorizes I/O.
+        # actually changed during this deterministic refresh.  The ledger records
+        # retained-state provenance and never authorizes I/O.
         from automation.retained_state import refresh_retained_state_manifest
         refresh_retained_state_manifest(source="automation_refresh", run_id=run_id)
 
