@@ -133,7 +133,7 @@ def main() -> None:
     try:
         os.environ["AI_MACRO_MODE"] = "public"
         _check(not repository_writes_enabled(), "Public Reader can write retained research state.")
-        _check(current_context_paths()["registry"] == ROOT / "data" / "weekly_context_events.csv", "Public Reader is not reading the canonical retained Current Context registry.")
+        _check(current_context_paths()["registry"] == ROOT / "data" / "weekly_context_events.csv", "Public Reader is not reading the reference retained Current Context registry.")
         original_refresh = daily.refresh_current_context
         daily.refresh_current_context = lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("provider call"))
         snapshot = daily.load_retained_context_snapshot(as_of="2026-08-10")

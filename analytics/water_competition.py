@@ -56,11 +56,11 @@ def competing_freshwater_profile(category_frame: pd.DataFrame | None) -> pd.Data
 
 
 def local_context_coverage_profile(summary: dict | None) -> pd.DataFrame:
-    """Describe independent Water observability layers at canonical campus grain."""
+    """Describe independent Water observability layers at campus grain."""
     payload = summary or {}
-    campuses = int(payload.get("canonical_campuses", payload.get("mapped_campuses", 0)) or 0)
+    campuses = int(payload.get("campuses", payload.get("mapped_campuses", 0)) or 0)
     rows = [
-        ("Canonical campuses", campuses, "registry"),
+        ("Campuses", campuses, "registry"),
         ("Current county drought", int(payload.get("county_drought_context_records", 0) or 0), "physical context"),
         ("EPA point query resolved", int(payload.get("pws_service_area_query_resolved_records", 0) or 0), "service-area context"),
         ("EPA service-area overlap", int(payload.get("pws_service_area_overlap_records", 0) or 0), "service-area context"),

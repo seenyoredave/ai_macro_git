@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Page-level regression for the v9.6.0 Data Centers geography architecture."""
+"""Page-level regression for the v9.6.2 Data Centers geography architecture."""
 
 from __future__ import annotations
 
@@ -20,11 +20,11 @@ def main() -> int:
     charts = (ROOT / "rendering" / "charts_data_center.py").read_text(encoding="utf-8")
 
     if "render_spatial_explorer(" not in page:
-        raise AssertionError("Data Centers page is not using the shared canonical campus explorer")
+        raise AssertionError("Data Centers page is not using the shared campus explorer")
     if "go.Choropleth" in charts:
         raise AssertionError("Data Centers page retained the state choropleth geography")
     if 'on_select="rerun"' not in spatial:
-        raise AssertionError("Canonical campus map is not interactive")
+        raise AssertionError("Campus map is not interactive")
 
     fixture = pd.DataFrame([{
         "Campus ID": "campus:test",
@@ -41,7 +41,7 @@ def main() -> int:
     }])
     figure = data_center_map(fixture)
     if len(figure.data) != 1 or figure.data[0].type != "scattermap":
-        raise AssertionError("Data Centers geography did not render a canonical campus point")
+        raise AssertionError("Data Centers geography did not render a campus point")
     if str(figure.data[0].customdata[0][0]) != "campus:test":
         raise AssertionError("Data Centers geography lost Campus ID in point selection data")
 

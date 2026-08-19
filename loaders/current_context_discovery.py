@@ -95,7 +95,7 @@ PRIMARY_DISCOVERY_FEEDS = {
     ),
 }
 
-_CANONICAL_SOURCE_NAMES = {
+_SOURCE_NAMES_BY_DOMAIN = {
     "wsj.com": "The Wall Street Journal",
     "reuters.com": "Reuters",
     "apnews.com": "Associated Press",
@@ -160,10 +160,10 @@ def _fetch_bytes(url: str) -> tuple[bytes, str]:
 
 
 def _node_text(node: ET.Element, names: tuple[str, ...]) -> str:
-    for child in list(node):
-        local = child.tag.rsplit("}", 1)[-1].casefold()
+    for member in list(node):
+        local = member.tag.rsplit("}", 1)[-1].casefold()
         if local in names:
-            return str(child.text or "").strip()
+            return str(member.text or "").strip()
     return ""
 
 
@@ -182,9 +182,9 @@ def _generic_rss_items(payload: bytes, *, provider: str, source_name: str = "") 
         title = " ".join(html_lib.unescape(_node_text(node, ("title",))).split()).strip()
         link = _node_text(node, ("link",))
         if not link:
-            for child in list(node):
-                if child.tag.rsplit("}", 1)[-1].casefold() == "link":
-                    link = str(child.attrib.get("href") or "").strip()
+            for member in list(node):
+                if member.tag.rsplit("}", 1)[-1].casefold() == "link":
+                    link = str(member.attrib.get("href") or "").strip()
                     if link:
                         break
         date_text = _node_text(node, ("pubdate", "published", "updated", "date"))
@@ -195,9 +195,9 @@ def _generic_rss_items(payload: bytes, *, provider: str, source_name: str = "") 
             except (TypeError, ValueError):
                 published = None
         parts = []
-        for child in list(node):
-            if child.tag.rsplit("}", 1)[-1].casefold() in {"description", "summary", "content", "encoded"}:
-                parts.append(str(child.text or ""))
+        for member in list(node):
+            if member.tag.rsplit("}", 1)[-1].casefold() in {"description", "summary", "content", "encoded"}:
+                parts.append(str(member.text or ""))
         description_html = " ".join(parts)
         description = re.sub(r"<[^>]+>", " ", description_html)
         description = " ".join(html_lib.unescape(description).split()).strip()
@@ -206,7 +206,7 @@ def _generic_rss_items(payload: bytes, *, provider: str, source_name: str = "") 
                 "title": title,
                 "link": link,
                 "published": published,
-                "source_name": source_name or _canonical_source_name(link),
+                "source_name": source_name or _source_name_for_url(link),
                 "source_url": f"https://{_host(link)}" if _host(link) else "",
                 "description": description,
                 "description_html": description_html,
@@ -264,7 +264,7 @@ def fetch_tier2_outbound(source_name: str, feed_url: str, *, max_links: int = 60
             host = _host(url)
             if any(host == domain or host.endswith("." + domain) for domain in DISCOVERY_ONLY_DOMAINS):
                 continue
-            evidence = assess_source(_canonical_source_name(url), f"https://{host}" if host else "", url)
+            evidence = assess_source(_source_name_for_url(url), f"https://{host}" if host else "", url)
             if not evidence.auto_eligible:
                 continue
             title = " ".join(str(anchor_text or parent.get("title") or "").split()).strip()
@@ -274,7 +274,7 @@ def fetch_tier2_outbound(source_name: str, feed_url: str, *, max_links: int = 60
                 "title": title,
                 "link": url,
                 "published": parent.get("published"),
-                "source_name": _canonical_source_name(url),
+                "source_name": _source_name_for_url(url),
                 "source_url": f"https://{host}" if host else "",
                 "description": str(parent.get("title") or ""),
                 "provider": "tier2_outbound",
@@ -304,9 +304,9 @@ def _host(url: str) -> str:
         return ""
 
 
-def _canonical_source_name(url: str) -> str:
+def _source_name_for_url(url: str) -> str:
     host = _host(url)
-    for domain, name in _CANONICAL_SOURCE_NAMES.items():
+    for domain, name in _SOURCE_NAMES_BY_DOMAIN.items():
         if host == domain or host.endswith("." + domain):
             return name
     if host.endswith(".gov"):
@@ -484,7 +484,7 @@ def evaluate_item(
             "verified_fact": headline,
             "platform_relevance": "",
             "display": headline,
-            "reference_number": 0,
+            "normalized_number": 0,
             "source_name": source_name,
             "source_label": source_name,
             "source_url": article_url,
@@ -605,12 +605,12 @@ def _event_numeric_tokens(text: object) -> set[str]:
     scale = {"tn": "trillion", "bn": "billion", "mn": "million", "percent": "%"}
     for number, unit in pattern.findall(value):
         try:
-            canonical_number = f"{float(number):g}"
+            normalized_number = f"{float(number):g}"
         except ValueError:
-            canonical_number = number
-        canonical_unit = scale.get(unit.casefold(), unit.casefold()) if unit else ""
-        if canonical_unit or float(number) >= 10:
-            matches.add(f"{canonical_number}:{canonical_unit}")
+            normalized_number = number
+        normalized_unit = scale.get(unit.casefold(), unit.casefold()) if unit else ""
+        if normalized_unit or float(number) >= 10:
+            matches.add(f"{normalized_number}:{normalized_unit}")
     return matches
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stop-the-line authority test for the v9.6.0 Universal Data Center Registry."""
+"""Stop-the-line authority test for the v9.6.2 Universal Data Center Registry."""
 
 from __future__ import annotations
 
@@ -20,12 +20,12 @@ FORBIDDEN = (
     '"facility_coverage"', "'facility_coverage'",
     '"facility_identity_decisions"', "'facility_identity_decisions'",
     "build_campus_registry",
-    "canonicalize_facility_observations",
+    "normalize_facility_observations",
     "build_facility_observations",
     "load_curated_facility_records",
     "load_gigawatt_facility_records",
     "load_fractracker_facility_records",
-    "_assign_canonical_ids",
+    "_assign_registry_ids",
     "FACILITY_SIZE_METRICS",
     "facility_map_legend_items",
     "data_center_state_detail_map",
@@ -102,8 +102,8 @@ def main() -> int:
         print("FAIL  loaders/data_center_registry.py is missing")
         return 3
     registry_source = registry_path.read_text(encoding="utf-8")
-    if 'REGISTRY_VERSION = "9.6.0"' not in registry_source:
-        print("FAIL  Universal Data Center Registry version is not 9.6.0")
+    if 'REGISTRY_VERSION = "9.6.2"' not in registry_source:
+        print("FAIL  Universal Data Center Registry version is not 9.6.2")
         return 4
 
     for name, owners in function_owners.items():
@@ -132,7 +132,7 @@ def main() -> int:
         print("FAIL  Data Center geography still contains a state choropleth substitute")
         return 7
     if "data_center_map(" not in spatial or "render_spatial_explorer(" not in data_center:
-        print("FAIL  Data Center and shared spatial surfaces do not share the canonical campus map")
+        print("FAIL  Data Center and shared spatial surfaces do not share the campus map")
         return 8
     if 'on_select="rerun"' not in spatial or "selection_points(" not in spatial:
         print("FAIL  shared campus map is not wired for point selection")

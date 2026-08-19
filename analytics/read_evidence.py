@@ -191,7 +191,7 @@ class EvidenceFact:
 
         Raw numeric values remain available to deterministic validation and
         snapshot hashing but are deliberately omitted from the model payload.
-        ``display`` is the canonical human-scale representation, so the model
+        ``display`` is the human-scale representation, so the model
         never has to infer whether a raw ratio such as ``0.681`` means 0.681 or
         68.1 percent.
         """
@@ -452,9 +452,9 @@ def build_data_center_evidence(context: DashboardContext) -> EvidencePacket:
     registry_operating=int(operating_mask.sum()) if len(status) else 0; registry_development=int(development_mask.sum()) if len(status) else 0
     operating=int(broad.get("operating",0) or 0) or registry_operating; development=int(broad.get("development",0) or 0) or registry_development
     ratio=_num(broad.get("development_to_operating")); ratio=development/operating if pd.isna(ratio) and operating else ratio
-    canonical=pd.to_numeric(campuses.get("Planned Data Center Capacity MW"),errors="coerce").combine_first(pd.to_numeric(campuses.get("Published Capacity Estimate MW"),errors="coerce")).where(lambda x:x>0) if not campuses.empty else pd.Series(dtype=float)
-    coverage=float(canonical.notna().mean()) if len(campuses) else np.nan
-    registry_pipeline=_num(canonical.loc[development_mask].sum(min_count=1)/1000) if len(canonical) else np.nan; registry_operating_capacity=_num(canonical.loc[operating_mask].sum(min_count=1)/1000) if len(canonical) else np.nan
+    reference=pd.to_numeric(campuses.get("Planned Data Center Capacity MW"),errors="coerce").combine_first(pd.to_numeric(campuses.get("Published Capacity Estimate MW"),errors="coerce")).where(lambda x:x>0) if not campuses.empty else pd.Series(dtype=float)
+    coverage=float(reference.notna().mean()) if len(campuses) else np.nan
+    registry_pipeline=_num(reference.loc[development_mask].sum(min_count=1)/1000) if len(reference) else np.nan; registry_operating_capacity=_num(reference.loc[operating_mask].sum(min_count=1)/1000) if len(reference) else np.nan
     tracked=int(tracker.get("active_pipeline",0) or 0) or registry_development
     pipeline_capacity=_num(tracker.get("active_pipeline_published_mw"))/1000; pipeline_capacity=registry_pipeline if pd.isna(pipeline_capacity) else pipeline_capacity
     operating_capacity=_num(tracker.get("operating_published_mw"))/1000; operating_capacity=registry_operating_capacity if pd.isna(operating_capacity) else operating_capacity
@@ -466,7 +466,7 @@ def build_data_center_evidence(context: DashboardContext) -> EvidencePacket:
         _fact("data_center","tracked_pipeline_sites","Tracked active pipeline sites",tracked),
         _fact("data_center","pipeline_capacity_gw","Published capacity associated with development sites",pipeline_capacity,unit="GW"),
         _fact("data_center","operating_capacity_gw","Published capacity associated with operating sites",operating_capacity,unit="GW"),
-        _fact("data_center","canonical_capacity_coverage","Share of active campus records with a canonical published capacity",coverage,unit="%",scale=100),
+        _fact("data_center","published_capacity_coverage","Share of active campus records with published capacity",coverage,unit="%",scale=100),
     ], importance=importance)
 
 
@@ -545,7 +545,7 @@ def build_water_evidence(context: DashboardContext) -> EvidencePacket:
     water=context.water_data or {}; summary=water.get("summary",{}) or {}; eia=summary.get("eia_2024_thermoelectric",{}) or {}; campus_frame=water.get("campus_context")
     profile=current_top_withdrawal_profile(water.get("usgs_2020_top_withdrawals")); values=profile.set_index("Use Category")["Withdrawal Bgal/day"].to_dict() if not profile.empty else {}
     local=local_water_constraint_summary(campus_frame if isinstance(campus_frame,pd.DataFrame) else pd.DataFrame())
-    campuses=int(local.get("canonical_campuses",0) or 0); county_resolved=int(local.get("county_drought_resolved_campuses",0) or 0); county_share=_num(local.get("county_drought_resolution_share"))
+    campuses=int(local.get("campuses",0) or 0); county_resolved=int(local.get("campuses_with_county_drought_data",0) or 0); county_share=_num(local.get("county_drought_coverage_share"))
     d2_campuses=int(local.get("campuses_in_counties_with_d2",0) or 0); d2_share=_num(local.get("campuses_in_counties_with_d2_share")); material_campuses=int(local.get("campuses_in_counties_with_25pct_d2",0) or 0); material_share=_num(local.get("campuses_in_counties_with_25pct_d2_share")); highest_location=str(local.get("highest_county_d2_location") or ""); highest_d2=_num(local.get("highest_county_d2_area_pct"))
     direct=int(local.get("direct_water_evidence",0) or 0); quantified_withdrawal=int(local.get("quantified_withdrawal",0) or 0); quantified_consumption=int(local.get("quantified_consumption",0) or 0); quantified=quantified_withdrawal+quantified_consumption; direct_share=direct/campuses*100 if campuses else np.nan
     pws_resolved=int(local.get("service_area_query_resolved",0) or 0); pws_resolution_share=_num(local.get("service_area_query_resolution_share")); pws_overlap=int(local.get("service_area_overlap",0) or 0); pws_share=_num(local.get("service_area_overlap_share")); authoritative=int(local.get("authoritative_service_area_overlap",0) or 0); modeled=int(local.get("modeled_service_area_overlap",0) or 0); unclassified=int(local.get("unclassified_service_area_overlap",0) or 0); provenance_share=_num(local.get("service_area_provenance_classified_share")); ambiguous=int(local.get("ambiguous_service_area_overlap",0) or 0)
@@ -554,30 +554,30 @@ def build_water_evidence(context: DashboardContext) -> EvidencePacket:
     irrigation=_num(values.get("Crop irrigation")); thermo=_num(values.get("Thermoelectric power")); public=_num(values.get("Public supply")); withdrawal=_num(eia.get("withdrawal_bgal_day")); consumption=_num(eia.get("consumption_bgal_day"))
     exposure_score=(35*(material_share if pd.notna(material_share) else 0))+(15*(d2_share if pd.notna(d2_share) else 0)); resolution_factor=min(1.0,(county_share/0.8)) if pd.notna(county_share) and county_share>0 else 0.0; disclosure_gap=(1-(direct/campuses)) if campuses else 0.0; importance=min(85,35+(exposure_score*resolution_factor)+(10*disclosure_gap))
     return _packet("water", [
-        _fact("water","canonical_campuses","Canonical data-center campuses",campuses),
-        _fact("water","county_drought_resolved_campuses","Canonical campuses resolved to current county drought statistics",county_resolved),
-        _fact("water","county_drought_resolution_share_pct","Share of canonical campuses resolved to current county drought statistics",county_share,unit="%",scale=100),
-        _fact("water","campuses_in_counties_with_d2_area","Canonical campuses in counties with some D2-or-worse drought area",d2_campuses),
-        _fact("water","campuses_in_counties_with_d2_share_pct","Share of county-resolved campuses in counties with some D2-or-worse drought area",d2_share,unit="%",scale=100),
-        _fact("water","campuses_in_counties_with_25pct_d2_area","Canonical campuses in counties with at least 25% D2-or-worse drought area",material_campuses),
-        _fact("water","campuses_in_counties_with_25pct_d2_share_pct","Share of county-resolved campuses in counties with at least 25% D2-or-worse drought area",material_share,unit="%",scale=100),
+        _fact("water","campuses","Data-center campuses",campuses),
+        _fact("water","campuses_with_county_drought_data","Campuses with current county drought data",county_resolved),
+        _fact("water","county_drought_coverage_share_pct","Share of campuses with current county drought data",county_share,unit="%",scale=100),
+        _fact("water","campuses_in_counties_with_d2_area","Campuses in counties with some D2-or-worse drought area",d2_campuses),
+        _fact("water","campuses_in_counties_with_d2_share_pct","Share of campuses with county drought data in counties with some D2-or-worse drought area",d2_share,unit="%",scale=100),
+        _fact("water","campuses_in_counties_with_25pct_d2_area","Campuses in counties with at least 25% D2-or-worse drought area",material_campuses),
+        _fact("water","campuses_in_counties_with_25pct_d2_share_pct","Share of campuses with county drought data in counties with at least 25% D2-or-worse drought area",material_share,unit="%",scale=100),
         _fact("water","highest_county_d2_location","Mapped county with the highest D2-or-worse drought-area share",highest_location),
         _fact("water","highest_county_d2_area_pct","Highest mapped county D2-or-worse drought-area share",highest_d2,unit="%"),
-        _fact("water","direct_evidence_campuses","Canonical campuses with direct water evidence",direct),
-        _fact("water","direct_evidence_share_pct","Canonical campuses with direct water evidence",direct_share,unit="%"),
-        _fact("water","quantified_withdrawal_campuses","Canonical campuses with quantified withdrawal records",quantified_withdrawal),
-        _fact("water","quantified_consumption_campuses","Canonical campuses with quantified consumption records",quantified_consumption),
-        _fact("water","quantified_use_campuses","Canonical campuses with quantified withdrawal or consumption records",quantified),
-        _fact("water","pws_query_resolved_campuses","Canonical campus points with a resolved EPA service-area query",pws_resolved),
-        _fact("water","pws_query_resolution_share_pct","Canonical campus points with a resolved EPA service-area query",pws_resolution_share,unit="%",scale=100),
-        _fact("water","pws_service_area_overlap_campuses","Canonical campus points intersecting at least one EPA community-water service-area boundary",pws_overlap),
-        _fact("water","pws_service_area_overlap_share_pct","Canonical campus points intersecting at least one EPA community-water service-area boundary",pws_share,unit="%",scale=100),
+        _fact("water","direct_evidence_campuses","Campuses with direct water evidence",direct),
+        _fact("water","direct_evidence_share_pct","Campuses with direct water evidence",direct_share,unit="%"),
+        _fact("water","quantified_withdrawal_campuses","Campuses with quantified withdrawal records",quantified_withdrawal),
+        _fact("water","quantified_consumption_campuses","Campuses with quantified consumption records",quantified_consumption),
+        _fact("water","quantified_use_campuses","Campuses with quantified withdrawal or consumption records",quantified),
+        _fact("water","pws_query_resolved_campuses","Campus points with a resolved EPA service-area query",pws_resolved),
+        _fact("water","pws_query_resolution_share_pct","Campus points with a resolved EPA service-area query",pws_resolution_share,unit="%",scale=100),
+        _fact("water","pws_service_area_overlap_campuses","Campus points intersecting at least one EPA community-water service-area boundary",pws_overlap),
+        _fact("water","pws_service_area_overlap_share_pct","Campus points intersecting at least one EPA community-water service-area boundary",pws_share,unit="%",scale=100),
         _fact("water","pws_provenance_classified_share_pct","Share of EPA-overlap campuses with boundary provenance classified",provenance_share,unit="%",scale=100),
-        _fact("water","unclassified_pws_overlap_campuses","Canonical campus points with EPA service-area overlap and unclassified boundary provenance",unclassified),
-        _fact("water","authoritative_pws_overlap_campuses","Canonical campus points intersecting an EPA state/system-sourced community-water boundary",authoritative if use_provenance_split else np.nan),
-        _fact("water","modeled_pws_overlap_campuses","Canonical campus points intersecting an EPA-modeled community-water boundary",modeled if use_provenance_split else np.nan),
-        _fact("water","ambiguous_pws_overlap_campuses","Canonical campus points intersecting more than one EPA community-water boundary",ambiguous),
-        _fact("water","published_capacity_coverage_share_pct","Canonical campuses with usable published capacity",capacity_coverage if use_capacity else np.nan,unit="%",scale=100),
+        _fact("water","unclassified_pws_overlap_campuses","Campus points with EPA service-area overlap and unclassified boundary provenance",unclassified),
+        _fact("water","authoritative_pws_overlap_campuses","Campus points intersecting an EPA state/system-sourced community-water boundary",authoritative if use_provenance_split else np.nan),
+        _fact("water","modeled_pws_overlap_campuses","Campus points intersecting an EPA-modeled community-water boundary",modeled if use_provenance_split else np.nan),
+        _fact("water","ambiguous_pws_overlap_campuses","Campus points intersecting more than one EPA community-water boundary",ambiguous),
+        _fact("water","published_capacity_coverage_share_pct","Campuses with usable published capacity",capacity_coverage if use_capacity else np.nan,unit="%",scale=100),
         _fact("water","published_capacity_in_counties_with_d2_gw","Published data-center campus capacity in counties with D2-or-worse drought",d2_capacity if use_capacity else np.nan,unit="GW"),
         _fact("water","published_capacity_in_counties_with_25pct_d2_gw","Published data-center campus capacity in counties with at least 25% D2-or-worse drought",material_capacity if use_capacity else np.nan,unit="GW"),
         _fact("water","irrigation_withdrawal_bgal_day_2020","U.S. crop-irrigation withdrawals in 2020",irrigation,unit="Bgal/day"),
@@ -724,11 +724,11 @@ def model_evidence_packets(packets: dict[str, EvidencePacket | dict]) -> dict[st
 
 
 def evidence_snapshot_id(packets: dict[str, EvidencePacket | dict]) -> str:
-    canonical = {
+    reference = {
         domain: packet.to_dict() if isinstance(packet, EvidencePacket) else _json_safe(packet)
         for domain, packet in sorted(packets.items())
     }
-    raw = json.dumps(canonical, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+    raw = json.dumps(reference, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()[:24]
 
 

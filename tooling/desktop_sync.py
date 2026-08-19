@@ -106,13 +106,13 @@ def _clean_transient_and_audit(root: Path) -> dict[str, int]:
     counts = {"pycache": 0, "bytecode": 0, "ds_store": 0, "audit": 0}
     audit_root = root / "audit"
     if audit_root.exists():
-        for child in list(audit_root.iterdir()):
-            if child.name in PRESERVED_AUDIT_HOLDINGS:
+        for member in list(audit_root.iterdir()):
+            if member.name in PRESERVED_AUDIT_HOLDINGS:
                 continue
-            if child.is_dir():
-                shutil.rmtree(child)
+            if member.is_dir():
+                shutil.rmtree(member)
             else:
-                child.unlink(missing_ok=True)
+                member.unlink(missing_ok=True)
             counts["audit"] += 1
 
     for current, dirs, files in os.walk(root):

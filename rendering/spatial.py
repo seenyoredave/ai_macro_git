@@ -121,9 +121,9 @@ def _render_selection(row: pd.Series) -> None:
     render_panel_heading(label, " · ".join(part for part in (operator, f"{county}, {state}".strip(", ")) if part))
     render_statline(
         [
-            ("Status", status, "canonical campus"),
+            ("Status", status, "campus record"),
             ("Published / planned capacity", fmt_number(capacity, 0, suffix=" MW") if pd.notna(capacity) else "n/a", "campus grain"),
-            ("Buildings", f"{int(buildings):,}" if pd.notna(buildings) else "n/a", "child entities"),
+            ("Buildings", f"{int(buildings):,}" if pd.notna(buildings) else "n/a", "facility/building records"),
             ("Identity confidence", confidence.title(), str(row.get("Identity Basis") or "registry resolution")),
         ],
         key_prefix=f"spatial-selected-{str(row.get('Campus ID') or '')[-10:]}",
@@ -135,7 +135,7 @@ def render_spatial_explorer(
     *,
     key_prefix: str = "national-ai-landscape",
     title: str = "Project locations",
-    subtitle: str = "Canonical data-center campuses with published infrastructure evidence.",
+    subtitle: str = "Data-center campuses with published infrastructure evidence.",
     default_layer: str = "All campuses",
     show_table: bool = True,
     show_heading: bool = True,
@@ -145,7 +145,7 @@ def render_spatial_explorer(
     if show_heading:
         render_panel_heading(title, subtitle)
     if registry.empty:
-        st.info("No canonical campus records are available.")
+        st.info("No campus records are available.")
         return
 
     state_key = f"{key_prefix}-state"

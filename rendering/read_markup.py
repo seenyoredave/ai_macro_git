@@ -10,7 +10,7 @@ from config.visual_design import domain_profile
 
 
 def domain_read_label(domain: str | None, label: str | None = None) -> str:
-    """Return the canonical Reader-facing label for a domain Read."""
+    """Return the reference Reader-facing label for a domain Read."""
     profile = domain_profile(domain)
     requested = str(label or "").strip()
     if requested and requested.casefold() != "read":
@@ -25,7 +25,7 @@ def _reference_links(references: list[dict[str, Any]], *, limit: int = 6) -> str
         if not isinstance(reference, dict):
             continue
         try:
-            number = int(reference.get("reference_number") or index)
+            number = int(reference.get("normalized_number") or index)
         except (TypeError, ValueError):
             number = index
         source = str(
@@ -55,18 +55,18 @@ def _context_items_html(payload: dict) -> str:
         recent_context = str(payload.get("recent_context") or "").strip()
         if not recent_context:
             return ""
-        items = [{"text": recent_context, "reference_number": None, "source_url": ""}]
+        items = [{"text": recent_context, "normalized_number": None, "source_url": ""}]
 
     rendered: list[str] = []
     for item in items:
         text = str(item.get("text") or "").strip()
         if not text:
             continue
-        reference_number = item.get("reference_number")
+        normalized_number = item.get("normalized_number")
         source_url = str(item.get("source_url") or "").strip()
         citation = ""
-        if reference_number:
-            label = f"[{html.escape(str(reference_number))}]"
+        if normalized_number:
+            label = f"[{html.escape(str(normalized_number))}]"
             if source_url.startswith("https://"):
                 citation = (
                     ' <a class="rm-domain-read-context-citation" href="{url}" '

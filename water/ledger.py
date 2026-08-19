@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 from water.schema import (
-    CANONICAL_OBSERVATION_COLUMNS,
+    OBSERVATION_COLUMNS,
     EVIDENCE_CLASSES,
     FLOW_TYPES,
     MEASUREMENT_BASES,
@@ -44,10 +44,10 @@ def volume_to_million_gallons(value, unit: str):
 
 def normalize_observations(frame: pd.DataFrame | None) -> pd.DataFrame:
     if frame is None or not isinstance(frame, pd.DataFrame) or frame.empty:
-        return pd.DataFrame(columns=CANONICAL_OBSERVATION_COLUMNS)
+        return pd.DataFrame(columns=OBSERVATION_COLUMNS)
 
     output = frame.copy()
-    for column in CANONICAL_OBSERVATION_COLUMNS:
+    for column in OBSERVATION_COLUMNS:
         if column not in output.columns:
             output[column] = pd.NA
 
@@ -58,8 +58,8 @@ def normalize_observations(frame: pd.DataFrame | None) -> pd.DataFrame:
     output["volume_million_gallons"] = pd.to_numeric(
         output["volume_million_gallons"], errors="coerce"
     )
-    missing_canonical = output["volume_million_gallons"].isna() & output["original_value"].notna()
-    output.loc[missing_canonical, "volume_million_gallons"] = output.loc[missing_canonical].apply(
+    missing_normalized = output["volume_million_gallons"].isna() & output["original_value"].notna()
+    output.loc[missing_normalized, "volume_million_gallons"] = output.loc[missing_normalized].apply(
         lambda row: volume_to_million_gallons(row["original_value"], row["original_unit"]), axis=1
     )
 
@@ -88,4 +88,4 @@ def normalize_observations(frame: pd.DataFrame | None) -> pd.DataFrame:
             raise ValueError(f"Invalid {column} values: {values}")
 
     output["method_version"] = output["method_version"].fillna(WATER_LEDGER_VERSION)
-    return output[CANONICAL_OBSERVATION_COLUMNS].reset_index(drop=True)
+    return output[OBSERVATION_COLUMNS].reset_index(drop=True)

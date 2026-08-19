@@ -42,12 +42,12 @@ def _campus_frame(campuses: pd.DataFrame | None) -> pd.DataFrame:
         raise ValueError("Water campus analytics require Universal Data Center Registry Campus IDs")
     if campuses["Campus ID"].astype(str).duplicated().any():
         duplicate_ids = campuses.loc[campuses["Campus ID"].astype(str).duplicated(False), "Campus ID"].astype(str).unique().tolist()
-        raise ValueError(f"Water received duplicate canonical Campus IDs: {duplicate_ids[:10]}")
+        raise ValueError(f"Water received duplicate Campus IDs: {duplicate_ids[:10]}")
     return campuses.copy()
 
 
 def county_water_exposure_profile(campuses: pd.DataFrame | None) -> pd.DataFrame:
-    """Aggregate canonical campuses by one county identity, preferring FIPS."""
+    """Aggregate campuses by one county identity, preferring FIPS."""
     columns = [
         "State", "County", "FIPS", "Campuses", "D1+ Area Percent", "D2+ Area Percent",
         "D3+ Area Percent", "D4 Area Percent", "PWS Query Resolved", "PWS Overlap Campuses",
@@ -107,7 +107,7 @@ def county_water_exposure_profile(campuses: pd.DataFrame | None) -> pd.DataFrame
 
 
 def campus_water_dossier(campuses: pd.DataFrame | None) -> pd.DataFrame:
-    """Return one Water dossier row for every canonical Campus ID."""
+    """Return one Water dossier row for every Campus ID."""
     frame = _campus_frame(campuses)
     if frame.empty:
         return pd.DataFrame()
@@ -146,7 +146,7 @@ def campus_water_dossier(campuses: pd.DataFrame | None) -> pd.DataFrame:
     out["PWS Service Area Overlap"] = _boolean(out, "PWS Service Area Overlap")
 
     if out["Campus ID"].astype(str).duplicated().any():
-        raise ValueError("Water dossier multiplied canonical Campus IDs")
+        raise ValueError("Water dossier multiplied Campus IDs")
     return out.sort_values(
         ["Local D2+ Area Percent", "Published Capacity MW", "Campus Label"],
         ascending=[False, False, True],
@@ -158,7 +158,7 @@ def campus_water_dossier(campuses: pd.DataFrame | None) -> pd.DataFrame:
 
 
 def state_campus_evidence_profile(campuses: pd.DataFrame | None) -> pd.DataFrame:
-    """Summarize canonical campus coverage and direct water evidence by state."""
+    """Summarize campus coverage and direct water evidence by state."""
     columns = [
         "State", "Mapped Campuses", "Direct Water Evidence", "Quantified Use",
         "Direct Evidence Coverage", "Quantified Use Coverage",
@@ -187,7 +187,7 @@ def state_competition_exposure(
     campuses: pd.DataFrame | None,
     state_categories: pd.DataFrame | None,
 ) -> pd.DataFrame:
-    """Join the canonical campus universe to state freshwater-allocation context."""
+    """Join the campus universe to state freshwater-allocation context."""
     from analytics.water_competition import competing_freshwater_profile
 
     frame = _campus_frame(campuses)

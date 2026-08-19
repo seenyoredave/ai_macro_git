@@ -186,7 +186,7 @@ def _validate_prose_shape(sentence: SupportedSentence, *, label: str) -> tuple[l
     return errors, failures
 
 
-def _canonical_number(raw: str) -> str | None:
+def _normalized_number(raw: str) -> str | None:
     token = str(raw or "").strip().casefold().replace(",", "")
     if not token:
         return None
@@ -213,9 +213,9 @@ def _canonical_number(raw: str) -> str | None:
 
 
 def _numeric_tokens(text: str) -> dict[str, str]:
-    """Return canonical numeric values keyed by the rendered token.
+    """Return normalized numeric values keyed by the rendered token.
 
-    Canonicalization treats formatting-equivalent forms such as ``300k`` and
+    Normalization treats formatting-equivalent forms such as ``300k`` and
     ``300,000`` as the same number while keeping materially different values
     distinct.  Dates and thresholds embedded in fact labels/context are still
     factual content and are therefore eligible only when that fact_id is cited.
@@ -223,9 +223,9 @@ def _numeric_tokens(text: str) -> dict[str, str]:
     tokens: dict[str, str] = {}
     for match in _NUMBER_RE.finditer(str(text or "")):
         rendered = match.group(0).strip().lstrip("+")
-        canonical = _canonical_number(rendered)
-        if canonical is not None:
-            tokens[rendered] = canonical
+        reference = _normalized_number(rendered)
+        if reference is not None:
+            tokens[rendered] = reference
     return tokens
 
 
@@ -265,12 +265,12 @@ def _negative_direction_near_number(text: str, rendered: str) -> bool:
     return False
 
 
-def _numeric_token_supported(*, text: str, rendered: str, canonical: str, allowed_numbers: set[str]) -> bool:
-    if canonical in allowed_numbers:
+def _numeric_token_supported(*, text: str, rendered: str, normalized: str, allowed_numbers: set[str]) -> bool:
+    if normalized in allowed_numbers:
         return True
-    if canonical.startswith("-"):
+    if normalized.startswith("-"):
         return False
-    negative_equivalent = f"-{canonical}"
+    negative_equivalent = f"-{normalized}"
     return negative_equivalent in allowed_numbers and _negative_direction_near_number(text, rendered)
 
 
@@ -315,11 +315,11 @@ def _validate_sentence(
     allowed_numbers = _allowed_numeric_tokens(known_facts)
     unsupported_rendered = [
         rendered
-        for rendered, canonical in used_numbers.items()
+        for rendered, normalized in used_numbers.items()
         if not _numeric_token_supported(
             text=sentence.text,
             rendered=rendered,
-            canonical=canonical,
+            normalized=normalized,
             allowed_numbers=allowed_numbers,
         )
     ]

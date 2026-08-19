@@ -81,9 +81,9 @@ def main() -> None:
                     continue
                 debt_seed.extend([
                     {"Ticker": ticker, "Period End": "2025-06-30", "Filing Date": "2025-07-30", "Debt": 100.0,
-                     "Definition": f"canonical {ticker}", "Source URL": "retained", "Evidence Note": "filing reviewed"},
+                     "Definition": f"retained {ticker}", "Source URL": "retained", "Evidence Note": "filing reviewed"},
                     {"Ticker": ticker, "Period End": "2026-06-30", "Filing Date": "2026-07-30", "Debt": 120.0,
-                     "Definition": f"canonical {ticker}", "Source URL": "retained", "Evidence Note": "filing reviewed"},
+                     "Definition": f"retained {ticker}", "Source URL": "retained", "Evidence Note": "filing reviewed"},
                 ])
             pd.DataFrame(debt_seed).to_csv(refresh.DEBT_OBSERVATIONS_PATH, index=False)
 
@@ -93,15 +93,15 @@ def main() -> None:
                 return _snapshot(ticker, current=pd.Timestamp(cutoff).year == 2026)
             refresh.build_company_snapshot = fake_build
 
-            def fake_match(*, ticker, canonical_definition, **kwargs):
+            def fake_match(*, ticker, debt_definition, **kwargs):
                 if ticker == "SMCI":
                     return None, None, "issuer debt requires filing-reviewed components"
                 current_fact = types.SimpleNamespace(value=120.0, period_end=pd.Timestamp("2026-06-30"), filed=pd.Timestamp("2026-07-30"), tags=("LongTermDebtCurrent", "LongTermDebtNoncurrent"))
                 prior_fact = types.SimpleNamespace(value=100.0, period_end=pd.Timestamp("2025-06-30"), filed=pd.Timestamp("2025-07-30"), tags=("LongTermDebtCurrent", "LongTermDebtNoncurrent"))
                 source = f"https://data.sec.gov/{ticker}"
                 return (
-                    refresh._debt_fact_row(ticker=ticker, fact=current_fact, canonical_definition=canonical_definition, source_url=source),
-                    refresh._debt_fact_row(ticker=ticker, fact=prior_fact, canonical_definition=canonical_definition, source_url=source),
+                    refresh._debt_fact_row(ticker=ticker, fact=current_fact, debt_definition=debt_definition, source_url=source),
+                    refresh._debt_fact_row(ticker=ticker, fact=prior_fact, debt_definition=debt_definition, source_url=source),
                     None,
                 )
             refresh._matched_debt_pair = fake_match
@@ -124,11 +124,11 @@ def main() -> None:
             current = fundamentals.loc[fundamentals["Date"].astype(str).eq("2026-08-09")]
             if current["Ticker"].nunique() != 10:
                 raise AssertionError("Current 10-company fundamentals cohort was not persisted")
-            canonical_current = current.loc[~current["Ticker"].isin(["IREN", "ANET"])]
-            if not canonical_current["Total Debt"].eq(120.0).all():
-                raise AssertionError("Generic Companyfacts debt was not reconciled to canonical debt")
-            if not canonical_current["Debt Definition"].astype(str).str.startswith("canonical " ).all():
-                raise AssertionError("Canonical debt definition was not written into Finance fundamentals")
+            matched_current = current.loc[~current["Ticker"].isin(["IREN", "ANET"])]
+            if not matched_current["Total Debt"].eq(120.0).all():
+                raise AssertionError("Generic Companyfacts debt was not reconciled to matched debt")
+            if not matched_current["Debt Definition"].astype(str).str.startswith("retained " ).all():
+                raise AssertionError("Matched debt definition was not written into Finance fundamentals")
 
             debt = pd.read_csv(refresh.DEBT_OBSERVATIONS_PATH)
             for ticker in set(refresh.BORROWER_STRAIN_CIKS) - {"IREN", "ANET"}:
@@ -136,8 +136,8 @@ def main() -> None:
                 periods = set(rows["Period End"].astype(str))
                 if not {"2025-06-30", "2026-06-30"}.issubset(periods):
                     raise AssertionError(f"{ticker} missing definition-matched prior/current pair: {periods}")
-                if set(rows["Definition"].dropna()) != {f"canonical {ticker}"}:
-                    raise AssertionError(f"{ticker} canonical debt definition was not preserved")
+                if set(rows["Definition"].dropna()) != {f"retained {ticker}"}:
+                    raise AssertionError(f"{ticker} matched debt definition was not preserved")
 
             if report.get("debt_unresolved_tickers"):
                 raise AssertionError(f"Unexpected unresolved debt tickers: {report}")
@@ -169,7 +169,7 @@ def main() -> None:
         current_row, prior_row, error = original_match(
             ticker="GOOG",
             companyfacts=synthetic,
-            canonical_definition="Long-term debt, current plus non-current, net",
+            debt_definition="Long-term debt, current plus non-current, net",
             current_cutoff=pd.Timestamp("2026-08-09"),
             prior_cutoff=pd.Timestamp("2025-08-09"),
             current_capex_period_end="2026-06-30",
@@ -191,9 +191,9 @@ def main() -> None:
         meta_snapshot.loc[:, "CapEx Period End"] = "2026-03-31"
         meta_history = meta_snapshot.copy()
         meta_debt = pd.DataFrame([
-            {"Ticker":"META","Period End":"2025-03-31","Filing Date":"2025-05-01","Debt":28.0,"Definition":"canonical META"},
-            {"Ticker":"META","Period End":"2026-03-31","Filing Date":"2026-04-30","Debt":58.0,"Definition":"canonical META"},
-            {"Ticker":"META","Period End":"2026-06-30","Filing Date":"2026-07-24","Debt":84.0,"Definition":"canonical META"},
+            {"Ticker":"META","Period End":"2025-03-31","Filing Date":"2025-05-01","Debt":28.0,"Definition":"retained META"},
+            {"Ticker":"META","Period End":"2026-03-31","Filing Date":"2026-04-30","Debt":58.0,"Definition":"retained META"},
+            {"Ticker":"META","Period End":"2026-06-30","Filing Date":"2026-07-24","Debt":84.0,"Definition":"retained META"},
         ])
         pulse, current_total, prior_total, _, count = _matched_debt_pulse(
             meta_history, meta_snapshot, debt_observations=meta_debt, min_companies=1
@@ -210,7 +210,7 @@ def main() -> None:
 
     print("PASS  EDGAR refresh rebuilds 10-company Finance fundamentals")
     print("PASS  definition-matched debt refresh preserves 8-company coverage with filing-reviewed fallback")
-    print("PASS  canonical debt reconciles generic Companyfacts debt fields in retained Finance fundamentals")
+    print("PASS  matched debt reconciles generic Companyfacts debt fields in retained Finance fundamentals")
     print("PASS  EDGAR refresh token reaches Companyfacts cache key")
     print("PASS  debt refresh falls through to one common current/prior XBRL definition")
     retained_mix = calculate_deployment_funding_mix({})

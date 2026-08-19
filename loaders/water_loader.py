@@ -89,7 +89,7 @@ def _load_water_utilization_data_cached(
     return {
         "source_mode": str(refresh_report.get("source_mode") or "retained_local"),
         "refresh_report": refresh_report,
-        # Local sources need canonical campus coordinates, so their live refresh is
+        # Local sources need campus coordinates, so their live refresh is
         # executed by analytics.spatial_context.attach_water_context after the
         # Universal Data Center Registry has been assembled.
         "local_context_refresh_requested": live_refresh,

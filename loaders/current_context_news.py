@@ -115,7 +115,7 @@ def _domain_fit_score(text: str, domain: str) -> float:
     return min(24.0, matches * 4.0)
 
 
-def _canonical_event_key(event: dict) -> str:
+def _event_key(event: dict) -> str:
     url = str(event.get("source_url") or "").strip().casefold()
     if _valid_https_url(url):
         return f"url::{url}"
@@ -130,7 +130,7 @@ def _event_tokens(event: dict) -> set[str]:
 
 
 def _same_development(left: dict, right: dict) -> bool:
-    if _canonical_event_key(left) == _canonical_event_key(right):
+    if _event_key(left) == _event_key(right):
         return True
     try:
         left_date = pd.Timestamp(left.get("event_date"))

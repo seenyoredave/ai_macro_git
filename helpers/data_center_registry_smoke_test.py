@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused source-semantic regression for the v9.6.0 Universal Data Center Registry."""
+"""Focused source-semantic regression for the v9.6.2 Universal Data Center Registry."""
 
 from __future__ import annotations
 
@@ -138,12 +138,12 @@ def main() -> int:
     campuses = payload["campuses"]
     entities = payload["entities"]
 
-    if REGISTRY_VERSION != "9.6.0":
+    if REGISTRY_VERSION != "9.6.2":
         raise AssertionError("Registry version changed")
     if len(campuses) != 4:
         raise AssertionError(campuses[["Campus Name", "Campus Label", "Building Count"]].to_string(index=False))
     if not campuses["Campus ID"].is_unique or not campuses["Campus Label"].is_unique:
-        raise AssertionError("Canonical Campus IDs or labels are not unique")
+        raise AssertionError("Campus IDs or labels are not unique")
     if "Amazon PDX80 — Umatilla County, OR" not in set(campuses["Campus Label"].astype(str)):
         raise AssertionError("Named PDX80 evidence did not name its inferred campus")
     generic_labels = sorted(label for label in campuses["Campus Label"].astype(str) if label.startswith("Amazon Web Services"))
@@ -197,7 +197,7 @@ def main() -> int:
         curated_observations=empty,
     )
     if len(building_payload["campuses"]) != 0 or len(building_payload["unresolved_observations"]) != 1:
-        raise AssertionError("A lone building observation manufactured a canonical campus")
+        raise AssertionError("A lone building observation manufactured a campus")
 
     point_only = pd.DataFrame([{
         "State": "DC",
@@ -215,10 +215,10 @@ def main() -> int:
         curated_observations=empty,
     )
     if len(point_payload["campuses"]) != 0 or len(point_payload["unresolved_observations"]) != 1:
-        raise AssertionError("An uncorroborated source point manufactured a canonical campus")
+        raise AssertionError("An uncorroborated source point manufactured a campus")
 
     print(
-        "PASS  v9.6.0 source-first registry · 15 retained IM3 AWS buildings + PDX80 → "
+        "PASS  v9.6.2 source-first registry · 15 retained IM3 AWS buildings + PDX80 → "
         "4 Umatilla campuses · cross-state labels expose jurisdiction · county-only records create zero campuses · building grain preserved · lone buildings and point-only records remain unresolved"
     )
     return 0

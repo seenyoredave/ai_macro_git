@@ -22,7 +22,7 @@ REQUIRED_PROFILE_FIELDS = (
 )
 
 
-def _canonical(value: Any) -> bytes:
+def _stable_json(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
@@ -67,7 +67,7 @@ def compile_layer(source_path: Path = SOURCE) -> dict[str, Any]:
         raise ValueError("Unsupported language-layer source schema")
     profiles = source.get("profiles")
     if not isinstance(profiles, dict) or tuple(profiles) != DOMAIN_ORDER:
-        raise ValueError(f"Profiles must contain all domains in canonical order: {DOMAIN_ORDER}")
+        raise ValueError(f"Profiles must contain all domains in defined order: {DOMAIN_ORDER}")
 
     compiled_profiles: dict[str, Any] = {}
     corpus_manifest: dict[str, Any] = {}
@@ -126,7 +126,7 @@ def compile_layer(source_path: Path = SOURCE) -> dict[str, Any]:
     for field, expected in (bonus_config.get("required_audit") or {}).items():
         if int(audit.get(field, -1)) != int(expected):
             raise ValueError(f"Systems-dynamics audit mismatch for {field}: expected {expected}, found {audit.get(field)}")
-    families = bonus.get("canonical_bonus_families") or []
+    families = bonus.get("system_families") or []
     motifs = bonus.get("mathematical_motif_registry") or []
     transfers = bonus.get("finance_transfer_candidates") or []
     if len(families) != 22 or len(motifs) != 14 or len(transfers) != 12:
@@ -199,8 +199,8 @@ def compile_layer(source_path: Path = SOURCE) -> dict[str, Any]:
         "layer_version": str(source.get("layer_version") or "").strip(),
         "effective_date": str(source.get("effective_date") or "").strip(),
         "purpose": str(source.get("purpose") or "").strip(),
-        "source_sha256": _sha256_bytes(_canonical(source)),
-        "payload_sha256": _sha256_bytes(_canonical(payload)),
+        "source_sha256": _sha256_bytes(_stable_json(source)),
+        "payload_sha256": _sha256_bytes(_stable_json(payload)),
         "corpus_manifest": corpus_manifest,
         "payload": payload,
     }

@@ -41,7 +41,7 @@ def _numeric_series(frame: pd.DataFrame, column: str) -> pd.Series:
 
 
 def _data_center_context_registry(infrastructure: dict) -> pd.DataFrame:
-    """Return the one program-wide canonical data-center campus universe."""
+    """Return the program-wide data-center campus set."""
     campuses = infrastructure.get("data_center_registry")
     if not isinstance(campuses, pd.DataFrame):
         raise ValueError("Infrastructure payload is missing the Universal Data Center Registry")
@@ -200,7 +200,7 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
     registry = registry.copy()
     if registry.empty:
         water["campus_context"] = registry
-        water["campus_context_summary"] = {"canonical_campuses": 0}
+        water["campus_context_summary"] = {"campuses": 0}
         return infrastructure, water
 
     registry["_state_key"] = registry.get("State", "").fillna("").astype(str).str.upper().str.strip()
@@ -343,15 +343,15 @@ def attach_water_context(infrastructure_data: dict, water_data: dict) -> tuple[d
     county_d2 = _numeric_series(registry, "County D2+ Area Percent")
     state_d1 = _numeric_series(registry, "D1+ Area Percent")
 
-    # Water owns an enriched domain view keyed by Campus ID. The canonical
+    # Water owns an enriched domain view keyed by Campus ID. The registry
     # registry remains unchanged; every water row must resolve to that universe.
     if registry["Campus ID"].astype(str).duplicated().any():
         duplicate_ids = registry.loc[registry["Campus ID"].astype(str).duplicated(False), "Campus ID"].astype(str).unique().tolist()
-        raise ValueError(f"Water enrichment multiplied canonical Campus IDs: {duplicate_ids[:10]}")
+        raise ValueError(f"Water enrichment multiplied Campus IDs: {duplicate_ids[:10]}")
     assert_campus_foreign_keys(infrastructure["data_center_registry"], registry[["Campus ID"]], domain="water", allow_subset=False)
     water["campus_context"] = registry
     water["campus_context_summary"] = {
-        "canonical_campuses": int(len(registry)),
+        "campuses": int(len(registry)),
         "mapped_campuses": int(pd.to_numeric(registry.get("Latitude"), errors="coerce").notna().sum()),
         "states": int(registry.get("State", pd.Series(dtype=object)).replace("", np.nan).nunique()),
         "state_identified_records": int(registry.get("State", pd.Series("", index=registry.index)).fillna("").astype(str).str.strip().ne("").sum()),

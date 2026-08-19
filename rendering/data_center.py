@@ -133,15 +133,15 @@ def _render_pulse(campuses: pd.DataFrame, infrastructure_data: dict) -> None:
     development = int(status.isin(ACTIVE_CAMPUS_STATUSES - {"Operational"}).sum())
     capacity = _campus_capacity(active)
     render_section(
-        "Canonical data-center footprint",
+        "Data-center footprint",
         "One campus universe shared by Data Centers, Water, Power, Grid & Storage, and Connectivity.",
         first=True,
         compact=True,
     )
     render_statline(
         [
-            ("Canonical campuses", f"{len(campuses):,}", f"registry v{summary.get('registry_version', '9.6.0')}"),
-            ("Operating campuses", f"{operating:,}", "canonical Campus IDs"),
+            ("Campuses", f"{len(campuses):,}", f"registry v{summary.get('registry_version', '9.6.2')}"),
+            ("Operating campuses", f"{operating:,}", "Campus IDs"),
             ("Development campuses", f"{development:,}", "active development stages"),
             ("Published capacity", fmt_number(capacity.sum(min_count=1) / 1000.0, 1, suffix=" GW"), f"{int(capacity.notna().sum()):,} campuses with MW"),
         ],
@@ -153,13 +153,13 @@ def _render_geography(campuses: pd.DataFrame, infrastructure_data: dict) -> None
     state_counts = campuses.groupby("State", as_index=False)["Campus ID"].nunique().rename(columns={"Campus ID": "Campuses"}) if not campuses.empty else pd.DataFrame()
     leading = state_counts.nlargest(1, "Campuses") if not state_counts.empty else pd.DataFrame()
     summary = dict((infrastructure_data or {}).get("data_center_registry_summary", {}) or {})
-    render_section("Campus geography", "Interactive canonical campus map with state drilldown and campus selection.")
+    render_section("Campus geography", "Interactive campus map with state drilldown and campus selection.")
     render_summary_row(
         [
             ("Largest campus footprint", str(leading.iloc[0]["State"]) if not leading.empty else "n/a", f"{int(leading.iloc[0]['Campuses']):,} campuses" if not leading.empty else "n/a"),
             ("States represented", f"{int(summary.get('states', 0) or 0):,}", "universal registry"),
-            ("Mapped campuses", f"{int(summary.get('mapped_campuses', 0) or 0):,}", "canonical campus points"),
-            ("Building entities", f"{int(summary.get('building_entities', 0) or 0):,}", "children of campuses"),
+            ("Mapped campuses", f"{int(summary.get('mapped_campuses', 0) or 0):,}", "campus points"),
+            ("Building entities", f"{int(summary.get('building_entities', 0) or 0):,}", "buildings grouped by campus"),
         ],
         key_prefix="data-center-geography",
     )
@@ -175,11 +175,11 @@ def _render_geography(campuses: pd.DataFrame, infrastructure_data: dict) -> None
 
 
 def _render_scale(campuses: pd.DataFrame) -> None:
-    render_section("Campus scale", "Published capacity resolved at the canonical campus grain.")
+    render_section("Campus scale", "Published capacity by campus.")
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="data-center-panel-largest-campuses"):
-            render_panel_heading("Largest published campuses", "Canonical campus records")
+            render_panel_heading("Largest published campuses", "Campus records")
             render_plotly_chart(
                 data_center_largest_campuses(campuses, height=460),
                 width="stretch",
@@ -201,7 +201,7 @@ def _render_development_profile(inventory: dict) -> None:
     stage = inventory.get("national_stage")
     tracker = inventory.get("open_tracker_summary", {}) or {}
     states = inventory.get("state_stage")
-    render_section("Source project pipeline", "Development-stage source records supporting the canonical registry.")
+    render_section("Source project pipeline", "Development-stage source records supporting the registry.")
     render_summary_row(
         [
             ("Proposed source records", f"{int(tracker.get('proposed', 0) or 0):,}", "FracTracker"),
@@ -234,7 +234,7 @@ def _render_connectivity_operator_structure(connectivity: dict | None, campuses:
     coverage = payload.get("coverage", {}) or {}
     active = _active_campuses(campuses)
     operators = active.get("Operator", pd.Series("", index=active.index)).replace("", np.nan).nunique() if not active.empty else 0
-    render_section("Connectivity and operators", "Connectivity evidence joined to canonical Campus IDs.")
+    render_section("Connectivity and operators", "Connectivity evidence joined by Campus ID.")
     render_summary_row(
         [
             ("Active IXPs", f"{int(pd.to_numeric(national.get('Active IXPs'), errors='coerce') or 0):,}", "national public registry"),
@@ -285,7 +285,7 @@ def render_data_center_tab(infrastructure_data, tab_read=None):
     _inject_data_center_page_theme()
     render_tab_header(
         "Data Centers",
-        "Canonical U.S. data-center campuses with child facilities and buildings, development status, capacity, geography, and connectivity.",
+        "U.S. data-center campuses with facilities and buildings, development status, capacity, geography, and connectivity.",
         "Universal Data Center Registry",
     )
     _render_floating_terms("data_center")

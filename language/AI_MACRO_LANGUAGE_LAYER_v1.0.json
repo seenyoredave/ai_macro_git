@@ -3,24 +3,24 @@
   "layer_version": "language-layer-1.4.2",
   "effective_date": "2026-08-13",
   "purpose": "Compile the corpus-derived, portable editorial layer supplied in full to both OpenAI generation calls.",
-  "source_sha256": "afceb371f3be0629dbf345b8f1f73ddc0da9606ec89556895e0a7d186401c6d9",
-  "payload_sha256": "2edb810e3bc497826ca7529ecb2204dcc2d4be8398e3a29a19ccdfa6aab986fa",
+  "source_sha256": "bc29659346ad13dd7a0f1015cc65637dcf36a3b246e21942b0c67d71274688f5",
+  "payload_sha256": "3d7e9ad5ee78d373b9db2f9d4a73dc838ca42e06e2ccde2413148e24ebfe86d9",
   "corpus_manifest": {
     "AI_MACRO_MARKET_CORPUS_COMPLETE_v1.0.json": {
       "filename": "AI_MACRO_MARKET_CORPUS_COMPLETE_v1.0.json",
-      "sha256": "bad1fe7d1d5e23059160764bb4e083976e6f2d010b5dc70055d20623755f4b4a",
+      "sha256": "12c570bb9cb417703b8af7e4f82a2cfe27610b48dc54638acd4730e9c94595b4",
       "bytes": 443630,
       "corpus_version": ""
     },
     "AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json": {
       "filename": "AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json",
-      "sha256": "576359dea2f2b60bc38376d1ea15ba8cc17a5a54e6628bf10b5bc3ffd3add073",
-      "bytes": 578805,
+      "sha256": "c8291aa564f4139b4559213271a6b44ee8d42552433257af3e645729dfd23b94",
+      "bytes": 578788,
       "corpus_version": ""
     },
     "AI_MACRO_COMPUTE_CORPUS_COMPLETE_v1.0.json": {
       "filename": "AI_MACRO_COMPUTE_CORPUS_COMPLETE_v1.0.json",
-      "sha256": "f1f179c4e4daac1297913e1f922082d42e26288055698b791fd1efdba5e61651",
+      "sha256": "c0983154c85959acc3d7c47c6bd28b46098f3de5fbaf923dca829746e9268b2f",
       "bytes": 244693,
       "corpus_version": ""
     },
@@ -32,7 +32,7 @@
     },
     "AI_MACRO_CONNECTIVITY_CORPUS_COMPLETE_v1.0.json": {
       "filename": "AI_MACRO_CONNECTIVITY_CORPUS_COMPLETE_v1.0.json",
-      "sha256": "afba84dce23270a60b330c7f5b6e1b402b64404eb0f813e3350d5db0d5a01a74",
+      "sha256": "06b93988bb9d367301c0507e63b39a6d10d7e9b0d08b30d1fdf9525e544a92b1",
       "bytes": 285950,
       "corpus_version": ""
     },
@@ -358,7 +358,7 @@
         "user_supplied_source_count": 16,
         "sources_fully_reviewed": 16,
         "bonus_atomic_observations": 70,
-        "canonical_bonus_families": 22,
+        "system_families": 22,
         "mathematical_motifs": 14
       },
       "hard_boundary": "Use the layer only as transferable systems reasoning. Biological observations are never factual evidence about AI, infrastructure, firms, markets, workers, or the economy, and similarity never establishes a shared mechanism.",
@@ -548,7 +548,7 @@
       ],
       "source": {
         "filename": "AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json",
-        "sha256": "576359dea2f2b60bc38376d1ea15ba8cc17a5a54e6628bf10b5bc3ffd3add073"
+        "sha256": "c8291aa564f4139b4559213271a6b44ee8d42552433257af3e645729dfd23b94"
       }
     },
     "generalized_failure_lessons": [
@@ -604,7 +604,7 @@
         "corpus_sources": [
           {
             "filename": "AI_MACRO_MARKET_CORPUS_COMPLETE_v1.0.json",
-            "sha256": "bad1fe7d1d5e23059160764bb4e083976e6f2d010b5dc70055d20623755f4b4a",
+            "sha256": "12c570bb9cb417703b8af7e4f82a2cfe27610b48dc54638acd4730e9c94595b4",
             "bytes": 443630,
             "corpus_version": ""
           }
@@ -653,8 +653,8 @@
         "corpus_sources": [
           {
             "filename": "AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json",
-            "sha256": "576359dea2f2b60bc38376d1ea15ba8cc17a5a54e6628bf10b5bc3ffd3add073",
-            "bytes": 578805,
+            "sha256": "c8291aa564f4139b4559213271a6b44ee8d42552433257af3e645729dfd23b94",
+            "bytes": 578788,
             "corpus_version": ""
           }
         ]
@@ -702,7 +702,7 @@
         "corpus_sources": [
           {
             "filename": "AI_MACRO_COMPUTE_CORPUS_COMPLETE_v1.0.json",
-            "sha256": "f1f179c4e4daac1297913e1f922082d42e26288055698b791fd1efdba5e61651",
+            "sha256": "c0983154c85959acc3d7c47c6bd28b46098f3de5fbaf923dca829746e9268b2f",
             "bytes": 244693,
             "corpus_version": ""
           }
@@ -800,7 +800,7 @@
         "corpus_sources": [
           {
             "filename": "AI_MACRO_CONNECTIVITY_CORPUS_COMPLETE_v1.0.json",
-            "sha256": "afba84dce23270a60b330c7f5b6e1b402b64404eb0f813e3350d5db0d5a01a74",
+            "sha256": "06b93988bb9d367301c0507e63b39a6d10d7e9b0d08b30d1fdf9525e544a92b1",
             "bytes": 285950,
             "corpus_version": ""
           }

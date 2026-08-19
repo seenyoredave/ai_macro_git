@@ -52,15 +52,15 @@ def validate_metric_facts(frame: pd.DataFrame | None, campuses: pd.DataFrame) ->
     facts = normalize_metric_facts(frame)
     if facts.empty:
         return facts
-    canonical = set(campuses.get("Campus ID", pd.Series(dtype=str)).dropna().astype(str))
-    unknown = set(facts["Campus ID"].dropna().astype(str)) - {""} - canonical
+    registry_ids = set(campuses.get("Campus ID", pd.Series(dtype=str)).dropna().astype(str))
+    unknown = set(facts["Campus ID"].dropna().astype(str)) - {""} - registry_ids
     if unknown:
         raise ValueError(f"Data-center metric facts reference {len(unknown)} unknown Campus IDs")
     missing_scope = facts["Measurement Scope"].eq("")
     if missing_scope.any():
         raise ValueError("Every data-center metric fact must declare Measurement Scope")
-    child = facts["Entity Level"].isin({"facility", "building"})
-    if (child & facts["Parent Entity ID"].eq("")).any():
+    member = facts["Entity Level"].isin({"facility", "building"})
+    if (member & facts["Parent Entity ID"].eq("")).any():
         raise ValueError("Facility and building metric facts must declare Parent Entity ID")
     return facts
 
@@ -88,19 +88,19 @@ def rollup_campus_metric(
     if clean.empty:
         return {"Campus ID": campus_id, "Metric": metric, "Value": np.nan, "Unit": spec.unit, "Measurement Scope": "campus", "Aggregation Method": spec.aggregation, "Source": "", "Source Date": "", "Evidence Grade": ""}
 
-    # A direct campus measurement is the campus total. Child measurements are detail, not additions to it.
+    # A direct campus measurement is the campus total. Member measurements are detail, not additions to it.
     direct = _direct_fact(clean, "campus")
     if direct is not None:
         return {**direct.to_dict(), "Entity ID": campus_id, "Entity Level": "campus", "Measurement Scope": "campus", "Aggregation Method": "direct_total"}
 
-    child = clean.loc[clean["Entity Level"].isin({"facility", "building"}) & clean["Value"].notna()].copy()
-    if child.empty:
+    member = clean.loc[clean["Entity Level"].isin({"facility", "building"}) & clean["Value"].notna()].copy()
+    if member.empty:
         return {"Campus ID": campus_id, "Metric": metric, "Value": np.nan, "Unit": spec.unit, "Measurement Scope": "campus", "Aggregation Method": spec.aggregation, "Source": "", "Source Date": "", "Evidence Grade": ""}
 
-    # Facility totals supersede only their own building children. Buildings attached
+    # Facility totals supersede only their own building members. Buildings attached
     # directly to the campus remain additive because no facility-level total covers them.
-    facilities = child.loc[child["Entity Level"].eq("facility")].copy()
-    buildings = child.loc[child["Entity Level"].eq("building")].copy()
+    facilities = member.loc[member["Entity Level"].eq("facility")].copy()
+    buildings = member.loc[member["Entity Level"].eq("building")].copy()
     if not facilities.empty:
         direct_buildings = buildings.loc[buildings["Parent Entity ID"].eq(str(campus_id))]
         selected = pd.concat([facilities, direct_buildings], ignore_index=True, sort=False)
@@ -122,7 +122,7 @@ def rollup_campus_metric(
         valid = weighted["Value"].notna() & weighted["_weight"].gt(0)
         value = float(np.average(weighted.loc[valid, "Value"], weights=weighted.loc[valid, "_weight"])) if valid.any() else np.nan
     else:
-        # One fact per child entity. Duplicate source observations for the same entity do not multiply the total.
+        # One fact per member entity. Duplicate source observations for the same entity do not multiply the total.
         entity_values = selected.sort_values("Source Date", kind="stable").drop_duplicates("Entity ID", keep="last")
         value = entity_values["Value"].sum(min_count=1)
 
@@ -135,7 +135,7 @@ def rollup_campus_metric(
         "Unit": spec.unit,
         "Measurement Scope": "campus",
         "Aggregation Method": spec.aggregation,
-        "Source": "derived from canonical child entities",
+        "Source": "derived from facility/building entities",
         "Source Date": "",
         "Evidence Grade": "",
     }

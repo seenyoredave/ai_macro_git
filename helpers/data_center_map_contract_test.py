@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Interactive-map contract for the v9.6.0 universal campus geography."""
+"""Interactive-map contract for the v9.6.2 universal campus geography."""
 
 from __future__ import annotations
 
@@ -59,9 +59,9 @@ def main() -> int:
     campuses = _fixture()
     national = data_center_map(campuses, size_by="Published capacity estimate", selected_campus_id="campus:or-1")
     if not national.data or any(trace.type != "scattermap" for trace in national.data):
-        raise AssertionError("Canonical campus geography must render selectable MapLibre campus points")
+        raise AssertionError("Campus geography must render selectable MapLibre campus points")
     if _campus_ids(national) != set(campuses["Campus ID"]):
-        raise AssertionError("Map customdata lost canonical Campus IDs")
+        raise AssertionError("Map customdata lost Campus IDs")
     if str(national.layout.map.style) != "carto-darkmatter":
         raise AssertionError("Campus geography lost its professional tile basemap")
     if _has_bounds(national):
@@ -81,7 +81,7 @@ def main() -> int:
 
     state = data_center_map(campuses, state="OR")
     if _campus_ids(state) != {"campus:or-1"}:
-        raise AssertionError("State drilldown did not restrict the canonical campus population")
+        raise AssertionError("State drilldown did not restrict the campus population")
     if len(state.layout.map.layers) < 2:
         raise AssertionError("State drilldown is missing the emphasized state boundary layer")
     if _has_bounds(state):
@@ -111,7 +111,7 @@ def main() -> int:
 
     print(
         "PASS  campus map contract · US opening camera · unrestricted two-axis pan · "
-        "wheel/pinch zoom · geography-scoped camera reset · canonical Campus IDs · emphasized state outline"
+        "wheel/pinch zoom · geography-scoped camera reset · Campus IDs · emphasized state outline"
     )
     return 0
 

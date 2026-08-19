@@ -32,7 +32,7 @@ REGISTRY_MEMBERSHIP_PATH = REGISTRY_DERIVED_DIR / "universal_data_center_members
 REGISTRY_UNRESOLVED_PATH = REGISTRY_DERIVED_DIR / "universal_data_center_unresolved.csv"
 REGISTRY_METADATA_PATH = REGISTRY_DERIVED_DIR / "universal_data_center_registry.json"
 
-REGISTRY_VERSION = "9.6.0"
+REGISTRY_VERSION = "9.6.2"
 
 OBSERVATION_COLUMNS = [
     "Observation ID", "Source Record ID", "Source", "Source Class", "Observation Level",
@@ -85,7 +85,7 @@ ENTITY_COLUMNS = [
     *[column for column in CAMPUS_COLUMNS if column not in {"Campus Name", "Campus Label"}],
 ]
 MEMBERSHIP_COLUMNS = [
-    "Child Entity ID", "Parent Entity ID", "Campus ID", "Relationship", "Source Record ID",
+    "Member Entity ID", "Parent Entity ID", "Campus ID", "Relationship", "Source Record ID",
     "Observation ID", "Relationship Basis", "Registry Version",
 ]
 
@@ -821,29 +821,29 @@ def _cluster_anchors(records: list[dict], anchor_indexes: list[int]) -> list[dic
     return clusters
 
 
-def _child_anchor_score(child: dict, anchor: dict) -> tuple[float, str] | None:
-    if _reviewed_separate_prepared(child, anchor):
+def _member_anchor_score(member: dict, anchor: dict) -> tuple[float, str] | None:
+    if _reviewed_separate_prepared(member, anchor):
         return None
-    if _reviewed_merge_prepared(child, anchor):
+    if _reviewed_merge_prepared(member, anchor):
         return 10000.0, "reviewed identity decision"
-    if not _same_jurisdiction_values(child, anchor):
+    if not _same_jurisdiction_values(member, anchor):
         return None
-    distance = _distance_prepared(child, anchor)
+    distance = _distance_prepared(member, anchor)
     if not math.isfinite(distance):
         return None
-    level = child["level"]
+    level = member["level"]
     max_distance = 1.75 if level in {"building", "facility"} else 0.65
     if distance > max_distance:
         return None
-    operator_ok = _operator_match(child["operator"], anchor["operator"])
-    name_similarity = _token_similarity(child["meaningful_name"], anchor["meaningful_name"]) if child["meaningful_name"] and anchor["meaningful_name"] else 0.0
-    address_match = bool(child["address"] and child["address"] == anchor["address"])
+    operator_ok = _operator_match(member["operator"], anchor["operator"])
+    name_similarity = _token_similarity(member["meaningful_name"], anchor["meaningful_name"]) if member["meaningful_name"] and anchor["meaningful_name"] else 0.0
+    address_match = bool(member["address"] and member["address"] == anchor["address"])
     if level == "building":
         if address_match:
             return 9000.0 - distance, "building at campus address"
         if operator_ok:
             return 8000.0 - distance, "building + operator within campus envelope"
-        if anchor["operator"] and _clean_token(child["name"]) == _clean_token(anchor["operator"]):
+        if anchor["operator"] and _clean_token(member["name"]) == _clean_token(anchor["operator"]):
             return 7600.0 - distance, "operator-labeled building within campus envelope"
         if name_similarity >= 0.72 and distance <= 0.75:
             return 7200.0 - distance, "building + campus name"
@@ -858,7 +858,7 @@ def _child_anchor_score(child: dict, anchor: dict) -> tuple[float, str] | None:
         return 6000.0 - distance, "site point + operator"
     if name_similarity >= 0.78 and distance <= 0.45:
         return 5800.0 - distance, "site point + campus name"
-    if not child["meaningful_name"] and not child["operator"] and distance <= 0.10:
+    if not member["meaningful_name"] and not member["operator"] and distance <= 0.10:
         return 5000.0 - distance, "coincident unlabeled site observation"
     return None
 
@@ -894,10 +894,10 @@ def _attach_to_anchor_clusters(records: list[dict], clusters: list[dict], remain
     spatial, decisions, anchor_to_cluster = _anchor_lookup(records, clusters)
     attached: set[int] = set()
     for index in sorted(remaining):
-        child = records[index]
+        member = records[index]
         choices: list[tuple[float, int, str]] = []
-        for anchor_idx in _candidate_anchors(child, spatial, decisions, 1.75):
-            score = _child_anchor_score(child, records[anchor_idx])
+        for anchor_idx in _candidate_anchors(member, spatial, decisions, 1.75):
+            score = _member_anchor_score(member, records[anchor_idx])
             if score is None:
                 continue
             score_value, reason = score
@@ -1101,7 +1101,7 @@ def _cluster_remaining_points(records: list[dict], indexes: list[int]) -> tuple[
     A source point is location evidence, not a campus boundary or facility
     identity. Points may attach to a campus established by stronger source
     evidence in ``_attach_to_anchor_clusters``. A point that remains unassigned
-    stays unresolved rather than manufacturing another canonical campus.
+    stays unresolved rather than manufacturing another campus.
     """
     return [], list(indexes)
 
@@ -1195,13 +1195,13 @@ def _campus_label_base(name: str, city: str, county: str, state: str) -> str:
     return f"{name_text} — {qualifier}" if qualifier else name_text
 
 
-def _aggregate_numeric(group: pd.DataFrame, column: str, *, child_aggregation: str = "sum") -> float:
-    """Roll one numeric field to campus grain using the canonical hierarchy.
+def _aggregate_numeric(group: pd.DataFrame, column: str, *, component_aggregation: str = "sum") -> float:
+    """Roll one numeric field to campus grain using the entity hierarchy.
 
     A direct campus measurement is authoritative for the campus total. When no
     campus measurement exists, source-native facilities are aggregated. Building
     values are used when the evidence exists only at building grain. Duplicate
-    source observations within a child entity are resolved before aggregation.
+    source observations within a facility or building entity are resolved before aggregation.
     """
     if column not in group.columns:
         return np.nan
@@ -1217,9 +1217,9 @@ def _aggregate_numeric(group: pd.DataFrame, column: str, *, child_aggregation: s
         if not selected:
             return np.nan
         series = pd.Series(selected, dtype=float)
-        if child_aggregation == "max":
+        if component_aggregation == "max":
             return float(series.max())
-        if child_aggregation == "mean":
+        if component_aggregation == "mean":
             return float(series.mean())
         return float(series.sum())
 
@@ -1251,7 +1251,7 @@ def _aggregate_numeric(group: pd.DataFrame, column: str, *, child_aggregation: s
     return aggregate_selected(remaining.astype(float).tolist())
 
 
-def _canonical_status(group: pd.DataFrame) -> str:
+def _combined_status(group: pd.DataFrame) -> str:
     statuses = {str(value).strip() for value in group.get("Status", pd.Series(dtype=str)) if _known_text(value)}
     active = {"Approved / permitted / under construction", "Under construction", "Proposed", "Planned", "Announced"}
     if "Expanding" in statuses or ("Operational" in statuses and statuses & active):
@@ -1307,7 +1307,7 @@ def _facility_groups(group: pd.DataFrame) -> list[pd.DataFrame]:
 
 
 def _entity_row(entity_id: str, level: str, parent_id: str, campus_id: str, group: pd.DataFrame, name: str) -> dict:
-    """Aggregate one canonical entity at its native grain.
+    """Aggregate one registry entity at its native grain.
 
     The entity table is the single persisted data-center registry. Campus rows,
     facility rows, and building rows therefore carry the same metric vocabulary;
@@ -1341,7 +1341,7 @@ def _entity_row(entity_id: str, level: str, parent_id: str, campus_id: str, grou
         "Longitude": float(longitude.mean()) if longitude.notna().any() else np.nan,
         "Location Precision": _best_text(ranked, "Location Precision"),
         "Purpose": _best_text(ranked, "Purpose"),
-        "Status": _canonical_status(ranked),
+        "Status": _combined_status(ranked),
         "Status Detail": _best_text(ranked, "Status Detail"),
         "Status Date": pd.to_datetime(ranked.get("Status Date"), errors="coerce").max(),
         "Expected Service Date": pd.to_datetime(ranked.get("Expected Service Date"), errors="coerce").min(),
@@ -1377,7 +1377,7 @@ def _entity_row(entity_id: str, level: str, parent_id: str, campus_id: str, grou
     })
     for column in NUMERIC_COLUMNS.intersection(ENTITY_COLUMNS):
         aggregation = "mean" if column == "Site WUE L/kWh" else "max" if column == "Property Size Acres" else "sum"
-        row[column] = _aggregate_numeric(ranked, column, child_aggregation=aggregation)
+        row[column] = _aggregate_numeric(ranked, column, component_aggregation=aggregation)
     return row
 
 def _build_entities(group: pd.DataFrame, campus_id: str, campus_name: str) -> tuple[list[dict], list[dict]]:
@@ -1394,7 +1394,7 @@ def _build_entities(group: pd.DataFrame, campus_id: str, campus_name: str) -> tu
         facility_anchors.append((entity_id, subset))
         for _, observation in subset.iterrows():
             membership.append({
-                "Child Entity ID": entity_id,
+                "Member Entity ID": entity_id,
                 "Parent Entity ID": campus_id,
                 "Campus ID": campus_id,
                 "Relationship": "facility_in_campus",
@@ -1421,7 +1421,7 @@ def _build_entities(group: pd.DataFrame, campus_id: str, campus_name: str) -> tu
         entities.append(_entity_row(entity_id, "building", parent_id, campus_id, subset, name))
         for _, observation in subset.iterrows():
             membership.append({
-                "Child Entity ID": entity_id,
+                "Member Entity ID": entity_id,
                 "Parent Entity ID": parent_id,
                 "Campus ID": campus_id,
                 "Relationship": "building_in_facility" if parent_id != campus_id else "building_in_campus",
@@ -1437,7 +1437,7 @@ def _build_entities(group: pd.DataFrame, campus_id: str, campus_name: str) -> tu
         if observation_id in represented:
             continue
         membership.append({
-            "Child Entity ID": campus_id,
+            "Member Entity ID": campus_id,
             "Parent Entity ID": campus_id,
             "Campus ID": campus_id,
             "Relationship": "observation_supports_campus",
@@ -1562,7 +1562,7 @@ def _build_singleton_campus_row(observations: pd.DataFrame, cluster: dict) -> tu
         if column not in {"Facility Count", "Building Count"}:
             campus[column] = _single_number(row, column)
 
-    # Campus entities are materialized once from the canonical campus table in
+    # Campus entities are materialized once from the campus table in
     # _materialize_entity_registry. Do not construct a throwaway campus entity
     # here: on a national registry with thousands of one-record campus anchors,
     # the per-row DataFrame work dominates rebuild time.
@@ -1575,7 +1575,7 @@ def _build_singleton_campus_row(observations: pd.DataFrame, cluster: dict) -> tu
         entity_name = _single_text(row, "Name") or f"Data-center {level}"
         entities.append(_entity_row(entity_id, level, campus_id, campus_id, singleton_group, entity_name))
         membership = [{
-            "Child Entity ID": entity_id, "Parent Entity ID": campus_id, "Campus ID": campus_id,
+            "Member Entity ID": entity_id, "Parent Entity ID": campus_id, "Campus ID": campus_id,
             "Relationship": f"{level}_in_campus", "Source Record ID": source_record_id,
             "Observation ID": observation_id, "Relationship Basis": f"source-native {level} observation",
             "Registry Version": REGISTRY_VERSION,
@@ -1583,7 +1583,7 @@ def _build_singleton_campus_row(observations: pd.DataFrame, cluster: dict) -> tu
         campus["Member Entity IDs"] = entity_id
     else:
         membership = [{
-            "Child Entity ID": campus_id, "Parent Entity ID": campus_id, "Campus ID": campus_id,
+            "Member Entity ID": campus_id, "Parent Entity ID": campus_id, "Campus ID": campus_id,
             "Relationship": "observation_supports_campus", "Source Record ID": source_record_id,
             "Observation ID": observation_id, "Relationship Basis": "campus identity evidence",
             "Registry Version": REGISTRY_VERSION,
@@ -1639,14 +1639,14 @@ def _build_campus_row(observations: pd.DataFrame, cluster: dict) -> tuple[dict, 
         "Longitude": float(longitude.mean()) if longitude.notna().any() else np.nan,
         "Location Precision": _best_text(group, "Location Precision"),
         "Purpose": _best_text(group, "Purpose"),
-        "Status": _canonical_status(group),
+        "Status": _combined_status(group),
         "Status Detail": _best_text(group, "Status Detail"),
         "Status Date": pd.to_datetime(group.get("Status Date"), errors="coerce").max(),
         "Expected Service Date": pd.to_datetime(group.get("Expected Service Date"), errors="coerce").min(),
         "Square Feet": _aggregate_numeric(group, "Square Feet"),
         "Facility Count": float(facility_count) if facility_count else np.nan,
         "Building Count": float(building_count) if building_count else np.nan,
-        "Property Size Acres": _aggregate_numeric(group, "Property Size Acres", child_aggregation="max"),
+        "Property Size Acres": _aggregate_numeric(group, "Property Size Acres", component_aggregation="max"),
         "Project Cost": _best_text(group, "Project Cost"),
         "Published Capacity Estimate Low MW": _aggregate_numeric(group, "Published Capacity Estimate Low MW"),
         "Published Capacity Estimate MW": _aggregate_numeric(group, "Published Capacity Estimate MW"),
@@ -1665,7 +1665,7 @@ def _build_campus_row(observations: pd.DataFrame, cluster: dict) -> tuple[dict, 
         "Watershed": _best_text(group, "Watershed"),
         "Water Withdrawal Gallons/Year": _aggregate_numeric(group, "Water Withdrawal Gallons/Year"),
         "Water Consumption Gallons/Year": _aggregate_numeric(group, "Water Consumption Gallons/Year"),
-        "Site WUE L/kWh": _aggregate_numeric(group, "Site WUE L/kWh", child_aggregation="mean"),
+        "Site WUE L/kWh": _aggregate_numeric(group, "Site WUE L/kWh", component_aggregation="mean"),
         "Cooling System": _best_text(group, "Cooling System"),
         "Water Source": _best_text(group, "Water Source"),
         "Water Permit or Utility Record": _best_text(group, "Water Permit or Utility Record"),
@@ -1750,14 +1750,14 @@ def _normalize_entity_frame(frame: pd.DataFrame | None) -> pd.DataFrame:
 def _materialize_entity_registry(campuses: pd.DataFrame, entity_rows: list[dict]) -> pd.DataFrame:
     """Build the one persisted data-center entity table.
 
-    Campus rows are materialized from the canonical campus calculation after
+    Campus rows are materialized from the campus calculation after
     display labels are assigned. Earlier lightweight campus entity rows are
     discarded, so there is one authoritative row per Entity ID.
     """
-    children = pd.DataFrame(entity_rows)
-    if not children.empty and "Entity Level" in children.columns:
-        children = children.loc[~children["Entity Level"].astype(str).eq("campus")].copy()
-    children = _normalize_entity_frame(children)
+    members = pd.DataFrame(entity_rows)
+    if not members.empty and "Entity Level" in members.columns:
+        members = members.loc[~members["Entity Level"].astype(str).eq("campus")].copy()
+    members = _normalize_entity_frame(members)
 
     campus_entities: list[dict] = []
     for _, campus in campuses.iterrows():
@@ -1781,14 +1781,14 @@ def _materialize_entity_registry(campuses: pd.DataFrame, entity_rows: list[dict]
         campus_entities.append(row)
     campus_frame = _normalize_entity_frame(pd.DataFrame(campus_entities))
 
-    entities = pd.concat([campus_frame, children], ignore_index=True, sort=False)
+    entities = pd.concat([campus_frame, members], ignore_index=True, sort=False)
     entities = _normalize_entity_frame(entities)
     if entities["Entity ID"].eq("").any() or entities["Entity ID"].duplicated().any():
         bad = entities.loc[entities["Entity ID"].eq("") | entities["Entity ID"].duplicated(False), ["Entity ID", "Entity Level", "Campus ID"]]
         raise ValueError(f"Universal Data Center Registry produced invalid Entity IDs: {bad.head(10).to_dict('records')}")
 
-    # Child cardinalities are structural properties of the hierarchy, not
-    # source observations. Populate them from the canonical parent links.
+    # Member cardinalities are structural properties of the hierarchy, not
+    # source observations. Populate them from the parent links.
     building_rows = entities.loc[entities["Entity Level"].eq("building")]
     if not building_rows.empty:
         counts = building_rows.groupby("Parent Entity ID")["Entity ID"].nunique()
@@ -1803,8 +1803,8 @@ def _materialize_entity_registry(campuses: pd.DataFrame, entity_rows: list[dict]
     return entities
 
 
-def canonical_campus_view(entities: pd.DataFrame | None) -> pd.DataFrame:
-    """Return the campus-grain view derived from the canonical entity table."""
+def campus_view(entities: pd.DataFrame | None) -> pd.DataFrame:
+    """Return the campus-grain view derived from the entity table."""
     frame = _normalize_entity_frame(entities)
     if frame.empty:
         return pd.DataFrame(columns=CAMPUS_COLUMNS)
@@ -1821,9 +1821,9 @@ def canonical_campus_view(entities: pd.DataFrame | None) -> pd.DataFrame:
         output[column] = campuses[column] if column in campuses.columns else ""
     output = output[CAMPUS_COLUMNS].reset_index(drop=True)
     if output["Campus ID"].eq("").any() or output["Campus ID"].duplicated().any():
-        raise ValueError("Canonical entity table contains invalid campus entities")
+        raise ValueError("Entity table contains invalid campus rows")
     if output["Campus Label"].eq("").any() or output["Campus Label"].duplicated().any():
-        raise ValueError("Canonical entity table contains invalid campus labels")
+        raise ValueError("Entity table contains invalid campus labels")
     return output
 
 def _resolve_clusters(observations: pd.DataFrame) -> tuple[list[dict], pd.DataFrame]:
@@ -1859,7 +1859,7 @@ def _resolve_clusters(observations: pd.DataFrame) -> tuple[list[dict], pd.DataFr
     building_indexes = [idx for idx, record in enumerate(records) if idx not in assigned and record["level"] == "building"]
     for cluster in _cluster_unassigned_buildings(records, building_indexes):
         # Building grain is subordinate to campus grain. A lone building
-        # observation cannot manufacture a canonical campus. Inference begins
+        # observation cannot manufacture a campus. Inference begins
         # only when the source evidence establishes a co-located multi-building
         # site; explicit campus/facility evidence is handled above.
         physical_buildings = _distinct_physical_building_count(records, cluster["indexes"])
@@ -1911,18 +1911,18 @@ def _inherit_us_jurisdiction(observations: pd.DataFrame) -> pd.DataFrame:
     if observations.empty:
         return observations
     output = observations.copy()
-    references = output.loc[
+    im3_rows = output.loc[
         output["State"].ne("")
         & output["Source"].astype(str).str.contains("IM3", case=False, na=False)
         & pd.to_numeric(output["Latitude"], errors="coerce").notna()
         & pd.to_numeric(output["Longitude"], errors="coerce").notna()
     ].copy()
-    if references.empty:
+    if im3_rows.empty:
         return output.loc[output["State"].ne("")].reset_index(drop=True)
 
     # Coarse cells keep the reconciliation linear on the national retained set.
     cells: dict[tuple[int, int], list[int]] = {}
-    for idx, row in references.iterrows():
+    for idx, row in im3_rows.iterrows():
         lat = float(row["Latitude"]); lon = float(row["Longitude"])
         cells.setdefault((round(lat * 20), round(lon * 20)), []).append(idx)
 
@@ -1938,7 +1938,7 @@ def _inherit_us_jurisdiction(observations: pd.DataFrame) -> pd.DataFrame:
         for dy in (-1, 0, 1):
             for dx in (-1, 0, 1):
                 for ref_idx in cells.get((cell[0] + dy, cell[1] + dx), []):
-                    ref = references.loc[ref_idx]
+                    ref = im3_rows.loc[ref_idx]
                     distance = _haversine_km(lat, lon, ref.get("Latitude"), ref.get("Longitude"))
                     if not math.isfinite(distance) or distance > 0.50:
                         continue
@@ -1951,7 +1951,7 @@ def _inherit_us_jurisdiction(observations: pd.DataFrame) -> pd.DataFrame:
         if not candidates:
             continue
         _, chosen = min(candidates, key=lambda item: (item[0], item[1]))
-        ref = references.loc[chosen]
+        ref = im3_rows.loc[chosen]
         output.at[idx, "State"] = ref.get("State", "")
         output.at[idx, "County"] = ref.get("County", "")
         note = str(output.at[idx, "Notes"] or "").strip()
@@ -2019,11 +2019,11 @@ def build_universal_data_center_registry(
         campus_calculation = campus_calculation.sort_values(["State", "County", "Campus Label", "Campus ID"], kind="stable").reset_index(drop=True)
 
     entities = _materialize_entity_registry(campus_calculation, entity_rows)
-    campuses = canonical_campus_view(entities)
+    campuses = campus_view(entities)
     membership = pd.DataFrame(membership_rows, columns=MEMBERSHIP_COLUMNS)
     if not membership.empty and membership["Observation ID"].duplicated().any():
         duplicate_ids = membership.loc[membership["Observation ID"].duplicated(False), "Observation ID"].astype(str).unique().tolist()
-        raise ValueError(f"A source observation was assigned to multiple canonical entities: {duplicate_ids[:5]}")
+        raise ValueError(f"A source observation was assigned to multiple registry entities: {duplicate_ids[:5]}")
 
     summary = data_center_registry_summary(campuses, entities, observations, unresolved)
     return {
@@ -2075,26 +2075,26 @@ def assert_campus_foreign_keys(
     allow_subset: bool = True,
 ) -> dict:
     if not isinstance(campuses, pd.DataFrame) or "Campus ID" not in campuses.columns:
-        raise ValueError("Canonical campus table is unavailable")
+        raise ValueError("Campus table is unavailable")
     if campuses["Campus ID"].duplicated().any():
-        raise ValueError("Canonical campus table contains duplicate Campus IDs")
-    canonical_ids = set(campuses["Campus ID"].dropna().astype(str)) - {""}
+        raise ValueError("Campus table contains duplicate Campus IDs")
+    registry_ids = set(campuses["Campus ID"].dropna().astype(str)) - {""}
     frame = domain_frame.copy() if isinstance(domain_frame, pd.DataFrame) else pd.DataFrame()
     if frame.empty:
-        return {"domain": domain, "canonical_campuses": len(canonical_ids), "referenced_campuses": 0, "coverage_share": 0.0}
+        return {"domain": domain, "campuses": len(registry_ids), "referenced_campuses": 0, "coverage_share": 0.0}
     if "Campus ID" not in frame.columns:
         raise ValueError(f"{domain} data-center evidence is missing Campus ID")
     refs = set(frame["Campus ID"].dropna().astype(str)) - {""}
-    unknown = refs - canonical_ids
+    unknown = refs - registry_ids
     if unknown:
         raise ValueError(f"{domain} references {len(unknown)} Campus IDs outside the Universal Data Center Registry")
-    if not allow_subset and refs != canonical_ids:
+    if not allow_subset and refs != registry_ids:
         raise ValueError(f"{domain} campus universe does not equal the Universal Data Center Registry")
     return {
         "domain": domain,
-        "canonical_campuses": len(canonical_ids),
+        "campuses": len(registry_ids),
         "referenced_campuses": len(refs),
-        "coverage_share": len(refs) / len(canonical_ids) if canonical_ids else np.nan,
+        "coverage_share": len(refs) / len(registry_ids) if registry_ids else np.nan,
     }
 
 
@@ -2148,18 +2148,18 @@ def _payload_valid(payload: dict) -> None:
         raise ValueError("Universal Data Center Registry entity table is unavailable")
     if entities["Entity ID"].astype(str).duplicated().any():
         raise ValueError("Universal Data Center Registry contains duplicate Entity IDs")
-    campuses = canonical_campus_view(entities)
-    canonical_ids = set(campuses["Campus ID"].dropna().astype(str)) - {""}
+    campuses = campus_view(entities)
+    registry_ids = set(campuses["Campus ID"].dropna().astype(str)) - {""}
     if isinstance(entities, pd.DataFrame) and not entities.empty:
-        unknown = set(entities.get("Campus ID", pd.Series(dtype=str)).dropna().astype(str)) - {""} - canonical_ids
+        unknown = set(entities.get("Campus ID", pd.Series(dtype=str)).dropna().astype(str)) - {""} - registry_ids
         if unknown:
             raise ValueError("Universal Data Center Registry entities contain unknown Campus IDs")
     if isinstance(membership, pd.DataFrame) and not membership.empty:
-        unknown = set(membership.get("Campus ID", pd.Series(dtype=str)).dropna().astype(str)) - {""} - canonical_ids
+        unknown = set(membership.get("Campus ID", pd.Series(dtype=str)).dropna().astype(str)) - {""} - registry_ids
         if unknown:
             raise ValueError("Universal Data Center Registry membership contains unknown Campus IDs")
         if membership.get("Observation ID", pd.Series(dtype=str)).astype(str).duplicated().any():
-            raise ValueError("A source observation is assigned to multiple canonical entities")
+            raise ValueError("A source observation is assigned to multiple registry entities")
 
 
 def persist_universal_data_center_registry(payload: dict, *, force: bool = False) -> None:
@@ -2210,7 +2210,7 @@ def load_retained_universal_data_center_registry(*, require_current: bool = True
                 if not expected or _sha256_path(path) != expected:
                     return None
         entities = pd.read_csv(REGISTRY_ENTITIES_PATH)
-        campuses = canonical_campus_view(entities)
+        campuses = campus_view(entities)
         observations = pd.read_csv(REGISTRY_OBSERVATIONS_PATH)
         membership = pd.read_csv(REGISTRY_MEMBERSHIP_PATH)
         unresolved = pd.read_csv(REGISTRY_UNRESOLVED_PATH)
@@ -2253,7 +2253,7 @@ __all__ = [
     "normalize_us_state", "normalize_im3_observations", "load_curated_data_center_observations",
     "load_gigawatt_data_center_observations", "load_fractracker_data_center_observations",
     "load_data_center_identity_decisions", "build_universal_data_center_registry",
-    "data_center_registry_summary", "assert_campus_foreign_keys", "campus_display_names", "campus_display_labels", "canonical_campus_view",
+    "data_center_registry_summary", "assert_campus_foreign_keys", "campus_display_names", "campus_display_labels", "campus_view",
     "registry_source_hashes", "registry_source_fingerprint", "persist_universal_data_center_registry",
     "load_retained_universal_data_center_registry", "build_registry_from_retained_sources",
 ]

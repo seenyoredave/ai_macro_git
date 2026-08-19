@@ -1,4 +1,4 @@
-"""Stable read interface for the canonical Current Context registry.
+"""Stable read interface for the reference Current Context registry.
 
 All network discovery is owned by ``current_context_discovery``.  This loader
 only resolves already-qualified registry records into domain and macro
@@ -89,7 +89,7 @@ def load_current_context(*, as_of=None, path=None, limit_per_domain=2) -> dict:
             item["owner_score"] = float(item.get("rank_score", item.get("priority", 0)) or 0) + 1000.0
             domain_events[domain].append(item)
 
-    # One source URL or canonical event may appear in only one subordinate Read.
+    # One source URL or reference event may appear in only one subordinate Read.
     owned_events = _assign_event_owners(domain_events)
 
     by_domain: dict[str, dict] = {}

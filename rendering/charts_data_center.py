@@ -53,7 +53,7 @@ def _campuses(frame: pd.DataFrame | None) -> pd.DataFrame:
     if "Campus ID" not in frame.columns:
         raise ValueError("Data-center charts require Campus ID from the Universal Data Center Registry")
     if frame["Campus ID"].astype(str).duplicated().any():
-        raise ValueError("Data-center charts require exactly one row per canonical Campus ID")
+        raise ValueError("Data-center charts require exactly one row per Campus ID")
     return frame.copy()
 
 
@@ -89,7 +89,7 @@ def data_center_map(
     selected_campus_id: str | None = None,
     height: int = 560,
 ) -> go.Figure:
-    """Canonical MapLibre campus map used by every product surface."""
+    """Shared MapLibre campus map used by every product surface."""
     frame = _campuses(campuses)
     if frame.empty:
         return _layout(go.Figure(), height=height, margin=dict(l=8, r=8, t=8, b=8))
@@ -182,7 +182,7 @@ def data_center_map(
         showlegend=False,
         dragmode="pan",
         map=view,
-        uirevision=f"canonical-campus-map:{selected_state or 'US'}",
+        uirevision=f"campus-map:{selected_state or 'US'}",
     )
     return fig
 

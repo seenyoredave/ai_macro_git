@@ -65,7 +65,7 @@ def main() -> None:
     bonus = layer["payload"]["systems_dynamics_bonus"]
     require(bonus["status"] == "FULLY_INGESTED", "Neuroscience systems-dynamics layer is not fully ingested.")
     require(bonus["audit"]["sources_fully_reviewed"] == 16, "Neuroscience source audit was not carried forward.")
-    require(len(bonus["system_families"]) == 22, "Neuroscience canonical family set was truncated.")
+    require(len(bonus["system_families"]) == 22, "Neuroscience system family set was truncated.")
     require(len(bonus["mathematical_motifs"]) == 14, "Neuroscience mathematical motif set was truncated.")
     require("never factual evidence" in bonus["hard_boundary"], "Neuroscience analogy boundary was weakened.")
     require(len(identity["payload_sha256"]) == 64, "Layer identity has no full payload digest.")

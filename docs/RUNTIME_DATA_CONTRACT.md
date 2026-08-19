@@ -85,9 +85,9 @@ prior Read. A structurally failed run records its non-secret run ledger.
   the event did not happen.
 - Google News RSS article links are transport wrappers, not citation targets.
   Opaque current-generation Google article identifiers must resolve through the
-  canonical decode flow before the discovered publisher route is trusted. A host
+  reference decode flow before the discovered publisher route is trusted. A host
   mismatch or decode/fetch failure rejects that route. For non-disqualifying
-  failures, the same canonical discovery owner may perform a bounded event-level
+  failures, the same reference discovery owner may perform a bounded event-level
   evidence lookup and try another eligible primary or approved independent source
   that matches the event in subject, date, and factual signature.
 - Alternate evidence is not a lower bar or a headline fallback. It must be a
@@ -131,14 +131,14 @@ prior Read. A structurally failed run records its non-secret run ledger.
 
 ## Commentary runtime
 
-- OpenAI is an interpretation service, not a data owner. Canonical facts, calculations, source provenance, and refresh authorization remain deterministic and local.
+- OpenAI is an interpretation service, not a data owner. Reference facts, calculations, source provenance, and refresh authorization remain deterministic and local.
 - The API receives bounded domain evidence packets. It does not receive the raw retained-data universe merely because it fits in the model context window.
 - Developer mode owns the explicit **Generate commentary** action and the zero-cost **Apply last Read** publication action; the approved automation worker may invoke the same two-call service under hard call ceilings. Public Reader sessions never call OpenAI.
 - The Responses API must return the Pydantic Structured Output contract. Every sentence must identify supporting evidence `fact_id` values.
 - A deterministic validator diagnoses unknown/out-of-domain fact IDs, unsupported numeric claims, interrogative filler, word-budget violations, schema/domain-membership failures, and invalid Macro domain scope. Numeric validation includes cited fact labels/context and normalizes formatting-equivalent values such as `300k` and `300,000`; it does not permit rounding or uncited numbers merely because they appear elsewhere in the domain. Diagnostics never rewrite, suppress, retry, or replace a paid response.
 - Every completed paid API response is persisted before validation under `openai_artifacts/attempts/<attempt_id>.json`, together with its exact raw response, evidence snapshot, structured model output when available, generation metadata, prompt versions, and eventual validation result.
 - A completed artifact is promoted atomically to `openai_artifacts/current.json` and records its evidence snapshot, model, reasoning effort, per-stage prompt provenance, validation diagnostics, exact response metadata, Reader payload, and a 24-hour publication lease. Warned or raw output is labeled explicitly. Neither attempt nor current artifacts contain an API credential.
-- Reader mode publishes a completed artifact as `validated`, `published_with_warnings`, or `published_raw_response` while its 24-hour publication lease is active. The artifact remains bound to its original evidence snapshot: a later deterministic refresh may make `evidence_current=false` without immediately removing the Read. Evidence mismatch still triggers fresh automation generation and still blocks snapshot-bound resume/Macro-regeneration paths. Once the lease expires, the retained Read fails closed to the canonical unavailable message until new output is generated or the owner uses **Apply last Read** to renew it for another 24 hours.
+- Reader mode publishes a completed artifact as `validated`, `published_with_warnings`, or `published_raw_response` while its 24-hour publication lease is active. The artifact remains bound to its original evidence snapshot: a later deterministic refresh may make `evidence_current=false` without immediately removing the Read. Evidence mismatch still triggers fresh automation generation and still blocks snapshot-bound resume/Macro-regeneration paths. Once the lease expires, the retained Read fails closed to the reference unavailable message until new output is generated or the owner uses **Apply last Read** to renew it for another 24 hours.
 - Current Context remains a separately sourced layer. It may add Recent developments to a validated or unavailable Read without mutating the retained commentary artifact. After source grounding, its deterministic language engine may reconstruct a compact event frame and one same-event supporting detail; it does not generate analytical implications and does not call OpenAI.
 - Paid OpenAI artifacts are runtime/publication state, not retained-data source-release inputs. `helpers/build_release_manifest.py` deliberately excludes `openai_artifacts/`. `openai_artifacts/attempts/` stays local/private; `openai_artifacts/current.json` may be intentionally committed for hosted Reader publication until a later scheduler/storage path replaces Git publication.
 
@@ -168,7 +168,7 @@ prior Read. A structurally failed run records its non-secret run ledger.
   not block the completed snapshot from being saved.
 - A nonmarket refresh cannot advance or re-date market-derived history.
 - An explicit EDGAR refresh must bypass any earlier 24-hour Companyfacts cache entry by carrying the refresh token into the Companyfacts cache key. The same token is then reused by the Finance derivative rebuild so the 10-company cohort consumes the exact refreshed SEC payloads without redundant provider calls.
-- Debt Financing Pulse may advance only when current and prior-year observations preserve the issuer-specific retained debt definition. Prefer one common complete standard XBRL debt group across both dates; selecting the best current and prior-year tag families independently is not definition matching. If Companyfacts cannot express the issuer's canonical debt definition completely, the refresh may fall back to a filing-reviewed retained pair only when that pair preserves the exact canonical definition and is aligned to the current CapEx period. A refresh may not replace an unmatched definition simply because a generic SEC debt fact is available. The Developer load report distinguishes automatic Companyfacts updates, filing-reviewed fallbacks, and unresolved debt tickers.
+- Debt Financing Pulse may advance only when current and prior-year observations preserve the issuer-specific retained debt definition. Prefer one common complete standard XBRL debt group across both dates; selecting the best current and prior-year tag families independently is not definition matching. If Companyfacts cannot express the issuer's matched debt definition completely, the refresh may fall back to a filing-reviewed retained pair only when that pair preserves that exact definition and is aligned to the current CapEx period. A refresh may not replace an unmatched definition simply because a generic SEC debt fact is available. The Developer load report distinguishes automatic Companyfacts updates, filing-reviewed fallbacks, and unresolved debt tickers.
 - Local GitHub pushes may replace the deployed retained snapshot. No online
   merge or first-viewer-write protocol exists.
 - `data/release_manifest.json` fingerprints the critical archives, baskets,

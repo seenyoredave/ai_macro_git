@@ -257,7 +257,7 @@ def _data_center_registry_summary(infrastructure_data):
     grades = registry.get("Evidence Grade", pd.Series("", index=registry.index)).fillna("").astype(str).str.upper()
 
     return pd.DataFrame([
-        {"Measure": "Canonical campuses", "Value": f"{int(summary.get('campuses', len(registry)) or 0):,}"},
+        {"Measure": "Campuses", "Value": f"{int(summary.get('campuses', len(registry)) or 0):,}"},
         {"Measure": "Mapped campuses", "Value": f"{int(summary.get('mapped_campuses', 0) or 0):,}"},
         {"Measure": "States", "Value": f"{int(summary.get('states', 0) or 0):,}"},
         {"Measure": "Facility entities", "Value": f"{int(summary.get('facility_entities', 0) or 0):,}"},
@@ -526,7 +526,7 @@ def _render_compute_data_center_evidence(infrastructure_data):
         render_static_table(decisions if isinstance(decisions, pd.DataFrame) else pd.DataFrame())
     with st.expander("National data-center evidence database", expanded=False):
         render_static_table(national_database if isinstance(national_database, pd.DataFrame) else pd.DataFrame())
-    with st.expander("Canonical data-center campuses", expanded=False):
+    with st.expander("Data-center campuses", expanded=False):
         registry = infrastructure.get("data_center_registry")
         if registry is None or not isinstance(registry, pd.DataFrame):
             registry = infrastructure.get("locations")
@@ -546,7 +546,7 @@ def _render_compute_data_center_evidence(infrastructure_data):
         manifest = infrastructure.get("infrastructure_source_manifest")
         if isinstance(manifest, pd.DataFrame):
             public_columns = [
-                "source_name", "custodian", "canonical_url", "publication_date",
+                "source_name", "custodian", "source_url", "publication_date",
                 "coverage_period", "geographic_coverage", "data_role", "evidence_grade",
             ]
             manifest = manifest[[column for column in public_columns if column in manifest.columns]].copy()
@@ -620,7 +620,7 @@ def _render_power_grid_evidence(energy_data, infrastructure_data):
         else:
             render_static_table(pd.DataFrame())
     with st.expander("Fuel infrastructure projects", expanded=False):
-        gas = energy.get("gas_pipeline_canonical")
+        gas = energy.get("gas_pipeline_projects")
         lng = energy.get("lng_projects")
         storage = energy.get("gas_storage_projects")
         st.markdown("**Natural-gas pipelines**")
@@ -674,7 +674,7 @@ def _render_water_evidence(water_data, infrastructure_data):
         manifest = water.get("source_manifest")
         if isinstance(manifest, pd.DataFrame) and not manifest.empty:
             columns = [
-                "source_name", "custodian", "canonical_url", "persistent_identifier",
+                "source_name", "custodian", "source_url", "persistent_identifier",
                 "publication_date", "coverage_period", "geographic_coverage",
                 "data_role", "evidence_grade", "retrieval_date",
             ]
@@ -891,16 +891,16 @@ def _evidence_lineage_rows(selected: str, read: dict, spec: dict) -> list[dict]:
         if isinstance(event, dict) and str(event.get("event_id") or "").strip()
     }
     reference_by_number = {
-        int(item.get("reference_number")): item
+        int(item.get("normalized_number")): item
         for item in references
-        if str(item.get("reference_number") or "").isdigit()
+        if str(item.get("normalized_number") or "").isdigit()
     }
     for item in read.get("current_context_items", []) or []:
         if not isinstance(item, dict):
             continue
         event = event_by_id.get(str(item.get("event_id") or ""), {})
         try:
-            number = int(item.get("reference_number"))
+            number = int(item.get("normalized_number"))
         except (TypeError, ValueError):
             number = 0
         reference = reference_by_number.get(number, {})
@@ -1056,14 +1056,14 @@ def _render_current_context_evidence(read: dict) -> None:
     if not items:
         return
     references = {
-        int(item.get("reference_number")): dict(item)
+        int(item.get("normalized_number")): dict(item)
         for item in read.get("references", []) or []
-        if isinstance(item, dict) and str(item.get("reference_number") or "").isdigit()
+        if isinstance(item, dict) and str(item.get("normalized_number") or "").isdigit()
     }
     cards = []
     for item in items[:2]:
         try:
-            number = int(item.get("reference_number"))
+            number = int(item.get("normalized_number"))
         except (TypeError, ValueError):
             number = 0
         reference = references.get(number, {})

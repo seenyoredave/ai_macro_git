@@ -65,7 +65,7 @@ MEASUREMENT_BASES = {
     "unknown",
 }
 
-CANONICAL_OBSERVATION_COLUMNS = [
+OBSERVATION_COLUMNS = [
     "observation_id",
     "entity_id",
     "site_id",
@@ -100,7 +100,7 @@ SOURCE_MANIFEST_COLUMNS = [
     "source_id",
     "source_name",
     "custodian",
-    "canonical_url",
+    "source_url",
     "acquisition_url",
     "persistent_identifier",
     "publication_date",

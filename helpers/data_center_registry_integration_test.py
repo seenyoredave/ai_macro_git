@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cross-domain Campus-ID integration contract for v9.6.0."""
+"""Cross-domain Campus-ID integration contract for v9.6.2."""
 
 from __future__ import annotations
 
@@ -49,13 +49,13 @@ def main() -> int:
     if not isinstance(central_after, pd.DataFrame):
         raise AssertionError("Water enrichment removed the central registry")
     if list(central_after["Campus ID"].astype(str)) != list(campuses["Campus ID"].astype(str)):
-        raise AssertionError("Water enrichment mutated the canonical Campus-ID universe")
+        raise AssertionError("Water enrichment mutated the Campus-ID set")
 
-    canonical = set(campuses["Campus ID"].astype(str))
+    registry_ids = set(campuses["Campus ID"].astype(str))
     water_ids = set(water_campuses["Campus ID"].astype(str))
-    if canonical != water_ids:
+    if registry_ids != water_ids:
         raise AssertionError(
-            f"Cross-domain universe drift: registry={len(canonical):,}, water={len(water_ids):,}"
+            f"Cross-domain universe drift: registry={len(registry_ids):,}, water={len(water_ids):,}"
         )
 
     for relative, required in (
@@ -69,7 +69,7 @@ def main() -> int:
 
     print(
         "PASS  cross-domain registry integration · "
-        f"{len(canonical):,} canonical Campus IDs identical in Data Centers and Water · "
+        f"{len(registry_ids):,} Campus IDs identical in Data Centers and Water · "
         "Power/Spatial/Evidence wired to the same registry"
     )
     return 0

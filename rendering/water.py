@@ -91,16 +91,16 @@ def _latest_county_snapshot(context: dict) -> str:
 
 def _local_exposure_stats(context: dict):
     local = context["local_summary"]
-    mapped = int(local.get("canonical_campuses", 0) or 0)
-    resolved = int(local.get("county_drought_resolved", 0) or 0)
+    mapped = int(local.get("campuses", 0) or 0)
+    covered = int(local.get("campuses_with_county_drought_data", 0) or 0)
     d2 = int(local.get("campuses_in_counties_with_d2", 0) or 0)
     material = int(local.get("campuses_in_counties_with_25pct_d2", 0) or 0)
     highest_location = str(local.get("highest_county_d2_location") or "n/a")
     highest_d2 = pd.to_numeric(local.get("highest_county_d2_area_pct"), errors="coerce")
     return [
-        ("County drought resolved", f"{resolved:,} / {mapped:,}", _pct(local.get("county_drought_resolution_share"))),
-        ("Campuses in D2+ counties", f"{d2:,}", f"{_pct(local.get('campuses_in_counties_with_d2_share'))} of county-resolved"),
-        ("Campuses in ≥25% D2+ counties", f"{material:,}", f"{_pct(local.get('campuses_in_counties_with_25pct_d2_share'))} of county-resolved"),
+        ("Campuses with county drought data", f"{covered:,} / {mapped:,}", f"{_pct(local.get('county_drought_coverage_share'))} coverage"),
+        ("Campuses in D2+ counties", f"{d2:,}", f"{_pct(local.get('campuses_in_counties_with_d2_share'))} of campuses with county data"),
+        ("Campuses in ≥25% D2+ counties", f"{material:,}", f"{_pct(local.get('campuses_in_counties_with_25pct_d2_share'))} of campuses with county data"),
         ("Highest current D2+ county", highest_location, "n/a" if pd.isna(highest_d2) else f"{float(highest_d2):.1f}% county area"),
     ]
 
@@ -355,14 +355,14 @@ def _campus_profile_html(row: pd.Series) -> str:
 .rm-water-detail + .rm-water-detail {{ border-left: 1px solid rgba(148,163,184,0.16); }}
 .rm-water-detail-title {{ color: #cfd8e5; font-size: 0.67rem; font-weight: 780; letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 0.42rem; }}
 .rm-water-row {{ display: grid; grid-template-columns: minmax(7.2rem, 0.85fr) minmax(0, 1.15fr); gap: 0.7rem; align-items: baseline; padding: 0.58rem 0; border-bottom: 1px solid rgba(148,163,184,0.11); }}
-.rm-water-row:last-child {{ border-bottom: 0; }}
+.rm-water-row:last-of-type {{ border-bottom: 0; }}
 .rm-water-row-label {{ color: #7f8ba1; font-size: 0.7rem; }}
 .rm-water-row-value {{ color: #dce4ef; font-size: 0.76rem; font-weight: 620; text-align: right; overflow-wrap: anywhere; }}
 .rm-water-empty {{ color: #8d9aae; font-size: 0.76rem; line-height: 1.5; padding-top: 0.5rem; max-width: 22rem; }}
 @media (max-width: 900px) {{
     .rm-water-metrics {{ grid-template-columns: repeat(2,minmax(0,1fr)); }}
-    .rm-water-metric:nth-child(3) {{ border-left: 0; border-top: 1px solid rgba(148,163,184,0.16); }}
-    .rm-water-metric:nth-child(4) {{ border-top: 1px solid rgba(148,163,184,0.16); }}
+    .rm-water-metric:nth-of-type(3) {{ border-left: 0; border-top: 1px solid rgba(148,163,184,0.16); }}
+    .rm-water-metric:nth-of-type(4) {{ border-top: 1px solid rgba(148,163,184,0.16); }}
     .rm-water-details {{ grid-template-columns: 1fr; }}
     .rm-water-detail + .rm-water-detail {{ border-left: 0; border-top: 1px solid rgba(148,163,184,0.16); }}
 }}
@@ -484,14 +484,14 @@ def _render_campus_dossier(context: dict) -> None:
 
 def _coverage_stats(context: dict):
     summary = context["summary"]
-    campuses = int(summary.get("canonical_campuses", len(context["campuses"])) or 0)
+    campuses = int(summary.get("campuses", len(context["campuses"])) or 0)
     denominator = max(campuses, 1)
     pws_resolved = int(summary.get("pws_service_area_query_resolved_records", 0) or 0)
     pws_overlap = int(summary.get("pws_service_area_overlap_records", 0) or 0)
     direct = int(summary.get("direct_water_evidence_records", 0) or 0)
     quantified = int(summary.get("quantified_withdrawal_records", 0) or 0) + int(summary.get("quantified_consumption_records", 0) or 0)
     return [
-        ("Canonical campuses", f"{campuses:,}", "Universal Data Center Registry"),
+        ("Campuses", f"{campuses:,}", "Universal Data Center Registry"),
         ("EPA point queries resolved", f"{pws_resolved:,}", f"{pws_resolved / denominator * 100.0:.1f}% of campuses"),
         ("EPA boundary overlaps", f"{pws_overlap:,}", "community-water service areas"),
         ("Direct / quantified", f"{direct:,} / {quantified:,}", "campus evidence / quantified records"),
@@ -515,7 +515,7 @@ def _render_coverage(context: dict) -> None:
             key="water-observability-view",
         )
         if view == "Direct evidence by state":
-            render_panel_heading("Direct campus water evidence by state", "Canonical campus records")
+            render_panel_heading("Direct campus water evidence by state", "Campus records")
             figure = water_state_evidence_profile(campuses, height=450)
             chart_key = "water-state-evidence-profile"
         else:

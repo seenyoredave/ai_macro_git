@@ -126,7 +126,7 @@ def refresh_campus_matches(campuses: pd.DataFrame | None, *, cache_path: str | P
     cache_path=Path(cache_path); cache=load_cache(cache_path); frame=campuses.copy() if isinstance(campuses,pd.DataFrame) else pd.DataFrame()
     if frame.empty: return cache,{"source_mode":"retained","requested_points":0,"queried_points":0,"errors":{}}
     if "Campus ID" not in frame.columns or frame["Campus ID"].duplicated().any():
-        raise ValueError("EPA PWS refresh requires one row per canonical Campus ID")
+        raise ValueError("EPA PWS refresh requires one row per Campus ID")
     requests_by_key: dict[str,tuple[str,float,float]]={}
     for _,row in frame.iterrows():
         lat=pd.to_numeric(row.get("Latitude"),errors="coerce"); lon=pd.to_numeric(row.get("Longitude"),errors="coerce"); campus_id=_text(row.get("Campus ID"))

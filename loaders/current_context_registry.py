@@ -73,7 +73,7 @@ def _fallback_domain_event(domain: str, current: pd.Timestamp) -> dict:
         "verified_fact": text,
         "platform_relevance": "",
         "display": text,
-        "reference_number": None,
+        "normalized_number": None,
         "source_name": "",
         "source_label": "",
         "source_url": "",
@@ -293,7 +293,7 @@ def _curated_events(frame: pd.DataFrame, current: pd.Timestamp) -> list[dict]:
             "verified_fact": fact,
             "platform_relevance": relevance,
             "display": fact,
-            "reference_number": 0,
+            "normalized_number": 0,
             "source_name": source_name,
             "source_label": source_label,
             "source_url": str(row.get("source_url") or "").strip(),
@@ -432,7 +432,7 @@ def _renumber_context(events: list[dict], current: pd.Timestamp, *, source: str)
                 number = len(references) + 1
                 reference_keys[key] = number
                 references.append({
-                    "reference_number": number,
+                    "normalized_number": number,
                     "event_id": item.get("event_id", ""),
                     "source_name": item.get("source_name", ""),
                     "source_label": source_label,
@@ -444,7 +444,7 @@ def _renumber_context(events: list[dict], current: pd.Timestamp, *, source: str)
                     "grounding_status": item.get("grounding_status", ""),
                     "source_evidence_hash": item.get("source_evidence_hash", ""),
                 })
-        item["reference_number"] = number
+        item["normalized_number"] = number
         numbered_events.append(item)
     return {
         "events": numbered_events,

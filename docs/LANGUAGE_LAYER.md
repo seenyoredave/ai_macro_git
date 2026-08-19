@@ -20,20 +20,20 @@ There is no draft call, editor call, critic call, repair call, replacement call,
 - set-level variation rules for the eleven domain Reads;
 - uncertainty and measurement-boundary rules;
 - sophisticated-non-specialist audience calibration, contextual-sufficiency rules, explanatory restraint, and flexible Macro paragraph guidance;
-- one profile for each canonical domain;
+- one profile for each reference domain;
 - a system-level Macro synthesis contract;
 - generalized editorial failure lessons, never a blacklist of previously failed sentences;
 - the full audited neuroscience/neurochemistry/biophysics systems-dynamics bonus.
 
 All eleven profiles are backed by completed corpora. Power and Grid & Storage use one combined research corpus while retaining separate production profiles, evidence boundaries, and Reads. Adoption, Workforce, and Economic Outcomes likewise use one combined diffusion-and-economic-transmission corpus while retaining three separate production profiles, evidence boundaries, and Reads.
 
-The neuroscience bonus remains complete: 16 reviewed sources, 70 atomic observations, 22 canonical system families, and 14 mathematical motifs. It supplies transferable systems reasoning only. It is never economic evidence and never establishes a shared biological/economic mechanism.
+The neuroscience bonus remains complete: 16 reviewed sources, 70 atomic observations, 22 reference system families, and 14 mathematical motifs. It supplies transferable systems reasoning only. It is never economic evidence and never establishes a shared biological/economic mechanism.
 
 ## Compilation and integrity
 
 `tooling/compile_language_layer.py` verifies:
 
-- the canonical eleven-domain order;
+- the reference eleven-domain order;
 - required profile fields and source-state labels;
 - exact structural corpus provenance identifiers;
 - hashes and versions for the eight completed corpus files supporting eleven corpus-backed profiles;

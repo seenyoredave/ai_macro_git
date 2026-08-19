@@ -30,8 +30,8 @@ PATHS = {
     "interconnection_queue": DATA_DIR / "energy_interconnection_queue.csv",
     "interconnection_queue_summary": DATA_DIR / "energy_interconnection_queue_summary.csv",
     "wholesale_prices": DATA_DIR / "energy_wholesale_prices.csv",
-    "gas_pipeline_projects": DATA_DIR / "energy_natural_gas_pipeline_projects.csv",
-    "gas_pipeline_canonical": DATA_DIR / "energy_natural_gas_pipeline_canonical.csv",
+    "gas_pipeline_source": DATA_DIR / "energy_natural_gas_pipeline_projects.csv",
+    "gas_pipeline_projects": DATA_DIR / "energy_natural_gas_pipeline_analysis.csv",
     "lng_projects": DATA_DIR / "energy_lng_projects.csv",
     "gas_storage_projects": DATA_DIR / "energy_natural_gas_storage_projects.csv",
 }
@@ -439,7 +439,7 @@ def _parse_gas_pipeline(content):
     return frame
 
 
-def _canonicalize_gas_pipeline(frame):
+def _normalize_gas_pipeline(frame):
     clean = frame.copy()
     clean["Last Updated Date"] = pd.to_datetime(clean.get("Last Updated Date"), errors="coerce", format="mixed")
     clean["Additional Capacity (MMcf/d)"] = _number(clean.get("Additional Capacity (MMcf/d)"))
@@ -588,8 +588,8 @@ def _refresh(scope: str = "all"):
     def parse_gas(content):
         raw = _parse_gas_pipeline(content)
         return {
-            "gas_pipeline_projects": raw,
-            "gas_pipeline_canonical": _canonicalize_gas_pipeline(raw),
+            "gas_pipeline_source": raw,
+            "gas_pipeline_projects": _normalize_gas_pipeline(raw),
         }
 
     apply(

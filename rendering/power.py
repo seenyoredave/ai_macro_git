@@ -79,7 +79,7 @@ def _power_source_rows(power_data):
         ("Current-year capacity changes", "capacity_changes", "Date", "EIA Electric Power Monthly"),
         ("Wholesale electricity prices", "wholesale_prices", "Trade Date", "EIA / ICE"),
         ("Natural-gas pipeline source records", "gas_pipeline_projects", "Last Updated Date", "EIA Natural Gas Pipeline Projects"),
-        ("Natural-gas pipeline projects", "gas_pipeline_canonical", "Last Updated Date", "EIA Natural Gas Pipeline Projects"),
+        ("Natural-gas pipeline projects", "gas_pipeline_projects", "Last Updated Date", "EIA Natural Gas Pipeline Projects"),
         ("LNG liquefaction projects", "lng_projects", "In-service Date", "EIA LNG Capacity"),
         ("Natural-gas storage projects", "gas_storage_projects", "Year in Service", "EIA Natural Gas Storage Projects"),
     ]
@@ -436,7 +436,7 @@ def _lng_capacity_total(frame, stages):
 
 
 def _render_fuel_infrastructure(power_data) -> None:
-    gas = _market_frame(power_data, "gas_pipeline_canonical")
+    gas = _market_frame(power_data, "gas_pipeline_projects")
     if gas.empty:
         gas = _market_frame(power_data, "gas_pipeline_projects")
     lng = _market_frame(power_data, "lng_projects")
@@ -513,7 +513,7 @@ def _render_power_ledger(context: dict, power_data) -> None:
         "Generator pipeline": context.get("pipeline"),
         "Wholesale prices": context.get("wholesale"),
         "Large-load campuses": context.get("campuses"),
-        "Gas pipelines": _market_frame(power_data, "gas_pipeline_canonical"),
+        "Gas pipelines": _market_frame(power_data, "gas_pipeline_projects"),
         "LNG projects": _market_frame(power_data, "lng_projects"),
     }
     with st.expander("Power data", expanded=False):

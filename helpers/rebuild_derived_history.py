@@ -113,7 +113,7 @@ def _previous_legacy_market_session(value) -> pd.Timestamp:
     return resolved
 
 
-def canonicalize_market_history_dates(
+def normalize_market_history_dates(
     yf_history: pd.DataFrame,
     *derived_histories: pd.DataFrame,
 ) -> tuple[pd.DataFrame, ...]:
@@ -858,7 +858,7 @@ def main() -> None:
     edgar_before = edgar_history.copy(deep=True)
     benchmark_before = benchmark_history.copy(deep=True)
 
-    yf_history, prior_sector, prior_macro = canonicalize_market_history_dates(
+    yf_history, prior_sector, prior_macro = normalize_market_history_dates(
         yf_history,
         prior_sector,
         prior_macro,

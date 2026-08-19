@@ -171,7 +171,7 @@ def main() -> None:
     packets = _packets()
     packet_dicts = {domain: packet.to_dict() for domain, packet in packets.items()}
     model_packets = model_evidence_packets(packets)
-    require(len(DOMAIN_ORDER) == 11, "Canonical domain set changed.")
+    require(len(DOMAIN_ORDER) == 11, "Reference domain set changed.")
     require(evidence_snapshot_id(packets) == evidence_snapshot_id(packets), "Evidence snapshot hashing is unstable.")
     model_blob = str(model_packets)
     require("source_url" not in model_blob and "https://" not in model_blob, "Source URLs leaked into the model projection.")

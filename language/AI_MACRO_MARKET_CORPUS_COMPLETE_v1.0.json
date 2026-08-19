@@ -34,8 +34,8 @@
     "academic_texts_analyzed": 2,
     "long_form_passages_analyzed": 13,
     "raw_atomic_observations": 153,
-    "canonical_universal_candidate_families": 23,
-    "canonical_market_language_families": 12,
+    "reference_universal_candidate_families": 23,
+    "reference_market_language_families": 12,
     "evidence_conditioned_mappings": 12,
     "sentence_architectures": 14,
     "anti_pattern_families": 18,
@@ -71,7 +71,7 @@
       "all_articles_pass_jif_gate": true,
       "all_articles_whole_text_verified": true,
       "all_articles_have_structured_rhetoric": true,
-      "all_atomic_observations_mapped_to_at_least_one_canonical_family": true
+      "all_atomic_observations_mapped_to_at_least_one_reference_family": true
     }
   },
   "source_registry": [
@@ -5236,7 +5236,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04",
         "E07"
       ]
@@ -5253,7 +5253,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E05"
       ]
@@ -5269,7 +5269,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U23"
       ]
     },
@@ -5285,7 +5285,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U22",
         "E01"
       ]
@@ -5301,7 +5301,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06"
       ]
     },
@@ -5317,7 +5317,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U05",
         "E08"
       ]
@@ -5333,7 +5333,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5348,7 +5348,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U09"
       ]
     },
@@ -5363,7 +5363,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5378,7 +5378,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U15",
         "U23"
       ]
@@ -5394,7 +5394,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U22"
       ]
     },
@@ -5410,7 +5410,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04",
         "E07"
       ]
@@ -5426,7 +5426,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03"
       ]
     },
@@ -5442,7 +5442,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U09",
         "E05"
       ]
@@ -5458,7 +5458,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03"
       ]
     },
@@ -5473,7 +5473,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U14"
       ]
     },
@@ -5489,7 +5489,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08",
         "E12"
       ]
@@ -5506,7 +5506,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E03"
       ]
@@ -5522,7 +5522,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5537,7 +5537,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01"
       ]
     },
@@ -5553,7 +5553,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U02",
         "E06"
       ]
@@ -5570,7 +5570,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U02",
         "E06"
       ]
@@ -5586,7 +5586,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08"
       ]
     },
@@ -5601,7 +5601,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01"
       ]
     },
@@ -5616,7 +5616,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03"
       ]
     },
@@ -5631,7 +5631,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5646,7 +5646,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01"
       ]
     },
@@ -5662,7 +5662,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E02"
       ]
@@ -5678,7 +5678,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U21"
       ]
     },
@@ -5693,7 +5693,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U02"
       ]
     },
@@ -5709,7 +5709,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E05"
       ]
@@ -5725,7 +5725,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5740,7 +5740,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01"
       ]
     },
@@ -5755,7 +5755,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U09"
       ]
     },
@@ -5770,7 +5770,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "U23"
       ]
@@ -5786,7 +5786,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03"
       ]
     },
@@ -5802,7 +5802,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U15",
         "E10"
       ]
@@ -5818,7 +5818,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U07"
       ]
     },
@@ -5834,7 +5834,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U15",
         "U22",
         "E10"
@@ -5852,7 +5852,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U15",
         "E10"
       ]
@@ -5869,7 +5869,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U05",
         "E08"
       ]
@@ -5885,7 +5885,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -5900,7 +5900,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5916,7 +5916,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U02",
         "U05",
         "E08"
@@ -5933,7 +5933,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03"
       ]
     },
@@ -5948,7 +5948,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5964,7 +5964,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08",
         "E12"
       ]
@@ -5980,7 +5980,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -5995,7 +5995,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03"
       ]
     },
@@ -6010,7 +6010,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6025,7 +6025,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6040,7 +6040,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08"
       ]
     },
@@ -6056,7 +6056,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03",
         "E01",
         "E07"
@@ -6073,7 +6073,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01"
       ]
     },
@@ -6088,7 +6088,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -6103,7 +6103,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U07"
       ]
     },
@@ -6118,7 +6118,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -6133,7 +6133,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01"
       ]
     },
@@ -6149,7 +6149,7 @@
         "domain_conditioned",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D03",
         "E02"
       ]
@@ -6165,7 +6165,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6180,7 +6180,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08"
       ]
     },
@@ -6196,7 +6196,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U05",
         "U10",
         "D11"
@@ -6213,7 +6213,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6229,7 +6229,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U10",
         "D11"
       ]
@@ -6245,7 +6245,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -6260,7 +6260,7 @@
       "normalized_layers": [
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "E09"
       ]
     },
@@ -6275,7 +6275,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D11"
       ]
     },
@@ -6290,7 +6290,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D01"
       ]
     },
@@ -6306,7 +6306,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E05"
       ]
@@ -6323,7 +6323,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E11"
       ]
@@ -6339,7 +6339,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08"
       ]
     },
@@ -6354,7 +6354,7 @@
       "normalized_layers": [
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "E10"
       ]
     },
@@ -6370,7 +6370,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08",
         "D01"
       ]
@@ -6387,7 +6387,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U15",
         "E10"
       ]
@@ -6404,7 +6404,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U09",
         "U15",
         "E10"
@@ -6421,7 +6421,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D09"
       ]
     },
@@ -6437,7 +6437,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E03",
         "E11"
@@ -6455,7 +6455,7 @@
         "domain_conditioned",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D04",
         "E03"
       ]
@@ -6471,7 +6471,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U02",
         "U06"
       ]
@@ -6487,7 +6487,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6502,7 +6502,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D03",
         "D04"
       ]
@@ -6518,7 +6518,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6533,7 +6533,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U11"
       ]
     },
@@ -6548,7 +6548,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -6564,7 +6564,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08",
         "D02"
       ]
@@ -6580,7 +6580,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U07"
       ]
     },
@@ -6596,7 +6596,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E11"
       ]
@@ -6612,7 +6612,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -6628,7 +6628,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04",
         "D06"
       ]
@@ -6645,7 +6645,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E05"
       ]
@@ -6661,7 +6661,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D09"
       ]
     },
@@ -6677,7 +6677,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E01"
       ]
@@ -6693,7 +6693,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -6709,7 +6709,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U02",
         "E06"
       ]
@@ -6725,7 +6725,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U12"
       ]
     },
@@ -6740,7 +6740,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D01",
         "D02"
       ]
@@ -6756,7 +6756,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U09"
       ]
     },
@@ -6772,7 +6772,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U13",
         "E02"
       ]
@@ -6789,7 +6789,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08",
         "E12"
       ]
@@ -6805,7 +6805,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D05"
       ]
     },
@@ -6821,7 +6821,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03",
         "E07"
       ]
@@ -6837,7 +6837,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6852,7 +6852,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D05"
       ]
     },
@@ -6868,7 +6868,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U07",
         "D08"
       ]
@@ -6884,7 +6884,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6899,7 +6899,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D08"
       ]
     },
@@ -6915,7 +6915,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E04"
       ]
@@ -6931,7 +6931,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U03"
       ]
     },
@@ -6946,7 +6946,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D10"
       ]
     },
@@ -6962,7 +6962,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04",
         "U07",
         "E07"
@@ -6979,7 +6979,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -6994,7 +6994,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D03",
         "D11"
       ]
@@ -7010,7 +7010,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08"
       ]
     },
@@ -7026,7 +7026,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "U09",
         "E04"
@@ -7044,7 +7044,7 @@
         "domain_conditioned",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D03",
         "D07",
         "E02"
@@ -7061,7 +7061,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U09"
       ]
     },
@@ -7077,7 +7077,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U02",
         "E06"
       ]
@@ -7093,7 +7093,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D05",
         "D06"
       ]
@@ -7110,7 +7110,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E03"
       ]
@@ -7127,7 +7127,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E03"
       ]
@@ -7143,7 +7143,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D06"
       ]
     },
@@ -7158,7 +7158,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08"
       ]
     },
@@ -7174,7 +7174,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E11"
       ]
@@ -7190,7 +7190,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D07"
       ]
     },
@@ -7205,7 +7205,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U14"
       ]
     },
@@ -7221,7 +7221,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U01",
         "E04"
       ]
@@ -7237,7 +7237,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D01",
         "D10"
       ]
@@ -7253,7 +7253,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U16"
       ]
     },
@@ -7268,7 +7268,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U14"
       ]
     },
@@ -7283,7 +7283,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U17"
       ]
     },
@@ -7298,7 +7298,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U17"
       ]
     },
@@ -7313,7 +7313,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U16"
       ]
     },
@@ -7329,7 +7329,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06",
         "E11"
       ]
@@ -7345,7 +7345,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U15"
       ]
     },
@@ -7360,7 +7360,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U06"
       ]
     },
@@ -7375,7 +7375,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U04"
       ]
     },
@@ -7390,7 +7390,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D06"
       ]
     },
@@ -7405,7 +7405,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U07",
         "U22"
       ]
@@ -7421,7 +7421,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U15"
       ]
     },
@@ -7437,7 +7437,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08",
         "U18",
         "E12"
@@ -7454,7 +7454,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D02"
       ]
     },
@@ -7469,7 +7469,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U18"
       ]
     },
@@ -7484,7 +7484,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U18"
       ]
     },
@@ -7500,7 +7500,7 @@
         "universal_candidate",
         "evidence_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U12",
         "U19",
         "E12"
@@ -7518,7 +7518,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U19",
         "D07"
       ]
@@ -7534,7 +7534,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U08",
         "U21"
       ]
@@ -7550,7 +7550,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U21",
         "U23"
       ]
@@ -7566,7 +7566,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U20"
       ]
     },
@@ -7582,7 +7582,7 @@
         "universal_candidate",
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U20",
         "D12"
       ]
@@ -7598,7 +7598,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U21"
       ]
     },
@@ -7613,7 +7613,7 @@
       "normalized_layers": [
         "domain_conditioned"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "D08"
       ]
     },
@@ -7628,7 +7628,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U22"
       ]
     },
@@ -7643,7 +7643,7 @@
       "normalized_layers": [
         "universal_candidate"
       ],
-      "canonical_family_ids": [
+      "reference_family_ids": [
         "U21",
         "U22"
       ]
@@ -9208,7 +9208,7 @@
   },
   "handoff": {
     "domain_status": "MARKET — COMPLETE",
-    "next_domain_instruction": "Do not reopen routine Market source acquisition unless a later cross-domain audit exposes a specific missing structure. Begin the next AI Macro domain as an independent corpus using the canonical project handoff methodology. Preserve this file unchanged as the authoritative completed Market corpus.",
+    "next_domain_instruction": "Do not reopen routine Market source acquisition unless a later cross-domain audit exposes a specific missing structure. Begin the next AI Macro domain as an independent corpus using the reference project handoff methodology. Preserve this file unchanged as the authoritative completed Market corpus.",
     "framework_instruction": "Do not derive or implement the final cross-domain framework until all 11 domain corpora are complete.",
     "production_instruction": "Do not modify AI Macro production prompts or deterministic evidence machinery during corpus construction."
   }

@@ -23,8 +23,8 @@ def local_water_constraint_summary(campus_context: pd.DataFrame | None) -> dict:
     frame = campus_context.copy() if isinstance(campus_context, pd.DataFrame) else pd.DataFrame()
     if frame.empty:
         return {
-            "canonical_campuses": 0,
-            "county_drought_resolved_campuses": 0,
+            "campuses": 0,
+            "campuses_with_county_drought_data": 0,
             "service_area_query_resolved": 0,
             "service_area_overlap": 0,
             "authoritative_service_area_overlap": 0,
@@ -37,7 +37,7 @@ def local_water_constraint_summary(campus_context: pd.DataFrame | None) -> dict:
             "quantified_consumption": 0,
         }
     if "Campus ID" not in frame.columns or frame["Campus ID"].astype(str).duplicated().any():
-        raise ValueError("Water context must contain one row per canonical Campus ID")
+        raise ValueError("Water context must contain one row per Campus ID")
 
     county_d2 = _number(frame.get("County D2+ Area Percent", pd.Series(np.nan, index=frame.index)))
     capacity = _capacity(frame)
@@ -61,9 +61,9 @@ def local_water_constraint_summary(campus_context: pd.DataFrame | None) -> dict:
         return float(total / 1000.0) if pd.notna(total) else np.nan
 
     return {
-        "canonical_campuses": int(len(frame)),
-        "county_drought_resolved_campuses": int(county_d2.notna().sum()),
-        "county_drought_resolution_share": float(county_d2.notna().mean()),
+        "campuses": int(len(frame)),
+        "campuses_with_county_drought_data": int(county_d2.notna().sum()),
+        "county_drought_coverage_share": float(county_d2.notna().mean()),
         "service_area_query_resolved": int(pws_resolved.sum()),
         "service_area_overlap": int(pws_overlap.sum()),
         "service_area_query_resolution_share": float(pws_resolved.mean()),

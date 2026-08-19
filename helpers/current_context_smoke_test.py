@@ -918,14 +918,14 @@ def main() -> None:
     if any(token in context_loader_source for token in ("include_live", "_fetch_live_", "ThreadPoolExecutor", "urlopen")):
         raise AssertionError("Retired live Current Context path remains reachable from the registry loader.")
     if any(token in discovery_source for token in ("GDELT_ENDPOINT", "fetch_gdelt", "minimum_score")):
-        raise AssertionError("Retired Current Context provider/score-gate code remains in the canonical discovery engine.")
+        raise AssertionError("Retired Current Context provider/score-gate code remains in the reference discovery engine.")
     if any("minimum_score" in policy for policy in DOMAIN_CONTEXT_POLICY.values()):
         raise AssertionError("A retired aggregate acceptance threshold remains in domain policy.")
 
-    # Every domain has one canonical semantic record.  The active engine must
+    # Every domain has one semantic record.  The active engine must
     # not maintain stage-specific shadow vocabularies that can drift apart.
     if set(DOMAIN_VOCABULARY) != set(DOMAIN_KEYS) or set(DOMAIN_VOCABULARY) != set(DOMAIN_CONTEXT_POLICY):
-        raise AssertionError("Canonical domain vocabulary does not cover exactly the active Current Context domains.")
+        raise AssertionError("Reference domain vocabulary does not cover exactly the active Current Context domains.")
     semantic_signatures = set()
     for domain in DOMAIN_KEYS:
         profile = DOMAIN_VOCABULARY[domain]
@@ -1063,10 +1063,10 @@ def main() -> None:
     for domain, examples in mechanism_examples.items():
         for category, fact_text in examples:
             if not grounding._synthesis_match(domain, category, fact_text.casefold()):
-                raise AssertionError(f"{domain}.{category} fixture no longer matches its canonical vocabulary.")
+                raise AssertionError(f"{domain}.{category} fixture no longer matches its reference vocabulary.")
 
     # Current Context no longer manufactures deterministic consequence prose.
-    # Canonical vocabulary remains available for qualification/grounding only.
+    # Reference vocabulary remains available for qualification/grounding only.
     if hasattr(grounding, "_specific_relevance"):
         raise AssertionError("Canned Current Context relevance prose returned to the grounding layer.")
 
@@ -1085,7 +1085,7 @@ def main() -> None:
         "DOMAIN_OWNER_TERMS", "DOMAIN_MATERIAL_EVENT_WEIGHTS",
     ):
         if retired_name in policy_source or retired_name in active_sources:
-            raise AssertionError(f"Shadow semantic registry {retired_name} survived the canonical-vocabulary renovation.")
+            raise AssertionError(f"Shadow semantic registry {retired_name} survived the reference-vocabulary renovation.")
 
     # Finance is the regression that exposed the drift: bond/lease/rating terms
     # must be known to ownership as well as qualification and synthesis.
@@ -1760,7 +1760,7 @@ def main() -> None:
         "confidence": "high",
         "current_context_items": [{
             "text": event["display"],
-            "reference_number": event.get("reference_number"),
+            "normalized_number": event.get("normalized_number"),
             "source_url": event.get("source_url", ""),
         }],
         "references": market_context["references"],

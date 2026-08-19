@@ -104,7 +104,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v9.6.1"
+APP_VERSION = "v9.6.2"
 APP_STATE_SCHEMA_VERSION = "71.0-universal-data-center-registry"
 
 st.set_page_config(
@@ -282,7 +282,7 @@ if st.session_state.force_rebuild:
         allow_live=load_policy.allows_live(RefreshSource.CONNECTIVITY),
     )
     # Data Centers retains only a compact site-economics cross-signal; the
-    # canonical transport evidence and refresh contract live in Connectivity.
+    # reference transport evidence and refresh contract live in Connectivity.
     infrastructure_data["connectivity"] = connectivity_data
     construction_data = load_data_center_construction(
         force_refresh=False,

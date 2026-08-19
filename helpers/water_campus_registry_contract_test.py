@@ -27,18 +27,18 @@ def main() -> int:
     ])
     dossier = campus_water_dossier(campuses)
     if list(dossier["Campus ID"]) != ["campus:1", "campus:2"]:
-        raise AssertionError("Water dossier changed or duplicated canonical Campus IDs")
+        raise AssertionError("Water dossier changed or duplicated Campus IDs")
     county = county_water_exposure_profile(campuses)
     if len(county) != 1 or int(county.iloc[0]["Campuses"]) != 2:
-        raise AssertionError("Water county aggregation did not use FIPS-first canonical Campus-ID counts")
+        raise AssertionError("Water county aggregation did not use FIPS-first Campus-ID counts")
 
     water_source = (ROOT / "rendering" / "water.py").read_text(encoding="utf-8")
     if "from analytics.water_campus import campus_water_dossier, county_water_exposure_profile" not in water_source:
         raise AssertionError("Water renderer is still using legacy facility-grain campus helpers")
     if "campus_display_labels(subset)" not in water_source:
-        raise AssertionError("Water selector is not using canonical Campus Labels")
+        raise AssertionError("Water selector is not using Campus Labels")
 
-    print("PASS  Water campus contract · one dossier row per Campus ID · FIPS-first county counts · canonical labels")
+    print("PASS  Water campus contract · one dossier row per Campus ID · FIPS-first county counts · campus labels")
     return 0
 
 

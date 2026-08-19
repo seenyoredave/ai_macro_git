@@ -5108,7 +5108,7 @@
         "name": "Nominal capability versus effective usable capacity",
         "status": "SATURATED",
         "definition": "A rated, allocated, predicted, or demonstrated capability becomes economically usable only after workload fit, availability, yield, topology, contention, process control, qualification, and decision rules are applied.",
-        "canonical_logic": "nominal capability -> constraint- and regime-conditioned availability -> effective usable capacity -> good output or service",
+        "reference_logic": "nominal capability -> constraint- and regime-conditioned availability -> effective usable capacity -> good output or service",
         "state_variables_to_keep_distinct": [
           "rated capacity",
           "installed capacity",
@@ -5154,7 +5154,7 @@
         "name": "Constraint migration under scaling",
         "status": "SATURATED",
         "definition": "Relieving or scaling one constraint changes the system state and often moves the binding limit to communication, memory, thermal management, packaging, scheduling, qualification, power, supply, or organizational coordination.",
-        "canonical_logic": "local relief or scale-up -> changed flows and coupling -> new binding constraint -> revised effective output",
+        "reference_logic": "local relief or scale-up -> changed flows and coupling -> new binding constraint -> revised effective output",
         "state_variables_to_keep_distinct": [
           "compute",
           "memory bandwidth",
@@ -5192,7 +5192,7 @@
         "name": "Unit efficiency versus aggregate scale demand",
         "status": "SATURATED",
         "definition": "Lower resource use per unit of work does not determine aggregate resource demand when workload volume, model size, test-time compute, service quality, utilization, or adoption changes.",
-        "canonical_logic": "unit resource intensity x workload volume x quality/scale factor x facility overhead = aggregate resource demand",
+        "reference_logic": "unit resource intensity x workload volume x quality/scale factor x facility overhead = aggregate resource demand",
         "state_variables_to_keep_distinct": [
           "joules per query",
           "queries per interval",
@@ -5229,7 +5229,7 @@
         "name": "Technical feasibility versus commercial realization",
         "status": "SATURATED_AFTER_CHALLENGE_1",
         "definition": "A technically feasible device, process, architecture, pilot, award, or announced investment becomes commercial output only through integration, manufacturability, qualification, construction, ramp, customer adoption, and stable volume.",
-        "canonical_logic": "concept or award -> engineering demonstration -> integrated system -> qualified process/product -> released capacity -> stable commercial output",
+        "reference_logic": "concept or award -> engineering demonstration -> integrated system -> qualified process/product -> released capacity -> stable commercial output",
         "state_variables_to_keep_distinct": [
           "award",
           "commitment",

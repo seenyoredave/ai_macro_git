@@ -72,7 +72,7 @@ def main() -> int:
         raise AssertionError("Water state camera does not reset when geography changes")
     custom = state.data[1].customdata
     if custom is None or str(custom[0][0]) != "campus:or-1":
-        raise AssertionError("Water campus markers lost canonical Campus IDs")
+        raise AssertionError("Water campus markers lost Campus IDs")
 
     water_source = (ROOT / "rendering" / "water.py").read_text(encoding="utf-8")
     visual = (ROOT / "rendering" / "visual_system.py").read_text(encoding="utf-8")
@@ -83,7 +83,7 @@ def main() -> int:
 
     print(
         "PASS  water map viewport · US opening camera · unrestricted pan · wheel/pinch zoom · "
-        "visible selected-state outline · canonical campus points"
+        "visible selected-state outline · campus points"
     )
     return 0
 

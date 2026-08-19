@@ -1,4 +1,4 @@
-"""Canonical market-universe configuration.
+"""Market-universe configuration.
 
 The v5.17 universe contains 204 companies across 15 exclusive sectors.
 Ticker ownership is exclusive: a symbol may occur in exactly one basket.
@@ -430,7 +430,7 @@ TICKER_DESIGNATIONS = {'GWRE': ('insurance_enablement',),
  'CCC': ('insurance_enablement',)}
 
 def ticker_to_sector() -> dict[str, str]:
-    """Return the canonical one-to-one ticker ownership map."""
+    """Return the one-to-one ticker ownership map."""
     return {
         ticker: sector
         for sector, cfg in SECTOR_CONFIG.items()
@@ -439,7 +439,7 @@ def ticker_to_sector() -> dict[str, str]:
 
 
 def all_tickers() -> tuple[str, ...]:
-    """Return all canonical tickers in deterministic sector order."""
+    """Return all configured tickers in deterministic sector order."""
     return tuple(
         ticker
         for cfg in SECTOR_CONFIG.values()

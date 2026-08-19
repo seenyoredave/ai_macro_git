@@ -18,7 +18,7 @@ class LanguageLayerError(RuntimeError):
     """Raised before generation when the compiled editorial layer is invalid."""
 
 
-def _canonical(value: Any) -> bytes:
+def _stable_json(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
@@ -29,12 +29,12 @@ def validate_language_layer(layer: Any) -> dict[str, Any]:
         raise LanguageLayerError("Compiled language layer schema is incompatible.")
     payload = layer.get("payload")
     expected = str(layer.get("payload_sha256") or "")
-    actual = hashlib.sha256(_canonical(payload)).hexdigest()
+    actual = hashlib.sha256(_stable_json(payload)).hexdigest()
     if not expected or actual != expected:
         raise LanguageLayerError("Compiled language layer payload checksum failed.")
     profiles = (payload or {}).get("profiles")
     if not isinstance(profiles, dict) or tuple(profiles) != tuple(DOMAIN_ORDER):
-        raise LanguageLayerError("Compiled language layer does not contain the canonical 11-domain profile set.")
+        raise LanguageLayerError("Compiled language layer does not contain the 11-domain profile set.")
     for domain, profile in profiles.items():
         for field in ("objective", "relationship_chain", "preferred_architectures", "anti_patterns", "evidence_rules"):
             if not profile.get(field):

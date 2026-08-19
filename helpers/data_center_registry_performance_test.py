@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Performance and determinism gate for the source-first v9.6.0 registry."""
+"""Performance and determinism gate for the source-first v9.6.2 registry."""
 
 from __future__ import annotations
 
@@ -95,7 +95,7 @@ def main() -> int:
         raise AssertionError("Registry membership depends on source row order")
 
     print(
-        "PASS  v9.6.0 registry performance · "
+        "PASS  v9.6.2 registry performance · "
         f"{NATIONAL_COUNT:,} distributed observations in {national_elapsed:.2f}s · "
         f"{DENSE_COUNT:,} dense-county observations in {dense_elapsed:.2f}s · deterministic membership"
     )

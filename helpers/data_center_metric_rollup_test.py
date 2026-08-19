@@ -19,10 +19,10 @@ def main() -> int:
     direct = rollup_campus_metric(facts, campus_id="campus:x", metric="Planned Data Center Capacity MW")
     assert direct["Value"] == 100 and direct["Aggregation Method"] == "direct_total"
 
-    child_only = facts.loc[~facts["Entity Level"].eq("campus")]
-    rolled = rollup_campus_metric(child_only, campus_id="campus:x", metric="Planned Data Center Capacity MW")
+    member_only = facts.loc[~facts["Entity Level"].eq("campus")]
+    rolled = rollup_campus_metric(member_only, campus_id="campus:x", metric="Planned Data Center Capacity MW")
     assert rolled["Value"] == 39
-    print("PASS  metric grain · campus direct total supersedes children · child-only sum = 39 MW")
+    print("PASS  metric grain · campus direct total supersedes members · member-only sum = 39 MW")
     return 0
 
 

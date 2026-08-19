@@ -56,7 +56,7 @@ def _similarity(left: str, right: str) -> float:
 
 
 # Trigger order matters. Multiword/auxiliary forms are evaluated before their
-# shorter components.  The canonical past form is used only for headline
+# shorter components.  The normalized past form is used only for headline
 # realization; natural body prose remains source-authored when it is already
 # grammatical.
 _ACTIONS: tuple[tuple[str, str, str], ...] = (
@@ -331,11 +331,11 @@ def _action_match(text: str) -> tuple[re.Match[str] | None, str, str]:
     appears earlier in the rule table recreates the old sentence-scoring bug.
     """
     best: tuple[int, int, re.Match[str], str, str] | None = None
-    for pattern, canonical, event_type in _ACTIONS:
+    for pattern, action, event_type in _ACTIONS:
         match = re.search(pattern, text, flags=re.I)
         if not match:
             continue
-        candidate = (match.start(), -len(match.group(0)), match, canonical, event_type)
+        candidate = (match.start(), -len(match.group(0)), match, action, event_type)
         if best is None or candidate[:2] < best[:2]:
             best = candidate
     if best is None:

@@ -92,13 +92,13 @@ def main() -> int:
     broad = _campuses(6)
 
     local = local_water_constraint_summary(broad)
-    assert local["canonical_campuses"] == 10
-    assert local["county_drought_resolved_campuses"] == 10
+    assert local["campuses"] == 10
+    assert local["campuses_with_county_drought_data"] == 10
     assert local["campuses_in_counties_with_25pct_d2"] == 6
     assert abs(local["campuses_in_counties_with_25pct_d2_share"] - 0.6) < 1e-9
 
     coverage = local_context_coverage_profile({
-        "canonical_campuses": 10,
+        "campuses": 10,
         "county_drought_context_records": 10,
         "pws_service_area_query_resolved_records": 10,
         "pws_service_area_overlap_records": 1,
@@ -179,7 +179,7 @@ def main() -> int:
     assert "map_layers(" in chart_source
 
     print(
-        "PASS  Water presentation · canonical campus grain · FIPS-first drought · "
+        "PASS  Water presentation · campus grain · FIPS-first drought · "
         "MapLibre drilldown · campus dossier continuity"
     )
     return 0

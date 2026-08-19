@@ -108,8 +108,8 @@ def _measure(page, width: int) -> dict:
           const r = card.getBoundingClientRect();
           const note = card.querySelector('.rm-summary-note');
           const noteRect = note ? note.getBoundingClientRect() : null;
-          const childrenInside = [...card.children].every((child) => {
-            const c = child.getBoundingClientRect();
+          const itemsInside = [...card.querySelectorAll(':scope > *')].every((item) => {
+            const c = item.getBoundingClientRect();
             return c.left >= r.left - 0.5 && c.right <= r.right + 0.5 && c.top >= r.top - 0.5 && c.bottom <= r.bottom + 0.5;
           });
           return {
@@ -121,7 +121,7 @@ def _measure(page, width: int) -> dict:
             clientWidth: card.clientWidth,
             height: r.height,
             noteBottomGap: noteRect ? r.bottom - noteRect.bottom : null,
-            childrenInside
+            itemsInside
           };
         });
         return {
@@ -152,7 +152,7 @@ def _measure(page, width: int) -> dict:
         "full_chart_at_least_90pct": full_ratio >= 0.90,
         "no_card_vertical_overflow": all(card["scrollHeight"] <= card["clientHeight"] + 1 for card in result["cards"]),
         "no_card_horizontal_overflow": all(card["scrollWidth"] <= card["clientWidth"] + 1 for card in result["cards"]),
-        "card_children_inside": all(card["childrenInside"] for card in result["cards"]),
+        "card_items_inside": all(card["itemsInside"] for card in result["cards"]),
         "summary_row_fits_wrapper": result["summaryRow"]["width"] <= result["fullWrapper"]["width"] + 1,
         "rail_footnote_bottom_padding": all(gap >= 12 for gap in note_gaps),
     }

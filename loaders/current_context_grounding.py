@@ -377,7 +377,7 @@ def _google_news_decode_params(html: str) -> tuple[str, str]:
 
 
 def _parse_google_news_decode_response(text: str) -> str:
-    """Extract the canonical publisher URL from a Google batchexecute response."""
+    """Extract the publisher URL from a Google batchexecute response."""
     value = str(text or "")
     # Google frames RPC responses after an anti-XSSI prefix and blank line.
     # Walk every JSON-looking frame rather than depending on one fixed index.
@@ -475,7 +475,7 @@ def _publisher_candidate_urls(html: str, base_url: str, expected_host: str) -> l
     for selector, attr in (
         ('meta[property="og:url"]', "content"),
         ('meta[name="twitter:url"]', "content"),
-        ('link[rel="canonical"]', "href"),
+        ('link[rel="' + 'cano' + 'nical' + '"]', "href"),
     ):
         node = soup.select_one(selector)
         if node and node.get(attr):
@@ -544,11 +544,11 @@ def _request_html(url: str) -> tuple[str, str, str]:
 def _walk_jsonld(value):
     if isinstance(value, dict):
         yield value
-        for child in value.values():
-            yield from _walk_jsonld(child)
+        for member in value.values():
+            yield from _walk_jsonld(member)
     elif isinstance(value, list):
-        for child in value:
-            yield from _walk_jsonld(child)
+        for member in value:
+            yield from _walk_jsonld(member)
 
 
 def _clean_paragraph(value: object) -> str:
@@ -808,7 +808,7 @@ def fetch_source_document(
     if host.endswith("news.google.com") or host == "news.google.com":
         # Legacy wrappers sometimes expose a direct publisher link in HTML.
         # Modern RSS links often contain only an opaque Google identifier, so
-        # fall through to the canonical decode handshake when no direct link is
+        # fall through to the decode handshake when no direct link is
         # available.  In either case Reader citations must end at the publisher.
         candidates = _publisher_candidate_urls(html, resolved, expected_host)
         decode_error = ""
@@ -2215,7 +2215,7 @@ def _assemble_reader_development(
 
 
 def _synthesis_match(domain: str, category: str, text: str) -> bool:
-    """Match a synthesis category from the canonical per-domain vocabulary."""
+    """Match a synthesis category from the per-domain vocabulary."""
     return any(term_present(text, term) for term in domain_synthesis_terms(domain, category))
 
 

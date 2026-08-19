@@ -45,7 +45,7 @@ def _read(path: Path, columns: list[str]) -> pd.DataFrame:
     return frame
 
 
-def _canonical_debt_definitions(observations: pd.DataFrame) -> dict[str, str]:
+def _debt_definitions(observations: pd.DataFrame) -> dict[str, str]:
     if observations.empty:
         return {}
     frame = observations.copy()
@@ -68,7 +68,7 @@ def _debt_fact_row(
     *,
     ticker: str,
     fact,
-    canonical_definition: str,
+    debt_definition: str,
     source_url: str | None,
 ) -> dict | None:
     debt = pd.to_numeric(getattr(fact, "value", np.nan), errors="coerce")
@@ -83,7 +83,7 @@ def _debt_fact_row(
         "Period End": period_end.date().isoformat(),
         "Filing Date": filing_date.date().isoformat(),
         "Debt": float(debt),
-        "Definition": canonical_definition,
+        "Definition": debt_definition,
         "Source URL": source_url,
         "Evidence Note": f"SEC Companyfacts refresh; matched XBRL definition: {tag_text}",
         "_tags": tag_text,
@@ -94,7 +94,7 @@ def _matched_debt_pair(
     *,
     ticker: str,
     companyfacts: dict,
-    canonical_definition: str,
+    debt_definition: str,
     current_cutoff: pd.Timestamp,
     prior_cutoff: pd.Timestamp,
     current_capex_period_end=None,
@@ -119,13 +119,13 @@ def _matched_debt_pair(
         current_row = _debt_fact_row(
             ticker=ticker,
             fact=current_fact,
-            canonical_definition=canonical_definition,
+            debt_definition=debt_definition,
             source_url=source_url,
         )
         prior_row = _debt_fact_row(
             ticker=ticker,
             fact=prior_fact,
-            canonical_definition=canonical_definition,
+            debt_definition=debt_definition,
             source_url=source_url,
         )
         if current_row is None or prior_row is None:
@@ -155,7 +155,7 @@ def _reviewed_debt_pair(
     *,
     ticker: str,
     retained_debt: pd.DataFrame,
-    canonical_definition: str,
+    debt_definition: str,
     observation_date: pd.Timestamp,
     current_capex_period_end,
     tolerance_days: int = 62,
@@ -166,7 +166,7 @@ def _reviewed_debt_pair(
     economically correct debt definition through a combination that is not
     available as one complete standard-tag family in Companyfacts. In that case
     we may retain a filing-reviewed pair, but only when it preserves the issuer's
-    canonical definition and is period-aligned with the current CapEx snapshot.
+    retained definition and is period-aligned with the current CapEx snapshot.
     """
     frame = retained_debt.copy()
     if frame.empty:
@@ -181,7 +181,7 @@ def _reviewed_debt_pair(
     tolerance = pd.Timedelta(days=int(tolerance_days))
     frame = frame.loc[
         frame["Ticker"].eq(str(ticker).upper())
-        & frame["Definition"].eq(str(canonical_definition).strip())
+        & frame["Definition"].eq(str(debt_definition).strip())
         & frame["Period End"].notna()
         & frame["Debt"].notna()
         & frame["Period End"].le(cutoff)
@@ -223,7 +223,7 @@ def _reviewed_debt_pair(
                 source["Filing Date"].date().isoformat() if pd.notna(source["Filing Date"]) else np.nan
             ),
             "Debt": float(source["Debt"]),
-            "Definition": str(canonical_definition).strip(),
+            "Definition": str(debt_definition).strip(),
             "Source URL": source.get("Source URL", np.nan),
             "Evidence Note": source.get("Evidence Note", np.nan),
         }
@@ -232,7 +232,7 @@ def _reviewed_debt_pair(
 
 
 def _reconcile_snapshot_debt(frame: pd.DataFrame, *, ticker: str, debt_row: dict) -> None:
-    """Replace generic Companyfacts debt fields with the canonical debt result."""
+    """Replace generic Companyfacts debt fields with the matched debt result."""
     mask = frame["Ticker"].astype(str).str.upper().eq(str(ticker).upper())
     if not mask.any():
         return
@@ -266,7 +266,7 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
 
     retained_fundamentals = _read(FUNDAMENTALS_PATH, FUNDAMENTAL_COLUMNS)
     retained_debt = _read(DEBT_OBSERVATIONS_PATH, DEBT_COLUMNS)
-    canonical = _canonical_debt_definitions(retained_debt)
+    definitions = _debt_definitions(retained_debt)
 
     current_rows: list[dict] = []
     companyfacts_by_ticker: dict[str, dict] = {}
@@ -321,7 +321,7 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
     reviewed_debt_tickers: list[str] = []
     debt_errors: dict[str, str] = {}
 
-    for ticker, definition in canonical.items():
+    for ticker, definition in definitions.items():
         facts = companyfacts_by_ticker.get(ticker)
         if facts is None:
             debt_errors[ticker] = "Companyfacts unavailable during Finance derivative refresh"
@@ -330,7 +330,7 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
         current_debt, prior_debt, match_error = _matched_debt_pair(
             ticker=ticker,
             companyfacts=facts,
-            canonical_definition=definition,
+            debt_definition=definition,
             current_cutoff=observation,
             prior_cutoff=prior_observation,
             current_capex_period_end=current_snapshot.get("CapEx Period End"),
@@ -340,7 +340,7 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
             current_debt, prior_debt, fallback_error = _reviewed_debt_pair(
                 ticker=ticker,
                 retained_debt=retained_debt,
-                canonical_definition=definition,
+                debt_definition=definition,
                 observation_date=observation,
                 current_capex_period_end=current_snapshot.get("CapEx Period End"),
             )
@@ -402,12 +402,12 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
     updated_debt_tickers = sorted({row["Ticker"] for row in debt_updates})
     reviewed_debt_tickers = sorted(set(reviewed_debt_tickers))
     covered_debt_tickers = sorted(set(updated_debt_tickers) | set(reviewed_debt_tickers))
-    unresolved_debt_tickers = sorted(set(canonical) - set(covered_debt_tickers))
+    unresolved_debt_tickers = sorted(set(definitions) - set(covered_debt_tickers))
     return {
         "status": "written",
         "observation_date": date_text,
         "fundamental_companies": int(current_frame["Ticker"].nunique()),
-        "debt_target_companies": len(canonical),
+        "debt_target_companies": len(definitions),
         "debt_companies": len(covered_debt_tickers),
         "debt_updated_tickers": updated_debt_tickers,
         "debt_reviewed_tickers": reviewed_debt_tickers,

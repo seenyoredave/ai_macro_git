@@ -22,9 +22,9 @@ def read_first_sheet(path: str | Path) -> pd.DataFrame:
                 if element.tag.endswith("}si"):
                     shared_strings.append(
                         "".join(
-                            child.text or ""
-                            for child in element.iter()
-                            if child.tag.endswith("}t")
+                            member.text or ""
+                            for member in element.iter()
+                            if member.tag.endswith("}t")
                         )
                     )
                     element.clear()
@@ -46,13 +46,13 @@ def read_first_sheet(path: str | Path) -> pd.DataFrame:
                     maximum_column = max(maximum_column, index + 1)
                     cell_type = cell.attrib.get("t")
                     value = None
-                    for child in cell:
-                        if child.tag.endswith("}v"):
-                            value = child.text
-                        elif child.tag.endswith("}is"):
+                    for member in cell:
+                        if member.tag.endswith("}v"):
+                            value = member.text
+                        elif member.tag.endswith("}is"):
                             value = "".join(
                                 item.text or ""
-                                for item in child.iter()
+                                for item in member.iter()
                                 if item.tag.endswith("}t")
                             )
                     if cell_type == "s" and value is not None:

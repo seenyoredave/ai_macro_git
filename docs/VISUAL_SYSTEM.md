@@ -81,7 +81,7 @@ Observed, estimated, announced, retained, partial, fallback, and inferred values
 
 All Plotly surfaces render through `rendering.visual_system.render_plotly_chart`. The wrapper standardizes typography, backgrounds, hover treatment, legend text, responsive configuration, state persistence, and accessible descriptions for registered signature tools. It deliberately preserves chart type, annotations, axis ranges, map projection, and domain-specific encodings.
 
-`rendering.charts_common._base_layout` remains the canonical figure shell. Domain chart modules may change margins and heights when labels or geography require it, but should not define an independent visual theme.
+`rendering.charts_common._base_layout` remains the reference figure shell. Domain chart modules may change margins and heights when labels or geography require it, but should not define an independent visual theme.
 
 ## Governance
 

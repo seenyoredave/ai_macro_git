@@ -59,8 +59,8 @@ def _coordinate_pairs(value):
     if len(value) >= 2 and isinstance(value[0], (int, float)) and isinstance(value[1], (int, float)):
         yield float(value[0]), float(value[1])
         return
-    for child in value:
-        yield from _coordinate_pairs(child)
+    for member in value:
+        yield from _coordinate_pairs(member)
 
 
 @lru_cache(maxsize=64)

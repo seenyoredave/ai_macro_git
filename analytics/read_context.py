@@ -28,7 +28,7 @@ def attach_current_context(read: dict, context: dict | None, *, limit: int = 2) 
             number = len(references) + 1
             source_keys[key] = number
             item = dict(reference)
-            item["reference_number"] = number
+            item["normalized_number"] = number
             references.append(item)
     context_items: list[dict[str, Any]] = []
     for event in events:
@@ -37,7 +37,7 @@ def attach_current_context(read: dict, context: dict | None, *, limit: int = 2) 
         context_items.append({
             "event_id": str(event.get("event_id") or ""),
             "text": str(event.get("display") or event.get("verified_fact") or "").strip(),
-            "reference_number": source_keys.get((label, url)),
+            "normalized_number": source_keys.get((label, url)),
             "source_url": url,
             "status": str(event.get("status") or "").strip(),
             "legal_status": str(event.get("legal_status") or "").strip(),

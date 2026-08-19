@@ -276,7 +276,7 @@ def current_context_tier_index(value: object = 'A') -> int:
     key = current_context_qualification_tier(value).key
     return next((index for index, tier in enumerate(CURRENT_CONTEXT_QUALIFICATION_TIERS) if tier.key == key), 0)
 
-# One canonical semantic definition per domain. Every active Current Context
+# One semantic definition per domain. Every active Current Context
 # stage consumes this registry: discovery queries, metadata qualification,
 # source-grounding sentence selection, materiality ranking, cross-domain
 # ownership, retained revalidation, and synthesis classification. A domain
@@ -2539,7 +2539,7 @@ def term_present(text: str, term: str) -> bool:
 
 
 def materiality_score(text: str, domain: str) -> float:
-    """Score materiality using the canonical vocabulary for one known domain."""
+    """Score materiality using the domain vocabulary for one known domain."""
     weights = domain_vocabulary(domain).materiality_weights
     score = sum(weight for term, weight in weights.items() if term_present(text, term))
     return min(36.0, float(score))
