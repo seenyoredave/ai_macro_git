@@ -36,7 +36,7 @@ DOMAIN_VISUAL_PROFILES: tuple[DomainVisualProfile, ...] = (
         "Overview",
         "blue",
         "Investment, usable infrastructure, adoption, and broader economic gains.",
-        ("buildout_leadership_rotation", "national_landscape_map"),
+        ("macro_transmission_board", "buildout_leadership_rotation", "national_landscape_map"),
     ),
     DomainVisualProfile(
         "market",
@@ -138,6 +138,14 @@ DOMAIN_VISUAL_PROFILES: tuple[DomainVisualProfile, ...] = (
 
 
 SIGNATURE_TOOLS: tuple[SignatureTool, ...] = (
+    SignatureTool(
+        "macro_transmission_board",
+        "macro",
+        "AI Economic Transmission",
+        "macro-transmission-pathway-*",
+        "Follow market participation, funding, buildout, grid delivery, adoption, and economic outcomes.",
+        protected=True,
+    ),
     SignatureTool(
         "buildout_leadership_rotation",
         "macro",

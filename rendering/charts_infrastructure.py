@@ -398,7 +398,12 @@ def infrastructure_leadership_rotation(history: pd.DataFrame | None, *, height: 
 
     fig = _make_subplots(
         rows=1, cols=2, shared_yaxes=True,
-        column_widths=[0.70, 0.30], horizontal_spacing=0.115,
+        column_widths=[0.72, 0.28],
+        horizontal_spacing=0.10,
+        subplot_titles=(
+            "Quarterly growth history",
+            "Latest year-over-year change",
+        ),
     )
     if not matrix.empty:
         quarter_labels = [f"{period.year} Q{period.quarter}" for period in matrix.columns]
@@ -417,13 +422,17 @@ def infrastructure_leadership_rotation(history: pd.DataFrame | None, *, height: 
                 [1.00, "#a78bfa"],
             ],
             colorbar={
-                "title": {"text": "YoY", "font": {"size": 10}},
+                "title": {"text": "YoY growth", "font": {"size": 10}},
                 "ticksuffix": "%",
+                "tickvals": [-60, -30, 0, 30, 60],
                 "thickness": 10,
-                "len": 0.72,
-                "x": 1.035,
+                "len": 0.60,
+                "x": 0.698,
+                "xanchor": "center",
+                "y": 0.50,
+                "yanchor": "middle",
             },
-            hovertemplate="%{y}<br>%{x}<br>Growth: %{z:+.1f}%<extra></extra>",
+            hovertemplate="%{y}<br>%{x}<br>Year-over-year change: %{z:+.1f}%<extra></extra>",
         ), row=1, col=1)
     if not current.empty:
         growth = pd.to_numeric(current["YoY Growth"], errors="coerce") * 100.0
@@ -445,17 +454,32 @@ def infrastructure_leadership_rotation(history: pd.DataFrame | None, *, height: 
             hovertemplate="%{y}<br>Current growth: %{x:+.1f}%<br>Construction: $%{customdata:,.1f}B SAAR<extra></extra>",
             showlegend=False,
         ), row=1, col=2)
-    fig.update_xaxes(title="Leadership rotation · quarterly YoY growth", tickangle=0, row=1, col=1)
+    fig.update_xaxes(title="Quarter", tickangle=0, row=1, col=1)
     if not matrix.empty:
         labels = [f"{period.year} Q{period.quarter}" for period in matrix.columns]
         step = max(len(labels) // 6, 1)
         fig.update_xaxes(tickmode="array", tickvals=labels[::step], ticktext=labels[::step], row=1, col=1)
-    fig.update_xaxes(title="Current", ticksuffix="%", zeroline=True, zerolinecolor="rgba(148,163,184,0.45)", row=1, col=2)
-    fig.update_yaxes(title="", categoryorder="array", categoryarray=list(reversed(order)), row=1, col=1)
-    fig = _infra_layout(fig, height=height, margin=dict(l=168, r=104, t=34, b=62))
+    fig.update_xaxes(
+        title="Year-over-year growth",
+        ticksuffix="%",
+        zeroline=True,
+        zerolinecolor="rgba(148,163,184,0.45)",
+        row=1,
+        col=2,
+    )
+    fig.update_yaxes(
+        title="Construction category",
+        categoryorder="array",
+        categoryarray=list(reversed(order)),
+        row=1,
+        col=1,
+    )
+    fig.update_yaxes(showticklabels=False, row=1, col=2)
+    fig = _infra_layout(fig, height=height, margin=dict(l=178, r=48, t=66, b=62))
+    fig.update_annotations(font={"size": 12, "color": COLORS["text"]}, y=1.06)
     if not current.empty:
         max_abs = float(np.nanmax(np.abs(pd.to_numeric(current["YoY Growth"], errors="coerce") * 100.0)))
-        bound = max(20.0, np.ceil(max_abs / 10.0) * 10.0 + 10.0)
+        bound = max(30.0, np.ceil(max_abs / 10.0) * 10.0 + 20.0)
         fig.update_xaxes(range=[-bound, bound], dtick=20, row=1, col=2)
     return fig
 

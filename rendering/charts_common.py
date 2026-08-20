@@ -220,55 +220,6 @@ def _base_layout(fig, *, height=300, margin=None, legend=False, title=None):
         fig.layout.pop("title", None)
     return fig
 
-def compact_sparkline(history, *, color=None, reference=None, years=5, height=80):
-    clean = clean_history(history)
-    if not clean.empty and years:
-        cutoff = clean["Date"].max() - pd.DateOffset(years=years)
-        clean = clean[clean["Date"] >= cutoff]
-
-    fig = go.Figure()
-    if not clean.empty:
-        fig.add_trace(
-            go.Scatter(
-                x=clean["Date"],
-                y=clean["Value"],
-                mode="lines",
-                line={"color": color or COLORS["violet"], "width": 2.3},
-                hovertemplate="%{x|%Y-%m-%d}<br>%{y:.2f}<extra></extra>",
-            )
-        )
-        fig.add_trace(
-            go.Scatter(
-                x=[clean["Date"].iloc[-1]],
-                y=[clean["Value"].iloc[-1]],
-                mode="markers",
-                marker={
-                    "size": 6,
-                    "color": color or COLORS["violet"],
-                    "line": {"width": 1.2, "color": "#111827"},
-                },
-                hoverinfo="skip",
-            )
-        )
-    if reference is not None:
-        fig.add_hline(y=reference, line_dash="dot", line_color="#64748b", opacity=0.75)
-    fig.update_layout(
-        height=height,
-        margin=dict(l=2, r=2, t=3, b=2),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        showlegend=False,
-        xaxis={"visible": False, "fixedrange": True},
-        yaxis={"visible": False, "fixedrange": True},
-    )
-    return add_axis_headroom(
-        fig,
-        axis="y",
-        upper=0.16,
-        lower=0.08,
-        extra_values=[reference] if reference is not None else None,
-    )
-
 def dual_history(
     first,
     second,

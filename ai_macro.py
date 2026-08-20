@@ -104,7 +104,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v10.1.0"
+APP_VERSION = "v3.0.0.5"
 APP_STATE_SCHEMA_VERSION = "73.0-adoption-depth-activation"
 
 st.set_page_config(

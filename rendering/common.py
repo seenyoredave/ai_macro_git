@@ -68,6 +68,7 @@ def _metric_context(name, value):
 
 TAB_METRIC_REGISTRIES = {
     "macro": [
+        "AI Economic Transmission",
         "AI Equity Index",
         "Buildout Leadership Rotation",
         "AI Development Intensity",

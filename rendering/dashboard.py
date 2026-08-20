@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 from analytics.dashboard_context import DashboardContext
 from analytics.domain_state import with_domain_states
 from analytics.macro_dataframe import build_macro_dashboard_data
@@ -32,14 +34,9 @@ def render_research_dashboard(tabs, context: DashboardContext):
 
     if tabs[0].open:
         with tabs[0]:
+            macro_context = with_domain_states(replace(context, dashboard_data=dashboard_data))
             render_macro_tab(
-                context.sector_metrics,
-                context.sector_data,
-                context.fred_data,
-                context.regime_metrics,
-                dashboard_data,
-                context.adoption_data,
-                context.infrastructure_data,
+                macro_context,
                 tab_read=platform_reads.get("macro"),
             )
     if tabs[1].open:

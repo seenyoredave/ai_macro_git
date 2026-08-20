@@ -11,6 +11,10 @@ At least three of the four pillars must be valid. Available weights are renormal
 """
 
 METRIC_DEFINITIONS = {
+    "AI Economic Transmission": """
+Six readings that follow the AI economy from market performance and funding through construction, grid delivery, business use, and economic results.
+""",
+
     "AI Equity Index": """
 Measures sustained relative performance and participation across the selected AI equity universe.
 

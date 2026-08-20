@@ -8,10 +8,8 @@ import pandas as pd
 import streamlit as st
 
 from rendering.dataframe import arrow_safe_dataframe
-from rendering.charts_common import compact_sparkline
 from rendering.read_markup import build_domain_read_html, domain_read_label
 from config.visual_design import domain_profile
-from rendering.visual_system import render_plotly_chart
 from rendering.layout_contracts import (
     delivery_pathway_stage_html,
     detail_dossier_html,
@@ -41,6 +39,97 @@ def fmt_number(value, digits=1, signed=False, suffix="") -> str:
 def fmt_date(value) -> str:
     ts = pd.to_datetime(value, errors="coerce", format="mixed")
     return "n/a" if pd.isna(ts) else ts.strftime("%Y-%m-%d")
+
+
+def _compact_sparkline_html(
+    history,
+    *,
+    color: str,
+    reference=None,
+    years: int = 5,
+    height: int = 74,
+    label: str = "Recent history",
+) -> str:
+    """Return a full-width inline sparkline without a Plotly sizing boundary."""
+    frame = history.copy() if isinstance(history, pd.DataFrame) else pd.DataFrame()
+    if frame.empty or not {"Date", "Value"}.issubset(frame.columns):
+        return (
+            '<div class="rm-card-sparkline empty" role="img" '
+            f'aria-label="{html.escape(label)} unavailable"></div>'
+        )
+
+    frame = frame[["Date", "Value"]].copy()
+    frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce", format="mixed")
+    frame["Value"] = pd.to_numeric(frame["Value"], errors="coerce")
+    frame = (
+        frame.replace([np.inf, -np.inf], np.nan)
+        .dropna(subset=["Date", "Value"])
+        .sort_values("Date", kind="stable")
+        .drop_duplicates("Date", keep="last")
+    )
+    if frame.empty:
+        return (
+            '<div class="rm-card-sparkline empty" role="img" '
+            f'aria-label="{html.escape(label)} unavailable"></div>'
+        )
+    if years:
+        frame = frame.loc[frame["Date"] >= frame["Date"].max() - pd.DateOffset(years=years)]
+
+    dates = frame["Date"].astype("int64").to_numpy(dtype=float)
+    values = frame["Value"].to_numpy(dtype=float)
+    if len(dates) == 1 or dates[-1] <= dates[0]:
+        x_positions = np.full(len(dates), 50.0)
+    else:
+        x_positions = 1.0 + (dates - dates[0]) / (dates[-1] - dates[0]) * 98.0
+
+    reference_value = pd.to_numeric(reference, errors="coerce")
+    reference_is_valid = pd.notna(reference_value) and np.isfinite(reference_value)
+    bounds = values.tolist()
+    if reference_is_valid:
+        bounds.append(float(reference_value))
+    minimum = float(min(bounds))
+    maximum = float(max(bounds))
+    span = maximum - minimum
+    if not np.isfinite(span) or span <= 0:
+        padding = max(abs(maximum) * 0.08, 1.0)
+        lower, upper = minimum - padding, maximum + padding
+    else:
+        lower, upper = minimum - span * 0.08, maximum + span * 0.16
+
+    top = 5.0
+    bottom = max(float(height) - 5.0, top + 1.0)
+
+    def y_position(number: float) -> float:
+        return top + (upper - number) / (upper - lower) * (bottom - top)
+
+    points = " ".join(
+        f"{x * 10.0:.2f},{y_position(value):.2f}"
+        for x, value in zip(x_positions, values, strict=True)
+    )
+    line = (
+        f'<polyline class="rm-card-sparkline-line" points="{points}" '
+        f'style="stroke:{html.escape(color, quote=True)}"></polyline>'
+        if len(values) > 1 else ""
+    )
+    reference_line = ""
+    if reference_is_valid:
+        reference_y = y_position(float(reference_value))
+        reference_line = (
+            '<line class="rm-card-sparkline-reference" '
+            f'x1="10" x2="990" y1="{reference_y:.2f}" y2="{reference_y:.2f}"></line>'
+        )
+    latest_date = frame["Date"].iloc[-1].strftime("%Y-%m-%d")
+    aria = f"{label}; latest observation {latest_date}"
+    return (
+        f'<div class="rm-card-sparkline" role="img" aria-label="{html.escape(aria, quote=True)}">'
+        f'<svg viewBox="0 0 1000 {int(height)}" preserveAspectRatio="none" aria-hidden="true">'
+        f'{reference_line}{line}</svg>'
+        '<span class="rm-card-sparkline-dot" '
+        f'style="left:{x_positions[-1]:.2f}%;top:{y_position(values[-1]):.2f}px;'
+        f'background:{html.escape(color, quote=True)}"></span>'
+        '</div>'
+    )
+
 
 def render_masthead(
     title: str,
@@ -197,7 +286,6 @@ def metric_card(
             padding: 0.9rem 1rem 0.35rem 1rem !important;
             min-height: 245px;
         }}
-        .st-key-{key} [data-testid="stPlotlyChart"] {{ margin-top: -0.3rem; }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -222,18 +310,16 @@ def metric_card(
             """,
             unsafe_allow_html=True,
         )
-        render_plotly_chart(
-            compact_sparkline(
+        st.markdown(
+            _compact_sparkline_html(
                 history,
                 color=accent_color,
                 reference=reference,
                 years=years,
                 height=74,
+                label=f"{label} recent history",
             ),
-            width="stretch",
-            config={"displayModeBar": False, "responsive": True},
-            key=f"{key}-sparkline",
-            role="trend",
+            unsafe_allow_html=True,
         )
 
 def render_summary_row(
@@ -368,6 +454,36 @@ def render_deliverability_screen(
                     unsafe_allow_html=True,
                     width="stretch",
                 )
+
+
+def render_macro_transmission(
+    stages: Iterable[tuple[str, str, str]],
+    *,
+    key_prefix: str,
+) -> None:
+    """Render the six-stage AI-economy transmission chain in two readable rows."""
+    items = list(stages)
+    if len(items) != 6:
+        raise ValueError("AI Macro transmission requires exactly six stages")
+    namespace = str(key_prefix).strip().lower().replace(" ", "-")
+    if not namespace:
+        raise ValueError("render_macro_transmission requires a non-empty key_prefix")
+    with st.container(key=f"macro-transmission-pathway-{namespace}"):
+        for row_start in (0, 3):
+            row = items[row_start:row_start + 3]
+            columns = st.columns(3, gap="small", vertical_alignment="top")
+            for offset, (column, stage) in enumerate(zip(columns, row, strict=True)):
+                with column:
+                    st.markdown(
+                        delivery_pathway_stage_html(
+                            stage,
+                            index=row_start + offset + 1,
+                            namespace=namespace,
+                        ),
+                        unsafe_allow_html=True,
+                        width="stretch",
+                    )
+
 
 def render_detail_dossier(
     *,

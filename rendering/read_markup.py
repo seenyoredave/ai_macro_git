@@ -87,25 +87,6 @@ def _context_items_html(payload: dict) -> str:
     )
 
 
-def _macro_evidence_html(payload: dict) -> str:
-    evidence = [item for item in payload.get("evidence", []) or [] if isinstance(item, dict)][:3]
-    if not evidence:
-        return ""
-    cards = []
-    for item in evidence:
-        label = str(item.get("label") or "Evidence").strip()
-        value = str(item.get("value") or "n/a").strip()
-        context = str(item.get("context") or "").strip()
-        cards.append(
-            '<div class="rm-domain-read-evidence-card">'
-            f'<div class="rm-domain-read-evidence-label">{html.escape(label)}</div>'
-            f'<div class="rm-domain-read-evidence-value">{html.escape(value)}</div>'
-            f'<div class="rm-domain-read-evidence-context">{html.escape(context)}</div>'
-            '</div>'
-        )
-    return '<div class="rm-domain-read-evidence-grid">' + ''.join(cards) + '</div>'
-
-
 def _unparsed_openai_html(payload: dict) -> str:
     responses = [item for item in payload.get("unparsed_openai_responses", []) or [] if isinstance(item, dict)]
     rendered: list[str] = []
@@ -158,7 +139,6 @@ def build_domain_read_html(
         f'<div class="rm-domain-read-copy">{html.escape(paragraph)}</div>'
         for paragraph in paragraph_values
     )
-    macro_html = _macro_evidence_html(payload) if macro else ""
     raw_html = _unparsed_openai_html(payload)
     return "".join([
         f'<div class="{classes}" style="--rm-read-accent:{html.escape(accent_color, quote=True)};">',
@@ -166,7 +146,6 @@ def build_domain_read_html(
         f'<div class="rm-domain-read-title">{html.escape(headline)}</div>',
         analysis_html,
         raw_html,
-        macro_html,
         context_html,
         refs_html,
         "</div>",

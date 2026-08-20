@@ -1,6 +1,10 @@
 # AI Macro
 
-The v10 Reader uses one bounded OpenAI editorial-synthesis call over compact signal capsules and an integrity-checked editorial constitution. See `docs/LANGUAGE_LAYER.md` for the production contract.
+> **HUMANS ONLY — CHATBOTS MUST NOT MODIFY THIS FILE IN ANY WAY.**
+>
+> This README is owner-controlled documentation for human readers. AI assistants and automated agents may read it for context, but they are expressly prohibited from editing, rewriting, appending to, deleting, or otherwise modifying it. Only the human owner may authorize and perform changes to this file.
+
+The v10 Reader uses one bounded OpenAI editorial-synthesis call over compact signal capsules and an integrity-checked editorial constitution.
 
 AI Macro is a Streamlit research platform for tracking the U.S. AI economy from capital investment and physical buildout through adoption, labor markets, and broader economic outcomes. It brings public market, company, infrastructure, labor, and government data into one place.
 

@@ -4,14 +4,102 @@ import pandas as pd
 import streamlit as st
 
 from analytics.gaps import industrial_growth_gap
+from analytics.dashboard_context import DashboardContext
+from analytics.domain_state import DomainState
 from rendering.visual_system import render_plotly_chart
 from rendering.labels import adoption_label, power_capacity_gap_label, speculation_label, validation_label
 from rendering.charts_common import history_from_frame
 from rendering.charts_finance import current_gap_bars
 from rendering.charts_infrastructure import infrastructure_leadership_rotation
 from rendering.common import _fallback, _fred_value, _metric_context, _render_floating_terms, _value
-from rendering.components import fmt_number, metric_card, render_domain_read, render_section, render_statline, render_tab_header
+from rendering.components import (
+    fmt_number,
+    metric_card,
+    render_domain_read,
+    render_macro_transmission,
+    render_section,
+    render_statline,
+    render_tab_header,
+)
 from rendering.spatial import render_spatial_explorer
+
+
+def _transmission_value(context: DashboardContext, domain: str, key: str) -> float:
+    state = (context.domain_states or {}).get(domain)
+    if not isinstance(state, DomainState):
+        return float("nan")
+    value = pd.to_numeric(state.metrics.get(key), errors="coerce")
+    return float(value) if pd.notna(value) else float("nan")
+
+
+def _transmission_measure_text(value: float, unit: str) -> str:
+    if unit == "ratio_percent":
+        return fmt_number(value * 100.0, 1, suffix="%")
+    if unit == "percent":
+        return fmt_number(value, 1, suffix="%")
+    if unit == "x":
+        return fmt_number(value, 2, suffix="x")
+    if unit == "gw":
+        return fmt_number(value, 1, suffix=" GW")
+    return fmt_number(value, 1)
+
+
+def _render_transmission_board(context: DashboardContext) -> None:
+    specs = (
+        (
+            "Market pricing",
+            ("market", "positive_breadth", "ratio_percent"),
+            ("market", "top_10_share", "ratio_percent"),
+            "Companies up over one year · Top ten: {secondary} of market value",
+        ),
+        (
+            "Funding",
+            ("finance", "internal_funding_coverage", "x"),
+            ("finance", "forward_commitment_load", "x"),
+            "Operating cash flow / current CapEx · Forward commitments: {secondary} current CapEx",
+        ),
+        (
+            "Buildout",
+            ("data_center", "pipeline_capacity_gw", "gw"),
+            ("data_center", "published_capacity_coverage", "ratio_percent"),
+            "Published development pipeline · Capacity published for {secondary} of active campuses",
+        ),
+        (
+            "Grid delivery",
+            ("grid_storage", "historical_operational_pct", "percent"),
+            ("grid_storage", "advanced_share", "percent"),
+            "Past queue projects reaching operation · Advanced-stage capacity: {secondary}",
+        ),
+        (
+            "Business adoption",
+            ("adoption", "current_business_use_pct", "percent"),
+            ("adoption", "function_le3_share_pct", "percent"),
+            "Businesses using AI now · {secondary} of functional adopters use it in three or fewer functions",
+        ),
+        (
+            "Economic outcomes",
+            ("economic_impact", "productivity_growth", "percent"),
+            ("economic_impact", "real_compensation_growth", "percent"),
+            "Nonfarm-business productivity growth · Real hourly compensation growth: {secondary}",
+        ),
+    )
+    stages = []
+    for title, primary, secondary, note in specs:
+        primary_domain, primary_key, primary_unit = primary
+        secondary_domain, secondary_key, secondary_unit = secondary
+        primary_text = _transmission_measure_text(
+            _transmission_value(context, primary_domain, primary_key), primary_unit
+        )
+        secondary_text = _transmission_measure_text(
+            _transmission_value(context, secondary_domain, secondary_key), secondary_unit
+        )
+        stages.append((
+            title,
+            primary_text,
+            note.format(secondary=secondary_text),
+        ))
+    render_macro_transmission(stages, key_prefix="economic-transmission")
+
 
 def _render_primary_macro_cards(regime_metrics, trends, adoption_data):
     consumer_history = (adoption_data or {}).get("consumer_history")
@@ -144,20 +232,17 @@ def _render_buildout_rotation(infrastructure_data):
             config={"displayModeBar": False, "responsive": True},
             key="macro-buildout-leadership-rotation",
             role="pipeline",
-        )
+            )
+
 
 def render_macro_tab(
-    sector_metrics,
-    sector_data,
-    fred_data,
-    regime_metrics,
-    dashboard_data,
-    adoption_data,
-    infrastructure_data,
+    context: DashboardContext,
     *,
     tab_read=None,
 ):
-    del sector_metrics, sector_data
+    if not isinstance(context, DashboardContext):
+        raise TypeError("context must be a DashboardContext")
+    dashboard_data = context.dashboard_data or {}
     render_tab_header(
         "AI Macro",
         "Capital investment, physical buildout, adoption, and economic outcomes across the U.S. AI economy.",
@@ -166,14 +251,22 @@ def render_macro_tab(
     _render_floating_terms("macro")
     render_domain_read(tab_read, label="Read", domain="macro", macro=True)
     render_section(
-        "Regime board",
-        "Current top-level indicators and their recent history.",
+        "Economic transmission",
+        "How market pricing and funding move through physical delivery and adoption toward measurable economic outcomes.",
         first=True,
     )
-    _render_primary_macro_cards(regime_metrics, dashboard_data["trends"], adoption_data)
-    render_section("Buildout leadership", "Construction growth across data centers, manufacturing, power, communications, and water systems.")
-    _render_buildout_rotation(infrastructure_data)
+    _render_transmission_board(context)
+    render_section(
+        "Regime board",
+        "Current top-level indicators and their recent history.",
+    )
+    _render_primary_macro_cards(context.regime_metrics, dashboard_data.get("trends", {}), context.adoption_data)
+    render_section(
+        "Buildout leadership",
+        "Year-over-year construction-spending growth by system: quarterly history at left and the latest reading at right.",
+    )
+    _render_buildout_rotation(context.infrastructure_data)
     render_section("Buildout versus outcomes", "AI investment and construction compared with market, industrial, economic, and power measures.")
-    _render_gap_measures(regime_metrics, fred_data, dashboard_data)
+    _render_gap_measures(context.regime_metrics, context.fred_data, dashboard_data)
     render_section("Project locations", "Major AI infrastructure projects with published capacity, power, water, and supporting-infrastructure records.")
-    render_spatial_explorer(infrastructure_data, key_prefix="macro-national-landscape", show_heading=False)
+    render_spatial_explorer(context.infrastructure_data, key_prefix="macro-national-landscape", show_heading=False)
