@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-EDITORIAL_PROMPT_VERSION = "editorial-synthesis-1.0"
+EDITORIAL_PROMPT_VERSION = "editorial-synthesis-1.1"
 
 EDITORIAL_OUTPUT_RULES = {
     "decision": (
@@ -17,13 +17,13 @@ EDITORIAL_OUTPUT_RULES = {
         "genuinely needs replacement. Routine runs should update 1-4 domains; a broad or bootstrap run may update more."
     ),
     "domain_read": (
-        "Headline at most 12 words. Write 3-4 sentences and at most 95 words. State the conclusion, "
-        "movement, internal composition, and consequence without inventorying the capsule."
+        "Headline at most 12 words. Write 3-4 sentences and at most 95 words. Lead with the judgment, "
+        "then use only the movement, composition, and consequence needed to support it."
     ),
     "macro_read": (
         "Select 3-5 domains spanning at least three lifecycle stages. Write one system thesis in 3 paragraphs, "
-        "normally 150-225 words and never more than 250. Explain one conversion chain, bottleneck, timing mismatch, "
-        "or distributional boundary."
+        "normally 150-225 words and never more than 250. Explain one conversion chain, operating constraint, "
+        "timing difference, or economic consequence."
     ),
     "grounding": (
         "Every published sentence must cite supplied fact_ids. A domain Read may cite only its own domain. "
@@ -47,11 +47,15 @@ The signal capsules are the exclusive current factual record. The editorial cons
 
 First decide whether the new evidence changes the interpretation enough to justify publication. Material arithmetic can still be analytically unimportant. If the prior thesis remains the best account and no domain Read genuinely requires replacement, choose retain_prior. Do not write filler merely because a paid call was made.
 
-If publication is warranted, choose one thesis before writing. Use the capsules' current-versus-prior movement, elapsed time, trajectory, breadth, concentration, drivers, boundaries, and cross-domain conditions to determine what the change means. Distinguish a broad move from a narrow one, an announced stock from an operating flow, a transient response from a durable state change, and upstream commitment from downstream realization.
+If publication is warranted, choose one thesis before writing. Use current-versus-prior movement, elapsed time, trajectory, breadth, concentration, drivers, and cross-domain conditions to determine what the change means. Distinguish a broad move from a narrow one, an announced stock from an operating flow, a transient response from a durable state change, and upstream commitment from downstream realization.
 
 Return only the domain Reads that need replacement, plus one new Macro Read. Every required_update_domain must be present. Preserve all other published domain Reads by omitting them. The Macro Read must add system-level judgment rather than concatenate the domain updates.
 
-Write for a brilliant, operationally experienced adult who may not know every specialized term. Lead with conclusions. Prefer concrete subjects and verbs. Explain unfamiliar measures only when needed to understand the conclusion. Avoid evidence narration, domain tours, classroom exposition, slogans, predictions, generic caveats, and stock analytical filler. Use a number only when magnitude changes the judgment.
+Write for a brilliant, operationally experienced adult who may not know every specialized term. Lead with conclusions. Prefer concrete subjects and verbs. Explain unfamiliar measures only when needed to understand the conclusion. Use a number only when magnitude changes the judgment.
+
+Write affirmative analysis: say what is happening, why it matters, and which operating step comes next. Capsule boundaries are silent reasoning controls. Never quote, paraphrase, announce, or summarize them for the reader. Do not organize a sentence around what evidence does not, cannot, or fails to prove. Avoid defensive scope disclaimers, methodological throat-clearing, “not X” constructions, and phrases such as “does not establish,” “cannot be read as,” “rather than,” “without proving,” or “remains unresolved.” When a limitation materially affects the thesis, name the measured state and the next observable conversion step directly. Omit the limitation when it does not change the judgment.
+
+Avoid evidence narration, domain tours, classroom exposition, slogans, predictions, generic caveats, and stock analytical filler. The prose should sound authored by a human analyst, not assembled from compliance notes.
 
 Every published sentence must cite one or more fact_ids that appear in the supplied capsules. Keep observation and interpretation distinct. Silently edit once for clarity and return only the structured response.
 """.strip()

@@ -20,7 +20,7 @@ from analytics.read_prompts import (
 )
 from config.openai_config import OpenAIConfig
 
-GENERATOR_VERSION = "6.0.0"
+GENERATOR_VERSION = "6.1.0"
 
 DEFAULT_BACKGROUND_DEADLINE_SECONDS = 1200.0
 DEFAULT_BACKGROUND_POLL_INTERVAL_SECONDS = 2.0
@@ -191,16 +191,20 @@ def _parse(
         "AI_MACRO_OPENAI_POLL_INTERVAL_SECONDS",
         DEFAULT_BACKGROUND_POLL_INTERVAL_SECONDS,
     )
+    request: dict[str, Any] = {
+        "model": config.model,
+        "reasoning": {"effort": config.reasoning_effort},
+        "instructions": instructions,
+        "input": input_payload,
+        "text_format": text_format,
+        "background": True,
+        "store": False,
+        "timeout": request_timeout,
+    }
+    if config.max_output_tokens is not None:
+        request["max_output_tokens"] = config.max_output_tokens
     response = api.responses.parse(
-        model=config.model,
-        reasoning={"effort": config.reasoning_effort},
-        instructions=instructions,
-        input=input_payload,
-        text_format=text_format,
-        max_output_tokens=config.max_output_tokens,
-        background=True,
-        store=False,
-        timeout=request_timeout,
+        **request,
     )
     response_id = _response_id(response)
     if not response_id:

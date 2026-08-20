@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "constitution_version": "1.0.0",
+  "constitution_version": "1.1.0",
   "purpose": "Compact runtime guidance distilled from the audited AI Macro language corpora. The complete corpora remain the source record and are not factual evidence.",
   "audience": "A highly intelligent, widely read adult who may not know the specialized vocabulary of every domain.",
   "evidence_contract": [
@@ -12,10 +12,12 @@
   ],
   "editorial_contract": [
     "Choose one material system thesis before writing.",
-    "Explain the conversion, bottleneck, timing mismatch, distribution, or operating condition that makes the change consequential.",
+    "Explain the conversion, operating constraint, timing difference, distribution, or consequence that makes the change material.",
     "Use current-versus-prior movement, trajectory shape, breadth, concentration, and internal drivers when they alter the interpretation.",
     "Prefer concrete economic, operational, financial, market, or physical subjects and verbs.",
     "Use numbers only when their magnitude changes the conclusion.",
+    "Write affirmative analysis that states what is happening, why it matters, and which operating step comes next.",
+    "Treat evidence boundaries as silent reasoning controls; never turn them into reader-facing disclaimers.",
     "Do not tour domains, inventory metrics, narrate methodology, write classroom exposition, or manufacture novelty.",
     "Preserve the prior thesis when the new evidence does not materially change it."
   ],
@@ -26,14 +28,14 @@
     "Use retain_prior when the evidence moved but does not support a coherent, materially different analytical judgment."
   ],
   "systems_reasoning": {
-    "boundary": "These are transferable reasoning patterns only. Biological observations are never economic evidence, and analogous structure never establishes a shared mechanism.",
+    "use": "Use these patterns internally to organize the supplied economic evidence.",
     "patterns": [
       "Separate stocks from flows and endpoints from paths.",
       "Distinguish transient movement from a changed steady state.",
       "Test whether an aggregate move is broad, concentrated, or compensation masking deterioration elsewhere.",
       "Treat thresholds, saturation, state dependence, and asymmetric responses as hypotheses requiring supplied evidence.",
       "Track conversion across interfaces: funding, construction, delivery, use, and realized outcomes.",
-      "Do not infer mechanism from model fit, structural resemblance, or a static snapshot.",
+      "Require trajectory or operating evidence before assigning a mechanism.",
       "Identify recovery, reversibility, lag, and path dependence when the trajectory supports them."
     ]
   },
@@ -43,6 +45,6 @@
     "macro_headline_words_max": 16,
     "macro_analysis_words_target": "150-225",
     "macro_analysis_words_max": 250,
-    "tone": "Authored, direct, precise, neutral, and readable. No slogans, filler, or sing-song repetition."
+    "tone": "Authored, direct, precise, neutral, and readable. Use concrete subjects and verbs. No slogans, filler, defensive qualifiers, scope disclaimers, or sing-song repetition."
   }
 }

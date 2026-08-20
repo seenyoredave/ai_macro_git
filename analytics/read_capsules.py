@@ -15,7 +15,7 @@ from typing import Any
 from analytics.read_evidence import DOMAIN_LABELS, DOMAIN_ORDER
 
 CAPSULE_ARCHITECTURE_VERSION = "1.0.0"
-EVALUATED_STATE_VERSION = "1.0.0"
+EVALUATED_STATE_VERSION = "1.1.0"
 MAX_FACTS_PER_DOMAIN_CAPSULE = 4
 MAX_SUPPLEMENTAL_CAPSULES = 4
 MAX_HISTORY_OBSERVATIONS = 4
@@ -456,6 +456,7 @@ def build_evaluated_state(
     analytical_state: dict[str, Any] | None,
     validation: dict[str, Any],
     status: str,
+    prompt_versions: dict[str, str],
 ) -> dict[str, Any]:
     return {
         "evaluated_state_version": EVALUATED_STATE_VERSION,
@@ -467,6 +468,7 @@ def build_evaluated_state(
         "decision_reason": str(decision_reason or ""),
         "analytical_state": deepcopy(dict(analytical_state or {})),
         "validation": deepcopy(dict(validation or {})),
+        "prompt_versions": deepcopy(dict(prompt_versions or {})),
         "evidence_packets": deepcopy(packets),
         "fact_history": deepcopy(dict(capsules.get("fact_history") or {})),
         "capsule_architecture_version": CAPSULE_ARCHITECTURE_VERSION,

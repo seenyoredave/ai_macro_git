@@ -41,6 +41,17 @@ def load_evaluated_state(path: Path = EVALUATED_STATE_PATH) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def evaluated_state_matches_prompt(
+    payload: dict[str, Any],
+    current_prompt_versions: dict[str, str],
+) -> bool:
+    """Return whether an evaluated baseline belongs to the active editorial contract."""
+    return bool(
+        payload.get("evidence_packets")
+        and dict(payload.get("prompt_versions") or {}) == dict(current_prompt_versions or {})
+    )
+
+
 
 def load_read_attempt(attempt_id: str) -> dict[str, Any]:
     """Load one preserved paid attempt by immutable attempt ID."""

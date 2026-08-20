@@ -16,7 +16,7 @@ from analytics.read_models import (
     SupportedSentence,
 )
 
-VALIDATOR_VERSION = "3.4.0"
+VALIDATOR_VERSION = "3.5.0"
 _NUMBER_RE = re.compile(
     r"(?<![A-Za-z0-9])"
     r"[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
@@ -42,6 +42,18 @@ MAX_MACRO_SENTENCE_WORDS = 28
 MAX_REPEATED_HEADLINE_ARCHITECTURE = 2
 _STOCK_FILLER_RE = re.compile(
     r"\b(?:taken together|this underscores|these dynamics|the central test|it is worth noting|going forward)\b",
+    re.IGNORECASE,
+)
+_ROBOTIC_DISCLAIMER_RE = re.compile(
+    r"\b(?:"
+    r"(?:does|do|did|can|could|will|would)\s+not\s+"
+    r"(?:establish|show|prove|isolate|identify|measure|mean|demonstrate|confirm|quantify|support|capture)"
+    r"|cannot\s+(?:be\s+)?(?:read|treated|interpreted|used|taken|quantify|establish|show|prove|isolate|identify|measure)"
+    r"|without\s+(?:establishing|proving|showing|isolating|identifying|measuring)"
+    r"|rather\s+than"
+    r"|remains?\s+(?:unresolved|unclear|unknown|unproven)"
+    r"|not\s+(?:(?:the\s+)?whole\s+market|(?:an?\s+)?energized\s+load|(?:a\s+)?project\s+forecast)"
+    r")\b",
     re.IGNORECASE,
 )
 _NEGATIVE_IDENTITY_RE = re.compile(r"\b(?:is|are|was|were)\s+not\b", re.IGNORECASE)
@@ -165,6 +177,12 @@ def _validate_prose_shape(sentence: SupportedSentence, *, label: str) -> tuple[l
         message = f"{label}: stock analytical filler is not allowed: {filler.group(0)}"
         errors.append(message)
         failures.append(_failure(label, "stock_filler", sentence, message, phrase=filler.group(0)))
+    robotic_disclaimer = _ROBOTIC_DISCLAIMER_RE.search(str(sentence.text or ""))
+    if robotic_disclaimer:
+        phrase = robotic_disclaimer.group(0)
+        message = f"{label}: defensive or robotic disclaimer is not allowed: {phrase}"
+        errors.append(message)
+        failures.append(_failure(label, "robotic_disclaimer", sentence, message, phrase=phrase))
     undefined_cohort = _UNDEFINED_COHORT_RE.search(str(sentence.text or ""))
     if undefined_cohort:
         phrase = undefined_cohort.group(0)
@@ -619,7 +637,7 @@ def validate_macro_read(
     return ValidationResult(not errors, tuple(errors), checked, grounded, tuple(failures))
 
 
-EDITORIAL_VALIDATOR_VERSION = "4.0.0"
+EDITORIAL_VALIDATOR_VERSION = "4.1.0"
 _HARD_EDITORIAL_FAILURES = {
     "contract_decision",
     "contract_duplicate_domains",
@@ -629,6 +647,7 @@ _HARD_EDITORIAL_FAILURES = {
     "domain_selection",
     "lifecycle_coverage",
     "out_of_scope_fact_ids",
+    "robotic_disclaimer",
     "unknown_fact_ids",
     "unsupported_numeric_tokens",
     "unsupplied_fact_ids",

@@ -75,7 +75,7 @@ def _run(response, *, run_id: str) -> None:
         required_update_domains=[],
         candidate_update_domains=[],
         bootstrap=False,
-        config=OpenAIConfig(api_key="test", max_output_tokens=12000),
+        config=OpenAIConfig(api_key="test"),
         client=client,
     )
 

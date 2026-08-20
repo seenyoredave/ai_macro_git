@@ -7,8 +7,6 @@ import os
 
 DEFAULT_OPENAI_MODEL = "gpt-5.6"
 DEFAULT_REASONING_EFFORT = "medium"
-DEFAULT_MAX_OUTPUT_TOKENS = 12000
-HARD_MAX_OUTPUT_TOKENS = 20000
 
 
 def _streamlit_secret(name: str) -> str:
@@ -25,7 +23,7 @@ class OpenAIConfig:
     api_key: str
     model: str = DEFAULT_OPENAI_MODEL
     reasoning_effort: str = DEFAULT_REASONING_EFFORT
-    max_output_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS
+    max_output_tokens: int | None = None
 
     @property
     def configured(self) -> bool:
@@ -38,11 +36,13 @@ def load_openai_config() -> OpenAIConfig:
     effort = str(os.getenv("AI_MACRO_OPENAI_REASONING", DEFAULT_REASONING_EFFORT) or DEFAULT_REASONING_EFFORT).strip().lower()
     if effort not in {"none", "low", "medium", "high", "xhigh", "max"}:
         effort = DEFAULT_REASONING_EFFORT
-    try:
-        requested_tokens = int(str(os.getenv("AI_MACRO_OPENAI_MAX_OUTPUT_TOKENS", DEFAULT_MAX_OUTPUT_TOKENS)))
-    except (TypeError, ValueError):
-        requested_tokens = DEFAULT_MAX_OUTPUT_TOKENS
-    max_output_tokens = max(2000, min(requested_tokens, HARD_MAX_OUTPUT_TOKENS))
+    raw_output_limit = str(os.getenv("AI_MACRO_OPENAI_MAX_OUTPUT_TOKENS", "") or "").strip()
+    max_output_tokens: int | None = None
+    if raw_output_limit:
+        try:
+            max_output_tokens = max(2000, int(raw_output_limit))
+        except (TypeError, ValueError):
+            max_output_tokens = None
     return OpenAIConfig(
         api_key=key,
         model=model,

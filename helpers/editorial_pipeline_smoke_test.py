@@ -12,10 +12,11 @@ sys.path.insert(0, str(ROOT))
 
 from analytics.language_layer import editorial_constitution_payload  # noqa: E402
 from analytics.read_capsules import build_signal_capsules  # noqa: E402
-from analytics.read_generation import generate_editorial_synthesis  # noqa: E402
+from analytics.read_generation import generate_editorial_synthesis, prompt_versions  # noqa: E402
 from analytics.read_materiality import compare_evidence_materiality  # noqa: E402
 from analytics.read_models import GeneratedEditorialSynthesis  # noqa: E402
 from analytics.read_prompts import editorial_synthesis_input  # noqa: E402
+from analytics.read_store import evaluated_state_matches_prompt  # noqa: E402
 from analytics.read_validation import validate_editorial_synthesis  # noqa: E402
 from config.openai_config import OpenAIConfig  # noqa: E402
 
@@ -58,38 +59,38 @@ def _model_payload() -> dict:
         "macro_read": {
             "selected_domains": ["market", "power", "adoption", "economic_impact"],
             "headline": {
-                "text": "Broader capital participation still faces a narrow conversion path",
+                "text": "Broader capital participation meets a narrow conversion path",
                 "fact_ids": ["market.positive_breadth", "adoption.current_business_use_pct"],
                 "inference": "interpretation",
             },
             "paragraphs": [
                 {"sentences": [
                     {
-                        "text": "Broader equity participation supports financing capacity, while planned generation remains distinct from delivered power.",
+                        "text": "Broader equity participation supports financing capacity while planned generation expands the physical buildout pipeline.",
                         "fact_ids": ["market.positive_breadth", "power.planned_net_gw"],
                         "inference": "interpretation",
                     },
                     {
-                        "text": "That separation keeps physical delivery central to the investment thesis.",
+                        "text": "Grid connection and commissioning now govern the pace of physical delivery.",
                         "fact_ids": ["power.planned_net_gw"],
                         "inference": "interpretation",
                     },
                 ]},
                 {"sentences": [
                     {
-                        "text": "Available power can expand service capacity without establishing broad business use.",
+                        "text": "Available power can expand service capacity as business use spreads.",
                         "fact_ids": ["power.large_load_capacity_mw", "adoption.current_business_use_pct"],
                         "inference": "interpretation",
                     },
                     {
-                        "text": "Current business use therefore remains the nearer test of diffusion.",
+                        "text": "Current business use provides the nearer measure of diffusion.",
                         "fact_ids": ["adoption.current_business_use_pct"],
                         "inference": "interpretation",
                     },
                 ]},
                 {"sentences": [
                     {
-                        "text": "Business use and aggregate productivity can rise together without proving that one caused the other.",
+                        "text": "Business use and aggregate productivity are advancing at different points in the conversion chain.",
                         "fact_ids": ["adoption.current_business_use_pct", "economic_impact.productivity_growth"],
                         "inference": "interpretation",
                     },
@@ -105,7 +106,7 @@ def _model_payload() -> dict:
             "thesis": "Capital participation broadened, but physical delivery and business diffusion still govern conversion.",
             "selected_domains": ["market", "power", "adoption", "economic_impact"],
             "changed_since_prior": ["Market participation broadened."],
-            "unresolved_tensions": ["Planned supply is not delivered power."],
+            "unresolved_tensions": ["Grid delivery lags planned supply."],
             "confirming_signals": ["Broader business use with stronger productivity would support conversion."],
             "disconfirming_signals": ["Narrowing breadth would weaken the capital signal."],
         },
@@ -212,14 +213,21 @@ def main() -> None:
         required_update_domains=[],
         candidate_update_domains=["market"],
         bootstrap=False,
-        config=OpenAIConfig(api_key="test", max_output_tokens=12000),
+        config=OpenAIConfig(api_key="test"),
         client=client,
     )
     _check(parsed.decision == "publish", "Structured result was not returned")
     _check(client.responses.calls == 1, "Editorial generation issued more than one API call")
     _check(client.responses.kwargs.get("background") is True, "Background mode was not retained")
-    _check(client.responses.kwargs.get("max_output_tokens") == 12000, "Output ceiling was not applied")
+    _check("max_output_tokens" not in client.responses.kwargs, "Default request imposed an output ceiling")
     _check(metadata.total_tokens == 300, "Generation usage metadata changed")
+    _check(
+        not evaluated_state_matches_prompt(
+            {"evidence_packets": current, "prompt_versions": {}},
+            prompt_versions(),
+        ),
+        "An evaluation from an older editorial contract blocked the upgraded prompt",
+    )
 
     retain = GeneratedEditorialSynthesis.model_validate({
         "decision": "retain_prior",
@@ -241,6 +249,21 @@ def main() -> None:
             candidate_update_domains=["market"],
         )["passed"],
         "Retain-prior response preserved a domain with stale cited facts",
+    )
+    robotic = _model_payload()
+    robotic["macro_read"]["paragraphs"][0]["sentences"][1]["text"] = (
+        "Planned generation does not establish delivered power."
+    )
+    robotic_validation = validate_editorial_synthesis(
+        GeneratedEditorialSynthesis.model_validate(robotic),
+        current,
+        candidate_update_domains=["market"],
+        allowed_fact_ids=allowed,
+    )
+    _check(not robotic_validation["passed"], "Robotic disclaimer passed the publication gate")
+    _check(
+        any(item.get("reason") == "robotic_disclaimer" for item in robotic_validation["hard_failures"]),
+        "Robotic disclaimer was not identified explicitly",
     )
     print(json.dumps({
         "status": "PASS",

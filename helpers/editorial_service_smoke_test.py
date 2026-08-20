@@ -51,7 +51,7 @@ def _run(
     ):
         return service.generate_validated_read_artifact(
             service.DashboardContext(),
-            OpenAIConfig(api_key="test", max_output_tokens=12000),
+            OpenAIConfig(api_key="test"),
             client=_Client(model),
             persist=False,
             materiality=materiality,
@@ -155,6 +155,7 @@ def main() -> None:
             "status": "rejected_hard_validation",
             "evidence_snapshot_id": "rejected-evaluation-snapshot",
             "evidence_packets": rejected_packets,
+            "prompt_versions": service.prompt_versions(),
         },
     )
     _check(

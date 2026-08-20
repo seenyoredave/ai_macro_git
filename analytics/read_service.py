@@ -30,6 +30,7 @@ from analytics.read_generation import (
 from analytics.read_materiality import compare_evidence_materiality
 from analytics.read_models import GeneratedDomainRead, GeneratedEditorialSynthesis, GeneratedMacroRead
 from analytics.read_store import (
+    evaluated_state_matches_prompt,
     load_evaluated_state,
     load_read_artifact,
     new_attempt_id,
@@ -40,10 +41,10 @@ from analytics.read_store import (
 from analytics.read_validation import EDITORIAL_VALIDATOR_VERSION, validate_editorial_synthesis
 from config.openai_config import OpenAIConfig
 
-READ_SERVICE_VERSION = "5.0.0"
+READ_SERVICE_VERSION = "5.1.0"
 READ_SERVICE_COMPATIBLE_VERSIONS = {
     READ_SERVICE_VERSION,
-    "4.5.0", "4.4.0", "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0",
+    "5.0.0", "4.5.0", "4.4.0", "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0",
 }
 COMMENTARY_PUBLICATION_LEASE_HOURS = 24
 UNAVAILABLE_HEADLINE = "Commentary temporarily unavailable."
@@ -367,6 +368,10 @@ def build_platform_reads(
 
     generated_snapshot = str(stored.get("evidence_snapshot_id") or "")
     evaluated_snapshot = str(evaluated.get("evidence_snapshot_id") or "")
+    evaluation_contract_current = evaluated_state_matches_prompt(
+        evaluated,
+        prompt_versions(),
+    )
     evidence_current = bool(
         artifact_publishable and generated_snapshot and generated_snapshot == snapshot
     )
@@ -410,7 +415,12 @@ def build_platform_reads(
         "artifact_publishable": artifact_publishable,
         "evidence_current": evidence_current,
         "evidence_materially_current": evidence_materially_current,
-        "evaluation_current": bool(evaluated_snapshot and evaluated_snapshot == snapshot),
+        "evaluation_current": bool(
+            evaluation_contract_current
+            and evaluated_snapshot
+            and evaluated_snapshot == snapshot
+        ),
+        "evaluation_contract_current": evaluation_contract_current,
         "last_evaluation_status": str(evaluated.get("status") or ""),
         "last_evaluation_decision": str(evaluated.get("decision") or ""),
         "evaluated_evidence_snapshot_id": evaluated_snapshot,
@@ -578,6 +588,7 @@ def _persist_completed_evaluation(
         analytical_state=analytical_state,
         validation=validation,
         status=status,
+        prompt_versions=dict(attempt.get("prompt_versions") or {}),
     )
     if persist:
         persist_evaluated_state(state)
@@ -677,7 +688,10 @@ def generate_validated_read_artifact(
     packet_dicts = _packet_dicts(packets)
     snapshot = evidence_snapshot_id(packets)
     prior_artifact = load_read_artifact()
+    active_prompt_versions = prompt_versions()
     prior_evaluated = load_evaluated_state()
+    if not evaluated_state_matches_prompt(prior_evaluated, active_prompt_versions):
+        prior_evaluated = {}
     baseline = prior_evaluated if prior_evaluated.get("evidence_packets") else prior_artifact
     comparison = dict(materiality or compare_evidence_materiality(
         baseline.get("evidence_packets"),

@@ -265,13 +265,22 @@ def main() -> int:
         evidence_started = time.perf_counter()
         artifact_valid, evidence_snapshot, commentary = _current_artifact_valid(bundle.context)
         from analytics.read_materiality import compare_evidence_materiality
-        from analytics.read_store import load_evaluated_state, load_read_artifact
+        from analytics.read_generation import prompt_versions
+        from analytics.read_store import (
+            evaluated_state_matches_prompt,
+            load_evaluated_state,
+            load_read_artifact,
+        )
 
         stored_artifact = load_read_artifact()
         evaluated_state = load_evaluated_state()
+        evaluation_contract_current = evaluated_state_matches_prompt(
+            evaluated_state,
+            prompt_versions(),
+        )
         comparison_baseline = (
             evaluated_state
-            if evaluated_state.get("evidence_packets")
+            if evaluation_contract_current
             else stored_artifact
         )
         materiality = compare_evidence_materiality(
@@ -291,6 +300,7 @@ def main() -> int:
             "artifact_current": artifact_valid,
             "artifact_materially_current": reusable_artifact,
             "artifact_status": str(commentary.get("status") or "unknown"),
+            "evaluation_contract_current": evaluation_contract_current,
             "materiality": materiality,
             "elapsed_sec": round(evidence_elapsed, 3),
         }
@@ -301,7 +311,8 @@ def main() -> int:
 
         if reusable_artifact:
             evaluated_rejected = bool(
-                str(evaluated_state.get("status") or "").startswith("rejected_")
+                evaluation_contract_current
+                and str(evaluated_state.get("status") or "").startswith("rejected_")
             )
             reuse_reason = (
                 "completed_evaluation_rejected_no_automatic_retry"
