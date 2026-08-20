@@ -12,12 +12,13 @@ from copy import deepcopy
 from threading import RLock
 
 from analytics.dashboard_context import DashboardContext
+from analytics.read_capsules import CAPSULE_ARCHITECTURE_VERSION
 from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION
 from analytics.read_service import READ_SERVICE_VERSION, build_platform_reads
 from analytics.read_store import READ_ARTIFACT_PATH
 from config.deployment import developer_mode
 
-READER_SNAPSHOT_VERSION = "1.1.0"
+READER_SNAPSHOT_VERSION = "1.2.0"
 _SNAPSHOT_LOCK = RLock()
 _SNAPSHOT_CACHE: dict[str, dict] = {}
 
@@ -32,7 +33,7 @@ def _artifact_cache_token() -> str:
 
 def _cached_snapshot_usable(snapshot: dict) -> bool:
     commentary = dict(snapshot.get("commentary") or {})
-    if commentary.get("status") not in {"validated", "published_with_warnings", "published_raw_response"}:
+    if commentary.get("status") not in {"validated", "published_with_warnings"}:
         return True
     # A publishable artifact is last-known-good until a newer artifact replaces
     # it. The 24-hour publication lease is freshness metadata only and must not
@@ -77,6 +78,7 @@ def build_reader_snapshot(context: DashboardContext, *, context_report: dict | N
         "snapshot_version": READER_SNAPSHOT_VERSION,
         "read_service_version": READ_SERVICE_VERSION,
         "evidence_architecture_version": EVIDENCE_ARCHITECTURE_VERSION,
+        "capsule_architecture_version": CAPSULE_ARCHITECTURE_VERSION,
         "evidence_snapshot_id": commentary.get("evidence_snapshot_id", ""),
         "commentary": {key: value for key, value in commentary.items() if key != "packets"},
         "current_context": current_context,

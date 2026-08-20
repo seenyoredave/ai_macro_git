@@ -1,9 +1,7 @@
 """Model-safe evidence adapters for the AI Macro commentary overlay.
 
-Canonical analytical state is computed outside the language subsystem. This
-module only formats that finished state, attaches evidence metadata, and builds
-the bounded packets supplied to OpenAI. It must not calculate, aggregate, rank,
-resolve, or otherwise determine economic state.
+This module formats canonical analytical state, attaches evidence metadata, and
+builds the bounded packets supplied to OpenAI.
 """
 
 from __future__ import annotations
@@ -18,7 +16,7 @@ from typing import Any, Iterable
 from analytics.dashboard_context import DashboardContext
 from analytics.domain_state import DomainState
 
-EVIDENCE_ARCHITECTURE_VERSION = "1.2.0"
+EVIDENCE_ARCHITECTURE_VERSION = "1.3.0"
 DOMAIN_ORDER = (
     "market",
     "finance",
@@ -112,46 +110,46 @@ DOMAIN_REFERENCES: dict[str, tuple[dict[str, str], ...]] = {
 
 DOMAIN_BOUNDARIES: dict[str, tuple[str, ...]] = {
     "market": (
-        "Covered-company market measures are not the entire U.S. equity market.",
-        "Concentration and breadth describe participation; they do not establish causality.",
+        "Covered-company market measures describe the configured AI equity universe.",
+        "Concentration and breadth describe market participation and distribution.",
     ),
     "finance": (
-        "Company funding metrics describe the covered issuers, not all AI investment.",
-        "Private-fund NAV is not realized cash and should not be described as a realized return.",
-        "Provider revenue demonstrates paid demand but not economy-wide return on AI investment.",
+        "Company funding metrics describe the covered issuers.",
+        "Private-fund NAV represents remaining value; DPI represents realized cash distributions.",
+        "Provider revenue measures paid demand at the reporting provider.",
     ),
     "compute": (
-        "Announced projects are commitments, not current operating capacity.",
-        "Provider serving-cost disclosures must not be generalized to the whole market.",
+        "Announced projects represent investment commitments; operating capacity requires in-service evidence.",
+        "Provider serving-cost disclosures apply to the reporting provider and disclosed workload scope.",
     ),
     "data_center": (
-        "The project registry is not a national census of the U.S. data-center fleet.",
-        "Published MW describes disclosed project scale, not energized load.",
+        "The project registry is a curated research universe of observed U.S. data-center campuses and projects.",
+        "Published MW represents disclosed project scale; energized load requires explicit operating evidence.",
     ),
     "connectivity": (
-        "Public IXP and cable records do not capture every private route or bilateral connection.",
-        "National route totals do not establish usable capacity at a specific campus.",
+        "Public IXP and cable records measure visible interconnection and route infrastructure.",
+        "Campus-level capacity requires route, service, and deliverability evidence tied to the site.",
     ),
     "power": (
-        "Planned generation is not equivalent to capacity placed in service.",
-        "Power ownership excludes interconnection-queue maturity, which belongs to Grid & Storage.",
+        "Planned generation represents the development pipeline; placed-in-service capacity is measured separately.",
+        "Interconnection-queue maturity is measured in Grid & Storage.",
     ),
     "grid_storage": (
-        "Queue capacity measures developer interest, not near-term supply.",
-        "Storage duration can address short peaks but does not remove transmission or interconnection constraints.",
+        "Queue capacity measures requested development; advanced-stage and historical conversion measures indicate maturity.",
+        "Storage duration measures time-shifting capability alongside transmission and interconnection conditions.",
     ),
     "water": (),
     "adoption": (
-        "Expected business use is stated intent and must not be described as deployed use.",
-        "Provider subscriber counts are not a national paid-adoption rate.",
+        "Expected business use represents stated six-month intent.",
+        "Provider subscriber counts are platform-specific reach measures.",
     ),
     "workforce": (
-        "Task-exposure estimates describe work AI could affect; they do not measure jobs lost or automated.",
-        "Tracked AI-linked channels are not the entire labor market.",
+        "Task-exposure estimates measure the share of occupational tasks technically exposed to AI capabilities.",
+        "Tracked AI-linked channels are selected labor-market transmission channels.",
     ),
     "economic_impact": (
-        "Economy-wide productivity and output measures do not identify AI as the cause.",
-        "Provider revenue does not establish economy-wide return on AI investment.",
+        "Economy-wide productivity and output measure aggregate economic performance.",
+        "Provider revenue measures commercialization at the reporting provider.",
     ),
 }
 
@@ -312,10 +310,7 @@ def _fact(
 def _state(context: DashboardContext, domain: str) -> DomainState:
     state = (context.domain_states or {}).get(domain)
     if not isinstance(state, DomainState):
-        raise ValueError(
-            f"Language evidence requires canonical deterministic domain state for {domain}. "
-            "The language layer may not reconstruct analytical state."
-        )
+        raise ValueError(f"Evidence domain {domain} requires canonical deterministic domain state.")
     return state
 
 
@@ -512,6 +507,19 @@ def build_adoption_evidence(context: DashboardContext) -> EvidencePacket:
         _fact("adoption", "sector_coverage", "Share of BTOS sectors with a current-use reading", m.get("sector_coverage"), unit="%", scale=100),
         _fact("adoption", "leading_sector", "BTOS sector with the highest current AI-use reading", m.get("leading_sector")),
         _fact("adoption", "leading_sector_use_pct", "Highest BTOS sector current AI-use reading", m.get("leading_sector_use_pct"), unit="%"),
+        _fact("adoption", "worker_ai_use_pct", "Businesses reporting employee AI use for work tasks", m.get("worker_ai_use_pct"), unit="%"),
+        _fact("adoption", "worker_genai_use_pct", "Businesses reporting employee Generative AI use for work tasks", m.get("worker_genai_use_pct"), unit="%"),
+        _fact("adoption", "function_le3_share_pct", "Functional AI adopters using three or fewer business functions", m.get("function_le3_share_pct"), unit="%"),
+        _fact("adoption", "task_le3_share_pct", "Businesses reporting employee Generative AI use across three or fewer task categories", m.get("task_le3_share_pct"), unit="%"),
+        _fact("adoption", "top_function", "Most common six-month AI business-function deployment among functional adopters", m.get("top_function")),
+        _fact("adoption", "top_function_use_pct", "Functional adopters reporting AI deployment in the leading business function", m.get("top_function_use_pct"), unit="%"),
+        _fact("adoption", "top_task", "Most common employee Generative AI task among businesses reporting employee Generative AI use", m.get("top_task")),
+        _fact("adoption", "top_task_use_pct", "Businesses reporting employee Generative AI use in the leading task category", m.get("top_task_use_pct"), unit="%"),
+        _fact("adoption", "organizational_change_share_pct", "AI-using businesses reporting an organizational adjustment", m.get("organizational_change_share_pct"), unit="%"),
+        _fact("adoption", "task_augmentation_pct", "AI-using businesses reporting task augmentation", m.get("task_augmentation_pct"), unit="%"),
+        _fact("adoption", "task_substitution_pct", "AI-using businesses reporting task substitution", m.get("task_substitution_pct"), unit="%"),
+        _fact("adoption", "task_creation_pct", "AI-using businesses reporting new task creation", m.get("task_creation_pct"), unit="%"),
+        _fact("adoption", "employment_decrease_pct", "Businesses reporting an AI-related employment decrease", m.get("employment_decrease_pct"), unit="%"),
         _fact("adoption", "chatgpt_subscribers_m", "OpenAI reported ChatGPT subscribers", m.get("chatgpt_subscribers_m"), unit="million"),
         _fact("adoption", "implied_subscriber_share_pct", "Implied subscriber share of working-age U.S. adults", m.get("implied_subscriber_share_pct"), unit="%"),
         _fact("adoption", "openai_paying_business_users_m", "OpenAI reported paying business users", m.get("openai_paying_business_users_m"), unit="million"),

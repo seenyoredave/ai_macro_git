@@ -1,4 +1,4 @@
-"""Exactly two explicit OpenAI calls for AI Macro commentary generation."""
+"""Exactly one explicit OpenAI call for AI Macro editorial synthesis."""
 
 from __future__ import annotations
 
@@ -7,19 +7,20 @@ import os
 import time
 from typing import Any
 
-from analytics.language_layer import language_layer_identity, language_layer_payload
-from analytics.read_models import GeneratedDomainReadSet, GeneratedMacroRead
+from analytics.language_layer import (
+    editorial_constitution_identity,
+    editorial_constitution_payload,
+    language_layer_identity,
+)
+from analytics.read_models import GeneratedEditorialSynthesis
 from analytics.read_prompts import (
-    DOMAIN_INSTRUCTIONS,
-    DOMAIN_PROMPT_VERSION,
-    MACRO_INSTRUCTIONS,
-    MACRO_PROMPT_VERSION,
-    domain_read_input,
-    macro_read_input,
+    EDITORIAL_INSTRUCTIONS,
+    EDITORIAL_PROMPT_VERSION,
+    editorial_synthesis_input,
 )
 from config.openai_config import OpenAIConfig
 
-GENERATOR_VERSION = "5.0.0"
+GENERATOR_VERSION = "6.0.0"
 
 DEFAULT_BACKGROUND_DEADLINE_SECONDS = 1200.0
 DEFAULT_BACKGROUND_POLL_INTERVAL_SECONDS = 2.0
@@ -196,6 +197,7 @@ def _parse(
         instructions=instructions,
         input=input_payload,
         text_format=text_format,
+        max_output_tokens=config.max_output_tokens,
         background=True,
         store=False,
         timeout=request_timeout,
@@ -266,7 +268,10 @@ def _parse(
 
     if terminal_status != "completed":
         detail = f"background response ended with status={terminal_status or 'unknown'}"
-        _release_allowance(api, response_id, detail)
+        if str(getattr(response, "output_text", "") or "").strip():
+            _commit_allowance(api, response_id)
+        else:
+            _release_allowance(api, response_id, detail)
         raise GenerationStageError(
             f"OpenAI {detail}.",
             metadata=metadata,
@@ -299,48 +304,44 @@ def _parse(
     return parsed, metadata
 
 
-def generate_domain_reads(
-    packets: dict[str, dict],
-    config: OpenAIConfig,
+def generate_editorial_synthesis(
     *,
+    capsules: dict[str, Any],
+    prior_publication: dict[str, Any],
+    prior_analytical_state: dict[str, Any],
+    required_update_domains: list[str],
+    candidate_update_domains: list[str],
+    bootstrap: bool,
+    config: OpenAIConfig,
     client: Any | None = None,
-) -> tuple[GeneratedDomainReadSet, GenerationMetadata]:
-    layer = language_layer_payload(phase="domain")
+) -> tuple[GeneratedEditorialSynthesis, GenerationMetadata]:
+    constitution = editorial_constitution_payload()
     return _parse(
         api=_client(config, client),
         config=config,
-        instructions=DOMAIN_INSTRUCTIONS,
-        input_payload=domain_read_input(packets, layer),
-        text_format=GeneratedDomainReadSet,
-        empty_error="OpenAI returned no parsed domain Read set.",
-    )
-
-
-def generate_macro_read(
-    packets: dict[str, dict],
-    domain_reads: GeneratedDomainReadSet | dict[str, Any],
-    config: OpenAIConfig,
-    *,
-    client: Any | None = None,
-) -> tuple[GeneratedMacroRead, GenerationMetadata]:
-    layer = language_layer_payload(phase="macro")
-    completed = domain_reads.model_dump(mode="json") if hasattr(domain_reads, "model_dump") else dict(domain_reads)
-    return _parse(
-        api=_client(config, client),
-        config=config,
-        instructions=MACRO_INSTRUCTIONS,
-        input_payload=macro_read_input(packets, completed, layer),
-        text_format=GeneratedMacroRead,
-        empty_error="OpenAI returned no parsed AI Macro Read.",
+        instructions=EDITORIAL_INSTRUCTIONS,
+        input_payload=editorial_synthesis_input(
+            capsules=capsules,
+            editorial_constitution=constitution,
+            prior_publication=prior_publication,
+            prior_analytical_state=prior_analytical_state,
+            required_update_domains=required_update_domains,
+            candidate_update_domains=candidate_update_domains,
+            bootstrap=bootstrap,
+        ),
+        text_format=GeneratedEditorialSynthesis,
+        empty_error="OpenAI returned no parsed editorial synthesis.",
     )
 
 
 def prompt_versions() -> dict[str, str]:
-    identity = language_layer_identity()
+    source_identity = language_layer_identity()
+    constitution = editorial_constitution_identity()
     return {
-        "domain": DOMAIN_PROMPT_VERSION,
-        "macro": MACRO_PROMPT_VERSION,
+        "editorial": EDITORIAL_PROMPT_VERSION,
         "generator": GENERATOR_VERSION,
-        "language_layer": identity["layer_version"],
-        "language_layer_sha256": identity["payload_sha256"],
+        "editorial_constitution": constitution["constitution_version"],
+        "editorial_constitution_sha256": constitution["sha256"],
+        "source_language_layer": source_identity["layer_version"],
+        "source_language_layer_sha256": source_identity["payload_sha256"],
     }

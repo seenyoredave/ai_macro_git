@@ -104,8 +104,8 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v9.7.0"
-APP_STATE_SCHEMA_VERSION = "71.0-universal-data-center-registry"
+APP_VERSION = "v10.0.0"
+APP_STATE_SCHEMA_VERSION = "72.0-one-call-editorial-synthesis"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -418,6 +418,7 @@ if st.session_state.force_rebuild:
         "reader_snapshot_version": reader_snapshot.get("snapshot_version", ""),
         "read_service_version": reader_snapshot.get("read_service_version", ""),
         "evidence_architecture_version": reader_snapshot.get("evidence_architecture_version", ""),
+        "capsule_architecture_version": reader_snapshot.get("capsule_architecture_version", ""),
         "evidence_snapshot_id": reader_snapshot.get("evidence_snapshot_id", ""),
         "snapshot_id": reader_snapshot.get("snapshot_id", context_refresh.get("snapshot_id", "")),
     })

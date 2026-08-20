@@ -9,6 +9,7 @@ AUTOMATION_PUBLICATION_PATHS = (
     "data/",
     "archive/",
     "openai_artifacts/current.json",
+    "openai_artifacts/evaluated.json",
     "automation_artifacts/",
 )
 

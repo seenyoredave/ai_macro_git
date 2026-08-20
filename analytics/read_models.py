@@ -1,4 +1,4 @@
-"""Typed OpenAI output contracts for the AI Macro language-layer pipeline."""
+"""Typed OpenAI output contracts for AI Macro editorial synthesis."""
 
 from __future__ import annotations
 
@@ -9,6 +9,10 @@ from pydantic import BaseModel, Field
 from analytics.read_evidence import DOMAIN_ORDER
 
 InferenceKind = Literal["observation", "interpretation"]
+DomainName = Literal[
+    "market", "finance", "compute", "data_center", "connectivity", "power",
+    "grid_storage", "water", "adoption", "workforce", "economic_impact",
+]
 
 
 class SupportedSentence(BaseModel):
@@ -18,10 +22,7 @@ class SupportedSentence(BaseModel):
 
 
 class GeneratedDomainRead(BaseModel):
-    domain: Literal[
-        "market", "finance", "compute", "data_center", "connectivity", "power",
-        "grid_storage", "water", "adoption", "workforce", "economic_impact"
-    ]
+    domain: DomainName
     headline: SupportedSentence
     analysis: list[SupportedSentence] = Field(min_length=3, max_length=4)
 
@@ -35,10 +36,7 @@ class GeneratedMacroParagraph(BaseModel):
 
 
 class GeneratedMacroRead(BaseModel):
-    selected_domains: list[Literal[
-        "market", "finance", "compute", "data_center", "connectivity", "power",
-        "grid_storage", "water", "adoption", "workforce", "economic_impact"
-    ]] = Field(min_length=3, max_length=5)
+    selected_domains: list[DomainName] = Field(min_length=3, max_length=5)
     headline: SupportedSentence
     paragraphs: list[GeneratedMacroParagraph] = Field(min_length=3, max_length=4)
 
@@ -46,3 +44,25 @@ class GeneratedMacroRead(BaseModel):
     def analysis(self) -> list[SupportedSentence]:
         """Flatten paragraph sentences for grounding and editorial audits."""
         return [sentence for paragraph in self.paragraphs for sentence in paragraph.sentences]
+
+
+class GeneratedAnalyticalState(BaseModel):
+    """Compact continuity state retained for the next editorial call."""
+
+    thesis: str = Field(min_length=1, max_length=500)
+    selected_domains: list[DomainName] = Field(max_length=5)
+    changed_since_prior: list[str] = Field(max_length=5)
+    unresolved_tensions: list[str] = Field(max_length=4)
+    confirming_signals: list[str] = Field(max_length=4)
+    disconfirming_signals: list[str] = Field(max_length=4)
+
+
+class GeneratedEditorialSynthesis(BaseModel):
+    """One-call decision, incremental domain updates, and Macro synthesis."""
+
+    decision: Literal["publish", "retain_prior"]
+    decision_reason: str = Field(min_length=1, max_length=500)
+    updated_domains: list[DomainName] = Field(max_length=len(DOMAIN_ORDER))
+    domain_reads: list[GeneratedDomainRead] = Field(max_length=len(DOMAIN_ORDER))
+    macro_read: GeneratedMacroRead | None
+    analytical_state: GeneratedAnalyticalState

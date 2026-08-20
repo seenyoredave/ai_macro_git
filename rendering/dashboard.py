@@ -4,7 +4,6 @@ from analytics.dashboard_context import DashboardContext
 from analytics.domain_state import with_domain_states
 from analytics.macro_dataframe import build_macro_dashboard_data
 from analytics.read_evidence import build_evidence_packets
-from analytics.transmission import build_macro_transmission
 from rendering.adoption import render_adoption_tab
 from rendering.compute import render_compute_tab
 from rendering.connectivity import render_connectivity_tab
@@ -41,7 +40,6 @@ def render_research_dashboard(tabs, context: DashboardContext):
                 dashboard_data,
                 context.adoption_data,
                 context.infrastructure_data,
-                transmission_state=build_macro_transmission(context),
                 tab_read=platform_reads.get("macro"),
             )
     if tabs[1].open:

@@ -68,7 +68,7 @@ class _BudgetedResponses:
 
     def parse(self, *args: Any, **kwargs: Any) -> Any:
         format_name = str(getattr(kwargs.get("text_format"), "__name__", ""))
-        stage = "domain" if "Domain" in format_name else "macro" if "Macro" in format_name else "responses.parse"
+        stage = "editorial_synthesis" if "Editorial" in format_name else "responses.parse"
         call_id = self._guard.reserve(stage)
         try:
             response = self._inner.parse(*args, **kwargs)

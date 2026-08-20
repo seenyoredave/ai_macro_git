@@ -124,3 +124,66 @@ def consumer_adoption_history(history: pd.DataFrame | None, *, height: int = 340
     figure = _base_layout(figure, height=height, legend=True, margin=dict(l=56, r=18, t=28, b=36))
     figure.update_layout(legend={"orientation": "h", "y": 1.05, "x": 0})
     return add_axis_headroom(figure, upper=0.18, lower=0.05, include_zero=True)
+
+
+def adoption_function_bars(functions: pd.DataFrame | None, *, height: int = 650):
+    required = {"Function", "Share"}
+    if functions is None or not isinstance(functions, pd.DataFrame) or functions.empty or not required.issubset(functions.columns):
+        clean = pd.DataFrame(columns=["Function", "Share", "SE"])
+    else:
+        clean = functions.copy()
+        clean["Share"] = pd.to_numeric(clean["Share"], errors="coerce")
+        clean["SE"] = pd.to_numeric(clean.get("SE"), errors="coerce")
+        clean = clean.dropna(subset=["Share"]).sort_values("Share", kind="stable")
+
+    figure = go.Figure()
+    if not clean.empty:
+        figure.add_trace(go.Bar(
+            x=clean["Share"],
+            y=clean["Function"],
+            orientation="h",
+            marker_color=COLORS["violet"],
+            error_x={
+                "type": "data",
+                "array": 1.96 * clean["SE"],
+                "visible": bool(clean["SE"].notna().any()),
+                "color": COLORS["violet"],
+                "thickness": 1.0,
+            },
+            hovertemplate="%{y}<br>%{x:.1f}%<extra></extra>",
+            showlegend=False,
+        ))
+    figure.update_xaxes(ticksuffix="%", rangemode="tozero")
+    figure = _base_layout(figure, height=height, legend=False, margin=dict(l=255, r=34, t=30, b=36))
+    return add_axis_headroom(figure, axis="x", upper=0.18, lower=0.0, include_zero=True)
+
+def adoption_depth_bars(
+    frame: pd.DataFrame | None,
+    *,
+    category: str,
+    value: str,
+    height: int = 420,
+):
+    required = {category, value}
+    if frame is None or not isinstance(frame, pd.DataFrame) or frame.empty or not required.issubset(frame.columns):
+        clean = pd.DataFrame(columns=[category, value, "SE"])
+    else:
+        clean = frame.copy()
+        clean[value] = pd.to_numeric(clean[value], errors="coerce")
+        clean["SE"] = pd.to_numeric(clean.get("SE"), errors="coerce")
+        clean = clean.dropna(subset=[value]).sort_values(value, kind="stable")
+
+    figure = go.Figure()
+    if not clean.empty:
+        figure.add_trace(go.Bar(
+            x=clean[value],
+            y=clean[category],
+            orientation="h",
+            marker_color=COLORS["green"],
+            error_x={"type": "data", "array": 1.96 * clean["SE"], "visible": bool(clean["SE"].notna().any()), "color": COLORS["green"], "thickness": 1.0},
+            hovertemplate="%{y}<br>%{x:.1f}%<extra></extra>",
+            showlegend=False,
+        ))
+    figure.update_xaxes(ticksuffix="%", rangemode="tozero")
+    figure = _base_layout(figure, height=height, legend=False, margin=dict(l=255, r=34, t=22, b=36))
+    return add_axis_headroom(figure, axis="x", upper=0.18, lower=0.0, include_zero=True)

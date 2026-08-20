@@ -68,7 +68,7 @@ Keep the analytical Read nonpartisan and outside social-identity debates. Do not
 
 Do not use **minority** or **majority** as a modifier for a measured proportion of people, businesses, workers, consumers, users, adoption, participation, or employment. That construction is both ambiguous and clumsy. Make the counted population the grammatical subject: `Fewer than half of businesses currently report AI use`, or state the measured percentage. Do not write `minority current business use`.
 
-Prefer zero to two commas in a Read sentence. Three is a warning that the sentence may be carrying too much. Four or more fails the publication style gate. Semicolons are not used in Reader commentary. Domain Reads should usually be 55–85 words and must stay at or below 95. AI Macro uses three paragraphs by default and a fourth only when analytically necessary. Each paragraph contains two to four sentences. The Read should usually contain 150–225 words, has no minimum word count, must stay at or below 250, and uses no more than 28 words in an individual analysis sentence.
+Prefer zero to two commas in a Read sentence. Three is a warning that the sentence may be carrying too much; four or more is a strong editorial diagnostic. Semicolons are not used in Reader commentary. Domain Reads should usually be 55–85 words and must stay at or below 95. AI Macro uses three paragraphs by default and a fourth only when analytically necessary. Each paragraph contains two to four sentences. The Read should usually contain 150–225 words, has no minimum word count, must stay at or below 250, and uses no more than 28 words in an individual analysis sentence.
 
 Examples of the intended distinction:
 

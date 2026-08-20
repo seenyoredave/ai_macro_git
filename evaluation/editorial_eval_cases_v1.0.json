@@ -1,0 +1,265 @@
+{
+  "schema_version": "1.0",
+  "suite_version": "1.0.0",
+  "purpose": "Blind, production-shaped evaluation cases for the one-call AI Macro editorial synthesis pipeline.",
+  "rubric": {
+    "dimensions": ["factual_fidelity", "coherence", "relevance", "readability", "material_usefulness"],
+    "score_range": [1, 5],
+    "publish_without_edit_target": 0.8,
+    "paired_distinction_target": 0.9,
+    "unsupported_numeric_claims_allowed": 0,
+    "median_dimension_score_target": 4
+  },
+  "cases": [
+    {
+      "case_id": "MKT-BROAD-01",
+      "pair_id": "MKT-COMPOSITION",
+      "category": "market_composition",
+      "expected_decision": "publish",
+      "setup": "AEI rises by the same amount as its pair, with gains distributed across sectors and firms.",
+      "signals": ["AEI +3.6", "positive breadth rises", "median and equal-weight returns improve", "top-ten share falls"],
+      "must_address": ["broadening participation", "concentration is easing"],
+      "must_not_claim": ["economy-wide adoption", "causation"]
+    },
+    {
+      "case_id": "MKT-NARROW-02",
+      "pair_id": "MKT-COMPOSITION",
+      "category": "market_composition",
+      "expected_decision": "publish",
+      "setup": "AEI rises by the same amount as its pair, but breadth weakens and gains concentrate in the largest firms.",
+      "signals": ["AEI +3.6", "positive breadth falls", "median return weakens", "top-ten share rises"],
+      "must_address": ["narrow leadership", "aggregate strength masks concentration"],
+      "must_not_claim": ["broad market confirmation", "causation"]
+    },
+    {
+      "case_id": "FIN-FUNDED-03",
+      "pair_id": "FIN-FUNDING",
+      "category": "finance",
+      "expected_decision": "publish",
+      "setup": "Forward commitments rise while operating cash flow and cash reserves improve.",
+      "signals": ["commitment load rises", "internal funding coverage above one", "cash runway improves", "borrower strain stable"],
+      "must_address": ["commitments are large but presently fundable", "timing remains relevant"],
+      "must_not_claim": ["commitments are realized returns"]
+    },
+    {
+      "case_id": "FIN-STRAINED-04",
+      "pair_id": "FIN-FUNDING",
+      "category": "finance",
+      "expected_decision": "publish",
+      "setup": "Forward commitments rise by the same amount as its pair while cash coverage deteriorates and borrower strain increases.",
+      "signals": ["commitment load rises", "internal funding coverage below one", "cash runway falls", "borrower strain rises"],
+      "must_address": ["funding burden", "refinancing or external capital dependence"],
+      "must_not_claim": ["default is certain"]
+    },
+    {
+      "case_id": "PWR-DELIVERED-05",
+      "pair_id": "POWER-STATE",
+      "category": "power",
+      "expected_decision": "publish",
+      "setup": "Generation capacity increases with operating evidence and adequate reserve conditions.",
+      "signals": ["operating supply rises", "reserve margin remains positive", "large-load campus capacity rises", "queue conversion improves"],
+      "must_address": ["delivered power supports deployment", "conversion evidence matters"],
+      "must_not_claim": ["every campus is energized"]
+    },
+    {
+      "case_id": "PWR-PLANNED-06",
+      "pair_id": "POWER-STATE",
+      "category": "power",
+      "expected_decision": "publish",
+      "setup": "The same capacity increase exists only in planned additions while reserve stress and queue attrition worsen.",
+      "signals": ["planned additions rise", "reserve margin turns negative", "large-load campus capacity rises", "queue withdrawals rise"],
+      "must_address": ["plans are not delivered supply", "deliverability bottleneck"],
+      "must_not_claim": ["planned capacity is operating"]
+    },
+    {
+      "case_id": "ADP-BROAD-07",
+      "pair_id": "ADOPTION-DEPTH",
+      "category": "adoption",
+      "expected_decision": "publish",
+      "setup": "Business AI use rises with broader functional deployment and organizational adjustment.",
+      "signals": ["current business use rises", "use across more than three functions rises", "organizational change rises", "task creation rises"],
+      "must_address": ["diffusion is deepening", "organizational absorption"],
+      "must_not_claim": ["productivity causation"]
+    },
+    {
+      "case_id": "ADP-SHALLOW-08",
+      "pair_id": "ADOPTION-DEPTH",
+      "category": "adoption",
+      "expected_decision": "publish",
+      "setup": "Business AI use rises by the same amount as its pair while deployment remains concentrated in few functions and tasks.",
+      "signals": ["current business use rises", "three-or-fewer functions share rises", "organizational change flat", "leading task concentration rises"],
+      "must_address": ["reach expands without comparable depth", "limited organizational absorption"],
+      "must_not_claim": ["broad transformation"]
+    },
+    {
+      "case_id": "OUT-ALIGNED-09",
+      "pair_id": "OUTCOME-CONVERSION",
+      "category": "economic_outcomes",
+      "expected_decision": "publish",
+      "setup": "Adoption, productivity, real output, and real compensation strengthen together.",
+      "signals": ["business use rises", "productivity rises", "real output rises", "real compensation rises"],
+      "must_address": ["conversion evidence is becoming more consistent", "causal attribution remains bounded"],
+      "must_not_claim": ["AI caused all aggregate growth"]
+    },
+    {
+      "case_id": "OUT-DISCONNECTED-10",
+      "pair_id": "OUTCOME-CONVERSION",
+      "category": "economic_outcomes",
+      "expected_decision": "publish",
+      "setup": "Adoption rises by the same amount as its pair while productivity is flat and real compensation weakens.",
+      "signals": ["business use rises", "productivity flat", "real output slows", "real compensation falls"],
+      "must_address": ["diffusion has not yet converted into broad outcomes", "distribution or lag"],
+      "must_not_claim": ["AI caused compensation weakness"]
+    },
+    {
+      "case_id": "DC-DELIVERABLE-11",
+      "pair_id": "DATACENTER-DELIVERY",
+      "category": "data_centers",
+      "expected_decision": "publish",
+      "setup": "The development pipeline expands with higher published-capacity coverage and improving power/connectivity conditions.",
+      "signals": ["development ratio rises", "capacity coverage rises", "power reserve adequate", "public interconnection depth improves"],
+      "must_address": ["pipeline quality improves", "delivery conditions support conversion"],
+      "must_not_claim": ["all announced sites will operate"]
+    },
+    {
+      "case_id": "DC-BLOCKED-12",
+      "pair_id": "DATACENTER-DELIVERY",
+      "category": "data_centers",
+      "expected_decision": "publish",
+      "setup": "The same pipeline expansion occurs with low capacity disclosure and worsening power/connectivity constraints.",
+      "signals": ["development ratio rises", "capacity coverage falls", "reserve stress rises", "connectivity mismatch states rise"],
+      "must_address": ["headline pipeline overstates deliverability", "site conversion risk"],
+      "must_not_claim": ["announcements equal operating capacity"]
+    },
+    {
+      "case_id": "WRK-AUGMENT-13",
+      "pair_id": "WORKFORCE-TRANSMISSION",
+      "category": "workforce",
+      "expected_decision": "publish",
+      "setup": "AI exposure rises while employment and real-earnings breadth improve and task augmentation dominates.",
+      "signals": ["exposure rises", "employment breadth rises", "real earnings breadth rises", "augmentation exceeds substitution"],
+      "must_address": ["exposure is transmitting through augmentation", "heterogeneous channels"],
+      "must_not_claim": ["exposure guarantees job growth"]
+    },
+    {
+      "case_id": "WRK-DISPLACE-14",
+      "pair_id": "WORKFORCE-TRANSMISSION",
+      "category": "workforce",
+      "expected_decision": "publish",
+      "setup": "The same exposure rise occurs while employment breadth weakens and substitution indicators increase.",
+      "signals": ["exposure rises", "employment breadth falls", "weakest channel deteriorates", "substitution rises"],
+      "must_address": ["transmission is less benign", "distribution across channels"],
+      "must_not_claim": ["AI caused every job loss"]
+    },
+    {
+      "case_id": "WTR-DISCLOSED-15",
+      "pair_id": "WATER-EVIDENCE",
+      "category": "water",
+      "expected_decision": "publish",
+      "setup": "Drought exposure rises, but direct water evidence and service-area provenance improve materially.",
+      "signals": ["D2 exposure rises", "direct evidence share rises", "provenance classification rises", "quantified use records rise"],
+      "must_address": ["constraint is better measured", "exposure and evidence quality are separate"],
+      "must_not_claim": ["exposure equals shortage"]
+    },
+    {
+      "case_id": "WTR-OPAQUE-16",
+      "pair_id": "WATER-EVIDENCE",
+      "category": "water",
+      "expected_decision": "publish",
+      "setup": "The same drought exposure rise occurs while direct evidence remains sparse and service-area provenance deteriorates.",
+      "signals": ["D2 exposure rises", "direct evidence share flat", "unclassified overlaps rise", "quantified use records sparse"],
+      "must_address": ["risk is compounded by observability limits", "do not overstate physical shortage"],
+      "must_not_claim": ["every exposed campus lacks water"]
+    },
+    {
+      "case_id": "RET-EXACT-17",
+      "pair_id": null,
+      "category": "abstention",
+      "expected_decision": "retain_prior",
+      "setup": "The evidence snapshot is exactly unchanged.",
+      "signals": ["no changed facts", "prior thesis remains supported"],
+      "must_address": ["no new publication is warranted"],
+      "must_not_claim": ["new development"]
+    },
+    {
+      "case_id": "RET-NOISE-18",
+      "pair_id": null,
+      "category": "abstention",
+      "expected_decision": "retain_prior",
+      "setup": "Several figures move inside ordinary noise bands without changing composition or cross-domain conditions.",
+      "signals": ["small metric changes", "breadth stable", "constraints stable", "outcomes stable"],
+      "must_address": ["movement does not alter the interpretation"],
+      "must_not_claim": ["regime shift"]
+    },
+    {
+      "case_id": "SYS-FUNDING-BUILDOUT-19",
+      "pair_id": null,
+      "category": "cross_domain",
+      "expected_decision": "publish",
+      "setup": "Commitments accelerate while internal funding deteriorates and delivery constraints tighten.",
+      "signals": ["commitment load rises", "cash coverage falls", "data-center pipeline rises", "grid maturity falls"],
+      "must_address": ["timing mismatch between funding and delivery", "capital dependence"],
+      "must_not_claim": ["construction completion"]
+    },
+    {
+      "case_id": "CON-MISMATCH-20",
+      "pair_id": null,
+      "category": "connectivity",
+      "expected_decision": "publish",
+      "setup": "Campus development shifts toward states with limited visible interconnection depth.",
+      "signals": ["campuses screened rise", "mismatch states rise", "IXP presence flat", "middle-mile buildout lags"],
+      "must_address": ["location-specific connectivity constraint", "public evidence boundary"],
+      "must_not_claim": ["private routes do not exist"]
+    },
+    {
+      "case_id": "GRID-CONVERSION-21",
+      "pair_id": null,
+      "category": "grid_storage",
+      "expected_decision": "publish",
+      "setup": "The queue expands while advanced-stage share and historical conversion decline.",
+      "signals": ["queue GW rises", "advanced share falls", "withdrawals rise", "request-to-operation time lengthens"],
+      "must_address": ["headline capacity is less mature", "conversion bottleneck"],
+      "must_not_claim": ["queued capacity is operating"]
+    },
+    {
+      "case_id": "CMP-BREADTH-22",
+      "pair_id": null,
+      "category": "compute",
+      "expected_decision": "publish",
+      "setup": "Manufacturing investment expands across multiple critical supply-chain layers rather than one project cluster.",
+      "signals": ["project capex rises", "critical layers covered rise", "core-AI sites rise", "utilization stable"],
+      "must_address": ["domestic manufacturing breadth", "commitment versus operating output"],
+      "must_not_claim": ["announced projects are producing"]
+    },
+    {
+      "case_id": "RET-CONTEXT-ONLY-23",
+      "pair_id": null,
+      "category": "abstention",
+      "expected_decision": "retain_prior",
+      "setup": "A news event appears in Current Context but no retained analytical capsule changes.",
+      "signals": ["context event only", "no changed analytical facts"],
+      "must_address": ["current context is not analytical evidence"],
+      "must_not_claim": ["event changed the measured state"]
+    },
+    {
+      "case_id": "RET-SPARSE-24",
+      "pair_id": null,
+      "category": "abstention",
+      "expected_decision": "retain_prior",
+      "setup": "One categorical source label changes while the relevant values and boundaries remain unavailable.",
+      "signals": ["source metadata change", "no usable trajectory", "no changed measured value"],
+      "must_address": ["insufficient basis for new analysis"],
+      "must_not_claim": ["direction of change"]
+    },
+    {
+      "case_id": "SYS-CONVERSION-25",
+      "pair_id": null,
+      "category": "cross_domain",
+      "expected_decision": "publish",
+      "setup": "Funding, delivered infrastructure, adoption depth, and realized outcomes strengthen together across repeated observations.",
+      "signals": ["funding coverage stable", "delivered capacity rises", "adoption depth rises", "productivity and compensation strengthen"],
+      "must_address": ["cross-lifecycle conversion is becoming more observable", "causal attribution remains bounded"],
+      "must_not_claim": ["one common mechanism is proven"]
+    }
+  ]
+}

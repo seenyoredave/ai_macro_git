@@ -1,4 +1,4 @@
-"""Deterministic quality audit for generated v8 commentary."""
+"""Hard grounding gate and editorial diagnostics for v10 commentary."""
 
 from __future__ import annotations
 
@@ -8,7 +8,13 @@ import re
 from typing import Any, Iterable
 
 from analytics.read_evidence import DOMAIN_ORDER, evidence_fact_index
-from analytics.read_models import GeneratedDomainRead, GeneratedDomainReadSet, GeneratedMacroRead, SupportedSentence
+from analytics.read_models import (
+    GeneratedDomainRead,
+    GeneratedDomainReadSet,
+    GeneratedEditorialSynthesis,
+    GeneratedMacroRead,
+    SupportedSentence,
+)
 
 VALIDATOR_VERSION = "3.4.0"
 _NUMBER_RE = re.compile(
@@ -611,3 +617,172 @@ def validate_macro_read(
         failures.extend(sentence_failures)
         grounded += int(ok)
     return ValidationResult(not errors, tuple(errors), checked, grounded, tuple(failures))
+
+
+EDITORIAL_VALIDATOR_VERSION = "4.0.0"
+_HARD_EDITORIAL_FAILURES = {
+    "contract_decision",
+    "contract_duplicate_domains",
+    "contract_missing_required_domains",
+    "contract_unavailable_domain",
+    "contract_update_membership",
+    "domain_selection",
+    "lifecycle_coverage",
+    "out_of_scope_fact_ids",
+    "unknown_fact_ids",
+    "unsupported_numeric_tokens",
+    "unsupplied_fact_ids",
+    "unused_selected_domains",
+}
+
+
+def _contract_failure(reason: str, message: str, **details: Any) -> dict[str, Any]:
+    return {
+        "label": "editorial_synthesis",
+        "reason": reason,
+        "message": message,
+        **details,
+    }
+
+
+def validate_editorial_synthesis(
+    synthesis: GeneratedEditorialSynthesis,
+    packets: dict[str, dict],
+    *,
+    required_update_domains: Iterable[str] = (),
+    candidate_update_domains: Iterable[str] = (),
+    allowed_fact_ids: Iterable[str] = (),
+    bootstrap: bool = False,
+) -> dict[str, Any]:
+    """Apply a hard factual/contract gate and retain style checks as diagnostics."""
+    required = [str(domain) for domain in required_update_domains]
+    candidates = set(str(domain) for domain in candidate_update_domains) | set(required)
+    supplied = {str(fact_id) for fact_id in allowed_fact_ids}
+    failures: list[dict[str, Any]] = []
+    domain_reports: dict[str, Any] = {}
+    macro_report: dict[str, Any] = {}
+    checked = grounded = 0
+
+    update_domains = [str(domain) for domain in synthesis.updated_domains]
+    model_domains = [read.domain for read in synthesis.domain_reads]
+    if synthesis.decision == "retain_prior":
+        if bootstrap:
+            failures.append(_contract_failure(
+                "contract_decision",
+                "bootstrap generation cannot retain a missing prior publication",
+            ))
+        if required:
+            failures.append(_contract_failure(
+                "contract_missing_required_domains",
+                "retain_prior cannot preserve domain prose that cites changed facts",
+                missing_domains=required,
+            ))
+        if update_domains or model_domains or synthesis.macro_read is not None:
+            failures.append(_contract_failure(
+                "contract_decision",
+                "retain_prior must not contain domain or Macro prose",
+            ))
+    else:
+        if synthesis.macro_read is None or not model_domains:
+            failures.append(_contract_failure(
+                "contract_decision",
+                "publish requires one Macro Read and at least one domain Read",
+            ))
+        if len(model_domains) != len(set(model_domains)) or len(update_domains) != len(set(update_domains)):
+            failures.append(_contract_failure(
+                "contract_duplicate_domains",
+                "updated domains must be unique",
+                updated_domains=update_domains,
+                model_domains=model_domains,
+            ))
+        if update_domains != model_domains:
+            failures.append(_contract_failure(
+                "contract_update_membership",
+                "updated_domains must match domain_reads in the same order",
+                updated_domains=update_domains,
+                model_domains=model_domains,
+            ))
+        missing = [domain for domain in required if domain not in model_domains]
+        if missing:
+            failures.append(_contract_failure(
+                "contract_missing_required_domains",
+                "publish omitted required domain replacements",
+                missing_domains=missing,
+            ))
+        unavailable = [
+            domain for domain in model_domains
+            if domain not in candidates and not bootstrap
+        ]
+        if unavailable:
+            failures.append(_contract_failure(
+                "contract_unavailable_domain",
+                "publish returned domains outside the current change set",
+                unavailable_domains=unavailable,
+            ))
+
+        for read in synthesis.domain_reads:
+            errors, read_failures, read_checked, read_grounded = _validate_domain_read(
+                read,
+                evidence_fact_index(packets),
+            )
+            domain_reports[read.domain] = {
+                "passed": not errors,
+                "errors": errors,
+                "failures": read_failures,
+                "checked_claims": read_checked,
+                "grounded_claims": read_grounded,
+            }
+            failures.extend(read_failures)
+            checked += read_checked
+            grounded += read_grounded
+
+        if synthesis.macro_read is not None:
+            macro_validation = validate_macro_read(
+                synthesis.macro_read,
+                packets,
+                domain_texts={
+                    read.domain: [read.headline.text, *[sentence.text for sentence in read.analysis]]
+                    for read in synthesis.domain_reads
+                },
+            )
+            macro_report = macro_validation.to_dict()
+            failures.extend(macro_validation.failures)
+            checked += macro_validation.checked_claims
+            grounded += macro_validation.grounded_claims
+
+        if supplied:
+            sentences = [
+                sentence
+                for read in synthesis.domain_reads
+                for sentence in [read.headline, *read.analysis]
+            ]
+            if synthesis.macro_read is not None:
+                sentences.extend([synthesis.macro_read.headline, *synthesis.macro_read.analysis])
+            outside = sorted({
+                str(fact_id)
+                for sentence in sentences
+                for fact_id in sentence.fact_ids
+                if str(fact_id) not in supplied
+            })
+            if outside:
+                failures.append(_contract_failure(
+                    "unsupplied_fact_ids",
+                    "response cited facts that were not present in the signal capsules",
+                    unsupplied_fact_ids=outside,
+                ))
+
+    hard_failures = [item for item in failures if str(item.get("reason") or "") in _HARD_EDITORIAL_FAILURES]
+    diagnostics = [item for item in failures if item not in hard_failures]
+    return {
+        "passed": not hard_failures,
+        "decision": synthesis.decision,
+        "hard_errors": [str(item.get("message") or item.get("reason") or "") for item in hard_failures],
+        "hard_failures": hard_failures,
+        "diagnostics": diagnostics,
+        "domain": domain_reports,
+        "macro": macro_report,
+        "checked_claims": checked,
+        "grounded_claims": grounded,
+        "publication_policy": "hard_grounding_gate_soft_editorial_diagnostics",
+        "validator_version": EDITORIAL_VALIDATOR_VERSION,
+    }

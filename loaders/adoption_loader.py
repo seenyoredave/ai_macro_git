@@ -13,6 +13,8 @@ from helpers.atomic_io import atomic_write_csv
 
 from config.debug_config import debug_print
 from loaders.official_series_refresh import refresh_templated_history
+from loaders.adoption_depth_loader import load_adoption_depth, persist_adoption_depth_source
+from analytics.adoption_depth import build_adoption_depth_snapshot
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 NATIONAL_HISTORY_PATH = PROJECT_ROOT / "data" / "adoption_national_history.csv"
@@ -267,7 +269,28 @@ def load_adoption_data(
     live_refresh = bool(force_refresh and allow_live)
     local_national, local_sector = _load_local()
     consumer_history = _load_consumer_history()
-    reports = {}
+    depth = load_adoption_depth(force_refresh=live_refresh, allow_live=allow_live)
+    depth_report = dict(depth.get("load_report") or {})
+    try:
+        depth["snapshot"] = build_adoption_depth_snapshot(depth.get("table"))
+        if live_refresh and depth_report.get("source_mode") == "live_candidate":
+            persist_adoption_depth_source(depth.get("table"))
+            depth_report["source_mode"] = "live_refresh"
+    except Exception as exc:
+        if not live_refresh or depth_report.get("source_mode") != "live_candidate":
+            raise
+        retained_depth = depth.get("retained_table")
+        if isinstance(retained_depth, pd.DataFrame) and not retained_depth.empty:
+            depth["table"] = retained_depth
+            depth["snapshot"] = build_adoption_depth_snapshot(retained_depth)
+            depth_report = {"source_mode": "retained_fallback", "error": f"{type(exc).__name__}: {exc}"}
+        else:
+            depth["table"] = pd.DataFrame()
+            depth["snapshot"] = build_adoption_depth_snapshot(None)
+            depth_report = {"source_mode": "unavailable", "error": f"{type(exc).__name__}: {exc}"}
+    depth.pop("retained_table", None)
+    depth["load_report"] = depth_report
+    reports = {"depth": depth_report}
     if not live_refresh:
         payload = _summarize(
             local_national,
@@ -275,10 +298,11 @@ def load_adoption_data(
             source="Census BTOS Local History",
             consumer=consumer_history,
         )
+        payload["depth"] = depth
         payload["source_mode"] = "retained_official" if not local_national.empty else "unavailable"
         payload["load_report"] = {
             "source_mode": payload["source_mode"],
-            "datasets": {},
+            "datasets": reports,
         }
         return payload
 
@@ -314,6 +338,7 @@ def load_adoption_data(
         }
 
     payload = _summarize(national, sector, source=source, consumer=consumer_history)
+    payload["depth"] = depth
     modes = [str(report.get("source_mode", "")) for report in reports.values()]
     payload["source_mode"] = (
         "live_refresh" if modes and all(mode == "live_refresh" for mode in modes)

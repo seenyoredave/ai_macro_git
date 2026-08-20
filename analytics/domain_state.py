@@ -1,8 +1,7 @@
 """Canonical deterministic domain state shared by rendering and commentary.
 
-This module is part of AI Macro's analytical core.  It computes domain-level
-summary state from already-loaded research inputs.  The language subsystem may
-read these finished values, but it must never reproduce or override them.
+Domain summaries are computed from loaded research inputs and reused across the
+application.
 """
 
 from __future__ import annotations
@@ -570,6 +569,20 @@ def build_adoption_state(context: DashboardContext) -> DomainState:
     consumer_work = _num((adoption.get("consumer_work", {}) or {}).get("value"))
     consumer_active = _num((adoption.get("consumer_active", {}) or {}).get("value"))
     consumer_daily = _num((adoption.get("consumer_daily", {}) or {}).get("value"))
+    depth = ((adoption.get("depth") or {}).get("snapshot") or {})
+    worker_ai_use = _num(depth.get("worker_ai_use_pct"))
+    worker_genai_use = _num(depth.get("worker_genai_use_pct"))
+    function_le3 = _num(depth.get("function_le3_share_pct"))
+    task_le3 = _num(depth.get("task_le3_share_pct"))
+    top_function = str(depth.get("top_function") or "")
+    top_function_use = _num(depth.get("top_function_use_pct"))
+    top_task = str(depth.get("top_task") or "")
+    top_task_use = _num(depth.get("top_task_use_pct"))
+    organizational_change = _num(depth.get("organizational_change_share_pct"))
+    task_augmentation = _num(depth.get("task_augmentation_pct"))
+    task_substitution = _num(depth.get("task_substitution_pct"))
+    task_creation = _num(depth.get("task_creation_pct"))
+    employment_decrease = _num(depth.get("employment_decrease_pct"))
 
     change = np.nan
     history = adoption.get("consumer_history")
@@ -621,6 +634,19 @@ def build_adoption_state(context: DashboardContext) -> DomainState:
             "sector_coverage": sector_coverage,
             "leading_sector": leading_sector,
             "leading_sector_use_pct": leading_sector_use,
+            "worker_ai_use_pct": worker_ai_use,
+            "worker_genai_use_pct": worker_genai_use,
+            "function_le3_share_pct": function_le3,
+            "task_le3_share_pct": task_le3,
+            "top_function": top_function,
+            "top_function_use_pct": top_function_use,
+            "top_task": top_task,
+            "top_task_use_pct": top_task_use,
+            "organizational_change_share_pct": organizational_change,
+            "task_augmentation_pct": task_augmentation,
+            "task_substitution_pct": task_substitution,
+            "task_creation_pct": task_creation,
+            "employment_decrease_pct": employment_decrease,
             "chatgpt_subscribers_m": subscribers,
             "implied_subscriber_share_pct": subscriber_share,
             "openai_paying_business_users_m": business_users,

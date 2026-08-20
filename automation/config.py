@@ -7,8 +7,8 @@ import os
 
 AUTOMATION_TIMEZONE = "America/New_York"
 AUTOMATION_START_LOCAL = "08:07"
-HARD_MAX_PAID_CALLS_PER_RUN = 2
-HARD_MAX_PAID_CALLS_PER_DAY = 4
+HARD_MAX_PAID_CALLS_PER_RUN = 1
+HARD_MAX_PAID_CALLS_PER_DAY = 2
 DEFAULT_OPENAI_TIMEOUT_SECONDS = 600.0
 
 
@@ -66,13 +66,12 @@ def load_automation_config() -> AutomationConfig:
         auto_publish=publish,
         trigger=trigger,
         max_paid_calls_per_run=_bounded_int(
-            "AI_MACRO_MAX_PAID_CALLS_PER_RUN", 2, HARD_MAX_PAID_CALLS_PER_RUN
+            "AI_MACRO_MAX_PAID_CALLS_PER_RUN", 1, HARD_MAX_PAID_CALLS_PER_RUN
         ),
         max_paid_calls_per_day=_bounded_int(
-            "AI_MACRO_MAX_PAID_CALLS_PER_DAY", 4, HARD_MAX_PAID_CALLS_PER_DAY
+            "AI_MACRO_MAX_PAID_CALLS_PER_DAY", 2, HARD_MAX_PAID_CALLS_PER_DAY
         ),
         openai_timeout_seconds=_float(
             "AI_MACRO_OPENAI_TIMEOUT_SECONDS", DEFAULT_OPENAI_TIMEOUT_SECONDS
         ),
-        
     )

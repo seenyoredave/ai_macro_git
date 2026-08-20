@@ -2198,7 +2198,14 @@ def load_retained_universal_data_center_registry(*, require_current: bool = True
         return None
     try:
         metadata = json.loads(REGISTRY_METADATA_PATH.read_text(encoding="utf-8"))
-        if str(metadata.get("registry_version")) != REGISTRY_VERSION:
+        retained_version = str(metadata.get("registry_version") or "")
+        if not retained_version:
+            return None
+        # Normal retained-mode startup must remain able to read the last
+        # internally valid published registry even when code has advanced.
+        # Strict version + source freshness is reserved for callers that
+        # explicitly require the current build (release gates / rebuild checks).
+        if require_current and retained_version != REGISTRY_VERSION:
             return None
         if require_current and str(metadata.get("source_fingerprint")) != registry_source_fingerprint():
             return None
@@ -2218,7 +2225,7 @@ def load_retained_universal_data_center_registry(*, require_current: bool = True
             for column in DATE_COLUMNS.intersection(frame.columns):
                 frame[column] = pd.to_datetime(frame[column], errors="coerce", format="mixed")
         payload = {
-            "version": REGISTRY_VERSION,
+            "version": retained_version,
             "campuses": campuses,
             "entities": entities,
             "observations": observations,

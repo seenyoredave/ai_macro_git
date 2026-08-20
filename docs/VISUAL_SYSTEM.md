@@ -87,5 +87,5 @@ All Plotly surfaces render through `rendering.visual_system.render_plotly_chart`
 
 - `config.visual_design` owns domain profiles, stage families, signature tools, and protected status.
 - `data/visual_surface_inventory.csv` records the current chart, selector, and interactive-table footprint.
-- `helpers/visual_system_smoke_test.py` blocks removal of protected signatures, direct Plotly rendering outside the shared wrapper, missing domain profiles, and silent inventory contraction.
+- Visual changes are verified in the running application. Protected signature tools and shared Plotly ownership remain design rules, not executable release gates.
 - Phase-specific redesigns must update the visual inventory and explain any new signature surface.

@@ -75,17 +75,6 @@ Macro and Data Centers use the same interactive campus map in `rendering/spatial
 
 Map points carry `Campus ID` in selection data. A national campus click can drill into the selected state, and state maps preserve campus selection. Water uses the same Campus IDs for its drought/water context and campus selection.
 
-## Release gate
+## Verification
 
-The overhaul is accepted only after `helpers/data_center_registry_release_gate.py` passes against the actual retained national checkout. The gate verifies:
-
-- one identity authority and no legacy identity modules/keys;
-- retained registry freshness through the current source fingerprint and retained-table SHA-256 verification;
-- unique IDs and labels;
-- no county-only identities promoted to campuses;
-- no uncorroborated point or lone-building campus creation;
-- observation membership uniqueness;
-- Umatilla AWS regression: the 15 generic IM3 AWS building footprints resolve into four local campuses rather than 15 campus identities;
-- Water has exactly the campus universe;
-- Connectivity joins only by Campus ID;
-- retained registry startup-load performance bound.
+Registry work is verified against the behavior it can materially break: retained startup must load a coherent registry, campus metric rollups must not double-count campus totals and member measurements, and an explicit Data Centers refresh must rebuild the derived registry when source or identity inputs change. Version labels by themselves are not a runtime validity condition.

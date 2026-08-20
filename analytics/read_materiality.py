@@ -1,10 +1,10 @@
 """Deterministic materiality gate for scheduled OpenAI commentary.
 
 The exact evidence fingerprint remains the audit identity.  This module answers
-a different question: whether changes since the last generated Read are large
-enough to justify another paid two-call generation.  Comparisons always use the
-evidence packets persisted with the last generated artifact, so sub-threshold
-changes accumulate rather than resetting after each daily refresh.
+a different question: whether changes since the last completed API evaluation
+are large enough to justify another paid one-call synthesis. Comparisons use the
+separate evaluated baseline when it exists, so an explicit model abstention is
+not purchased again while sub-threshold changes still accumulate.
 """
 
 from __future__ import annotations
@@ -14,9 +14,17 @@ import re
 from typing import Any
 
 
-MATERIALITY_VERSION = "1.0.0"
+MATERIALITY_VERSION = "1.1.0"
 RELATIVE_CHANGE_THRESHOLD = 0.10
 PERCENTAGE_POINT_THRESHOLD = 2.0
+POINT_SCALE_FACT_IDS = {
+    "market.aei",
+    "market.pressure",
+    "finance.borrower_strain",
+    "finance.lender_strain",
+    "finance.debt_financing_pulse",
+    "finance.bond_distress",
+}
 
 _DISPLAY_NUMBER_RE = re.compile(r"[-+]?\d[\d,]*(?:\.\d+)?")
 
@@ -65,6 +73,10 @@ def _percentage_fact(fact: dict[str, Any]) -> bool:
     return "%" in display or "percentage point" in display
 
 
+def _point_scale_fact(fact_id: str, old: dict[str, Any], new: dict[str, Any]) -> bool:
+    return fact_id in POINT_SCALE_FACT_IDS or _percentage_fact(old) or _percentage_fact(new)
+
+
 def _semantic_packet_changes(
     previous: dict[str, dict[str, Any]],
     current: dict[str, dict[str, Any]],
@@ -98,7 +110,7 @@ def compare_evidence_materiality(
     previous_snapshot_id: str = "",
     current_snapshot_id: str = "",
 ) -> dict[str, Any]:
-    """Compare current evidence with the last generated evidence baseline."""
+    """Compare current evidence with the last completed evaluation baseline."""
 
     previous = _packets(previous_packets)
     current = _packets(current_packets)
@@ -152,7 +164,7 @@ def compare_evidence_materiality(
                 continue
             percentage_points = None
             percentage_material = False
-            if _percentage_fact(old) or _percentage_fact(new):
+            if _point_scale_fact(fact_id, old, new):
                 old_display = _display_number(old)
                 new_display = _display_number(new)
                 if old_display is not None and new_display is not None:
@@ -199,6 +211,7 @@ def compare_evidence_materiality(
 __all__ = [
     "MATERIALITY_VERSION",
     "PERCENTAGE_POINT_THRESHOLD",
+    "POINT_SCALE_FACT_IDS",
     "RELATIVE_CHANGE_THRESHOLD",
     "compare_evidence_materiality",
 ]

@@ -1,0 +1,41 @@
+{
+  "checkpoint_version": "1.0.0",
+  "application_version": "10.0.0",
+  "release_id": "428db6ce4f0c985776bf",
+  "status": "complete",
+  "architecture": {
+    "api_calls_per_material_evaluation": 1,
+    "automatic_retries": 0,
+    "production_context": "signal_capsules_plus_editorial_constitution",
+    "publication_mode": "incremental_domain_replacement_plus_new_macro",
+    "abstention": "retain_prior",
+    "evaluated_state_path": "openai_artifacts/evaluated.json",
+    "published_state_path": "openai_artifacts/current.json",
+    "hard_publication_gate": true
+  },
+  "preserved_research": {
+    "completed_domain_corpora": 8,
+    "production_domains": 11,
+    "neuroscience_audit_preserved": true,
+    "neuroscience_sources": 16,
+    "neuroscience_atomic_observations": 70,
+    "neuroscience_system_families": 22,
+    "neuroscience_mathematical_motifs": 14
+  },
+  "verification": {
+    "editorial_pipeline_smoke": "passed",
+    "editorial_service_smoke": "passed",
+    "response_allowance_smoke": "passed",
+    "rejected_baseline_staleness_guard": "passed",
+    "startup_loader_contract": "passed",
+    "snapshot_writer_contract": "passed",
+    "language_layer_integrity": "passed",
+    "python_ast_files_checked": 217,
+    "python_ast_errors": 0,
+    "eval_suite_cases": 25,
+    "eval_paired_contrasts": 8,
+    "live_api_calls": 0,
+    "github_mutations": 0,
+    "rendering_import_smoke": "not_run_missing_plotly_in_sandbox"
+  }
+}

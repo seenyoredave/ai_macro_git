@@ -11,13 +11,26 @@ from uuid import uuid4
 from config.deployment import PROJECT_ROOT, repository_writes_enabled
 from helpers.atomic_io import atomic_write_json, synchronized_path
 
-READ_ARTIFACT_VERSION = "3.1.0"
+READ_ARTIFACT_VERSION = "4.0.0"
 OPENAI_ARTIFACT_ROOT = PROJECT_ROOT / "openai_artifacts"
 READ_ARTIFACT_PATH = OPENAI_ARTIFACT_ROOT / "current.json"
+EVALUATED_STATE_PATH = OPENAI_ARTIFACT_ROOT / "evaluated.json"
 READ_ATTEMPT_DIR = OPENAI_ARTIFACT_ROOT / "attempts"
 
 
 def load_read_artifact(path: Path = READ_ARTIFACT_PATH) -> dict[str, Any]:
+    with synchronized_path(path):
+        if not path.exists():
+            return {}
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def load_evaluated_state(path: Path = EVALUATED_STATE_PATH) -> dict[str, Any]:
+    """Load the last evidence snapshot that received a completed API response."""
     with synchronized_path(path):
         if not path.exists():
             return {}
@@ -40,52 +53,6 @@ def load_read_attempt(attempt_id: str) -> dict[str, Any]:
         except (OSError, json.JSONDecodeError):
             return {}
     return payload if isinstance(payload, dict) else {}
-
-
-def latest_recoverable_attempt(
-    *,
-    evidence_snapshot_id: str = "",
-    domain_prompt_version: str = "",
-    language_layer_sha256: str = "",
-) -> dict[str, Any]:
-    """Return the newest failed paid attempt that still contains model output.
-
-    Attempt filenames begin with a UTC timestamp, so reverse lexical order is
-    newest-first.  Only attempts for the requested evidence snapshot are
-    eligible; a paid response is never replayed against different evidence.
-    """
-    snapshot = str(evidence_snapshot_id or "").strip()
-    prompt_version = str(domain_prompt_version or "").strip()
-    layer_digest = str(language_layer_sha256 or "").strip()
-    if not READ_ATTEMPT_DIR.exists():
-        return {}
-    for path in sorted(READ_ATTEMPT_DIR.glob("*.json"), reverse=True):
-        with synchronized_path(path):
-            try:
-                payload = json.loads(path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
-                continue
-        if not isinstance(payload, dict):
-            continue
-        if str(payload.get("mode") or "") == "macro_only":
-            continue
-        if snapshot and str(payload.get("evidence_snapshot_id") or "") != snapshot:
-            continue
-        if prompt_version and str((payload.get("prompt_versions") or {}).get("domain") or "") != prompt_version:
-            continue
-        if layer_digest and str((payload.get("prompt_versions") or {}).get("language_layer_sha256") or "") != layer_digest:
-            continue
-        generated = payload.get("generated_output") or {}
-        staged_output = any(
-            generated.get(key)
-            for key in ("domain_reads", "macro_read")
-        ) if isinstance(generated, dict) else False
-        raw_output = bool(payload.get("raw_responses"))
-        if str(payload.get("status") or "") == "generation_failed" and (staged_output or raw_output):
-            return payload
-    return {}
-
-
 def persist_read_artifact(payload: dict[str, Any], path: Path = READ_ARTIFACT_PATH) -> None:
     """Publish one completed typed model result with its validation diagnostics."""
     if not repository_writes_enabled():
@@ -93,6 +60,15 @@ def persist_read_artifact(payload: dict[str, Any], path: Path = READ_ARTIFACT_PA
     artifact = dict(payload)
     artifact["artifact_version"] = READ_ARTIFACT_VERSION
     atomic_write_json(artifact, path)
+
+
+def persist_evaluated_state(payload: dict[str, Any], path: Path = EVALUATED_STATE_PATH) -> None:
+    """Persist the completed-evaluation baseline independently of publication."""
+    if not repository_writes_enabled():
+        raise PermissionError("Evaluated OpenAI state may be written only by an authorized research writer.")
+    state = dict(payload)
+    state["artifact_version"] = READ_ARTIFACT_VERSION
+    atomic_write_json(state, path)
 
 
 def new_attempt_id(*, evidence_snapshot_id: str = "") -> str:

@@ -1,4 +1,4 @@
-"""Four-workspace Developer Tools panel for v8."""
+"""Four-workspace Developer Tools panel for AI Macro v10."""
 
 from __future__ import annotations
 
@@ -6,11 +6,15 @@ import streamlit as st
 
 from analytics.dashboard_context import DashboardContext
 from analytics.domain_state import with_domain_states
-from analytics.language_layer import language_layer_identity
+from analytics.language_layer import editorial_constitution_identity
 from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION
-from analytics.read_prompts import DOMAIN_PROMPT_VERSION
-from analytics.read_service import PUBLISHABLE_STATUSES, READ_SERVICE_COMPATIBLE_VERSIONS, generate_validated_read_artifact, reapply_last_read, recovery_call_plan, regenerate_macro_read, resume_saved_read_attempt
-from analytics.read_store import latest_recoverable_attempt, load_read_artifact
+from analytics.read_service import (
+    PUBLISHABLE_STATUSES,
+    READ_SERVICE_COMPATIBLE_VERSIONS,
+    generate_validated_read_artifact,
+    reapply_last_read,
+)
+from analytics.read_store import load_evaluated_state, load_read_artifact
 from automation.config import AUTOMATION_START_LOCAL, AUTOMATION_TIMEZONE
 from automation.status import load_automation_status
 from config.openai_config import load_openai_config
@@ -235,7 +239,12 @@ def _validation_claim_counts(validation: dict) -> tuple[int, int]:
 
 
 def _validation_failures(validation: dict) -> list[dict]:
-    failures = [item for item in (validation.get("failures") or []) if isinstance(item, dict)]
+    failures = [
+        item
+        for key in ("hard_failures", "diagnostics", "failures")
+        for item in (validation.get(key) or [])
+        if isinstance(item, dict)
+    ]
     for key in ("domain", "macro"):
         block = validation.get(key)
         if isinstance(block, dict):
@@ -251,8 +260,10 @@ def _render_ai_result(result: dict) -> None:
         st.success("Validated commentary artifact")
     elif status == "published_with_warnings":
         st.warning("New commentary published with validation diagnostics")
-    elif status == "published_raw_response":
-        st.warning("OpenAI response published without a complete structured parse")
+    elif status == "retained_prior":
+        st.success("Evidence evaluated; prior commentary retained")
+    elif status in {"rejected_hard_validation", "rejected_unparseable"}:
+        st.error("Completed response rejected; prior commentary retained")
     elif status == "reapplied":
         st.success("Last published Read reapplied for 24 hours")
     elif status == "validation_failed":
@@ -305,8 +316,9 @@ def _render_ai_result(result: dict) -> None:
 
 def _ai_workspace(context: DashboardContext | None) -> None:
     config = load_openai_config()
-    identity = language_layer_identity()
+    identity = editorial_constitution_identity()
     current_artifact = load_read_artifact()
+    evaluated_state = load_evaluated_state()
     stored_packets = dict(current_artifact.get("evidence_packets") or {}) if current_artifact else {}
     current_snapshot = str(current_artifact.get("evidence_snapshot_id") or "") if current_artifact else ""
     fact_count = sum(len((packet or {}).get("facts", []) or []) for packet in stored_packets.values())
@@ -315,8 +327,9 @@ def _ai_workspace(context: DashboardContext | None) -> None:
     st.write(f"API: `{'configured' if config.configured else 'not configured'}`")
     st.write(f"Model: `{config.model}`")
     st.write(f"Reasoning: `{config.reasoning_effort}`")
-    st.write(f"Language layer: `{identity['layer_version']}` · `{identity['payload_sha256'][:16]}`")
+    st.write(f"Editorial constitution: `{identity['constitution_version']}` · `{identity['sha256'][:16]}`")
     st.write(f"Published evidence: `{current_snapshot or 'unavailable'}` · `{fact_count:,}` facts")
+    st.write(f"Last evaluated evidence: `{evaluated_state.get('evidence_snapshot_id', '') or 'unavailable'}`")
 
     disabled = context is None or not config.configured
     publishable = bool(
@@ -325,44 +338,21 @@ def _ai_workspace(context: DashboardContext | None) -> None:
         and str(current_artifact.get("service_version") or "") in READ_SERVICE_COMPATIBLE_VERSIONS
         and isinstance(current_artifact.get("reads"), dict)
     )
-    macro_ready = bool(
-        publishable
-        and str((current_artifact.get("prompt_versions") or {}).get("language_layer_sha256") or "") == identity["payload_sha256"]
-    )
-    recoverable = latest_recoverable_attempt(
-        evidence_snapshot_id=current_snapshot,
-        domain_prompt_version=DOMAIN_PROMPT_VERSION,
-        language_layer_sha256=identity["payload_sha256"],
-    ) if current_snapshot else {}
-
     st.markdown("**Actions**")
-    if st.button("Generate commentary", use_container_width=True, key="dev-generate-commentary-v9", disabled=disabled):
+    if st.button("Generate editorial synthesis", use_container_width=True, key="dev-generate-commentary-v10", disabled=disabled):
         try:
-            with st.spinner("Generating domain Reads and AI Macro roll-up…"):
+            with st.spinner("Evaluating evidence and generating one editorial response…"):
                 prepared_context = with_domain_states(context)
                 result = generate_validated_read_artifact(prepared_context, config, persist=True)
             st.session_state.developer_last_ai_result = result
-            if result.get("status") in PUBLISHABLE_STATUSES:
+            if result.get("status") in (PUBLISHABLE_STATUSES | {"retained_prior"}):
                 st.session_state.force_rebuild = True
-                st.session_state.developer_last_operation = {"kind": "ai", "label": "Commentary", "status": str(result.get("status"))}
+                st.session_state.developer_last_operation = {"kind": "ai", "label": "Editorial synthesis", "status": str(result.get("status"))}
                 st.rerun()
         except Exception as exc:
             st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
 
-    if st.button("Regenerate AI Macro", use_container_width=True, key="dev-regenerate-macro-v9", disabled=disabled or not macro_ready):
-        try:
-            with st.spinner("Generating AI Macro roll-up…"):
-                prepared_context = with_domain_states(context)
-                result = regenerate_macro_read(prepared_context, config, persist=True)
-            st.session_state.developer_last_ai_result = result
-            if result.get("status") in PUBLISHABLE_STATUSES:
-                st.session_state.force_rebuild = True
-                st.session_state.developer_last_operation = {"kind": "ai", "label": "AI Macro", "status": str(result.get("status"))}
-                st.rerun()
-        except Exception as exc:
-            st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
-
-    if st.button("Apply last Read", use_container_width=True, key="dev-apply-last-read-v9", disabled=not publishable):
+    if st.button("Apply last Read", use_container_width=True, key="dev-apply-last-read-v10", disabled=not publishable):
         try:
             renewed = reapply_last_read(persist=True, source="manual_reapply")
             st.session_state.developer_last_ai_result = {
@@ -377,28 +367,12 @@ def _ai_workspace(context: DashboardContext | None) -> None:
         except Exception as exc:
             st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
 
-    if recoverable:
-        plan = recovery_call_plan(recoverable)
-        st.write(f"Recoverable attempt: `{recoverable.get('attempt_id', '')}` · `{int(plan.get('api_calls_required', 0) or 0)}` calls")
-        if st.button("Resume attempt", use_container_width=True, key="dev-resume-commentary-v9", disabled=disabled):
-            try:
-                with st.spinner("Resuming commentary generation…"):
-                    prepared_context = with_domain_states(context)
-                    result = resume_saved_read_attempt(prepared_context, config, str(recoverable.get("attempt_id") or ""), persist=True)
-                st.session_state.developer_last_ai_result = result
-                if result.get("status") in PUBLISHABLE_STATUSES:
-                    st.session_state.force_rebuild = True
-                    st.session_state.developer_last_operation = {"kind": "ai", "label": "Commentary resume", "status": str(result.get("status"))}
-                    st.rerun()
-            except Exception as exc:
-                st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
-
     result = dict(st.session_state.get("developer_last_ai_result") or {})
     if result.get("status") == "error":
         st.error(result.get("error", "OpenAI request failed."))
     else:
         _render_ai_result(result)
-        if result.get("status") in PUBLISHABLE_STATUSES and isinstance(result.get("reads"), dict):
+        if result.get("status") in (PUBLISHABLE_STATUSES | {"retained_prior"}) and isinstance(result.get("reads"), dict):
             with st.expander("Reads", expanded=False):
                 st.json(result.get("reads"))
 
