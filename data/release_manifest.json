@@ -4,21 +4,13 @@
     "weight_effective_date": "2026-08-02"
   },
   "files": {
-    ".githooks/pre-commit": {
-      "bytes": 150,
-      "sha256": "3f46a9079fc1a5ca96565a43c529b6fce2f7b0e5923c804c1b34cc9d01c1d959"
-    },
-    ".githooks/pre-push": {
-      "bytes": 206,
-      "sha256": "f545ec4f6616d08f84e99776b447cd661659a69d852718f3e1ec121694791ada"
-    },
-    ".github/workflows/ai_macro_automation.yml": {
-      "bytes": 5526,
-      "sha256": "afff333cd06033b9b4a1a800f11ae9a250232efc2fe824613888fb5cdb99b249"
-    },
     "ai_macro.py": {
-      "bytes": 27251,
-      "sha256": "c9b4375e4e3c4886affe37fa72ad8b33766ae23c7e854fc03ae52a421b4d6492"
+      "bytes": 27345,
+      "sha256": "2c396d635aab7850826e7f32d945dc4eb13a9540bcfd94157d436afb37ed94fb"
+    },
+    "analytics/adoption_depth.py": {
+      "bytes": 12905,
+      "sha256": "bedf9e9d3699a79f4b58efd0139307af44257306645db4117a3446f87af803f7"
     },
     "analytics/capital_commitments.py": {
       "bytes": 6578,
@@ -33,56 +25,60 @@
       "sha256": "907a29d12d76acbcc6a3e35344d824289b218fd3afc3a1e337e236ee428a3fef"
     },
     "analytics/domain_state.py": {
-      "bytes": 35708,
-      "sha256": "2b5a83759f51b284dfd0a6034ec78c6885dfea910564fe2518a374ba2ea8a83e"
+      "bytes": 37225,
+      "sha256": "e03c4d27db7871c626c4e852c66840220dddebce68e09e245bb1d311a62b9292"
     },
     "analytics/editorial_quality.py": {
       "bytes": 10520,
       "sha256": "59eec0fa338606f6d48213b37bba97dcdf6718655547d94fa4610983ce4caa06"
     },
     "analytics/language_layer.py": {
-      "bytes": 3458,
-      "sha256": "065c7c8e1e8895003f64d997730ca07a1149c2bec4c9f75c124cbaec776ad930"
+      "bytes": 5049,
+      "sha256": "3355f36f32a306f3af652f8e63984b8a40e8169250c9f071dc833c7d132c1e8a"
+    },
+    "analytics/read_capsules.py": {
+      "bytes": 17976,
+      "sha256": "280c87e49ed70660c03c12b665b821f07ebb9c24ae95631d2d4ec4d2877ffd18"
     },
     "analytics/read_context.py": {
       "bytes": 2521,
       "sha256": "1ae47edaa52eee0d275a61a7b27653de0be6757150e74d156530caa68949c315"
     },
     "analytics/read_evidence.py": {
-      "bytes": 43788,
-      "sha256": "2893991eb63149791e2b501f14719d3b55265a80f82ee2acad82f36ece098df5"
+      "bytes": 46213,
+      "sha256": "294bbe2d759249f76dc088f97ffd5eb425180416e39e55d86dac79bc25a3fa66"
     },
     "analytics/read_generation.py": {
-      "bytes": 12393,
-      "sha256": "437a9189c1e52dccffd6bb9a479040baf63c6dd923616bff0c7c4cd2ac089f10"
+      "bytes": 12616,
+      "sha256": "ef357336715fcf4aaf71018cfa6a79de278e52f4afb694f8add208b9cb108d8b"
     },
     "analytics/read_materiality.py": {
-      "bytes": 7400,
-      "sha256": "46a7b2eb726c72cb2634069bc6d0b7c341d5da2e62ca5c4462020ce65e6e2f78"
+      "bytes": 7796,
+      "sha256": "26315791d260f6e13bf1e6f030f1f104d9ee485c3183691d56b75114d9fb9d3f"
     },
     "analytics/read_models.py": {
-      "bytes": 1661,
-      "sha256": "2efbc2a333c65f48e2d145c68fc95c5da13a4e778244fd183b7caa980fc21cdc"
+      "bytes": 2455,
+      "sha256": "37fae5f6d0b9d6dee73f0fb0fe8e8ce7f7aab0745e35ced18f1b1fe042598e3f"
     },
     "analytics/read_prompts.py": {
-      "bytes": 12098,
-      "sha256": "61b77faccf8ed7791f30b635c8ce034c729ca89f685036d2e20a767f889efdbd"
+      "bytes": 5589,
+      "sha256": "a31dd30e822d53f547cccfc563aaad0ef0d2affe25a175724d5b3a52780021c7"
     },
     "analytics/read_service.py": {
-      "bytes": 33100,
-      "sha256": "4de7867d408724e5a2cd77ece4682087e0129f55a7573be2856c82bb836a3d4a"
+      "bytes": 33634,
+      "sha256": "36e1e6206728518d5eb427e4a646b7eaeab4f844ffd9a83a1bcc32f2a5660f16"
     },
     "analytics/read_store.py": {
-      "bytes": 5349,
-      "sha256": "937c1848249420facd5020cbcaeef96f2d1cf75d223d4e6e3c642873ce29ebc8"
+      "bytes": 4367,
+      "sha256": "5475912dac5916f4ad980b4675dcbfe674064f2af9a79ad792df23348730fd4d"
     },
     "analytics/read_validation.py": {
-      "bytes": 26094,
-      "sha256": "685be2e07cdf9fe21554aba6ce468cb10c11012006d98ac5e869999e6297d2c1"
+      "bytes": 32904,
+      "sha256": "69899de6fbc12c0fe1ba2bab00a974404e5620694997cc562112fbe2fbbb6971"
     },
     "analytics/reader_snapshot.py": {
-      "bytes": 3576,
-      "sha256": "8cca17ff2fc70de27124d4c6b7a30cf48f18c5330ebce5c5d3a8e66dde33c03b"
+      "bytes": 3685,
+      "sha256": "79d27435c5fbff3fcfebb0c6cfe6c511aa33cacc97426c843ab817044eb6173d"
     },
     "analytics/regime_engine.py": {
       "bytes": 11254,
@@ -91,10 +87,6 @@
     "analytics/spatial_context.py": {
       "bytes": 24784,
       "sha256": "e750952c22f66e46f00dc938fdb029ebe4e4b54a3e53c094deb721d352f14aef"
-    },
-    "analytics/transmission.py": {
-      "bytes": 9034,
-      "sha256": "3ea6bd2bfafe26ab861d6cae7016bfb81e50a96116b37a10ca50cea11da7ebcb"
     },
     "analytics/trend_engine.py": {
       "bytes": 8737,
@@ -117,52 +109,52 @@
       "sha256": "1681ceb9d25b09bcaf7c0cb9dbbb193abc4d2e46a79755f4933881aacfd4136d"
     },
     "archive/benchmark_history.csv": {
-      "bytes": 5906,
+      "bytes": 6104,
       "date_column": "Date",
-      "date_max": "2026-08-18",
+      "date_max": "2026-08-19",
       "date_min": "2026-06-12",
-      "rows": 32,
-      "sha256": "640f589a9895c9d442534eb2312fb40d8774aa5cfa60dd99301f639f249cbe1b"
+      "rows": 33,
+      "sha256": "387346c104b2c8811a8520079d94095052c6011ab12128422a08990deeed6c57"
     },
     "archive/edgar_history.csv": {
-      "bytes": 967751,
+      "bytes": 991518,
       "date_column": "Date",
-      "date_max": "2026-08-19",
+      "date_max": "2026-08-20",
       "date_min": "2026-06-14",
-      "rows": 7839,
-      "sha256": "5d84f3a23935a87d0d38fdadf7f56d2c61b980cb036a1952e0cf32afe9d5aed0"
+      "rows": 8030,
+      "sha256": "87dbd18884dbf15f410c2b043c129dbe15607a21cee93fbd0e017a249edc0277"
     },
     "archive/fred_history.csv": {
-      "bytes": 16003,
+      "bytes": 16761,
       "date_column": "Date",
-      "date_max": "2026-08-19",
+      "date_max": "2026-08-20",
       "date_min": "2026-06-14",
-      "rows": 30,
-      "sha256": "46ddf7fe455c66e2f728f3551eec7a97c9ecaa9cc6a90f470371bbc72932d24b"
+      "rows": 31,
+      "sha256": "ec513e67f23ee9bf007a0a5b1e2266fe2f07ef4d7e8b4aae3187290425582e03"
     },
     "archive/macro_history.csv": {
-      "bytes": 50713,
-      "date_column": "Date",
-      "date_max": "2026-08-18",
-      "date_min": "2026-06-12",
-      "rows": 32,
-      "sha256": "0d31c79e79794d37dab560deb050e12855e6d9a1b3a78976f1320be9560e4c55"
-    },
-    "archive/sector_history.csv": {
-      "bytes": 69979,
-      "date_column": "Date",
-      "date_max": "2026-08-18",
-      "date_min": "2026-06-12",
-      "rows": 480,
-      "sha256": "93d0c390a2e88e5b551a66262247ca5255d577ec1ab8d0f7c3bd6d768867ac2c"
-    },
-    "archive/yf_history.csv": {
-      "bytes": 2889335,
+      "bytes": 51444,
       "date_column": "Date",
       "date_max": "2026-08-19",
       "date_min": "2026-06-12",
-      "rows": 6732,
-      "sha256": "1c955f07014a8e0f545a680c260b2bba2b673c993a9c25e0e954100142da2404"
+      "rows": 33,
+      "sha256": "652f079bfee0cabe80920c782ed73fa8ce5e8cc5ab43b1f999196379d2016cbd"
+    },
+    "archive/sector_history.csv": {
+      "bytes": 72808,
+      "date_column": "Date",
+      "date_max": "2026-08-19",
+      "date_min": "2026-06-12",
+      "rows": 495,
+      "sha256": "73870044b1810b382ea7d74ac305492a67274da4dd5e8755e434aef292cab30c"
+    },
+    "archive/yf_history.csv": {
+      "bytes": 3002656,
+      "date_column": "Date",
+      "date_max": "2026-08-20",
+      "date_min": "2026-06-12",
+      "rows": 6936,
+      "sha256": "fbc8c29992023ba055018cb3ec454e90dbf3339f775584752492ea0ee585ca6f"
     },
     "assets/geo/us_counties.geojson": {
       "bytes": 2563127,
@@ -177,12 +169,12 @@
       "sha256": "452925967bf0c71dd8650125027f07a22692d20d93bc8316f0d146819fc25cef"
     },
     "automation/budget.py": {
-      "bytes": 4869,
-      "sha256": "182abe1e7e44e7c17583701d3ceccb2cabd4bf6b284a4fd7f18fa63a360d2599"
+      "bytes": 4846,
+      "sha256": "1ea38be48dee28003f1bd5894d8b9e64a014a87844784b69b2d5f72a0946ace8"
     },
     "automation/config.py": {
-      "bytes": 2529,
-      "sha256": "b1a274d38bb4b08b6696b898a0935357d9ad99048acc07adcd077f0bbaeaa229"
+      "bytes": 2520,
+      "sha256": "ece03d4a3f9988fe116935f043504b3d542cc0835788ff2e8f55a0090ccfe07d"
     },
     "automation/git_transport.py": {
       "bytes": 5733,
@@ -201,8 +193,8 @@
       "sha256": "3dd49fada6269ef3ce5c9acb973c9131d4d31834217cb3234589593d399c33bb"
     },
     "automation/runner.py": {
-      "bytes": 17058,
-      "sha256": "76804302eb8e9a2883211fae781931ddd7d88503526d205fa7b6580be5d12f29"
+      "bytes": 19769,
+      "sha256": "6a829f680aa34813502c38c68645bb2661a6b90eedc70452814469260d125ec0"
     },
     "automation/status.py": {
       "bytes": 493,
@@ -233,24 +225,53 @@
       "sha256": "f85c328d3d937c8442cd906818fccc67a235abd7cb5b4a5382e4d9c753a19072"
     },
     "config/metric_definitions.py": {
-      "bytes": 47468,
-      "sha256": "318965b1134274bf6d29f73bf5a5d0a9903d66db94376577476d223d1672a8be"
+      "bytes": 49163,
+      "sha256": "3e1944c5fb9a7b0d1206d8b576ffb8be1cc983e369c1c881748f2eb55ceeedcd"
     },
     "config/openai_config.py": {
-      "bytes": 1261,
-      "sha256": "24db7837d0626f5d23a347fbda8afd3a6825975c1835a6988258e649fe4aa1ca"
+      "bytes": 1744,
+      "sha256": "d64bf038394bb8dfb1d6c8bc7b37951b79acc99e90172d2e9e3ae9d3f95448d5"
     },
     "config/sector_config.py": {
       "bytes": 23685,
       "sha256": "bc015404aab0d6b89f93dec747281a22fac4080d8da54931de255befe67dc8d1"
     },
-    "data/borrower_strain_fundamentals_history.csv": {
-      "bytes": 84693,
+    "data/adoption_ai_supplement_2026.csv": {
+      "bytes": 25320,
+      "rows": 85,
+      "sha256": "2d7547baa5359943340618254a0aeb192fe5eaf9ef4a93d9f4d7d2760a57830a"
+    },
+    "data/adoption_consumer_history.csv": {
+      "bytes": 5771,
       "date_column": "Date",
-      "date_max": "2026-08-19",
+      "date_max": "2026-04-01",
+      "date_min": "2024-07-01",
+      "rows": 38,
+      "sha256": "32bca768cc65d63b01ff59abeaea72054e164c2075b7eb9481c5070ff06fd300"
+    },
+    "data/adoption_national_history.csv": {
+      "bytes": 1129,
+      "date_column": "Date",
+      "date_max": "2026-08-13",
+      "date_min": "2025-12-04",
+      "rows": 19,
+      "sha256": "fd387f42ddb9fe79d4d16e51fc1c80138042b388a78dbbce95eb9fca1ffdb5b7"
+    },
+    "data/adoption_sector_snapshot.csv": {
+      "bytes": 1596,
+      "date_column": "Observation Date",
+      "date_max": "2026-08-13",
+      "date_min": "2026-08-13",
+      "rows": 20,
+      "sha256": "e61aa8680ce612ea6babec68a802449b799c8c87d275fb3384bdc2424337a876"
+    },
+    "data/borrower_strain_fundamentals_history.csv": {
+      "bytes": 88676,
+      "date_column": "Date",
+      "date_max": "2026-08-20",
       "date_min": "2014-12-31",
-      "rows": 250,
-      "sha256": "3cd2fd058235c9152606af21be22bb3125fd707794feca7fdc53c909f3065bde"
+      "rows": 260,
+      "sha256": "5fb819baf6dbccc9a6725881c07a003b4af067826c7d0fba42b07042790b0d25"
     },
     "data/capital_commitment_components.csv": {
       "bytes": 9195,
@@ -261,6 +282,19 @@
       "bytes": 4650,
       "rows": 10,
       "sha256": "9380f86b527828085d9cb02af3eaa40c7f989d194f2c4ec702ee3429354709e9"
+    },
+    "data/commercialization/commercialization_ledger.csv": {
+      "bytes": 5843,
+      "date_column": "Observation Date",
+      "date_max": "2026-06-30",
+      "date_min": "2025-12-31",
+      "rows": 19,
+      "sha256": "055d185b9e8e6216e8555d608e67ee6da9f8caf001bd7c32ef4f22a4ad0b957a"
+    },
+    "data/commercialization/source_manifest.csv": {
+      "bytes": 1095,
+      "rows": 5,
+      "sha256": "dafbe9282d36e53278899894032a7f90b1e51e2158078354d16ec5237a09c16e"
     },
     "data/debt_financing_observations.csv": {
       "bytes": 12548,
@@ -333,7 +367,7 @@
     "data/infrastructure/source_manifest.csv": {
       "bytes": 11524,
       "rows": 11,
-      "sha256": "395cd77f7e4e4dce8c07a707745361ca08a89a4e21d9fe71b05adf4bd1f35b39"
+      "sha256": "607033fbe98bd0948e9779c911e5bc65d211f867c664267cdf09d2b4a823e9a2"
     },
     "data/market_valuation_context.csv": {
       "bytes": 353,
@@ -341,21 +375,21 @@
       "sha256": "0a9bd6c1ec8dc9bc9f9295f287f71c42f52a9d4a823c2c8bd3c76c08677f991c"
     },
     "data/retained_state_manifest.json": {
-      "bytes": 38380,
-      "sha256": "4a752359d4436162460252afaae62d857b834d4fbb299997b82455267b7eb369"
+      "bytes": 38705,
+      "sha256": "7993f808b89449f77715d40e457ea348f56fe702d1aceed7ca5b6cfbd3c527e3"
     },
     "data/weekly_context_events.csv": {
       "bytes": 30974,
       "rows": 26,
-      "sha256": "e0cc774006b1e95f76cf84f193bdb14112675bbcaa72505747954f54486170cf"
+      "sha256": "5c44f9beca44405062e54087a78a52fb86b26ec8982ea06b5ef2969c68f49b10"
     },
     "developer/load_report.py": {
       "bytes": 8466,
       "sha256": "1bb86fe4c64ae30c8224c19c0373f75e72e973a520d61760013e0ca2e5ab005b"
     },
     "developer/panel.py": {
-      "bytes": 23515,
-      "sha256": "7e96437f30f055869f76f3a0f26d9d414cbc65927343fa1682d689d7f9926ef5"
+      "bytes": 21474,
+      "sha256": "4041fcf6821cd9ef191db01e2163f6ad914d6943254a01ff10ca651760caf615"
     },
     "developer/reports.py": {
       "bytes": 5921,
@@ -364,26 +398,6 @@
     "developer/state.py": {
       "bytes": 5379,
       "sha256": "8cf74b7ed25032ed3e81d90e89baa8cd61155fd5f0885d0f8d87691be0bb5e87"
-    },
-    "docs/AUTOMATION_ARCHITECTURE.md": {
-      "bytes": 7178,
-      "sha256": "f503b49ebb11ea0aac71af9485688287a49ee7a9eefd0d05d03c96bb50b00320"
-    },
-    "docs/EDITORIAL_STYLE.md": {
-      "bytes": 13063,
-      "sha256": "e632b8630e482215119579193f6a7b80e3528c52ff9a1544a774d020cb344a80"
-    },
-    "docs/LANGUAGE_LAYER.md": {
-      "bytes": 5428,
-      "sha256": "a4db69ec65e959beefb0baf3b4859b2b1005f62f4122a6e09d347da38b5d2756"
-    },
-    "docs/RUNTIME_DATA_CONTRACT.md": {
-      "bytes": 16740,
-      "sha256": "cadc421824fd32c7032b69a34879a2303e6048d4150ff000aa94cdc1a86a07ea"
-    },
-    "docs/UNIVERSAL_DATA_CENTER_REGISTRY.md": {
-      "bytes": 4313,
-      "sha256": "a202aba04a7536a3cb0d2335b26cb574d8640dc9abaab0b930be094cee8df4ea"
     },
     "helpers/atomic_io.py": {
       "bytes": 6224,
@@ -394,8 +408,8 @@
       "sha256": "8818b4699347e17bc3e29c8baa0bbd378fdf8e7f45d74dd7490b5f52bd9efd5d"
     },
     "helpers/build_release_manifest.py": {
-      "bytes": 10526,
-      "sha256": "bf372df5d039979cbb9b09a7477f4bf843e7429692119cd3a07d47af799949ea"
+      "bytes": 10057,
+      "sha256": "e83b18c63dd14897f308ed677423540dd6200e7945d8b60b5b6efd196bc195a4"
     },
     "helpers/build_universal_data_center_registry.py": {
       "bytes": 2385,
@@ -404,58 +418,6 @@
     "helpers/build_water_ledger.py": {
       "bytes": 13854,
       "sha256": "a3cba41abed94d480c7a72bfb3dac4c70e34af2c7ba756b77de5035e96054683"
-    },
-    "helpers/data_center_identity_authority_test.py": {
-      "bytes": 7059,
-      "sha256": "2ce3300195ffcb571199efc8d184940a65d37612af47d62ec116169fd350b36c"
-    },
-    "helpers/data_center_map_contract_test.py": {
-      "bytes": 5981,
-      "sha256": "3cf1837c04a8bd5614ac9172188059a2a5bdab024d6d41cd08969bc8380f66dd"
-    },
-    "helpers/data_center_registry_release_gate.py": {
-      "bytes": 17406,
-      "sha256": "22e2192bc060d29450065b4d482954b340af2b26dab786ae1a0c81181188867a"
-    },
-    "helpers/data_center_registry_smoke_test.py": {
-      "bytes": 9002,
-      "sha256": "dad7fd1472a00a90e5093f141143576895954229b9f045b122cfe125a8a0a982"
-    },
-    "helpers/editorial_quality_contract_test.py": {
-      "bytes": 4821,
-      "sha256": "53958e4f7bc996e1772bb85a0eaad917fbb0408b9efeab19038204d020cd0b62"
-    },
-    "helpers/integrity_linked_state_smoke_test.py": {
-      "bytes": 5244,
-      "sha256": "736d60220c81d1db93b3f37bee9640149c832eb89840dbc1c820ce9effa291df"
-    },
-    "helpers/language_layer_contract_test.py": {
-      "bytes": 7329,
-      "sha256": "5fed14f1b4ee2c0b8abf5ccaf58699c35880f35a17ba0ddd2109b885e2bcead0"
-    },
-    "helpers/language_overlay_boundary_smoke_test.py": {
-      "bytes": 4947,
-      "sha256": "850536a24285b30436b617987fbd6a06507fd2970df97d4b3e738abc056eaf0c"
-    },
-    "helpers/macro_transmission_smoke_test.py": {
-      "bytes": 5023,
-      "sha256": "316e5b3514ef0f7553e9344a8e67eb5385091fd3f3d2dac6e7423b56c3495f99"
-    },
-    "helpers/water_campus_registry_contract_test.py": {
-      "bytes": 1933,
-      "sha256": "16ed51bd0ad7fbfad0c4afe9576082d7ab3c37701e3fa87c3cfa1c15a580d3d6"
-    },
-    "helpers/water_loader_retained_cache_test.py": {
-      "bytes": 2888,
-      "sha256": "59b1bcb2814249f729b0ccea71d5373c8821c15a86e61526effefce4e037ccff"
-    },
-    "helpers/water_map_viewport_contract_test.py": {
-      "bytes": 4154,
-      "sha256": "719bef4b992fada3d8018a944170bf4887859c134426d2c13dcf425d4ae5770e"
-    },
-    "helpers/water_presentation_smoke_test.py": {
-      "bytes": 8912,
-      "sha256": "193c339a53fb6f21b57a87b19b36c8961e0c599493376af4ca088ef0720ed990"
     },
     "language/AI_MACRO_COMPUTE_CORPUS_COMPLETE_v1.0.json": {
       "bytes": 244693,
@@ -472,6 +434,10 @@
     "language/AI_MACRO_DIFFUSION_ECONOMIC_TRANSMISSION_CORPUS_COMPLETE_v1.0.json": {
       "bytes": 143265,
       "sha256": "cf5a4d1914cba6db9abf86a5b09f43393348aea928b6c813dd5fe289d9621ff9"
+    },
+    "language/AI_MACRO_EDITORIAL_CONSTITUTION_v1.0.json": {
+      "bytes": 3183,
+      "sha256": "817461e546cf582fcb16bb88772dd3827c880dbbfd063e7c4f490b2c9a8a655a"
     },
     "language/AI_MACRO_FINANCE_CORPUS_COMPLETE_v1.1.json": {
       "bytes": 578788,
@@ -501,9 +467,13 @@
       "bytes": 3238,
       "sha256": "167dca9de81f5633f8e6b45f76eeed2af8efa99dc58333f8f38f2aa3e0014f0e"
     },
+    "loaders/adoption_depth_loader.py": {
+      "bytes": 11145,
+      "sha256": "2914f9101bc1a8f44774a2ee1ed5849bf89082e97ab66b71f9081fb5d703000d"
+    },
     "loaders/adoption_loader.py": {
-      "bytes": 16121,
-      "sha256": "007eef60c08e01c09b20877915144eb810163c907ac9a531ec988b35447402fa"
+      "bytes": 17749,
+      "sha256": "91a5e1f83435f57f56b3a4feea246cfca3afb209b60666f371186253b8d77c97"
     },
     "loaders/benchmark_loader.py": {
       "bytes": 941,
@@ -554,8 +524,8 @@
       "sha256": "ad6f1428e29ffa9073368f627604cd4424449401d3ba4ecbc39788ec31aed6c2"
     },
     "loaders/data_center_registry.py": {
-      "bytes": 116954,
-      "sha256": "fa763b5e73a6f2f57ec6f6eb919157aab756d367e1c62b66233e5fdaa3c2b32f"
+      "bytes": 117383,
+      "sha256": "976700204b08798334ceef4cabadbcb870b055be8fc8a1cb102c7b23ce77288a"
     },
     "loaders/debt_markets_loader.py": {
       "bytes": 10567,
@@ -617,9 +587,17 @@
       "bytes": 16314,
       "sha256": "e81b9529d426bbcf676157ac3ac544684d4dbaa033bb17b18a5341ad7757abfc"
     },
+    "rendering/adoption.py": {
+      "bytes": 16569,
+      "sha256": "2281972f9927ba54c3ca009fa2e71a306c17543ab9e427160e7fd3c37cb069b4"
+    },
+    "rendering/charts_adoption.py": {
+      "bytes": 9289,
+      "sha256": "5155af8b19018cacbd5192b71aecf84efb38aa82bcd7b0ddb9733b85670db24e"
+    },
     "rendering/charts_common.py": {
-      "bytes": 12342,
-      "sha256": "a6f9a9adf5d5f8a6cc5f49fd3e3df3a3f14a2456d1d77027d434015cfda7f958"
+      "bytes": 10695,
+      "sha256": "bf53886384c13bcf9e3dc57abf59caf6b865b8cda0465649c6f266216affb39b"
     },
     "rendering/charts_data_center.py": {
       "bytes": 13135,
@@ -630,16 +608,16 @@
       "sha256": "0b73a41842c4198698942f843e3c36c054b0b53ec89312f4bdac5cedeeb676b4"
     },
     "rendering/common.py": {
-      "bytes": 7149,
-      "sha256": "06634347676bae98dcf7ba00dbcec24b742942292e024a635dd9bee8b2fe2b8f"
+      "bytes": 7315,
+      "sha256": "94201b4e3e7f70d95409edc987400e337e89f279c603ede9097ac25af194a79f"
     },
     "rendering/components.py": {
-      "bytes": 17055,
-      "sha256": "bf2a3ed828471009a0f44af9702d395e61b3d47ff4559a07acc2e1c8775fe19f"
+      "bytes": 20729,
+      "sha256": "b058fcc24c551ca596485da8976682ef65d8abdbfefa3b63d34970af633ca856"
     },
     "rendering/dashboard.py": {
-      "bytes": 5941,
-      "sha256": "2d301932b3e19bde7c8611807f6c4744ae428bdfd0599d14f906fac264cff5d8"
+      "bytes": 5703,
+      "sha256": "85a5f69956856a697f38eaf0532aba9e5ed7216726693902cd2db25e348c5480"
     },
     "rendering/data_center.py": {
       "bytes": 15333,
@@ -658,12 +636,12 @@
       "sha256": "47372e7df072c76118dd77493feb0aa334374a04dc9d9c24b5d82d1eda2e86c7"
     },
     "rendering/layout_contracts.py": {
-      "bytes": 14365,
-      "sha256": "5e9d84a07b54adef124cee7f7464d66cd293798827feba55aca56e21888f9a31"
+      "bytes": 12306,
+      "sha256": "9f0d87835a69c2b2582cda3a441022a7d58dea568aa6e11bc8d106d4e893248e"
     },
     "rendering/macro.py": {
-      "bytes": 8489,
-      "sha256": "565120e84666f33531828a6aa69f4f7d6efe3515022d57a6ce082d1d39c5dfea"
+      "bytes": 11474,
+      "sha256": "a20458dd691616f9c18aa3e3caad92c9a445d697b31a29576b87ba82815432eb"
     },
     "rendering/map_geometry.py": {
       "bytes": 6247,
@@ -678,16 +656,16 @@
       "sha256": "cd0be6d719a00623d46e78d792c652a5c55be9dd75c56d0fb04c61163621b97b"
     },
     "rendering/read_markup.py": {
-      "bytes": 6774,
-      "sha256": "d77ff13139019ddc051481c9c0c9f9093a2c0743d15c61e5f383bce464e77813"
+      "bytes": 5835,
+      "sha256": "f91689e86d6a57283469859fc562b93b36d72bb33f324088280e77ed0d636698"
     },
     "rendering/spatial.py": {
       "bytes": 9354,
       "sha256": "04d58460d03f1b040007b2b46b6922ee29a1cc55bd77dd56b66934146d43b2e4"
     },
     "rendering/theme.css": {
-      "bytes": 48720,
-      "sha256": "d9c6ac3da0b04902cbad00c0a78a8e6206c876eb91200c3dcf4ec6dbb214a48b"
+      "bytes": 45957,
+      "sha256": "21dbdca9830c3a470f4682e25bc478894650e8d34d9f935b743edbaf94eb004e"
     },
     "rendering/visual_system.py": {
       "bytes": 4762,
@@ -698,8 +676,8 @@
       "sha256": "5d9c51abe0b485264ceaa46b7ec51aec17729c48c00f40a7522e6f26a71a0d38"
     },
     "requirements-dev.txt": {
-      "bytes": 39,
-      "sha256": "afd8bd12dab46e15941ede9767a5e770899dab3fac6b32ee3f3b99c03fe3855b"
+      "bytes": 20,
+      "sha256": "69075054c6d3bf5e0104bbc5d72895f380f050216a76ee8978dc4fbfd62f95e8"
     },
     "requirements.txt": {
       "bytes": 190,
@@ -730,8 +708,8 @@
       "sha256": "9f3ac00a8639eeb40b809301fd1043dd71de565d9a8db9a3873355d432642310"
     },
     "tooling/repository_policy.py": {
-      "bytes": 1702,
-      "sha256": "ae9acfe5f5888c1a73d3a6e2ae459617de89cb076bf155aae97493ad321aa186"
+      "bytes": 1741,
+      "sha256": "df87427ec48ad54134bf78e01eda15938a3d39a99efec5000fe14f178cf45527"
     },
     "water/epa_pws.py": {
       "bytes": 10021,
@@ -758,7 +736,7 @@
       "sha256": "596de294f35709293d75621955b2839bc4d573b8907d460eb633b0565f0f48df"
     }
   },
-  "generated_at_utc": "2026-08-19T13:17:56+00:00",
+  "generated_at_utc": "2026-08-20T09:31:50+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -769,6 +747,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "2ae09f5b22d7c5f10657",
+  "release_id": "ec4ed595c94160406c03",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }

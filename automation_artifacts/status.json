@@ -1,42 +1,612 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "errors": [
-    "TypeError: load_infrastructure_data() got an unexpected keyword argument 'force_facility_refresh'. Did you mean 'force_compute_refresh'?"
+  "changed_paths": [
+    "archive/benchmark_history.csv",
+    "archive/edgar_history.csv",
+    "archive/fred_history.csv",
+    "archive/macro_history.csv",
+    "archive/sector_history.csv",
+    "archive/yf_history.csv",
+    "automation_artifacts/call_journal.jsonl",
+    "automation_artifacts/status.json",
+    "data/borrower_strain_fundamentals_history.csv",
+    "data/commercialization/commercialization_ledger.csv",
+    "data/connectivity/ixp_snapshot.csv",
+    "data/connectivity/national_summary.csv",
+    "data/current_context_candidate_audit.csv",
+    "data/current_context_refresh_manifest.json",
+    "data/debt_markets_metadata.json",
+    "data/energy_series_history.csv",
+    "data/infrastructure/source_manifest.csv",
+    "data/release_manifest.json",
+    "data/retained_state_manifest.json",
+    "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
+    "data/water/derived/epa_pws_facility_matches.csv.gz",
+    "data/water/derived/usdm_county_drought_snapshot.csv.gz",
+    "data/water/derived/usgs_2015_county_summary.csv.gz",
+    "data/water/derived/usgs_2015_reconciliation.csv.gz",
+    "data/water/derived/water_national_summary.json",
+    "data/water/derived/water_observations.csv.gz",
+    "data/water/source_manifest.csv",
+    "data/weekly_context_events.csv",
+    "data/adoption_ai_supplement_2026.csv",
+    "openai_artifacts/attempts/20260820T093152996907Z_3983237c_da5fa428.json",
+    "openai_artifacts/evaluated.json"
   ],
-  "finished_at_utc": "2026-08-18T13:02:52.084598+00:00",
+  "current_context_snapshot_id": "d5dce5a7fc5a35cd",
+  "errors": [],
+  "evidence_snapshot_id": "3983237c36aa667ef24332db",
+  "finished_at_utc": "2026-08-20T09:34:23.265643+00:00",
   "openai_enabled": true,
   "paid_calls": {
-    "daily_ceiling": 4,
-    "run_ceiling": 2,
-    "this_run": 0,
-    "today_after_run": 0,
+    "daily_ceiling": 2,
+    "run_ceiling": 1,
+    "this_run": 1,
+    "today_after_run": 1,
     "today_before_run": 0
   },
   "phases": {
     "deterministic_refresh": {
-      "status": "running"
+      "elapsed_sec": 887.685,
+      "status": "passed",
+      "subphases": {
+        "assemble + persist": 5.079,
+        "current context": 35.892,
+        "domain sources": 480.518,
+        "market sources": 366.195
+      }
+    },
+    "evidence": {
+      "artifact_current": false,
+      "artifact_materially_current": false,
+      "artifact_status": "validated",
+      "elapsed_sec": 0.68,
+      "materiality": {
+        "baseline_available": true,
+        "change_count": 73,
+        "changes": [
+          {
+            "domain": "adoption",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "compute",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "connectivity",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "data_center",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "economic_impact",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "finance",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "grid_storage",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "market",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "power",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "field": "references",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "workforce",
+            "field": "boundaries",
+            "kind": "evidence_semantics_changed",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.employment_decrease_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.employment_unchanged_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.function_le3_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.organizational_change_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.task_augmentation_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.task_creation_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.task_le3_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.task_substitution_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.top_function",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.top_function_use_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.top_task",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.top_task_use_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.worker_ai_use_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "adoption",
+            "fact_id": "adoption.worker_genai_use_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "connectivity",
+            "fact_id": "connectivity.campuses_screened",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 225.0,
+            "old_value": 216.0,
+            "percentage_point_change": null,
+            "relative_change": 0.041666666666666664
+          },
+          {
+            "domain": "data_center",
+            "fact_id": "data_center.canonical_capacity_coverage",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "data_center",
+            "fact_id": "data_center.published_capacity_coverage",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "finance",
+            "fact_id": "finance.nfci",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": -0.559,
+            "old_value": -0.549,
+            "percentage_point_change": null,
+            "relative_change": 0.01821493624772315
+          },
+          {
+            "domain": "finance",
+            "fact_id": "finance.nfci_change",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": -0.049000000000000044,
+            "old_value": -0.04400000000000004,
+            "percentage_point_change": null,
+            "relative_change": 0.11363636363636363
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.aei",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 39.53157755675432,
+            "old_value": 41.222391867514915,
+            "percentage_point_change": 1.7000000000000028,
+            "relative_change": 0.04126213592233016
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.crowded_sector_count",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 4.0,
+            "old_value": 3.0,
+            "percentage_point_change": null,
+            "relative_change": 0.3333333333333333
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.effective_firms",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 18.742271017583324,
+            "old_value": 19.12291072081383,
+            "percentage_point_change": null,
+            "relative_change": 0.019904904059203175
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.equal_weight_return",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 0.4886146545416319,
+            "old_value": 0.5568019380988666,
+            "percentage_point_change": 6.800000000000004,
+            "relative_change": 0.12208258527827655
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.median_return",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 0.22692858476011346,
+            "old_value": 0.2487280146047307,
+            "percentage_point_change": 2.1999999999999993,
+            "relative_change": 0.08835341365461845
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.positive_breadth",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.6911764705882353,
+            "old_value": 0.696078431372549,
+            "percentage_point_change": 0.5,
+            "relative_change": 0.007183908045977012
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.pressure",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 59.344766033589835,
+            "old_value": 59.68220098865049,
+            "percentage_point_change": 0.4000000000000057,
+            "relative_change": 0.006700167504187699
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.top_10_share",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.6387463940335817,
+            "old_value": 0.633965101562435,
+            "percentage_point_change": 0.5,
+            "relative_change": 0.007886435331230283
+          },
+          {
+            "domain": "power",
+            "fact_id": "power.large_load_capacity_mw",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 200982.128003608,
+            "old_value": 189879.788003703,
+            "percentage_point_change": null,
+            "relative_change": 0.05847036230990781
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.ambiguous_pws_overlap_campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_25pct_d2_area",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_25pct_d2_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_d2_area",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_d2_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_with_county_drought_data",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.county_drought_coverage_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.direct_evidence_campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.direct_evidence_records",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.direct_evidence_share_pct",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 2.2941970310391366,
+            "old_value": 1.570210856886496,
+            "percentage_point_change": 0.6999999999999997,
+            "relative_change": 0.43749999999999983
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.highest_county_d2_area_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.highest_county_d2_location",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.highest_d2_area_pct",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.highest_d2_state",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.mapped_facilities",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.published_capacity_coverage_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.published_capacity_in_25pct_d2_states_gw",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.published_capacity_in_counties_with_25pct_d2_gw",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.published_capacity_in_counties_with_d2_gw",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.published_capacity_in_d2_states_gw",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.pws_provenance_classified_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.pws_query_resolution_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.pws_query_resolved_campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.pws_service_area_overlap_campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.pws_service_area_overlap_share_pct",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.quantified_consumption_campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.quantified_use_campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.quantified_use_records",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.quantified_withdrawal_campuses",
+            "kind": "fact_added",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.states_with_25pct_d2_area",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.states_with_d2_area",
+            "kind": "fact_removed",
+            "material": true
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.unclassified_pws_overlap_campuses",
+            "kind": "fact_added",
+            "material": true
+          }
+        ],
+        "current_snapshot_id": "3983237c36aa667ef24332db",
+        "decision": "generate_material_change",
+        "exact_match": false,
+        "immaterial_change_count": 8,
+        "material": true,
+        "material_change_count": 65,
+        "percentage_point_threshold": 2.0,
+        "previous_snapshot_id": "069b67e4df4b14693fe82ed1",
+        "relative_change_threshold": 0.1,
+        "version": "1.1.0"
+      },
+      "status": "passed"
+    },
+    "openai": {
+      "attempt_id": "20260820T093152996907Z_3983237c_da5fa428",
+      "elapsed_sec": 150.489,
+      "stage": "editorial_synthesis",
+      "status": "rejected_unparseable",
+      "validation": {
+        "hard_errors": [
+          "Completed response did not conform to the editorial schema."
+        ],
+        "passed": false,
+        "validator_version": "4.0.0"
+      }
+    },
+    "publication": {
+      "status": "ready_with_prior_commentary",
+      "transaction_boundary": "git_commit"
     }
   },
-  "publish_ready": false,
-  "result": "exception",
-  "run_id": "20260818T130249Z_7740d0a4",
+  "publish_ready": true,
+  "result": "publish_ready",
+  "run_id": "20260820T091702Z_87df3553",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-18T13:02:49.750592+00:00",
-  "traceback_tail": [
-    "Traceback (most recent call last):",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/runner.py\", line 221, in main",
-    "    bundle = refresh_research_state()",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/research_refresh.py\", line 112, in refresh_research_state",
-    "    infrastructure_data = load_infrastructure_data(",
-    "        refresh_token=token,",
-    "    ...<5 lines>...",
-    "        allow_compute_live=live,",
-    "    )",
-    "TypeError: load_infrastructure_data() got an unexpected keyword argument 'force_facility_refresh'. Did you mean 'force_compute_refresh'?"
-  ],
-  "trigger": "schedule"
+  "started_at_utc": "2026-08-20T09:17:02.167668+00:00",
+  "trigger": "workflow_dispatch",
+  "warnings": [
+    "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
+    "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
+    "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
+    "connectivity: SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
+    "adoption: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
+    "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
+    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
+    "The completed OpenAI response failed the hard publication gate. The prior Read was retained and this evidence snapshot will not be retried automatically."
+  ]
 }
