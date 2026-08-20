@@ -73,6 +73,7 @@ DOMAIN_ANCHORS: dict[str, tuple[str, ...]] = {
         "adoption.current_business_use_pct",
         "adoption.expected_adoption_gap_ppts",
         "adoption.function_le3_share_pct",
+        "adoption.organizational_change_share_pct",
     ),
     "workforce": (
         "workforce.employment_breadth",
@@ -293,18 +294,31 @@ def _selected_fact_ids(
     packet: dict[str, Any],
     changes: dict[str, dict[str, Any]],
 ) -> tuple[list[str], list[str]]:
-    available = {
+    available_order = [
         str(fact.get("id"))
         for fact in (packet.get("facts") or [])
         if isinstance(fact, dict) and fact.get("id")
-    }
+    ]
+    available = set(available_order)
+    anchors = DOMAIN_ANCHORS.get(domain, ())
+    anchor_rank = {fact_id: index for index, fact_id in enumerate(anchors)}
+    packet_rank = {fact_id: index for index, fact_id in enumerate(available_order)}
+
+    def changed_rank(fact_id: str) -> tuple[int, float, int, int]:
+        material, score = _change_score(changes[fact_id])
+        return (
+            -material,
+            -score,
+            anchor_rank.get(fact_id, len(anchor_rank)),
+            packet_rank.get(fact_id, len(packet_rank)),
+        )
+
     changed = sorted(
         (fact_id for fact_id in available if fact_id in changes),
-        key=lambda fact_id: _change_score(changes[fact_id]),
-        reverse=True,
+        key=changed_rank,
     )
     selected: list[str] = []
-    for fact_id in [*changed, *DOMAIN_ANCHORS.get(domain, ()), *sorted(available)]:
+    for fact_id in [*changed, *anchors, *available_order]:
         if fact_id in available and fact_id not in selected:
             selected.append(fact_id)
         if len(selected) >= MAX_FACTS_PER_DOMAIN_CAPSULE:

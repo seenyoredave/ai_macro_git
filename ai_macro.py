@@ -104,8 +104,8 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v10.0.0"
-APP_STATE_SCHEMA_VERSION = "72.0-one-call-editorial-synthesis"
+APP_VERSION = "v10.1.0"
+APP_STATE_SCHEMA_VERSION = "73.0-adoption-depth-activation"
 
 st.set_page_config(
     page_title="AI Macro",

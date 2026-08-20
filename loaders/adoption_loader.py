@@ -283,11 +283,19 @@ def load_adoption_data(
         if isinstance(retained_depth, pd.DataFrame) and not retained_depth.empty:
             depth["table"] = retained_depth
             depth["snapshot"] = build_adoption_depth_snapshot(retained_depth)
-            depth_report = {"source_mode": "retained_fallback", "error": f"{type(exc).__name__}: {exc}"}
+            depth_report = {
+                **depth_report,
+                "source_mode": "retained_fallback",
+                "error": f"{type(exc).__name__}: {exc}",
+            }
         else:
             depth["table"] = pd.DataFrame()
             depth["snapshot"] = build_adoption_depth_snapshot(None)
-            depth_report = {"source_mode": "unavailable", "error": f"{type(exc).__name__}: {exc}"}
+            depth_report = {
+                **depth_report,
+                "source_mode": "unavailable",
+                "error": f"{type(exc).__name__}: {exc}",
+            }
     depth.pop("retained_table", None)
     depth["load_report"] = depth_report
     reports = {"depth": depth_report}

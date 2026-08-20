@@ -579,6 +579,30 @@ Compares current and expected AI use across major U.S. industries.
 **Interpretation:** Broader adoption means reported use is distributed across more BTOS industry groups rather than concentrated in a few. Sector estimates retain standard errors and missing/suppressed values; this is breadth across the survey frame, not use intensity.
 """,
 
+    "Business-Function AI Deployment": """
+Share of businesses using AI in a named function during the prior six months, expressed as a share of businesses using AI in at least one function.
+
+**Source:** U.S. Census BTOS 2026 AI Supplement. The published function-level rates are conditionalized using Census's 27.7% pooled functional-use benchmark.
+
+**Interpretation:** This dated cross-section shows where functional adopters report deployment. It is not a time series, a measure of use intensity, or evidence that the function was transformed. Conditionalized standard errors are unavailable because the published tables do not provide the required covariance.
+""",
+
+    "Employee Generative-AI Task Use": """
+Share of businesses reporting employee Generative AI use that identify a named work-task category during the prior six months.
+
+**Source:** U.S. Census BTOS 2026 AI Supplement.
+
+**Interpretation:** The denominator is businesses reporting employee Generative AI task use, not all workers or all businesses. Categories may overlap, so their shares do not sum to 100%.
+""",
+
+    "AI-Related Organizational Change": """
+Share of AI-using businesses reporting training, workflow, data, infrastructure, staffing, or external-support changes during the prior six months.
+
+**Source:** U.S. Census BTOS 2026 AI Supplement.
+
+**Interpretation:** The categories are reported organizational responses associated with AI use. They may overlap and do not establish productivity effects or causation.
+""",
+
     "Purpose Statement": """
 AI Macro is a research platform that examines the development of the U.S. AI economy from capital investment and physical construction through deployment, adoption, and economic results. It uses publicly available data to relate corporate and market activity to the physical systems required to support the buildout. It evaluates the extent to which that investment produces durable economic value and how its effects are transmitted through the broader U.S. economy.
 """,

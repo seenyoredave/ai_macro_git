@@ -148,6 +148,9 @@ TAB_METRIC_REGISTRIES = {
         "Expected Business AI Use",
         "Expected Adoption Gap",
         "Adoption Breadth",
+        "Business-Function AI Deployment",
+        "Employee Generative-AI Task Use",
+        "AI-Related Organizational Change",
     ],
     "workforce": [
         "AI-Linked Employment Footprint",

@@ -67,7 +67,7 @@ Large accidental voids are presentation failures.
 - **Power:** demand → supply response → generation buildout → price / fuel consequences → ledger.
 - **Grid & Storage:** grid connection conditions → queue outcomes → reliability / storage → regional queue conditions → grid construction spending.
 - **Water:** exposure state → Campus Water Dossier → Evidence Ladder → broader water-system workbench.
-- **Adoption:** diffusion state → unified People / Business trajectory → paid-adoption validation → industry breadth → ledger.
+- **Adoption:** diffusion state → People / Business trajectory → business and worker integration → paid-adoption validation → industry breadth → ledger.
 - **Workforce:** Outcomes Matrix hero → workforce pulse → coordinated employment / labor-flow / compensation / exposure workbench → ledger.
 - **Economic Outcomes:** protected Value Realization Bridge → national outcomes history → paired distribution of gains → investment validation → production context → ledger.
 - **Evidence:** preserve the existing cleanup; source-lineage and stronger search/filter behavior remain future work.

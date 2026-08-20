@@ -46,6 +46,17 @@ SOURCE_COLUMNS = (
 )
 
 
+def _load_report(source_mode: str, error: str = "") -> dict:
+    return {
+        "source_mode": source_mode,
+        "error": str(error or ""),
+        "dataset_kind": "fixed_published_supplement",
+        "retained_path": str(DEPTH_PATH.relative_to(PROJECT_ROOT)),
+        "reference_start": REFERENCE_START,
+        "reference_end": REFERENCE_END,
+    }
+
+
 def _clean(value) -> str:
     if value is None:
         return ""
@@ -249,20 +260,28 @@ def persist_adoption_depth_source(frame: pd.DataFrame) -> None:
 def load_adoption_depth(*, force_refresh: bool = False, allow_live: bool = False) -> dict:
     retained = _load_retained()
     table = retained
-    report = {"source_mode": "retained_official" if not retained.empty else "unavailable", "error": ""}
+    report = (
+        _load_report("retained_official")
+        if not retained.empty
+        else _load_report(
+            "unavailable",
+            f"Required retained Census AI supplement is missing or invalid: "
+            f"{DEPTH_PATH.relative_to(PROJECT_ROOT)}",
+        )
+    )
 
     if force_refresh and allow_live:
         try:
             response = requests.get(BTOS_AI_SUPPLEMENT_URL, timeout=60, headers=BTOS_REQUEST_HEADERS)
             response.raise_for_status()
             table = parse_btos_ai_supplement_workbook(response.content)
-            report = {"source_mode": "live_candidate", "error": ""}
+            report = _load_report("live_candidate")
         except Exception as exc:
             table = retained
-            report = {
-                "source_mode": "retained_fallback" if not retained.empty else "unavailable",
-                "error": f"{type(exc).__name__}: {exc}",
-            }
+            report = _load_report(
+                "retained_fallback" if not retained.empty else "unavailable",
+                f"{type(exc).__name__}: {exc}",
+            )
 
     return {
         "table": table,

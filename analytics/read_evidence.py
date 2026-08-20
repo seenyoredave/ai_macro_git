@@ -142,6 +142,8 @@ DOMAIN_BOUNDARIES: dict[str, tuple[str, ...]] = {
     "adoption": (
         "Expected business use represents stated six-month intent.",
         "Provider subscriber counts are platform-specific reach measures.",
+        "The implied OpenAI subscriber share divides separately disclosed subscriber and weekly-user floors; it is not a national adoption rate or a cohort conversion measure.",
+        "The Census AI supplement covers November 17, 2025 through February 8, 2026 and is a dated structural benchmark, not a time series of adoption depth.",
     ),
     "workforce": (
         "Task-exposure estimates measure the share of occupational tasks technically exposed to AI capabilities.",
@@ -520,8 +522,9 @@ def build_adoption_evidence(context: DashboardContext) -> EvidencePacket:
         _fact("adoption", "task_substitution_pct", "AI-using businesses reporting task substitution", m.get("task_substitution_pct"), unit="%"),
         _fact("adoption", "task_creation_pct", "AI-using businesses reporting new task creation", m.get("task_creation_pct"), unit="%"),
         _fact("adoption", "employment_decrease_pct", "Businesses reporting an AI-related employment decrease", m.get("employment_decrease_pct"), unit="%"),
+        _fact("adoption", "employment_unchanged_pct", "AI-using businesses reporting no AI-related employment change", m.get("employment_unchanged_pct"), unit="%"),
         _fact("adoption", "chatgpt_subscribers_m", "OpenAI reported ChatGPT subscribers", m.get("chatgpt_subscribers_m"), unit="million"),
-        _fact("adoption", "implied_subscriber_share_pct", "Implied subscriber share of working-age U.S. adults", m.get("implied_subscriber_share_pct"), unit="%"),
+        _fact("adoption", "implied_subscriber_share_pct", "Implied OpenAI subscriber share of reported ChatGPT weekly users", m.get("implied_subscriber_share_pct"), unit="%"),
         _fact("adoption", "openai_paying_business_users_m", "OpenAI reported paying business users", m.get("openai_paying_business_users_m"), unit="million"),
         _fact("adoption", "gemini_enterprise_paid_seats_m", "Alphabet reported paid Gemini enterprise seats", m.get("gemini_enterprise_paid_seats_m"), unit="million"),
     ])

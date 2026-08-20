@@ -583,6 +583,7 @@ def build_adoption_state(context: DashboardContext) -> DomainState:
     task_substitution = _num(depth.get("task_substitution_pct"))
     task_creation = _num(depth.get("task_creation_pct"))
     employment_decrease = _num(depth.get("employment_decrease_pct"))
+    employment_unchanged = _num(depth.get("employment_unchanged_pct"))
 
     change = np.nan
     history = adoption.get("consumer_history")
@@ -647,6 +648,7 @@ def build_adoption_state(context: DashboardContext) -> DomainState:
             "task_substitution_pct": task_substitution,
             "task_creation_pct": task_creation,
             "employment_decrease_pct": employment_decrease,
+            "employment_unchanged_pct": employment_unchanged,
             "chatgpt_subscribers_m": subscribers,
             "implied_subscriber_share_pct": subscriber_share,
             "openai_paying_business_users_m": business_users,

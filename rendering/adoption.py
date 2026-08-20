@@ -35,6 +35,11 @@ def _depth(adoption_data: dict) -> dict:
     return payload if isinstance(payload, dict) else {}
 
 
+def _depth_report(adoption_data: dict) -> dict:
+    payload = ((adoption_data or {}).get("depth") or {}).get("load_report")
+    return payload if isinstance(payload, dict) else {}
+
+
 def _adoption_source_rows(adoption_data):
     national = (adoption_data or {}).get("national_history")
     rows = []
@@ -107,21 +112,35 @@ def _business_metrics(adoption_data):
     expected = pd.to_numeric((adoption_data or {}).get("expected_use"), errors="coerce")
     expected_gap = pd.to_numeric((adoption_data or {}).get("expected_adoption_gap"), errors="coerce")
     annual = pd.to_numeric((adoption_data or {}).get("annual_change"), errors="coerce")
-    return [
+    metrics = [
         ("Current business use", fmt_number(current, 1, suffix="%"), "used AI in any business function"),
         ("Expected business use", fmt_number(expected, 1, suffix="%"), "expected within six months"),
         ("Expected adoption gap", fmt_number(expected_gap, 1, signed=True, suffix=" pp"), "expected minus current use"),
-        ("12-month change", fmt_number(annual, 1, signed=True, suffix=" pp"), fmt_date((adoption_data or {}).get("snapshot_date"))),
     ]
+    if pd.notna(annual):
+        metrics.append((
+            "12-month change",
+            fmt_number(annual, 1, signed=True, suffix=" pp"),
+            fmt_date((adoption_data or {}).get("snapshot_date")),
+        ))
+    return metrics
 
 
 def _render_business_integration(adoption_data):
     depth = _depth(adoption_data)
     functions = depth.get("functions")
     if not isinstance(functions, pd.DataFrame) or functions.empty:
+        report = _depth_report(adoption_data)
+        if str(report.get("source_mode") or "") == "unavailable":
+            render_section("Business integration", "How businesses are deploying AI across functions and changing their organizations.")
+            st.info("Detailed Census business-integration measures are unavailable in this release.")
         return
 
-    render_section("Business integration", "AI deployment across business functions and organizational changes.")
+    reference_end = fmt_date(depth.get("reference_end"))
+    render_section(
+        "Business integration",
+        f"AI deployment across business functions and organizational changes · reference period through {reference_end}.",
+    )
     integration_metrics = []
     function_le3 = pd.to_numeric(depth.get("function_le3_share_pct"), errors="coerce")
     if pd.notna(function_le3):
@@ -129,31 +148,42 @@ def _render_business_integration(adoption_data):
     top_function = str(depth.get("top_function") or "").strip()
     top_function_use = pd.to_numeric(depth.get("top_function_use_pct"), errors="coerce")
     if top_function and pd.notna(top_function_use):
-        integration_metrics.append(("Leading function", top_function, f"{fmt_number(top_function_use, 1, suffix="%")} of functional adopters"))
+        integration_metrics.append(("Leading function", top_function, f"{fmt_number(top_function_use, 1, suffix='%')} of functional adopters"))
     organizational_change = pd.to_numeric(depth.get("organizational_change_share_pct"), errors="coerce")
     if pd.notna(organizational_change):
         integration_metrics.append(("Organizational change", fmt_number(organizational_change, 1, suffix="%"), "AI-using businesses"))
     if integration_metrics:
         render_summary_row(integration_metrics, key_prefix="adoption-business-integration")
 
-    with st.container(border=True, key="adoption-panel-functions"):
-        render_panel_heading("AI deployment by business function", "Last six months · functional adopters · Census BTOS AI Supplement")
-        render_plotly_chart(
-            adoption_function_bars(functions),
-            width="stretch",
-            config={"displayModeBar": True, "responsive": True},
-            key="adoption-function-depth",
-        )
-
     adjustments = depth.get("organizational_adjustments")
-    if isinstance(adjustments, pd.DataFrame) and not adjustments.empty:
-        with st.container(border=True, key="adoption-panel-organizational-adjustments"):
+    with st.container(border=True, key="adoption-panel-business-integration"):
+        has_adjustments = isinstance(adjustments, pd.DataFrame) and not adjustments.empty
+        view = (
+            st.radio(
+                "Integration view",
+                ["Business functions", "Organizational changes"],
+                horizontal=True,
+                label_visibility="collapsed",
+                key="adoption-business-integration-view",
+            )
+            if has_adjustments
+            else "Business functions"
+        )
+        if view == "Organizational changes":
             render_panel_heading("Organizational changes accompanying AI use", "Training, workflows, data, infrastructure, and external support")
             render_plotly_chart(
                 adoption_depth_bars(adjustments, category="Adjustment", value="Share", height=430),
                 width="stretch",
                 config={"displayModeBar": True, "responsive": True},
                 key="adoption-organizational-depth",
+            )
+        else:
+            render_panel_heading("AI deployment by business function", "Last six months · functional adopters · Census BTOS AI Supplement")
+            render_plotly_chart(
+                adoption_function_bars(functions),
+                width="stretch",
+                config={"displayModeBar": True, "responsive": True},
+                key="adoption-function-depth",
             )
 
 
@@ -166,7 +196,11 @@ def _render_worker_integration(adoption_data):
     if (not isinstance(tasks, pd.DataFrame) or tasks.empty) and pd.isna(worker_ai) and pd.isna(worker_genai):
         return
 
-    render_section("Worker use", "Employee AI use, Generative AI task mix, and reported labor interaction.")
+    reference_end = fmt_date(depth.get("reference_end"))
+    render_section(
+        "Worker use",
+        f"Employee AI use, Generative AI task mix, and reported labor interaction · reference period through {reference_end}.",
+    )
     worker_metrics = []
     if pd.notna(worker_ai):
         worker_metrics.append(("Employee AI use", fmt_number(worker_ai, 1, suffix="%"), "share of employer businesses"))
@@ -178,7 +212,7 @@ def _render_worker_integration(adoption_data):
     top_task = str(depth.get("top_task") or "").strip()
     top_task_use = pd.to_numeric(depth.get("top_task_use_pct"), errors="coerce")
     if top_task and pd.notna(top_task_use):
-        worker_metrics.append(("Leading task", top_task, f"{fmt_number(top_task_use, 1, suffix="%")} of GenAI-task users"))
+        worker_metrics.append(("Leading task", top_task, f"{fmt_number(top_task_use, 1, suffix='%')} of GenAI-task users"))
     if worker_metrics:
         render_summary_row(worker_metrics, key_prefix="adoption-worker-integration")
 
@@ -197,7 +231,7 @@ def _render_worker_integration(adoption_data):
             ("Task augmentation", fmt_number(depth.get("task_augmentation_pct"), 1, suffix="%"), "AI-using businesses"),
             ("Task substitution", fmt_number(depth.get("task_substitution_pct"), 1, suffix="%"), "AI-using businesses"),
             ("Task creation", fmt_number(depth.get("task_creation_pct"), 1, suffix="%"), "AI-using businesses"),
-            ("Employment decrease", fmt_number(depth.get("employment_decrease_pct"), 1, suffix="%"), "businesses reporting AI-related change"),
+            ("Employment unchanged", fmt_number(depth.get("employment_unchanged_pct"), 1, suffix="%"), "AI-using businesses"),
         ], key_prefix="adoption-labor-interaction")
 
 
@@ -211,7 +245,7 @@ def _render_paid_adoption(commercialization_data):
     render_section("Paid use", "Provider disclosures on paid consumer and enterprise use.")
     render_summary_row([
         ("ChatGPT subscribers", fmt_number(chatgpt_subscribers, 0, suffix="M+"), "consumer subscriptions"),
-        ("Subscriber share", fmt_number(subscriber_share, 1, suffix="%"), "rough share of weekly users"),
+        ("Subscriber / weekly-user ratio", fmt_number(subscriber_share, 1, suffix="%"), "rough floor-to-floor ratio"),
         ("OpenAI business users", fmt_number(openai_business, 0, suffix="M"), "paid business-account users"),
         ("Gemini Enterprise", fmt_number(gemini_enterprise, 0, suffix="M"), "paid seats"),
     ], key_prefix="adoption-paid")
@@ -244,9 +278,6 @@ def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=Non
     business = _business_metrics(adoption_data)
     render_summary_row([societal[0], societal[2], business[0], business[2]], key_prefix="adoption-diffusion-state")
 
-    _render_business_integration(adoption_data)
-    _render_worker_integration(adoption_data)
-
     render_section("Use over time", "Survey estimates of personal and business use over time.")
     with st.container(key="full-width-layout-adoption-trajectory"):
         with st.container(border=True, key="adoption-panel-trajectory"):
@@ -261,6 +292,11 @@ def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=Non
                 render_summary_row(_societal_metrics(adoption_data), key_prefix="adoption-societal-summary")
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=key)
 
+    _render_business_integration(adoption_data)
+    _render_worker_integration(adoption_data)
+
+    _render_paid_adoption(commercialization_data)
+
     render_section("AI use by industry", "Current and expected AI use across major U.S. industries.")
     with st.container(key="full-width-layout-adoption-industry-breadth"):
         with st.container(border=True, key="adoption-panel-industry-breadth"):
@@ -272,5 +308,4 @@ def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=Non
                 key="adoption-sector-breadth",
             )
 
-    _render_paid_adoption(commercialization_data)
     _render_adoption_ledger(adoption_data, commercialization_data)
