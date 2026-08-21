@@ -1,34 +1,222 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "errors": [
-    "snapshot yfinance: YFinance refresh did not return a complete live ticker universe; the retained archive was not advanced. Mode=live_with_archive_row_fallback, live=202/204, fallback rows=2, missing rows=0, retained field fills=22."
+  "changed_paths": [
+    "archive/edgar_history.csv",
+    "archive/fred_history.csv",
+    "automation_artifacts/call_journal.jsonl",
+    "automation_artifacts/status.json",
+    "data/borrower_strain_fundamentals_history.csv",
+    "data/commercialization/commercialization_ledger.csv",
+    "data/connectivity/ixp_snapshot.csv",
+    "data/connectivity/national_summary.csv",
+    "data/current_context_candidate_audit.csv",
+    "data/current_context_refresh_manifest.json",
+    "data/debt_markets_metadata.json",
+    "data/energy_wholesale_prices.csv",
+    "data/infrastructure/source_manifest.csv",
+    "data/release_manifest.json",
+    "data/retained_state_manifest.json",
+    "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
+    "data/water/derived/epa_pws_facility_matches.csv.gz",
+    "data/water/derived/usdm_county_drought_snapshot.csv.gz",
+    "data/water/derived/usgs_2015_county_summary.csv.gz",
+    "data/water/derived/usgs_2015_reconciliation.csv.gz",
+    "data/water/derived/water_national_summary.json",
+    "data/water/derived/water_observations.csv.gz",
+    "data/water/source_manifest.csv",
+    "data/weekly_context_events.csv",
+    "openai_artifacts/evaluated.json",
+    "openai_artifacts/attempts/20260821T131901314661Z_c9e8abbe_01071955.json"
   ],
-  "finished_at_utc": "2026-08-20T13:19:59.833402+00:00",
+  "current_context_snapshot_id": "b821429691259ab9",
+  "errors": [],
+  "evidence_snapshot_id": "c9e8abbec21c8e5ae83e0611",
+  "finished_at_utc": "2026-08-21T13:19:19.257458+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
     "run_ceiling": 1,
-    "this_run": 0,
-    "today_after_run": 2,
-    "today_before_run": 2
+    "this_run": 1,
+    "today_after_run": 1,
+    "today_before_run": 0
   },
   "phases": {
     "deterministic_refresh": {
-      "errors": [
-        "snapshot yfinance: YFinance refresh did not return a complete live ticker universe; the retained archive was not advanced. Mode=live_with_archive_row_fallback, live=202/204, fallback rows=2, missing rows=0, retained field fills=22."
-      ],
-      "status": "failed"
+      "elapsed_sec": 838.558,
+      "status": "passed",
+      "subphases": {
+        "assemble + persist": 4.175,
+        "current context": 39.052,
+        "domain sources": 466.345,
+        "market sources": 328.985
+      }
+    },
+    "evidence": {
+      "artifact_current": false,
+      "artifact_materially_current": false,
+      "artifact_status": "validated",
+      "elapsed_sec": 0.599,
+      "evaluation_contract_current": true,
+      "materiality": {
+        "baseline_available": true,
+        "change_count": 9,
+        "changes": [
+          {
+            "domain": "market",
+            "fact_id": "market.median_return",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.2256181989438931,
+            "old_value": 0.22561819894389312,
+            "percentage_point_change": 0.0,
+            "relative_change": 0.0
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.top_10_share",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.6387949532735897,
+            "old_value": 0.6387949532735896,
+            "percentage_point_change": 0.0,
+            "relative_change": 0.0
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_25pct_d2_area",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 142.0,
+            "old_value": 144.0,
+            "percentage_point_change": null,
+            "relative_change": 0.013888888888888888
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_25pct_d2_share_pct",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.09902370990237098,
+            "old_value": 0.100418410041841,
+            "percentage_point_change": 0.09999999999999964,
+            "relative_change": 0.009999999999999964
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_d2_area",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 182.0,
+            "old_value": 187.0,
+            "percentage_point_change": null,
+            "relative_change": 0.026737967914438502
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.campuses_in_counties_with_d2_share_pct",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.12691771269177127,
+            "old_value": 0.1304044630404463,
+            "percentage_point_change": 0.3000000000000007,
+            "relative_change": 0.02307692307692313
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.highest_county_d2_location",
+            "kind": "categorical_change",
+            "material": true,
+            "new_value": "Pulaski, AR",
+            "old_value": "Denver, CO"
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.published_capacity_in_counties_with_25pct_d2_gw",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 54.090399999999995,
+            "old_value": 54.88240000000001,
+            "percentage_point_change": null,
+            "relative_change": 0.014430855793478704
+          },
+          {
+            "domain": "water",
+            "fact_id": "water.published_capacity_in_counties_with_d2_gw",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 59.04867,
+            "old_value": 60.60284999999999,
+            "percentage_point_change": null,
+            "relative_change": 0.025645328561280344
+          }
+        ],
+        "current_snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "decision": "generate_material_change",
+        "exact_match": false,
+        "immaterial_change_count": 8,
+        "material": true,
+        "material_change_count": 1,
+        "percentage_point_threshold": 2.0,
+        "previous_snapshot_id": "ec329276dfcfc1eeb4de78a6",
+        "relative_change_threshold": 0.1,
+        "version": "1.1.0"
+      },
+      "status": "passed"
+    },
+    "openai": {
+      "attempt_id": "20260821T131901314661Z_c9e8abbe_01071955",
+      "elapsed_sec": 18.257,
+      "stage": "editorial_synthesis",
+      "status": "rejected_hard_validation",
+      "validation": {
+        "checked_claims": 0,
+        "decision": "retain_prior",
+        "diagnostics": [],
+        "domain": {},
+        "grounded_claims": 0,
+        "hard_errors": [
+          "retain_prior cannot preserve domain prose that cites changed facts"
+        ],
+        "hard_failures": [
+          {
+            "label": "editorial_synthesis",
+            "message": "retain_prior cannot preserve domain prose that cites changed facts",
+            "missing_domains": [
+              "market",
+              "finance",
+              "compute",
+              "data_center",
+              "connectivity",
+              "power",
+              "grid_storage",
+              "water",
+              "adoption",
+              "workforce",
+              "economic_impact"
+            ],
+            "reason": "contract_missing_required_domains"
+          }
+        ],
+        "macro": {},
+        "passed": false,
+        "publication_policy": "hard_grounding_gate_soft_editorial_diagnostics",
+        "validator_version": "4.1.0"
+      }
+    },
+    "publication": {
+      "status": "ready_with_prior_commentary",
+      "transaction_boundary": "git_commit"
     }
   },
-  "publish_ready": false,
-  "result": "deterministic_refresh_failed",
-  "run_id": "20260820T130539Z_f3122688",
+  "publish_ready": true,
+  "result": "publish_ready",
+  "run_id": "20260821T130459Z_324cbefd",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-08-20T13:05:39.539135+00:00",
+  "started_at_utc": "2026-08-21T13:04:59.224271+00:00",
   "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
@@ -39,6 +227,8 @@
     "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
-    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth"
+    "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
+    "snapshot yfinance: The live YFinance refresh did not produce one complete, single-date market snapshot. The last complete retained snapshot remained in use, and no YFinance-owned history was advanced. Mode=archive_fallback_market_date_mismatch; retained market date=2026-08-19.",
+    "The completed OpenAI response failed the hard publication gate. The prior Read was retained and this evidence snapshot will not be retried automatically."
   ]
 }
