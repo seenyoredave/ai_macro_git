@@ -490,7 +490,9 @@ def _store_stage(
     metadata: Any,
     persist: bool,
 ) -> None:
-    attempt["generated_output"] = {"editorial_synthesis": model.model_dump(mode="json")}
+    generated = model.model_dump(mode="json")
+    attempt["generated_output"] = {"editorial_synthesis": generated}
+    attempt["model_decision"] = str(generated.get("decision") or "")
     attempt["generation"] = {"editorial_synthesis": metadata.to_dict()}
     attempt["raw_responses"] = {"editorial_synthesis": metadata.response_payload}
     attempt["stage_prompt_versions"] = {
@@ -554,6 +556,7 @@ def _generation_failure(
     _save_attempt(attempt, persist=persist)
     return {
         "status": status,
+        "model_decision": str(attempt.get("model_decision") or ""),
         "stage": "editorial_synthesis",
         "attempt_id": str(attempt.get("attempt_id") or ""),
         "evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
@@ -642,6 +645,7 @@ def _publish_artifact(
     generated_at = datetime.now(timezone.utc).isoformat()
     artifact = {
         "status": status,
+        "model_decision": "publish",
         "attempt_id": str(attempt.get("attempt_id") or ""),
         "evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
         "evaluated_evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
@@ -661,6 +665,7 @@ def _publish_artifact(
         "service_version": READ_SERVICE_VERSION,
     }
     attempt["status"] = "completed_unpublished"
+    attempt["model_decision"] = "publish"
     attempt["stage"] = "publication"
     attempt["validation"] = validation
     attempt["published_artifact"] = artifact
@@ -848,6 +853,7 @@ def generate_validated_read_artifact(
         _save_attempt(attempt, persist=persist)
         return {
             "status": "retained_prior",
+            "model_decision": "retain_prior",
             "stage": "publication",
             "attempt_id": str(attempt.get("attempt_id") or ""),
             "evidence_snapshot_id": snapshot,

@@ -394,14 +394,7 @@ def main() -> int:
                 materiality=materiality,
             )
             openai_elapsed = max(0.0, time.perf_counter() - openai_started)
-            status["phases"]["openai"] = {
-                "status": str(generation.get("status") or "unknown"),
-                "stage": str(generation.get("stage") or ""),
-                "attempt_id": str(generation.get("attempt_id") or ""),
-                "validation": generation.get("validation") or {},
-                "elapsed_sec": round(openai_elapsed, 3),
-            }
-            _log(f"DONE  bounded OpenAI generation · {openai_elapsed:.1f}s · status={generation.get('status')}")
+            generated_status = str(generation.get("status") or "unknown")
             completed_statuses = {
                 "validated",
                 "published_with_warnings",
@@ -409,7 +402,35 @@ def main() -> int:
                 "rejected_hard_validation",
                 "rejected_unparseable",
             }
-            if generation.get("status") not in completed_statuses:
+            validation = dict(generation.get("validation") or {})
+            model_decision = str(generation.get("model_decision") or "")
+            if not model_decision and generated_status in {"validated", "published_with_warnings"}:
+                model_decision = "publish"
+            elif not model_decision and generated_status == "retained_prior":
+                model_decision = "retain_prior"
+            validation_status = (
+                "passed"
+                if validation.get("passed") is True
+                else "rejected"
+                if generated_status in completed_statuses
+                else "not_completed"
+            )
+            status["phases"]["openai"] = {
+                "status": generated_status,
+                "api_status": "completed" if generated_status in completed_statuses else "failed",
+                "model_decision": model_decision,
+                "validation_status": validation_status,
+                "stage": str(generation.get("stage") or ""),
+                "attempt_id": str(generation.get("attempt_id") or ""),
+                "validation": validation,
+                "elapsed_sec": round(openai_elapsed, 3),
+            }
+            _log(
+                f"DONE  bounded OpenAI generation · {openai_elapsed:.1f}s · "
+                f"api={status['phases']['openai']['api_status']} · "
+                f"decision={model_decision or 'unavailable'} · validation={validation_status}"
+            )
+            if generated_status not in completed_statuses:
                 status["errors"].append(
                     f"OpenAI generation did not return a completed response at {generation.get('stage', 'unknown')} stage."
                 )
@@ -417,7 +438,6 @@ def main() -> int:
                 return 2
 
             artifact_valid, regenerated_snapshot, commentary = _current_artifact_valid(bundle.context)
-            generated_status = str(generation.get("status") or "")
             if generated_status in {"validated", "published_with_warnings"} and (
                 not artifact_valid or regenerated_snapshot != evidence_snapshot
             ):
@@ -469,6 +489,11 @@ def main() -> int:
                 "ready_with_prior_commentary"
                 if editorial_status in {"retained_prior", "rejected_hard_validation", "rejected_unparseable"}
                 else "ready"
+            ),
+            "read_status": (
+                "prior_read_retained"
+                if editorial_status in {"retained_prior", "rejected_hard_validation", "rejected_unparseable"}
+                else "new_read_ready"
             ),
             "transaction_boundary": "git_commit",
         }

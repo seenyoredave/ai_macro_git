@@ -10,6 +10,7 @@ AUTOMATION_PUBLICATION_PATHS = (
     "archive/",
     "openai_artifacts/current.json",
     "openai_artifacts/evaluated.json",
+    "openai_artifacts/attempts/",
     "automation_artifacts/",
 )
 
@@ -54,5 +55,5 @@ def automation_stage_paths(mode: str) -> tuple[str, ...]:
     if mode == "publication":
         return AUTOMATION_PUBLICATION_PATHS
     if mode == "ledger":
-        return ("automation_artifacts/",)
+        return ("automation_artifacts/", "openai_artifacts/attempts/")
     raise ValueError(f"Unknown automation transport mode: {mode}")

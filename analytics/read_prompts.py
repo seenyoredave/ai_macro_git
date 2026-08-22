@@ -5,16 +5,18 @@ from __future__ import annotations
 import json
 from typing import Any
 
-EDITORIAL_PROMPT_VERSION = "editorial-synthesis-1.1"
+EDITORIAL_PROMPT_VERSION = "editorial-synthesis-1.2"
 
 EDITORIAL_OUTPUT_RULES = {
     "decision": (
-        "Return publish only when the capsules support coherent, materially useful new prose. "
-        "Otherwise return retain_prior with no domain_reads and macro_read=null."
+        "When run_contract.publication_required is true, return publish; retain_prior is forbidden because "
+        "the published prose is stale. Otherwise return publish only when the capsules support coherent, "
+        "materially useful new prose, or retain_prior with no domain_reads and macro_read=null."
     ),
     "incremental_domains": (
-        "On publish, return every required_update_domain. Add another changed domain only when its Read "
-        "genuinely needs replacement. Routine runs should update 1-4 domains; a broad or bootstrap run may update more."
+        "On publish, return every required_update_domain. Add another candidate_update_domain only when its Read "
+        "genuinely needs replacement. Routine runs should update 1-4 domains; a publication repair or bootstrap "
+        "run may require every domain."
     ),
     "domain_read": (
         "Headline at most 12 words. Write 3-4 sentences and at most 95 words. Lead with the judgment, "
@@ -45,11 +47,11 @@ You are the sole editorial analyst for AI Macro, a research platform tracking th
 
 The signal capsules are the exclusive current factual record. The editorial constitution governs reasoning and prose but is not evidence. Prior Reads and prior analytical state supply continuity only; they cannot support a present factual claim. Never invent, repair, estimate, update, or causally upgrade a supplied fact.
 
-First decide whether the new evidence changes the interpretation enough to justify publication. Material arithmetic can still be analytically unimportant. If the prior thesis remains the best account and no domain Read genuinely requires replacement, choose retain_prior. Do not write filler merely because a paid call was made.
+Read run_contract before making the publication decision. A nonempty required_update_domains list means the published prose is stale: publication is mandatory, retain_prior is forbidden, and every required domain must be replaced. Only when required_update_domains is empty may you decide that the new evidence is analytically unimportant and choose retain_prior. Do not write filler merely because a paid call was made.
 
 If publication is warranted, choose one thesis before writing. Use current-versus-prior movement, elapsed time, trajectory, breadth, concentration, drivers, and cross-domain conditions to determine what the change means. Distinguish a broad move from a narrow one, an announced stock from an operating flow, a transient response from a durable state change, and upstream commitment from downstream realization.
 
-Return only the domain Reads that need replacement, plus one new Macro Read. Every required_update_domain must be present. Preserve all other published domain Reads by omitting them. The Macro Read must add system-level judgment rather than concatenate the domain updates.
+On publish, return every required domain, any additional candidate domain that genuinely needs replacement, and one new Macro Read. Preserve all other published domain Reads by omitting them. The Macro Read must add system-level judgment rather than concatenate the domain updates.
 
 Write for a brilliant, operationally experienced adult who may not know every specialized term. Lead with conclusions. Prefer concrete subjects and verbs. Explain unfamiliar measures only when needed to understand the conclusion. Use a number only when magnitude changes the judgment.
 
@@ -71,12 +73,19 @@ def editorial_synthesis_input(
     candidate_update_domains: list[str],
     bootstrap: bool,
 ) -> str:
+    publication_required = bool(bootstrap or required_update_domains)
     return json.dumps(
         {
-            "task": "Make one publication decision and, only if warranted, return incremental domain Reads plus one Macro Read.",
+            "task": (
+                "Publish replacement Reads for every required domain plus one Macro Read."
+                if publication_required
+                else "Decide whether the evidence warrants incremental domain Reads plus one Macro Read."
+            ),
             "output_rules": EDITORIAL_OUTPUT_RULES,
             "run_contract": {
                 "bootstrap": bool(bootstrap),
+                "publication_required": publication_required,
+                "retain_prior_allowed": not publication_required,
                 "required_update_domains": list(required_update_domains),
                 "candidate_update_domains": list(candidate_update_domains),
                 "unchanged_domains_are_retained_automatically": True,
