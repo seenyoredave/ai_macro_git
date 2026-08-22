@@ -1,42 +1,43 @@
 {
   "analytical_state": {
     "changed_since_prior": [
-      "County drought exposure around tracked campuses eased slightly; the movement does not alter the physical-buildout thesis.",
-      "All other thesis-bearing indicators were unchanged from the previous evaluation."
+      "Market returns and breadth cooled, with valuation concentration edging higher.",
+      "Data-center capacity-disclosure coverage is now explicit across the active registry.",
+      "Large-load campus project scale increased.",
+      "County drought exposure is now mapped across most campuses, isolating a higher-exposure subset.",
+      "New adoption-depth measures show use concentrated in a small number of functions and tasks."
     ],
     "confirming_signals": [
-      "Employee AI use remains concentrated in a few tasks and business functions.",
-      "Organizational adjustment still reaches a minority of AI-using businesses.",
-      "Funding coverage exceeds current spending while forward commitments remain several times larger.",
-      "Published campus capacity, planned generation, and interconnection queues remain project stocks awaiting operating conversion."
+      "Operating cash flow covers current capital spending while forward commitments extend the funding horizon.",
+      "Large-load campus project scale increased against an unchanged planned-generation pipeline.",
+      "Employee use is visible, while functional and task deployment remains concentrated and organizational adjustment is limited.",
+      "Labor-market breadth remains narrow even as aggregate productivity and output grow."
     ],
     "disconfirming_signals": [
-      "Broader task and function deployment accompanied by widespread organizational adjustment.",
-      "Published campus capacity entering service with matched power delivery.",
-      "Real-compensation growth converging with productivity growth.",
-      "Forward commitments declining as projects enter current spending and operation."
+      "Operating cash flow remains sufficient for current capital spending.",
+      "Broad one-year equity participation remains positive after the cooling.",
+      "Aggregate productivity and real output continue to grow."
     ],
     "selected_domains": [
       "finance",
-      "data_center",
       "power",
       "adoption",
+      "workforce",
       "economic_impact"
     ],
-    "thesis": "AI use reaches employee tasks while the conversion bottleneck sits in workflow redesign and project operation; broader gains require commitments to become operating capacity, wider organizational adoption, and stronger compensation transmission.",
+    "thesis": "Capital supports current AI spending, while system conversion now hinges on energizing projects and deepening employee use into organizational redesign before labor and compensation breadth emerges.",
     "unresolved_tensions": [
-      "Forward commitments remain much larger than current capital spending.",
-      "Published campus capacity and planned generation still require operating conversion.",
-      "Employee use is visible while organizational adjustment and cross-function breadth remain limited.",
-      "Productivity growth continues to outpace real-compensation growth."
+      "The timing of project entry into service and delivery of power to specific campuses.",
+      "The conversion of employee AI use into broader functional deployment and organizational redesign.",
+      "The timing gap between productivity growth and wider employment, earnings, and real-compensation participation."
     ]
   },
   "artifact_version": "4.0.0",
-  "attempt_id": "20260821T131901314661Z_c9e8abbe_01071955",
+  "attempt_id": "20260822T025627212097Z_2113006f_c4492c7d",
   "capsule_architecture_version": "1.0.0",
-  "decision": "retain_prior",
-  "decision_reason": "The thesis-bearing evidence is unchanged from the previous evaluation. Small movements in county drought exposure do not require a replacement domain Read or a new system interpretation.",
-  "evaluated_at": "2026-08-21T13:19:01.313550+00:00",
+  "decision": "publish",
+  "decision_reason": "The run contract requires publication and replacement of all stale domains; the capsules also add material evidence on adoption depth, water exposure, and data-center disclosure.",
+  "evaluated_at": "2026-08-22T02:56:27.211072+00:00",
   "evaluated_state_version": "1.1.0",
   "evidence_packets": {
     "adoption": {
@@ -1054,52 +1055,52 @@
       "facts": [
         {
           "context": "",
-          "display": "39.6",
+          "display": "38.0",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 39.62439480310719
+          "value": 37.9731854980198
         },
         {
           "context": "",
-          "display": "59.3",
+          "display": "57.6",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 59.2854253115946
+          "value": 57.595416159245296
         },
         {
           "context": "",
-          "display": "69.6%",
+          "display": "67.2%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.696078431372549
+          "value": 0.6715686274509803
         },
         {
           "context": "",
           "display": "22.6%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.2256181989438931
+          "value": 0.22590751342101256
         },
         {
           "context": "",
-          "display": "48.8%",
+          "display": "50.1%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.48769606807742577
+          "value": 0.500558820428169
         },
         {
           "context": "",
           "display": "63.9%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6387949532735897
+          "value": 0.6388622309718638
         },
         {
           "context": "",
-          "display": "18.7",
+          "display": "18.9",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.73994095396777
+          "value": 18.905194964420694
         },
         {
           "context": "",
@@ -1116,7 +1117,7 @@
           "value": 4.0
         }
       ],
-      "importance": 19.607843137254903,
+      "importance": 18.88622309718638,
       "label": "Market",
       "references": [
         {
@@ -1536,7 +1537,7 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "c9e8abbec21c8e5ae83e0611",
+  "evidence_snapshot_id": "2113006f1a09ce2deaaee556",
   "fact_history": {
     "adoption.chatgpt_subscribers_m": [
       {
@@ -1547,14 +1548,8 @@
       },
       {
         "display": "50.0 million",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 50.0
-      },
-      {
-        "display": "50.0 million",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 50.0
       }
     ],
@@ -1567,14 +1562,8 @@
       },
       {
         "display": "54.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 54.2087424858
-      },
-      {
-        "display": "54.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 54.2087424858
       }
     ],
@@ -1587,14 +1576,8 @@
       },
       {
         "display": "13.8 percentage points",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 13.804690254100002
-      },
-      {
-        "display": "13.8 percentage points",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 13.804690254100002
       }
     ],
@@ -1607,14 +1590,8 @@
       },
       {
         "display": "15.4%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 15.4386318268
-      },
-      {
-        "display": "15.4%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 15.4386318268
       }
     ],
@@ -1627,14 +1604,8 @@
       },
       {
         "display": "61.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 61.7802431014
-      },
-      {
-        "display": "61.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 61.7802431014
       }
     ],
@@ -1647,14 +1618,8 @@
       },
       {
         "display": "54.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 54.8077960521
-      },
-      {
-        "display": "54.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 54.8077960521
       }
     ],
@@ -1667,14 +1632,8 @@
       },
       {
         "display": "45.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 45.1993181231
-      },
-      {
-        "display": "45.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 45.1993181231
       }
     ],
@@ -1687,42 +1646,24 @@
       },
       {
         "display": "21.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 21.8
-      },
-      {
-        "display": "21.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 21.8
       }
     ],
     "adoption.employment_decrease_pct": [
       {
         "display": "2.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.0
-      },
-      {
-        "display": "2.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.0
       }
     ],
     "adoption.employment_unchanged_pct": [
       {
         "display": "95.7%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 95.7
-      },
-      {
-        "display": "95.7%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 95.7
       }
     ],
@@ -1735,14 +1676,8 @@
       },
       {
         "display": "4.1 percentage points",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 4.099999999999998
-      },
-      {
-        "display": "4.1 percentage points",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 4.099999999999998
       }
     ],
@@ -1755,28 +1690,16 @@
       },
       {
         "display": "25.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 25.9
-      },
-      {
-        "display": "25.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 25.9
       }
     ],
     "adoption.function_le3_share_pct": [
       {
         "display": "57.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 57.0
-      },
-      {
-        "display": "57.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 57.0
       }
     ],
@@ -1789,14 +1712,8 @@
       },
       {
         "display": "8.0 million",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 8.0
-      },
-      {
-        "display": "8.0 million",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 8.0
       }
     ],
@@ -1809,14 +1726,8 @@
       },
       {
         "display": "5.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 5.555555555555555
-      },
-      {
-        "display": "5.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 5.555555555555555
       }
     ],
@@ -1829,14 +1740,8 @@
       },
       {
         "display": "Information",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": "Information"
-      },
-      {
-        "display": "Information",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": "Information"
       }
     ],
@@ -1849,14 +1754,8 @@
       },
       {
         "display": "45.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 45.0
-      },
-      {
-        "display": "45.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 45.0
       }
     ],
@@ -1869,28 +1768,16 @@
       },
       {
         "display": "9.0 million",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 9.0
-      },
-      {
-        "display": "9.0 million",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 9.0
       }
     ],
     "adoption.organizational_change_share_pct": [
       {
         "display": "35.7%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 35.7
-      },
-      {
-        "display": "35.7%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 35.7
       }
     ],
@@ -1903,154 +1790,88 @@
       },
       {
         "display": "100.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.0
-      },
-      {
-        "display": "100.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.0
       }
     ],
     "adoption.task_augmentation_pct": [
       {
         "display": "43.7%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 43.7
-      },
-      {
-        "display": "43.7%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 43.7
       }
     ],
     "adoption.task_creation_pct": [
       {
         "display": "10.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 10.6
-      },
-      {
-        "display": "10.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 10.6
       }
     ],
     "adoption.task_le3_share_pct": [
       {
         "display": "65.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 65.0
-      },
-      {
-        "display": "65.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 65.0
       }
     ],
     "adoption.task_substitution_pct": [
       {
         "display": "10.1%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 10.1
-      },
-      {
-        "display": "10.1%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 10.1
       }
     ],
     "adoption.top_function": [
       {
         "display": "Sales and marketing",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": "Sales and marketing"
-      },
-      {
-        "display": "Sales and marketing",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": "Sales and marketing"
       }
     ],
     "adoption.top_function_use_pct": [
       {
         "display": "51.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 51.624548736462096
-      },
-      {
-        "display": "51.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 51.624548736462096
       }
     ],
     "adoption.top_task": [
       {
         "display": "Writing or editing documents, emails, or communications",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": "Writing or editing documents, emails, or communications"
-      },
-      {
-        "display": "Writing or editing documents, emails, or communications",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": "Writing or editing documents, emails, or communications"
       }
     ],
     "adoption.top_task_use_pct": [
       {
         "display": "85.4%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 85.4
-      },
-      {
-        "display": "85.4%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 85.4
       }
     ],
     "adoption.worker_ai_use_pct": [
       {
         "display": "22.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 22.6
-      },
-      {
-        "display": "22.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 22.6
       }
     ],
     "adoption.worker_genai_use_pct": [
       {
         "display": "20.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 20.8
-      },
-      {
-        "display": "20.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 20.8
       }
     ],
@@ -2063,14 +1884,8 @@
       },
       {
         "display": "1.9 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.9
-      },
-      {
-        "display": "1.9 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.9
       }
     ],
@@ -2083,14 +1898,8 @@
       },
       {
         "display": "9.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.09247983352669742
-      },
-      {
-        "display": "9.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.09247983352669742
       }
     ],
@@ -2103,14 +1912,8 @@
       },
       {
         "display": "81.7%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 81.6758
-      },
-      {
-        "display": "81.7%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 81.6758
       }
     ],
@@ -2123,14 +1926,8 @@
       },
       {
         "display": "$348.0B",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 348.026
-      },
-      {
-        "display": "$348.0B",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 348.026
       }
     ],
@@ -2143,14 +1940,8 @@
       },
       {
         "display": "11",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 11.0
-      },
-      {
-        "display": "11",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 11.0
       }
     ],
@@ -2163,14 +1954,8 @@
       },
       {
         "display": "4",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 4.0
-      },
-      {
-        "display": "4",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 4.0
       }
     ],
@@ -2183,14 +1968,8 @@
       },
       {
         "display": "4",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 4.0
-      },
-      {
-        "display": "4",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 4.0
       }
     ],
@@ -2203,14 +1982,8 @@
       },
       {
         "display": "15.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.1592742836027563
-      },
-      {
-        "display": "15.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.1592742836027563
       }
     ],
@@ -2223,14 +1996,8 @@
       },
       {
         "display": "$362.0B",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 362.026
-      },
-      {
-        "display": "$362.0B",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 362.026
       }
     ],
@@ -2243,14 +2010,8 @@
       },
       {
         "display": "17",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 17.0
-      },
-      {
-        "display": "17",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 17.0
       }
     ],
@@ -2263,14 +2024,8 @@
       },
       {
         "display": "11.5%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.11465238662263166
-      },
-      {
-        "display": "11.5%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.11465238662263166
       }
     ],
@@ -2283,14 +2038,8 @@
       },
       {
         "display": "72.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 72.1577
-      },
-      {
-        "display": "72.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 72.1577
       }
     ],
@@ -2303,14 +2052,8 @@
       },
       {
         "display": "78.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 78.0
-      },
-      {
-        "display": "78.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 78.0
       }
     ],
@@ -2323,14 +2066,8 @@
       },
       {
         "display": "168",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 168.0
-      },
-      {
-        "display": "168",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 168.0
       }
     ],
@@ -2343,14 +2080,8 @@
       },
       {
         "display": "225",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 225.0
-      },
-      {
-        "display": "225",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 225.0
       }
     ],
@@ -2363,14 +2094,8 @@
       },
       {
         "display": "2,805",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2805.0
-      },
-      {
-        "display": "2,805",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2805.0
       }
     ],
@@ -2383,14 +2108,8 @@
       },
       {
         "display": "24",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 24.0
-      },
-      {
-        "display": "24",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 24.0
       }
     ],
@@ -2403,14 +2122,8 @@
       },
       {
         "display": "19",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 19.0
-      },
-      {
-        "display": "19",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 19.0
       }
     ],
@@ -2423,14 +2136,8 @@
       },
       {
         "display": "1,376",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1376.0
-      },
-      {
-        "display": "1,376",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1376.0
       }
     ],
@@ -2443,14 +2150,8 @@
       },
       {
         "display": "90",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 90.0
-      },
-      {
-        "display": "90",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 90.0
       }
     ],
@@ -2463,14 +2164,8 @@
       },
       {
         "display": "12,500 miles",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 12500.0
-      },
-      {
-        "display": "12,500 miles",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 12500.0
       }
     ],
@@ -2483,14 +2178,8 @@
       },
       {
         "display": "75",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 75.0
-      },
-      {
-        "display": "75",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 75.0
       }
     ],
@@ -2503,14 +2192,8 @@
       },
       {
         "display": "40",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 40.0
-      },
-      {
-        "display": "40",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 40.0
       }
     ],
@@ -2523,14 +2206,8 @@
       },
       {
         "display": "115",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 115.0
-      },
-      {
-        "display": "115",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 115.0
       }
     ],
@@ -2551,14 +2228,8 @@
       },
       {
         "display": "1,556",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1556.0
-      },
-      {
-        "display": "1,556",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1556.0
       }
     ],
@@ -2571,14 +2242,8 @@
       },
       {
         "display": "0.51x",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.5071707953063885
-      },
-      {
-        "display": "0.51x",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.5071707953063885
       }
     ],
@@ -2591,14 +2256,8 @@
       },
       {
         "display": "22.9 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 22.9025
-      },
-      {
-        "display": "22.9 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 22.9025
       }
     ],
@@ -2611,14 +2270,8 @@
       },
       {
         "display": "3,068",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 3068.0
-      },
-      {
-        "display": "3,068",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 3068.0
       }
     ],
@@ -2631,28 +2284,16 @@
       },
       {
         "display": "287.2 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 287.155
-      },
-      {
-        "display": "287.2 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 287.155
       }
     ],
     "data_center.published_capacity_coverage": [
       {
         "display": "41.3%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.412987012987013
-      },
-      {
-        "display": "41.3%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.412987012987013
       }
     ],
@@ -2665,14 +2306,8 @@
       },
       {
         "display": "894",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 894.0
-      },
-      {
-        "display": "894",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 894.0
       }
     ],
@@ -2685,14 +2320,8 @@
       },
       {
         "display": "82.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 82.0
-      },
-      {
-        "display": "82.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 82.0
       }
     ],
@@ -2705,14 +2334,8 @@
       },
       {
         "display": "3.3 percentage points",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 3.300566845370434
-      },
-      {
-        "display": "3.3 percentage points",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 3.300566845370434
       }
     ],
@@ -2725,14 +2348,8 @@
       },
       {
         "display": "15.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 15.92742836027563
-      },
-      {
-        "display": "15.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 15.92742836027563
       }
     ],
@@ -2745,14 +2362,8 @@
       },
       {
         "display": "-8.4%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": -8.429996378194781
-      },
-      {
-        "display": "-8.4%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": -8.429996378194781
       }
     ],
@@ -2765,14 +2376,8 @@
       },
       {
         "display": "0.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.8032128514056325
-      },
-      {
-        "display": "0.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.8032128514056325
       }
     ],
@@ -2785,14 +2390,8 @@
       },
       {
         "display": "$37.0B",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 37.0
-      },
-      {
-        "display": "$37.0B",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 37.0
       }
     ],
@@ -2805,14 +2404,8 @@
       },
       {
         "display": "$20.0B",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 20.0
-      },
-      {
-        "display": "$20.0B",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 20.0
       }
     ],
@@ -2825,14 +2418,8 @@
       },
       {
         "display": "40.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 40.0
-      },
-      {
-        "display": "40.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 40.0
       }
     ],
@@ -2845,14 +2432,8 @@
       },
       {
         "display": "2.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.2
-      },
-      {
-        "display": "2.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.2
       }
     ],
@@ -2865,14 +2446,8 @@
       },
       {
         "display": "9.6 percentage points",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 9.622454608456412
-      },
-      {
-        "display": "9.6 percentage points",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 9.622454608456412
       }
     ],
@@ -2885,14 +2460,8 @@
       },
       {
         "display": "14.1%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 14.098338730786498
-      },
-      {
-        "display": "14.1%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 14.098338730786498
       }
     ],
@@ -2905,14 +2474,8 @@
       },
       {
         "display": "0.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.5837482300278696
-      },
-      {
-        "display": "0.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.5837482300278696
       }
     ],
@@ -2925,14 +2488,8 @@
       },
       {
         "display": "4.5%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 4.475884122330087
-      },
-      {
-        "display": "4.5%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 4.475884122330087
       }
     ],
@@ -2945,14 +2502,8 @@
       },
       {
         "display": "2.5%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.5
-      },
-      {
-        "display": "2.5%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.5
       }
     ],
@@ -2965,14 +2516,8 @@
       },
       {
         "display": "1.4%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.4
-      },
-      {
-        "display": "1.4%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.4
       }
     ],
@@ -2985,14 +2530,8 @@
       },
       {
         "display": "$514.0B",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 514.0
-      },
-      {
-        "display": "$514.0B",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 514.0
       }
     ],
@@ -3005,14 +2544,8 @@
       },
       {
         "display": "0.15",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.15
-      },
-      {
-        "display": "0.15",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.15
       }
     ],
@@ -3025,14 +2558,8 @@
       },
       {
         "display": "25.9",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 25.92740248873737
-      },
-      {
-        "display": "25.9",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 25.92740248873737
       }
     ],
@@ -3045,14 +2572,8 @@
       },
       {
         "display": "0.96 years",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.9566930174138429
-      },
-      {
-        "display": "0.96 years",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.9566930174138429
       }
     ],
@@ -3065,14 +2586,8 @@
       },
       {
         "display": "0.4",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.4305238339370745
-      },
-      {
-        "display": "0.4",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.4305238339370745
       }
     ],
@@ -3085,14 +2600,8 @@
       },
       {
         "display": "5.04x",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 5.041906622754207
-      },
-      {
-        "display": "5.04x",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 5.041906622754207
       }
     ],
@@ -3105,14 +2614,8 @@
       },
       {
         "display": "1.43x",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.4338752083828838
-      },
-      {
-        "display": "1.43x",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.4338752083828838
       }
     ],
@@ -3125,14 +2628,8 @@
       },
       {
         "display": "-17.0",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": -17.002687259605295
-      },
-      {
-        "display": "-17.0",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": -17.002687259605295
       }
     ],
@@ -3145,14 +2642,8 @@
       },
       {
         "display": "$37.0B",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 37.0
-      },
-      {
-        "display": "$37.0B",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 37.0
       }
     ],
@@ -3165,14 +2656,8 @@
       },
       {
         "display": "123.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 123.0
-      },
-      {
-        "display": "123.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 123.0
       }
     ],
@@ -3185,14 +2670,8 @@
       },
       {
         "display": "-0.56",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": -0.559
-      },
-      {
-        "display": "-0.56",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": -0.559
       }
     ],
@@ -3205,14 +2684,8 @@
       },
       {
         "display": "-0.05",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": -0.049000000000000044
-      },
-      {
-        "display": "-0.05",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": -0.049000000000000044
       }
     ],
@@ -3225,14 +2698,8 @@
       },
       {
         "display": "$20.0B",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 20.0
-      },
-      {
-        "display": "$20.0B",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 20.0
       }
     ],
@@ -3245,14 +2712,8 @@
       },
       {
         "display": "1.18x",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.1842385657863554
-      },
-      {
-        "display": "1.18x",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.1842385657863554
       }
     ],
@@ -3265,14 +2726,8 @@
       },
       {
         "display": "31",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 31.0
-      },
-      {
-        "display": "31",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 31.0
       }
     ],
@@ -3285,14 +2740,8 @@
       },
       {
         "display": "54.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.54868289798829
-      },
-      {
-        "display": "54.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.54868289798829
       }
     ],
@@ -3305,14 +2754,8 @@
       },
       {
         "display": "0.97x",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.974091081680859
-      },
-      {
-        "display": "0.97x",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.974091081680859
       }
     ],
@@ -3325,14 +2768,8 @@
       },
       {
         "display": "2.16x",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.1583296474672142
-      },
-      {
-        "display": "2.16x",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.1583296474672142
       }
     ],
@@ -3345,14 +2782,8 @@
       },
       {
         "display": "24.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 24.245265300990745
-      },
-      {
-        "display": "24.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 24.245265300990745
       }
     ],
@@ -3365,14 +2796,8 @@
       },
       {
         "display": "549.0 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 549.0
-      },
-      {
-        "display": "549.0 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 549.0
       }
     ],
@@ -3385,14 +2810,8 @@
       },
       {
         "display": "5.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.05160115820117861
-      },
-      {
-        "display": "5.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.05160115820117861
       }
     ],
@@ -3405,14 +2824,8 @@
       },
       {
         "display": "13%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 13.0
-      },
-      {
-        "display": "13%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 13.0
       }
     ],
@@ -3425,14 +2838,8 @@
       },
       {
         "display": "75%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 75.0
-      },
-      {
-        "display": "75%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 75.0
       }
     ],
@@ -3445,14 +2852,8 @@
       },
       {
         "display": "NPCC-New England",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": "NPCC-New England"
-      },
-      {
-        "display": "NPCC-New England",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": "NPCC-New England"
       }
     ],
@@ -3465,14 +2866,8 @@
       },
       {
         "display": "-0.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": -0.9
-      },
-      {
-        "display": "-0.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": -0.9
       }
     ],
@@ -3485,14 +2880,8 @@
       },
       {
         "display": "5.0 years",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 5.0
-      },
-      {
-        "display": "5.0 years",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 5.0
       }
     ],
@@ -3505,14 +2894,8 @@
       },
       {
         "display": "1",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.0
-      },
-      {
-        "display": "1",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.0
       }
     ],
@@ -3525,14 +2908,8 @@
       },
       {
         "display": "46.1%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 46.13068341099738
-      },
-      {
-        "display": "46.1%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 46.13068341099738
       }
     ],
@@ -3545,14 +2922,8 @@
       },
       {
         "display": "2.8 hours",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.7522794416029703
-      },
-      {
-        "display": "2.8 hours",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.7522794416029703
       }
     ],
@@ -3565,14 +2936,8 @@
       },
       {
         "display": "2061 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2061.3275019726048
-      },
-      {
-        "display": "2061 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2061.3275019726048
       }
     ],
@@ -3585,14 +2950,8 @@
       },
       {
         "display": "552.7 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 552.7496947276098
-      },
-      {
-        "display": "552.7 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 552.7496947276098
       }
     ],
@@ -3604,16 +2963,10 @@
         "value": 41.222391867514915
       },
       {
-        "display": "39.6",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 39.62439480310719
-      },
-      {
-        "display": "39.6",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
-        "value": 39.62439480310719
+        "display": "38.0",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
+        "value": 37.9731854980198
       }
     ],
     "market.crowded_sector_count": [
@@ -3625,14 +2978,8 @@
       },
       {
         "display": "4",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 4.0
-      },
-      {
-        "display": "4",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 4.0
       }
     ],
@@ -3644,16 +2991,10 @@
         "value": 19.12291072081383
       },
       {
-        "display": "18.7",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 18.73994095396777
-      },
-      {
-        "display": "18.7",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
-        "value": 18.73994095396777
+        "display": "18.9",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
+        "value": 18.905194964420694
       }
     ],
     "market.equal_weight_return": [
@@ -3664,16 +3005,10 @@
         "value": 0.5568019380988666
       },
       {
-        "display": "48.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.48769606807742577
-      },
-      {
-        "display": "48.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
-        "value": 0.48769606807742577
+        "display": "50.1%",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
+        "value": 0.500558820428169
       }
     ],
     "market.median_return": [
@@ -3685,15 +3020,9 @@
       },
       {
         "display": "22.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.22561819894389312
-      },
-      {
-        "display": "22.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
-        "value": 0.2256181989438931
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
+        "value": 0.22590751342101256
       }
     ],
     "market.positive_breadth": [
@@ -3704,16 +3033,10 @@
         "value": 0.696078431372549
       },
       {
-        "display": "69.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.696078431372549
-      },
-      {
-        "display": "69.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
-        "value": 0.696078431372549
+        "display": "67.2%",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
+        "value": 0.6715686274509803
       }
     ],
     "market.pressure": [
@@ -3724,16 +3047,10 @@
         "value": 59.68220098865049
       },
       {
-        "display": "59.3",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 59.2854253115946
-      },
-      {
-        "display": "59.3",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
-        "value": 59.2854253115946
+        "display": "57.6",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
+        "value": 57.595416159245296
       }
     ],
     "market.strong_sector_count": [
@@ -3745,14 +3062,8 @@
       },
       {
         "display": "3",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 3.0
-      },
-      {
-        "display": "3",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 3.0
       }
     ],
@@ -3765,15 +3076,9 @@
       },
       {
         "display": "63.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.6387949532735896
-      },
-      {
-        "display": "63.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
-        "value": 0.6387949532735897
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
+        "value": 0.6388622309718638
       }
     ],
     "power.commercial_growth": [
@@ -3785,14 +3090,8 @@
       },
       {
         "display": "2.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.909109066881821
-      },
-      {
-        "display": "2.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.909109066881821
       }
     ],
@@ -3805,14 +3104,8 @@
       },
       {
         "display": "1.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.2007350328539612
-      },
-      {
-        "display": "1.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.2007350328539612
       }
     ],
@@ -3825,14 +3118,8 @@
       },
       {
         "display": "200,982 MW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 200982.128003608
-      },
-      {
-        "display": "200,982 MW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 200982.128003608
       }
     ],
@@ -3845,14 +3132,8 @@
       },
       {
         "display": "2030",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2030.0
-      },
-      {
-        "display": "2030",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2030.0
       }
     ],
@@ -3865,14 +3146,8 @@
       },
       {
         "display": "227.0 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 227.00179999999992
-      },
-      {
-        "display": "227.0 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 227.00179999999992
       }
     ],
@@ -3885,140 +3160,80 @@
       },
       {
         "display": "5.4%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 5.395660783561906
-      },
-      {
-        "display": "5.4%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 5.395660783561906
       }
     ],
     "water.ambiguous_pws_overlap_campuses": [
       {
         "display": "6",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 6.0
-      },
-      {
-        "display": "6",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 6.0
       }
     ],
     "water.campuses": [
       {
         "display": "1,482",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1482.0
-      },
-      {
-        "display": "1,482",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1482.0
       }
     ],
     "water.campuses_in_counties_with_25pct_d2_area": [
       {
-        "display": "144",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 144.0
-      },
-      {
         "display": "142",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 142.0
       }
     ],
     "water.campuses_in_counties_with_25pct_d2_share_pct": [
       {
-        "display": "10.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.100418410041841
-      },
-      {
         "display": "9.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.09902370990237098
       }
     ],
     "water.campuses_in_counties_with_d2_area": [
       {
-        "display": "187",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 187.0
-      },
-      {
         "display": "182",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 182.0
       }
     ],
     "water.campuses_in_counties_with_d2_share_pct": [
       {
-        "display": "13.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.1304044630404463
-      },
-      {
         "display": "12.7%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.12691771269177127
       }
     ],
     "water.campuses_with_county_drought_data": [
       {
         "display": "1,434",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1434.0
-      },
-      {
-        "display": "1,434",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1434.0
       }
     ],
     "water.county_drought_coverage_share_pct": [
       {
         "display": "96.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.9676113360323887
-      },
-      {
-        "display": "96.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.9676113360323887
       }
     ],
     "water.direct_evidence_campuses": [
       {
         "display": "34",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 34.0
-      },
-      {
-        "display": "34",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 34.0
       }
     ],
@@ -4039,42 +3254,24 @@
       },
       {
         "display": "2.3%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.2941970310391366
-      },
-      {
-        "display": "2.3%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.2941970310391366
       }
     ],
     "water.highest_county_d2_area_pct": [
       {
         "display": "100.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 100.0
-      },
-      {
-        "display": "100.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 100.0
       }
     ],
     "water.highest_county_d2_location": [
       {
-        "display": "Denver, CO",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": "Denver, CO"
-      },
-      {
         "display": "Pulaski, AR",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": "Pulaski, AR"
       }
     ],
@@ -4103,14 +3300,8 @@
       },
       {
         "display": "108.4 Bgal/day",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 108.412
-      },
-      {
-        "display": "108.4 Bgal/day",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 108.412
       }
     ],
@@ -4131,28 +3322,16 @@
       },
       {
         "display": "35.6 Bgal/day",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 35.575
-      },
-      {
-        "display": "35.6 Bgal/day",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 35.575
       }
     ],
     "water.published_capacity_coverage_share_pct": [
       {
         "display": "45.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.45209176788124156
-      },
-      {
-        "display": "45.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.45209176788124156
       }
     ],
@@ -4166,29 +3345,17 @@
     ],
     "water.published_capacity_in_counties_with_25pct_d2_gw": [
       {
-        "display": "54.9 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 54.88240000000001
-      },
-      {
         "display": "54.1 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 54.090399999999995
       }
     ],
     "water.published_capacity_in_counties_with_d2_gw": [
       {
-        "display": "60.6 GW",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 60.60284999999999
-      },
-      {
         "display": "59.0 GW",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 59.04867
       }
     ],
@@ -4203,98 +3370,56 @@
     "water.pws_provenance_classified_share_pct": [
       {
         "display": "29.9%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.2987012987012987
-      },
-      {
-        "display": "29.9%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.2987012987012987
       }
     ],
     "water.pws_query_resolution_share_pct": [
       {
         "display": "100.0%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.0
-      },
-      {
-        "display": "100.0%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.0
       }
     ],
     "water.pws_query_resolved_campuses": [
       {
         "display": "1,482",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1482.0
-      },
-      {
-        "display": "1,482",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1482.0
       }
     ],
     "water.pws_service_area_overlap_campuses": [
       {
         "display": "231",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 231.0
-      },
-      {
-        "display": "231",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 231.0
       }
     ],
     "water.pws_service_area_overlap_share_pct": [
       {
         "display": "15.6%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.15587044534412955
-      },
-      {
-        "display": "15.6%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.15587044534412955
       }
     ],
     "water.quantified_consumption_campuses": [
       {
         "display": "0",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.0
-      },
-      {
-        "display": "0",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.0
       }
     ],
     "water.quantified_use_campuses": [
       {
         "display": "0",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.0
-      },
-      {
-        "display": "0",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.0
       }
     ],
@@ -4309,14 +3434,8 @@
     "water.quantified_withdrawal_campuses": [
       {
         "display": "0",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.0
-      },
-      {
-        "display": "0",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.0
       }
     ],
@@ -4345,14 +3464,8 @@
       },
       {
         "display": "2.6 Bgal/day",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.559680884931507
-      },
-      {
-        "display": "2.6 Bgal/day",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.559680884931507
       }
     ],
@@ -4365,14 +3478,8 @@
       },
       {
         "display": "124.6 Bgal/day",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 124.61096676438356
-      },
-      {
-        "display": "124.6 Bgal/day",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 124.61096676438356
       }
     ],
@@ -4385,28 +3492,16 @@
       },
       {
         "display": "80.2 Bgal/day",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 80.213
-      },
-      {
-        "display": "80.2 Bgal/day",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 80.213
       }
     ],
     "water.unclassified_pws_overlap_campuses": [
       {
         "display": "162",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 162.0
-      },
-      {
-        "display": "162",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 162.0
       }
     ],
@@ -4419,14 +3514,8 @@
       },
       {
         "display": "1",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 1.0
-      },
-      {
-        "display": "1",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 1.0
       }
     ],
@@ -4439,14 +3528,8 @@
       },
       {
         "display": "47.3%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 47.34561213434453
-      },
-      {
-        "display": "47.3%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 47.34561213434453
       }
     ],
@@ -4459,14 +3542,8 @@
       },
       {
         "display": "2.2%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.2
-      },
-      {
-        "display": "2.2%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.2
       }
     ],
@@ -4479,14 +3556,8 @@
       },
       {
         "display": "5.5%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 5.5
-      },
-      {
-        "display": "5.5%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 5.5
       }
     ],
@@ -4499,14 +3570,8 @@
       },
       {
         "display": "45.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 45.83333333333333
-      },
-      {
-        "display": "45.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 45.83333333333333
       }
     ],
@@ -4519,14 +3584,8 @@
       },
       {
         "display": "923",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 923.0
-      },
-      {
-        "display": "923",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 923.0
       }
     ],
@@ -4539,14 +3598,8 @@
       },
       {
         "display": "2",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 2.0
-      },
-      {
-        "display": "2",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 2.0
       }
     ],
@@ -4559,14 +3612,8 @@
       },
       {
         "display": "Power & communication construction",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": "Power & communication construction"
-      },
-      {
-        "display": "Power & communication construction",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": "Power & communication construction"
       }
     ],
@@ -4579,14 +3626,8 @@
       },
       {
         "display": "0.8%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": 0.8443908323281235
-      },
-      {
-        "display": "0.8%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": 0.8443908323281235
       }
     ],
@@ -4599,14 +3640,8 @@
       },
       {
         "display": "Computing infrastructure",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": "Computing infrastructure"
-      },
-      {
-        "display": "Computing infrastructure",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": "Computing infrastructure"
       }
     ],
@@ -4619,20 +3654,14 @@
       },
       {
         "display": "-4.1%",
-        "observed_at": "2026-08-20T10:42:35.712530+00:00",
-        "snapshot_id": "ec329276dfcfc1eeb4de78a6",
-        "value": -4.071458246780213
-      },
-      {
-        "display": "-4.1%",
-        "observed_at": "2026-08-21T13:19:01.313550+00:00",
-        "snapshot_id": "c9e8abbec21c8e5ae83e0611",
+        "observed_at": "2026-08-22T02:56:27.211072+00:00",
+        "snapshot_id": "2113006f1a09ce2deaaee556",
         "value": -4.071458246780213
       }
     ]
   },
   "prompt_versions": {
-    "editorial": "editorial-synthesis-1.1",
+    "editorial": "editorial-synthesis-1.2",
     "editorial_constitution": "1.1.0",
     "editorial_constitution_sha256": "724d0a91ff73c7f82586aebbca9593d4cbc0b1b18f4703eb0cd1f56b6d2778ff",
     "generator": "6.1.0",
@@ -4641,35 +3670,948 @@
   },
   "status": "rejected_hard_validation",
   "validation": {
-    "checked_claims": 0,
-    "decision": "retain_prior",
-    "diagnostics": [],
-    "domain": {},
-    "grounded_claims": 0,
+    "checked_claims": 59,
+    "decision": "publish",
+    "diagnostics": [
+      {
+        "label": "market.analysis",
+        "message": "market: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 9,
+        "reason": "numeric_density"
+      },
+      {
+        "label": "finance.analysis",
+        "message": "finance: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 4,
+        "reason": "numeric_density"
+      },
+      {
+        "fact_ids": [
+          "finance.internal_funding_coverage",
+          "finance.forward_commitment_load"
+        ],
+        "label": "finance.headline",
+        "message": "finance.headline: semicolons are not allowed in Reader commentary",
+        "reason": "semicolon",
+        "sentence": "Current cash flow covers spending; commitments dominate the horizon"
+      },
+      {
+        "fact_ids": [
+          "finance.internal_funding_coverage"
+        ],
+        "label": "finance.analysis[0]",
+        "message": "finance.analysis[0]: internal cohort label is undefined for the reader: Covered issuers",
+        "phrase": "Covered issuers",
+        "reason": "undefined_cohort",
+        "sentence": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending."
+      },
+      {
+        "label": "compute.analysis",
+        "message": "compute: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 4,
+        "reason": "numeric_density"
+      },
+      {
+        "label": "data_center.analysis",
+        "message": "data_center: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 4,
+        "reason": "numeric_density"
+      },
+      {
+        "fact_ids": [
+          "data_center.operating_sites",
+          "data_center.development_to_operating"
+        ],
+        "label": "data_center.analysis[1]",
+        "message": "data_center.analysis[1]: semicolons are not allowed in Reader commentary",
+        "reason": "semicolon",
+        "sentence": "The registry contains 3,068 operating sites; development sites equal 0.51 times that count."
+      },
+      {
+        "label": "connectivity.analysis",
+        "message": "connectivity: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 4,
+        "reason": "numeric_density"
+      },
+      {
+        "fact_ids": [
+          "connectivity.campuses_screened",
+          "connectivity.high_capacity_low_public_connectivity_states"
+        ],
+        "label": "connectivity.headline",
+        "message": "connectivity.headline: semicolons are not allowed in Reader commentary",
+        "reason": "semicolon",
+        "sentence": "Campus screening expands; public interconnection depth stays uneven"
+      },
+      {
+        "label": "power.analysis",
+        "message": "power: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 5,
+        "reason": "numeric_density"
+      },
+      {
+        "label": "grid_storage.analysis",
+        "message": "grid_storage: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 5,
+        "reason": "numeric_density"
+      },
+      {
+        "label": "water.analysis",
+        "message": "water: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 7,
+        "reason": "numeric_density"
+      },
+      {
+        "label": "adoption.analysis",
+        "message": "adoption: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 6,
+        "reason": "numeric_density"
+      },
+      {
+        "fact_ids": [
+          "adoption.function_le3_share_pct",
+          "adoption.task_le3_share_pct"
+        ],
+        "label": "adoption.analysis[1]",
+        "message": "adoption.analysis[1]: semicolons are not allowed in Reader commentary",
+        "reason": "semicolon",
+        "sentence": "Among functional adopters, 57.0% use AI in three or fewer business functions; among businesses reporting employee generative-AI use, 65.0% span three or fewer task categories."
+      },
+      {
+        "fact_ids": [
+          "workforce.median_llm_software_exposure_pct",
+          "workforce.employment_breadth",
+          "workforce.real_earnings_breadth"
+        ],
+        "label": "workforce.headline",
+        "message": "workforce.headline: semicolons are not allowed in Reader commentary",
+        "reason": "semicolon",
+        "sentence": "Task exposure is broad; labor-market transmission is narrow"
+      },
+      {
+        "fact_ids": [
+          "workforce.employment_breadth",
+          "workforce.weakest_channel_growth"
+        ],
+        "label": "workforce.analysis[1]",
+        "message": "workforce.analysis[1]: semicolons are not allowed in Reader commentary",
+        "reason": "semicolon",
+        "sentence": "One tracked AI-linked channel has positive employment growth; the weakest channel is down 4.1%."
+      },
+      {
+        "label": "economic_impact.analysis",
+        "message": "economic_impact: analysis uses more than 3 displayed quantities",
+        "numeric_occurrences": 5,
+        "reason": "numeric_density"
+      },
+      {
+        "label": "macro.analysis",
+        "message": "macro: analysis uses more than 5 displayed quantities",
+        "numeric_occurrences": 13,
+        "reason": "numeric_density"
+      },
+      {
+        "domains": [
+          "adoption",
+          "economic_impact",
+          "workforce"
+        ],
+        "fact_ids": [
+          "adoption.function_le3_share_pct",
+          "adoption.organizational_change_share_pct",
+          "workforce.employment_breadth",
+          "workforce.real_earnings_breadth",
+          "economic_impact.productivity_real_comp_gap"
+        ],
+        "label": "macro.analysis[8]",
+        "message": "macro.analysis[8]: sentence spans more than 2 domains",
+        "reason": "sentence_scope",
+        "sentence": "The next system confirmation is deeper organizational adoption paired with wider employment and pay participation."
+      },
+      {
+        "cross_domain_sentences": 2,
+        "label": "macro.analysis",
+        "message": "macro analysis must contain at least three cross-domain synthesis sentences",
+        "reason": "insufficient_cross_domain_synthesis"
+      },
+      {
+        "fact_ids": [
+          "finance.internal_funding_coverage",
+          "finance.forward_commitment_load"
+        ],
+        "label": "macro.analysis[0]",
+        "message": "macro.analysis[0]: internal cohort label is undefined for the reader: Covered issuers",
+        "phrase": "Covered issuers",
+        "reason": "undefined_cohort",
+        "sentence": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending, while forward commitments equal 5.04 times it."
+      },
+      {
+        "fact_ids": [
+          "finance.internal_funding_coverage",
+          "finance.forward_commitment_load"
+        ],
+        "label": "macro.analysis[0]",
+        "message": "macro.analysis[0]: reuses domain Read language from finance",
+        "reason": "domain_language_reuse",
+        "sentence": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending, while forward commitments equal 5.04 times it.",
+        "source_domain": "finance",
+        "source_text": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending."
+      },
+      {
+        "fact_ids": [
+          "power.large_load_capacity_mw",
+          "power.planned_net_gw"
+        ],
+        "label": "macro.analysis[1]",
+        "message": "macro.analysis[1]: reuses domain Read language from power",
+        "reason": "domain_language_reuse",
+        "sentence": "At the physical layer, published capacity tied to large-load campuses rose from 189,880 MW to 200,982 MW, while planned net generation additions held at 227.0 GW.",
+        "source_domain": "power",
+        "source_text": "Published capacity associated with large-load campus records rose from 189,880 MW to 200,982 MW."
+      },
+      {
+        "fact_ids": [
+          "adoption.organizational_change_share_pct"
+        ],
+        "label": "macro.analysis[5]",
+        "message": "macro.analysis[5]: reuses domain Read language from adoption",
+        "reason": "domain_language_reuse",
+        "sentence": "Organizational adjustment reaches 35.7% of AI-using businesses, making workflow redesign the immediate step from tool use toward enterprise-wide gains.",
+        "source_domain": "adoption",
+        "source_text": "Organizational adjustment reaches 35.7% of AI-using businesses, making process redesign the next step from use to enterprise-wide gains."
+      }
+    ],
+    "domain": {
+      "adoption": {
+        "checked_claims": 5,
+        "errors": [
+          "adoption: analysis uses more than 3 displayed quantities",
+          "adoption.analysis[1]: semicolons are not allowed in Reader commentary"
+        ],
+        "failures": [
+          {
+            "label": "adoption.analysis",
+            "message": "adoption: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 6,
+            "reason": "numeric_density"
+          },
+          {
+            "fact_ids": [
+              "adoption.function_le3_share_pct",
+              "adoption.task_le3_share_pct"
+            ],
+            "label": "adoption.analysis[1]",
+            "message": "adoption.analysis[1]: semicolons are not allowed in Reader commentary",
+            "reason": "semicolon",
+            "sentence": "Among functional adopters, 57.0% use AI in three or fewer business functions; among businesses reporting employee generative-AI use, 65.0% span three or fewer task categories."
+          }
+        ],
+        "grounded_claims": 4,
+        "passed": false
+      },
+      "compute": {
+        "checked_claims": 5,
+        "errors": [
+          "compute: analysis uses more than 3 displayed quantities"
+        ],
+        "failures": [
+          {
+            "label": "compute.analysis",
+            "message": "compute: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 4,
+            "reason": "numeric_density"
+          }
+        ],
+        "grounded_claims": 5,
+        "passed": false
+      },
+      "connectivity": {
+        "checked_claims": 4,
+        "errors": [
+          "connectivity: analysis uses more than 3 displayed quantities",
+          "connectivity.headline: semicolons are not allowed in Reader commentary",
+          "connectivity.analysis[0]: unsupported numeric tokens: 216"
+        ],
+        "failures": [
+          {
+            "label": "connectivity.analysis",
+            "message": "connectivity: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 4,
+            "reason": "numeric_density"
+          },
+          {
+            "fact_ids": [
+              "connectivity.campuses_screened",
+              "connectivity.high_capacity_low_public_connectivity_states"
+            ],
+            "label": "connectivity.headline",
+            "message": "connectivity.headline: semicolons are not allowed in Reader commentary",
+            "reason": "semicolon",
+            "sentence": "Campus screening expands; public interconnection depth stays uneven"
+          },
+          {
+            "cited_facts": [
+              {
+                "context": "",
+                "display": "225",
+                "id": "connectivity.campuses_screened",
+                "label": "Data-center campuses screened for connectivity context"
+              }
+            ],
+            "fact_ids": [
+              "connectivity.campuses_screened"
+            ],
+            "label": "connectivity.analysis[0]",
+            "message": "connectivity.analysis[0]: unsupported numeric tokens: 216",
+            "reason": "unsupported_numeric_tokens",
+            "sentence": "Campus-level connectivity screening now covers 225 data-center campuses, up from 216.",
+            "unsupported_numeric_tokens": [
+              "216"
+            ]
+          }
+        ],
+        "grounded_claims": 2,
+        "passed": false
+      },
+      "data_center": {
+        "checked_claims": 4,
+        "errors": [
+          "data_center: analysis uses more than 3 displayed quantities",
+          "data_center.analysis[1]: semicolons are not allowed in Reader commentary"
+        ],
+        "failures": [
+          {
+            "label": "data_center.analysis",
+            "message": "data_center: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 4,
+            "reason": "numeric_density"
+          },
+          {
+            "fact_ids": [
+              "data_center.operating_sites",
+              "data_center.development_to_operating"
+            ],
+            "label": "data_center.analysis[1]",
+            "message": "data_center.analysis[1]: semicolons are not allowed in Reader commentary",
+            "reason": "semicolon",
+            "sentence": "The registry contains 3,068 operating sites; development sites equal 0.51 times that count."
+          }
+        ],
+        "grounded_claims": 3,
+        "passed": false
+      },
+      "economic_impact": {
+        "checked_claims": 5,
+        "errors": [
+          "economic_impact: analysis uses more than 3 displayed quantities"
+        ],
+        "failures": [
+          {
+            "label": "economic_impact.analysis",
+            "message": "economic_impact: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 5,
+            "reason": "numeric_density"
+          }
+        ],
+        "grounded_claims": 5,
+        "passed": false
+      },
+      "finance": {
+        "checked_claims": 4,
+        "errors": [
+          "finance: analysis uses more than 3 displayed quantities",
+          "finance.headline: semicolons are not allowed in Reader commentary",
+          "finance.analysis[0]: internal cohort label is undefined for the reader: Covered issuers",
+          "finance.analysis[2]: unsupported numeric tokens: -0.55, -0.04"
+        ],
+        "failures": [
+          {
+            "label": "finance.analysis",
+            "message": "finance: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 4,
+            "reason": "numeric_density"
+          },
+          {
+            "fact_ids": [
+              "finance.internal_funding_coverage",
+              "finance.forward_commitment_load"
+            ],
+            "label": "finance.headline",
+            "message": "finance.headline: semicolons are not allowed in Reader commentary",
+            "reason": "semicolon",
+            "sentence": "Current cash flow covers spending; commitments dominate the horizon"
+          },
+          {
+            "fact_ids": [
+              "finance.internal_funding_coverage"
+            ],
+            "label": "finance.analysis[0]",
+            "message": "finance.analysis[0]: internal cohort label is undefined for the reader: Covered issuers",
+            "phrase": "Covered issuers",
+            "reason": "undefined_cohort",
+            "sentence": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending."
+          },
+          {
+            "cited_facts": [
+              {
+                "context": "",
+                "display": "-0.56",
+                "id": "finance.nfci",
+                "label": "Chicago Fed NFCI"
+              },
+              {
+                "context": "",
+                "display": "-0.05",
+                "id": "finance.nfci_change",
+                "label": "Three-month change in NFCI"
+              }
+            ],
+            "fact_ids": [
+              "finance.nfci",
+              "finance.nfci_change"
+            ],
+            "label": "finance.analysis[2]",
+            "message": "finance.analysis[2]: unsupported numeric tokens: -0.55, -0.04",
+            "reason": "unsupported_numeric_tokens",
+            "sentence": "The Chicago Fed's broad financial-conditions index moved from -0.55 to -0.56, and its three-month change moved from -0.04 to -0.05.",
+            "unsupported_numeric_tokens": [
+              "-0.55",
+              "-0.04"
+            ]
+          }
+        ],
+        "grounded_claims": 1,
+        "passed": false
+      },
+      "grid_storage": {
+        "checked_claims": 4,
+        "errors": [
+          "grid_storage: analysis uses more than 3 displayed quantities"
+        ],
+        "failures": [
+          {
+            "label": "grid_storage.analysis",
+            "message": "grid_storage: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 5,
+            "reason": "numeric_density"
+          }
+        ],
+        "grounded_claims": 4,
+        "passed": false
+      },
+      "market": {
+        "checked_claims": 4,
+        "errors": [
+          "market: analysis uses more than 3 displayed quantities",
+          "market.analysis[0]: unsupported numeric tokens: 55.7, 24.9",
+          "market.analysis[1]: unsupported numeric tokens: 69.6, 41.2",
+          "market.analysis[2]: unsupported numeric tokens: 63.4"
+        ],
+        "failures": [
+          {
+            "label": "market.analysis",
+            "message": "market: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 9,
+            "reason": "numeric_density"
+          },
+          {
+            "cited_facts": [
+              {
+                "context": "",
+                "display": "50.1%",
+                "id": "market.equal_weight_return",
+                "label": "Equal-weight one-year return"
+              },
+              {
+                "context": "",
+                "display": "22.6%",
+                "id": "market.median_return",
+                "label": "Median one-year return"
+              }
+            ],
+            "fact_ids": [
+              "market.equal_weight_return",
+              "market.median_return"
+            ],
+            "label": "market.analysis[0]",
+            "message": "market.analysis[0]: unsupported numeric tokens: 55.7, 24.9",
+            "reason": "unsupported_numeric_tokens",
+            "sentence": "Covered-company returns cooled: the equal-weight one-year return fell from 55.7% to 50.1%, and the median fell from 24.9% to 22.6%.",
+            "unsupported_numeric_tokens": [
+              "55.7",
+              "24.9"
+            ]
+          },
+          {
+            "cited_facts": [
+              {
+                "context": "",
+                "display": "67.2%",
+                "id": "market.positive_breadth",
+                "label": "Covered companies with positive one-year returns"
+              },
+              {
+                "context": "",
+                "display": "38.0",
+                "id": "market.aei",
+                "label": "AI Equity Index"
+              }
+            ],
+            "fact_ids": [
+              "market.positive_breadth",
+              "market.aei"
+            ],
+            "label": "market.analysis[1]",
+            "message": "market.analysis[1]: unsupported numeric tokens: 69.6, 41.2",
+            "reason": "unsupported_numeric_tokens",
+            "sentence": "Positive-return breadth slipped from 69.6% to 67.2%, while the AI Equity Index fell from 41.2 to 38.0.",
+            "unsupported_numeric_tokens": [
+              "69.6",
+              "41.2"
+            ]
+          },
+          {
+            "cited_facts": [
+              {
+                "context": "",
+                "display": "67.2%",
+                "id": "market.positive_breadth",
+                "label": "Covered companies with positive one-year returns"
+              },
+              {
+                "context": "",
+                "display": "63.9%",
+                "id": "market.top_10_share",
+                "label": "Top-ten share of covered market value"
+              },
+              {
+                "context": "",
+                "display": "4",
+                "id": "market.crowded_sector_count",
+                "label": "Sectors above the high-pressure threshold"
+              }
+            ],
+            "fact_ids": [
+              "market.positive_breadth",
+              "market.top_10_share",
+              "market.crowded_sector_count"
+            ],
+            "label": "market.analysis[2]",
+            "message": "market.analysis[2]: unsupported numeric tokens: 63.4",
+            "reason": "unsupported_numeric_tokens",
+            "sentence": "The universe remains broadly positive but slightly more concentrated, with the top-ten value share edging from 63.4% to 63.9% and four sectors above the high-pressure threshold.",
+            "unsupported_numeric_tokens": [
+              "63.4"
+            ]
+          }
+        ],
+        "grounded_claims": 1,
+        "passed": false
+      },
+      "power": {
+        "checked_claims": 5,
+        "errors": [
+          "power: analysis uses more than 3 displayed quantities",
+          "power.analysis[0]: unsupported numeric tokens: 189,880"
+        ],
+        "failures": [
+          {
+            "label": "power.analysis",
+            "message": "power: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 5,
+            "reason": "numeric_density"
+          },
+          {
+            "cited_facts": [
+              {
+                "context": "",
+                "display": "200,982 MW",
+                "id": "power.large_load_capacity_mw",
+                "label": "Published capacity associated with large-load campus records"
+              }
+            ],
+            "fact_ids": [
+              "power.large_load_capacity_mw"
+            ],
+            "label": "power.analysis[0]",
+            "message": "power.analysis[0]: unsupported numeric tokens: 189,880",
+            "reason": "unsupported_numeric_tokens",
+            "sentence": "Published capacity associated with large-load campus records rose from 189,880 MW to 200,982 MW.",
+            "unsupported_numeric_tokens": [
+              "189,880"
+            ]
+          }
+        ],
+        "grounded_claims": 4,
+        "passed": false
+      },
+      "water": {
+        "checked_claims": 4,
+        "errors": [
+          "water: analysis uses more than 3 displayed quantities"
+        ],
+        "failures": [
+          {
+            "label": "water.analysis",
+            "message": "water: analysis uses more than 3 displayed quantities",
+            "numeric_occurrences": 7,
+            "reason": "numeric_density"
+          }
+        ],
+        "grounded_claims": 4,
+        "passed": false
+      },
+      "workforce": {
+        "checked_claims": 5,
+        "errors": [
+          "workforce.headline: semicolons are not allowed in Reader commentary",
+          "workforce.analysis[1]: semicolons are not allowed in Reader commentary"
+        ],
+        "failures": [
+          {
+            "fact_ids": [
+              "workforce.median_llm_software_exposure_pct",
+              "workforce.employment_breadth",
+              "workforce.real_earnings_breadth"
+            ],
+            "label": "workforce.headline",
+            "message": "workforce.headline: semicolons are not allowed in Reader commentary",
+            "reason": "semicolon",
+            "sentence": "Task exposure is broad; labor-market transmission is narrow"
+          },
+          {
+            "fact_ids": [
+              "workforce.employment_breadth",
+              "workforce.weakest_channel_growth"
+            ],
+            "label": "workforce.analysis[1]",
+            "message": "workforce.analysis[1]: semicolons are not allowed in Reader commentary",
+            "reason": "semicolon",
+            "sentence": "One tracked AI-linked channel has positive employment growth; the weakest channel is down 4.1%."
+          }
+        ],
+        "grounded_claims": 3,
+        "passed": false
+      }
+    },
+    "grounded_claims": 43,
     "hard_errors": [
-      "retain_prior cannot preserve domain prose that cites changed facts"
+      "market.analysis[0]: unsupported numeric tokens: 55.7, 24.9",
+      "market.analysis[1]: unsupported numeric tokens: 69.6, 41.2",
+      "market.analysis[2]: unsupported numeric tokens: 63.4",
+      "finance.analysis[2]: unsupported numeric tokens: -0.55, -0.04",
+      "connectivity.analysis[0]: unsupported numeric tokens: 216",
+      "power.analysis[0]: unsupported numeric tokens: 189,880",
+      "macro.analysis[1]: unsupported numeric tokens: 189,880"
     ],
     "hard_failures": [
       {
-        "label": "editorial_synthesis",
-        "message": "retain_prior cannot preserve domain prose that cites changed facts",
-        "missing_domains": [
-          "market",
-          "finance",
-          "compute",
-          "data_center",
-          "connectivity",
-          "power",
-          "grid_storage",
-          "water",
-          "adoption",
-          "workforce",
-          "economic_impact"
+        "cited_facts": [
+          {
+            "context": "",
+            "display": "50.1%",
+            "id": "market.equal_weight_return",
+            "label": "Equal-weight one-year return"
+          },
+          {
+            "context": "",
+            "display": "22.6%",
+            "id": "market.median_return",
+            "label": "Median one-year return"
+          }
         ],
-        "reason": "contract_missing_required_domains"
+        "fact_ids": [
+          "market.equal_weight_return",
+          "market.median_return"
+        ],
+        "label": "market.analysis[0]",
+        "message": "market.analysis[0]: unsupported numeric tokens: 55.7, 24.9",
+        "reason": "unsupported_numeric_tokens",
+        "sentence": "Covered-company returns cooled: the equal-weight one-year return fell from 55.7% to 50.1%, and the median fell from 24.9% to 22.6%.",
+        "unsupported_numeric_tokens": [
+          "55.7",
+          "24.9"
+        ]
+      },
+      {
+        "cited_facts": [
+          {
+            "context": "",
+            "display": "67.2%",
+            "id": "market.positive_breadth",
+            "label": "Covered companies with positive one-year returns"
+          },
+          {
+            "context": "",
+            "display": "38.0",
+            "id": "market.aei",
+            "label": "AI Equity Index"
+          }
+        ],
+        "fact_ids": [
+          "market.positive_breadth",
+          "market.aei"
+        ],
+        "label": "market.analysis[1]",
+        "message": "market.analysis[1]: unsupported numeric tokens: 69.6, 41.2",
+        "reason": "unsupported_numeric_tokens",
+        "sentence": "Positive-return breadth slipped from 69.6% to 67.2%, while the AI Equity Index fell from 41.2 to 38.0.",
+        "unsupported_numeric_tokens": [
+          "69.6",
+          "41.2"
+        ]
+      },
+      {
+        "cited_facts": [
+          {
+            "context": "",
+            "display": "67.2%",
+            "id": "market.positive_breadth",
+            "label": "Covered companies with positive one-year returns"
+          },
+          {
+            "context": "",
+            "display": "63.9%",
+            "id": "market.top_10_share",
+            "label": "Top-ten share of covered market value"
+          },
+          {
+            "context": "",
+            "display": "4",
+            "id": "market.crowded_sector_count",
+            "label": "Sectors above the high-pressure threshold"
+          }
+        ],
+        "fact_ids": [
+          "market.positive_breadth",
+          "market.top_10_share",
+          "market.crowded_sector_count"
+        ],
+        "label": "market.analysis[2]",
+        "message": "market.analysis[2]: unsupported numeric tokens: 63.4",
+        "reason": "unsupported_numeric_tokens",
+        "sentence": "The universe remains broadly positive but slightly more concentrated, with the top-ten value share edging from 63.4% to 63.9% and four sectors above the high-pressure threshold.",
+        "unsupported_numeric_tokens": [
+          "63.4"
+        ]
+      },
+      {
+        "cited_facts": [
+          {
+            "context": "",
+            "display": "-0.56",
+            "id": "finance.nfci",
+            "label": "Chicago Fed NFCI"
+          },
+          {
+            "context": "",
+            "display": "-0.05",
+            "id": "finance.nfci_change",
+            "label": "Three-month change in NFCI"
+          }
+        ],
+        "fact_ids": [
+          "finance.nfci",
+          "finance.nfci_change"
+        ],
+        "label": "finance.analysis[2]",
+        "message": "finance.analysis[2]: unsupported numeric tokens: -0.55, -0.04",
+        "reason": "unsupported_numeric_tokens",
+        "sentence": "The Chicago Fed's broad financial-conditions index moved from -0.55 to -0.56, and its three-month change moved from -0.04 to -0.05.",
+        "unsupported_numeric_tokens": [
+          "-0.55",
+          "-0.04"
+        ]
+      },
+      {
+        "cited_facts": [
+          {
+            "context": "",
+            "display": "225",
+            "id": "connectivity.campuses_screened",
+            "label": "Data-center campuses screened for connectivity context"
+          }
+        ],
+        "fact_ids": [
+          "connectivity.campuses_screened"
+        ],
+        "label": "connectivity.analysis[0]",
+        "message": "connectivity.analysis[0]: unsupported numeric tokens: 216",
+        "reason": "unsupported_numeric_tokens",
+        "sentence": "Campus-level connectivity screening now covers 225 data-center campuses, up from 216.",
+        "unsupported_numeric_tokens": [
+          "216"
+        ]
+      },
+      {
+        "cited_facts": [
+          {
+            "context": "",
+            "display": "200,982 MW",
+            "id": "power.large_load_capacity_mw",
+            "label": "Published capacity associated with large-load campus records"
+          }
+        ],
+        "fact_ids": [
+          "power.large_load_capacity_mw"
+        ],
+        "label": "power.analysis[0]",
+        "message": "power.analysis[0]: unsupported numeric tokens: 189,880",
+        "reason": "unsupported_numeric_tokens",
+        "sentence": "Published capacity associated with large-load campus records rose from 189,880 MW to 200,982 MW.",
+        "unsupported_numeric_tokens": [
+          "189,880"
+        ]
+      },
+      {
+        "cited_facts": [
+          {
+            "context": "",
+            "display": "200,982 MW",
+            "id": "power.large_load_capacity_mw",
+            "label": "Published capacity associated with large-load campus records"
+          },
+          {
+            "context": "",
+            "display": "227.0 GW",
+            "id": "power.planned_net_gw",
+            "label": "Net planned generation additions through the pipeline horizon"
+          }
+        ],
+        "fact_ids": [
+          "power.large_load_capacity_mw",
+          "power.planned_net_gw"
+        ],
+        "label": "macro.analysis[1]",
+        "message": "macro.analysis[1]: unsupported numeric tokens: 189,880",
+        "reason": "unsupported_numeric_tokens",
+        "sentence": "At the physical layer, published capacity tied to large-load campuses rose from 189,880 MW to 200,982 MW, while planned net generation additions held at 227.0 GW.",
+        "unsupported_numeric_tokens": [
+          "189,880"
+        ]
       }
     ],
-    "macro": {},
+    "macro": {
+      "checked_claims": 10,
+      "errors": [
+        "macro: analysis uses more than 5 displayed quantities",
+        "macro.analysis[8]: sentence spans more than 2 domains",
+        "macro analysis must contain at least three cross-domain synthesis sentences",
+        "macro.analysis[0]: internal cohort label is undefined for the reader: Covered issuers",
+        "macro.analysis[0]: reuses domain Read language from finance",
+        "macro.analysis[1]: unsupported numeric tokens: 189,880",
+        "macro.analysis[1]: reuses domain Read language from power",
+        "macro.analysis[5]: reuses domain Read language from adoption"
+      ],
+      "failures": [
+        {
+          "label": "macro.analysis",
+          "message": "macro: analysis uses more than 5 displayed quantities",
+          "numeric_occurrences": 13,
+          "reason": "numeric_density"
+        },
+        {
+          "domains": [
+            "adoption",
+            "economic_impact",
+            "workforce"
+          ],
+          "fact_ids": [
+            "adoption.function_le3_share_pct",
+            "adoption.organizational_change_share_pct",
+            "workforce.employment_breadth",
+            "workforce.real_earnings_breadth",
+            "economic_impact.productivity_real_comp_gap"
+          ],
+          "label": "macro.analysis[8]",
+          "message": "macro.analysis[8]: sentence spans more than 2 domains",
+          "reason": "sentence_scope",
+          "sentence": "The next system confirmation is deeper organizational adoption paired with wider employment and pay participation."
+        },
+        {
+          "cross_domain_sentences": 2,
+          "label": "macro.analysis",
+          "message": "macro analysis must contain at least three cross-domain synthesis sentences",
+          "reason": "insufficient_cross_domain_synthesis"
+        },
+        {
+          "fact_ids": [
+            "finance.internal_funding_coverage",
+            "finance.forward_commitment_load"
+          ],
+          "label": "macro.analysis[0]",
+          "message": "macro.analysis[0]: internal cohort label is undefined for the reader: Covered issuers",
+          "phrase": "Covered issuers",
+          "reason": "undefined_cohort",
+          "sentence": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending, while forward commitments equal 5.04 times it."
+        },
+        {
+          "fact_ids": [
+            "finance.internal_funding_coverage",
+            "finance.forward_commitment_load"
+          ],
+          "label": "macro.analysis[0]",
+          "message": "macro.analysis[0]: reuses domain Read language from finance",
+          "reason": "domain_language_reuse",
+          "sentence": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending, while forward commitments equal 5.04 times it.",
+          "source_domain": "finance",
+          "source_text": "Covered issuers generate operating cash flow equal to 1.43 times current capital spending."
+        },
+        {
+          "cited_facts": [
+            {
+              "context": "",
+              "display": "200,982 MW",
+              "id": "power.large_load_capacity_mw",
+              "label": "Published capacity associated with large-load campus records"
+            },
+            {
+              "context": "",
+              "display": "227.0 GW",
+              "id": "power.planned_net_gw",
+              "label": "Net planned generation additions through the pipeline horizon"
+            }
+          ],
+          "fact_ids": [
+            "power.large_load_capacity_mw",
+            "power.planned_net_gw"
+          ],
+          "label": "macro.analysis[1]",
+          "message": "macro.analysis[1]: unsupported numeric tokens: 189,880",
+          "reason": "unsupported_numeric_tokens",
+          "sentence": "At the physical layer, published capacity tied to large-load campuses rose from 189,880 MW to 200,982 MW, while planned net generation additions held at 227.0 GW.",
+          "unsupported_numeric_tokens": [
+            "189,880"
+          ]
+        },
+        {
+          "fact_ids": [
+            "power.large_load_capacity_mw",
+            "power.planned_net_gw"
+          ],
+          "label": "macro.analysis[1]",
+          "message": "macro.analysis[1]: reuses domain Read language from power",
+          "reason": "domain_language_reuse",
+          "sentence": "At the physical layer, published capacity tied to large-load campuses rose from 189,880 MW to 200,982 MW, while planned net generation additions held at 227.0 GW.",
+          "source_domain": "power",
+          "source_text": "Published capacity associated with large-load campus records rose from 189,880 MW to 200,982 MW."
+        },
+        {
+          "fact_ids": [
+            "adoption.organizational_change_share_pct"
+          ],
+          "label": "macro.analysis[5]",
+          "message": "macro.analysis[5]: reuses domain Read language from adoption",
+          "reason": "domain_language_reuse",
+          "sentence": "Organizational adjustment reaches 35.7% of AI-using businesses, making workflow redesign the immediate step from tool use toward enterprise-wide gains.",
+          "source_domain": "adoption",
+          "source_text": "Organizational adjustment reaches 35.7% of AI-using businesses, making process redesign the next step from use to enterprise-wide gains."
+        }
+      ],
+      "grounded_claims": 7,
+      "passed": false,
+      "version": "3.5.0"
+    },
     "passed": false,
     "publication_policy": "hard_grounding_gate_soft_editorial_diagnostics",
     "validator_version": "4.1.0"

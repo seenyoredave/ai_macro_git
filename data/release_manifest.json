@@ -6,7 +6,7 @@
   "files": {
     "ai_macro.py": {
       "bytes": 27345,
-      "sha256": "ea11a60deabe5e2dd805efdcbbac808d1afaed7a24effe40e02c826655a9c9f4"
+      "sha256": "969c5b7c190757bc4a70b033753163cf308c0ab9ee446036049e57f4e1379e4d"
     },
     "analytics/adoption_depth.py": {
       "bytes": 12905,
@@ -61,12 +61,12 @@
       "sha256": "37fae5f6d0b9d6dee73f0fb0fe8e8ce7f7aab0745e35ced18f1b1fe042598e3f"
     },
     "analytics/read_prompts.py": {
-      "bytes": 6387,
-      "sha256": "609b2a6e18fd04d9d3b0763eb7d7521ce30669603d8a858849d76045f77b380f"
+      "bytes": 7007,
+      "sha256": "6eab16aaef99354abfa09bbd799fcdaf0b86571bfeed784221bc18040a37c4da"
     },
     "analytics/read_service.py": {
-      "bytes": 34171,
-      "sha256": "dddcba42c70d8792203de17f9e1155104bb80893861755bfa16444e3f9692b36"
+      "bytes": 34459,
+      "sha256": "2866b0b5624d7bc6a630ae42614ceea27cf9ab2c56675c0f831fd9af6ef577d8"
     },
     "analytics/read_store.py": {
       "bytes": 4736,
@@ -109,20 +109,20 @@
       "sha256": "1681ceb9d25b09bcaf7c0cb9dbbb193abc4d2e46a79755f4933881aacfd4136d"
     },
     "archive/benchmark_history.csv": {
-      "bytes": 6103,
+      "bytes": 6300,
       "date_column": "Date",
-      "date_max": "2026-08-19",
+      "date_max": "2026-08-21",
       "date_min": "2026-06-12",
-      "rows": 33,
-      "sha256": "ae4314c7ca7621c475b79bc685fa29cd659052d9b84f3d4c00845fa394aa7462"
+      "rows": 34,
+      "sha256": "acf4afd0a2e1e8bfde694d7025f465b032ca49c2bceb1c242fd5f87e8ec3bf3c"
     },
     "archive/edgar_history.csv": {
-      "bytes": 1015282,
+      "bytes": 1015401,
       "date_column": "Date",
       "date_max": "2026-08-21",
       "date_min": "2026-06-14",
-      "rows": 8221,
-      "sha256": "b5ce8d5399a99679d1f7e5b0345e1f56d7c65aeaa43d2c47c3fcbd5c9c140189"
+      "rows": 8222,
+      "sha256": "feb2fb7abed4ce2d6a15f889d598188dea81bf908bf392c3a77867592f7406ce"
     },
     "archive/fred_history.csv": {
       "bytes": 17519,
@@ -133,28 +133,28 @@
       "sha256": "f6da172db7863ad9ebd137e31fcdb47c6585ebcccac92341a11a9f8cb283e045"
     },
     "archive/macro_history.csv": {
-      "bytes": 51442,
+      "bytes": 52172,
       "date_column": "Date",
-      "date_max": "2026-08-19",
+      "date_max": "2026-08-21",
       "date_min": "2026-06-12",
-      "rows": 33,
-      "sha256": "a92da11c6ceef8254259207983653522c42cf210c1527a957a2a84a5de4bf9ef"
+      "rows": 34,
+      "sha256": "4747d1c09736c214d709756a8998f5493df4f648c93e50452a365771853e7bf0"
     },
     "archive/sector_history.csv": {
-      "bytes": 72807,
+      "bytes": 75629,
       "date_column": "Date",
-      "date_max": "2026-08-19",
+      "date_max": "2026-08-21",
       "date_min": "2026-06-12",
-      "rows": 495,
-      "sha256": "84e6a995103e597657f7b0cbd278c00380ff982d94a39172fddc9ae3a34cdaaa"
+      "rows": 510,
+      "sha256": "839739bc417b84326033b70146a999434f15d3b624d5995a8687dcf5af38a033"
     },
     "archive/yf_history.csv": {
-      "bytes": 3002639,
+      "bytes": 3116065,
       "date_column": "Date",
-      "date_max": "2026-08-20",
+      "date_max": "2026-08-21",
       "date_min": "2026-06-12",
-      "rows": 6936,
-      "sha256": "bb2f17315d391dd95947a326923e268bf488da056a41dadb148d361e9cc024b0"
+      "rows": 7140,
+      "sha256": "b366d6d2283c42f9fbbde6530c9fcee575fcc34177f9ca616c3233a2f7472cda"
     },
     "assets/geo/us_counties.geojson": {
       "bytes": 2563127,
@@ -193,8 +193,8 @@
       "sha256": "3dd49fada6269ef3ce5c9acb973c9131d4d31834217cb3234589593d399c33bb"
     },
     "automation/runner.py": {
-      "bytes": 20160,
-      "sha256": "18933c65ac9bf91ab104af7d30182da81c74c04c45e815a30b04fe77b4becb6a"
+      "bytes": 21367,
+      "sha256": "65a8fc977d23df7685fb63c4cbc14fe91aadf392cb0624483660dda39997d259"
     },
     "automation/status.py": {
       "bytes": 493,
@@ -289,7 +289,7 @@
       "date_max": "2026-06-30",
       "date_min": "2025-12-31",
       "rows": 19,
-      "sha256": "a2101456731b05a09ecc2253216e2713ae2b363f13b4e1f3f75a2d034a922d3c"
+      "sha256": "0a449b947159e5bd819663fc127bd06109f3474b61c813ef02700f84fee82a10"
     },
     "data/commercialization/source_manifest.csv": {
       "bytes": 1095,
@@ -367,7 +367,7 @@
     "data/infrastructure/source_manifest.csv": {
       "bytes": 11524,
       "rows": 11,
-      "sha256": "faf4e4bf5a7f35b95419e30c237594aaa530666be05d112607e093e86a0cf14f"
+      "sha256": "9cecae9dad440eb060bfbf07c68e73b2b04892a861d13bbeebbe9455bc8a72ed"
     },
     "data/market_valuation_context.csv": {
       "bytes": 353,
@@ -376,12 +376,12 @@
     },
     "data/retained_state_manifest.json": {
       "bytes": 38734,
-      "sha256": "84e36ccae9f373094d8984c8d9c704960c48012067e58cc2c2ef3474c2d9bea0"
+      "sha256": "202f1c75a037f3269c3f8339fc18a017a15e224ac4a98c1c50d19ff431ac70c8"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 50024,
+      "bytes": 49927,
       "rows": 43,
-      "sha256": "f5d044460874b7c37f87e8ff23421f0e31f3debf1d5ae902d96e447113ccc3fc"
+      "sha256": "0f876b99b667cdbe6c7f65390d281a6b27bfd7eb2632c412ea6e580393d2fe3d"
     },
     "developer/load_report.py": {
       "bytes": 8466,
@@ -708,8 +708,8 @@
       "sha256": "9f3ac00a8639eeb40b809301fd1043dd71de565d9a8db9a3873355d432642310"
     },
     "tooling/repository_policy.py": {
-      "bytes": 1741,
-      "sha256": "df87427ec48ad54134bf78e01eda15938a3d39a99efec5000fe14f178cf45527"
+      "bytes": 1804,
+      "sha256": "d77cda45736605c6af53ca7a405552b3b760b3653db081cfdc003f3ba9a9fb92"
     },
     "water/epa_pws.py": {
       "bytes": 10021,
@@ -736,7 +736,7 @@
       "sha256": "596de294f35709293d75621955b2839bc4d573b8907d460eb633b0565f0f48df"
     }
   },
-  "generated_at_utc": "2026-08-21T13:18:59+00:00",
+  "generated_at_utc": "2026-08-22T02:56:25+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -747,6 +747,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "c35b871a2a841b6c0697",
+  "release_id": "220e5c776b13ed68f215",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }
