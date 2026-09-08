@@ -4,7 +4,7 @@
   "errors": [
     "snapshot finance:debt:SMCI: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebtCurrent;LongTermDebtNoncurrent: prior period 2014-12-31 is not within 62 days of 2013-12-31; LongTermDebt: prior period 2023-06-30 is not within 62 days of 2022-06-30; LongTermDebtAndCapitalLeaseObligations: prior period 2013-03-31 is not within 62 days of 2012-03-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-06-30"
   ],
-  "finished_at_utc": "2026-09-07T17:57:39.469775+00:00",
+  "finished_at_utc": "2026-09-08T16:47:34.505055+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
@@ -23,12 +23,12 @@
   },
   "publish_ready": false,
   "result": "deterministic_refresh_failed",
-  "run_id": "20260907T174304Z_08f39414",
+  "run_id": "20260908T163311Z_be104c10",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-09-07T17:43:04.039626+00:00",
+  "started_at_utc": "2026-09-08T16:33:11.433068+00:00",
   "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
@@ -39,6 +39,7 @@
     "workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
+    "commercialization: ReadTimeout: HTTPSConnectionPool(host='openai.com', port=443): Read timed out. (read timeout=30)",
     "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth"
   ]
 }
