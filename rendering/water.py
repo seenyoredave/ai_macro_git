@@ -107,8 +107,8 @@ def _local_exposure_stats(context: dict):
 
 def _render_local_exposure(context: dict) -> None:
     render_section(
-        "Current county drought conditions",
-        "Current drought conditions across U.S. counties.",
+        "County drought",
+        "Current U.S. county drought classifications.",
         first=True,
     )
     render_statline(_local_exposure_stats(context), key_prefix="water-local-exposure")
@@ -151,7 +151,7 @@ def _render_local_exposure(context: dict) -> None:
                     st.rerun()
         else:
             render_panel_heading("National county drought map", _latest_county_snapshot(context))
-            st.caption("Select a county to open its state.")
+            st.caption("Select a county to view its state.")
             figure = water_county_drought_map(
                 county_drought,
                 context["campuses"],
@@ -502,8 +502,8 @@ def _render_coverage(context: dict) -> None:
     campuses = context["campuses"]
     summary = context["summary"]
     render_section(
-        "Water data coverage",
-        "Coverage across county drought, EPA service-area geography, and campus water disclosure.",
+        "Water disclosure coverage",
+        "Coverage of county drought, public-water service areas, and campus-level water records.",
     )
     render_statline(_coverage_stats(context), key_prefix="water-observability")
     with st.container(border=True, key="full-width-layout-water-observability"):
@@ -515,11 +515,11 @@ def _render_coverage(context: dict) -> None:
             key="water-observability-view",
         )
         if view == "Direct evidence by state":
-            render_panel_heading("Direct campus water evidence by state", "Campus records")
+            render_panel_heading("Campus water records by state", "Campus records")
             figure = water_state_evidence_profile(campuses, height=450)
             chart_key = "water-state-evidence-profile"
         else:
-            render_panel_heading("Coverage by evidence layer", "Mapped campus coverage")
+            render_panel_heading("Campus water disclosure", "Mapped campus coverage")
             figure = water_local_context_coverage(summary, height=450)
             chart_key = "water-local-context-coverage"
         render_plotly_chart(
@@ -575,8 +575,8 @@ def _render_system_context_workbench(context: dict, infrastructure_data: dict) -
         views.append("Thermoelectric system")
     views.append("Wastewater investment")
     render_section(
-        "National water system",
-        "National water allocation, thermoelectric demand, and wastewater investment.",
+        "National water use",
+        "Water withdrawals, thermoelectric demand, and wastewater construction spending.",
     )
     with st.container(border=True, key="water-system-workbench"):
         view = st.radio(
@@ -620,7 +620,7 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
     context = _context(water_data, infrastructure_data)
     render_tab_header(
         "Water",
-        "County drought conditions, public-water service areas, campus water disclosure, national water demand, and infrastructure investment.",
+        "Drought, public-water service areas, campus water records, national withdrawals, and water infrastructure.",
         "USGS / U.S. Drought Monitor / EPA / EIA / U.S. Census Bureau",
     )
     _render_floating_terms("water")

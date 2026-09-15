@@ -256,7 +256,7 @@ def _render_sector_detail(sector_data, sector_metrics, macro_df):
         with st.container(border=True, key="market-panel-sector-signal-anatomy"):
             render_panel_heading(
                 "Sector score components",
-                "AEI drivers and trading pressure · common 0–100 scale",
+                "AEI components and trading pressure · common 0–100 scale",
             )
             factor_frame = metrics.get("Scored Factors", pd.DataFrame()).copy()
             if not factor_frame.empty and "Factor" in factor_frame.columns:
@@ -360,7 +360,7 @@ def _render_market_ledger_summary(ledger, valuation_context=None):
     coverage = pd.to_numeric(metrics.get("cap_coverage"), errors="coerce")
     coverage_text = fmt_number(coverage * 100.0, 0, suffix="%")
     render_section(
-        "Current market conditions",
+        "Market snapshot",
         (
             f"Current ownership concentration and participation across {sector_count} sectors and "
             f"{company_count} unique companies · {coverage_text} market-cap coverage."
@@ -375,8 +375,8 @@ def _render_market_structure(ledger):
     return_meta = (ledger or {}).get("return_metadata", {}) or {}
 
     render_section(
-        "Ownership and participation",
-        "Market value concentration, return contribution, and breadth across the covered public-equity universe.",
+        "Market concentration and breadth",
+        "Market-cap concentration, return contribution, and participation across the covered public-equity universe.",
     )
     with st.container(key="market-structure-signature"):
         left, right = st.columns(2, gap="large")
@@ -411,7 +411,7 @@ def _render_market_structure(ledger):
                 )
         with lower_right:
             with st.container(border=True, key="market-panel-participation-history"):
-                render_panel_heading("Large companies versus the broader market", _history_label(history_meta))
+                render_panel_heading("Largest companies and the rest of the market", _history_label(history_meta))
                 render_plotly_chart(
                     participation_history_chart((ledger or {}).get("history", pd.DataFrame())),
                     width="stretch",
@@ -422,8 +422,8 @@ def _render_market_structure(ledger):
 
 def _render_market_constituent_ledger(selection: dict | None, ledger: dict) -> None:
     render_section(
-        "Underlying company data",
-        "Company-level records behind the ownership, return, and sector views.",
+        "Company data",
+        "Company-level records used in the market and sector views.",
     )
     with st.expander("Company records", expanded=False):
         options = ["Selected sector", "Full market universe"] if selection else ["Full market universe"]
@@ -440,7 +440,7 @@ def _render_market_constituent_ledger(selection: dict | None, ledger: dict) -> N
             )
             frame = _company_table(selection["frame"])
         else:
-            st.caption("Full market-ledger company universe used by the ownership and contribution views.")
+            st.caption("Companies included in the market-value and return-contribution calculations.")
             frame = (ledger or {}).get("companies", pd.DataFrame())
         st.dataframe(
             arrow_safe_dataframe(frame),
@@ -467,7 +467,7 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
     })
     render_tab_header(
         "Market",
-        "Public-market value, return concentration, breadth, sector valuations, and company-level fundamentals.",
+        "Market value, returns, breadth, valuation, and company fundamentals across the AI equity universe.",
         "YFinance + SEC EDGAR",
     )
     _render_floating_terms("market")
@@ -476,13 +476,13 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
     render_signal_rail(_assessment_stats(macro_df, sector_data), key_prefix="sector-cross-state")
     _render_market_structure(market_ledger)
 
-    render_section("Sector valuations and trading", "Valuation, earnings, returns, and trading pressure across sectors.")
+    render_section("Sector valuation and trading", "Valuation, earnings, returns, and trading pressure by sector.")
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="market-panel-earnings-support"):
             render_panel_heading(
                 "Earnings Support",
-                "Trailing repricing relative to the profitable operating-earnings base",
+                "One-year returns relative to profitable-company forward earnings",
             )
             render_plotly_chart(
                 earnings_support_map(macro_df),
@@ -494,7 +494,7 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
         with st.container(border=True, key="market-panel-speculative-load"):
             render_panel_heading(
                 "Speculative Load",
-                "Abnormal trading pressure relative to sustained, broad-based equity strength",
+                "Trading pressure relative to sector strength and market breadth",
             )
             render_plotly_chart(
                 speculative_load_matrix(macro_df),
@@ -505,8 +505,8 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
 
 
     render_section(
-        "Sector profile",
-        "Select a sector to see its drivers, market structure, fundamentals, and trading pressure.",
+        "Sector detail",
+        "Select a sector for factors, market structure, fundamentals, and trading pressure.",
     )
     selection = _render_sector_detail(sector_data, sector_metrics, macro_df)
     _render_market_constituent_ledger(selection, market_ledger)

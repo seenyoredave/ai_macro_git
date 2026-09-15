@@ -7,12 +7,8 @@ import os
 import time
 from typing import Any
 
-from analytics.language_layer import (
-    editorial_constitution_identity,
-    editorial_constitution_payload,
-    language_layer_identity,
-)
 from analytics.read_models import GeneratedEditorialSynthesis
+from analytics.read_briefing import BRIEFING_VERSION
 from analytics.read_prompts import (
     EDITORIAL_INSTRUCTIONS,
     EDITORIAL_PROMPT_VERSION,
@@ -20,7 +16,7 @@ from analytics.read_prompts import (
 )
 from config.openai_config import OpenAIConfig
 
-GENERATOR_VERSION = "6.1.0"
+GENERATOR_VERSION = "7.1.0"
 
 DEFAULT_BACKGROUND_DEADLINE_SECONDS = 1200.0
 DEFAULT_BACKGROUND_POLL_INTERVAL_SECONDS = 2.0
@@ -301,42 +297,23 @@ def _parse(
 
 def generate_editorial_synthesis(
     *,
-    capsules: dict[str, Any],
-    prior_publication: dict[str, Any],
-    prior_analytical_state: dict[str, Any],
-    required_update_domains: list[str],
-    candidate_update_domains: list[str],
-    bootstrap: bool,
+    briefing: dict[str, Any],
     config: OpenAIConfig,
     client: Any | None = None,
 ) -> tuple[GeneratedEditorialSynthesis, GenerationMetadata]:
-    constitution = editorial_constitution_payload()
     return _parse(
         api=_client(config, client),
         config=config,
         instructions=EDITORIAL_INSTRUCTIONS,
-        input_payload=editorial_synthesis_input(
-            capsules=capsules,
-            editorial_constitution=constitution,
-            prior_publication=prior_publication,
-            prior_analytical_state=prior_analytical_state,
-            required_update_domains=required_update_domains,
-            candidate_update_domains=candidate_update_domains,
-            bootstrap=bootstrap,
-        ),
+        input_payload=editorial_synthesis_input(briefing=briefing),
         text_format=GeneratedEditorialSynthesis,
         empty_error="OpenAI returned no parsed editorial synthesis.",
     )
 
 
 def prompt_versions() -> dict[str, str]:
-    source_identity = language_layer_identity()
-    constitution = editorial_constitution_identity()
     return {
         "editorial": EDITORIAL_PROMPT_VERSION,
         "generator": GENERATOR_VERSION,
-        "editorial_constitution": constitution["constitution_version"],
-        "editorial_constitution_sha256": constitution["sha256"],
-        "source_language_layer": source_identity["layer_version"],
-        "source_language_layer_sha256": source_identity["payload_sha256"],
+        "briefing": BRIEFING_VERSION,
     }

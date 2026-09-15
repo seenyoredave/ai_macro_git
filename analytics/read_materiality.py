@@ -1,10 +1,9 @@
 """Deterministic materiality gate for scheduled OpenAI commentary.
 
-The exact evidence fingerprint remains the audit identity.  This module answers
-a different question: whether changes since the last completed API evaluation
-are large enough to justify another paid one-call synthesis. Comparisons use the
-separate evaluated baseline when it exists, so an explicit model abstention is
-not purchased again while sub-threshold changes still accumulate.
+The exact evidence fingerprint remains the audit identity. This module answers
+a different question: whether changes since the last successfully published Read
+are large enough to justify another paid one-call synthesis. Rejected drafts do
+not become comparison state; the last good publication remains the baseline.
 """
 
 from __future__ import annotations
@@ -14,7 +13,7 @@ import re
 from typing import Any
 
 
-MATERIALITY_VERSION = "1.1.0"
+MATERIALITY_VERSION = "1.2.0"
 RELATIVE_CHANGE_THRESHOLD = 0.10
 PERCENTAGE_POINT_THRESHOLD = 2.0
 POINT_SCALE_FACT_IDS = {
@@ -95,10 +94,10 @@ def _semantic_packet_changes(
         for field in ("label", "boundaries", "references"):
             if old.get(field) != new.get(field):
                 changes.append({
-                    "kind": "evidence_semantics_changed",
+                    "kind": "evidence_metadata_changed",
                     "domain": domain,
                     "field": field,
-                    "material": True,
+                    "material": False,
                 })
     return changes
 
@@ -110,7 +109,7 @@ def compare_evidence_materiality(
     previous_snapshot_id: str = "",
     current_snapshot_id: str = "",
 ) -> dict[str, Any]:
-    """Compare current evidence with the last completed evaluation baseline."""
+    """Compare current evidence with the last successfully published baseline."""
 
     previous = _packets(previous_packets)
     current = _packets(current_packets)

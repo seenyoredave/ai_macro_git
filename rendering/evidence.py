@@ -43,7 +43,7 @@ Political and regulatory developments are included when they produce a concrete 
 
 Corroboration requires independent evidence. Multiple reports derived from the same root source are treated as a single source rather than independent confirmation.
 
-Current Context independently discovers and grounds recent developments in source evidence. It favors the strongest developments from the preceding seven days and broadens its qualification criteria within a ten-day limit when necessary to maintain coverage across at least six analytical domains.
+Current Context independently discovers and grounds recent developments in source evidence. It favors material developments from approved primary, general-news, specialist, and local sources. Recency and materiality thresholds may widen within a ten-day limit, but source quality is not relaxed simply to fill domain slots.
 """.strip()
 
 def _status_rows(regime_metrics):
@@ -156,7 +156,7 @@ def _sector_methodology_rows():
                 "Product": "Returns versus profitable-company earnings",
                 "Construction": "1Y Return ÷ profitable-cohort FWD EV/EBIT",
                 "Treatment": "FWD EBIT is calculated as forward revenue times current operating margin",
-                "Interpretation": "Trailing repricing relative to the profitable operating-earnings base; descriptive, not causal",
+                "Interpretation": "One-year returns relative to profitable-company forward earnings; descriptive, not causal",
             },
             {
                 "Product": "Trading pressure relative to sector strength",
@@ -1105,7 +1105,7 @@ def _render_evidence_trace(platform_reads: dict | None, evidence_packets: dict |
     _render_evidence_interpretation(read)
     render_section(
         "Evidence used in the Read",
-        "The facts below are the analytical evidence explicitly cited by the published interpretation.",
+        "Analytical records cited by the published Read.",
         compact=True,
     )
     _render_cited_facts(read, packet)
@@ -1186,13 +1186,13 @@ def render_evidence_tab(
 ):
     render_tab_header(
         "Evidence",
-        "Trace the research from published interpretation back to the facts, sources, and boundaries that support it.",
+        "Sources, formulas, coverage rules, and records behind the platform’s published research.",
         "Sources and methodology",
     )
     render_line_break()
     render_section(
         "Research standards",
-        "How sources are selected, corroborated, and kept separate from interpretation.",
+        "Source selection, corroboration, and the boundary between evidence and interpretation.",
         first=True,
         compact=True,
     )
@@ -1200,20 +1200,20 @@ def render_evidence_tab(
         st.markdown(EVIDENCE_STANDARDS)
 
     render_section(
-        "Trace a Read",
-        "Start with the conclusion, then inspect the cited analytical evidence and its source foundation.",
+        "Read citations",
+        "Open a published Read and inspect the analytical records it cites.",
         compact=True,
     )
     selected = _render_evidence_trace(platform_reads, evidence_packets)
 
     render_section(
         "Technical records",
-        "Full formulas, coverage tables, source registers, and underlying observations are retained for audit and deeper review.",
+        "Formulas, coverage tables, source registers, and underlying observations.",
         compact=True,
     )
     with st.expander("Open technical records", expanded=False):
         st.markdown("**Claim lineage**")
-        st.caption("Audit the selected Read's interpretation, Current Context evidence, and provenance trail.")
+        st.caption("Claims, current-context sources, and provenance for the selected Read.")
         _render_lineage_audit(selected, platform_reads)
 
         st.markdown("---")

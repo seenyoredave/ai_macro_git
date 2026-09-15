@@ -7,6 +7,7 @@ create a second live-news path.
 
 from __future__ import annotations
 
+from difflib import SequenceMatcher
 from email.utils import parsedate_to_datetime
 import html as html_lib
 import re
@@ -144,42 +145,114 @@ def _same_development(left: dict, right: dict) -> bool:
     if not left_tokens or not right_tokens:
         return False
     overlap = len(left_tokens.intersection(right_tokens)) / max(1, min(len(left_tokens), len(right_tokens)))
-    return overlap >= 0.62
+    if overlap >= 0.62:
+        return True
+
+    # Cross-publisher headlines can describe the same strategic AI-lab event in
+    # very different words (for example "call for slowdown" versus "hit the
+    # brakes"). Keep both discovery paths, but do not let paraphrased coverage
+    # of one event consume both visible Market slots.
+    left_text = f"{left.get('verified_fact', '')} {left.get('source_title', '')}".casefold()
+    right_text = f"{right.get('verified_fact', '')} {right.get('source_title', '')}".casefold()
+    slowdown_terms = ("slowdown", "slowing", "slow down", "slower", "pace", "pacing", "hit the brakes")
+    lab_terms = ("openai", "anthropic", "altman", "amodei", "xai", "musk", "deepmind", "hassabis")
+    if (
+        str(left.get("event_type") or "") == "policy_position"
+        and str(right.get("event_type") or "") == "policy_position"
+        and any(term in left_text for term in slowdown_terms)
+        and any(term in right_text for term in slowdown_terms)
+        and any(term in left_text and term in right_text for term in lab_terms)
+    ):
+        return True
+    return False
+
+
+def _same_visible_event(left: dict, right: dict) -> bool:
+    """Conservatively deduplicate already-grounded Reader events.
+
+    Discovery performs the semantic/event clustering before source grounding.
+    Once two candidates have survived that stage and independently grounded,
+    the Reader must not run a second broad token-overlap classifier that can
+    collapse distinct developments simply because their compact summaries use
+    similar domain vocabulary.  Post-grounding deduplication therefore handles
+    only exact identities and near-identical rewrites.
+    """
+    left_id = str(left.get("event_id") or "").strip()
+    right_id = str(right.get("event_id") or "").strip()
+    if left_id and right_id and left_id == right_id:
+        return True
+
+    left_url = str(left.get("source_url") or "").strip().casefold()
+    right_url = str(right.get("source_url") or "").strip().casefold()
+    if left_url and right_url and left_url == right_url:
+        return True
+
+    try:
+        left_date = pd.Timestamp(left.get("event_date")).normalize()
+        right_date = pd.Timestamp(right.get("event_date")).normalize()
+        if pd.isna(left_date) or pd.isna(right_date) or abs(int((left_date - right_date).days)) > 1:
+            return False
+    except Exception:
+        return False
+
+    left_text = " ".join(
+        str(left.get(key) or "")
+        for key in ("source_title", "discovery_title", "verified_fact")
+    ).strip().casefold()
+    right_text = " ".join(
+        str(right.get(key) or "")
+        for key in ("source_title", "discovery_title", "verified_fact")
+    ).strip().casefold()
+    if not left_text or not right_text:
+        return False
+
+    left_tokens = _event_tokens({"verified_fact": left_text, "event_type": left.get("event_type", "")})
+    right_tokens = _event_tokens({"verified_fact": right_text, "event_type": right.get("event_type", "")})
+    shared = left_tokens.intersection(right_tokens)
+    overlap = len(shared) / max(1, min(len(left_tokens), len(right_tokens)))
+    sequence = SequenceMatcher(None, left_text, right_text).ratio()
+    return len(shared) >= 6 and overlap >= 0.80 and sequence >= 0.88
 
 
 def _assign_event_owners(candidates_by_domain: dict[str, list[dict]]) -> dict[str, list[dict]]:
-    """Assign each discovered development to exactly one visible domain tab."""
-    clusters: list[list[dict]] = []
+    """Assign grounded events to one visible owner without semantic re-clustering.
+
+    Semantic duplicate clustering already happens before source grounding across
+    every discovery lane. Re-running a fuzzy similarity test after grounding
+    was discarding independently grounded events. At this stage only exact
+    identities (same event id or same source URL) are deduplicated.
+    """
+    winners: dict[str, dict] = {}
     for domain, candidates in candidates_by_domain.items():
         for candidate in candidates:
             item = dict(candidate)
-            item["owner_domain"] = domain
-            cluster = next(
-                (group for group in clusters if any(_same_development(item, member) for member in group)),
-                None,
-            )
-            if cluster is None:
-                clusters.append([item])
-            else:
-                cluster.append(item)
+            owner = str(item.get("owner_domain") or item.get("domain") or domain).strip().lower()
+            if owner not in DOMAIN_KEYS:
+                owner = str(domain).strip().lower()
+            item["owner_domain"] = owner
+            item["domain"] = owner
 
-    assigned: dict[str, list[dict]] = {domain: [] for domain in DOMAIN_KEYS}
-    for cluster in clusters:
-        winner = max(
-            cluster,
-            key=lambda item: (
+            event_id = str(item.get("event_id") or "").strip()
+            source_url = str(item.get("source_url") or "").strip().casefold()
+            identity = f"id::{event_id}" if event_id else (f"url::{source_url}" if source_url else f"row::{len(winners)}")
+            prior = winners.get(identity)
+            if prior is None:
+                winners[identity] = item
+                continue
+            if (
                 float(item.get("owner_score", 0) or 0),
                 float(item.get("rank_score", 0) or 0),
                 str(item.get("event_date", "")),
-            ),
-        )
-        owner = str(winner.get("owner_domain") or winner.get("domain") or "").strip().lower()
+            ) > (
+                float(prior.get("owner_score", 0) or 0),
+                float(prior.get("rank_score", 0) or 0),
+                str(prior.get("event_date", "")),
+            ):
+                winners[identity] = item
+
+    assigned: dict[str, list[dict]] = {domain: [] for domain in DOMAIN_KEYS}
+    for item in winners.values():
+        owner = str(item.get("owner_domain") or item.get("domain") or "").strip().lower()
         if owner in assigned:
-            winner["domain"] = owner
-            winner["secondary_domains"] = sorted({
-                str(item.get("owner_domain") or item.get("domain") or "").strip().lower()
-                for item in cluster
-                if str(item.get("owner_domain") or item.get("domain") or "").strip().lower() not in {"", owner}
-            })
-            assigned[owner].append(winner)
+            assigned[owner].append(item)
     return assigned

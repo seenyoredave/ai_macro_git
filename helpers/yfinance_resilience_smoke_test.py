@@ -30,6 +30,9 @@ if "yfinance" not in sys.modules:
     sys.modules["yfinance"] = fake_yfinance
 
 import loaders.market_loader as market_loader  # noqa: E402
+from benchmarks import benchmark_service  # noqa: E402
+from config.benchmark_config import QQQ_MEMBERS  # noqa: E402
+from rendering.snapshot_status import market_snapshot_label  # noqa: E402
 
 
 def _row(ticker: str) -> dict:
@@ -54,8 +57,8 @@ def main() -> None:
         ticker = str(ticker).upper()
         calls[ticker] = calls.get(ticker, 0) + 1
         # One ticker rate-limits on its first attempt; another fails once for a
-        # non-rate-limit transport reason.  Both must retry without relaxing
-        # the complete-live-row publication contract.
+        # non-rate-limit transport reason. Both must retry without refetching
+        # the already successful tickers.
         if ticker == "BBB" and calls[ticker] == 1:
             return {
                 "ticker": ticker,
@@ -166,38 +169,108 @@ def main() -> None:
     if calls.get("AAA") != 1 or calls.get("BBB") != 2:
         raise AssertionError(f"Retry path refetched successful rows or skipped the miss: {calls}")
 
-    # A provider can return every ticker while one quote still carries the
-    # previous market date. The analytical frame must then use the prior
-    # complete retained snapshot rather than mixing observation dates.
+    # A persistent stale or failed ticker degrades locally. Fresh rows remain
+    # current while only the affected ticker is supplied from retained history.
     tickers = {"AAA": "AAA", "BBB": "BBB", "CCC": "CCC"}
-    mixed_live = pd.DataFrame([
-        _row("AAA"),
-        _row("BBB"),
-        {**_row("CCC"), "Market Data Date": "2026-08-06"},
-    ])
+    current_live = pd.DataFrame([_row("AAA"), _row("BBB")])
     retained = pd.DataFrame([
         {**_row("AAA"), "Market Data Date": "2026-08-05", "Price": 90.0},
         {**_row("BBB"), "Market Data Date": "2026-08-05", "Price": 91.0},
         {**_row("CCC"), "Market Data Date": "2026-08-05", "Price": 92.0},
     ])
     merged = market_loader.merge_live_yfinance_with_archive(
-        mixed_live, retained, tickers
+        current_live, retained, tickers
     )
     resolved = market_loader.resolve_yfinance_market_date_mismatch(
         merged, retained, tickers
     )
     resolved_dates = set(resolved["Market Data Date"].astype(str))
     resolved_report = dict(resolved.attrs.get("load_report", {}) or {})
-    if resolved_dates != {"2026-08-05"}:
-        raise AssertionError(f"Mixed live market dates reached analysis: {resolved_dates}")
-    if resolved_report.get("source_mode") != "archive_fallback_market_date_mismatch":
-        raise AssertionError(f"Market-date fallback was not explicit: {resolved_report}")
-    if resolved_report.get("provider_live_tickers") != 3:
-        raise AssertionError(f"Provider coverage was lost from diagnostics: {resolved_report}")
-    if resolved_report.get("archive_fallback_tickers") != 3:
-        raise AssertionError(f"Retained fallback coverage was not complete: {resolved_report}")
+    if resolved_dates != {"2026-08-07", "2026-08-05"}:
+        raise AssertionError(f"Current rows were rolled back by one stale ticker: {resolved_dates}")
+    if float(resolved.loc[resolved["Ticker"] == "AAA", "Price"].iloc[0]) != 100.0:
+        raise AssertionError("Fresh AAA data was replaced by retained history")
+    if float(resolved.loc[resolved["Ticker"] == "CCC", "Price"].iloc[0]) != 92.0:
+        raise AssertionError("Failed CCC ticker did not retain its last-good row")
+    if resolved_report.get("source_mode") != "live_with_archive_row_fallback":
+        raise AssertionError(f"Ticker-level fallback was not explicit: {resolved_report}")
+    if resolved_report.get("archive_fallback_tickers") != 1:
+        raise AssertionError(f"Only one ticker should have fallen back: {resolved_report}")
+    if resolved_report.get("current_market_date_tickers") != 2:
+        raise AssertionError(f"Fresh market-date coverage was lost: {resolved_report}")
+    if resolved_report.get("latest_market_data_date") != "2026-08-07":
+        raise AssertionError(f"Latest market date did not advance: {resolved_report}")
 
-    print("PASS  YFinance adaptive pacing · retry only misses · rate-limit cooldown · coherent-date fallback")
+
+    # Retained fallback selection is also per ticker. The newest AAA row may be
+    # newer than the newest BBB row without forcing AAA back to BBB's date.
+    original_history_loader = market_loader.load_yf_history
+    retained_history = pd.DataFrame([
+        {"Date": "2026-08-05", "Ticker": "AAA", "Market Data Date": "2026-08-05", "Price": 90.0},
+        {"Date": "2026-08-05", "Ticker": "BBB", "Market Data Date": "2026-08-05", "Price": 91.0},
+        {"Date": "2026-08-07", "Ticker": "AAA", "Market Data Date": "2026-08-07", "Price": 100.0},
+    ])
+    try:
+        market_loader.load_yf_history = lambda: retained_history.copy()
+        latest = market_loader.read_latest_yf_history({"AAA": "AAA", "BBB": "BBB"})
+    finally:
+        market_loader.load_yf_history = original_history_loader
+    latest_lookup = latest.set_index("Ticker")
+    if float(latest_lookup.at["AAA", "Price"]) != 100.0 or float(latest_lookup.at["BBB", "Price"]) != 91.0:
+        raise AssertionError(f"Retained ticker history rolled back fresh rows: {latest_lookup[["Price", "Market Data Date"]]}")
+
+    # The fixed benchmark accepts mixed per-member freshness rather than
+    # crashing the refresh when one constituent is retained.
+    benchmark_rows = []
+    for index, ticker in enumerate(QQQ_MEMBERS):
+        benchmark_rows.append({
+            "Ticker": ticker,
+            "Market Data Date": "2026-08-06" if ticker == "TSLA" else "2026-08-07",
+            "1Y Return": 0.10 + index * 0.01,
+            "Beta": 1.0,
+            "Enterprise Value": 1000.0 + index,
+            "Forward EBIT": 100.0 + index,
+        })
+    benchmark_frame = pd.DataFrame(benchmark_rows)
+    benchmark_frame.attrs["load_report"] = {
+        "source_mode": "live_with_archive_row_fallback",
+        "archive_fallback_tickers": 1,
+        "missing_tickers": [],
+    }
+    benchmark = benchmark_service.get_benchmark_metrics_from_market_frame(
+        "QQQ", benchmark_frame
+    )
+    if benchmark.get("source_mode") != "mixed_market_universe":
+        raise AssertionError(f"Mixed benchmark freshness was not retained: {benchmark}")
+    if benchmark.get("market_data_date") != "2026-08-07":
+        raise AssertionError(f"Benchmark latest date did not advance: {benchmark}")
+    if benchmark.get("archive_fallback_tickers") != 1:
+        raise AssertionError(f"Benchmark stale-member count changed: {benchmark}")
+
+    # A genuinely unavailable benchmark member still must not crash the market
+    # refresh. If no retained benchmark exists, benchmark metrics degrade to
+    # unavailable while the market universe remains usable.
+    missing_benchmark_frame = benchmark_frame.loc[benchmark_frame["Ticker"] != "TSLA"].copy()
+    missing_benchmark_frame.attrs["load_report"] = {"source_mode": "live_complete"}
+    original_archived_benchmark = benchmark_service.get_archived_benchmark_metrics
+    try:
+        benchmark_service.get_archived_benchmark_metrics = lambda *args, **kwargs: None
+        unavailable_benchmark = benchmark_service.get_benchmark_metrics_from_market_frame(
+            "QQQ", missing_benchmark_frame
+        )
+    finally:
+        benchmark_service.get_archived_benchmark_metrics = original_archived_benchmark
+    if unavailable_benchmark.get("source_mode") != "unavailable_missing_members":
+        raise AssertionError(f"Missing benchmark member still caused a hard failure: {unavailable_benchmark}")
+    if unavailable_benchmark.get("missing_tickers") != ["TSLA"]:
+        raise AssertionError(f"Missing benchmark member diagnostics changed: {unavailable_benchmark}")
+
+    label = market_snapshot_label(resolved)
+    expected_label = "Market data through 8.7.2026 · 2/3 current · 1 retained from 8.5.2026"
+    if label != expected_label:
+        raise AssertionError(f"Mixed market freshness label changed: {label!r}")
+
+    print("PASS  YFinance adaptive pacing · retry only misses · rate-limit cooldown · ticker-level fallback")
 
 
 if __name__ == "__main__":

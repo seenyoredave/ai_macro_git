@@ -93,7 +93,7 @@ def merge_live_with_archive(
     # provider field being populated. YFinance regularly omits individual
     # fundamentals even when the ticker itself refreshed successfully. Those
     # cells are resolved from the previous retained snapshot and are reported
-    # separately; they do not turn a 204/204 live universe into a failed refresh.
+    # separately; they do not turn an otherwise successful ticker row into a failed refresh.
     if not live_tickers and returned:
         source_mode = "archive_fallback"
     elif archive_row_fallback:

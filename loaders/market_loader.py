@@ -12,6 +12,7 @@ from archive.archive_reader import (
     filter_expected_tickers,
     has_expected_tickers,
     latest_complete_ticker_rows,
+    latest_ticker_rows,
     load_yf_history,
     rows_for_date,
 )
@@ -149,7 +150,7 @@ def read_latest_yf_history(tickers, sector=None):
     if history is None or history.empty or not {"Date", "Ticker"}.issubset(history.columns):
         return None
 
-    latest = latest_complete_ticker_rows(history, tickers, sector=sector)
+    latest = latest_ticker_rows(history, tickers, sector=sector)
     if latest is None or latest.empty:
         return None
     if sector is None and "Ticker" in latest.columns:
@@ -186,17 +187,26 @@ def describe_yf_archive_status(tickers, sector=None):
         "today_complete": expected.issubset(found),
     })
 
-    latest = latest_complete_ticker_rows(history, expected, sector=sector)
-    if latest is not None and not latest.empty and "Date" in latest.columns:
-        dates = pd.to_datetime(latest["Date"], errors="coerce", format="mixed").dropna()
+    latest_complete = latest_complete_ticker_rows(history, expected, sector=sector)
+    if latest_complete is not None and not latest_complete.empty and "Date" in latest_complete.columns:
+        dates = pd.to_datetime(
+            latest_complete["Date"], errors="coerce", format="mixed"
+        ).dropna()
         if not dates.empty:
             status["latest_complete_date"] = dates.max().date().isoformat()
-        if "Market Data Date" in latest.columns:
-            market_dates = pd.to_datetime(
-                latest["Market Data Date"], errors="coerce", format="mixed"
-            ).dropna()
-            if not market_dates.empty:
-                status["latest_data_date"] = market_dates.max().date().isoformat()
+
+    latest_rows = latest_ticker_rows(history, expected, sector=sector)
+    if latest_rows is not None and not latest_rows.empty and "Market Data Date" in latest_rows.columns:
+        market_dates = pd.to_datetime(
+            latest_rows["Market Data Date"], errors="coerce", format="mixed"
+        ).dropna()
+        if not market_dates.empty:
+            latest_date = market_dates.max().date()
+            status["latest_data_date"] = latest_date.isoformat()
+            status["latest_data_date_tickers"] = int(
+                (market_dates.dt.date == latest_date).sum()
+            )
+            status["retained_older_tickers"] = int(len(latest_rows) - status["latest_data_date_tickers"])
 
     return status
 
@@ -261,65 +271,44 @@ def _market_data_dates(frame):
 
 
 def resolve_yfinance_market_date_mismatch(merged, fallback, tickers):
-    """Use one complete retained snapshot when live rows span market dates.
+    """Preserve the current-best row for each ticker when market dates differ.
 
-    YFinance occasionally returns a stale close for one otherwise successful
-    ticker.  Mixing that row with current-date rows is valid for neither the
-    fixed QQQ reference nor retained history.  The analytical transaction may
-    continue from the prior complete retained snapshot, but the live refresh
-    remains unsuccessful and must not advance YFinance-owned history.
+    A stale or failed constituent is a local data-quality problem. Successful
+    ticker rows remain current, while only the affected ticker falls back to its
+    most recent retained row. Mixed market dates are therefore expected and are
+    recorded explicitly in the load report instead of rolling the entire
+    universe back to an older common snapshot.
     """
-    live_dates = _market_data_dates(merged)
-    if len(live_dates) == 1:
+    del fallback, tickers  # retained for compatibility with existing callers
+    if not isinstance(merged, pd.DataFrame) or merged.empty:
         return merged
 
-    raw_tickers = tickers.keys() if isinstance(tickers, dict) else tickers
-    expected_order = [str(ticker).upper().strip() for ticker in raw_tickers]
-    expected = set(expected_order)
-    retained = ensure_yf_schema(fallback) if isinstance(fallback, pd.DataFrame) else pd.DataFrame()
-    if retained.empty or "Ticker" not in retained.columns:
-        return merged
-
-    retained = retained.copy()
-    retained["Ticker"] = retained["Ticker"].astype(str).str.upper().str.strip()
-    retained = retained.loc[retained["Ticker"].isin(expected)].drop_duplicates(
-        subset=["Ticker"], keep="last"
-    )
-    retained_dates = _market_data_dates(retained)
-    returned = set(retained["Ticker"]) if not retained.empty else set()
-    if returned != expected or len(retained_dates) != 1:
-        return merged
-
-    row_order = {ticker: index for index, ticker in enumerate(expected_order)}
-    retained["_ticker_order"] = retained["Ticker"].map(row_order)
-    retained = (
-        retained.sort_values("_ticker_order", kind="stable")
-        .drop(columns="_ticker_order")
-        .reset_index(drop=True)
-    )
-
+    result = merged.copy()
     prior_report = dict(getattr(merged, "attrs", {}).get("load_report", {}) or {})
-    provider_live_tickers = int(prior_report.get("live_tickers") or 0)
-    retained.attrs["load_report"] = {
-        **prior_report,
-        "source_mode": "archive_fallback_market_date_mismatch",
-        "live_tickers": 0,
-        "provider_live_tickers": provider_live_tickers,
-        "archive_fallback_tickers": len(expected),
-        "archive_fallback_symbols": sorted(expected),
-        "archive_field_backfills": 0,
-        "archive_field_backfill_details": [],
-        "archive_field_backfill_columns": {},
-        "missing_tickers": [],
-        "returned_tickers": len(returned),
-        "live_market_data_dates": live_dates,
-        "retained_market_data_date": retained_dates[0],
-        "live_error": (
-            "YFinance live rows did not share one Market Data Date; "
-            "the complete retained market snapshot was used without advancing history."
-        ),
+    dates = pd.to_datetime(
+        result.get("Market Data Date"), errors="coerce", format="mixed"
+    ) if "Market Data Date" in result.columns else pd.Series(dtype="datetime64[ns]")
+    valid_dates = dates.dropna()
+    date_counts = {
+        value.date().isoformat(): int(count)
+        for value, count in valid_dates.value_counts().sort_index().items()
     }
-    return retained
+    newest = valid_dates.max().date().isoformat() if not valid_dates.empty else None
+    oldest = valid_dates.min().date().isoformat() if not valid_dates.empty else None
+    current_tickers = int((dates.dt.date == valid_dates.max().date()).sum()) if not valid_dates.empty else 0
+
+    report = {
+        **prior_report,
+        "market_data_dates": date_counts,
+        "latest_market_data_date": newest,
+        "oldest_market_data_date": oldest,
+        "current_market_date_tickers": current_tickers,
+        "mixed_market_dates": len(date_counts) > 1,
+    }
+    if len(date_counts) > 1 and str(report.get("source_mode") or "").startswith("live"):
+        report["source_mode"] = "live_with_archive_row_fallback"
+    result.attrs["load_report"] = report
+    return result
 
 def _safe_market_number(fast_info, info, *keys):
     for key in keys:
@@ -408,9 +397,9 @@ def _fetch_company_attempt(ticker, company):
 def pull_yfinance(ticker_tuple, attempts=YFINANCE_PULL_MAX_ATTEMPTS):
     """Pull the configured universe with provider-friendly adaptive pacing.
 
-    The retained archive still advances only on complete live row coverage.
-    Pacing changes therefore improve resilience without relaxing the 204/204
-    publication contract or silently treating archive fallback rows as live.
+    Provider failures are isolated by ticker. Successful rows are retained even
+    when another ticker needs an archive fallback; retry logic targets only the
+    failed or stale constituent.
     """
     started = time.perf_counter()
     tickers = {str(key).upper().strip(): value for key, value in dict(ticker_tuple).items()}

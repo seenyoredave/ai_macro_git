@@ -61,6 +61,7 @@ RELEASE_FILES = (
     "analytics/water_campus.py",
     "analytics/water_competition.py",
     "analytics/water_local.py",
+    "analytics/read_briefing.py",
     "analytics/read_evidence.py",
     "analytics/read_capsules.py",
     "analytics/read_materiality.py",

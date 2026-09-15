@@ -11,12 +11,9 @@ from config.current_context_policy import (
     CURRENT_CONTEXT_HARD_WINDOW_DAYS,
     current_context_qualification_policy,
     current_context_qualification_tier,
-    domain_relevance_terms,
-    domain_topic_anchors,
     assess_source_for_qualification,
-    materiality_score,
     recent_development_copy_issues,
-    term_present,
+    trusted_publisher_headline_copy_issues,
 )
 from helpers.atomic_io import synchronized_path
 from loaders.current_context_news import (
@@ -38,7 +35,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVENT_PATH = ROOT / "data" / "weekly_context_events.csv"
 
 
-CURRENT_CONTEXT_READ_VERSION = "3.3"
+CURRENT_CONTEXT_READ_VERSION = "3.6"
 
 
 REQUIRED_COLUMNS = {
@@ -233,24 +230,37 @@ def _automated_row_still_qualifies(row: dict) -> bool:
     policy = current_context_qualification_policy(domain, tier_key)
     source_chars = pd.to_numeric(row.get("source_text_chars"), errors="coerce")
     minimum_chars = int(policy.get("minimum_source_text_chars", 220) or 220)
-    if pd.isna(source_chars) or int(source_chars) < minimum_chars:
+    resolution_mode = str(row.get("evidence_resolution_mode") or "").strip().casefold()
+    headline_only = resolution_mode == "trusted_headline_metadata"
+    if headline_only:
+        # Approved publisher headlines are bounded source evidence and contain
+        # no generated detail. Requiring article-body character counts here
+        # would recreate the body-restatement gate removed from live grounding.
+        if str(row.get("source_text_method") or "").strip() != "trusted_publisher_headline":
+            return False
+        if pd.isna(source_chars) or int(source_chars) < 30:
+            return False
+    elif pd.isna(source_chars) or int(source_chars) < minimum_chars:
         return False
 
     fact = strip_legacy_source_leadin(row.get("verified_fact"), row.get("source_name"))
     if is_preview_or_calendar_item(fact):
         return False
-    terms = domain_relevance_terms(domain)
-    if terms and not any(term_present(fact, term) for term in terms):
-        return False
-    anchors = domain_topic_anchors(domain)
-    if bool(policy.get("require_topic_anchor", True)) and anchors and not any(term_present(fact, term) for term in anchors):
-        if domain not in {"grid_storage", "water"}:
-            return False
-    if materiality_score(fact, domain) < float(policy.get("minimum_materiality", 0.0001)):
-        return False
+    # Domain relevance, topical anchors, and materiality are established during
+    # metadata qualification and source grounding. Re-running those lexical
+    # tests on the shortened Reader sentence creates a third qualification path
+    # and can discard a valid event simply because concise presentation copy no
+    # longer repeats every discovery keyword. Retained revalidation therefore
+    # checks only durable provenance, freshness, source eligibility, and Reader
+    # copy sanity below.
     lookback_days = int(policy.get("lookback_days", 7) or 7)
     quality_ok, _ = retained_reader_quality_gate(
-        domain, fact, "", event_date=row.get("event_date"), lookback_days=lookback_days
+        domain,
+        fact,
+        "",
+        event_date=row.get("event_date"),
+        lookback_days=lookback_days,
+        trusted_headline=headline_only,
     )
     return bool(quality_ok)
 
@@ -271,7 +281,13 @@ def _curated_events(frame: pd.DataFrame, current: pd.Timestamp) -> list[dict]:
             continue
         fact = _clean_sentence(row.get("verified_fact"))
         relevance = ""
-        if recent_development_copy_issues(fact):
+        headline_only = str(row.get("evidence_resolution_mode") or "").strip().casefold() == "trusted_headline_metadata"
+        copy_issues = (
+            trusted_publisher_headline_copy_issues(fact)
+            if headline_only
+            else recent_development_copy_issues(fact)
+        )
+        if copy_issues:
             continue
         source_name = " ".join(str(row.get("source_name") or "").split()).strip()
         source_label = " ".join(str(row.get("source_label") or source_name).split()).strip()

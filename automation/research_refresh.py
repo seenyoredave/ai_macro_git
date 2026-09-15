@@ -246,7 +246,7 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         current_context = load_current_context(
             as_of=as_of or market_date(),
             path=context_refresh.get("registry_path"),
-            limit_per_domain=2,
+            limit_per_domain=4,
         )
         context_refresh = finalize_context_report(context_refresh, current_context)
         current_context = dict(current_context)

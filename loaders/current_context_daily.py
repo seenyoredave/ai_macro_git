@@ -12,7 +12,7 @@ from loaders.current_context_discovery import DISCOVERY_VERSION, refresh_current
 from loaders.current_context_loader import load_current_context
 
 RETAINED_REGISTRY = Path(__file__).resolve().parents[1] / "data" / "weekly_context_events.csv"
-CONTEXT_READ_SNAPSHOT_VERSION = "1.3"
+CONTEXT_READ_SNAPSHOT_VERSION = "1.4"
 
 
 def _read_manifest(path: Path) -> dict:
@@ -146,8 +146,7 @@ def refresh_current_context_once_daily(*, as_of=None, force: bool = False) -> di
     paths["base"].mkdir(parents=True, exist_ok=True)
     with synchronized_path(paths["daily_lock"]):
         manifest = _read_manifest(paths["manifest"])
-        retained_coverage = dict(manifest.get("coverage") or {})
-        if not force and manifest.get("as_of") == expected_date and retained_coverage.get("target_met", True):
+        if not force and manifest.get("as_of") == expected_date:
             return _decorate_manifest(manifest, refresh_status="already_current", registry_path=paths["registry"])
 
         try:
@@ -158,12 +157,7 @@ def refresh_current_context_once_daily(*, as_of=None, force: bool = False) -> di
                 registry_path=paths["registry"],
                 merge_registry=True,
             )
-            coverage = dict(manifest.get("coverage") or {})
-            refresh_status = "refreshed" if coverage.get("target_met", True) else "coverage_floor_not_met_retained_fallback"
-            decorated = _decorate_manifest(manifest, refresh_status=refresh_status, registry_path=paths["registry"])
-            if not coverage.get("target_met", True):
-                decorated["refresh_required"] = True
-            return decorated
+            return _decorate_manifest(manifest, refresh_status="refreshed", registry_path=paths["registry"])
         except Exception as exc:
             failure = {
                 "as_of": expected_date,
@@ -233,7 +227,7 @@ def load_retained_context_snapshot(*, as_of=None) -> dict:
     current_context = load_current_context(
         as_of=current,
         path=current_context_paths()["registry"],
-        limit_per_domain=2,
+        limit_per_domain=4,
     )
     report = finalize_context_report(report, current_context)
     current_context = dict(current_context)

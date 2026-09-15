@@ -104,7 +104,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.0.9"
+APP_VERSION = "v3.0.0.22"
 APP_STATE_SCHEMA_VERSION = "73.0-adoption-depth-activation"
 
 st.set_page_config(
@@ -349,7 +349,7 @@ if st.session_state.force_rebuild:
         current_context = load_current_context(
             as_of=market_date(),
             path=context_registry_path,
-            limit_per_domain=2,
+            limit_per_domain=4,
         )
         context_refresh = finalize_context_report(context_refresh, current_context)
         current_context = dict(current_context)
@@ -418,7 +418,7 @@ if st.session_state.force_rebuild:
         "reader_snapshot_version": reader_snapshot.get("snapshot_version", ""),
         "read_service_version": reader_snapshot.get("read_service_version", ""),
         "evidence_architecture_version": reader_snapshot.get("evidence_architecture_version", ""),
-        "capsule_architecture_version": reader_snapshot.get("capsule_architecture_version", ""),
+        "editorial_briefing_version": reader_snapshot.get("editorial_briefing_version", ""),
         "evidence_snapshot_id": reader_snapshot.get("evidence_snapshot_id", ""),
         "snapshot_id": reader_snapshot.get("snapshot_id", context_refresh.get("snapshot_id", "")),
     })

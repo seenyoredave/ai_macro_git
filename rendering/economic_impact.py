@@ -69,13 +69,13 @@ def _build_value_bridge(data: dict, commercialization_data) -> dict[str, object]
 
 
 def _render_pulse(data: dict, commercialization_data) -> None:
-    render_section("From AI revenue to economic results", "Provider AI revenue, productivity, worker compensation, and household earnings.", first=True, compact=True)
+    render_section("AI revenue and national outcomes", "Provider AI revenue alongside productivity, real compensation, and household earnings.", first=True, compact=True)
     bridge = _build_value_bridge(data, commercialization_data)
     with st.container(key="economic-outcomes-value-bridge"):
         st.markdown(value_realization_bridge_html(commercial_value=bridge["commercial_value"], production_value=bridge["production_value"], distribution_rows=bridge["distribution_rows"], namespace="economic-outcomes-overview"), unsafe_allow_html=True, width="stretch")
     with st.container(key="full-width-layout-economic-realized-history"):
         with st.container(border=True, key="economic-outcomes-overview-realized"):
-            render_panel_heading("National outcome history", "BLS indexes · 2017 = 100")
+            render_panel_heading("Productivity, output, and labor costs", "BLS indexes · 2017 = 100")
             render_summary_row(_realized_growth_metrics(data), key_prefix="economic-impact-current-growth")
             render_plotly_chart(productivity_index(data.get("productivity_history"), height=460), width="stretch", config={"responsive": True}, key="economic-impact-index-history")
 
@@ -112,7 +112,7 @@ def _participation_metrics(data: dict) -> list[tuple[str, str, str]]:
 def _render_distribution_of_gains(data: dict) -> None:
     capture = data.get("capture_summary", {}) or {}
     productivity = capture.get("productivity", {}) or {}; real_comp = capture.get("real_compensation", {}) or {}; labor_share = capture.get("labor_share", {}) or {}
-    render_section("Worker outcomes", "Productivity, worker compensation, and real earnings since 2020.")
+    render_section("Productivity and pay", "Nonfarm-business productivity, real compensation, and median real earnings since 2020.")
     render_summary_row([
         ("Productivity since 2020", fmt_number(productivity.get("since_2020"), 1, signed=True, suffix="%"), fmt_date(productivity.get("date"))),
         ("Real compensation since 2020", fmt_number(real_comp.get("since_2020"), 1, signed=True, suffix="%"), fmt_date(real_comp.get("date"))),
@@ -122,7 +122,7 @@ def _render_distribution_of_gains(data: dict) -> None:
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="economic-impact-panel-worker-capture"):
-            render_panel_heading("Productivity versus worker compensation", "Each series rebased to its first 2020 observation")
+            render_panel_heading("Productivity and real compensation", "Each series rebased to its first 2020 observation")
             render_plotly_chart(worker_capture_history(data.get("value_transmission_history"), height=500), width="stretch", config={"displayModeBar": False, "responsive": True}, key="economic-impact-worker-capture-history")
     with right:
         with st.container(border=True, key="economic-impact-panel-participation"):
@@ -150,15 +150,15 @@ def _render_economic_ledger(data: dict, commercialization_data) -> None:
         st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", height=440, hide_index=True)
 
 def render_economic_impact_tab(economic_impact_data: dict, commercialization_data=None, tab_read=None) -> None:
-    render_tab_header("Economic Outcomes", "Productivity, worker compensation, median earnings, investment, and production costs.", "BLS / BEA / FRED / primary company disclosures")
+    render_tab_header("Economic Outcomes", "Productivity, worker compensation, real earnings, investment, output, and labor costs.", "BLS / BEA / FRED / primary company disclosures")
     _render_floating_terms("economic_impact")
     render_domain_read(tab_read, label="Read", domain="economic_outcomes")
     _render_pulse(economic_impact_data, commercialization_data)
     _render_distribution_of_gains(economic_impact_data)
-    render_section("Investment versus results", "Information-processing investment compared with real output and productivity.")
+    render_section("Investment, output, and productivity", "Information-processing investment, real value-added output, and productivity since 2020.")
     with st.container(key="full-width-layout-economic-investment-validation"):
         with st.container(border=True, key="economic-impact-panel-validation"):
-            render_panel_heading("Investment versus output and productivity", "Each series rebased to its first 2020 observation")
+            render_panel_heading("Investment, output, and productivity", "Each series rebased to its first 2020 observation")
             render_plotly_chart(investment_vs_output(economic_impact_data.get("investment_history"), economic_impact_data.get("productivity_history"), height=470), width="stretch", config={"displayModeBar": False, "responsive": True}, key="economic-impact-investment-validation")
     render_section("Production and labor costs", "Manufacturing productivity, inflation-adjusted output, and unit labor costs.")
     mprod = economic_impact_data.get("manufacturing_productivity", {}); mout = economic_impact_data.get("manufacturing_output", {}); ulc = economic_impact_data.get("nonfarm_unit_labor_cost", {})

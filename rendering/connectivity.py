@@ -59,7 +59,7 @@ def _inject_connectivity_theme() -> None:
 def _render_national_pulse(connectivity: dict) -> None:
     national = connectivity.get("national_summary", {}) or {}
     coverage = connectivity.get("coverage", {}) or {}
-    render_section("Current network footprint", "Submarine cables, internet exchanges, and new middle-mile fiber serving U.S. networks.", first=True, compact=True)
+    render_section("Network overview", "U.S.-connected submarine cables, internet exchanges, and federally funded middle-mile fiber.", first=True, compact=True)
     facility_count = _count(national.get("PeeringDB Facilities"))
     facility_floor = _count(national.get("PeeringDB Facility Coverage Floor") or coverage.get("facility_search_floor"))
     facility_value = f"{facility_count:,}" if facility_count else f"{facility_floor:,}+"
@@ -102,7 +102,7 @@ def _render_submarine(connectivity: dict) -> None:
 def _render_interconnection(connectivity: dict) -> None:
     markets = connectivity.get("interconnection_market_summary")
     national = connectivity.get("national_summary", {}) or {}
-    render_section("Internet exchange depth", "Internet exchange participation, physical locations, and concentration by market.")
+    render_section("Internet exchanges", "Exchange participation, physical locations, and concentration by market.")
     centers = _count(national.get("Population Centers With IXP")); center_total = _count(national.get("Population Centers Over 300k"))
     render_summary_row([
         ("Reported memberships", f"{_count(national.get('Combined Reported Members')):,}", "exchange memberships"),
@@ -136,7 +136,7 @@ def _render_compute_transport(connectivity: dict) -> None:
     state = connectivity.get("state_summary")
     campuses = connectivity.get("campus_connectivity_snapshot")
     coverage = connectivity.get("coverage", {}) or {}
-    render_section("Network capacity near data-center markets", "Data-center growth compared with local internet exchange depth and submarine-cable access.")
+    render_section("Data centers and network access", "Published data-center capacity alongside local internet-exchange activity and cable-landing proximity.")
     render_summary_row([
         ("States with network gap", f"{_count(coverage.get('mismatch_states')):,}", "capacity with limited IXP depth"),
         ("Campuses compared", f"{_count(coverage.get('campuses_screened')):,}", "published capacity"),
@@ -151,7 +151,7 @@ def _render_compute_transport(connectivity: dict) -> None:
                 figure, key = campus_distance_distribution(campuses, height=520), "connectivity-campus-distance"
             else:
                 lens = st.radio("Map view", ["Data-center/network gap", "Connectivity depth", "Published capacity"], horizontal=True, label_visibility="collapsed", key="connectivity-view-mismatch")
-                render_panel_heading("State capacity and interconnection depth", lens)
+                render_panel_heading("Data-center capacity and network access", lens)
                 figure, key = data_center_connectivity_state(state, height=520, lens=lens), "connectivity-state-mismatch"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key)
 
@@ -176,7 +176,7 @@ def render_connectivity_tab(connectivity_data: dict | None, infrastructure_data:
     if not connectivity and isinstance(infrastructure_data, dict):
         connectivity = infrastructure_data.get("connectivity", {}) or {}
     _inject_connectivity_theme()
-    render_tab_header("Connectivity", "Submarine cable gateways, internet exchanges, middle-mile fiber, and network depth around major data-center markets.", "FCC / Internet Society Pulse / PeeringDB / TeleGeography / NTIA")
+    render_tab_header("Connectivity", "Submarine cables, internet exchanges, middle-mile fiber, and links to major data-center markets.", "FCC / Internet Society Pulse / PeeringDB / TeleGeography / NTIA")
     _render_floating_terms("connectivity")
     render_domain_read(tab_read, label="Read", domain="connectivity")
     _render_national_pulse(connectivity)

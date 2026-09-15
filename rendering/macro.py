@@ -245,28 +245,28 @@ def render_macro_tab(
     dashboard_data = context.dashboard_data or {}
     render_tab_header(
         "AI Macro",
-        "Capital investment, physical buildout, adoption, and economic outcomes across the U.S. AI economy.",
+        "Investment, infrastructure, adoption, and U.S. economic data related to AI.",
         "YFinance / SEC / FRED / Census / EIA",
     )
     _render_floating_terms("macro")
     render_domain_read(tab_read, label="Read", domain="macro", macro=True)
     render_section(
         "Economic transmission",
-        "How market pricing and funding move through physical delivery and adoption toward measurable economic outcomes.",
+        "Market pricing, funding, buildout, adoption, and economic results in sequence.",
         first=True,
     )
     _render_transmission_board(context)
     render_section(
-        "Regime board",
-        "Current top-level indicators and their recent history.",
+        "Core indicators",
+        "Latest readings and recent history.",
     )
     _render_primary_macro_cards(context.regime_metrics, dashboard_data.get("trends", {}), context.adoption_data)
     render_section(
-        "Buildout leadership",
-        "Year-over-year construction-spending growth by system: quarterly history at left and the latest reading at right.",
+        "Construction growth",
+        "Year-over-year construction-spending growth by infrastructure category.",
     )
     _render_buildout_rotation(context.infrastructure_data)
-    render_section("Buildout versus outcomes", "AI investment and construction compared with market, industrial, economic, and power measures.")
+    render_section("Investment and outcomes", "AI investment and construction alongside market, industrial, economic, and power measures.")
     _render_gap_measures(context.regime_metrics, context.fred_data, dashboard_data)
-    render_section("Project locations", "Major AI infrastructure projects with published capacity, power, water, and supporting-infrastructure records.")
+    render_section("Project map", "Major AI infrastructure projects with published capacity, power, water, and supporting-infrastructure data.")
     render_spatial_explorer(context.infrastructure_data, key_prefix="macro-national-landscape", show_heading=False)

@@ -134,8 +134,8 @@ def _render_deliverability_screen(context: dict) -> None:
     duration_summary = context.get("storage_duration_summary", {}) or {}
     investment = _investment_snapshot(context)
     render_section(
-        "Grid connection conditions",
-        "Queue size, project progress, reserve margins, battery duration, and grid construction spending.",
+        "Interconnection snapshot",
+        "Active queue capacity, project stage, reserve margins, battery duration, and grid construction spending.",
         first=True,
     )
     render_deliverability_screen(
@@ -226,8 +226,8 @@ def _render_queue_regions(context: dict) -> None:
     development = context["development"]
     regions = context.get("queue_regions")
     render_section(
-        "Regional queue conditions",
-        "Queue size, median age, and target-year status by region.",
+        "Regional interconnection queues",
+        "Active capacity, median queue age, and target year by region.",
     )
     render_statline(_regional_stats(context), key_prefix="grid-storage-regional-state")
     with st.container(border=True, key="full-width-layout-grid-storage-regional-maturity"):
@@ -286,7 +286,7 @@ def render_grid_storage_tab(energy_data: dict, infrastructure_data: dict, tab_re
     context = _context(energy_data, infrastructure_data)
     render_tab_header(
         "Grid & Storage",
-        "Interconnection queues, project progress, reliability, storage duration, and grid construction spending.",
+        "Interconnection queues, reserve margins, battery storage, and grid construction spending.",
         "Berkeley Lab / NERC / EIA / U.S. Census Bureau",
     )
     _render_floating_terms("grid_storage")

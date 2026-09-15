@@ -297,8 +297,8 @@ def _render_power_pulse(context: dict) -> None:
         large_context = "active campuses"
 
     render_section(
-        "Current power conditions",
-        "Demand growth, disclosed large loads, planned generation, and prices.",
+        "Power snapshot",
+        "Demand growth, reported large loads, planned generation, and electricity prices.",
         first=True,
         compact=True,
     )
@@ -392,7 +392,7 @@ def _render_demand(context: dict) -> None:
 
 def _render_supply(context: dict) -> None:
     generation = context["generation"]; capacity = context["capacity"]; changes = context["changes"]; supply = context["supply"]; through = _latest_date(generation)
-    render_section("Electricity supply", "Generation mix, output changes, and fleet additions and retirements.")
+    render_section("Generation", "Generation mix, recent output changes, and capacity additions and retirements.")
     render_summary_row([
         ("Natural gas share", fmt_number(supply.get("gas_share"), 1, suffix="%"), "rolling 12 months"),
         ("Nuclear share", fmt_number(supply.get("nuclear_share"), 1, suffix="%"), "rolling 12 months"),
@@ -405,7 +405,7 @@ def _render_supply(context: dict) -> None:
             if view == "Generation change":
                 render_panel_heading("Generation change", "Rolling 12-month change by source"); figure, chart_key = generation_change(generation, height=490), "power-generation-change"
             elif view == "Fleet changes":
-                render_panel_heading("Current fleet changes", "Capacity additions and retirements through the latest EIA release"); figure, chart_key = capacity_changes(changes, height=490), "power-capacity-changes"
+                render_panel_heading("Capacity additions and retirements", "Latest EIA release"); figure, chart_key = capacity_changes(changes, height=490), "power-capacity-changes"
             else:
                 render_panel_heading("Generation mix", "Annual electricity generation by source · 2020-present"); figure, chart_key = generation_mix(generation, height=490), "power-generation-mix"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=chart_key)
@@ -484,7 +484,7 @@ def _render_fuel_infrastructure(power_data) -> None:
 
 def _render_prices(context: dict, power_data) -> None:
     retail = context["retail"]; wholesale = context["wholesale"]; prices = context["prices"]; through = _latest_date(retail)
-    render_section("Power prices and fuel infrastructure", "Retail and wholesale electricity prices, with major fuel-infrastructure projects available as an alternate view.")
+    render_section("Electricity prices and fuel infrastructure", "Retail and wholesale electricity prices, natural-gas delivery, LNG export capacity, and storage projects.")
     render_summary_row([
         ("Residential", fmt_number(prices.get("residential"), 2, suffix="¢/kWh"), through),
         ("Commercial", fmt_number(prices.get("commercial"), 2, suffix="¢/kWh"), through),
@@ -495,7 +495,7 @@ def _render_prices(context: dict, power_data) -> None:
         with st.container(border=True, key="power-panel-price-selected"):
             view = st.radio("Price and fuel view", ["Retail prices", "Wholesale hubs", "Fuel infrastructure"], horizontal=True, label_visibility="collapsed", key="power-view-prices")
             if view == "Fuel infrastructure":
-                render_panel_heading("Generation-fuel infrastructure", "Natural-gas delivery, LNG export capacity, and storage development")
+                render_panel_heading("Natural-gas infrastructure", "Pipeline delivery, LNG export capacity, and storage development")
                 _render_fuel_infrastructure(power_data)
             else:
                 if view == "Wholesale hubs":
@@ -524,7 +524,7 @@ def render_power_tab(fred_data, regime_metrics, power_data, dashboard_data, infr
     del fred_data, regime_metrics, dashboard_data
     _inject_power_page_theme()
     inject_panel_height_rules({"power-panel-demand-history": 520, "power-panel-large-load-profile": 520, "power-panel-gas-pipeline": 455, "power-panel-lng": 455})
-    render_tab_header("Power", "Electricity demand, generation, planned capacity, prices, and major fuel infrastructure.", "EIA / FRED / facility registry")
+    render_tab_header("Power", "Electricity demand, generation, planned capacity, prices, and natural-gas infrastructure.", "EIA / FRED / facility registry")
     _render_floating_terms("power")
     context = _power_context(power_data, infrastructure_data or {})
     render_domain_read(tab_read, label="Read", domain="power")

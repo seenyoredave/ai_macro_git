@@ -91,6 +91,7 @@ PREFERRED_NEWS_SOURCES = {
     "investors business daily": 91.0,
     "morningstar": 90.0,
     "cnbc": 86.0,
+    "axios": 90.0,
 }
 
 # Company-issued releases distributed through these services may establish that
@@ -156,6 +157,7 @@ APPROVED_NEWS_DOMAINS = {
     "investors.com": 91.0,
     "morningstar.com": 90.0,
     "cnbc.com": 86.0,
+    "axios.com": 90.0,
     "utilitydive.com": 87.0,
     "datacenterdynamics.com": 87.0,
     "rtoinsider.com": 87.0,
@@ -224,20 +226,66 @@ class ContextQualificationTier:
     minimum_anchor_score: float
 
 
-# Current Context is a coverage-constrained news layer. It begins with the
-# preferred editorial policy and progressively broadens source, recency,
-# materiality, and topical-anchor thresholds until useful cross-domain coverage
-# is achieved. Every published item still has to resolve to a real source page
-# and support a concrete current development in the source body.
+# Current Context is a significance-first news layer. It may progressively widen
+# recency and materiality thresholds, but source quality never relaxes merely to
+# fill domain slots. Unknown/manual-review publishers may nominate an event as a
+# discovery lead, but publication still requires approved evidence. When an
+# approved publisher page cannot be retrieved, a clean publisher-edited headline
+# may serve as the complete evidence only under the bounded grounding fallback.
 CURRENT_CONTEXT_PREFERRED_WINDOW_DAYS = 7
 CURRENT_CONTEXT_HARD_WINDOW_DAYS = 10
-CURRENT_CONTEXT_COVERAGE_TARGET = 6
+
+# Current Context is expected to return a useful news set, not a handful of
+# forensic survivors.  Selection targets 10-15 distinct approved-source
+# developments when the discovery pool contains that many viable events.
+CURRENT_CONTEXT_TARGET_RESULTS_MIN = 10
+CURRENT_CONTEXT_TARGET_RESULTS_MAX = 15
+CURRENT_CONTEXT_DOMAIN_SOFT_CAP = 4
+
+# Cross-domain discovery protects the news layer from the blind spots created by
+# narrow tab-specific queries. These queries are fetched once per refresh and
+# assigned to the analytical domain that best fits the resulting event.
+GLOBAL_CONTEXT_QUERIES = (
+    '(OpenAI OR Anthropic OR xAI OR "Google DeepMind" OR Nvidia OR Microsoft OR Google OR Meta OR Amazon) AI',
+    '("Sam Altman" OR "Dario Amodei" OR "Jensen Huang" OR "Satya Nadella" OR "Sundar Pichai" OR "Mark Zuckerberg" OR "Elon Musk" OR "Demis Hassabis") AI',
+    '(AI slowdown OR AI pause OR AI safety OR AI regulation OR AI development pace OR AI race)',
+    '(AI stocks OR semiconductor stocks OR AI infrastructure spending OR AI capex)',
+)
+
+# Publisher-first discovery prevents high-authority reporting from being crowded
+# out by hundreds of lower-quality Google News results.  These searches are
+# deliberately broad within AI Macro's remit, then routed through the same
+# domain/materiality gates as every other candidate.  Unknown publishers are
+# still useful audit signals, but the unattended refresh does not spend its
+# routine grounding budget trying to rehabilitate them one by one.
+APPROVED_SOURCE_SWEEP_QUERIES = (
+    (
+        "general",
+        '(AI OR "artificial intelligence" OR OpenAI OR Anthropic OR xAI OR Nvidia OR "data center" OR datacenter OR semiconductor OR chip OR hyperscaler OR cloud OR "AI stocks" OR "AI spending" OR "AI investment" OR productivity OR workforce OR jobs) '
+        '(site:reuters.com OR site:axios.com OR site:cnbc.com OR site:bloomberg.com OR site:ft.com OR site:wsj.com OR site:barrons.com OR site:investors.com OR site:morningstar.com)',
+    ),
+    (
+        "infrastructure",
+        '(AI OR "artificial intelligence" OR "data center" OR datacenter OR "large load" OR power OR electricity OR grid OR transmission OR interconnection OR generation OR storage OR water) '
+        '(site:datacenterdynamics.com OR site:utilitydive.com OR site:rtoinsider.com OR site:spglobal.com OR site:constructiondive.com)',
+    ),
+    (
+        "compute",
+        '(AI OR GPU OR accelerator OR semiconductor OR chip OR HBM OR Nvidia OR AMD OR TSMC OR foundry) '
+        '(site:semiengineering.com OR site:eetimes.com)',
+    ),
+    (
+        "local_infrastructure",
+        '(AI OR "data center" OR datacenter OR power OR electricity OR grid OR transmission OR water) '
+        '(site:texastribune.org OR site:houstonchronicle.com OR site:dallasnews.com OR site:statesman.com OR site:expressnews.com)',
+    ),
+)
 CURRENT_CONTEXT_QUALIFICATION_TIERS = (
     ContextQualificationTier('A', 'Preferred', 7, 1.00, True, 'strict', 220, 8.0),
     ContextQualificationTier('B', 'Strong', 7, 0.70, True, 'strict', 190, 6.5),
-    ContextQualificationTier('C', 'Expanded', 10, 0.45, True, 'manual_review', 160, 5.0),
-    ContextQualificationTier('D', 'Broad', 10, 0.20, False, 'google_news_fallback', 125, 4.0),
-    ContextQualificationTier('E', 'Coverage floor', 10, 0.05, False, 'google_news_fallback', 100, 3.0),
+    ContextQualificationTier('C', 'Expanded window', 10, 0.45, True, 'strict', 160, 5.0),
+    ContextQualificationTier('D', 'Lower threshold', 10, 0.20, False, 'strict', 125, 4.0),
+    ContextQualificationTier('E', 'Minimum threshold', 10, 0.05, False, 'strict', 100, 3.0),
 )
 _CURRENT_CONTEXT_TIER_BY_KEY = {tier.key: tier for tier in CURRENT_CONTEXT_QUALIFICATION_TIERS}
 
@@ -298,7 +346,9 @@ DOMAIN_VOCABULARY = {
              '(hyperscaler capex OR AI spending OR data center capex)',
              '(semiconductor revenue OR cloud revenue OR AI bookings)',
              '(AI acquisition OR technology IPO OR technology antitrust)',
-             '(AI stocks rally OR AI stocks selloff OR AI valuation OR market breadth technology)'),
+             '(AI stocks rally OR AI stocks selloff OR AI valuation OR market breadth technology)',
+             '((OpenAI OR Anthropic OR xAI OR Google DeepMind) (AI safety OR AI development OR slowdown OR pause OR pacing OR regulation OR risk))',
+             '((Sam Altman OR Dario Amodei OR Elon Musk OR Demis Hassabis OR Jensen Huang) AI)'),
         anchors=
             ('ai',
              'artificial intelligence',
@@ -323,7 +373,11 @@ DOMAIN_VOCABULARY = {
              'google',
              'meta',
              'oracle',
-             'palantir'),
+             'palantir',
+             'openai',
+             'anthropic',
+             'xai',
+             'deepmind'),
         relevance_terms=
             ('earnings',
              'guidance',
@@ -352,9 +406,16 @@ DOMAIN_VOCABULARY = {
              'merger',
              'acquisition',
              'ipo',
-             'stake'),
+             'stake',
+             'openai',
+             'anthropic',
+             'ai safety',
+             'ai development',
+             'slowdown',
+             'pacing',
+             'regulation'),
         owner_terms=
-            ('earnings', 'revenue', 'guidance', 'shares', 'stock', 'market cap', 'valuation', 'index'),
+            ('earnings', 'revenue', 'guidance', 'shares', 'stock', 'market cap', 'valuation', 'index', 'openai', 'anthropic', 'ai development', 'ai safety'),
         materiality_weights=
             {'earnings': 10.0,
              'guidance': 10.0,
@@ -381,7 +442,14 @@ DOMAIN_VOCABULARY = {
              'breadth': 5.0,
              'concentration': 5.0,
              'stake sale': 8.0,
-             'in talks': 6.0},
+             'in talks': 6.0,
+             'ai slowdown': 12.0,
+             'slowdown': 10.0,
+             'ai safety': 8.0,
+             'ai development': 8.0,
+             'regulation': 8.0,
+             'openai': 5.0,
+             'anthropic': 5.0},
         synthesis_terms=
             {'guidance_up': ('guidance',
                              'raised guidance',
@@ -1535,6 +1603,7 @@ DOMAIN_VOCABULARY = {
              'electricity demand',
              'load forecast',
              'power purchase agreement',
+             'power agreement',
              'utility',
              'generation',
              'power plant',
@@ -1546,6 +1615,7 @@ DOMAIN_VOCABULARY = {
             ('electricity demand',
              'load forecast',
              'power purchase agreement',
+             'power agreement',
              'power contract',
              'generation',
              'power plant',
@@ -1567,6 +1637,7 @@ DOMAIN_VOCABULARY = {
              'natural gas'),
         materiality_weights=
             {'power purchase agreement': 11.0,
+             'power agreement': 9.0,
              'power contract': 10.0,
              'electricity demand': 9.0,
              'load forecast': 10.0,
@@ -2505,30 +2576,16 @@ def assess_source_for_qualification(
     provider: str = '',
     tier_key: object = 'A',
 ) -> SourceAssessment:
-    """Return the source profile allowed at one progressive coverage tier.
+    """Return the source profile allowed for unattended Current Context.
 
-    Explicitly blocked, social, and discovery-only endpoints remain prohibited
-    at every tier.  Tier C may use manual-review journalism as directly
-    source-grounded secondary evidence.  Tiers D/E may additionally use a
-    publisher surfaced by Google News even when it is not on the preferred
-    allowlist; the underlying publisher page must still be fetched and grounded.
+    Qualification tiers may widen recency, materiality, and topical-anchor
+    thresholds. They never relax publisher quality. Unknown Google News
+    publishers and manual-review sources remain ineligible for unattended
+    Reader publication at every tier; they may serve only as discovery leads
+    when another approved source independently establishes the event.
     """
-    assessment = assess_source(source_name, source_url, article_url)
-    tier = current_context_qualification_tier(tier_key)
-    if assessment.auto_eligible:
-        return assessment
-    if assessment.tier in {'blocked_social', 'blocked', 'discovery_only'}:
-        return assessment
-    if tier.source_policy in {'manual_review', 'google_news_fallback'} and assessment.tier == 'manual_review':
-        return SourceAssessment('coverage_manual', 72.0, True, 'secondary', 'eligible only under progressive coverage relaxation')
-    provider_key = str(provider or '').strip().casefold()
-    if (
-        tier.source_policy == 'google_news_fallback'
-        and assessment.tier == 'unapproved'
-        and provider_key in {'google_news_rss', 'event_evidence_search'}
-    ):
-        return SourceAssessment('coverage_fallback', 58.0, True, 'secondary', 'Google News publisher admitted only under progressive coverage relaxation')
-    return assessment
+    _ = provider, tier_key
+    return assess_source(source_name, source_url, article_url)
 
 def term_present(text: str, term: str) -> bool:
     haystack = " ".join(str(text or "").split()).casefold()
@@ -2576,6 +2633,62 @@ _DANGLING_FIRST_REFERENCE = re.compile(
 )
 
 
+def trusted_publisher_headline_copy_issues(text: object) -> list[str]:
+    """Return only hard corruption problems for approved publisher headlines.
+
+    A clean publisher-edited headline is already presentation copy. It should
+    not be rejected for house-style preferences such as expanding ERCOT/FERC
+    on first reference or spelling out an official's jurisdiction. Those
+    requirements are appropriate when AI Macro constructs prose from extracted
+    body text, not when transport fallback preserves the publisher's own title.
+    """
+
+    value = " ".join(str(text or "").split()).strip()
+    if not value:
+        return []
+
+    issues: list[str] = []
+    if "…" in value or re.search(r"\.{3,}", value):
+        issues.append("headline contains an ellipsis/truncation artifact")
+    if re.search(r"\b\d{1,2}/\d{1,2}/(?:\d{2}|\d{4})\b", value):
+        issues.append("headline contains embedded slash-date article furniture")
+
+    trimmed = value.rstrip()
+    trimmed_no_terminal = trimmed.rstrip(".!?\"'”’ ")
+    if trimmed_no_terminal.endswith(("—", "–", "-")):
+        issues.append("headline ends with a dangling cutoff mark")
+    if re.search(r"\b(?:of|to|for|with|from|by|at|in|on|and|or|that|which|as)\s*[.!?]$", trimmed, flags=re.I):
+        issues.append("headline ends with a dangling grammatical connector")
+    if re.search(r"https?://|\b(?:up|down)\s+pointing\s+triangle\b", value, flags=re.I):
+        issues.append("headline contains embedded page/widget furniture")
+    if re.match(r"^(?:also\s+read|read\s+also|related|recommended)\b", value, flags=re.I):
+        issues.append("headline opens with navigation/page furniture")
+    if re.search(r"\b(?:results?|revenue|earnings)\s+than\s+(?:topped|beat|exceeded)\b", value, flags=re.I):
+        issues.append("headline contains a malformed comparison from source extraction")
+    if re.search(r"\bin ordered to\b|\bto added that\b|\breported links\b|\breported says\b", value, flags=re.I):
+        issues.append("headline contains malformed source syntax")
+    if re.search(r"[.!?](?=[A-Z][a-z])", value):
+        issues.append("headline contains a missing sentence boundary")
+    if re.search(r"/(?:PRNewswire|Business\s+Wire|GlobeNewswire)/", value, flags=re.I):
+        issues.append("headline contains a wire-service dateline")
+    if re.match(r"^(?:during|after|before|over)\b.{0,100},\s+(?:they|it|their|its)\b", value, flags=re.I):
+        issues.append("headline contains an unresolved actor after an introductory clause")
+    if value.count("“") != value.count("”"):
+        issues.append("headline contains unbalanced smart quotation marks")
+    if value.count('\"') % 2:
+        issues.append("headline contains an unbalanced quotation mark")
+    if value.count("(") != value.count(")") or value.count("[") != value.count("]"):
+        issues.append("headline contains unbalanced brackets")
+
+    # A generic or pronoun-only opening is not self-contained even when the
+    # publisher is approved. Keep this one context requirement because the
+    # Reader does not display the article deck alongside the headline.
+    if _DANGLING_FIRST_REFERENCE.search(value):
+        issues.append("headline opens with an unresolved actor or pronoun")
+
+    return issues
+
+
 def recent_development_copy_issues(text: object) -> list[str]:
     """Return first-reference context problems in Recent Developments copy.
 
@@ -2611,6 +2724,10 @@ def recent_development_copy_issues(text: object) -> list[str]:
         issues.append("development opens with navigation/page furniture")
     if re.search(r"\b(?:results?|revenue|earnings)\s+than\s+(?:topped|beat|exceeded)\b", value, flags=re.I):
         issues.append("development contains a malformed comparison from source extraction")
+    if re.search(r"\bin ordered to\b|\bto added that\b|\breported links\b|\breported says\b", value, flags=re.I):
+        issues.append("development contains malformed source syntax")
+    if re.search(r"[.!?](?=[A-Z][a-z])", value):
+        issues.append("development contains a missing sentence boundary")
     if re.search(r"/(?:PRNewswire|Business\s+Wire|GlobeNewswire)/", value, flags=re.I):
         issues.append("development contains a wire-service dateline")
     if re.match(r"^(?:during|after|before|over)\b.{0,100},\s+(?:they|it|their|its)\b", value, flags=re.I):

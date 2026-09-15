@@ -37,57 +37,41 @@ def _live_mode(value: object) -> bool:
     )
 
 
-def _yfinance_live_refresh_succeeded(report: dict) -> bool:
-    """Return True when every configured ticker returned a live row.
-
-    Individual YFinance fields can be unavailable on an otherwise successful
-    ticker refresh. The loader resolves those cells from the previous retained
-    snapshot and reports them as field backfills. Field-level backfills do not
-    block persistence; row-level fallbacks and missing tickers do.
-    """
+def _yfinance_has_publishable_live_rows(report: dict) -> bool:
+    """Return True when a refresh produced at least one live ticker row."""
     payload = report or {}
     mode = str(payload.get("source_mode") or "").strip().casefold()
     try:
-        expected = int(payload.get("expected_tickers") or 0)
         live = int(payload.get("live_tickers") or 0)
-        fallback_rows = int(payload.get("archive_fallback_tickers") or 0)
+        returned = int(
+            payload.get("returned_tickers")
+            or (int(payload.get("live_tickers") or 0) + int(payload.get("archive_fallback_tickers") or 0))
+        )
     except (TypeError, ValueError):
         return False
-    missing = payload.get("missing_tickers") or []
-    return (
-        mode.startswith("live")
-        and expected > 0
-        and live == expected
-        and fallback_rows == 0
-        and not missing
-    )
+    return mode.startswith("live") and live > 0 and returned > 0
 
 
-
-
-def _benchmark_matches_market_refresh(benchmark_metrics: dict, market_data_date: str) -> bool:
+def _benchmark_can_advance(benchmark_metrics: dict, market_data_date: str) -> bool:
     payload = benchmark_metrics or {}
     mode = str(payload.get("source_mode") or "").strip().casefold()
     try:
         expected = int(payload.get("expected_tickers") or payload.get("member_count") or 0)
-        live = int(payload.get("live_tickers") or 0)
-        fallback_rows = int(payload.get("archive_fallback_tickers") or 0)
         members = int(payload.get("member_count") or 0)
     except (TypeError, ValueError):
         return False
     missing = payload.get("missing_tickers") or []
-    benchmark_date = str(payload.get("market_data_date") or "").strip()
     return (
-        mode == "live_market_universe"
+        mode in {"live_market_universe", "mixed_market_universe"}
         and expected > 0
         and members == expected
-        and live == expected
-        and fallback_rows == 0
         and not missing
-        and benchmark_date == str(market_data_date)
+        and str(payload.get("market_data_date") or "").strip() == str(market_data_date)
     )
 
+
 def _market_observation_date(raw_universe_data: dict) -> str | None:
+    """Return the newest provider market date present in the current-best universe."""
     frame = raw_universe_data.get("yfinance")
     if not isinstance(frame, pd.DataFrame) or frame.empty:
         return None
@@ -95,16 +79,10 @@ def _market_observation_date(raw_universe_data: dict) -> str | None:
         return None
     dates = pd.to_datetime(
         frame["Market Data Date"], errors="coerce", format="mixed"
-    ).dt.date
-    # A retained market snapshot represents one completed provider observation
-    # date. Every live ticker row must therefore carry the same valid market
-    # date; a dominant-date heuristic can hide one or more stale ticker rows.
-    if dates.isna().any() or len(dates) != len(frame):
+    ).dropna()
+    if dates.empty:
         return None
-    unique = sorted(set(dates.tolist()))
-    if len(unique) != 1:
-        return None
-    return unique[0].isoformat()
+    return dates.max().date().isoformat()
 
 
 def persist_refresh_snapshots(
@@ -164,20 +142,18 @@ def persist_refresh_snapshots(
 
     if policy.allows_live(RefreshSource.YFINANCE):
         yf_report = dict(market_report.get("yfinance", {}) or {})
-        if _yfinance_live_refresh_succeeded(yf_report):
+        mode = str(yf_report.get("source_mode") or "unknown")
+        live = int(yf_report.get("live_tickers") or 0)
+        expected = int(yf_report.get("expected_tickers") or 0)
+        fallback_rows = int(yf_report.get("archive_fallback_tickers") or 0)
+        fallback_fields = int(yf_report.get("archive_field_backfills") or 0)
+        missing_symbols = yf_report.get("missing_tickers") or []
+        returned = int(yf_report.get("returned_tickers") or 0)
+
+        if _yfinance_has_publishable_live_rows(yf_report):
             market_observation_date = _market_observation_date(raw_universe_data)
             if not market_observation_date:
-                errors["yfinance"] = (
-                    "Live market rows do not share a valid dominant Market Data Date"
-                )
-            elif not _benchmark_matches_market_refresh(benchmark_metrics, market_observation_date):
-                errors["benchmark"] = (
-                    "The QQQ reference did not reconcile to the same complete live market "
-                    f"snapshot. Market data date={market_observation_date}; "
-                    f"benchmark mode={benchmark_metrics.get('source_mode')}; "
-                    f"benchmark data date={benchmark_metrics.get('market_data_date')}. "
-                    "No YFinance-owned retained histories were advanced."
-                )
+                errors["yfinance"] = "Live YFinance rows have no valid Market Data Date"
             elif run(
                 "yfinance",
                 lambda: append_yf_history(
@@ -186,13 +162,31 @@ def persist_refresh_snapshots(
                     observation_date=snapshot_date,
                 ),
             ):
-                run(
-                    "benchmark",
-                    lambda: append_benchmark_history(
-                        {"QQQ": benchmark_metrics},
-                        observation_date=market_observation_date,
-                    ),
-                )
+                mixed_dates = bool(yf_report.get("mixed_market_dates"))
+                if fallback_rows or missing_symbols or mixed_dates:
+                    report_warnings["yfinance"] = (
+                        "YFinance refreshed partially and retained current-best market state. "
+                        f"Live={live}/{expected}; retained ticker rows={fallback_rows}; "
+                        f"missing tickers={len(missing_symbols)}; "
+                        f"retained field fills={fallback_fields}."
+                    )
+
+                if _benchmark_can_advance(benchmark_metrics, market_observation_date):
+                    run(
+                        "benchmark",
+                        lambda: append_benchmark_history(
+                            {"QQQ": benchmark_metrics},
+                            observation_date=market_observation_date,
+                        ),
+                    )
+                else:
+                    report_warnings["benchmark"] = (
+                        "The fixed QQQ reference could not be advanced from the current-best "
+                        "market universe; its prior retained benchmark remains in use. "
+                        f"Mode={benchmark_metrics.get('source_mode')}; "
+                        f"missing={benchmark_metrics.get('missing_tickers') or []}."
+                    )
+
                 run(
                     "sector",
                     lambda: append_sector_history(
@@ -210,36 +204,24 @@ def persist_refresh_snapshots(
                     ),
                 )
         else:
-            mode = str(yf_report.get("source_mode") or "unknown")
-            live = int(yf_report.get("live_tickers") or 0)
-            expected = int(yf_report.get("expected_tickers") or 0)
-            fallback_rows = int(yf_report.get("archive_fallback_tickers") or 0)
-            fallback_fields = int(yf_report.get("archive_field_backfills") or 0)
-            missing_symbols = yf_report.get("missing_tickers") or []
-            returned = int(yf_report.get("returned_tickers") or 0)
             retained_date = _market_observation_date(raw_universe_data)
             valid_retained_fallback = (
-                mode.casefold().startswith("archive_fallback")
-                and expected > 0
-                and returned == expected
-                and not missing_symbols
+                ("archive" in mode.casefold() or "retained" in mode.casefold())
+                and returned > 0
                 and bool(retained_date)
             )
             if valid_retained_fallback:
                 retained_fallbacks.append("yfinance")
                 report_warnings["yfinance"] = (
-                    "The live YFinance refresh did not produce one complete, single-date "
-                    "market snapshot. The last complete retained snapshot remained in use, "
-                    "and no YFinance-owned history was advanced. "
-                    f"Mode={mode}; retained market date={retained_date}."
+                    "The live YFinance refresh produced no publishable live ticker rows. "
+                    "The current-best retained market state remains in use and no YFinance-owned "
+                    f"history was advanced. Mode={mode}; latest retained market date={retained_date}."
                 )
             else:
                 errors["yfinance"] = (
-                    "YFinance refresh did not return a complete live ticker universe; "
-                    "the retained archive was not advanced. "
-                    f"Mode={mode}, live={live}/{expected}, "
-                    f"fallback rows={fallback_rows}, missing rows={len(missing_symbols)}, "
-                    f"retained field fills={fallback_fields}."
+                    "YFinance refresh produced no usable live rows and no usable retained market state. "
+                    f"Mode={mode}, live={live}/{expected}, returned={returned}, "
+                    f"missing rows={len(missing_symbols)}."
                 )
 
     if policy.allows_live(RefreshSource.EDGAR):

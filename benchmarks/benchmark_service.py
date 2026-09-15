@@ -90,26 +90,50 @@ def get_archived_benchmark_metrics(benchmark: str, *, current_only: bool = True)
     return _metrics_from_archive_row(eligible.iloc[-1])
 
 
-def _single_market_data_date(frame: pd.DataFrame) -> str:
+def _market_date_profile(frame: pd.DataFrame) -> dict:
     if not isinstance(frame, pd.DataFrame) or frame.empty or "Market Data Date" not in frame.columns:
-        raise ValueError("Benchmark input has no Market Data Date")
+        return {
+            "latest": None,
+            "oldest": None,
+            "current_members": 0,
+            "retained_members": 0,
+            "dates": {},
+        }
     dates = pd.to_datetime(
         frame["Market Data Date"], errors="coerce", format="mixed"
-    ).dt.date.dropna()
-    unique = sorted(set(dates))
-    if len(unique) != 1:
-        raise ValueError(f"Benchmark members do not share one market date: {unique}")
-    return unique[0].isoformat()
+    )
+    valid = dates.dropna()
+    if valid.empty:
+        return {
+            "latest": None,
+            "oldest": None,
+            "current_members": 0,
+            "retained_members": int(len(frame)),
+            "dates": {},
+        }
+    latest_date = valid.max().date()
+    counts = {
+        value.date().isoformat(): int(count)
+        for value, count in valid.value_counts().sort_index().items()
+    }
+    current = int((dates.dt.date == latest_date).sum())
+    return {
+        "latest": latest_date.isoformat(),
+        "oldest": valid.min().date().isoformat(),
+        "current_members": current,
+        "retained_members": int(len(frame) - current),
+        "dates": counts,
+    }
 
 
 def get_benchmark_metrics_from_market_frame(benchmark: str, market_frame: pd.DataFrame) -> dict:
     """Build the fixed benchmark directly from the resolved market universe.
 
-    This keeps the sector reference on the exact same provider observation date
-    as the 204-name YFinance universe.  The retained market universe contains
-    GOOG but not GOOGL, so the documented fixed-reference contract uses the
-    retained GOOG Class C return for the GOOGL Class A weight as well.  That
-    makes every benchmark observation reproducible from ``yf_history.csv``.
+    The benchmark uses the current-best retained row for each fixed member. A
+    stale constituent therefore degrades only that member instead of blocking
+    the broader market refresh. The retained market universe contains GOOG but
+    may omit GOOGL, so the documented fixed-reference contract can use the
+    retained GOOG Class C return for the GOOGL Class A weight as well.
     """
     if benchmark not in ACTIVE_BENCHMARKS:
         raise ValueError(f"Benchmark {benchmark} is configured but not active")
@@ -129,44 +153,83 @@ def get_benchmark_metrics_from_market_frame(benchmark: str, market_frame: pd.Dat
 
     rows = []
     aliases = {}
+    missing = []
     for ticker in members:
         source_ticker = ticker
         if source_ticker not in frame.index and ticker == "GOOGL" and "GOOG" in frame.index:
             source_ticker = "GOOG"
             aliases[ticker] = source_ticker
         if source_ticker not in frame.index:
-            raise ValueError(f"Fixed benchmark member unavailable in market universe: {ticker}")
+            missing.append(ticker)
+            continue
         row = frame.loc[source_ticker].copy()
         row["Ticker"] = ticker
         row["Benchmark Weight"] = float(weights[ticker])
         rows.append(row)
 
+    load_report = dict(getattr(market_frame, "attrs", {}).get("load_report", {}) or {})
+    if missing:
+        archived = get_archived_benchmark_metrics(benchmark, current_only=False)
+        if archived is None:
+            return {
+                "forward_ev_ebit": np.nan,
+                "forward_ebit_yield": np.nan,
+                "avg_return": np.nan,
+                "beta": np.nan,
+                "member_count": 0,
+                "version": BENCHMARK_VERSION,
+                "weight_effective_date": QQQ_WEIGHTS_EFFECTIVE_DATE,
+                "source_mode": "unavailable_missing_members",
+                "market_data_date": None,
+                "expected_tickers": len(members),
+                "live_tickers": 0,
+                "archive_fallback_tickers": 0,
+                "missing_tickers": missing,
+                "member_aliases": aliases,
+                "archive_field_backfills": int(load_report.get("archive_field_backfills") or 0),
+            }
+        retained = dict(archived)
+        retained.update({
+            "source_mode": "archive_fallback_missing_members",
+            "expected_tickers": len(members),
+            "live_tickers": 0,
+            "archive_fallback_tickers": len(members),
+            "missing_tickers": missing,
+            "member_aliases": aliases,
+            "archive_field_backfills": int(load_report.get("archive_field_backfills") or 0),
+        })
+        return retained
+
     benchmark_frame = pd.DataFrame(rows).reset_index(drop=True)
-    market_data_date = _single_market_data_date(benchmark_frame)
+    date_profile = _market_date_profile(benchmark_frame)
     normalized = normalize_benchmark_dataframe(benchmark_frame)
     normalized.update(
         {
             "version": BENCHMARK_VERSION,
             "weight_effective_date": QQQ_WEIGHTS_EFFECTIVE_DATE,
-            "market_data_date": market_data_date,
+            "market_data_date": date_profile["latest"],
+            "oldest_market_data_date": date_profile["oldest"],
+            "market_data_dates": date_profile["dates"],
             "member_count": int(len(benchmark_frame)),
             "member_aliases": aliases,
         }
     )
 
-    load_report = dict(getattr(market_frame, "attrs", {}).get("load_report", {}) or {})
     raw_mode = str(load_report.get("source_mode") or "").strip().casefold()
-    live_complete = (
-        raw_mode.startswith("live")
-        and int(load_report.get("archive_fallback_tickers") or 0) == 0
-        and not (load_report.get("missing_tickers") or [])
-    )
-    normalized["source_mode"] = (
-        "live_market_universe" if live_complete else "retained_market_universe"
-    )
-    normalized["live_tickers"] = len(benchmark_frame) if live_complete else 0
+    current_members = int(date_profile["current_members"])
+    retained_members = int(date_profile["retained_members"])
+    if raw_mode.startswith("live"):
+        source_mode = (
+            "live_market_universe"
+            if retained_members == 0
+            else "mixed_market_universe"
+        )
+    else:
+        source_mode = "retained_market_universe"
+    normalized["source_mode"] = source_mode
+    normalized["live_tickers"] = current_members if raw_mode.startswith("live") else 0
     normalized["expected_tickers"] = len(members)
-    normalized["archive_fallback_tickers"] = 0 if live_complete else len(benchmark_frame)
+    normalized["archive_fallback_tickers"] = retained_members
     normalized["missing_tickers"] = []
     normalized["archive_field_backfills"] = int(load_report.get("archive_field_backfills") or 0)
     return normalized

@@ -17,7 +17,7 @@ import re
 from typing import Iterable, Sequence
 
 
-MAX_WORDS = 70
+MAX_WORDS = 48
 
 
 def _spaces(value: object) -> str:
@@ -94,6 +94,24 @@ _ACTIONS: tuple[tuple[str, str, str], ...] = (
     (r"\b(?:is|are)\s+set\s+to\s+(?:develop|build|construct)\b", "plans to develop", "infrastructure_project"),
     (r"\b(?:is|are)\s+set\s+to\s+(?:sell|divest)\b", "plans to sell", "transaction"),
     (r"\b(?:is|are)\s+set\s+to\s+(?:deploy|launch|expand)\b", "plans to deploy", "deployment"),
+    (r"\b(?:has|have|had)\s+called\s+for\b", "called for", "policy_position"),
+    (r"\b(?:has|have|had)\s+urged\b", "urged", "policy_position"),
+    (r"\b(?:has|have|had)\s+endorsed\b", "endorsed", "policy_position"),
+    (r"\b(?:has|have|had)\s+warned\b", "warned", "policy_position"),
+    (r"\bcalled\s+for\b", "called for", "policy_position"),
+    (r"\bcalls?\s+for\b", "called for", "policy_position"),
+    (r"\burged\b", "urged", "policy_position"),
+    (r"\burges?\b", "urged", "policy_position"),
+    (r"\bendorsed\b", "endorsed", "policy_position"),
+    (r"\bendorses?\b", "endorsed", "policy_position"),
+    (r"\bwarned\b", "warned", "policy_position"),
+    (r"\bwarns?\b", "warned", "policy_position"),
+    (r"\bhit\s+the\s+brakes\b", "hit the brakes", "policy_position"),
+    (r"\bdelayed\b", "delayed", "regulatory_action"),
+    (r"\bdelays?\b", "delayed", "regulatory_action"),
+    (r"\bpostponed\b", "postponed", "corporate_action"),
+    (r"\bslowed\b", "slowed", "policy_position"),
+    (r"\bslows?\b", "slowed", "policy_position"),
     (r"\bdirected\b", "directed", "regulatory_action"),
     (r"\bordered\b", "ordered", "regulatory_action"),
     (r"\bapproved\b", "approved", "regulatory_action"),
@@ -240,6 +258,7 @@ class CompositionResult:
 
 _EVENT_PRIORITY = {
     "regulatory_action": 18.0,
+    "policy_position": 18.0,
     "financing": 18.0,
     "investment": 17.0,
     "transaction": 17.0,
@@ -263,8 +282,10 @@ _EVENT_PRIORITY = {
 
 _DOMAIN_STRICT_PATTERNS: dict[str, tuple[str, ...]] = {
     "market": (
-        r"\bshares?\b", r"\bstock\b", r"\bearnings\b", r"\brevenue\b", r"\bguidance\b",
+        r"\bshares?\b", r"\bstocks?\b", r"\bearnings\b", r"\brevenue\b", r"\bguidance\b",
         r"\bwall street\b", r"\bafter-hours\b", r"\btrading\b", r"\bvaluation\b", r"\bindex\b",
+        r"\bOpenAI\b", r"\bAnthropic\b", r"\bAI safety\b", r"\bAI development\b",
+        r"\bAI(?:'s)?\b.{0,40}\bCEOs?\b", r"\bslow(?:down|ing|er)?\b", r"\bpacing\b", r"\bregulation\b",
     ),
     "finance": (
         r"\bfinanc(?:e|ed|ing)\b", r"\bcapital\b", r"\bdebt\b", r"\bloan(?:s)?\b", r"\bcredit\b",
@@ -288,7 +309,7 @@ _DOMAIN_STRICT_PATTERNS: dict[str, tuple[str, ...]] = {
     ),
     "power": (
         r"\bpower plant\b", r"\bgeneration\b", r"\belectricity\b", r"\bnatural gas\b", r"\bturbine(?:s)?\b",
-        r"\bpower purchase agreement\b", r"\bPPA\b", r"\bnuclear\b", r"\b\d+(?:\.\d+)?\s*(?:MW|GW)\b",
+        r"\bpower purchase agreement\b", r"\bpower agreement\b", r"\bpower contract\b", r"\bPPA\b", r"\bnuclear\b", r"\b\d+(?:\.\d+)?\s*(?:MW|GW)\b",
     ),
     "grid_storage": (
         r"\bgrid\b", r"\btransmission\b", r"\binterconnection\b", r"\bERCOT\b", r"\bPJM\b",
@@ -466,10 +487,38 @@ def _realize_title_frame(frame: EventFrame) -> str:
     return _sentence(f"{actor} {frame.action} {obj}")
 
 
+_DAMAGED_SURFACE_RE = re.compile(
+    r"(?:"
+    r"\bin ordered to\b"
+    r"|\bto added that\b"
+    r"|\breported links\b"
+    r"|\breported says\b"
+    r"|\bnew job['’]s workforce\b"
+    r"|\b(?:company|firm|utility|regulator) to (?:added|said|reported)\b"
+    r"|\b(?:should|could|would|may|might|must)\s+(?:slowed|delayed|urged|warned)\b"
+    r")",
+    re.IGNORECASE,
+)
+
+
 def _frame_surface(frame: EventFrame) -> str:
-    if frame.source_kind == "title":
-        return _realize_title_frame(frame)
-    return _sentence(frame.sentence)
+    """Return one grammatical, self-contained event sentence.
+
+    Source prose is evidence, not presentation copy.  Body sentences can carry
+    publisher typos, headline fragments, or extraction damage, so all event
+    frames are deterministically realized from actor + normalized action +
+    object.  A damaged frame is rejected instead of being published verbatim.
+    """
+    actor = _spaces(frame.actor)
+    if not actor or not _spaces(frame.object_text):
+        return ""
+    candidate = _realize_title_frame(frame)
+    if _DAMAGED_SURFACE_RE.search(candidate):
+        return ""
+    # Reject obvious headline/extraction debris rather than guessing a repair.
+    if re.search(r"\b(?:to added|to reported|has has|have have|was was|were were)\b", candidate, flags=re.I):
+        return ""
+    return candidate
 
 
 def _title_is_corroborated(frame: EventFrame, body_frames: Sequence[EventFrame], body_sentences: Sequence[str]) -> bool:
@@ -487,36 +536,27 @@ def _title_is_corroborated(frame: EventFrame, body_frames: Sequence[EventFrame],
     return False
 
 
-def _support_candidate(frame: EventFrame, sentence: str, *, index: int, domain: str) -> tuple[float, str] | None:
-    value = _sentence(sentence)
-    if not value or len(value.split()) < 7 or len(value.split()) > 42:
-        return None
-    if value.startswith(('"', '“')):
-        return None
-    if _similarity(frame.sentence, value) >= 0.72:
-        return None
-    frame_tokens = _tokens(frame.sentence)
-    support_tokens = _tokens(value)
-    if frame_tokens and support_tokens:
-        overlap_ratio = len(frame_tokens.intersection(support_tokens)) / max(1, min(len(frame_tokens), len(support_tokens)))
-        if overlap_ratio >= 0.58:
-            return None
-    # Avoid attaching a second unrelated event.  Supporting facts either share
-    # event identity or provide a quantified metric adjacent to the frame.
-    overlap = len(frame.identity_tokens.intersection(_tokens(value)))
-    quantified = bool(re.search(r"(?:\$?\d[\d,.]*\s*(?:%|percent|billion|million|trillion|GW|MW|Tbps|Gbps|jobs?|customers?)?)", value, flags=re.I))
-    if overlap < 2 and not quantified:
-        return None
-    if not strict_domain_fit(domain, f"{frame.sentence} {value}"):
-        return None
-    score = overlap * 2.5 + (5.0 if quantified else 0.0)
-    score += max(0.0, 3.0 - abs(index - frame.index) * 0.8)
-    # Metric/context openings are preferred as *support* once a true event has
-    # already been established.
-    if _GENERIC_ACTOR_OPENINGS.search(value) or _CONTEXT_OPENING.search(value):
-        score += 1.5
-    return score, value
 
+def _reader_title(value: str) -> str:
+    """Return a clean publisher headline without rewriting its grammar.
+
+    A corroborated headline is already edited human copy. Re-conjugating its
+    verb (for example, turning "Google to invest" into "Google to invested")
+    creates errors that were not present in the source. Remove only obvious
+    publisher suffix furniture and normalize terminal punctuation.
+    """
+    title = _spaces(value).strip()
+    if not title:
+        return ""
+    for separator in (" | ", " - "):
+        if separator not in title:
+            continue
+        head, tail = title.rsplit(separator, 1)
+        if len(head.split()) >= 4 and 1 <= len(tail.split()) <= 7:
+            title = head.strip()
+            break
+    title = title.rstrip(" .!?")
+    return f"{title}." if title else ""
 
 def compose_development(
     *,
@@ -526,9 +566,9 @@ def compose_development(
 ) -> CompositionResult | None:
     """Extract one semantic event and deterministically realize Reader copy.
 
-    The body is authoritative.  A title frame is available only as a fallback
-    when its actor/event identity is corroborated by the body.  A quantified or
-    contextual sentence may support the event but can never replace it.
+    The body is authoritative. A title frame is available only as a fallback
+    when its actor/event identity is corroborated by the body. Reader copy is
+    always one explicit, self-contained actor/action event sentence.
     """
     body = [_sentence(item) for item in body_sentences if _sentence(item)]
     if not body:
@@ -546,63 +586,62 @@ def compose_development(
     if title_frame and not _title_is_corroborated(title_frame, body_frames, body):
         title_frame = None
 
-    candidates = list(lead_frames)
+    # A corroborated publisher headline is already edited human copy. Prefer it
+    # when it contains an explicit event frame; body sentences exist to verify
+    # the headline, not to overwrite it with noisier extraction text.
+    primary = ""
+    frame: EventFrame | None = None
     if title_frame and title_frame.lead_eligible:
-        candidates.append(title_frame)
-    if not candidates:
-        return None
+        title_copy = _reader_title(source_title)
+        if title_copy and strict_domain_fit(domain, title_copy):
+            frame = title_frame
+            primary = title_copy
 
-    # Prefer explicit semantic event classes and body evidence.  Similarity to
-    # the publisher title is a tie-breaker, not the organizing principle.
-    title_tokens = _tokens(source_title)
-    ranked: list[tuple[float, EventFrame]] = []
-    for frame in candidates:
-        score = frame.score
-        identity_overlap = len(title_tokens.intersection(frame.identity_tokens))
-        score += min(7.0, identity_overlap * 1.8)
-        if frame.source_kind == "body":
-            score += 2.0
-        # A standalone market-move sentence is weaker than the company event
-        # that caused it when both exist.
-        if frame.event_type == "market_move" and any(f.event_type == "earnings_result" for f in lead_frames):
-            score -= 6.0
-        ranked.append((score, frame))
-    ranked.sort(key=lambda item: item[0], reverse=True)
-    frame = ranked[0][1]
-    primary = _frame_surface(frame)
+    if frame is None:
+        candidates = list(lead_frames)
+        if not candidates:
+            return None
+        title_tokens = _tokens(source_title)
+        ranked: list[tuple[float, EventFrame]] = []
+        for frame_candidate in candidates:
+            score = frame_candidate.score
+            identity_overlap = len(title_tokens.intersection(frame_candidate.identity_tokens))
+            score += min(7.0, identity_overlap * 1.8)
+            # A standalone market-move sentence is weaker than the company event
+            # that caused it when both exist.
+            if frame_candidate.event_type == "market_move" and any(f.event_type == "earnings_result" for f in lead_frames):
+                score -= 6.0
+            ranked.append((score, frame_candidate))
+        ranked.sort(key=lambda item: item[0], reverse=True)
+
+        # Ranking identifies the best semantic event, but malformed extraction
+        # can still make its deterministic surface unusable. Skip that frame and
+        # try the next grounded event rather than discarding the whole article.
+        for _, frame_candidate in ranked:
+            candidate_copy = _frame_surface(frame_candidate)
+            if candidate_copy and strict_domain_fit(domain, candidate_copy):
+                frame = frame_candidate
+                primary = candidate_copy
+                break
+        if frame is None:
+            return None
+
     if not primary or not strict_domain_fit(domain, primary):
         return None
 
-    support_options: list[tuple[float, str]] = []
-    for idx, sentence in enumerate(body[:24]):
-        if idx == frame.index and frame.source_kind == "body":
-            continue
-        option = _support_candidate(frame, sentence, index=idx, domain=domain)
-        if option:
-            support_options.append(option)
-    support_options.sort(key=lambda item: item[0], reverse=True)
-
-    text = primary
-    evidence = frame.sentence
-    support_count = 0
-    if support_options and len(primary.split()) < 42:
-        support = support_options[0][1]
-        combined = _spaces(f"{primary} {support}")
-        if len(combined.split()) <= MAX_WORDS:
-            text = combined
-            evidence = _spaces(f"{frame.sentence} {support}")
-            support_count = 1
-
-    if len(text.split()) > MAX_WORDS or not strict_domain_fit(domain, text):
+    # Recent Developments is a roll-up, not a mini-summary. Preserve a
+    # corroborated publisher headline instead of mechanically rewriting its
+    # grammar; otherwise render one explicit body-derived event sentence.
+    if len(primary.split()) > MAX_WORDS or not strict_domain_fit(domain, primary):
         return None
     return CompositionResult(
-        text=_spaces(text),
-        evidence_text=evidence,
+        text=_spaces(primary),
+        evidence_text=frame.sentence,
         event_type=frame.event_type,
         actor=frame.actor,
         used_title=frame.source_kind == "title",
-        support_count=support_count,
-        reason="deterministic semantic event frame composed from grounded source evidence",
+        support_count=0,
+        reason="single self-contained event sentence composed from grounded source evidence",
     )
 
 

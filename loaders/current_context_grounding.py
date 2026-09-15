@@ -1,10 +1,10 @@
 """Source-grounded qualification for AI Macro Current Context.
 
-Discovery metadata may nominate a candidate, but Reader-facing prose may not be
-built from a headline or RSS description.  A candidate must resolve to an
-eligible publisher/primary page, yield substantive source text, contain a
-concrete domain-relevant development, and support the factual sentence that is
-published to the Reader.
+Discovery metadata nominates candidates. For approved reported sources, a
+clean publisher-edited headline may itself establish the bounded event stated
+in that headline; article-body retrieval is corroboration/enrichment rather
+than a mandatory restatement test. Primary records and any body-derived Reader
+copy still use source-text grounding.
 
 Only compact derived facts/provenance are persisted.  Full article bodies are
 used transiently during refresh and are never written to the retained ledger.
@@ -35,13 +35,14 @@ from config.current_context_policy import (
     assess_source,
     assess_source_for_qualification,
     recent_development_copy_issues,
+    trusted_publisher_headline_copy_issues,
     term_present,
 )
 from loaders.current_context_news import NEWS_USER_AGENT, _valid_https_url
 from loaders.current_context_composer import compose_development, strict_domain_fit
 
 
-GROUNDING_VERSION = "4.0"
+GROUNDING_VERSION = "4.6"
 SOURCE_TIMEOUT = (4, 9)
 SOURCE_MAX_BYTES = 2_500_000
 # Publisher HTML is fetched as a normal browser navigation. The RSS/discovery
@@ -96,7 +97,7 @@ _POLICY_COMMENTARY_PATTERNS = (
 _EVENT_VERBS = (
     # Past-tense/reporting forms.
     "acquired", "announced", "approved", "awarded", "began", "bought", "built", "closed", "commissioned",
-    "completed", "cut", "decided", "delayed", "denied", "directed", "filed", "found", "grew", "held",
+    "completed", "cut", "decided", "delay", "delayed", "denied", "directed", "filed", "found", "grew", "held",
     "implemented", "increased", "invested", "issued", "launched", "maintained", "opened", "ordered",
     "planned", "priced", "proposed", "published", "purchased", "raised", "reached", "released", "reported", "secured", "signed",
     "started", "suspended", "terminated", "updated", "voted", "withdrew", "rose", "fell",
@@ -104,11 +105,13 @@ _EVENT_VERBS = (
     "reduced", "adopted", "committed", "agreed", "entered", "lowered",
     "surged", "jumped", "rallied", "slid", "dropped", "plunged", "climbed", "beat", "blew", "forecast", "exceeded", "topped",
     "arranged", "marketed", "financed", "funded", "partnered", "stacked",
+    "called", "urged", "endorsed", "warned", "slowed", "hit",
+    "back", "backed", "backs", "support", "supported", "supports", "oppose", "opposed", "opposes",
     # Headline-present forms. Publisher headlines are an eligible event frame
     # only when the body independently corroborates them, so present tense is
     # not by itself a weaker evidentiary form.
     "acquires", "announces", "approves", "awards", "begins", "buys", "closes", "commissions",
-    "completes", "cuts", "decides", "delays", "denies", "directs", "files", "finds", "grows", "holds",
+    "completes", "cuts", "decides", "delay", "delays", "denies", "directs", "files", "finds", "grows", "holds",
     "implements", "increases", "invests", "issues", "launches", "maintains", "opens", "orders",
     "plans", "prices", "proposes", "publishes", "purchases", "raises", "reaches", "releases", "reports", "secures", "signs",
     "starts", "suspends", "terminates", "updates", "votes", "withdraws",
@@ -116,6 +119,8 @@ _EVENT_VERBS = (
     "reduces", "adopts", "commits", "agrees", "enters", "lowers",
     "surges", "jumps", "rallies", "slides", "drops", "plunges", "climbs", "beats", "forecasts", "exceeds", "tops",
     "arranges", "markets", "finances", "funds", "partners", "stacks",
+    "call", "calls", "urge", "urges", "endorse", "endorses", "warn", "warns", "slow", "slows", "hits",
+    "back", "backs", "support", "supports", "oppose", "opposes",
 )
 
 _EMPIRICAL_MARKERS = (
@@ -950,6 +955,9 @@ def _split_sentences(text: str) -> list[str]:
     if not clean:
         return []
     protected = _protect_sentence_abbreviations(clean)
+    # Repair extractor joins such as ``jobs.According`` after abbreviations have
+    # been protected, then split on ordinary sentence boundaries.
+    protected = re.sub(r"(?<=[.!?])(?=(?:[\"'“‘(]*[A-Z]))", " ", protected)
     pieces = re.split(r"(?<=[.!?])\s+(?=(?:[\"'“‘(]*[A-Z0-9]))", protected)
     output: list[str] = []
     for piece in pieces:
@@ -1056,7 +1064,7 @@ def fact_is_current_development(text: object, *, reference_date: object, lookbac
 def _market_percent_move(text: object) -> float:
     """Return a percent explicitly attached to a stock/share-price move."""
     value = _spaces(text).casefold()
-    move = r"(?:rose|surged|jumped|gained|rallied|fell|dropped|slid|tumbled|plunged|declined|advanced|climbed)"
+    move = r"(?:rose|ris(?:e|es|ing)|surged|surg(?:e|es|ing)|jumped|jump(?:s|ing)?|gained|gain(?:s|ing)?|rallied|rallying|fell|fall(?:s|ing)?|dropped|drop(?:s|ping)?|slid|sliding|tumbled|tumbl(?:e|es|ing)|plunged|plung(?:e|es|ing)|declined|declin(?:e|es|ing)|advanced|advanc(?:e|es|ing)|climbed|climb(?:s|ing)?)"
     security = r"(?:shares?|stock)"
     patterns = (
         rf"{security}[^.;:]{{0,45}}?{move}[^.;:]{{0,20}}?(\d{{1,3}}(?:\.\d+)?)\s*%",
@@ -1125,6 +1133,20 @@ def market_event_is_significant(fact: object, context: object = "") -> bool:
     if systemic and operating_or_market_event:
         return True
 
+    strategic_ai_shift = (
+        any(term in lower for term in (
+            "openai", "anthropic", "google deepmind", "xai",
+            "sam altman", "dario amodei", "demis hassabis", "elon musk",
+        ))
+        and any(term in lower for term in (
+            "slow", "slowdown", "slowing", "pause", "pacing", "pace of development",
+            "ai safety", "safety", "regulation", "regulatory", "called for", "urged",
+            "hit the brakes",
+        ))
+    )
+    if strategic_ai_shift:
+        return True
+
     if _market_percent_move(combined) >= _MAJOR_MARKET_MOVE_PCT:
         return True
 
@@ -1164,30 +1186,32 @@ def retained_reader_quality_gate(
     *,
     event_date: object,
     lookback_days: int = 7,
+    trusted_headline: bool = False,
 ) -> tuple[bool, str]:
     """Content-based durable gate for already-vetted retained rows.
 
-    Engine version never expires a grounded row.  Universal Reader-quality
-    invariants still apply: a historical-context sentence cannot masquerade as
-    the current event, selection rationale cannot leak into prose, and Market
-    retains its separate significance boundary.
+    A row that has already passed discovery and source grounding should not be
+    re-qualified by another semantic classifier when it is written to or read
+    back from the retained registry. Durable Reader checks are intentionally
+    narrow: bounded copy length, hard copy hygiene, and no leaked selection
+    rationale. Freshness and source eligibility are enforced separately by the
+    registry before this function is called.
     """
     fact_text = _spaces(fact)
     relevance_text = _spaces(relevance)
-    if not fact_is_current_development(fact_text, reference_date=event_date, lookback_days=lookback_days):
-        return False, "retained fact is historical context rather than a current development"
+    if not fact_text:
+        return False, "retained Reader copy is empty"
     if len(_spaces(f"{fact_text} {relevance_text}").split()) > MAX_FACT_WORDS:
         return False, f"retained Reader copy exceeds the {MAX_FACT_WORDS}-word ceiling"
-    copy_issues = recent_development_copy_issues(f"{fact_text} {relevance_text}")
+    copy_issues = (
+        trusted_publisher_headline_copy_issues(f"{fact_text} {relevance_text}")
+        if trusted_headline
+        else recent_development_copy_issues(f"{fact_text} {relevance_text}")
+    )
     if copy_issues:
         return False, f"retained Reader copy failed hygiene: {copy_issues[0]}"
-    frame_issues = reader_development_event_frame_issues(fact_text)
-    if frame_issues:
-        return False, f"retained Reader copy lacks event framing: {frame_issues[0]}"
     if reader_copy_has_selection_rationale(relevance_text):
         return False, "retained Reader prose contains selection-rationale language"
-    if str(domain or "").strip().casefold() == "market" and not market_event_is_significant(fact_text, relevance_text):
-        return False, "retained Market item is AI-relevant but not market-significant"
     return True, "retained source-grounded event remains Reader-eligible"
 
 
@@ -1275,19 +1299,23 @@ def _domain_grounding_gate(
     floor_coverage = tier_index >= current_context_tier_index("D")
 
     relevance_terms = tuple(domain_relevance_terms(domain))
-    if not any(term_present(source_text, str(term)) for term in relevance_terms):
-        return False, "source body does not establish the domain-relevant subject"
-    if not any(term_present(fact_sentence, str(term)) for term in relevance_terms):
+    source_surface = _spaces(f"{headline} {source_text}")
+    if not any(term_present(source_surface, str(term)) for term in relevance_terms):
+        return False, "source title/body does not establish the domain-relevant subject"
+    if not (
+        any(term_present(fact_sentence, str(term)) for term in relevance_terms)
+        or strict_domain_fit(domain, fact_sentence)
+    ):
         return False, "selected source fact does not itself establish the domain-relevant subject"
     tier_policy = current_context_qualification_policy(domain, qualification_tier)
-    if bool(tier_policy.get("require_topic_anchor", True)) and domain_topic_anchors(domain) and not any(term_present(source_text, str(term)) for term in domain_topic_anchors(domain)):
+    if bool(tier_policy.get("require_topic_anchor", True)) and domain_topic_anchors(domain) and not any(term_present(source_surface, str(term)) for term in domain_topic_anchors(domain)):
         # A few physical domains may qualify through a system-wide measured constraint.
-        if domain == "grid_storage" and _has_number(source_text) and any(term in lower for term in _SYSTEM_GRID_TERMS):
+        if domain == "grid_storage" and _has_number(source_surface) and any(term in lower for term in _SYSTEM_GRID_TERMS):
             pass
-        elif domain == "water" and _has_number(source_text) and any(term in lower for term in _SYSTEM_WATER_TERMS):
+        elif domain == "water" and _has_number(source_surface) and any(term in lower for term in _SYSTEM_WATER_TERMS):
             pass
         else:
-            return False, "source body does not establish the required AI/technology or system-wide anchor"
+            return False, "source title/body does not establish the required AI/technology or system-wide anchor"
 
     finance_transaction_action = domain == "finance" and _finance_transaction_in_motion(fact_sentence)
     finance_offering_action = (
@@ -1304,9 +1332,33 @@ def _domain_grounding_gate(
     ):
         return False, "best source sentence is topical/commentary rather than a concrete development"
 
-    if domain in {"workforce", "economic_impact", "adoption"}:
+    if domain in {"workforce", "economic_impact"}:
         if not broad_coverage and not _has_number(fact_sentence):
-            return False, "domain requires a quantified observed result; topic commentary or unquantified interpretation is not enough"
+            # The evidence must be empirical, but the compact Reader sentence
+            # does not have to repeat a number merely to prove that again. A
+            # concrete release/action may summarize a quantified source body.
+            source_has_empirical_result = (
+                _has_number(source_surface)
+                and (_has_empirical_marker(source_surface) or _has_event_action(fact_sentence))
+            )
+            if not source_has_empirical_result:
+                return False, "domain requires a concrete empirical release or observed result; topic commentary alone is not enough"
+
+    if domain == "adoption":
+        concrete_adoption_action = (
+            _has_event_action(fact_sentence)
+            and any(term in fact_lower for term in (
+                "enterprise ai", "ai system", "ai systems", "ai agent", "ai agents",
+                "artificial intelligence", "ai solution", "ai solutions",
+            ))
+            and any(term in fact_lower for term in (
+                "announced", "launched", "deployed", "implemented", "investment",
+                "invest", "invests", "invested", "partnership", "partner", "partners", "partnered",
+                "acquired", "signed", "rolled out", "adopted",
+            ))
+        )
+        if not broad_coverage and not (_has_number(fact_sentence) or concrete_adoption_action):
+            return False, "adoption item lacks a quantified result or a concrete enterprise AI deployment/action"
 
     if domain == "finance":
         finance_fact_terms = domain_relevance_terms("finance")
@@ -1364,21 +1416,30 @@ def _domain_grounding_gate(
             return False, "informational power publication does not establish a new operational or measured development"
 
     if domain == "grid_storage":
+        # A formal grid/interconnection proposal, filing, award, or project
+        # action is itself a current development even before it becomes a
+        # binding rule.  The former tier-dependent gate perversely rejected
+        # high-quality A-tier reporting on live FERC/RTO proposals while
+        # allowing the same event only after source standards were relaxed.
+        # Domain fit + event framing have already been established above; this
+        # check only excludes generic grid commentary with no concrete system
+        # action or measured constraint.
         binding_action = any(term in fact_lower for term in (
             "approved", "ordered", "adopted", "implemented", "rule", "standard", "tariff",
             "construction", "commissioned", "energized", "curtail", "curtailed", "transmission",
             "substation", "transformer",
         ))
-        broader_action = any(term in fact_lower for term in (
-            "proposed", "filed", "requested", "announced", "selected", "awarded", "planned",
-            "interconnection", "storage", "battery", "queue", "grid",
+        system_action = any(term in fact_lower for term in (
+            "proposal", "proposed", "filed", "filing", "requested", "announced", "selected",
+            "awarded", "planned", "interconnection", "storage", "battery", "queue", "grid",
+            "large-load", "large load",
         ))
-        if not (_has_number(fact_sentence) or binding_action or (broad_coverage and broader_action)):
-            return False, "grid item lacks a concrete measured constraint or binding/physical system action"
+        if not (_has_number(fact_sentence) or binding_action or system_action):
+            return False, "grid item lacks a concrete measured constraint or physical/regulatory system action"
         if (
             not floor_coverage
-            and any(term in fact_lower for term in ("roadmap", "recommendation", "guide", "framework"))
-            and not (_has_number(fact_sentence) or any(term in fact_lower for term in ("adopted", "implemented", "approved", "ordered")))
+            and any(term in fact_lower for term in ("roadmap", "recommendation", "guide"))
+            and not (_has_number(fact_sentence) or binding_action or any(term in fact_lower for term in ("filed", "filing", "proposal", "proposed")))
         ):
             return False, "nonbinding grid roadmap or guidance is context, not a material development"
 
@@ -2171,19 +2232,27 @@ def _assemble_reader_development(
 
     v7.9 stops treating source sentences as the presentation model.  The
     article is first reduced to cleaned factual clauses, then the deterministic
-    composer identifies an actor/action event nucleus, assigns supporting facts
-    to that event, and realizes the event before any supporting metric/context.
+    composer identifies an actor/action event nucleus and realizes one explicit,
+    self-contained event sentence for Reader display.
 
     The publisher title may participate only as corroborated evidence; it is
     never concatenated verbatim ahead of body prose.  If the semantic composer
     cannot establish a complete domain-specific event, the candidate is
     rejected and discovery proceeds to the next source.
     """
+    raw_body = _split_sentences(source_text)[:24]
     cleaned_body: list[str] = []
-    for raw in _split_sentences(source_text)[:24]:
+    for raw in raw_body:
         value = _format_support_sentence(raw, headline=headline or source_title, source_text=source_text)
         if value:
             cleaned_body.append(value)
+
+    # A malformed extracted sentence may be unsuitable for display but still
+    # corroborate a clean publisher headline. When formatting rejects every
+    # body sentence, retain the raw split sentences as evidence-only input; the
+    # composer will still refuse to surface malformed body prose.
+    if not cleaned_body:
+        cleaned_body = list(raw_body)
 
     # Anchors can contain a fact that the page splitter omitted because of a
     # malformed boundary.  They are evidence-only additions, deduplicated
@@ -2202,16 +2271,133 @@ def _assemble_reader_development(
     if composed is None:
         return "", ""
 
-    fact = _spaces(composed.text)
-    if not fact or len(fact.split()) > MAX_FACT_WORDS:
-        return "", ""
-    if recent_development_copy_issues(fact):
-        return "", ""
-    if reader_development_event_frame_issues(fact):
-        return "", ""
-    if not strict_domain_fit(domain, fact):
-        return "", ""
-    return fact, _spaces(composed.evidence_text)
+    def _usable(result) -> tuple[str, str]:
+        value = _spaces(result.text)
+        if not value or len(value.split()) > MAX_FACT_WORDS:
+            return "", ""
+        if recent_development_copy_issues(value):
+            return "", ""
+        if reader_development_event_frame_issues(value):
+            return "", ""
+        if not strict_domain_fit(domain, value):
+            return "", ""
+        return value, _spaces(result.evidence_text)
+
+    fact, evidence = _usable(composed)
+    if fact:
+        return fact, evidence
+
+    # A publisher headline can be materially correct yet unsuitable for Reader
+    # display on its own (for example, an unexplained grid acronym).  When the
+    # body contains a clean explicit event, fall back to that grounded sentence
+    # instead of rejecting the article or trying to mechanically repair the
+    # headline.
+    if composed.used_title:
+        body_composed = compose_development(
+            domain=domain,
+            source_title="",
+            body_sentences=cleaned_body,
+        )
+        if body_composed is not None:
+            return _usable(body_composed)
+    return "", ""
+
+
+def _trusted_headline_fallback(
+    candidate: dict,
+    *,
+    domain: str,
+    failure_detail: str,
+    headline_override: str = "",
+    resolved_url: str = "",
+    source_published_date: str = "",
+    source_modified_date: str = "",
+) -> tuple[dict | None, GroundingResult]:
+    """Use a clean headline from an approved publisher as bounded event evidence.
+
+    A publisher-edited headline from AI Macro's approved unattended source list
+    is sufficient evidence for the factual event stated in that headline once
+    discovery has established freshness, domain relevance, and materiality.
+    Article-body retrieval may corroborate or enrich the event but is not
+    required to restate it. Unknown publishers never acquire this privilege.
+    """
+    source_name = _spaces(candidate.get("source_name"))
+    publisher_url = _spaces(candidate.get("publisher_url"))
+    article_url = _spaces(candidate.get("source_url"))
+    tier_key = str(candidate.get("qualification_tier") or "A")
+    assessment = assess_source_for_qualification(
+        source_name,
+        publisher_url,
+        article_url,
+        provider=str(candidate.get("discovery_provider") or ""),
+        tier_key=tier_key,
+    )
+    if (
+        not assessment.auto_eligible
+        or assessment.evidence_role != "secondary"
+    ):
+        return None, GroundingResult(
+            False,
+            reason="headline fallback is limited to approved reported sources",
+            error=failure_detail,
+        )
+
+    headline = _clean_source_title(
+        headline_override or candidate.get("discovery_title") or candidate.get("verified_fact")
+    )
+    fact = _sentence(headline)
+    if not fact or len(fact.split()) < 4 or len(fact.split()) > MAX_FACT_WORDS:
+        return None, GroundingResult(False, reason="trusted publisher headline is not usable Reader copy", error=failure_detail)
+    if is_preview_or_calendar_item(fact) or is_commentary_style_title(fact):
+        return None, GroundingResult(False, reason="trusted publisher headline is commentary/preview rather than a reported development", error=failure_detail)
+    headline_issues = trusted_publisher_headline_copy_issues(fact)
+    if headline_issues:
+        return None, GroundingResult(
+            False,
+            reason=f"trusted publisher headline contains hard copy damage: {headline_issues[0]}",
+            error=failure_detail,
+        )
+    # Discovery already established freshness, domain relevance, and ranked
+    # materiality before an approved source reached grounding. Do not run a
+    # second semantic classifier against professionally edited publisher
+    # headlines. Event-framing and Market-significance heuristics belong to
+    # reconstructed body prose, not approved-source headline evidence.
+
+    evidence_hash = hashlib.sha256(fact.encode("utf-8")).hexdigest()[:16]
+    evidence_url = resolved_url if _valid_https_url(resolved_url) else article_url
+    updated = dict(candidate)
+    updated.update({
+        "verified_fact": fact,
+        "platform_relevance": "",
+        "display": fact,
+        # Preserve the Google News article route when direct publisher URL
+        # resolution failed; browsers can still follow the article link.
+        "source_url": evidence_url,
+        "grounding_version": GROUNDING_VERSION,
+        "grounding_status": "grounded",
+        "source_text_method": "trusted_publisher_headline",
+        "source_text_chars": len(fact),
+        "source_evidence_hash": evidence_hash,
+        "source_title": headline,
+        "source_published_date": source_published_date or str(candidate.get("event_date") or ""),
+        "source_modified_date": source_modified_date,
+        "evidence_resolution_mode": "trusted_headline_metadata",
+    })
+    result = GroundingResult(
+        True,
+        fact=fact,
+        resolved_url=evidence_url,
+        extraction_method="trusted_publisher_headline",
+        text_chars=len(fact),
+        evidence_hash=evidence_hash,
+        evidence_sentence_count=1,
+        headline_similarity=1.0,
+        source_published_date=source_published_date or str(candidate.get("event_date") or ""),
+        source_modified_date=source_modified_date,
+        reason="approved publisher headline established a self-contained current development",
+        error=failure_detail,
+    )
+    return updated, result
 
 
 def _synthesis_match(domain: str, category: str, text: str) -> bool:
@@ -2239,12 +2425,25 @@ def ground_candidate(
         discovery_provider=str(candidate.get("discovery_provider") or ""),
     )
     if doc.error:
+        # Transport/decode/paywall failures should not make the feed blind to
+        # Reuters/Axios/etc.  Preserve only a clean publisher-edited headline;
+        # never manufacture details from RSS metadata.
+        fallback, fallback_result = _trusted_headline_fallback(
+            candidate,
+            domain=domain,
+            failure_detail=doc.error,
+        )
+        if fallback is not None:
+            return fallback, fallback_result
         return None, GroundingResult(
             False,
             resolved_url=doc.resolved_url,
             extraction_method=doc.extraction_method,
             text_chars=doc.text_chars,
-            reason="underlying source could not be established",
+            reason=(
+                "underlying source could not be established; approved headline metadata was not usable: "
+                f"{fallback_result.reason}"
+            ),
             error=doc.error,
         )
 
@@ -2274,20 +2473,6 @@ def ground_candidate(
             pass
 
     source_title = doc.title or headline
-    coherence_issue = _source_identity_coherence_issue(
-        headline, doc.title, doc.body_text, domain=domain
-    )
-    if coherence_issue:
-        return None, GroundingResult(
-            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
-            text_chars=doc.text_chars, reason=coherence_issue,
-        )
-    source_quality_issues = source_content_quality_issues(doc)
-    if source_quality_issues:
-        return None, GroundingResult(
-            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
-            text_chars=doc.text_chars, reason=source_quality_issues[0],
-        )
     if is_event_listing_page(doc):
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
@@ -2304,6 +2489,39 @@ def ground_candidate(
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
             text_chars=doc.text_chars, reason="attributed commentary without a new empirical release is not a Current Context development",
+        )
+
+    # For approved reported sources, the publisher-edited headline is itself a
+    # bounded factual claim. Once discovery established domain/materiality and
+    # the publisher page did not expose a stale date or disqualifying page type,
+    # do not force the article body to restate the headline before publication.
+    # Body text remains available as corroboration/enrichment for headlines that
+    # are not self-contained enough to stand on their own.
+    headline_row, headline_result = _trusted_headline_fallback(
+        candidate,
+        domain=domain,
+        failure_detail="approved publisher headline used as the event evidence",
+        headline_override=source_title,
+        resolved_url=doc.resolved_url,
+        source_published_date=doc.published_date,
+        source_modified_date=doc.modified_date,
+    )
+    if headline_row is not None:
+        return headline_row, headline_result
+
+    coherence_issue = _source_identity_coherence_issue(
+        headline, doc.title, doc.body_text, domain=domain
+    )
+    if coherence_issue:
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars, reason=coherence_issue,
+        )
+    source_quality_issues = source_content_quality_issues(doc)
+    if source_quality_issues:
+        return None, GroundingResult(
+            False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
+            text_chars=doc.text_chars, reason=source_quality_issues[0],
         )
 
     # Materiality precedes extraction: first establish that the title/lead body
@@ -2339,38 +2557,81 @@ def ground_candidate(
         reason = salience_reason
         if is_commentary_style_title(source_title) and "Market-level significance" not in reason:
             reason = "source is commentary/topic framing without a clear current material development"
+        fallback, fallback_result = _trusted_headline_fallback(
+            candidate,
+            domain=domain,
+            failure_detail=reason,
+            headline_override=source_title,
+            resolved_url=doc.resolved_url,
+            source_published_date=doc.published_date,
+            source_modified_date=doc.modified_date,
+        )
+        if fallback is not None:
+            return fallback, fallback_result
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
             text_chars=doc.text_chars, reason=reason,
         )
     if not fact:
+        detail = "source established a development but no complete self-contained Reader copy fit the 70-word ceiling"
+        fallback, fallback_result = _trusted_headline_fallback(
+            candidate, domain=domain, failure_detail=detail,
+            headline_override=source_title, resolved_url=doc.resolved_url,
+            source_published_date=doc.published_date, source_modified_date=doc.modified_date,
+        )
+        if fallback is not None:
+            return fallback, fallback_result
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
             text_chars=doc.text_chars,
-            reason="source established a development but no complete self-contained Reader copy fit the 70-word ceiling",
+            reason=detail,
         )
     final_gate_ok, final_gate_reason = _domain_grounding_gate(
         domain, headline=source_title, source_text=doc.body_text, fact_sentence=fact,
         qualification_tier=str(candidate.get("qualification_tier") or "A"),
     )
     if not final_gate_ok:
+        detail = f"final Reader development failed domain fit: {final_gate_reason}"
+        fallback, fallback_result = _trusted_headline_fallback(
+            candidate, domain=domain, failure_detail=detail,
+            headline_override=source_title, resolved_url=doc.resolved_url,
+            source_published_date=doc.published_date, source_modified_date=doc.modified_date,
+        )
+        if fallback is not None:
+            return fallback, fallback_result
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
             text_chars=doc.text_chars,
-            reason=f"final Reader development failed domain fit: {final_gate_reason}",
+            reason=detail,
         )
     if domain == "market" and not market_event_is_significant(fact, doc.body_text):
+        detail = "Market-level significance gate rejected the final Reader development"
+        fallback, fallback_result = _trusted_headline_fallback(
+            candidate, domain=domain, failure_detail=detail,
+            headline_override=source_title, resolved_url=doc.resolved_url,
+            source_published_date=doc.published_date, source_modified_date=doc.modified_date,
+        )
+        if fallback is not None:
+            return fallback, fallback_result
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
             text_chars=doc.text_chars,
-            reason="Market-level significance gate rejected the final Reader development",
+            reason=detail,
         )
     final_frame_issues = reader_development_event_frame_issues(fact)
     if final_frame_issues:
+        detail = f"final Reader development lacks event framing: {final_frame_issues[0]}"
+        fallback, fallback_result = _trusted_headline_fallback(
+            candidate, domain=domain, failure_detail=detail,
+            headline_override=source_title, resolved_url=doc.resolved_url,
+            source_published_date=doc.published_date, source_modified_date=doc.modified_date,
+        )
+        if fallback is not None:
+            return fallback, fallback_result
         return None, GroundingResult(
             False, resolved_url=doc.resolved_url, extraction_method=doc.extraction_method,
             text_chars=doc.text_chars,
-            reason=f"final Reader development lacks event framing: {final_frame_issues[0]}",
+            reason=detail,
         )
 
     # Current Context uses deterministic language repair only to preserve source

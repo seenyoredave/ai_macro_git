@@ -1,22 +1,23 @@
-"""Hard grounding gate and editorial diagnostics for v10 commentary."""
+"""Minimal publication gate for AI Macro generated commentary.
+
+The gate protects factual grounding and basic structural integrity.  Stylistic
+patterns are recorded as diagnostics so early runs can be evaluated without
+turning every historical model quirk into a publication rule.
+"""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 import re
 from typing import Any, Iterable
 
-from analytics.read_evidence import DOMAIN_ORDER, evidence_fact_index
-from analytics.read_models import (
-    GeneratedDomainRead,
-    GeneratedDomainReadSet,
-    GeneratedEditorialSynthesis,
-    GeneratedMacroRead,
-    SupportedSentence,
-)
+from analytics.read_briefing import briefing_event_ids, briefing_fact_ids
+from analytics.editorial_quality import diagnose_passage
+from analytics.read_evidence import evidence_fact_index
+from analytics.read_models import GeneratedEditorialSynthesis, SupportedPassage
 
-VALIDATOR_VERSION = "3.5.0"
+EDITORIAL_VALIDATOR_VERSION = "5.1.0"
+
 _NUMBER_RE = re.compile(
     r"(?<![A-Za-z0-9])"
     r"[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
@@ -24,57 +25,6 @@ _NUMBER_RE = re.compile(
     r"(?![A-Za-z0-9])",
     re.IGNORECASE,
 )
-_INTERROGATIVE_RE = re.compile(r"(?:^|[.!?]\s+)(?:who|what|when|where|why|how)\b", re.IGNORECASE)
-_NEGATIVE_DIRECTION_RE = re.compile(
-    r"\b(?:fell|fallen|falling|falls?|decline|declined|declining|declines|decrease|decreased|decreasing|decreases|"
-    r"drop|dropped|dropping|drops|contract|contracted|contracting|contracts|contraction|shr(?:ank|unk|inking)|"
-    r"down|lower|below|negative|reduce|reduced|reducing|reduction|lost|loss|weakened?|weakening)\b",
-    re.IGNORECASE,
-)
-
-MAX_ANALYSIS_SENTENCE_WORDS = 32
-MAX_SENTENCE_COMMAS = 3
-MAX_DISPLAYED_QUANTITIES = 3
-MAX_DOMAIN_ANALYSIS_WORDS = 95
-MAX_MACRO_ANALYSIS_WORDS = 250
-MAX_MACRO_SENTENCE_DOMAINS = 2
-MAX_MACRO_SENTENCE_WORDS = 28
-MAX_REPEATED_HEADLINE_ARCHITECTURE = 2
-_STOCK_FILLER_RE = re.compile(
-    r"\b(?:taken together|this underscores|these dynamics|the central test|it is worth noting|going forward)\b",
-    re.IGNORECASE,
-)
-_ROBOTIC_DISCLAIMER_RE = re.compile(
-    r"\b(?:"
-    r"(?:does|do|did|can|could|will|would)\s+not\s+"
-    r"(?:establish|show|prove|isolate|identify|measure|mean|demonstrate|confirm|quantify|support|capture)"
-    r"|cannot\s+(?:be\s+)?(?:read|treated|interpreted|used|taken|quantify|establish|show|prove|isolate|identify|measure)"
-    r"|without\s+(?:establishing|proving|showing|isolating|identifying|measuring)"
-    r"|rather\s+than"
-    r"|remains?\s+(?:unresolved|unclear|unknown|unproven)"
-    r"|not\s+(?:(?:the\s+)?whole\s+market|(?:an?\s+)?energized\s+load|(?:a\s+)?project\s+forecast)"
-    r")\b",
-    re.IGNORECASE,
-)
-_NEGATIVE_IDENTITY_RE = re.compile(r"\b(?:is|are|was|were)\s+not\b", re.IGNORECASE)
-_UNDEFINED_COHORT_RE = re.compile(r"\bcovered\s+(?:issuers?|compan(?:y|ies)|cohorts?)\b", re.IGNORECASE)
-_AMBIGUOUS_PROPORTION_RE = re.compile(
-    r"\b(?:a\s+)?(?:minority|majority)\s+(?:of\s+)?(?:current\s+)?"
-    r"(?:adults?|business(?:es)?|companies|consumers?|employees?|firms?|people|population|"
-    r"users?|use|usage|adoption|employment|participation|workers?|workplaces?)\b",
-    re.IGNORECASE,
-)
-_SOCIAL_PARTISAN_FRAME_RE = re.compile(
-    r"\b(?:race|racial|ethnic(?:ity)?|religion|religious|sexuality|sexual\s+orientation|"
-    r"gender\s+identity|partisan(?:ship)?|democrats?|republicans?|political\s+party|"
-    r"political\s+ideology|ideological\s+identity)\b",
-    re.IGNORECASE,
-)
-_ALLITERATION_IGNORED_WORDS = {
-    "a", "an", "the", "and", "or", "but", "nor", "for", "so", "yet",
-    "as", "at", "by", "in", "of", "on", "per", "to", "up", "via", "with",
-}
-
 _SCALE = {
     "k": Decimal("1000"),
     "thousand": Decimal("1000"),
@@ -85,135 +35,19 @@ _SCALE = {
     "t": Decimal("1000000000000"),
     "trillion": Decimal("1000000000000"),
 }
-
-
-@dataclass(frozen=True, slots=True)
-class ValidationResult:
-    passed: bool
-    errors: tuple[str, ...]
-    checked_claims: int
-    grounded_claims: int
-    failures: tuple[dict[str, Any], ...] = ()
-    version: str = VALIDATOR_VERSION
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "passed": self.passed,
-            "errors": list(self.errors),
-            "checked_claims": self.checked_claims,
-            "grounded_claims": self.grounded_claims,
-            "failures": [dict(item) for item in self.failures],
-            "version": self.version,
-        }
-
-
+_NEGATIVE_DIRECTION_RE = re.compile(
+    r"\b(?:fell|fallen|falling|falls?|decline|declined|declining|declines|decrease|decreased|decreasing|decreases|"
+    r"drop|dropped|dropping|drops|contract|contracted|contracting|contracts|contraction|down|lower|below|negative|"
+    r"reduce|reduced|reducing|reduction|lost|loss|weakened?|weakening)\b",
+    re.IGNORECASE,
+)
+_CONSECUTIVE_REPEAT_RE = re.compile(r"\b([A-Za-z]{2,})\b(?:\s+\1\b){2,}", re.IGNORECASE)
 def _word_count(text: str) -> int:
-    return len(str(text or "").split())
-
-
-def _numeric_occurrence_count(text: str) -> int:
-    """Count reader-visible quantities, treating a bounded range as one item.
-
-    The editorial ceiling is about how many quantities a reader must hold in
-    mind, not how many numeric tokens the regex can find.  A range such as
-    ``18–64`` or ``2024 to 2026`` is one displayed quantity.  Ordinary lists
-    and separate comparisons remain separate quantities.
-    """
-    rendered = str(text or "")
-    matches = list(_NUMBER_RE.finditer(rendered))
-    if not matches:
-        return 0
-
-    count = len(matches)
-    range_separator = re.compile(r"^\s*(?:-|–|—|to|through)\s*$", re.IGNORECASE)
-    for left, right in zip(matches, matches[1:]):
-        if range_separator.fullmatch(rendered[left.end():right.start()]):
-            count -= 1
-    return count
-
-
-def _read_numeric_occurrence_count(sentences: Iterable[SupportedSentence]) -> int:
-    return sum(_numeric_occurrence_count(sentence.text) for sentence in sentences)
-
-
-def _grammatical_comma_count(text: str) -> int:
-    # Thousands separators are numeric formatting, not sentence structure.
-    prose = re.sub(r"(?<=\d),(?=\d{3}(?:\D|$))", "", str(text or ""))
-    return prose.count(",")
-
-
-def _alliterative_run(text: str, *, minimum: int = 3) -> list[str]:
-    """Return the first conspicuous same-initial word run, if present."""
-    run: list[str] = []
-    initial = ""
-    for word in re.findall(r"[A-Za-z]+(?:['’][A-Za-z]+)?", str(text or "")):
-        if word.casefold() in _ALLITERATION_IGNORED_WORDS:
-            continue
-        current = word[0].casefold()
-        if current == initial:
-            run.append(word)
-        else:
-            initial = current
-            run = [word]
-        if len(run) >= minimum:
-            return run
-    return []
-
-
-def _validate_prose_shape(sentence: SupportedSentence, *, label: str) -> tuple[list[str], list[dict[str, Any]]]:
-    errors: list[str] = []
-    failures: list[dict[str, Any]] = []
-    comma_count = _grammatical_comma_count(sentence.text)
-    if comma_count > MAX_SENTENCE_COMMAS:
-        message = f"{label}: sentence uses more than {MAX_SENTENCE_COMMAS} commas"
-        errors.append(message)
-        failures.append(_failure(label, "comma_density", sentence, message, comma_count=comma_count))
-    if ";" in str(sentence.text or ""):
-        message = f"{label}: semicolons are not allowed in Reader commentary"
-        errors.append(message)
-        failures.append(_failure(label, "semicolon", sentence, message))
-    filler = _STOCK_FILLER_RE.search(str(sentence.text or ""))
-    if filler:
-        message = f"{label}: stock analytical filler is not allowed: {filler.group(0)}"
-        errors.append(message)
-        failures.append(_failure(label, "stock_filler", sentence, message, phrase=filler.group(0)))
-    robotic_disclaimer = _ROBOTIC_DISCLAIMER_RE.search(str(sentence.text or ""))
-    if robotic_disclaimer:
-        phrase = robotic_disclaimer.group(0)
-        message = f"{label}: defensive or robotic disclaimer is not allowed: {phrase}"
-        errors.append(message)
-        failures.append(_failure(label, "robotic_disclaimer", sentence, message, phrase=phrase))
-    undefined_cohort = _UNDEFINED_COHORT_RE.search(str(sentence.text or ""))
-    if undefined_cohort:
-        phrase = undefined_cohort.group(0)
-        message = f"{label}: internal cohort label is undefined for the reader: {phrase}"
-        errors.append(message)
-        failures.append(_failure(label, "undefined_cohort", sentence, message, phrase=phrase))
-    ambiguous_proportion = _AMBIGUOUS_PROPORTION_RE.search(str(sentence.text or ""))
-    if ambiguous_proportion:
-        phrase = ambiguous_proportion.group(0)
-        message = f"{label}: minority/majority proportion is ambiguous in neutral Reader prose: {phrase}"
-        errors.append(message)
-        failures.append(_failure(label, "ambiguous_proportion", sentence, message, phrase=phrase))
-    social_partisan_frame = _SOCIAL_PARTISAN_FRAME_RE.search(str(sentence.text or ""))
-    if social_partisan_frame:
-        phrase = social_partisan_frame.group(0)
-        message = f"{label}: social-identity or partisan framing is outside Reader scope: {phrase}"
-        errors.append(message)
-        failures.append(_failure(label, "social_partisan_frame", sentence, message, phrase=phrase))
-    alliterative = _alliterative_run(sentence.text)
-    if alliterative:
-        phrase = " ".join(alliterative)
-        message = f"{label}: conspicuous same-initial word run is not allowed: {phrase}"
-        errors.append(message)
-        failures.append(_failure(label, "alliterative_run", sentence, message, words=alliterative))
-    return errors, failures
+    return len(re.findall(r"\b\w+[\w'’-]*\b", str(text or "")))
 
 
 def _normalized_number(raw: str) -> str | None:
     token = str(raw or "").strip().casefold().replace(",", "")
-    if not token:
-        return None
     match = re.fullmatch(
         r"([-+]?(?:\d+(?:\.\d+)?))(?:\s*(x|times|k|m|b|t|thousand|million|billion|trillion))?",
         token,
@@ -237,51 +71,20 @@ def _normalized_number(raw: str) -> str | None:
 
 
 def _numeric_tokens(text: str) -> dict[str, str]:
-    """Return normalized numeric values keyed by the rendered token.
-
-    Normalization treats formatting-equivalent forms such as ``300k`` and
-    ``300,000`` as the same number while keeping materially different values
-    distinct.  Dates and thresholds embedded in fact labels/context are still
-    factual content and are therefore eligible only when that fact_id is cited.
-    """
-    tokens: dict[str, str] = {}
+    output: dict[str, str] = {}
     for match in _NUMBER_RE.finditer(str(text or "")):
         rendered = match.group(0).strip().lstrip("+")
-        reference = _normalized_number(rendered)
-        if reference is not None:
-            tokens[rendered] = reference
-    return tokens
-
-
-def _allowed_numeric_tokens(facts: Iterable[dict[str, Any]]) -> set[str]:
-    """Return numbers the model was actually allowed to see.
-
-    Raw deterministic ``value`` fields intentionally do not participate in
-    grounding.  The paid prompt exposes only label/display/context, so accepting
-    a hidden raw ratio would create a validation backdoor around the model-facing
-    evidence contract.
-    """
-    allowed: set[str] = set()
-    for fact in facts:
-        for field in ("label", "display", "context"):
-            allowed.update(_numeric_tokens(str(fact.get(field) or "")).values())
-    return allowed
+        normalized = _normalized_number(rendered)
+        if normalized is not None:
+            output[rendered] = normalized
+    return output
 
 
 def _negative_direction_near_number(text: str, rendered: str) -> bool:
-    """Return True when prose encodes the negative sign linguistically.
-
-    A cited fact displayed as ``-8.4%`` may naturally be written as ``fell
-    8.4%``.  That is not a numeric hallucination: the verb carries the sign.
-    Keep the allowance deliberately local to the numeric occurrence so a
-    negative word elsewhere in a compound sentence cannot license an unrelated
-    positive number.
-    """
     source = str(text or "")
     for match in re.finditer(re.escape(rendered), source, flags=re.IGNORECASE):
         left = source[max(0, match.start() - 72):match.start()]
         right = source[match.end():min(len(source), match.end() + 24)]
-        # Do not let direction leak across sentence/major-clause boundaries.
         left = re.split(r"[.!?;]", left)[-1]
         right = re.split(r"[.!?;]", right)[0]
         if _NEGATIVE_DIRECTION_RE.search(left) or _NEGATIVE_DIRECTION_RE.search(right):
@@ -289,519 +92,198 @@ def _negative_direction_near_number(text: str, rendered: str) -> bool:
     return False
 
 
-def _numeric_token_supported(*, text: str, rendered: str, normalized: str, allowed_numbers: set[str]) -> bool:
-    if normalized in allowed_numbers:
+def _number_supported(text: str, rendered: str, normalized: str, allowed: set[str]) -> bool:
+    if normalized in allowed:
         return True
     if normalized.startswith("-"):
         return False
-    negative_equivalent = f"-{normalized}"
-    return negative_equivalent in allowed_numbers and _negative_direction_near_number(text, rendered)
+    return f"-{normalized}" in allowed and _negative_direction_near_number(text, rendered)
 
 
-def _failure(label: str, reason: str, sentence: SupportedSentence | None, message: str, **details: Any) -> dict[str, Any]:
-    payload: dict[str, Any] = {
-        "label": label,
-        "reason": reason,
-        "message": message,
-    }
-    if sentence is not None:
-        payload["sentence"] = sentence.text
-        payload["fact_ids"] = [str(item) for item in sentence.fact_ids]
-    payload.update(details)
-    return payload
+def _allowed_numbers_from_fact(fact: dict[str, Any]) -> set[str]:
+    allowed: set[str] = set()
+    for field in ("label", "display", "context"):
+        allowed.update(_numeric_tokens(str(fact.get(field) or "")).values())
+    return allowed
 
 
-def _validate_sentence(
-    sentence: SupportedSentence,
-    *,
-    fact_index: dict[str, dict[str, Any]],
-    allowed_prefixes: tuple[str, ...],
-    label: str,
-) -> tuple[list[str], list[dict[str, Any]], bool]:
-    errors: list[str] = []
-    failures: list[dict[str, Any]] = []
-    fact_ids = [str(item) for item in sentence.fact_ids]
-    unknown = [fact_id for fact_id in fact_ids if fact_id not in fact_index]
-    if unknown:
-        message = f"{label}: unknown fact_ids: {', '.join(unknown)}"
-        errors.append(message)
-        failures.append(_failure(label, "unknown_fact_ids", sentence, message, unknown_fact_ids=unknown))
-    wrong_scope = [fact_id for fact_id in fact_ids if not fact_id.startswith(allowed_prefixes)]
-    if wrong_scope:
-        message = f"{label}: out-of-scope fact_ids: {', '.join(wrong_scope)}"
-        errors.append(message)
-        failures.append(_failure(label, "out_of_scope_fact_ids", sentence, message, out_of_scope_fact_ids=wrong_scope))
-    prose_errors, prose_failures = _validate_prose_shape(sentence, label=label)
-    errors.extend(prose_errors)
-    failures.extend(prose_failures)
-    known_facts = [fact_index[fact_id] for fact_id in fact_ids if fact_id in fact_index]
-    used_numbers = _numeric_tokens(sentence.text)
-    allowed_numbers = _allowed_numeric_tokens(known_facts)
-    unsupported_rendered = [
-        rendered
-        for rendered, normalized in used_numbers.items()
-        if not _numeric_token_supported(
-            text=sentence.text,
-            rendered=rendered,
-            normalized=normalized,
-            allowed_numbers=allowed_numbers,
-        )
-    ]
-    if unsupported_rendered:
-        message = f"{label}: unsupported numeric tokens: {', '.join(unsupported_rendered)}"
-        errors.append(message)
-        failures.append(
-            _failure(
-                label,
-                "unsupported_numeric_tokens",
-                sentence,
-                message,
-                unsupported_numeric_tokens=unsupported_rendered,
-                cited_facts=[
-                    {
-                        "id": str(fact.get("id") or ""),
-                        "label": str(fact.get("label") or ""),
-                        "display": str(fact.get("display") or ""),
-                        "context": str(fact.get("context") or ""),
-                    }
-                    for fact in known_facts
-                ],
-            )
-        )
-    if "?" in sentence.text or _INTERROGATIVE_RE.search(sentence.text.strip()):
-        message = f"{label}: interrogative phrasing is not allowed"
-        errors.append(message)
-        failures.append(_failure(label, "interrogative", sentence, message))
-    return errors, failures, not errors
-
-
-def _validate_domain_read(read: GeneratedDomainRead, fact_index: dict[str, dict[str, Any]]) -> tuple[list[str], list[dict[str, Any]], int, int]:
-    errors: list[str] = []
-    failures: list[dict[str, Any]] = []
-    checked = grounded = 0
-    prefix = (f"{read.domain}.",)
-    if _word_count(read.headline.text) > 12:
-        message = f"{read.domain}: headline exceeds 12 words"
-        errors.append(message)
-        failures.append(_failure(f"{read.domain}.headline", "word_limit", read.headline, message))
-    analysis_words = _word_count(" ".join(item.text for item in read.analysis))
-    if analysis_words > MAX_DOMAIN_ANALYSIS_WORDS:
-        message = f"{read.domain}: analysis exceeds {MAX_DOMAIN_ANALYSIS_WORDS} words"
-        errors.append(message)
-        failures.append(_failure(f"{read.domain}.analysis", "word_limit", None, message, word_count=analysis_words))
-    numeric_occurrences = _read_numeric_occurrence_count(read.analysis)
-    if numeric_occurrences > MAX_DISPLAYED_QUANTITIES:
-        message = f"{read.domain}: analysis uses more than {MAX_DISPLAYED_QUANTITIES} displayed quantities"
-        errors.append(message)
-        failures.append(_failure(f"{read.domain}.analysis", "numeric_density", None, message, numeric_occurrences=numeric_occurrences))
-    for index, sentence in enumerate(read.analysis):
-        words = _word_count(sentence.text)
-        if words > MAX_ANALYSIS_SENTENCE_WORDS:
-            message = f"{read.domain}.analysis[{index}]: sentence exceeds {MAX_ANALYSIS_SENTENCE_WORDS} words"
-            errors.append(message)
-            failures.append(_failure(f"{read.domain}.analysis[{index}]", "sentence_length", sentence, message, word_count=words))
-    for field, sentence in [("headline", read.headline), *[(f"analysis[{i}]", item) for i, item in enumerate(read.analysis)]]:
-        checked += 1
-        sentence_errors, sentence_failures, ok = _validate_sentence(
-            sentence,
-            fact_index=fact_index,
-            allowed_prefixes=prefix,
-            label=f"{read.domain}.{field}",
-        )
-        errors.extend(sentence_errors)
-        failures.extend(sentence_failures)
-        grounded += int(ok)
-    return errors, failures, checked, grounded
-
-
-def validate_domain_read_set(read_set: GeneratedDomainReadSet, packets: dict[str, dict]) -> ValidationResult:
-    fact_index = evidence_fact_index(packets)
-    errors: list[str] = []
-    failures: list[dict[str, Any]] = []
-    checked = grounded = 0
-    domains = [read.domain for read in read_set.reads]
-    expected = set(DOMAIN_ORDER)
-    found = set(domains)
-    if found != expected:
-        missing = [domain for domain in DOMAIN_ORDER if domain not in found]
-        unexpected = [domain for domain in domains if domain not in expected]
-        message = f"domain membership mismatch: missing={missing}, unexpected={unexpected}"
-        errors.append(message)
-        failures.append(_failure("domain_set", "domain_membership", None, message, missing=missing, unexpected=unexpected))
-    if len(set(domains)) != len(domains):
-        message = "domain Read set contains duplicate domains"
-        errors.append(message)
-        failures.append(_failure("domain_set", "duplicate_domains", None, message, domains=domains))
-    negative_identity_domains = [read.domain for read in read_set.reads if _NEGATIVE_IDENTITY_RE.search(read.headline.text)]
-    if len(negative_identity_domains) > MAX_REPEATED_HEADLINE_ARCHITECTURE:
-        message = "domain Read set repeats the 'is/are not' headline architecture more than twice"
-        errors.append(message)
-        failures.append(_failure(
-            "domain_set",
-            "repeated_headline_architecture",
-            None,
-            message,
-            domains=negative_identity_domains,
-        ))
-    for read in read_set.reads:
-        read_errors, read_failures, read_checked, read_grounded = _validate_domain_read(read, fact_index)
-        errors.extend(read_errors)
-        failures.extend(read_failures)
-        checked += read_checked
-        grounded += read_grounded
-    return ValidationResult(not errors, tuple(errors), checked, grounded, tuple(failures))
-
-
-_MACRO_LIFECYCLE_STAGE = {
-    "market": "capital_markets",
-    "finance": "capital_markets",
-    "compute": "physical_buildout",
-    "data_center": "physical_buildout",
-    "connectivity": "physical_buildout",
-    "power": "physical_buildout",
-    "grid_storage": "physical_buildout",
-    "water": "physical_buildout",
-    "adoption": "adoption",
-    "workforce": "outcomes",
-    "economic_impact": "outcomes",
-}
-
-
-def _sentence_domains(sentence: SupportedSentence) -> set[str]:
-    domains: set[str] = set()
-    for fact_id in sentence.fact_ids:
-        prefix = str(fact_id).split(".", 1)[0]
-        if prefix:
-            domains.add(prefix)
-    return domains
-
-
-def _normalized_words(text: str) -> list[str]:
-    return re.findall(r"[a-z0-9]+", str(text or "").casefold())
-
-
-def _domain_language_reuse(text: str, domain_texts: dict[str, list[str]] | None) -> tuple[str, str] | None:
-    """Detect verbatim/near-verbatim reuse of already-published domain prose.
-
-    Macro synthesis is intentionally independent.  Reject exact reuse and long
-    copied word runs while allowing ordinary shared economic vocabulary.
-    """
-    if not domain_texts:
-        return None
-    macro_words = _normalized_words(text)
-    if not macro_words:
-        return None
-    macro_norm = " ".join(macro_words)
-    for domain, texts in domain_texts.items():
-        for source in texts:
-            source_words = _normalized_words(source)
-            if not source_words:
-                continue
-            source_norm = " ".join(source_words)
-            if macro_norm == source_norm:
-                return domain, source
-            if len(macro_words) >= 8 and len(source_words) >= 8:
-                source_joined = " " + source_norm + " "
-                for start in range(0, len(macro_words) - 7):
-                    run = " ".join(macro_words[start:start + 8])
-                    if f" {run} " in source_joined:
-                        return domain, source
-    return None
-
-
-def validate_macro_read(
-    read: GeneratedMacroRead,
-    packets: dict[str, dict],
-    *,
-    domain_texts: dict[str, list[str]] | None = None,
-) -> ValidationResult:
-    fact_index = evidence_fact_index(packets)
-    errors: list[str] = []
-    failures: list[dict[str, Any]] = []
-    checked = grounded = 0
-    selected = list(read.selected_domains)
-    if not 3 <= len(selected) <= 5 or len(selected) != len(set(selected)):
-        message = "macro selected_domains must contain 3-5 distinct domains"
-        errors.append(message)
-        failures.append(_failure("macro.selected_domains", "domain_selection", None, message, selected_domains=selected))
-
-    lifecycle_stages = {_MACRO_LIFECYCLE_STAGE.get(domain, "") for domain in selected}
-    lifecycle_stages.discard("")
-    if len(lifecycle_stages) < 3:
-        message = "macro selected_domains must span at least three lifecycle stages"
-        errors.append(message)
-        failures.append(
-            _failure(
-                "macro.selected_domains",
-                "lifecycle_coverage",
-                None,
-                message,
-                selected_domains=selected,
-                lifecycle_stages=sorted(lifecycle_stages),
-            )
-        )
-
-    if _word_count(read.headline.text) > 16:
-        message = "macro: headline exceeds 16 words"
-        errors.append(message)
-        failures.append(_failure("macro.headline", "word_limit", read.headline, message))
-    macro_words = _word_count(" ".join(item.text for item in read.analysis))
-    if macro_words > MAX_MACRO_ANALYSIS_WORDS:
-        message = f"macro: analysis exceeds {MAX_MACRO_ANALYSIS_WORDS} words"
-        errors.append(message)
-        failures.append(_failure("macro.analysis", "word_limit", None, message, word_count=macro_words))
-    numeric_occurrences = _read_numeric_occurrence_count(read.analysis)
-    if numeric_occurrences > 5:
-        message = "macro: analysis uses more than 5 displayed quantities"
-        errors.append(message)
-        failures.append(_failure("macro.analysis", "numeric_density", None, message, numeric_occurrences=numeric_occurrences))
-
-    all_claims = [read.headline, *read.analysis]
-    cited_domains: set[str] = set()
-    for sentence in all_claims:
-        cited_domains.update(_sentence_domains(sentence))
-    missing_selected = [domain for domain in selected if domain not in cited_domains]
-    if missing_selected:
-        message = f"macro selected domains without supporting claims: {', '.join(missing_selected)}"
-        errors.append(message)
-        failures.append(
-            _failure(
-                "macro.selected_domains",
-                "unused_selected_domains",
-                None,
-                message,
-                selected_domains=selected,
-                unused_domains=missing_selected,
-            )
-        )
-
-    for index, sentence in enumerate(read.analysis):
-        words = _word_count(sentence.text)
-        if words > MAX_MACRO_SENTENCE_WORDS:
-            message = f"macro.analysis[{index}]: sentence exceeds {MAX_MACRO_SENTENCE_WORDS} words"
-            errors.append(message)
-            failures.append(_failure(f"macro.analysis[{index}]", "sentence_length", sentence, message, word_count=words))
-        sentence_domains = _sentence_domains(sentence)
-        if len(sentence_domains) > MAX_MACRO_SENTENCE_DOMAINS:
-            message = f"macro.analysis[{index}]: sentence spans more than {MAX_MACRO_SENTENCE_DOMAINS} domains"
-            errors.append(message)
-            failures.append(_failure(
-                f"macro.analysis[{index}]",
-                "sentence_scope",
-                sentence,
-                message,
-                domains=sorted(sentence_domains),
-            ))
-    cross_domain_sentences = sum(1 for sentence in read.analysis if len(_sentence_domains(sentence)) >= 2)
-    if cross_domain_sentences < 3:
-        message = "macro analysis must contain at least three cross-domain synthesis sentences"
-        errors.append(message)
-        failures.append(
-            _failure(
-                "macro.analysis",
-                "insufficient_cross_domain_synthesis",
-                None,
-                message,
-                cross_domain_sentences=cross_domain_sentences,
-            )
-        )
-
-    prefixes = tuple(f"{domain}." for domain in selected)
-    for field, sentence in [("headline", read.headline), *[(f"analysis[{i}]", item) for i, item in enumerate(read.analysis)]]:
-        checked += 1
-        sentence_errors, sentence_failures, ok = _validate_sentence(
-            sentence,
-            fact_index=fact_index,
-            allowed_prefixes=prefixes,
-            label=f"macro.{field}",
-        )
-        reuse = _domain_language_reuse(sentence.text, domain_texts)
-        if reuse:
-            source_domain, source_text = reuse
-            message = f"macro.{field}: reuses domain Read language from {source_domain}"
-            sentence_errors.append(message)
-            sentence_failures.append(
-                _failure(
-                    f"macro.{field}",
-                    "domain_language_reuse",
-                    sentence,
-                    message,
-                    source_domain=source_domain,
-                    source_text=source_text,
-                )
-            )
-            ok = False
-        errors.extend(sentence_errors)
-        failures.extend(sentence_failures)
-        grounded += int(ok)
-    return ValidationResult(not errors, tuple(errors), checked, grounded, tuple(failures))
-
-
-EDITORIAL_VALIDATOR_VERSION = "4.1.0"
-_HARD_EDITORIAL_FAILURES = {
-    "contract_decision",
-    "contract_duplicate_domains",
-    "contract_missing_required_domains",
-    "contract_unavailable_domain",
-    "contract_update_membership",
-    "domain_selection",
-    "lifecycle_coverage",
-    "out_of_scope_fact_ids",
-    "robotic_disclaimer",
-    "unknown_fact_ids",
-    "unsupported_numeric_tokens",
-    "unsupplied_fact_ids",
-    "unused_selected_domains",
-}
-
-
-def _contract_failure(reason: str, message: str, **details: Any) -> dict[str, Any]:
+def _event_index(briefing: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {
-        "label": "editorial_synthesis",
-        "reason": reason,
-        "message": message,
-        **details,
+        str(event.get("event_id") or ""): dict(event)
+        for event in briefing.get("recent_developments", []) or []
+        if isinstance(event, dict) and event.get("event_id")
     }
+
+
+def _allowed_numbers_from_event(event: dict[str, Any]) -> set[str]:
+    allowed: set[str] = set()
+    for field in ("date", "development"):
+        allowed.update(_numeric_tokens(str(event.get(field) or "")).values())
+    return allowed
+
+
+def _failure(label: str, reason: str, message: str, **details: Any) -> dict[str, Any]:
+    return {"label": label, "reason": reason, "message": message, **details}
+
+
+def _validate_passage(
+    passage: SupportedPassage,
+    *,
+    label: str,
+    fact_index: dict[str, dict[str, Any]],
+    event_index: dict[str, dict[str, Any]],
+    supplied_fact_ids: set[str],
+    supplied_event_ids: set[str],
+    domain: str | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    hard: list[dict[str, Any]] = []
+    diagnostics = [issue.to_dict() for issue in diagnose_passage(passage, scope=label)]
+    fact_ids = [str(value) for value in passage.fact_ids]
+    event_ids = [str(value) for value in passage.event_ids]
+
+    if not fact_ids and not event_ids:
+        hard.append(_failure(label, "missing_support", "Passage contains no supporting fact_ids or event_ids."))
+
+    unknown_facts = [fact_id for fact_id in fact_ids if fact_id not in supplied_fact_ids or fact_id not in fact_index]
+    if unknown_facts:
+        hard.append(_failure(label, "unknown_fact_ids", "Passage cites facts that were not supplied.", fact_ids=unknown_facts))
+    unknown_events = [event_id for event_id in event_ids if event_id not in supplied_event_ids or event_id not in event_index]
+    if unknown_events:
+        hard.append(_failure(label, "unknown_event_ids", "Passage cites developments that were not supplied.", event_ids=unknown_events))
+
+    if domain:
+        wrong_facts = [fact_id for fact_id in fact_ids if not fact_id.startswith(f"{domain}.")]
+        if wrong_facts:
+            hard.append(_failure(label, "out_of_scope_fact_ids", "Domain Read cites facts from another domain.", fact_ids=wrong_facts))
+        wrong_events = [
+            event_id for event_id in event_ids
+            if str(event_index.get(event_id, {}).get("domain") or "") not in {"", domain}
+        ]
+        if wrong_events:
+            hard.append(_failure(label, "out_of_scope_event_ids", "Domain Read cites a development assigned to another domain.", event_ids=wrong_events))
+
+    allowed_numbers: set[str] = set()
+    for fact_id in fact_ids:
+        fact = fact_index.get(fact_id)
+        if fact:
+            allowed_numbers.update(_allowed_numbers_from_fact(fact))
+    for event_id in event_ids:
+        event = event_index.get(event_id)
+        if event:
+            allowed_numbers.update(_allowed_numbers_from_event(event))
+
+    unsupported = [
+        rendered
+        for rendered, normalized in _numeric_tokens(passage.text).items()
+        if not _number_supported(passage.text, rendered, normalized, allowed_numbers)
+    ]
+    if unsupported:
+        hard.append(_failure(
+            label,
+            "unsupported_numeric_tokens",
+            "Passage contains numbers not present in its cited support.",
+            numeric_tokens=unsupported,
+        ))
+
+    if _CONSECUTIVE_REPEAT_RE.search(passage.text):
+        hard.append(_failure(label, "obviously_broken_prose", "Passage repeats the same word three or more times consecutively."))
+
+    words = _word_count(passage.text)
+    if words > 450:
+        hard.append(_failure(label, "gross_length", f"Passage contains {words} words; output is clearly outside the product format."))
+    return hard, diagnostics
+
+
+def _iter_macro_passages(synthesis: GeneratedEditorialSynthesis) -> Iterable[tuple[str, SupportedPassage]]:
+    yield "macro.headline", synthesis.macro_read.headline
+    for index, paragraph in enumerate(synthesis.macro_read.paragraphs):
+        yield f"macro.paragraphs[{index}]", paragraph
 
 
 def validate_editorial_synthesis(
     synthesis: GeneratedEditorialSynthesis,
-    packets: dict[str, dict],
+    packets: dict[str, dict[str, Any]],
     *,
-    required_update_domains: Iterable[str] = (),
-    candidate_update_domains: Iterable[str] = (),
-    allowed_fact_ids: Iterable[str] = (),
+    briefing: dict[str, Any],
+    candidate_domains: Iterable[str],
     bootstrap: bool = False,
 ) -> dict[str, Any]:
-    """Apply a hard factual/contract gate and retain style checks as diagnostics."""
-    required = [str(domain) for domain in required_update_domains]
-    candidates = set(str(domain) for domain in candidate_update_domains) | set(required)
-    supplied = {str(fact_id) for fact_id in allowed_fact_ids}
-    failures: list[dict[str, Any]] = []
-    domain_reports: dict[str, Any] = {}
-    macro_report: dict[str, Any] = {}
-    checked = grounded = 0
+    """Return a low-bar factual/sanity publication decision for one candidate."""
+    candidates = [str(domain) for domain in candidate_domains]
+    model_domains = [str(read.domain) for read in synthesis.domain_reads]
+    hard: list[dict[str, Any]] = []
+    diagnostics: list[dict[str, Any]] = []
 
-    update_domains = [str(domain) for domain in synthesis.updated_domains]
-    model_domains = [read.domain for read in synthesis.domain_reads]
-    if synthesis.decision == "retain_prior":
-        if bootstrap:
-            failures.append(_contract_failure(
-                "contract_decision",
-                "bootstrap generation cannot retain a missing prior publication",
-            ))
-        if required:
-            failures.append(_contract_failure(
-                "contract_missing_required_domains",
-                "retain_prior cannot preserve domain prose that cites changed facts",
-                missing_domains=required,
-            ))
-        if update_domains or model_domains or synthesis.macro_read is not None:
-            failures.append(_contract_failure(
-                "contract_decision",
-                "retain_prior must not contain domain or Macro prose",
+    if len(model_domains) != len(set(model_domains)):
+        hard.append(_failure("editorial_synthesis", "duplicate_domains", "Domain Reads contain duplicate domains."))
+    if bootstrap:
+        if model_domains != candidates:
+            hard.append(_failure(
+                "editorial_synthesis",
+                "bootstrap_domain_mismatch",
+                "The first publication must return every candidate domain in order.",
+                candidate_domains=candidates,
+                returned_domains=model_domains,
             ))
     else:
-        if synthesis.macro_read is None or not model_domains:
-            failures.append(_contract_failure(
-                "contract_decision",
-                "publish requires one Macro Read and at least one domain Read",
-            ))
-        if len(model_domains) != len(set(model_domains)) or len(update_domains) != len(set(update_domains)):
-            failures.append(_contract_failure(
-                "contract_duplicate_domains",
-                "updated domains must be unique",
-                updated_domains=update_domains,
-                model_domains=model_domains,
-            ))
-        if update_domains != model_domains:
-            failures.append(_contract_failure(
-                "contract_update_membership",
-                "updated_domains must match domain_reads in the same order",
-                updated_domains=update_domains,
-                model_domains=model_domains,
-            ))
-        missing = [domain for domain in required if domain not in model_domains]
-        if missing:
-            failures.append(_contract_failure(
-                "contract_missing_required_domains",
-                "publish omitted required domain replacements",
-                missing_domains=missing,
-            ))
-        unavailable = [
-            domain for domain in model_domains
-            if domain not in candidates and not bootstrap
-        ]
-        if unavailable:
-            failures.append(_contract_failure(
-                "contract_unavailable_domain",
-                "publish returned domains outside the current change set",
-                unavailable_domains=unavailable,
+        unexpected = [domain for domain in model_domains if domain not in candidates]
+        if unexpected:
+            hard.append(_failure(
+                "editorial_synthesis",
+                "unexpected_domains",
+                "Domain Reads may only replace sections identified as update candidates.",
+                candidate_domains=candidates,
+                returned_domains=model_domains,
+                unexpected_domains=unexpected,
             ))
 
-        for read in synthesis.domain_reads:
-            errors, read_failures, read_checked, read_grounded = _validate_domain_read(
-                read,
-                evidence_fact_index(packets),
+    fact_index = evidence_fact_index(packets)
+    events = _event_index(briefing)
+    supplied_facts = briefing_fact_ids(briefing)
+    supplied_events = briefing_event_ids(briefing)
+
+    checked = 0
+    for read in synthesis.domain_reads:
+        for field, passage in (("headline", read.headline), ("body", read.body)):
+            checked += 1
+            passage_hard, passage_diagnostics = _validate_passage(
+                passage,
+                label=f"{read.domain}.{field}",
+                fact_index=fact_index,
+                event_index=events,
+                supplied_fact_ids=supplied_facts,
+                supplied_event_ids=supplied_events,
+                domain=read.domain,
             )
-            domain_reports[read.domain] = {
-                "passed": not errors,
-                "errors": errors,
-                "failures": read_failures,
-                "checked_claims": read_checked,
-                "grounded_claims": read_grounded,
-            }
-            failures.extend(read_failures)
-            checked += read_checked
-            grounded += read_grounded
+            hard.extend(passage_hard)
+            diagnostics.extend(passage_diagnostics)
 
-        if synthesis.macro_read is not None:
-            macro_validation = validate_macro_read(
-                synthesis.macro_read,
-                packets,
-                domain_texts={
-                    read.domain: [read.headline.text, *[sentence.text for sentence in read.analysis]]
-                    for read in synthesis.domain_reads
-                },
-            )
-            macro_report = macro_validation.to_dict()
-            failures.extend(macro_validation.failures)
-            checked += macro_validation.checked_claims
-            grounded += macro_validation.grounded_claims
+    macro_words = 0
+    for label, passage in _iter_macro_passages(synthesis):
+        checked += 1
+        macro_words += _word_count(passage.text)
+        passage_hard, passage_diagnostics = _validate_passage(
+            passage,
+            label=label,
+            fact_index=fact_index,
+            event_index=events,
+            supplied_fact_ids=supplied_facts,
+            supplied_event_ids=supplied_events,
+        )
+        hard.extend(passage_hard)
+        diagnostics.extend(passage_diagnostics)
+    if macro_words > 1000:
+        hard.append(_failure("macro", "gross_length", f"Macro Read contains {macro_words} words; output is clearly outside the product format."))
 
-        if supplied:
-            sentences = [
-                sentence
-                for read in synthesis.domain_reads
-                for sentence in [read.headline, *read.analysis]
-            ]
-            if synthesis.macro_read is not None:
-                sentences.extend([synthesis.macro_read.headline, *synthesis.macro_read.analysis])
-            outside = sorted({
-                str(fact_id)
-                for sentence in sentences
-                for fact_id in sentence.fact_ids
-                if str(fact_id) not in supplied
-            })
-            if outside:
-                failures.append(_contract_failure(
-                    "unsupplied_fact_ids",
-                    "response cited facts that were not present in the signal capsules",
-                    unsupplied_fact_ids=outside,
-                ))
-
-    hard_failures = [item for item in failures if str(item.get("reason") or "") in _HARD_EDITORIAL_FAILURES]
-    diagnostics = [item for item in failures if item not in hard_failures]
     return {
-        "passed": not hard_failures,
-        "decision": synthesis.decision,
-        "hard_errors": [str(item.get("message") or item.get("reason") or "") for item in hard_failures],
-        "hard_failures": hard_failures,
+        "passed": not hard,
+        "hard_errors": [str(item.get("message") or item.get("reason") or "") for item in hard],
+        "hard_failures": hard,
         "diagnostics": diagnostics,
-        "domain": domain_reports,
-        "macro": macro_report,
-        "checked_claims": checked,
-        "grounded_claims": grounded,
-        "publication_policy": "hard_grounding_gate_soft_editorial_diagnostics",
+        "checked_passages": checked,
+        "publication_policy": "minimal_grounding_and_sanity_gate",
         "validator_version": EDITORIAL_VALIDATOR_VERSION,
     }
+
+
+__all__ = ["EDITORIAL_VALIDATOR_VERSION", "validate_editorial_synthesis"]

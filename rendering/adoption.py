@@ -132,7 +132,7 @@ def _render_business_integration(adoption_data):
     if not isinstance(functions, pd.DataFrame) or functions.empty:
         report = _depth_report(adoption_data)
         if str(report.get("source_mode") or "") == "unavailable":
-            render_section("Business integration", "How businesses are deploying AI across functions and changing their organizations.")
+            render_section("Business integration", "Business use by function and reported organizational changes.")
             st.info("Detailed Census business-integration measures are unavailable in this release.")
         return
 
@@ -199,7 +199,7 @@ def _render_worker_integration(adoption_data):
     reference_end = fmt_date(depth.get("reference_end"))
     render_section(
         "Worker use",
-        f"Employee AI use, Generative AI task mix, and reported labor interaction · reference period through {reference_end}.",
+        f"Employee AI use, GenAI task categories, and reported changes in work tasks · through {reference_end}.",
     )
     worker_metrics = []
     if pd.notna(worker_ai):
@@ -242,7 +242,7 @@ def _render_paid_adoption(commercialization_data):
     gemini_enterprise = metric_value(commercialization_data, "Alphabet", "Paid seats")
     if all(pd.isna(value) for value in [chatgpt_subscribers, subscriber_share, openai_business, gemini_enterprise]):
         return
-    render_section("Paid use", "Provider disclosures on paid consumer and enterprise use.")
+    render_section("Paid adoption", "Provider disclosures on paid consumer subscriptions, business users, and enterprise seats.")
     render_summary_row([
         ("ChatGPT subscribers", fmt_number(chatgpt_subscribers, 0, suffix="M+"), "consumer subscriptions"),
         ("Subscriber / weekly-user ratio", fmt_number(subscriber_share, 1, suffix="%"), "rough floor-to-floor ratio"),
@@ -267,18 +267,18 @@ def _render_adoption_ledger(adoption_data, commercialization_data):
 def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=None):
     render_tab_header(
         "Adoption",
-        "Personal use, business adoption, workflow integration, worker tasks, and paid use.",
+        "Personal use, business use, workplace deployment, employee tasks, and paid adoption.",
         "RPS / U.S. Census BTOS / primary provider disclosures",
     )
     _render_floating_terms("adoption")
     render_domain_read(tab_read, label="Read", domain="adoption")
 
-    render_section("Current use", "Current personal and business use.", first=True, compact=True)
+    render_section("Current adoption", "Reported personal and business AI use.", first=True, compact=True)
     societal = _societal_metrics(adoption_data)
     business = _business_metrics(adoption_data)
     render_summary_row([societal[0], societal[2], business[0], business[2]], key_prefix="adoption-diffusion-state")
 
-    render_section("Use over time", "Survey estimates of personal and business use over time.")
+    render_section("Adoption over time", "Survey estimates for personal and business AI use.")
     with st.container(key="full-width-layout-adoption-trajectory"):
         with st.container(border=True, key="adoption-panel-trajectory"):
             view = st.radio("Use view", ["People", "Business"], horizontal=True, label_visibility="collapsed", key="adoption-trajectory-view")

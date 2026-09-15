@@ -141,7 +141,7 @@ def _project_detail(projects: pd.DataFrame) -> pd.DataFrame:
 def _render_critical_supply_chain(infrastructure_data):
     compute = _compute_data(infrastructure_data)
     critical = compute.get("critical_supply_chain", {}) or {}
-    render_section("Critical supply chain", "U.S. production and project evidence for logic chips, HBM, advanced packaging, and optical interconnect.")
+    render_section("AI hardware supply chain", "U.S. production and projects in logic chips, HBM, advanced packaging, and optical interconnect.")
     with st.container(key="full-width-layout-compute-critical-supply-chain"):
         with st.container(border=True, key="compute-panel-critical-supply-chain"):
             render_panel_heading("Critical AI supply-chain layers", "Logic, HBM, packaging, and optical interconnect")
@@ -178,7 +178,7 @@ def _render_serving_economics(commercialization_data):
     alphabet_efficiency = metric_value(commercialization_data, "Alphabet", "Serving unit-cost reduction")
     if all(pd.isna(value) for value in [openai_compute, openai_arr, microsoft_arr, alphabet_efficiency]):
         return
-    render_section("Cost of serving AI demand", "Provider revenue and the reported cost of serving AI demand.")
+    render_section("AI revenue and service costs", "Provider revenue and reported costs associated with serving AI demand.")
     render_summary_row([
         ("Available compute", fmt_number(openai_compute, 1, suffix=" GW"), "OpenAI · company reported"),
         ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "2025 disclosed floor"),
@@ -203,7 +203,7 @@ def render_compute_tab(infrastructure_data, commercialization_data=None, tab_rea
     m3_history = compute.get("m3_history")
     if isinstance(m3_history, pd.DataFrame) and not m3_history.empty:
         sources.insert(1, "Census")
-    render_tab_header("Compute", "U.S. compute manufacturing, factory capacity, demand, supply-chain projects, and AI service costs.", " / ".join(sources))
+    render_tab_header("Compute", "U.S. compute manufacturing, factory capacity, orders, investment, projects, and AI service costs.", " / ".join(sources))
     _render_floating_terms("compute")
     render_domain_read(tab_read, label="Read", domain="compute")
     _render_manufacturing_output(infrastructure_data)

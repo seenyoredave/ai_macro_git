@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import streamlit as st
 
 from analytics.dashboard_context import DashboardContext
 from analytics.domain_state import with_domain_states
-from analytics.language_layer import editorial_constitution_identity
+from analytics.read_briefing import BRIEFING_VERSION
 from analytics.read_evidence import EVIDENCE_ARCHITECTURE_VERSION
 from analytics.read_service import (
     PUBLISHABLE_STATUSES,
@@ -14,7 +16,7 @@ from analytics.read_service import (
     generate_validated_read_artifact,
     reapply_last_read,
 )
-from analytics.read_store import load_evaluated_state, load_read_artifact
+from analytics.read_store import load_read_artifact
 from automation.config import AUTOMATION_START_LOCAL, AUTOMATION_TIMEZONE
 from automation.status import load_automation_status
 from config.openai_config import load_openai_config
@@ -140,8 +142,6 @@ def _current_context_workspace() -> None:
         st.error("Latest Current Context refresh failed before publication; prior retained context remains active.")
         if report.get("error"):
             st.caption(f"Refresh error: `{report.get('error')}`")
-    elif refresh_status == "coverage_floor_not_met_retained_fallback":
-        st.warning("Latest Current Context refresh did not reach the six-domain coverage floor; prior retained context remains active.")
     elif status.refresh_required:
         st.warning("Current Context requires another refresh before the retained snapshot is considered current.")
     else:
@@ -155,10 +155,34 @@ def _current_context_workspace() -> None:
 
     st.markdown("**Pipeline**")
     st.write(f"Discovered `{status.discovered:,}`")
-    if status.metadata_qualified:
-        st.write(f"Metadata qualified `{status.metadata_qualified:,}`")
+    if status.approved_evidence_candidates:
+        st.write(f"Approved evidence candidates `{status.approved_evidence_candidates:,}`")
+    if status.approved_source_sweep_candidates:
+        st.caption(
+            f"Publisher-first sweep candidates `{status.approved_source_sweep_candidates:,}`"
+            + (f" · grounded `{status.approved_source_sweep_grounded:,}`" if status.approved_source_sweep_grounded else "")
+        )
+    if status.discovery_leads:
+        st.caption(
+            f"Unapproved discovery leads observed `{status.discovery_leads:,}` · audit only; do not consume routine grounding attempts"
+        )
+    if status.preground_unique_candidates or status.preground_duplicates_clustered or status.preground_retained_duplicates_skipped:
+        st.caption(
+            f"Distinct approved events queued for grounding `{status.preground_unique_candidates:,}`"
+            + (f" · duplicate nominations clustered `{status.preground_duplicates_clustered:,}`" if status.preground_duplicates_clustered else "")
+            + (f" · already-current events skipped `{status.preground_retained_duplicates_skipped:,}`" if status.preground_retained_duplicates_skipped else "")
+        )
     st.write(f"Grounding attempted `{status.attempted:,}`")
     st.write(f"Grounded `{status.grounded:,}`")
+    if status.trusted_headline_grounded:
+        st.caption(
+            f"Approved-publisher headline evidence `{status.trusted_headline_grounded:,}` · "
+            "clean approved-source headlines may establish the event without body-text restatement"
+        )
+    if status.unique_grounded_after_dedup and status.unique_grounded_after_dedup != status.grounded:
+        st.caption(
+            f"Grounded events after exact ownership deduplication `{status.unique_grounded_after_dedup:,}`"
+        )
     st.write(f"Qualified `{status.qualified:,}`")
     st.write(f"Newly selected this refresh `{status.selected:,}`")
     if status.continuity_attempted:
@@ -168,14 +192,14 @@ def _current_context_workspace() -> None:
         )
     st.write(f"Eligible retained developments rendered now `{status.rendered:,}`")
 
-    st.markdown("**Coverage**")
-    coverage_state = "met" if status.coverage_target_met else "not met"
+    st.markdown("**News selection**")
     st.write(
-        f"Domain coverage `{status.coverage_selected_domains}/{status.coverage_target}` · "
-        f"floor {coverage_state} · tier `{status.coverage_tier_reached}` {status.coverage_tier_label}"
+        f"Domains with eligible retained developments `{status.coverage_selected_domains}` · "
+        f"highest selected tier `{status.coverage_tier_reached}` {status.coverage_tier_label}"
     )
     st.caption(
-        f"Preferred window: {status.preferred_window_days} days · hard window: {status.hard_window_days} days · "
+        f"Selection target: {status.selection_target_min}-{status.selection_target_max} fresh developments when available · "
+        f"preferred window: {status.preferred_window_days} days · hard window: {status.hard_window_days} days · "
         f"expanded qualification: {'yes' if status.expanded_qualification else 'no'}"
     )
     if status.selected_domains_by_tier:
@@ -189,10 +213,22 @@ def _current_context_workspace() -> None:
                 label = row.domain.replace("_", " ").title()
                 st.markdown(f"**{label}**")
                 st.caption(
-                    f"{row.discovered:,} discovered → {row.metadata_qualified:,} metadata → "
+                    f"{row.discovered:,} discovered → {row.approved_evidence_candidates:,} approved candidates → "
                     f"{row.attempted:,} attempted → {row.grounded:,} grounded → "
                     f"{row.selected:,} newly selected; {row.rendered:,} retained eligible now"
                 )
+                if row.approved_source_sweep_candidates:
+                    st.caption(f"Publisher-first sweep candidates: {row.approved_source_sweep_candidates:,}")
+                if row.preground_unique_candidates or row.preground_duplicates_clustered or row.preground_retained_duplicates_skipped:
+                    st.caption(
+                        f"Distinct approved events queued: {row.preground_unique_candidates:,}"
+                        + (f" · duplicate nominations clustered: {row.preground_duplicates_clustered:,}" if row.preground_duplicates_clustered else "")
+                        + (f" · already-current events skipped: {row.preground_retained_duplicates_skipped:,}" if row.preground_retained_duplicates_skipped else "")
+                    )
+                if row.discovery_leads:
+                    st.caption(f"Unapproved leads observed (audit only): {row.discovery_leads:,}")
+                if row.trusted_headline_grounded:
+                    st.caption(f"Approved-publisher headline evidence: {row.trusted_headline_grounded:,}")
     if status.grounding_rejections:
         with st.expander("Rejection analysis", expanded=False):
             for row in status.grounding_rejections[:12]:
@@ -315,21 +351,45 @@ def _render_ai_result(result: dict) -> None:
 
 
 def _ai_workspace(context: DashboardContext | None) -> None:
-    config = load_openai_config()
-    identity = editorial_constitution_identity()
+    configured = load_openai_config()
+    session_key = ""
+    credential_source = "environment / Streamlit secrets" if configured.configured else "not configured"
+
+    st.markdown("**Runtime**")
+    if not configured.configured:
+        session_key = str(
+            st.text_input(
+                "OpenAI API key",
+                type="password",
+                key="developer_openai_api_key",
+                help=(
+                    "Used only for this local Streamlit session. The key is not written to the repository, "
+                    "retained research state, or publication artifacts."
+                ),
+                placeholder="sk-…",
+            )
+            or ""
+        ).strip()
+        if session_key:
+            configured = replace(configured, api_key=session_key)
+            credential_source = "local session"
+
+    config = configured
     current_artifact = load_read_artifact()
-    evaluated_state = load_evaluated_state()
     stored_packets = dict(current_artifact.get("evidence_packets") or {}) if current_artifact else {}
     current_snapshot = str(current_artifact.get("evidence_snapshot_id") or "") if current_artifact else ""
     fact_count = sum(len((packet or {}).get("facts", []) or []) for packet in stored_packets.values())
 
-    st.markdown("**Runtime**")
     st.write(f"API: `{'configured' if config.configured else 'not configured'}`")
+    st.caption(f"Credential source: {credential_source}")
+    if not config.configured:
+        st.caption("Enter an OpenAI API key above to enable local preview and publication controls.")
     st.write(f"Model: `{config.model}`")
     st.write(f"Reasoning: `{config.reasoning_effort}`")
-    st.write(f"Editorial constitution: `{identity['constitution_version']}` · `{identity['sha256'][:16]}`")
+    st.write(f"Editorial briefing: `{BRIEFING_VERSION}`")
     st.write(f"Published evidence: `{current_snapshot or 'unavailable'}` · `{fact_count:,}` facts")
-    st.write(f"Last evaluated evidence: `{evaluated_state.get('evidence_snapshot_id', '') or 'unavailable'}`")
+    st.write(f"Last published Read: `{str(current_artifact.get('generated_at') or 'unavailable')}`")
+    st.write(f"Recent developments considered: `{len(current_artifact.get('editorial_context_event_ids', []) or [])}`")
 
     disabled = context is None or not config.configured
     publishable = bool(
@@ -339,7 +399,30 @@ def _ai_workspace(context: DashboardContext | None) -> None:
         and isinstance(current_artifact.get("reads"), dict)
     )
     st.markdown("**Actions**")
-    if st.button("Generate editorial synthesis", use_container_width=True, key="dev-generate-commentary-v10", disabled=disabled):
+    if st.button("Preview one editorial synthesis", use_container_width=True, key="dev-preview-commentary-v12", disabled=disabled):
+        try:
+            with st.spinner("Generating one non-publishing editorial response…"):
+                prepared_context = with_domain_states(context)
+                result = generate_validated_read_artifact(
+                    prepared_context,
+                    config,
+                    persist=False,
+                    force_preview=True,
+                )
+            result = {**dict(result), "preview_only": True}
+            previews = list(st.session_state.get("developer_editorial_previews") or [])
+            previews.append(result)
+            st.session_state.developer_editorial_previews = previews[-5:]
+            st.session_state.developer_last_ai_result = result
+            st.session_state.developer_last_operation = {
+                "kind": "ai",
+                "label": "Editorial preview",
+                "status": str(result.get("status") or "unknown"),
+            }
+        except Exception as exc:
+            st.session_state.developer_last_ai_result = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
+
+    if st.button("Generate and publish editorial synthesis", use_container_width=True, key="dev-generate-commentary-v12", disabled=disabled):
         try:
             with st.spinner("Evaluating evidence and generating one editorial response…"):
                 prepared_context = with_domain_states(context)
@@ -375,6 +458,27 @@ def _ai_workspace(context: DashboardContext | None) -> None:
         if result.get("status") in (PUBLISHABLE_STATUSES | {"retained_prior"}) and isinstance(result.get("reads"), dict):
             with st.expander("Reads", expanded=False):
                 st.json(result.get("reads"))
+
+    previews = list(st.session_state.get("developer_editorial_previews") or [])
+    if previews:
+        with st.expander(f"Editorial previews ({len(previews)})", expanded=False):
+            for index, preview in enumerate(reversed(previews), start=1):
+                st.markdown(f"**Preview {len(previews) - index + 1} · {preview.get('status', 'unknown')}**")
+                preview_reads = dict(preview.get("reads") or {})
+                updated_domains = list(preview.get("editorial_update_domains") or [])
+                candidates = list(preview.get("editorial_candidate_domains") or [])
+                if candidates:
+                    st.caption("Candidates: " + ", ".join(candidates))
+                st.caption("Updated domains: " + (", ".join(updated_domains) if updated_domains else "none"))
+                macro = dict(preview_reads.get("macro") or {})
+                if macro:
+                    st.write(str(macro.get("headline") or ""))
+                    for paragraph in macro.get("analysis_paragraphs") or [macro.get("analysis")]:
+                        if paragraph:
+                            st.write(str(paragraph))
+                validation = dict(preview.get("validation") or {})
+                if validation.get("diagnostics"):
+                    st.caption(f"Style diagnostics: {len(validation.get('diagnostics') or [])}")
 
     commentary = dict(st.session_state.get("commentary_status") or {})
     if commentary:

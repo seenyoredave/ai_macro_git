@@ -11,9 +11,17 @@ class ContextDomainStatus:
     domain: str
     discovered: int = 0
     metadata_qualified: int = 0
+    approved_evidence_candidates: int = 0
+    approved_source_sweep_candidates: int = 0
+    preground_unique_candidates: int = 0
+    preground_duplicates_clustered: int = 0
+    preground_retained_duplicates_skipped: int = 0
+    discovery_leads: int = 0
+    discovery_leads_resolved: int = 0
     attempted: int = 0
     grounded: int = 0
     alternate_grounded: int = 0
+    trusted_headline_grounded: int = 0
     selected: int = 0
     rendered: int = 0
 
@@ -27,8 +35,18 @@ class CurrentContextStatus:
     as_of: str
     discovered: int
     metadata_qualified: int
+    approved_evidence_candidates: int
+    approved_source_sweep_candidates: int
+    approved_source_sweep_grounded: int
+    preground_unique_candidates: int
+    preground_duplicates_clustered: int
+    preground_retained_duplicates_skipped: int
     attempted: int
     grounded: int
+    trusted_headline_grounded: int
+    discovery_leads: int
+    discovery_leads_resolved: int
+    unique_grounded_after_dedup: int
     qualified: int
     selected: int
     rendered: int
@@ -40,9 +58,7 @@ class CurrentContextStatus:
     domains: tuple[ContextDomainStatus, ...]
     grounding_rejections: tuple[dict[str, Any], ...]
     provider_errors: tuple[dict[str, Any], ...]
-    coverage_target: int
     coverage_selected_domains: int
-    coverage_target_met: bool
     coverage_tier_reached: str
     coverage_tier_label: str
     expanded_qualification: bool
@@ -50,6 +66,8 @@ class CurrentContextStatus:
     selected_events_by_tier: tuple[tuple[str, int], ...]
     preferred_window_days: int
     hard_window_days: int
+    selection_target_min: int
+    selection_target_max: int
 
 
 def current_context_status(report: dict | None) -> CurrentContextStatus:
@@ -72,9 +90,17 @@ def current_context_status(report: dict | None) -> CurrentContextStatus:
             domain=str(domain),
             discovered=int(row.get("discovered", 0) or 0),
             metadata_qualified=metadata,
+            approved_evidence_candidates=int(row.get("approved_evidence_candidates", 0) or 0),
+            approved_source_sweep_candidates=int(row.get("approved_source_sweep_candidates", 0) or 0),
+            preground_unique_candidates=int(row.get("preground_unique_candidates", 0) or 0),
+            preground_duplicates_clustered=int(row.get("preground_duplicates_clustered", 0) or 0),
+            preground_retained_duplicates_skipped=int(row.get("preground_retained_duplicates_skipped", 0) or 0),
+            discovery_leads=int(row.get("discovery_leads", 0) or 0),
+            discovery_leads_resolved=int(row.get("discovery_leads_resolved", 0) or 0),
             attempted=int(row.get("attempted", 0) or 0),
             grounded=int(row.get("succeeded", 0) or 0),
             alternate_grounded=int(row.get("alternate_source_grounded", 0) or 0),
+            trusted_headline_grounded=int(row.get("trusted_headline_grounded", 0) or 0),
             selected=int(selected_counts.get(domain, row.get("selected", 0)) or 0),
             rendered=int(rendered_counts.get(domain, 0) or 0),
         )
@@ -98,8 +124,18 @@ def current_context_status(report: dict | None) -> CurrentContextStatus:
         as_of=str(payload.get("as_of") or ""),
         discovered=int(payload.get("candidate_count", 0) or 0),
         metadata_qualified=metadata_total,
+        approved_evidence_candidates=int(grounding.get("approved_evidence_candidates", 0) or 0),
+        approved_source_sweep_candidates=int(grounding.get("approved_source_sweep_candidates", 0) or 0),
+        approved_source_sweep_grounded=int(grounding.get("approved_source_sweep_grounded", 0) or 0),
+        preground_unique_candidates=int(grounding.get("preground_unique_candidates", 0) or 0),
+        preground_duplicates_clustered=int(grounding.get("preground_duplicates_clustered", 0) or 0),
+        preground_retained_duplicates_skipped=int(grounding.get("preground_retained_duplicates_skipped", 0) or 0),
         attempted=int(grounding.get("attempted", 0) or 0),
         grounded=int(grounding.get("succeeded", 0) or 0),
+        trusted_headline_grounded=int(grounding.get("trusted_headline_grounded", 0) or 0),
+        discovery_leads=int(grounding.get("discovery_leads", 0) or 0),
+        discovery_leads_resolved=int(grounding.get("discovery_leads_resolved", 0) or 0),
+        unique_grounded_after_dedup=int(grounding.get("unique_grounded_after_dedup", 0) or 0),
         qualified=int(payload.get("qualified_count", 0) or 0),
         selected=selected_total,
         rendered=rendered_total,
@@ -111,9 +147,7 @@ def current_context_status(report: dict | None) -> CurrentContextStatus:
         domains=tuple(domain_rows),
         grounding_rejections=tuple(item for item in (grounding.get("rejection_reasons") or []) if isinstance(item, dict)),
         provider_errors=tuple(item for item in fetch_errors if isinstance(item, dict)),
-        coverage_target=int(coverage.get("target_domains", 6) or 6),
         coverage_selected_domains=int(coverage.get("selected_domain_count", 0) or 0),
-        coverage_target_met=bool(coverage.get("target_met", False)),
         coverage_tier_reached=str(coverage.get("tier_reached") or "A"),
         coverage_tier_label=str(coverage.get("tier_reached_label") or "Preferred"),
         expanded_qualification=bool(coverage.get("expanded_discovery_required", False)),
@@ -125,6 +159,8 @@ def current_context_status(report: dict | None) -> CurrentContextStatus:
         ),
         preferred_window_days=int(coverage.get("preferred_window_days", 7) or 7),
         hard_window_days=int(coverage.get("hard_window_days", 10) or 10),
+        selection_target_min=int(coverage.get("selection_target_min", 10) or 10),
+        selection_target_max=int(coverage.get("selection_target_max", 15) or 15),
     )
 
 

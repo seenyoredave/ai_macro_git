@@ -43,10 +43,10 @@ def _yoy_text(row: dict) -> str:
 
 
 def _render_signature(data: dict) -> None:
-    render_section("Employment and real pay", "Employment and inflation-adjusted pay across industries directly involved in AI production and infrastructure.", first=True)
+    render_section("Employment and real pay", "Employment and inflation-adjusted pay in industries tied directly to AI production and infrastructure.", first=True)
     with st.container(key="full-width-layout-workforce-outcomes-matrix"):
         with st.container(border=True, key="workforce-panel-outcomes-matrix"):
-            render_panel_heading("Employment and real-pay outcomes", "Latest values in cells · color shows where each measure sits within its 2020-present range")
+            render_panel_heading("Employment and real pay", "Latest readings · color shows each measure within its 2020-present range")
             render_plotly_chart(workforce_outcomes_matrix(data.get("transmission_matrix"), height=560), width="stretch", config={"displayModeBar": False, "responsive": True}, key="workforce-outcomes-matrix")
 
 def _render_pulse(data: dict) -> None:
@@ -56,8 +56,8 @@ def _render_pulse(data: dict) -> None:
     information_hires = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Hires rate")
     information_layoffs = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Layoffs and discharges rate")
     render_section(
-        "Current labor-market conditions",
-        "Current employment, real pay, openings, hiring, quits, and layoffs across covered industries.",
+        "Employment and labor flows",
+        "Employment, real pay, job openings, hiring, quits, and layoffs across covered industries.",
         compact=True,
     )
     render_statline([
@@ -69,7 +69,7 @@ def _render_pulse(data: dict) -> None:
 
 
 def _render_workforce_channels(data: dict) -> None:
-    render_section("Employment, hiring, pay, and task exposure", "Views of employment, labor flows, pay, and research estimates of task exposure.")
+    render_section("Labor-market detail", "Employment history, labor flows, earnings, and published estimates of LLM task exposure.")
     with st.container(key="full-width-layout-workforce-channels"):
         with st.container(border=True, key="workforce-panel-channel-workbench"):
             view = st.radio("Channel", ["Employment", "Labor flows", "Compensation", "Exposure benchmark"], horizontal=True, label_visibility="collapsed", key="workforce-channel-view")
@@ -120,7 +120,7 @@ def _render_workforce_ledger(data: dict) -> None:
 
 def render_workforce_tab(workforce_data: dict, tab_read=None) -> None:
     inject_panel_height_rules({})
-    render_tab_header("Workforce", "Employment, hiring, separations, real pay, and task exposure in industries tied to AI production and deployment.", "U.S. Bureau of Labor Statistics")
+    render_tab_header("Workforce", "Employment, hiring, separations, real pay, and task exposure in AI-linked industries.", "U.S. Bureau of Labor Statistics")
     _render_floating_terms("workforce")
     render_domain_read(tab_read, label="Read", domain="workforce")
     _render_signature(workforce_data)

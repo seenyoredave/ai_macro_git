@@ -76,12 +76,7 @@ def _run(response, *, run_id: str) -> None:
         PaidCallGuard(run_id=run_id, max_per_run=1, max_per_day=3),
     )
     generate_editorial_synthesis(
-        capsules={"capsules": []},
-        prior_publication={},
-        prior_analytical_state={},
-        required_update_domains=[],
-        candidate_update_domains=[],
-        bootstrap=False,
+        briefing={"candidate_domains": [], "findings": [], "recent_developments": []},
         config=OpenAIConfig(api_key="test"),
         client=client,
     )
@@ -148,12 +143,7 @@ def main() -> None:
             )
             try:
                 generate_editorial_synthesis(
-                    capsules={"capsules": []},
-                    prior_publication={},
-                    prior_analytical_state={},
-                    required_update_domains=[],
-                    candidate_update_domains=[],
-                    bootstrap=False,
+                    briefing={"candidate_domains": [], "findings": [], "recent_developments": []},
                     config=OpenAIConfig(api_key="test"),
                     client=one_request_client,
                 )
@@ -163,12 +153,7 @@ def main() -> None:
                 raise AssertionError("No-output request did not fail")
             try:
                 generate_editorial_synthesis(
-                    capsules={"capsules": []},
-                    prior_publication={},
-                    prior_analytical_state={},
-                    required_update_domains=[],
-                    candidate_update_domains=[],
-                    bootstrap=False,
+                    briefing={"candidate_domains": [], "findings": [], "recent_developments": []},
                     config=OpenAIConfig(api_key="test"),
                     client=one_request_client,
                 )

@@ -67,8 +67,8 @@ def _macro_ranked_events(events: list[dict], *, limit: int = 3) -> list[dict]:
     return chosen
 
 
-def load_current_context(*, as_of=None, path=None, limit_per_domain=2) -> dict:
-    """Return up to two qualified developments per domain plus a diverse macro top three.
+def load_current_context(*, as_of=None, path=None, limit_per_domain=4) -> dict:
+    """Return up to four qualified developments per domain plus a diverse macro top three.
 
     Each event has exactly one visible tab owner.  The discovery engine writes
     qualified evidence into the supplied registry; this function never performs
@@ -95,7 +95,7 @@ def load_current_context(*, as_of=None, path=None, limit_per_domain=2) -> dict:
     by_domain: dict[str, dict] = {}
     all_events: list[dict] = []
     all_references: list[dict] = []
-    limit = max(1, min(int(limit_per_domain), 2))
+    limit = max(1, min(int(limit_per_domain), 4))
     for domain in DOMAIN_KEYS:
         selected = _dedupe_events(owned_events.get(domain, []))[:limit]
         if not selected:

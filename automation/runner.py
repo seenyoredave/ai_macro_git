@@ -130,7 +130,6 @@ def _publication_phase(openai_phase: dict[str, Any]) -> tuple[dict[str, str], st
     editorial_status = str(openai_phase.get("status") or "")
     reason = str(openai_phase.get("reason") or "")
     rejected = editorial_status in {"rejected_hard_validation", "rejected_unparseable"}
-    rejected = rejected or reason == "completed_evaluation_rejected_no_automatic_retry"
     if rejected:
         return ({
             "status": "ready_with_editorial_rejection",
@@ -296,60 +295,46 @@ def main() -> int:
         _log("START evidence comparison")
         evidence_started = time.perf_counter()
         artifact_valid, evidence_snapshot, commentary = _current_artifact_valid(bundle.context)
+        from analytics.read_briefing import editorial_refresh_plan
         from analytics.read_materiality import compare_evidence_materiality
-        from analytics.read_generation import prompt_versions
-        from analytics.read_store import (
-            evaluated_state_matches_prompt,
-            load_evaluated_state,
-            load_read_artifact,
-        )
+        from analytics.read_store import load_read_artifact
 
         stored_artifact = load_read_artifact()
-        evaluated_state = load_evaluated_state()
-        evaluation_contract_current = evaluated_state_matches_prompt(
-            evaluated_state,
-            prompt_versions(),
-        )
-        comparison_baseline = (
-            evaluated_state
-            if evaluation_contract_current
-            else stored_artifact
-        )
         materiality = compare_evidence_materiality(
-            comparison_baseline.get("evidence_packets"),
+            stored_artifact.get("evidence_packets"),
             commentary.get("packets"),
-            previous_snapshot_id=str(comparison_baseline.get("evidence_snapshot_id") or ""),
+            previous_snapshot_id=str(stored_artifact.get("evidence_snapshot_id") or ""),
             current_snapshot_id=evidence_snapshot,
+        )
+        refresh_plan = editorial_refresh_plan(
+            materiality,
+            current_context=bundle.context.current_context,
+            prior_artifact=stored_artifact,
+            bootstrap=not bool(commentary.get("artifact_publishable")),
         )
         reusable_artifact = bool(
             commentary.get("artifact_publishable")
-            and not materiality.get("material")
+            and not refresh_plan.get("refresh_needed")
         )
         evidence_elapsed = max(0.0, time.perf_counter() - evidence_started)
         status["evidence_snapshot_id"] = evidence_snapshot
         status["phases"]["evidence"] = {
             "status": "passed",
             "artifact_current": artifact_valid,
-            "artifact_materially_current": reusable_artifact,
+            "artifact_editorially_current": reusable_artifact,
             "artifact_status": str(commentary.get("status") or "unknown"),
-            "evaluation_contract_current": evaluation_contract_current,
             "materiality": materiality,
+            "editorial_refresh": refresh_plan,
             "elapsed_sec": round(evidence_elapsed, 3),
         }
         _log(
             f"DONE  evidence comparison · {evidence_elapsed:.1f}s · "
-            f"exact={artifact_valid} · material={bool(materiality.get('material'))}"
+            f"exact={artifact_valid} · editorial_refresh={bool(refresh_plan.get('refresh_needed'))}"
         )
 
         if reusable_artifact:
-            evaluated_rejected = bool(
-                evaluation_contract_current
-                and str(evaluated_state.get("status") or "").startswith("rejected_")
-            )
             reuse_reason = (
-                "completed_evaluation_rejected_no_automatic_retry"
-                if evaluated_rejected
-                else "evidence_snapshot_already_has_publishable_artifact"
+                "evidence_snapshot_already_has_publishable_artifact"
                 if artifact_valid
                 else "evidence_change_below_materiality_threshold"
             )
@@ -357,7 +342,7 @@ def main() -> int:
                 "status": "skipped",
                 "reason": reuse_reason,
             }
-            if config.auto_publish and not evaluated_rejected:
+            if config.auto_publish:
                 from analytics.read_service import reapply_last_read
 
                 renewal_source = "automation_reapply" if artifact_valid else "automation_immaterial_reapply"
@@ -380,11 +365,6 @@ def main() -> int:
                     "expires_at": str(publication.get("expires_at") or ""),
                 }
                 _log(f"publication lease renewed · no OpenAI call · {reuse_reason}")
-            elif evaluated_rejected:
-                status["phases"]["publication_lease"] = {
-                    "status": "retained_without_renewal",
-                    "reason": reuse_reason,
-                }
             else:
                 status["phases"]["publication_lease"] = {
                     "status": "withheld",
@@ -392,7 +372,7 @@ def main() -> int:
                 }
         else:
             # Scheduled runs never spend money merely to create a draft that
-            # automation is not authorized to publish.  Manual workflow runs
+            # automation is not authorized to publish. Manual workflow runs
             # may explicitly opt into a paid validation-only rehearsal.
             if config.trigger == "schedule" and not config.auto_publish:
                 status["phases"]["openai"] = {
@@ -400,7 +380,7 @@ def main() -> int:
                     "reason": "scheduled_paid_generation_requires_AUTO_PUBLISH",
                 }
                 status.setdefault("warnings", []).append(
-                    "Analytical evidence changed, but scheduled publication is disabled; no OpenAI call was made."
+                    "A current editorial update is available, but scheduled publication is disabled; no OpenAI call was made."
                 )
                 _finish(status, result="scheduled_publish_disabled_for_changed_evidence")
                 return 0
@@ -411,7 +391,7 @@ def main() -> int:
                     "reason": "OPENAI_AUTOMATION_ENABLED is false or manual paid opt-in is absent",
                 }
                 status.setdefault("warnings", []).append(
-                    "Analytical evidence changed but autonomous OpenAI spending is disabled."
+                    "A current editorial update is available but autonomous OpenAI spending is disabled."
                 )
                 _finish(status, result="openai_disabled_for_changed_evidence")
                 return 0
@@ -435,11 +415,6 @@ def main() -> int:
                 "rejected_unparseable",
             }
             validation = dict(generation.get("validation") or {})
-            model_decision = str(generation.get("model_decision") or "")
-            if not model_decision and generated_status in {"validated", "published_with_warnings"}:
-                model_decision = "publish"
-            elif not model_decision and generated_status == "retained_prior":
-                model_decision = "retain_prior"
             validation_status = (
                 "passed"
                 if validation.get("passed") is True
@@ -450,7 +425,6 @@ def main() -> int:
             status["phases"]["openai"] = {
                 "status": generated_status,
                 "api_status": "completed" if generated_status in completed_statuses else "failed",
-                "model_decision": model_decision,
                 "validation_status": validation_status,
                 "stage": str(generation.get("stage") or ""),
                 "attempt_id": str(generation.get("attempt_id") or ""),
@@ -459,8 +433,7 @@ def main() -> int:
             }
             _log(
                 f"DONE  bounded OpenAI generation · {openai_elapsed:.1f}s · "
-                f"api={status['phases']['openai']['api_status']} · "
-                f"decision={model_decision or 'unavailable'} · validation={validation_status}"
+                f"api={status['phases']['openai']['api_status']} · validation={validation_status}"
             )
             if generated_status not in completed_statuses:
                 status["errors"].append(
@@ -478,25 +451,15 @@ def main() -> int:
                 )
                 _finish(status, result="publication_verification_failed")
                 return 2
-            if generated_status == "retained_prior" and not (
-                commentary.get("artifact_publishable")
-                and commentary.get("evaluation_current")
-                and commentary.get("evidence_materially_current")
-            ):
-                status["errors"].append(
-                    "Model abstention did not preserve a current evaluated baseline and prior publication."
-                )
-                _finish(status, result="publication_verification_failed")
-                return 2
             if generated_status.startswith("rejected_"):
-                if not commentary.get("evaluation_current"):
+                if not commentary.get("artifact_publishable"):
                     status["errors"].append(
-                        "Rejected response did not advance the evaluated evidence baseline."
+                        "The generated commentary was rejected and no prior publishable Read is available."
                     )
-                    _finish(status, result="evaluation_verification_failed")
+                    _finish(status, result="commentary_unavailable")
                     return 2
                 status.setdefault("warnings", []).append(
-                    "The completed OpenAI response failed the hard publication gate. The prior Read was retained and this evidence snapshot will not be retried automatically."
+                    "The completed OpenAI response failed the minimal publication gate. The prior Read was retained; a later authorized run may try again if the evidence still warrants an update."
                 )
 
         changed = _git_changed_paths(root)

@@ -1,4 +1,4 @@
-"""Exercise publish, retain, and hard-rejection branches without network or writes."""
+"""Verify last-good fallback and retry semantics for the reset editorial service."""
 
 from __future__ import annotations
 
@@ -37,30 +37,36 @@ def _run(
     materiality: dict,
     *,
     packet_payload: dict | None = None,
-    evaluated_state: dict | None = None,
+    current_context: dict | None = None,
+    force_preview: bool = False,
 ) -> dict:
     packet_payload = packet_payload or prior["evidence_packets"]
-    packets = {
-        domain: _Packet(packet)
-        for domain, packet in packet_payload.items()
-    }
+    packets = {domain: _Packet(packet) for domain, packet in packet_payload.items()}
+    context = service.DashboardContext(current_context=current_context or {
+        "events": [],
+        "by_domain": {},
+    })
     with (
         patch.object(service, "build_evidence_packets", return_value=packets),
         patch.object(service, "evidence_snapshot_id", return_value="service-smoke-snapshot"),
         patch.object(service, "load_read_artifact", return_value=deepcopy(prior)),
-        patch.object(service, "load_evaluated_state", return_value=deepcopy(evaluated_state or {})),
     ):
         return service.generate_validated_read_artifact(
-            service.DashboardContext(),
+            context,
             OpenAIConfig(api_key="test"),
             client=_Client(model),
             persist=False,
             materiality=materiality,
+            force_preview=force_preview,
         )
 
 
 def main() -> None:
     prior = json.loads((ROOT / "openai_artifacts" / "current.json").read_text(encoding="utf-8"))
+    current = deepcopy(prior["evidence_packets"])
+    market = next(fact for fact in current["market"]["facts"] if fact["id"] == "market.aei")
+    market["value"] = float(market["value"]) + 3.6
+    market["display"] = f"{market['value']:.1f}"
     materiality = {
         "version": "smoke",
         "previous_snapshot_id": str(prior.get("evidence_snapshot_id") or ""),
@@ -75,17 +81,17 @@ def main() -> None:
             "kind": "numeric_change",
             "fact_id": "market.aei",
             "domain": "market",
-            "old_value": 41.2,
-            "new_value": 44.8,
-            "relative_change": 0.0874,
+            "old_value": float(market["value"]) - 3.6,
+            "new_value": float(market["value"]),
+            "relative_change": 0.08,
             "percentage_point_change": 3.6,
             "material": True,
         }],
     }
 
     publish_model = GeneratedEditorialSynthesis.model_validate(_model_payload())
-    published = _run(publish_model, prior, materiality)
-    _check(published["status"] in service.PUBLISHABLE_STATUSES, "Grounded publish result was not publishable")
+    published = _run(publish_model, prior, materiality, packet_payload=current)
+    _check(published["status"] in service.PUBLISHABLE_STATUSES, "Grounded publication candidate was not publishable")
     _check(published["service_version"] == service.READ_SERVICE_VERSION, "Service version did not advance")
     _check(set(published["reads"]) == {*service.DOMAIN_ORDER, "macro"}, "Incremental merge lost a Read")
     _check(
@@ -97,97 +103,86 @@ def main() -> None:
         "Unchanged domain prose was regenerated",
     )
 
-    retain_payload = {
-        "decision": "retain_prior",
-        "decision_reason": "The evidence moved without changing the material interpretation.",
-        "updated_domains": [],
-        "domain_reads": [],
-        "macro_read": None,
-        "analytical_state": _model_payload()["analytical_state"],
+    rejected_payload = deepcopy(_model_payload())
+    rejected_payload["domain_reads"][0]["body"]["fact_ids"] = ["market.not_supplied"]
+    rejected = _run(GeneratedEditorialSynthesis.model_validate(rejected_payload), prior, materiality, packet_payload=current)
+    _check(rejected["status"] == "rejected_hard_validation", "Unknown support ID did not trigger the minimal gate")
+    _check("published_artifact" not in rejected, "Rejected draft leaked into publication output")
+
+    # The same material gap can be attempted again on a later authorized run.
+    retried = _run(publish_model, prior, materiality, packet_payload=current)
+    _check(retried["status"] in service.PUBLISHABLE_STATUSES, "A prior rejection suppressed a later valid attempt")
+
+    context_only_materiality = {
+        "version": "smoke",
+        "previous_snapshot_id": str(prior.get("evidence_snapshot_id") or ""),
+        "current_snapshot_id": str(prior.get("evidence_snapshot_id") or ""),
+        "baseline_available": True,
+        "exact_match": True,
+        "material": False,
+        "decision": "reuse_exact_evidence",
+        "changes": [],
     }
-    retained = _run(GeneratedEditorialSynthesis.model_validate(retain_payload), prior, materiality)
-    _check(retained["status"] == "retained_prior", "Valid abstention did not retain prior prose")
-    _check(
-        retained["publication"]["materiality"]["model_decision"] == "retain_prior",
-        "Abstention decision was not recorded in publication metadata",
-    )
-
-    rejected_payload = _model_payload()
-    rejected_payload["domain_reads"][0]["headline"]["fact_ids"] = ["market.not_in_capsules"]
-    rejected = _run(GeneratedEditorialSynthesis.model_validate(rejected_payload), prior, materiality)
-    _check(rejected["status"] == "rejected_hard_validation", "Unsupplied fact did not trigger the hard gate")
-    _check(prior["reads"]["market"]["headline"] != "Participation broadens inside a concentrated market", "Test fixture mutated prior publication")
-
-    # A rejected evaluation advances the paid-call baseline, but it must not
-    # erase the gap between last-good published prose and current facts.  On a
-    # later material call in another domain, retaining stale cited prose is a
-    # hard failure rather than a silent publication leak.
-    rejected_packets = deepcopy(prior["evidence_packets"])
-    current_packets = deepcopy(rejected_packets)
-    for fact in rejected_packets["market"]["facts"]:
-        if fact["id"] == "market.positive_breadth":
-            fact["value"] = float(fact["value"]) + 5.0
-            fact["display"] = f"{fact['value']:.1f}%"
-    current_packets = deepcopy(rejected_packets)
-    for fact in current_packets["finance"]["facts"]:
-        if fact["id"] == "finance.internal_funding_coverage":
-            fact["value"] = float(fact["value"]) + 0.5
-            fact["display"] = f"{fact['value']:.2f}x"
-    later_materiality = {
-        **materiality,
-        "previous_snapshot_id": "rejected-evaluation-snapshot",
-        "changes": [{
-            "kind": "numeric_change",
-            "fact_id": "finance.internal_funding_coverage",
-            "domain": "finance",
-            "old_value": 1.0,
-            "new_value": 1.5,
-            "relative_change": 0.5,
-            "percentage_point_change": None,
-            "material": True,
+    context_prior = deepcopy(prior)
+    context_prior["editorial_context_event_ids"] = ["event-old"]
+    context_event = {
+        "events": [{
+            "event_id": "event-market-new",
+            "event_date": "2026-09-14",
+            "domain": "market",
+            "display": "A major chip supplier raised its revenue outlook after stronger AI demand.",
+            "source_label": "Example Wire",
+            "source_url": "https://example.com/new",
+            "priority": 100,
         }],
+        "by_domain": {},
     }
-    stale_retain = _run(
-        GeneratedEditorialSynthesis.model_validate(retain_payload),
+    context_only = _run(
+        publish_model,
+        context_prior,
+        context_only_materiality,
+        packet_payload=prior["evidence_packets"],
+        current_context=context_event,
+    )
+    _check(context_only["status"] in service.PUBLISHABLE_STATUSES, "A new qualified development did not trigger an editorial attempt")
+    _check("event-market-new" in context_only.get("editorial_context_event_ids", []), "Published artifact did not record developments considered by the call")
+
+    preview_materiality = {
+        "version": "smoke",
+        "previous_snapshot_id": str(prior.get("evidence_snapshot_id") or ""),
+        "current_snapshot_id": str(prior.get("evidence_snapshot_id") or ""),
+        "baseline_available": True,
+        "exact_match": True,
+        "material": False,
+        "decision": "reuse_exact_evidence",
+        "changes": [],
+    }
+    preview = _run(
+        publish_model,
         prior,
-        later_materiality,
-        packet_payload=current_packets,
-        evaluated_state={
-            "status": "rejected_hard_validation",
-            "evidence_snapshot_id": "rejected-evaluation-snapshot",
-            "evidence_packets": rejected_packets,
-            "prompt_versions": service.prompt_versions(),
-        },
+        preview_materiality,
+        packet_payload=prior["evidence_packets"],
+        force_preview=True,
     )
-    _check(
-        stale_retain["status"] == "rejected_hard_validation",
-        "A later call was allowed to retain prose made stale by an earlier rejected evaluation",
-    )
+    _check(preview["status"] in service.PUBLISHABLE_STATUSES, "Owner preview did not force one fresh synthesis")
+    _check((preview.get("editorial_refresh_plan") or {}).get("reason") == "owner_preview", "Owner preview reason was not preserved")
 
     rejected_phase, rejected_result = _publication_phase({"status": "rejected_hard_validation"})
     _check(
         rejected_phase["status"] == "ready_with_editorial_rejection"
         and rejected_phase["read_status"] == "last_good_read_retained_after_rejection"
         and rejected_result == "publish_ready_with_editorial_fallback",
-        "Rejected editorial output was mislabeled as a successful Read refresh",
-    )
-    carried_phase, carried_result = _publication_phase({
-        "status": "skipped",
-        "reason": "completed_evaluation_rejected_no_automatic_retry",
-    })
-    _check(
-        carried_phase["editorial_refresh_status"] == "rejected"
-        and carried_result == "publish_ready_with_editorial_fallback",
-        "A prior rejected evaluation was mislabeled on a later no-retry publication",
+        "Rejected editorial output was not treated as last-good fallback",
     )
 
     print(json.dumps({
         "status": "PASS",
         "publish_status": published["status"],
-        "retain_status": retained["status"],
         "reject_status": rejected["status"],
-        "stale_retain_status": stale_retain["status"],
+        "retry_status": retried["status"],
         "rejected_publication_status": rejected_phase["status"],
+        "context_only_refresh_status": context_only["status"],
+        "preview_status": preview["status"],
         "read_count": len(published["reads"]),
     }, indent=2))
 

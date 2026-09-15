@@ -6,21 +6,13 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Callable
 
 from analytics.dashboard_context import DashboardContext
-from analytics.read_capsules import (
-    CAPSULE_ARCHITECTURE_VERSION,
-    build_evaluated_state,
-    build_signal_capsules,
-    materially_changed_domains,
-    prior_publication_payload,
-    required_update_domains,
-)
+from analytics.read_briefing import build_editorial_briefing, editorial_refresh_plan
 from analytics.read_context import attach_current_context
 from analytics.read_evidence import (
     DOMAIN_LABELS,
     DOMAIN_ORDER,
     EvidencePacket,
     build_evidence_packets,
-    evidence_fact_index,
     evidence_snapshot_id,
 )
 from analytics.read_generation import (
@@ -30,21 +22,18 @@ from analytics.read_generation import (
 from analytics.read_materiality import compare_evidence_materiality
 from analytics.read_models import GeneratedDomainRead, GeneratedEditorialSynthesis, GeneratedMacroRead
 from analytics.read_store import (
-    evaluated_state_matches_prompt,
-    load_evaluated_state,
     load_read_artifact,
     new_attempt_id,
-    persist_evaluated_state,
     persist_read_artifact,
     persist_read_attempt,
 )
 from analytics.read_validation import EDITORIAL_VALIDATOR_VERSION, validate_editorial_synthesis
 from config.openai_config import OpenAIConfig
 
-READ_SERVICE_VERSION = "5.1.0"
+READ_SERVICE_VERSION = "6.1.0"
 READ_SERVICE_COMPATIBLE_VERSIONS = {
     READ_SERVICE_VERSION,
-    "5.0.0", "4.5.0", "4.4.0", "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0",
+    "6.0.0", "5.1.0", "5.0.0", "4.5.0", "4.4.0", "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0",
 }
 COMMENTARY_PUBLICATION_LEASE_HOURS = 24
 UNAVAILABLE_HEADLINE = "Commentary temporarily unavailable."
@@ -57,90 +46,84 @@ def _packet_dicts(packets: dict[str, EvidencePacket]) -> dict[str, dict]:
     return {domain: packet.to_dict() for domain, packet in packets.items()}
 
 
-def _change_key(change: dict[str, Any]) -> tuple[str, str, str]:
-    return (
-        str(change.get("kind") or ""),
-        str(change.get("fact_id") or change.get("domain") or ""),
-        str(change.get("field") or ""),
-    )
+def _split_sentences(text: str) -> list[str]:
+    import re
+    return [part.strip() for part in re.split(r"(?<=[.!?])\s+", str(text or "").strip()) if part.strip()]
 
 
-def _editorial_materiality(
-    evaluation_comparison: dict[str, Any],
-    publication_comparison: dict[str, Any],
-    *,
-    required_domains: list[str],
-) -> dict[str, Any]:
-    """Combine new evaluation changes with publication-staleness repairs.
+def _support_row(field: str, passage: Any) -> dict[str, Any]:
+    return {
+        "field": field,
+        "text": str(passage.text or ""),
+        "fact_ids": [str(item) for item in passage.fact_ids],
+        "event_ids": [str(item) for item in passage.event_ids],
+    }
 
-    The paid-call trigger stays anchored to the last completed evaluation.  A
-    later call must still repair any published sentence made stale by an older
-    rejected response, so changes to cited facts are also brought forward from
-    the last-good publication baseline for required domains only.
-    """
-    merged = dict(evaluation_comparison)
-    changes: list[dict[str, Any]] = []
-    positions: dict[tuple[str, str, str], int] = {}
-    for raw in evaluation_comparison.get("changes", []) or []:
-        if not isinstance(raw, dict):
+
+
+def _event_reference_index(current_context: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    payload = dict(current_context or {})
+    index: dict[str, dict[str, Any]] = {}
+
+    def add(event: Any) -> None:
+        if not isinstance(event, dict):
+            return
+        event_id = str(event.get("event_id") or "").strip()
+        if not event_id:
+            return
+        label = str(event.get("source_label") or event.get("source_name") or "").strip()
+        url = str(event.get("source_url") or "").strip()
+        if label:
+            index[event_id] = {"source_label": label, "source_url": url}
+
+    for event in payload.get("events", []) or []:
+        add(event)
+    for domain_payload in (payload.get("by_domain") or {}).values():
+        if isinstance(domain_payload, dict):
+            for event in domain_payload.get("events", []) or []:
+                add(event)
+    return index
+
+
+def _merge_references(base: list[dict[str, Any]], event_ids: list[str], event_references: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    output: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for reference in [*base, *[event_references.get(event_id, {}) for event_id in event_ids]]:
+        if not isinstance(reference, dict):
             continue
-        item = {**raw, "comparison_basis": "last_completed_evaluation"}
-        positions[_change_key(item)] = len(changes)
-        changes.append(item)
-
-    required = set(required_domains)
-    for raw in publication_comparison.get("changes", []) or []:
-        if not isinstance(raw, dict):
+        key = (str(reference.get("source_label") or ""), str(reference.get("source_url") or ""))
+        if not key[0] or key in seen:
             continue
-        domain = str(raw.get("domain") or str(raw.get("fact_id") or "").split(".", 1)[0])
-        if domain not in required:
-            continue
-        item = {**raw, "comparison_basis": "last_good_publication"}
-        key = _change_key(item)
-        if key in positions:
-            existing = changes[positions[key]]
-            existing["also_changed_since_publication"] = True
-            existing["publication_old_value"] = raw.get("old_value")
-            existing["publication_new_value"] = raw.get("new_value")
-            continue
-        positions[key] = len(changes)
-        changes.append(item)
-
-    merged.update({
-        "changes": changes,
-        "change_count": len(changes),
-        "material_change_count": sum(bool(item.get("material")) for item in changes),
-        "immaterial_change_count": sum(not bool(item.get("material")) for item in changes),
-        "publication_repair_domains": [domain for domain in DOMAIN_ORDER if domain in required],
-    })
-    return merged
-
-
-def _claim_rows(read_model: Any) -> list[dict[str, Any]]:
-    rows = [{"field": "headline", **read_model.headline.model_dump()}]
-    rows.extend(
-        {"field": f"analysis[{index}]", **item.model_dump()}
-        for index, item in enumerate(read_model.analysis)
-    )
-    return rows
-
+        seen.add(key)
+        output.append(dict(reference))
+    return output
 
 def _domain_public_read(
     read_model: GeneratedDomainRead,
     packet: dict[str, Any],
     *,
+    event_references: dict[str, dict[str, Any]] | None = None,
     snapshot_id: str = "",
     generated_at: str = "",
 ) -> dict[str, Any]:
-    sentences = [item.text for item in read_model.analysis]
+    body = str(read_model.body.text or "").strip()
+    cited_events = [*read_model.headline.event_ids, *read_model.body.event_ids]
+    references = _merge_references(
+        [dict(item) for item in packet.get("references", []) or []],
+        [str(item) for item in cited_events],
+        dict(event_references or {}),
+    )
     return {
         "domain": read_model.domain,
         "label": DOMAIN_LABELS[read_model.domain],
         "headline": read_model.headline.text,
-        "analysis": " ".join(sentences),
-        "analysis_sentences": sentences,
-        "references": [dict(item) for item in packet.get("references", []) or []],
-        "claim_support": _claim_rows(read_model),
+        "analysis": body,
+        "analysis_sentences": _split_sentences(body),
+        "references": references,
+        "claim_support": [
+            _support_row("headline", read_model.headline),
+            _support_row("body", read_model.body),
+        ],
         "evidence_snapshot_id": str(snapshot_id or ""),
         "generated_at": str(generated_at or ""),
         "generator": "openai",
@@ -152,39 +135,43 @@ def _macro_public_read(
     read_model: GeneratedMacroRead,
     packets: dict[str, dict],
     *,
+    event_references: dict[str, dict[str, Any]] | None = None,
     snapshot_id: str = "",
     generated_at: str = "",
 ) -> dict[str, Any]:
-    selected = list(read_model.selected_domains)
+    passages = [read_model.headline, *read_model.paragraphs]
+    fact_ids: list[str] = []
+    for passage in passages:
+        for fact_id in passage.fact_ids:
+            if fact_id not in fact_ids:
+                fact_ids.append(str(fact_id))
+    selected = [
+        domain for domain in DOMAIN_ORDER
+        if any(fact_id.startswith(f"{domain}.") for fact_id in fact_ids)
+    ]
+
     references: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
-
-    def add_reference(reference: dict[str, Any]) -> None:
-        key = (str(reference.get("source_label") or ""), str(reference.get("source_url") or ""))
-        if not key[0] or key in seen or len(references) >= MAX_MACRO_REFERENCES:
-            return
-        seen.add(key)
-        references.append(dict(reference))
-
     for domain in selected:
         for reference in packets.get(domain, {}).get("references", []) or []:
-            if str(reference.get("source_label") or "").strip():
-                add_reference(reference)
-                break
-    for domain in selected:
-        for reference in packets.get(domain, {}).get("references", []) or []:
-            add_reference(reference)
+            key = (str(reference.get("source_label") or ""), str(reference.get("source_url") or ""))
+            if not key[0] or key in seen:
+                continue
+            seen.add(key)
+            references.append(dict(reference))
             if len(references) >= MAX_MACRO_REFERENCES:
                 break
         if len(references) >= MAX_MACRO_REFERENCES:
             break
 
-    fact_index = evidence_fact_index(packets)
-    fact_ids: list[str] = []
-    for sentence in [read_model.headline, *read_model.analysis]:
-        for fact_id in sentence.fact_ids:
-            if fact_id not in fact_ids:
-                fact_ids.append(fact_id)
+    cited_events = [str(event_id) for passage in passages for event_id in passage.event_ids]
+    references = _merge_references(references, cited_events, dict(event_references or {}))[:MAX_MACRO_REFERENCES]
+
+    fact_index: dict[str, dict[str, Any]] = {}
+    for packet in packets.values():
+        for fact in packet.get("facts", []) or []:
+            if isinstance(fact, dict) and fact.get("id"):
+                fact_index[str(fact["id"])] = dict(fact)
     evidence = [
         {
             "fact_id": fact_id,
@@ -194,21 +181,22 @@ def _macro_public_read(
         }
         for fact_id in fact_ids[:3]
     ]
-    sentences = [item.text for item in read_model.analysis]
-    paragraphs = [
-        " ".join(sentence.text for sentence in paragraph.sentences)
-        for paragraph in read_model.paragraphs
-    ]
+    paragraphs = [str(paragraph.text or "").strip() for paragraph in read_model.paragraphs]
+    analysis = " ".join(paragraphs)
+    sentences = [sentence for paragraph in paragraphs for sentence in _split_sentences(paragraph)]
     return {
         "domain": "macro",
         "label": DOMAIN_LABELS["macro"],
         "headline": read_model.headline.text,
-        "analysis": " ".join(sentences),
+        "analysis": analysis,
         "analysis_sentences": sentences,
         "analysis_paragraphs": paragraphs,
         "selected_domains": selected,
         "references": references,
-        "claim_support": _claim_rows(read_model),
+        "claim_support": [
+            _support_row("headline", read_model.headline),
+            *[_support_row(f"paragraphs[{index}]", paragraph) for index, paragraph in enumerate(read_model.paragraphs)],
+        ],
         "evidence": evidence,
         "evidence_snapshot_id": str(snapshot_id or ""),
         "generated_at": str(generated_at or ""),
@@ -349,7 +337,6 @@ def build_platform_reads(
     artifact: dict | None = None,
 ) -> tuple[dict[str, dict], dict[str, Any]]:
     stored = dict(artifact if artifact is not None else load_read_artifact())
-    evaluated = load_evaluated_state()
     artifact_validated = _artifact_is_validated(stored)
     artifact_publishable = _artifact_is_publishable(stored)
     publication = publication_lease_state(stored)
@@ -360,51 +347,30 @@ def build_platform_reads(
         snapshot = evidence_snapshot_id(packets)
     else:
         packet_dicts = dict(stored.get("evidence_packets") or {})
-        snapshot = str(
-            publication.get("current_evidence_snapshot_id")
-            or stored.get("evidence_snapshot_id")
-            or ""
-        )
+        snapshot = str(publication.get("current_evidence_snapshot_id") or stored.get("evidence_snapshot_id") or "")
 
     generated_snapshot = str(stored.get("evidence_snapshot_id") or "")
-    evaluated_snapshot = str(evaluated.get("evidence_snapshot_id") or "")
-    evaluation_contract_current = evaluated_state_matches_prompt(
-        evaluated,
-        prompt_versions(),
-    )
-    evidence_current = bool(
-        artifact_publishable and generated_snapshot and generated_snapshot == snapshot
-    )
+    evidence_current = bool(artifact_publishable and generated_snapshot and generated_snapshot == snapshot)
     publication_materiality = dict(publication.get("materiality") or {})
-    model_retained = publication_materiality.get("model_decision") == "retain_prior"
     evidence_materially_current = bool(
         evidence_current
         or (
             artifact_publishable
             and str(publication.get("current_evidence_snapshot_id") or "") == snapshot
-            and (publication_materiality.get("material") is False or model_retained)
+            and publication_materiality.get("material") is False
         )
     )
     publication_fresh = bool(artifact_publishable and publication.get("active"))
-    publication_active = bool(artifact_publishable)
 
-    if publication_active:
+    if artifact_publishable:
         reads = {
-            domain: dict(
-                (stored.get("reads") or {}).get(domain)
-                or _unavailable_read(domain, packet_dicts.get(domain, {}))
-            )
+            domain: dict((stored.get("reads") or {}).get(domain) or _unavailable_read(domain, packet_dicts.get(domain, {})))
             for domain in DOMAIN_ORDER
         }
-        reads["macro"] = dict(
-            (stored.get("reads") or {}).get("macro") or _unavailable_read("macro", {})
-        )
+        reads["macro"] = dict((stored.get("reads") or {}).get("macro") or _unavailable_read("macro", {}))
         status_name = "validated" if artifact_validated else str(stored.get("status") or "published_with_warnings")
     else:
-        reads = {
-            domain: _unavailable_read(domain, packet_dicts.get(domain, {}))
-            for domain in DOMAIN_ORDER
-        }
+        reads = {domain: _unavailable_read(domain, packet_dicts.get(domain, {})) for domain in DOMAIN_ORDER}
         reads["macro"] = _unavailable_read("macro", {})
         status_name = "missing" if not stored else "stale"
 
@@ -415,16 +381,12 @@ def build_platform_reads(
         "artifact_publishable": artifact_publishable,
         "evidence_current": evidence_current,
         "evidence_materially_current": evidence_materially_current,
-        "evaluation_current": bool(
-            evaluation_contract_current
-            and evaluated_snapshot
-            and evaluated_snapshot == snapshot
-        ),
-        "evaluation_contract_current": evaluation_contract_current,
-        "last_evaluation_status": str(evaluated.get("status") or ""),
-        "last_evaluation_decision": str(evaluated.get("decision") or ""),
-        "evaluated_evidence_snapshot_id": evaluated_snapshot,
-        "publication_active": publication_active,
+        "evaluation_current": False,
+        "evaluation_contract_current": False,
+        "last_evaluation_status": "",
+        "last_evaluation_decision": "",
+        "evaluated_evidence_snapshot_id": "",
+        "publication_active": artifact_publishable,
         "publication_fresh": publication_fresh,
         "publication": publication,
         "evidence_snapshot_id": snapshot,
@@ -448,8 +410,7 @@ def _attempt_base(
     attempt_id: str,
     snapshot: str,
     packets: dict[str, dict],
-    capsules: dict[str, Any],
-    required_domains: list[str],
+    briefing: dict[str, Any],
     candidate_domains: list[str],
     bootstrap: bool,
     config: OpenAIConfig,
@@ -465,9 +426,8 @@ def _attempt_base(
         "max_output_tokens": config.max_output_tokens,
         "prompt_versions": prompt_versions(),
         "evidence_packets": packets,
-        "signal_capsules": {key: value for key, value in capsules.items() if key != "fact_history"},
-        "required_update_domains": list(required_domains),
-        "candidate_update_domains": list(candidate_domains),
+        "editorial_briefing": briefing,
+        "candidate_domains": list(candidate_domains),
         "bootstrap": bool(bootstrap),
         "generation": {},
         "generated_output": {},
@@ -492,7 +452,6 @@ def _store_stage(
 ) -> None:
     generated = model.model_dump(mode="json")
     attempt["generated_output"] = {"editorial_synthesis": generated}
-    attempt["model_decision"] = str(generated.get("decision") or "")
     attempt["generation"] = {"editorial_synthesis": metadata.to_dict()}
     attempt["raw_responses"] = {"editorial_synthesis": metadata.response_payload}
     attempt["stage_prompt_versions"] = {
@@ -556,7 +515,6 @@ def _generation_failure(
     _save_attempt(attempt, persist=persist)
     return {
         "status": status,
-        "model_decision": str(attempt.get("model_decision") or ""),
         "stage": "editorial_synthesis",
         "attempt_id": str(attempt.get("attempt_id") or ""),
         "evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
@@ -565,37 +523,8 @@ def _generation_failure(
         "generation": dict(attempt.get("generation") or {}),
         "generated_output": dict(attempt.get("generated_output") or {}),
         "raw_responses": dict(attempt.get("raw_responses") or {}),
+        "refresh_plan": dict(attempt.get("refresh_plan") or {}),
     }
-
-
-def _persist_completed_evaluation(
-    *,
-    attempt: dict[str, Any],
-    snapshot: str,
-    packets: dict[str, Any],
-    capsules: dict[str, Any],
-    decision: str,
-    decision_reason: str,
-    analytical_state: dict[str, Any] | None,
-    validation: dict[str, Any],
-    status: str,
-    persist: bool,
-) -> dict[str, Any]:
-    state = build_evaluated_state(
-        snapshot_id=snapshot,
-        packets=packets,
-        capsules=capsules,
-        attempt_id=str(attempt.get("attempt_id") or ""),
-        decision=decision,
-        decision_reason=decision_reason,
-        analytical_state=analytical_state,
-        validation=validation,
-        status=status,
-        prompt_versions=dict(attempt.get("prompt_versions") or {}),
-    )
-    if persist:
-        persist_evaluated_state(state)
-    return state
 
 
 def _merge_reads(
@@ -603,6 +532,7 @@ def _merge_reads(
     prior_artifact: dict[str, Any],
     synthesis: GeneratedEditorialSynthesis,
     packets: dict[str, dict],
+    current_context: dict[str, Any] | None,
     snapshot: str,
     generated_at: str,
 ) -> dict[str, dict]:
@@ -611,21 +541,22 @@ def _merge_reads(
         for key, value in dict(prior_artifact.get("reads") or {}).items()
         if isinstance(value, dict)
     }
+    event_references = _event_reference_index(current_context)
     for model in synthesis.domain_reads:
         reads[model.domain] = _domain_public_read(
             model,
             packets[model.domain],
+            event_references=event_references,
             snapshot_id=snapshot,
             generated_at=generated_at,
         )
     missing = [domain for domain in DOMAIN_ORDER if not reads.get(domain)]
     if missing:
         raise ValueError("Published synthesis lacks domain Reads: " + ", ".join(missing))
-    if synthesis.macro_read is None:
-        raise ValueError("Published synthesis lacks its Macro Read.")
     reads["macro"] = _macro_public_read(
         synthesis.macro_read,
         packets,
+        event_references=event_references,
         snapshot_id=snapshot,
         generated_at=generated_at,
     )
@@ -637,7 +568,6 @@ def _publish_artifact(
     attempt: dict[str, Any],
     reads: dict[str, dict],
     validation: dict[str, Any],
-    analytical_state: dict[str, Any],
     config: OpenAIConfig,
     status: str,
     persist: bool,
@@ -645,27 +575,35 @@ def _publish_artifact(
     generated_at = datetime.now(timezone.utc).isoformat()
     artifact = {
         "status": status,
-        "model_decision": "publish",
         "attempt_id": str(attempt.get("attempt_id") or ""),
         "evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
-        "evaluated_evidence_snapshot_id": str(attempt.get("evidence_snapshot_id") or ""),
         "generated_at": generated_at,
         "model": config.model,
         "reasoning_effort": config.reasoning_effort,
         "max_output_tokens": config.max_output_tokens,
         "prompt_versions": dict(attempt.get("prompt_versions") or prompt_versions()),
         "stage_prompt_versions": dict(attempt.get("stage_prompt_versions") or {}),
-        "capsule_architecture_version": CAPSULE_ARCHITECTURE_VERSION,
         "validation": validation,
         "generation": dict(attempt.get("generation") or {}),
         "raw_responses": dict(attempt.get("raw_responses") or {}),
         "evidence_packets": dict(attempt.get("evidence_packets") or {}),
-        "analytical_state": dict(analytical_state or {}),
+        "editorial_briefing_version": str((attempt.get("prompt_versions") or {}).get("briefing") or ""),
+        "editorial_context_event_ids": [
+            str(event.get("event_id") or "")
+            for event in (attempt.get("editorial_briefing") or {}).get("recent_developments", []) or []
+            if isinstance(event, dict) and event.get("event_id")
+        ],
+        "editorial_candidate_domains": list(attempt.get("candidate_domains") or []),
+        "editorial_update_domains": [
+            str(item.get("domain") or "")
+            for item in (((attempt.get("generated_output") or {}).get("editorial_synthesis") or {}).get("domain_reads") or [])
+            if isinstance(item, dict) and item.get("domain")
+        ],
+        "editorial_refresh_plan": dict(attempt.get("refresh_plan") or {}),
         "reads": reads,
         "service_version": READ_SERVICE_VERSION,
     }
     attempt["status"] = "completed_unpublished"
-    attempt["model_decision"] = "publish"
     attempt["stage"] = "publication"
     attempt["validation"] = validation
     attempt["published_artifact"] = artifact
@@ -687,84 +625,82 @@ def generate_validated_read_artifact(
     client: Any | None = None,
     persist: bool = True,
     materiality: dict[str, Any] | None = None,
+    force_preview: bool = False,
 ) -> dict[str, Any]:
-    """Run one editorial call; never issue a validator- or stage-triggered retry."""
+    """Generate one publication candidate; reject bad output without retrying or replacing the prior Read."""
     packets = build_evidence_packets(context)
     packet_dicts = _packet_dicts(packets)
     snapshot = evidence_snapshot_id(packets)
     prior_artifact = load_read_artifact()
-    active_prompt_versions = prompt_versions()
-    prior_evaluated = load_evaluated_state()
-    if not evaluated_state_matches_prompt(prior_evaluated, active_prompt_versions):
-        prior_evaluated = {}
-    baseline = prior_evaluated if prior_evaluated.get("evidence_packets") else prior_artifact
-    comparison = dict(materiality or compare_evidence_materiality(
-        baseline.get("evidence_packets"),
-        packet_dicts,
-        previous_snapshot_id=str(baseline.get("evidence_snapshot_id") or ""),
-        current_snapshot_id=snapshot,
-    ))
     bootstrap = not _artifact_is_publishable(prior_artifact)
-    publication_comparison = compare_evidence_materiality(
+    comparison = dict(materiality or compare_evidence_materiality(
         prior_artifact.get("evidence_packets"),
         packet_dicts,
         previous_snapshot_id=str(prior_artifact.get("evidence_snapshot_id") or ""),
         current_snapshot_id=snapshot,
-    )
-    required = (
-        list(DOMAIN_ORDER)
-        if bootstrap
-        else required_update_domains(prior_artifact, publication_comparison)
-    )
-    capsule_materiality = _editorial_materiality(
+    ))
+    refresh_plan = editorial_refresh_plan(
         comparison,
-        publication_comparison,
-        required_domains=required,
-    )
-    candidates = list(DOMAIN_ORDER) if bootstrap else materially_changed_domains(comparison)
-    for domain in required:
-        if domain not in candidates:
-            candidates.append(domain)
-    candidates = [domain for domain in DOMAIN_ORDER if domain in candidates]
-    observed_at = datetime.now(timezone.utc).isoformat()
-    capsules = build_signal_capsules(
-        packet_dicts,
-        snapshot_id=snapshot,
-        materiality=capsule_materiality,
-        prior_state=prior_evaluated,
+        current_context=context.current_context,
         prior_artifact=prior_artifact,
-        observed_at=observed_at,
+        bootstrap=bootstrap,
     )
-    previous = prior_publication_payload(
-        prior_artifact,
-        relevant_domains=list(dict.fromkeys([*required, *candidates])),
+    candidates = [
+        domain for domain in DOMAIN_ORDER
+        if domain in set(refresh_plan.get("candidate_domains") or [])
+    ]
+    if force_preview and not bootstrap:
+        if not candidates:
+            candidates = list(DOMAIN_ORDER)
+        refresh_plan = {
+            **refresh_plan,
+            "refresh_needed": True,
+            "candidate_domains": list(candidates),
+            "reason": "owner_preview",
+        }
+
+    if not refresh_plan.get("refresh_needed") and not bootstrap:
+        renewed = reapply_last_read(
+            persist=persist,
+            source="service_no_editorial_change_reapply",
+            current_evidence_snapshot_id=snapshot,
+            materiality=comparison,
+        )
+        return {
+            "status": "retained_prior",
+            "stage": "publication",
+            "attempt_id": "",
+            "evidence_snapshot_id": snapshot,
+            "validation": {},
+            "refresh_plan": refresh_plan,
+            "publication": dict(renewed.get("publication") or {}),
+            "reads": dict(renewed.get("reads") or {}),
+        }
+
+    briefing = build_editorial_briefing(
+        packet_dicts,
+        current_context=context.current_context,
+        materiality=comparison,
+        prior_artifact=prior_artifact,
+        candidate_domains=candidates,
+        bootstrap=bootstrap,
+        new_event_ids=list(refresh_plan.get("new_event_ids") or []),
     )
     attempt = _attempt_base(
         attempt_id=new_attempt_id(evidence_snapshot_id=snapshot),
         snapshot=snapshot,
         packets=packet_dicts,
-        capsules=capsules,
-        required_domains=required,
+        briefing=briefing,
         candidate_domains=candidates,
         bootstrap=bootstrap,
         config=config,
     )
     attempt["materiality"] = comparison
-    attempt["publication_gap_materiality"] = publication_comparison
-    attempt["editorial_materiality"] = capsule_materiality
+    attempt["refresh_plan"] = refresh_plan
     synthesis, raw_text = _call_stage(
         attempt,
         call=lambda: generate_editorial_synthesis(
-            capsules=capsules,
-            prior_publication=previous,
-            prior_analytical_state=dict(
-                prior_evaluated.get("analytical_state")
-                or prior_artifact.get("analytical_state")
-                or {}
-            ),
-            required_update_domains=required,
-            candidate_update_domains=candidates,
-            bootstrap=bootstrap,
+            briefing=briefing,
             config=config,
             client=client,
         ),
@@ -775,94 +711,28 @@ def generate_validated_read_artifact(
             validation = {
                 "passed": False,
                 "hard_errors": ["Completed response did not conform to the editorial schema."],
+                "hard_failures": [{
+                    "label": "editorial_synthesis",
+                    "reason": "unparseable",
+                    "message": "Completed response did not conform to the editorial schema.",
+                }],
+                "diagnostics": [],
                 "validator_version": EDITORIAL_VALIDATOR_VERSION,
             }
             attempt["validation"] = validation
-            _persist_completed_evaluation(
-                attempt=attempt,
-                snapshot=snapshot,
-                packets=packet_dicts,
-                capsules=capsules,
-                decision="",
-                decision_reason="Completed response was not parseable.",
-                analytical_state={},
-                validation=validation,
-                status="rejected_unparseable",
-                persist=persist,
-            )
             return _generation_failure(attempt, status="rejected_unparseable", persist=persist)
         return _generation_failure(attempt, status="generation_failed", persist=persist)
 
     validation = validate_editorial_synthesis(
         synthesis,
         packet_dicts,
-        required_update_domains=required,
-        candidate_update_domains=candidates,
-        allowed_fact_ids={
-            str(fact.get("fact_id") or "")
-            for capsule in (capsules.get("capsules") or [])
-            if isinstance(capsule, dict)
-            for fact in (capsule.get("facts") or [])
-            if isinstance(fact, dict) and fact.get("fact_id")
-        },
+        briefing=briefing,
+        candidate_domains=candidates,
         bootstrap=bootstrap,
     )
     attempt["validation"] = validation
-    analytical_state = synthesis.analytical_state.model_dump(mode="json")
-    evaluated_status = (
-        "retained_prior"
-        if validation.get("passed") and synthesis.decision == "retain_prior"
-        else "publishable"
-        if validation.get("passed")
-        else "rejected_hard_validation"
-    )
-    _persist_completed_evaluation(
-        attempt=attempt,
-        snapshot=snapshot,
-        packets=packet_dicts,
-        capsules=capsules,
-        decision=synthesis.decision,
-        decision_reason=synthesis.decision_reason,
-        analytical_state=analytical_state,
-        validation=validation,
-        status=evaluated_status,
-        persist=persist,
-    )
-
     if not validation.get("passed"):
-        attempt["status"] = "rejected_hard_validation"
-        attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
-        _save_attempt(attempt, persist=persist)
         return _generation_failure(attempt, status="rejected_hard_validation", persist=persist)
-
-    if synthesis.decision == "retain_prior":
-        decision_materiality = {
-            **comparison,
-            "model_decision": "retain_prior",
-            "model_decision_reason": synthesis.decision_reason,
-        }
-        renewed = reapply_last_read(
-            persist=persist,
-            source="model_retain_prior",
-            current_evidence_snapshot_id=snapshot,
-            materiality=decision_materiality,
-        )
-        attempt["status"] = "completed_retain_prior"
-        attempt["stage"] = "publication"
-        attempt["finished_at"] = datetime.now(timezone.utc).isoformat()
-        _save_attempt(attempt, persist=persist)
-        return {
-            "status": "retained_prior",
-            "model_decision": "retain_prior",
-            "stage": "publication",
-            "attempt_id": str(attempt.get("attempt_id") or ""),
-            "evidence_snapshot_id": snapshot,
-            "decision_reason": synthesis.decision_reason,
-            "validation": validation,
-            "generation": dict(attempt.get("generation") or {}),
-            "publication": dict(renewed.get("publication") or {}),
-            "reads": dict(renewed.get("reads") or {}),
-        }
 
     generated_at = datetime.now(timezone.utc).isoformat()
     try:
@@ -870,6 +740,7 @@ def generate_validated_read_artifact(
             prior_artifact=prior_artifact,
             synthesis=synthesis,
             packets=packet_dicts,
+            current_context=context.current_context,
             snapshot=snapshot,
             generated_at=generated_at,
         )
@@ -877,23 +748,13 @@ def generate_validated_read_artifact(
         validation = dict(validation)
         validation["passed"] = False
         validation.setdefault("hard_errors", []).append(str(exc))
+        validation.setdefault("hard_failures", []).append({
+            "label": "publication",
+            "reason": "structural_merge",
+            "message": str(exc),
+        })
         attempt["validation"] = validation
         attempt["error"] = {"type": type(exc).__name__, "message": str(exc)}
-        # The typed response completed, so the evidence snapshot remains
-        # evaluated; correct the provisional state to record that publication
-        # was rejected at the final structural merge gate.
-        _persist_completed_evaluation(
-            attempt=attempt,
-            snapshot=snapshot,
-            packets=packet_dicts,
-            capsules=capsules,
-            decision=synthesis.decision,
-            decision_reason=synthesis.decision_reason,
-            analytical_state=analytical_state,
-            validation=validation,
-            status="rejected_hard_validation",
-            persist=persist,
-        )
         return _generation_failure(attempt, status="rejected_hard_validation", persist=persist)
 
     status = "published_with_warnings" if validation.get("diagnostics") else "validated"
@@ -901,7 +762,6 @@ def generate_validated_read_artifact(
         attempt=attempt,
         reads=reads,
         validation=validation,
-        analytical_state=analytical_state,
         config=config,
         status=status,
         persist=persist,

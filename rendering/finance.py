@@ -471,8 +471,8 @@ def _render_commercial_realization(commercialization_data):
         return
 
     render_section(
-        "Reported AI revenue and demand",
-        "AI-related revenue, backlog, and operating scale from primary company disclosures.",
+        "Company AI disclosures",
+        "Reported AI revenue, backlog, margins, and demand indicators from company disclosures.",
     )
     render_summary_row(
         [
@@ -519,7 +519,7 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
     inject_panel_height_rules({})
     render_tab_header(
         "Finance",
-        "Funding capacity, reported AI revenue and demand, private-market cash returns, credit conditions, and balance-sheet stress.",
+        "Cash flow, capital spending, debt, commitments, credit conditions, and private-fund returns.",
         "SEC / company disclosures / CalSTRS / ILPA / FRED / New York Fed / Chicago Fed",
     )
     _render_floating_terms("finance")
@@ -527,28 +527,28 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
 
     render_section(
         "Funding capacity",
-        "Internal funding capacity, cash reserves, debt formation, and future commitments.",
+        "Operating cash flow, cash reserves, debt change, and disclosed commitments relative to capital spending.",
         first=True,
     )
     _render_funding_section(regime_metrics)
     _render_commercial_realization(commercialization_data)
 
     render_section(
-        "Private-market cash returns",
-        "Cash distributions and remaining NAV across technology and AI-adjacent private funds.",
+        "Private-fund cash returns",
+        "Distributions and remaining NAV for technology and AI-adjacent funds in the retained sample.",
     )
     _render_private_capital_realization()
 
     render_section(
         "Credit conditions",
-        "Corporate-bond stress and the Chicago Fed financial-conditions indexes.",
+        "Corporate-bond distress and Chicago Fed financial-conditions indexes.",
     )
     _render_debt_markets(debt_markets_data)
     _render_nfci(fred_data, nfci_history)
 
     render_section(
         "Borrower and lender stress",
-        "Borrower balance sheets and lender credit channels.",
+        "Borrower balance-sheet strain and lender-side credit indicators.",
     )
     trends = (dashboard_data or {}).get("trends", {}) or {}
     borrower_strain = (regime_metrics or {}).get("Borrower Strain Components", {}) or {}
