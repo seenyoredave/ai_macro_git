@@ -231,9 +231,31 @@ def _reviewed_debt_pair(
     return _row(current), _row(prior), None
 
 
-def _reconcile_snapshot_debt(frame: pd.DataFrame, *, ticker: str, debt_row: dict) -> None:
-    """Replace generic Companyfacts debt fields with the matched debt result."""
+def _snapshot_mask(
+    frame: pd.DataFrame,
+    *,
+    ticker: str,
+    observation_date: str | date | pd.Timestamp | None = None,
+) -> pd.Series:
     mask = frame["Ticker"].astype(str).str.upper().eq(str(ticker).upper())
+    if observation_date is None or "Date" not in frame.columns:
+        return mask
+    target = pd.to_datetime(observation_date, errors="coerce")
+    if pd.isna(target):
+        return mask & False
+    dates = pd.to_datetime(frame["Date"], errors="coerce", format="mixed")
+    return mask & dates.dt.normalize().eq(pd.Timestamp(target).normalize())
+
+
+def _reconcile_snapshot_debt(
+    frame: pd.DataFrame,
+    *,
+    ticker: str,
+    debt_row: dict,
+    observation_date: str | date | pd.Timestamp | None = None,
+) -> None:
+    """Replace generic debt fields only in the intended observation row."""
+    mask = _snapshot_mask(frame, ticker=ticker, observation_date=observation_date)
     if not mask.any():
         return
     debt_value = pd.to_numeric(debt_row.get("Debt"), errors="coerce")
@@ -244,6 +266,21 @@ def _reconcile_snapshot_debt(frame: pd.DataFrame, *, ticker: str, debt_row: dict
     frame.loc[mask, "Debt Definition"] = debt_row.get("Definition")
     cash = pd.to_numeric(frame.loc[mask, "Cash"], errors="coerce")
     frame.loc[mask, "Net Debt"] = float(debt_value) - cash
+
+
+def _clear_snapshot_debt(
+    frame: pd.DataFrame,
+    *,
+    ticker: str,
+    observation_date: str | date | pd.Timestamp | None = None,
+) -> None:
+    """Remove debt-dependent values when no comparable debt pair is available."""
+    mask = _snapshot_mask(frame, ticker=ticker, observation_date=observation_date)
+    if not mask.any():
+        return
+    for column in ("Total Debt", "Net Debt", "Debt Period End", "Debt Definition"):
+        if column in frame.columns:
+            frame.loc[mask, column] = np.nan
 
 
 def _reasonable_transition(previous_value, new_value) -> bool:
@@ -325,6 +362,8 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
         facts = companyfacts_by_ticker.get(ticker)
         if facts is None:
             debt_errors[ticker] = "Companyfacts unavailable during Finance derivative refresh"
+            _clear_snapshot_debt(current_frame, ticker=ticker, observation_date=observation)
+            _clear_snapshot_debt(fundamentals, ticker=ticker, observation_date=observation)
             continue
         current_snapshot = next(row for row in current_rows if row["Ticker"] == ticker)
         current_debt, prior_debt, match_error = _matched_debt_pair(
@@ -351,6 +390,8 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
                     "or a filing-reviewed retained pair"
                     + (f": {'; reviewed fallback: '.join(details)}" if details else "")
                 )
+                _clear_snapshot_debt(current_frame, ticker=ticker, observation_date=observation)
+                _clear_snapshot_debt(fundamentals, ticker=ticker, observation_date=observation)
                 continue
             used_reviewed_fallback = True
 
@@ -366,11 +407,23 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
                 f"Debt transition failed corruption guard: retained={previous_value}, "
                 f"refreshed={current_debt['Debt']}"
             )
+            _clear_snapshot_debt(current_frame, ticker=ticker, observation_date=observation)
+            _clear_snapshot_debt(fundamentals, ticker=ticker, observation_date=observation)
             continue
         current_debt.pop("_tags", None)
         prior_debt.pop("_tags", None)
-        _reconcile_snapshot_debt(current_frame, ticker=ticker, debt_row=current_debt)
-        _reconcile_snapshot_debt(fundamentals, ticker=ticker, debt_row=current_debt)
+        _reconcile_snapshot_debt(
+            current_frame,
+            ticker=ticker,
+            debt_row=current_debt,
+            observation_date=observation,
+        )
+        _reconcile_snapshot_debt(
+            fundamentals,
+            ticker=ticker,
+            debt_row=current_debt,
+            observation_date=observation,
+        )
         if used_reviewed_fallback:
             reviewed_debt_tickers.append(ticker)
         else:
@@ -397,12 +450,11 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
     atomic_write_csv(fundamentals, FUNDAMENTALS_PATH)
     atomic_write_csv(combo, DEBT_OBSERVATIONS_PATH)
 
-    all_errors = dict(errors)
-    all_errors.update({f"debt:{k}": v for k, v in debt_errors.items()})
     updated_debt_tickers = sorted({row["Ticker"] for row in debt_updates})
     reviewed_debt_tickers = sorted(set(reviewed_debt_tickers))
     covered_debt_tickers = sorted(set(updated_debt_tickers) | set(reviewed_debt_tickers))
     unresolved_debt_tickers = sorted(set(definitions) - set(covered_debt_tickers))
+    debt_warnings = {f"debt:{ticker}": message for ticker, message in sorted(debt_errors.items())}
     return {
         "status": "written",
         "observation_date": date_text,
@@ -412,5 +464,7 @@ def refresh_borrower_finance_derivatives(*, refresh_token: int, observation_date
         "debt_updated_tickers": updated_debt_tickers,
         "debt_reviewed_tickers": reviewed_debt_tickers,
         "debt_unresolved_tickers": unresolved_debt_tickers,
-        "errors": all_errors,
+        "debt_coverage_status": "reduced" if unresolved_debt_tickers else "complete",
+        "warnings": debt_warnings,
+        "errors": dict(errors),
     }

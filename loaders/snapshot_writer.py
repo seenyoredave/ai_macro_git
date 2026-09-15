@@ -268,6 +268,8 @@ def persist_refresh_snapshots(
                             "EDGAR refreshed, but the 10-company Finance derivative cohort "
                             "was incomplete and retained derivatives were not advanced."
                         )
+                    for key, message in (finance_report.get("warnings") or {}).items():
+                        report_warnings[f"finance:{key}"] = str(message)
                     for key, message in (finance_report.get("errors") or {}).items():
                         errors[f"finance:{key}"] = str(message)
                 except Exception as exc:

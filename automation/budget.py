@@ -8,9 +8,7 @@ from typing import Any
 from automation.ledger import (
     complete_paid_call,
     mark_paid_call_submitted,
-    paid_calls_for_local_date,
     reserve_paid_call,
-    today_local_date,
 )
 
 
@@ -23,26 +21,26 @@ class PaidCallGuard:
     run_id: str
     max_per_run: int
     max_per_day: int
-    calls_this_run: int = 0
+    requests_this_run: int = 0
 
     def reserve(self, stage: str) -> str:
-        if self.calls_this_run >= self.max_per_run:
+        if self.requests_this_run >= self.max_per_run:
             raise PaidCallBudgetExceeded(
-                f"Paid-call run ceiling reached ({self.calls_this_run}/{self.max_per_run})."
+                f"OpenAI request ceiling reached ({self.requests_this_run}/{self.max_per_run}) for this run."
             )
-        local_date = today_local_date()
-        daily = paid_calls_for_local_date(local_date)
-        if daily >= self.max_per_day:
-            raise PaidCallBudgetExceeded(
-                f"Paid-call daily ceiling reached ({daily}/{self.max_per_day}) for {local_date}."
+        try:
+            call_id = reserve_paid_call(
+                run_id=self.run_id,
+                stage=stage,
+                max_per_day=self.max_per_day,
             )
-        call_id = reserve_paid_call(run_id=self.run_id, stage=stage)
-        self.calls_this_run += 1
+        except RuntimeError as exc:
+            raise PaidCallBudgetExceeded(str(exc)) from exc
+        # The per-run request limit is independent of allowance consumption.
+        # A provider or transport failure may release the daily allowance slot,
+        # but it never authorizes a second OpenAI request in the same run.
+        self.requests_this_run += 1
         return call_id
-
-    def release(self) -> None:
-        """Release an in-run slot when a call returns no response."""
-        self.calls_this_run = max(0, self.calls_this_run - 1)
 
 
 class _BudgetedResponses:
@@ -64,7 +62,6 @@ class _BudgetedResponses:
             status="error",
             detail=detail,
         )
-        self._guard.release()
 
     def parse(self, *args: Any, **kwargs: Any) -> Any:
         format_name = str(getattr(kwargs.get("text_format"), "__name__", ""))

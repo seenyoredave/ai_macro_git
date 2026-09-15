@@ -189,6 +189,7 @@ def main() -> None:
             "status": "written",
             "fundamental_companies": 10,
             "debt_companies": 8,
+            "warnings": {},
             "errors": {},
         }
 
@@ -484,6 +485,33 @@ def main() -> None:
             raise AssertionError(f"EDGAR write report changed: {successful_edgar}")
         if "finance_fundamentals" not in (successful_edgar.get("written") or []):
             raise AssertionError(f"EDGAR refresh did not advance Finance derivatives: {successful_edgar}")
+
+        calls.clear()
+        snapshot_writer.refresh_borrower_finance_derivatives = lambda **kwargs: {
+            "status": "written",
+            "fundamental_companies": 10,
+            "debt_target_companies": 8,
+            "debt_companies": 6,
+            "debt_unresolved_tickers": ["ORCL", "SMCI"],
+            "debt_coverage_status": "reduced",
+            "warnings": {
+                "debt:ORCL": "current debt is not aligned to the current CapEx period",
+                "debt:SMCI": "current debt is not aligned to the current CapEx period",
+            },
+            "errors": {},
+        }
+        reduced_finance = snapshot_writer.persist_refresh_snapshots(
+            policy=LoadPolicy.refresh([RefreshSource.EDGAR]),
+            archive_suspended=False,
+            **successful_edgar_payloads,
+        )
+        if reduced_finance.get("status") != "written" or reduced_finance.get("errors"):
+            raise AssertionError(f"Reduced Finance debt coverage blocked snapshot publication: {reduced_finance}")
+        if set(reduced_finance.get("warnings") or {}) != {
+            "finance:debt:ORCL",
+            "finance:debt:SMCI",
+        }:
+            raise AssertionError(f"Reduced Finance debt coverage was not preserved as warnings: {reduced_finance}")
     finally:
         for name, value in originals.items():
             setattr(snapshot_writer, name, value)
@@ -499,6 +527,7 @@ def main() -> None:
     print("PASS  successful NY Fed refresh reports its loader-owned retained write")
     print("PASS  failed EDGAR refresh preserves retained dates")
     print("PASS  successful EDGAR refresh advances EDGAR + Finance derivatives")
+    print("PASS  reduced Finance debt coverage remains publishable and diagnostic")
 
 
 if __name__ == "__main__":

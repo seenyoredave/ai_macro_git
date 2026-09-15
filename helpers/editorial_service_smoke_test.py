@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 
 import analytics.read_service as service  # noqa: E402
 from analytics.read_models import GeneratedEditorialSynthesis  # noqa: E402
+from automation.runner import _publication_phase  # noqa: E402
 from config.openai_config import OpenAIConfig  # noqa: E402
 from helpers.editorial_pipeline_smoke_test import _Client, _model_payload  # noqa: E402
 
@@ -163,12 +164,30 @@ def main() -> None:
         "A later call was allowed to retain prose made stale by an earlier rejected evaluation",
     )
 
+    rejected_phase, rejected_result = _publication_phase({"status": "rejected_hard_validation"})
+    _check(
+        rejected_phase["status"] == "ready_with_editorial_rejection"
+        and rejected_phase["read_status"] == "last_good_read_retained_after_rejection"
+        and rejected_result == "publish_ready_with_editorial_fallback",
+        "Rejected editorial output was mislabeled as a successful Read refresh",
+    )
+    carried_phase, carried_result = _publication_phase({
+        "status": "skipped",
+        "reason": "completed_evaluation_rejected_no_automatic_retry",
+    })
+    _check(
+        carried_phase["editorial_refresh_status"] == "rejected"
+        and carried_result == "publish_ready_with_editorial_fallback",
+        "A prior rejected evaluation was mislabeled on a later no-retry publication",
+    )
+
     print(json.dumps({
         "status": "PASS",
         "publish_status": published["status"],
         "retain_status": retained["status"],
         "reject_status": rejected["status"],
         "stale_retain_status": stale_retain["status"],
+        "rejected_publication_status": rejected_phase["status"],
         "read_count": len(published["reads"]),
     }, indent=2))
 

@@ -74,7 +74,10 @@ def main() -> None:
             tmp = Path(tmp)
             refresh.FUNDAMENTALS_PATH = tmp / "fundamentals.csv"
             refresh.DEBT_OBSERVATIONS_PATH = tmp / "debt.csv"
-            pd.DataFrame(columns=refresh.FUNDAMENTAL_COLUMNS).to_csv(refresh.FUNDAMENTALS_PATH, index=False)
+            pd.DataFrame(
+                [_snapshot(ticker, current=False) for ticker in refresh.BORROWER_STRAIN_CIKS],
+                columns=refresh.FUNDAMENTAL_COLUMNS,
+            ).to_csv(refresh.FUNDAMENTALS_PATH, index=False)
             debt_seed = []
             for ticker in refresh.BORROWER_STRAIN_CIKS:
                 if ticker in {"IREN", "ANET"}:
@@ -129,6 +132,10 @@ def main() -> None:
                 raise AssertionError("Generic Companyfacts debt was not reconciled to matched debt")
             if not matched_current["Debt Definition"].astype(str).str.startswith("retained " ).all():
                 raise AssertionError("Matched debt definition was not written into Finance fundamentals")
+            historical = fundamentals.loc[fundamentals["Date"].astype(str).eq("2025-08-09")]
+            historical_matched = historical.loc[~historical["Ticker"].isin(["IREN", "ANET"])]
+            if not historical_matched["Total Debt"].eq(100.0).all():
+                raise AssertionError("Current debt reconciliation rewrote historical fundamentals")
 
             debt = pd.read_csv(refresh.DEBT_OBSERVATIONS_PATH)
             for ticker in set(refresh.BORROWER_STRAIN_CIKS) - {"IREN", "ANET"}:
@@ -141,6 +148,103 @@ def main() -> None:
 
             if report.get("debt_unresolved_tickers"):
                 raise AssertionError(f"Unexpected unresolved debt tickers: {report}")
+
+        # Production-shaped quarter roll: fresh flow metrics can advance before
+        # the issuer exposes a same-definition debt observation aligned within
+        # the 62-day window. That reduces debt coverage; it must not abort the
+        # full deterministic publication transaction or substitute generic debt.
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            refresh.FUNDAMENTALS_PATH = tmp / "fundamentals.csv"
+            refresh.DEBT_OBSERVATIONS_PATH = tmp / "debt.csv"
+            historical_rows = [_snapshot(ticker, current=True) for ticker in refresh.BORROWER_STRAIN_CIKS]
+            for row in historical_rows:
+                row["Date"] = "2026-08-21"
+            pd.DataFrame(historical_rows, columns=refresh.FUNDAMENTAL_COLUMNS).to_csv(
+                refresh.FUNDAMENTALS_PATH, index=False
+            )
+
+            debt_seed = []
+            for ticker in refresh.BORROWER_STRAIN_CIKS:
+                if ticker in {"IREN", "ANET"}:
+                    continue
+                if ticker == "ORCL":
+                    prior_period, current_period = "2025-05-31", "2026-05-31"
+                elif ticker == "SMCI":
+                    prior_period, current_period = "2025-03-31", "2026-03-31"
+                else:
+                    prior_period, current_period = "2025-06-30", "2026-06-30"
+                debt_seed.extend([
+                    {"Ticker": ticker, "Period End": prior_period, "Filing Date": prior_period, "Debt": 100.0,
+                     "Definition": f"retained {ticker}", "Source URL": "retained", "Evidence Note": "filing reviewed"},
+                    {"Ticker": ticker, "Period End": current_period, "Filing Date": current_period, "Debt": 120.0,
+                     "Definition": f"retained {ticker}", "Source URL": "retained", "Evidence Note": "filing reviewed"},
+                ])
+            pd.DataFrame(debt_seed).to_csv(refresh.DEBT_OBSERVATIONS_PATH, index=False)
+
+            refresh.fetch_company_facts = lambda cik, refresh_token=0: {"cik": cik}
+
+            def quarter_roll_build(ticker, facts, cutoff, frequency):
+                row = _snapshot(ticker, current=True)
+                row["Date"] = "2026-09-14"
+                if ticker == "ORCL":
+                    row["CapEx Period End"] = "2026-08-31"
+                elif ticker == "SMCI":
+                    row["CapEx Period End"] = "2026-06-30"
+                return row
+
+            refresh.build_company_snapshot = quarter_roll_build
+
+            def quarter_roll_match(*, ticker, debt_definition, **kwargs):
+                if ticker in {"ORCL", "SMCI"}:
+                    return None, None, "no same-definition debt pair aligned to the current CapEx period"
+                current_fact = types.SimpleNamespace(
+                    value=120.0,
+                    period_end=pd.Timestamp("2026-06-30"),
+                    filed=pd.Timestamp("2026-07-30"),
+                    tags=("LongTermDebtCurrent", "LongTermDebtNoncurrent"),
+                )
+                prior_fact = types.SimpleNamespace(
+                    value=100.0,
+                    period_end=pd.Timestamp("2025-06-30"),
+                    filed=pd.Timestamp("2025-07-30"),
+                    tags=("LongTermDebtCurrent", "LongTermDebtNoncurrent"),
+                )
+                source = f"https://data.sec.gov/{ticker}"
+                return (
+                    refresh._debt_fact_row(ticker=ticker, fact=current_fact, debt_definition=debt_definition, source_url=source),
+                    refresh._debt_fact_row(ticker=ticker, fact=prior_fact, debt_definition=debt_definition, source_url=source),
+                    None,
+                )
+
+            refresh._matched_debt_pair = quarter_roll_match
+            report = refresh.refresh_borrower_finance_derivatives(
+                refresh_token=18, observation_date="2026-09-14"
+            )
+            if report.get("status") != "written" or report.get("errors"):
+                raise AssertionError(f"Quarter-roll coverage gap became a fatal refresh: {report}")
+            if report.get("debt_coverage_status") != "reduced":
+                raise AssertionError(f"Reduced debt coverage was not surfaced: {report}")
+            if report.get("debt_unresolved_tickers") != ["ORCL", "SMCI"]:
+                raise AssertionError(f"Quarter-roll unresolved cohort changed: {report}")
+            if set((report.get("warnings") or {})) != {"debt:ORCL", "debt:SMCI"}:
+                raise AssertionError(f"Quarter-roll warnings were not isolated to debt coverage: {report}")
+
+            fundamentals = pd.read_csv(refresh.FUNDAMENTALS_PATH)
+            current = fundamentals.loc[fundamentals["Date"].astype(str).eq("2026-09-14")]
+            unresolved = current.loc[current["Ticker"].isin(["ORCL", "SMCI"])]
+            if not unresolved["Total Debt"].isna().all() or not unresolved["Net Debt"].isna().all():
+                raise AssertionError("Unresolved quarter-roll debt leaked generic Companyfacts values")
+            if not unresolved["Debt Period End"].isna().all() or not unresolved["Debt Definition"].isna().all():
+                raise AssertionError("Unresolved quarter-roll debt retained incompatible debt metadata")
+            if not unresolved["CapEx"].eq(40.0).all() or not unresolved["Revenue"].eq(1000.0).all():
+                raise AssertionError("Reduced debt coverage discarded valid non-debt fundamentals")
+            historical = fundamentals.loc[
+                fundamentals["Date"].astype(str).eq("2026-08-21")
+                & fundamentals["Ticker"].isin(["ORCL", "SMCI"])
+            ]
+            if not historical["Total Debt"].eq(120.0).all():
+                raise AssertionError("Quarter-roll handling mutated prior retained debt history")
 
         # Regression: a current filing may expose a newer high-priority debt tag
         # that was absent a year earlier.  The refresh must fall through to one
@@ -213,6 +317,8 @@ def main() -> None:
     print("PASS  matched debt reconciles generic Companyfacts debt fields in retained Finance fundamentals")
     print("PASS  EDGAR refresh token reaches Companyfacts cache key")
     print("PASS  debt refresh falls through to one common current/prior XBRL definition")
+    print("PASS  current debt reconciliation leaves historical fundamentals unchanged")
+    print("PASS  ORCL/SMCI-style quarter rolls publish with explicit reduced debt coverage")
     retained_mix = calculate_deployment_funding_mix({})
     if int(retained_mix.get("current", {}).get("debt_financing_companies") or 0) != 8:
         raise AssertionError(f"Packaged retained debt cohort is not 8/8: {retained_mix.get('current', {})}")

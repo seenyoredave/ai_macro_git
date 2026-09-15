@@ -29,6 +29,9 @@ from automation.ledger import (
     append_run,
     new_run_id,
     paid_calls_for_local_date,
+    paid_calls_for_run,
+    request_attempts_for_run,
+    submitted_requests_for_run,
     today_local_date,
     write_status,
 )
@@ -97,6 +100,8 @@ def _base_status(*, run_id: str, config: AutomationConfig, started_at: str) -> d
         "auto_publish": config.auto_publish,
         "paid_calls": {
             "this_run": 0,
+            "request_attempts_this_run": 0,
+            "submitted_requests_this_run": 0,
             "today_before_run": paid_calls_for_local_date(today_local_date()),
             "run_ceiling": config.max_paid_calls_per_run,
             "daily_ceiling": config.max_paid_calls_per_day,
@@ -112,13 +117,40 @@ def _finish(status: dict[str, Any], *, result: str, publish_ready: bool = False)
     status["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
     today = today_local_date()
     status["paid_calls"]["today_after_run"] = paid_calls_for_local_date(today)
-    status["paid_calls"]["this_run"] = max(
-        0,
-        int(status["paid_calls"]["today_after_run"]) - int(status["paid_calls"]["today_before_run"]),
-    )
+    run_id = str(status.get("run_id") or "")
+    status["paid_calls"]["this_run"] = paid_calls_for_run(run_id)
+    status["paid_calls"]["request_attempts_this_run"] = request_attempts_for_run(run_id)
+    status["paid_calls"]["submitted_requests_this_run"] = submitted_requests_for_run(run_id)
     write_status(status)
     append_run(status)
     print(json.dumps(status, indent=2, sort_keys=True, default=str), flush=True)
+
+
+def _publication_phase(openai_phase: dict[str, Any]) -> tuple[dict[str, str], str]:
+    editorial_status = str(openai_phase.get("status") or "")
+    reason = str(openai_phase.get("reason") or "")
+    rejected = editorial_status in {"rejected_hard_validation", "rejected_unparseable"}
+    rejected = rejected or reason == "completed_evaluation_rejected_no_automatic_retry"
+    if rejected:
+        return ({
+            "status": "ready_with_editorial_rejection",
+            "read_status": "last_good_read_retained_after_rejection",
+            "editorial_refresh_status": "rejected",
+            "transaction_boundary": "git_commit",
+        }, "publish_ready_with_editorial_fallback")
+    if editorial_status == "retained_prior":
+        return ({
+            "status": "ready_with_prior_commentary",
+            "read_status": "prior_read_retained",
+            "editorial_refresh_status": "retained_prior",
+            "transaction_boundary": "git_commit",
+        }, "publish_ready")
+    return ({
+        "status": "ready",
+        "read_status": "new_or_current_read_ready",
+        "editorial_refresh_status": "current",
+        "transaction_boundary": "git_commit",
+    }, "publish_ready")
 
 
 def _current_artifact_valid(context: Any) -> tuple[bool, str, dict[str, Any]]:
@@ -483,21 +515,11 @@ def main() -> int:
             _finish(status, result="publication_withheld")
             return 0
 
-        editorial_status = str((status.get("phases", {}).get("openai") or {}).get("status") or "")
-        status["phases"]["publication"] = {
-            "status": (
-                "ready_with_prior_commentary"
-                if editorial_status in {"retained_prior", "rejected_hard_validation", "rejected_unparseable"}
-                else "ready"
-            ),
-            "read_status": (
-                "prior_read_retained"
-                if editorial_status in {"retained_prior", "rejected_hard_validation", "rejected_unparseable"}
-                else "new_read_ready"
-            ),
-            "transaction_boundary": "git_commit",
-        }
-        _finish(status, result="publish_ready", publish_ready=True)
+        publication_phase, publication_result = _publication_phase(
+            dict((status.get("phases", {}).get("openai") or {}))
+        )
+        status["phases"]["publication"] = publication_phase
+        _finish(status, result=publication_result, publish_ready=True)
         return 0
     except Exception as exc:
         status["errors"].append(f"{type(exc).__name__}: {exc}")

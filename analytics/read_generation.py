@@ -272,10 +272,7 @@ def _parse(
 
     if terminal_status != "completed":
         detail = f"background response ended with status={terminal_status or 'unknown'}"
-        if str(getattr(response, "output_text", "") or "").strip():
-            _commit_allowance(api, response_id)
-        else:
-            _release_allowance(api, response_id, detail)
+        _release_allowance(api, response_id, detail)
         raise GenerationStageError(
             f"OpenAI {detail}.",
             metadata=metadata,
@@ -285,13 +282,7 @@ def _parse(
     try:
         parsed, output_text = _parsed_output(response, text_format)
     except Exception as exc:
-        # A completed response containing model output consumes the allowance,
-        # even if local schema validation rejects that output. The raw response
-        # remains available to the existing preservation/publication path.
-        if str(getattr(response, "output_text", "") or "").strip():
-            _commit_allowance(api, response_id)
-        else:
-            _release_allowance(api, response_id, "completed response contained no output text")
+        _release_allowance(api, response_id, "completed response contained no usable structured output")
         raise GenerationStageError(
             f"{empty_error} {type(exc).__name__}: {exc}",
             metadata=metadata,
