@@ -53,6 +53,7 @@ jobs:
         run: |
           set -euo pipefail
           python helpers/adoption_depth_smoke_test.py
+          python helpers/git_guard_smoke_test.py
           python helpers/application_import_smoke_test.py
           python helpers/borrower_finance_refresh_smoke_test.py
           python helpers/current_context_deterministic_nlg_smoke_test.py

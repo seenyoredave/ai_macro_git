@@ -241,6 +241,35 @@ def has_expected_tickers(df: pd.DataFrame, tickers: Mapping | Iterable) -> bool:
     found = set(df["Ticker"].dropna().astype(str).str.upper().str.strip())
     return expected.issubset(found)
 
+def latest_ticker_rows(
+    df: pd.DataFrame,
+    tickers: Mapping | Iterable,
+    sector: str | None = None,
+) -> pd.DataFrame | None:
+    """Return the most recent retained row available for each requested ticker.
+
+    Observation dates may differ across tickers. This is intentional: retained
+    market state degrades per ticker, so one stale constituent never forces the
+    rest of the universe back to an older common snapshot.
+    """
+    filtered = filter_expected_tickers(df, tickers, sector=sector)
+    if filtered.empty or "Date" not in filtered.columns or "Ticker" not in filtered.columns:
+        return None
+
+    parsed = parse_archive_dates(filtered["Date"])
+    filtered = filtered.loc[parsed.notna()].copy()
+    if filtered.empty:
+        return None
+    filtered["_parsed_date"] = parsed.loc[filtered.index]
+    filtered["Ticker"] = filtered["Ticker"].astype(str).str.upper().str.strip()
+    latest = (
+        filtered.sort_values(["Ticker", "_parsed_date"], kind="stable")
+        .drop_duplicates(subset=["Ticker"], keep="last")
+        .drop(columns=["_parsed_date"], errors="ignore")
+    )
+    return latest.reset_index(drop=True)
+
+
 def latest_complete_ticker_rows(
     df: pd.DataFrame,
     tickers: Mapping | Iterable,

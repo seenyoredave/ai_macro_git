@@ -12,7 +12,6 @@ from tooling.repository_policy import (
     OWNER_PROTECTED_PATHS,
     is_owner_protected_path,
     normalize_repository_path,
-    owner_stage_exclusions,
 )
 
 AUTOMATION_LOCK_REF = "refs/tags/ai-macro-automation-refresh-lock"
@@ -136,14 +135,29 @@ def ensure_index_preserves_repository_state(root: Path) -> None:
 
 def safe_stage(root: Path) -> tuple[list[str], list[str], list[str]]:
     _require_main(root)
+
+    # Stage the working tree first, then remove only paths that the repository
+    # policy classifies as retained state.  This is deliberately policy-driven
+    # instead of excluding whole directories: archive/ contains both retained
+    # CSV state and normal Python source such as archive_reader.py.
     existing = protected_index_paths(root)
     if existing:
         _run(["git", "reset", "--quiet", "HEAD", "--", *existing], cwd=root, check=True)
-    _run(["git", "add", "-A", "--", ".", *owner_stage_exclusions()], cwd=root, check=True)
+
+    _run(["git", "add", "-A", "--", "."], cwd=root, check=True)
+    newly_protected = protected_index_paths(root)
+    if newly_protected:
+        _run(["git", "reset", "--quiet", "HEAD", "--", *newly_protected], cwd=root, check=True)
+
     ensure_index_preserves_repository_state(root)
     staged = _cached_paths(root)
-    protected_local = sorted(path for path in set(_unstaged_paths(root) + _untracked_paths(root)) if is_owner_protected_path(path))
-    return staged, protected_local, existing
+    protected_local = sorted(
+        path
+        for path in set(_unstaged_paths(root) + _untracked_paths(root))
+        if is_owner_protected_path(path)
+    )
+    removed_from_index = sorted(set(existing + newly_protected))
+    return staged, protected_local, removed_from_index
 
 
 def protected_paths_in_range(

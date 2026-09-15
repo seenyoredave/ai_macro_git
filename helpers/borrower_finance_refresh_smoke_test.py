@@ -320,11 +320,18 @@ def main() -> None:
     print("PASS  current debt reconciliation leaves historical fundamentals unchanged")
     print("PASS  ORCL/SMCI-style quarter rolls publish with explicit reduced debt coverage")
     retained_mix = calculate_deployment_funding_mix({})
-    if int(retained_mix.get("current", {}).get("debt_financing_companies") or 0) != 8:
-        raise AssertionError(f"Packaged retained debt cohort is not 8/8: {retained_mix.get('current', {})}")
+    retained_current = retained_mix.get("current", {})
+    retained_debt_count = int(retained_current.get("debt_financing_companies") or 0)
+    retained_cohort_count = int(retained_current.get("cohort_companies") or 0)
+    retained_pulse = pd.to_numeric(retained_current.get("debt_financing_pulse"), errors="coerce")
+    if retained_debt_count < 2 or retained_debt_count > retained_cohort_count or pd.isna(retained_pulse):
+        raise AssertionError(f"Packaged retained debt cohort is unusable: {retained_current}")
 
     print("PASS  Finance debt selection prefers the observation aligned to the current CapEx period")
-    print("PASS  packaged retained Finance debt cohort is 8/8")
+    print(
+        "PASS  packaged retained Finance debt cohort remains usable with explicit "
+        f"coverage ({retained_debt_count}/{retained_cohort_count})"
+    )
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+# Owner commits may change Python source inside archive/, but retained archive
+# state must remain automation-owned. data/ remains fully automation-owned.
 OWNER_PROTECTED_PATHS = (
     "data/",
     "archive/",
@@ -32,7 +34,19 @@ def _matches(relative: str, rule: str) -> bool:
 
 
 def is_owner_protected_path(relative: str) -> bool:
-    return any(_matches(relative, rule) for rule in OWNER_PROTECTED_PATHS)
+    """Return whether owner commits must leave this retained-state path alone.
+
+    archive/ is mixed-purpose: CSVs and other retained artifacts are automation
+    state, while Python modules are normal application source.  Treating the
+    whole directory as protected made the standard git-guard workflow silently
+    omit source changes such as archive/archive_reader.py.
+    """
+    normalized = normalize_repository_path(relative)
+    if normalized.startswith("data/"):
+        return True
+    if normalized.startswith("archive/"):
+        return not normalized.endswith(".py")
+    return False
 
 
 def is_automation_publication_path(relative: str) -> bool:
@@ -45,10 +59,6 @@ def is_automation_diagnostic_path(relative: str) -> bool:
 
 def is_automation_allowed_change(relative: str) -> bool:
     return is_automation_publication_path(relative) or is_automation_diagnostic_path(relative)
-
-
-def owner_stage_exclusions() -> tuple[str, ...]:
-    return tuple(f":(exclude){rule}**" if rule.endswith("/") else f":(exclude){rule}" for rule in OWNER_PROTECTED_PATHS)
 
 
 def automation_stage_paths(mode: str) -> tuple[str, ...]:
