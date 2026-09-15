@@ -4,7 +4,7 @@
   "errors": [
     "ImportError: cannot import name 'latest_ticker_rows' from 'archive.archive_reader' (/home/runner/work/ai_macro_git/ai_macro_git/archive/archive_reader.py)"
   ],
-  "finished_at_utc": "2026-09-15T10:28:22.472701+00:00",
+  "finished_at_utc": "2026-09-15T10:47:57.686936+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
@@ -18,12 +18,12 @@
   "phases": {},
   "publish_ready": false,
   "result": "exception",
-  "run_id": "20260915T102821Z_664a495f",
+  "run_id": "20260915T104756Z_31699777",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-09-15T10:28:21.428820+00:00",
+  "started_at_utc": "2026-09-15T10:47:56.919745+00:00",
   "traceback_tail": [
     "Traceback (most recent call last):",
     "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/runner.py\", line 255, in main",
