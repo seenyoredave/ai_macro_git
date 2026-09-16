@@ -107,6 +107,9 @@ def main() -> None:
     evidence_source = (ROOT / "rendering" / "evidence.py").read_text(encoding="utf-8")
     _check("_render_domain_reference_records(" in evidence_source, "Domain reference routing is missing")
     _check("_render_domain_technical_records(" in evidence_source, "Domain technical routing is missing")
+    _check("_evidence_domain_selector()" in evidence_source, "Evidence domain selector is not shared across the inspector")
+    _check('st.tabs(' in evidence_source[evidence_source.index("def render_evidence_tab("):], "Evidence inspector tabs are missing")
+    _check('domain_filter=selected' in evidence_source, "Change inspection is not pinned to the selected Evidence domain")
     _check('"Record group"' not in evidence_source[evidence_source.index("def render_evidence_tab("):], "Legacy grouped Evidence selector still renders")
 
     dashboard_source = (ROOT / "rendering" / "dashboard.py").read_text(encoding="utf-8")

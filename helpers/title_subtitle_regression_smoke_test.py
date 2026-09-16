@@ -19,6 +19,8 @@ EXPECTED_HEADERS = {
     "adoption.py": ("Adoption", "Personal use, business use, workplace deployment, employee tasks, and paid adoption.", "RPS / U.S. Census BTOS / primary provider disclosures"),
     "workforce.py": ("Workforce", "Employment, hiring, separations, real pay, and task exposure in AI-linked industries.", "U.S. Bureau of Labor Statistics"),
     "economic_impact.py": ("Economic Outcomes", "Productivity, worker compensation, real earnings, investment, output, and labor costs.", "BLS / BEA / FRED / primary company disclosures"),
+    "macro.py": ("AI Macro", "Investment, infrastructure, adoption, and U.S. economic data related to AI.", "YFinance / SEC / FRED / Census / EIA"),
+    "evidence.py": ("Evidence", "Sources, formulas, coverage rules, and records behind the platform’s published research.", "Sources and methodology"),
 }
 
 # Existing section/panel copy that was rewritten during the module pass and must
@@ -94,8 +96,8 @@ def _tab_header(path: Path) -> tuple[str | None, str | None, str | None]:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    if 'APP_VERSION = "v3.0.5.7"' not in app:
-        raise AssertionError("Title/subtitle repair must be v3.0.5.7")
+    if 'APP_VERSION = "v3.0.5.8"' not in app:
+        raise AssertionError("Title/subtitle protection must remain active in v3.0.5.8")
 
     for filename, expected in EXPECTED_HEADERS.items():
         path = ROOT / "rendering" / filename

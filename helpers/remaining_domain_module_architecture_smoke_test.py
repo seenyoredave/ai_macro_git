@@ -25,7 +25,7 @@ def _ordered(body: str, tokens: list[str], label: str) -> None:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    _check('APP_VERSION = "v3.0.5.7"' in app, "Title/subtitle repair must be v3.0.5.7")
+    _check('APP_VERSION = "v3.0.5.8"' in app, "Title/subtitle protection must remain active in v3.0.5.8")
 
     market = (ROOT / "rendering" / "market.py").read_text(encoding="utf-8")
     market_tab = _body(market, "render_market_tab")

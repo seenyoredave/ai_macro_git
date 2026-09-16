@@ -666,29 +666,40 @@ def render_change_evidence(
     *,
     platform_reads: dict | None,
     evidence_packets: dict | None,
+    domain_filter: str | None = None,
 ) -> None:
     """Inspect one deterministic metric change with provenance and Read linkage."""
     if not comparison_ready(change_set) or comparison_state is None:
         st.caption("A prior canonical publication is not available for change evidence yet.")
         return
     frame = _rank_changes(_changed_frame(change_set))
+    if domain_filter:
+        frame = frame.loc[frame["domain"].astype(str).eq(str(domain_filter))].reset_index(drop=True)
     if frame.empty:
         st.caption("No analytical metrics changed in the selected comparison.")
         return
 
     with st.container(key="change-evidence-inspector"):
         domains = list(dict.fromkeys(frame["domain"].dropna().astype(str)))
-        control_domain, control_metric = st.columns([0.85, 2.15], vertical_alignment="bottom")
-        with control_domain:
-            domain = st.selectbox(
-                "Domain",
-                domains,
-                format_func=lambda value: DOMAIN_LABELS.get(value, value.replace("_", " ").title()),
-                key="change-evidence-domain",
-            )
+        if domain_filter:
+            domain = str(domain_filter)
+            control_metric = st.container()
+        else:
+            control_domain, control_metric = st.columns([0.85, 2.15], vertical_alignment="bottom")
+            with control_domain:
+                if st.session_state.get("change-evidence-domain") not in domains:
+                    st.session_state["change-evidence-domain"] = domains[0]
+                domain = st.selectbox(
+                    "Domain",
+                    domains,
+                    format_func=lambda value: DOMAIN_LABELS.get(value, value.replace("_", " ").title()),
+                    key="change-evidence-domain",
+                )
         domain_frame = frame.loc[frame["domain"].astype(str).eq(domain)].reset_index(drop=True)
         metric_ids = domain_frame["metric_id"].astype(str).tolist()
         row_index = {str(row.get("metric_id")): row for _, row in domain_frame.iterrows()}
+        if st.session_state.get("change-evidence-metric") not in metric_ids:
+            st.session_state["change-evidence-metric"] = metric_ids[0]
         with control_metric:
             metric_id = st.selectbox(
                 "Metric",

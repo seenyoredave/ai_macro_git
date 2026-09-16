@@ -22,3 +22,4 @@
 20. The completed domain corpora and audited neuroscience product are retained reference assets. Do not rebuild, replace, or reaudit them without the owner’s express instruction.
 21. Current Context must remain independently discovered and source-grounded. Do not substitute model memory, unsupported summaries, or invented events for source evidence.
 22. Runtime schedules, thresholds, source policies, schemas, and other changeable implementation details belong in code and configuration, not in `README.md` or `botreadme.md`.
+23. The reader-facing `About this platform` and `Research standards` statements are human-authored and human-only. No bot may edit, rewrite, summarize, reorder, replace, or otherwise alter either statement unless the owner explicitly instructs that exact copy change.

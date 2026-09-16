@@ -1372,19 +1372,25 @@ def _render_current_context_evidence(read: dict) -> None:
         st.markdown('<div class="rm-evidence-context-grid">' + ''.join(cards) + '</div>', unsafe_allow_html=True)
 
 
-def _render_evidence_trace(platform_reads: dict | None, evidence_packets: dict | None) -> str:
-    reads = platform_reads or {}
-    packets = evidence_packets or {}
+def _evidence_domain_selector() -> str:
     options = list(_EVIDENCE_LOOKUP)
     if st.session_state.get("evidence-lookup-domain") not in options:
         st.session_state["evidence-lookup-domain"] = options[0]
-
-    selected = st.selectbox(
+    return st.selectbox(
         "Evidence for",
         options,
         format_func=lambda key: _EVIDENCE_LOOKUP[key]["label"],
         key="evidence-lookup-domain",
     )
+
+
+def _render_evidence_trace(
+    selected: str,
+    platform_reads: dict | None,
+    evidence_packets: dict | None,
+) -> None:
+    reads = platform_reads or {}
+    packets = evidence_packets or {}
     spec = _EVIDENCE_LOOKUP[selected]
     read = dict(reads.get(selected) or {})
     packet = dict(packets.get(selected) or {})
@@ -1403,7 +1409,6 @@ def _render_evidence_trace(platform_reads: dict | None, evidence_packets: dict |
         _render_scope_and_limits(packet, spec)
 
     _render_current_context_evidence(read)
-    return selected
 
 
 def _render_lineage_audit(selected: str, platform_reads: dict | None) -> None:
@@ -1487,29 +1492,43 @@ def render_evidence_tab(
     with st.expander("Read the evidence standards", expanded=False):
         st.markdown(EVIDENCE_STANDARDS)
 
-    render_section(
-        "Read citations",
-        "Open a published Read and inspect the analytical records it cites.",
-    )
-    selected = _render_evidence_trace(platform_reads, evidence_packets)
-
-    render_section(
-        "Change inspection",
-        "Inspect a point-in-time metric change, its source register, and its published Read linkage.",
-    )
-    render_change_evidence(
-        comparison_state,
-        comparison_change_set,
-        platform_reads=platform_reads,
-        evidence_packets=evidence_packets,
-    )
-
+    selected = _evidence_domain_selector()
     spec = _EVIDENCE_LOOKUP[selected]
-    render_section(
-        "Reference records",
-        f"Underlying {spec['label']} datasets used by the analytical views.",
+
+    read_tab, change_tab, reference_tab, technical_tab = st.tabs(
+        ["Read citations", "Change inspection", "Reference records", "Technical records"]
     )
-    with st.expander(f"Open {spec['label']} reference records", expanded=False):
+
+    with read_tab:
+        render_section(
+            "Read citations",
+            "Open a published Read and inspect the analytical records it cites.",
+            first=True,
+        )
+        _render_evidence_trace(selected, platform_reads, evidence_packets)
+        with st.expander("Open claim lineage", expanded=False):
+            _render_lineage_audit(selected, platform_reads)
+
+    with change_tab:
+        render_section(
+            "Change inspection",
+            "Inspect a point-in-time metric change, its source register, and its published Read linkage.",
+            first=True,
+        )
+        render_change_evidence(
+            comparison_state,
+            comparison_change_set,
+            platform_reads=platform_reads,
+            evidence_packets=evidence_packets,
+            domain_filter=selected,
+        )
+
+    with reference_tab:
+        render_section(
+            "Reference records",
+            f"Underlying {spec['label']} datasets used by the analytical views.",
+            first=True,
+        )
         _render_domain_reference_records(
             selected,
             sector_data=sector_data,
@@ -1525,11 +1544,12 @@ def render_evidence_tab(
             commercialization_data=commercialization_data,
         )
 
-    render_section(
-        "Technical records",
-        "Coverage, source registers, lineage, formulas, and analytical construction.",
-    )
-    with st.expander(f"Open {spec['label']} technical records", expanded=False):
+    with technical_tab:
+        render_section(
+            "Technical records",
+            "Coverage, source registers, lineage, formulas, and analytical construction.",
+            first=True,
+        )
         _render_domain_technical_records(
             selected,
             fred_data=fred_data,
@@ -1546,10 +1566,6 @@ def render_evidence_tab(
             workforce_data=workforce_data,
             economic_impact_data=economic_impact_data,
         )
-
-    with st.expander("Open claim lineage", expanded=False):
-        _render_lineage_audit(selected, platform_reads)
-
-    with st.expander("Open platform metric methods", expanded=False):
-        _render_metric_evidence(regime_metrics)
+        with st.expander("Open platform metric methods", expanded=False):
+            _render_metric_evidence(regime_metrics)
 
