@@ -23,7 +23,7 @@ _SNAPSHOT_LOCK = RLock()
 _SNAPSHOT_CACHE: dict[str, dict] = {}
 
 
-def _artifact_cache_token() -> str:
+def reader_artifact_cache_token() -> str:
     try:
         stat = READ_ARTIFACT_PATH.stat()
     except OSError:
@@ -63,7 +63,7 @@ def build_reader_snapshot(context: DashboardContext, *, context_report: dict | N
     ).strip()
     retrieved_at = str(report.get("retrieved_at") or current_context.get("snapshot_retrieved_at") or "").strip()
 
-    cache_key = f"{snapshot_id}:{_artifact_cache_token()}"
+    cache_key = f"{snapshot_id}:{reader_artifact_cache_token()}"
     if not developer_mode():
         with _SNAPSHOT_LOCK:
             cached = _SNAPSHOT_CACHE.get(cache_key)

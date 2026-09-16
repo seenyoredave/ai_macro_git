@@ -113,8 +113,12 @@ def build_domain_read_html(
 ) -> str:
     """Return compact one-line markup so Streamlit never exposes nested tags."""
     payload = read or {}
-    headline = str(payload.get("headline") or "Read unavailable").strip()
+    if str(payload.get("generator") or "").strip().casefold() == "unavailable":
+        return ""
+    headline = str(payload.get("headline") or "").strip()
     analysis = str(payload.get("analysis") or "").strip()
+    if not headline and not analysis:
+        return ""
     domain_label = str(label or payload.get("label") or "Read").strip()
     references = payload.get("references") or payload.get("weekly_references") or []
 

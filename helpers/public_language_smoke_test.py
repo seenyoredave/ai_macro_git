@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_COPY_FILES = [
+    ROOT / "analytics" / "read_service.py",
     ROOT / "config" / "metric_definitions.py",
     ROOT / "rendering" / "adoption.py",
     ROOT / "rendering" / "compute.py",
@@ -23,6 +24,14 @@ PUBLIC_COPY_FILES = [
 ]
 
 RETIRED_PHRASES = (
+    "Commentary temporarily unavailable.",
+    "The analyst has wandered off. The data have not.",
+    "No published commentary is available.",
+    "Read unavailable",
+    "in sequence",
+    "before direct BDC panel",
+    "retained analytical evidence above",
+    "ordered by current county D2+ exposure",
     "How market pricing and funding move through physical delivery and adoption toward measurable economic outcomes.",
     "Current top-level indicators and their recent history.",
     "One campus universe shared by Data Centers, Water, Power, Grid & Storage, and Connectivity.",

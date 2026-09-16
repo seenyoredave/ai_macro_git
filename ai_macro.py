@@ -54,7 +54,7 @@ if _loaded_archive is not None and not _archive_package_is_local(_loaded_archive
 import streamlit as st
 
 from analytics.dashboard_context import DashboardContext
-from analytics.reader_snapshot import build_reader_snapshot
+from analytics.reader_snapshot import build_reader_snapshot, reader_artifact_cache_token
 from analytics.factor_engine import calc_sector_factors
 from analytics.regime_engine import build_regime_metrics
 from analytics.macro_dataframe import build_macro_dashboard_data
@@ -493,6 +493,7 @@ if st.session_state.force_rebuild:
     st.session_state.platform_reads = platform_reads
     st.session_state.current_context = current_context
     st.session_state.commentary_status = dict(reader_snapshot.get("commentary") or {})
+    st.session_state.reader_artifact_cache_token = reader_artifact_cache_token()
     st.session_state.force_yfinance_refresh = False
     st.session_state.force_edgar_refresh = False
     st.session_state.force_fred_refresh = False
@@ -516,6 +517,38 @@ commercialization_data = st.session_state.get("commercialization_data", {})
 dashboard_data = st.session_state.get("dashboard_data")
 platform_reads = st.session_state.get("platform_reads", {})
 current_context = st.session_state.get("current_context", {})
+
+# Commentary artifacts can be replaced by the publication worker while a
+# Streamlit session remains alive. Refresh only the Reader snapshot when that
+# artifact changes; the retained research state does not need a full rebuild.
+current_reader_artifact_token = reader_artifact_cache_token()
+if st.session_state.get("reader_artifact_cache_token") != current_reader_artifact_token:
+    reader_context = DashboardContext(
+        sector_data=sector_data,
+        sector_metrics=sector_metrics,
+        dashboard_data=dashboard_data,
+        regime_metrics=regime_metrics,
+        fred_data=fred_data,
+        nfci_history=nfci_history,
+        energy_data=energy_data,
+        debt_markets_data=debt_markets_data,
+        infrastructure_data=infrastructure_data,
+        connectivity_data=connectivity_data,
+        water_data=water_data,
+        adoption_data=adoption_data,
+        workforce_data=workforce_data,
+        economic_impact_data=economic_impact_data,
+        commercialization_data=commercialization_data,
+        current_context=current_context,
+    )
+    reader_snapshot = build_reader_snapshot(
+        reader_context,
+        context_report=st.session_state.get("current_context_load_report", {}),
+    )
+    platform_reads = reader_snapshot["reads"]
+    st.session_state.platform_reads = platform_reads
+    st.session_state.commentary_status = dict(reader_snapshot.get("commentary") or {})
+    st.session_state.reader_artifact_cache_token = current_reader_artifact_token
 
 # Public Reader sessions never advance research state. A new retained snapshot
 # reaches hosted readers only through the publication/deployment path.

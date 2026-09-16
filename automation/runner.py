@@ -38,6 +38,10 @@ from automation.ledger import (
 from tooling.repository_policy import is_automation_allowed_change
 
 
+class CommentaryGenerationUnavailable(RuntimeError):
+    """A commentary refresh cannot run, but retained publication may continue."""
+
+
 def _configure_runtime_warnings() -> None:
     # Several official XLSX files contain print-header/footer markup that
     # openpyxl cannot parse. AI Macro does not consume that print metadata, so
@@ -190,17 +194,17 @@ def _generate_commentary(
     from config.openai_config import load_openai_config
 
     if config.max_paid_calls_per_run < 1:
-        raise RuntimeError("Unattended commentary generation requires one available call slot.")
+        raise CommentaryGenerationUnavailable("Unattended commentary generation requires one available call slot.")
     used_today = paid_calls_for_local_date(today_local_date())
     if used_today + 1 > config.max_paid_calls_per_day:
-        raise RuntimeError(
+        raise CommentaryGenerationUnavailable(
             f"Insufficient daily paid-call allowance for a complete generation: "
             f"{used_today}/{config.max_paid_calls_per_day} already reserved."
         )
 
     openai_config = load_openai_config()
     if not openai_config.configured:
-        raise RuntimeError("OPENAI_API_KEY is not configured for the automation worker.")
+        raise CommentaryGenerationUnavailable("OPENAI_API_KEY is not configured for the automation worker.")
 
     raw_client = OpenAI(
         api_key=openai_config.api_key,
@@ -221,6 +225,53 @@ def _generate_commentary(
         persist=True,
         materiality=materiality,
     )
+
+
+def _retain_prior_commentary(
+    status: dict[str, Any],
+    *,
+    config: AutomationConfig,
+    evidence_snapshot: str,
+    materiality: dict[str, Any],
+    reason: str,
+    source: str,
+) -> bool:
+    if not config.auto_publish:
+        return False
+
+    from analytics.read_service import reapply_last_read
+
+    try:
+        renewed = reapply_last_read(
+            persist=True,
+            source=source,
+            current_evidence_snapshot_id=evidence_snapshot,
+            materiality=materiality,
+        )
+    except ValueError:
+        return False
+
+    openai_phase = dict((status.get("phases", {}).get("openai") or {}))
+    previous_status = str(openai_phase.get("status") or "unavailable")
+    openai_phase.update({
+        "status": "retained_prior",
+        "generation_status": previous_status,
+        "reason": reason,
+    })
+    status["phases"]["openai"] = openai_phase
+
+    publication = dict(renewed.get("publication") or {})
+    status["phases"]["publication_lease"] = {
+        "status": "renewed",
+        "reason": "prior_publishable_read_retained_after_editorial_failure",
+        "published_at": str(publication.get("published_at") or ""),
+        "expires_at": str(publication.get("expires_at") or ""),
+    }
+    status.setdefault("warnings", []).append(
+        f"OpenAI commentary refresh was unavailable ({reason}); the prior publishable Read was retained."
+    )
+    _log(f"prior commentary retained · {reason}")
+    return True
 
 
 def main() -> int:
@@ -399,68 +450,94 @@ def main() -> int:
             status["phases"]["openai"] = {"status": "running"}
             _log("START bounded OpenAI generation")
             openai_started = time.perf_counter()
-            generation = _generate_commentary(
-                bundle.context,
-                config,
-                run_id,
-                materiality=materiality,
-            )
-            openai_elapsed = max(0.0, time.perf_counter() - openai_started)
-            generated_status = str(generation.get("status") or "unknown")
-            completed_statuses = {
-                "validated",
-                "published_with_warnings",
-                "retained_prior",
-                "rejected_hard_validation",
-                "rejected_unparseable",
-            }
-            validation = dict(generation.get("validation") or {})
-            validation_status = (
-                "passed"
-                if validation.get("passed") is True
-                else "rejected"
-                if generated_status in completed_statuses
-                else "not_completed"
-            )
-            status["phases"]["openai"] = {
-                "status": generated_status,
-                "api_status": "completed" if generated_status in completed_statuses else "failed",
-                "validation_status": validation_status,
-                "stage": str(generation.get("stage") or ""),
-                "attempt_id": str(generation.get("attempt_id") or ""),
-                "validation": validation,
-                "elapsed_sec": round(openai_elapsed, 3),
-            }
-            _log(
-                f"DONE  bounded OpenAI generation · {openai_elapsed:.1f}s · "
-                f"api={status['phases']['openai']['api_status']} · validation={validation_status}"
-            )
-            if generated_status not in completed_statuses:
-                status["errors"].append(
-                    f"OpenAI generation did not return a completed response at {generation.get('stage', 'unknown')} stage."
+            generation = None
+            try:
+                generation = _generate_commentary(
+                    bundle.context,
+                    config,
+                    run_id,
+                    materiality=materiality,
                 )
-                _finish(status, result="commentary_generation_failed")
-                return 2
-
-            artifact_valid, regenerated_snapshot, commentary = _current_artifact_valid(bundle.context)
-            if generated_status in {"validated", "published_with_warnings"} and (
-                not artifact_valid or regenerated_snapshot != evidence_snapshot
-            ):
-                status["errors"].append(
-                    "Generation did not produce a current publishable artifact for the refreshed evidence snapshot."
-                )
-                _finish(status, result="publication_verification_failed")
-                return 2
-            if generated_status.startswith("rejected_"):
-                if not commentary.get("artifact_publishable"):
-                    status["errors"].append(
-                        "The generated commentary was rejected and no prior publishable Read is available."
-                    )
+            except CommentaryGenerationUnavailable as exc:
+                openai_elapsed = max(0.0, time.perf_counter() - openai_started)
+                status["phases"]["openai"] = {
+                    "status": "unavailable",
+                    "api_status": "not_attempted",
+                    "validation_status": "not_completed",
+                    "elapsed_sec": round(openai_elapsed, 3),
+                }
+                if not _retain_prior_commentary(
+                    status,
+                    config=config,
+                    evidence_snapshot=evidence_snapshot,
+                    materiality=materiality,
+                    reason=str(exc),
+                    source="automation_unavailable_fallback",
+                ):
+                    status["errors"].append(f"{type(exc).__name__}: {exc}")
                     _finish(status, result="commentary_unavailable")
                     return 2
-                status.setdefault("warnings", []).append(
-                    "The completed OpenAI response failed the minimal publication gate. The prior Read was retained; a later authorized run may try again if the evidence still warrants an update."
+
+            if generation is not None:
+                openai_elapsed = max(0.0, time.perf_counter() - openai_started)
+                generated_status = str(generation.get("status") or "unknown")
+                successful_statuses = {"validated", "published_with_warnings", "retained_prior"}
+                completed_statuses = {
+                    *successful_statuses,
+                    "rejected_hard_validation",
+                    "rejected_unparseable",
+                }
+                validation = dict(generation.get("validation") or {})
+                validation_status = (
+                    "passed"
+                    if validation.get("passed") is True
+                    else "rejected"
+                    if generated_status in completed_statuses
+                    else "not_completed"
                 )
+                status["phases"]["openai"] = {
+                    "status": generated_status,
+                    "api_status": "completed" if generated_status in completed_statuses else "failed",
+                    "validation_status": validation_status,
+                    "stage": str(generation.get("stage") or ""),
+                    "attempt_id": str(generation.get("attempt_id") or ""),
+                    "validation": validation,
+                    "elapsed_sec": round(openai_elapsed, 3),
+                }
+                _log(
+                    f"DONE  bounded OpenAI generation · {openai_elapsed:.1f}s · "
+                    f"api={status['phases']['openai']['api_status']} · validation={validation_status}"
+                )
+
+                if generated_status not in successful_statuses:
+                    fallback_reason = (
+                        f"editorial validation returned {generated_status}"
+                        if generated_status.startswith("rejected_")
+                        else f"editorial generation returned {generated_status}"
+                    )
+                    if not _retain_prior_commentary(
+                        status,
+                        config=config,
+                        evidence_snapshot=evidence_snapshot,
+                        materiality=materiality,
+                        reason=fallback_reason,
+                        source="automation_generation_fallback",
+                    ):
+                        status["errors"].append(
+                            f"OpenAI generation did not produce publishable commentary at {generation.get('stage', 'unknown')} stage, and no prior publishable Read is available."
+                        )
+                        _finish(status, result="commentary_unavailable")
+                        return 2
+                else:
+                    artifact_valid, regenerated_snapshot, commentary = _current_artifact_valid(bundle.context)
+                    if generated_status in {"validated", "published_with_warnings"} and (
+                        not artifact_valid or regenerated_snapshot != evidence_snapshot
+                    ):
+                        status["errors"].append(
+                            "Generation did not produce a current publishable artifact for the refreshed evidence snapshot."
+                        )
+                        _finish(status, result="publication_verification_failed")
+                        return 2
 
         changed = _git_changed_paths(root)
         unexpected = _unexpected_changes(changed)

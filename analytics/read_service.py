@@ -36,8 +36,6 @@ READ_SERVICE_COMPATIBLE_VERSIONS = {
     "6.0.0", "5.1.0", "5.0.0", "4.5.0", "4.4.0", "4.3.0", "4.2.0", "4.1.0", "3.2.0", "3.0.0",
 }
 COMMENTARY_PUBLICATION_LEASE_HOURS = 24
-UNAVAILABLE_HEADLINE = "Commentary temporarily unavailable."
-UNAVAILABLE_ANALYSIS = "The analyst has wandered off. The data have not."
 MAX_MACRO_REFERENCES = 6
 PUBLISHABLE_STATUSES = {"validated", "published_with_warnings"}
 
@@ -206,11 +204,12 @@ def _macro_public_read(
 
 
 def _unavailable_read(domain: str, packet: dict[str, Any]) -> dict[str, Any]:
+    # This sentinel is never reader-facing. Normal publication failures retain
+    # the last publishable OpenAI Read; a true no-history state renders no Read
+    # rather than substituting canned status copy for analysis.
     return {
         "domain": domain,
         "label": DOMAIN_LABELS.get(domain, domain.replace("_", " ").title()),
-        "headline": UNAVAILABLE_HEADLINE,
-        "analysis": UNAVAILABLE_ANALYSIS,
         "references": [],
         "claim_support": [],
         "generator": "unavailable",

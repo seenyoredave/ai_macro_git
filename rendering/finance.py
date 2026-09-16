@@ -237,7 +237,7 @@ def _render_financial_condition_detail(
     slug = title.lower().replace(" ", "-")
     with st.container(border=True, key=f"finance-panel-{slug}-detail"):
         detail_meta = (
-            "10-year history · FRED bridge before direct BDC panel"
+            "10-year history · FRED and direct BDC data"
             if title == "Lender Strain"
             else "10-year history · component contribution"
         )

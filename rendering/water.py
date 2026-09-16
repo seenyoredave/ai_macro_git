@@ -430,7 +430,7 @@ def _render_campus_dossier(context: dict) -> None:
     map_state = str(st.session_state.get("water-drought-state") or "").strip().upper()
     render_section(
         "Campus water profile",
-        "Campuses ordered by current county D2+ exposure.",
+        "Current county D2+ exposure across tracked campuses.",
     )
     if dossier.empty:
         st.info("No campus records are available for the campus profile.")

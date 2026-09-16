@@ -1078,7 +1078,7 @@ def _render_current_context_evidence(read: dict) -> None:
     if cards:
         render_section(
             "Recent context",
-            "Current developments are sourced separately from the retained analytical evidence above.",
+            "Current developments are sourced separately from retained analytical evidence.",
             compact=True,
         )
         st.markdown('<div class="rm-evidence-context-grid">' + ''.join(cards) + '</div>', unsafe_allow_html=True)

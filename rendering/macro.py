@@ -252,7 +252,7 @@ def render_macro_tab(
     render_domain_read(tab_read, label="Read", domain="macro", macro=True)
     render_section(
         "Economic transmission",
-        "Market pricing, funding, buildout, adoption, and economic results in sequence.",
+        "Market pricing, funding, buildout, adoption, and economic results.",
         first=True,
     )
     _render_transmission_board(context)
