@@ -18,7 +18,7 @@ from analytics.read_service import READ_SERVICE_VERSION, build_platform_reads
 from analytics.read_store import READ_ARTIFACT_PATH
 from config.deployment import developer_mode
 
-READER_SNAPSHOT_VERSION = "1.3.0"
+READER_SNAPSHOT_VERSION = "1.4.0"
 _SNAPSHOT_LOCK = RLock()
 _SNAPSHOT_CACHE: dict[str, dict] = {}
 
@@ -63,7 +63,8 @@ def build_reader_snapshot(context: DashboardContext, *, context_report: dict | N
     ).strip()
     retrieved_at = str(report.get("retrieved_at") or current_context.get("snapshot_retrieved_at") or "").strip()
 
-    cache_key = f"{snapshot_id}:{reader_artifact_cache_token()}"
+    canonical_id = str(context.canonical_snapshot_id or "retained-unknown")
+    cache_key = f"{snapshot_id}:{canonical_id}:{reader_artifact_cache_token()}"
     if not developer_mode():
         with _SNAPSHOT_LOCK:
             cached = _SNAPSHOT_CACHE.get(cache_key)
@@ -80,6 +81,8 @@ def build_reader_snapshot(context: DashboardContext, *, context_report: dict | N
         "evidence_architecture_version": EVIDENCE_ARCHITECTURE_VERSION,
         "editorial_briefing_version": BRIEFING_VERSION,
         "evidence_snapshot_id": commentary.get("evidence_snapshot_id", ""),
+        "canonical_snapshot_id": str(context.canonical_snapshot_id or ""),
+        "canonical_schema_version": str(context.canonical_schema_version or ""),
         "commentary": {key: value for key, value in commentary.items() if key != "packets"},
         "current_context": current_context,
         "reads": reads,

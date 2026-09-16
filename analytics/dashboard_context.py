@@ -32,4 +32,6 @@ class DashboardContext:
     domain_states: dict = field(default_factory=dict)
     market_universe_summary: dict = field(default_factory=dict)
     dashboard_data: dict | None = None
+    canonical_snapshot_id: str = ""
+    canonical_schema_version: str = ""
     platform_reads: dict = field(default_factory=dict)

@@ -767,7 +767,17 @@ def build_domain_states(context: DashboardContext) -> dict[str, DomainState]:
 
 
 def with_domain_states(context: DashboardContext) -> DashboardContext:
-    """Return a context carrying canonical deterministic domain state."""
+    """Return a context carrying one complete canonical deterministic state set.
+
+    A persisted canonical snapshot may already have populated ``domain_states``.
+    Reuse that state rather than silently recomputing downstream editorial
+    evidence from provider-shaped payloads after the canonical boundary.
+    """
+    states = dict(context.domain_states or {})
+    if set(states) == set(DOMAIN_ORDER) and all(
+        isinstance(states.get(domain), DomainState) for domain in DOMAIN_ORDER
+    ):
+        return context
     return replace(context, domain_states=build_domain_states(context))
 
 

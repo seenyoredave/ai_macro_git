@@ -6,7 +6,7 @@ builds the bounded packets supplied to OpenAI.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 import hashlib
 import json
 import math
@@ -178,6 +178,21 @@ class EvidenceFact:
     value: Any
     display: str
     context: str = ""
+    unit: str = ""
+    scale: float = 1.0
+    digits: int = 1
+
+    def to_dict(self) -> dict[str, Any]:
+        # Unit/scale metadata belongs to the canonical analytical layer. Keep
+        # the existing evidence artifact contract byte-for-byte compatible so
+        # this storage upgrade does not manufacture editorial materiality.
+        return _json_safe({
+            "id": self.id,
+            "label": self.label,
+            "value": self.value,
+            "display": self.display,
+            "context": self.context,
+        })
 
     def to_model_dict(self) -> dict[str, Any]:
         """Return the compact, unambiguous fact representation sent to OpenAI.
@@ -210,10 +225,15 @@ class EvidencePacket:
 
     def to_dict(self) -> dict[str, Any]:
         """Return the complete deterministic packet used for audit/validation."""
-        payload = asdict(self)
-        payload["facts"] = [asdict(item) for item in self.facts]
-        payload["references"] = [dict(item) for item in self.references]
-        return _json_safe(payload)
+        return _json_safe({
+            "domain": self.domain,
+            "label": self.label,
+            "facts": [item.to_dict() for item in self.facts],
+            "importance": self.importance,
+            "boundaries": list(self.boundaries),
+            "references": [dict(item) for item in self.references],
+            "version": self.version,
+        })
 
     def to_model_dict(self) -> dict[str, Any]:
         """Return the smaller packet that is actually placed in the prompt."""
@@ -277,7 +297,7 @@ def _fact(
         clean = value.strip()
         if not clean:
             return None
-        return EvidenceFact(f"{domain}.{key}", label, clean, clean, context)
+        return EvidenceFact(f"{domain}.{key}", label, clean, clean, context, unit=unit, scale=scale, digits=digits)
     numeric = _num(value)
     if not math.isfinite(numeric):
         return None
@@ -306,7 +326,7 @@ def _fact(
         display = f"{int(shown):,}"
     else:
         display = f"{shown:.{digits}f}"
-    return EvidenceFact(f"{domain}.{key}", label, numeric, display, context)
+    return EvidenceFact(f"{domain}.{key}", label, numeric, display, context, unit=unit, scale=scale, digits=digits)
 
 
 def _state(context: DashboardContext, domain: str) -> DomainState:

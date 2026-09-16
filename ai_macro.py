@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 import sys
 import time
@@ -54,6 +55,7 @@ if _loaded_archive is not None and not _archive_package_is_local(_loaded_archive
 import streamlit as st
 
 from analytics.dashboard_context import DashboardContext
+from analytics.domain_state import DOMAIN_ORDER
 from analytics.reader_snapshot import build_reader_snapshot, reader_artifact_cache_token
 from analytics.factor_engine import calc_sector_factors
 from analytics.regime_engine import build_regime_metrics
@@ -104,8 +106,8 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.0.23"
-APP_STATE_SCHEMA_VERSION = "73.0-adoption-depth-activation"
+APP_VERSION = "v3.0.1.0"
+APP_STATE_SCHEMA_VERSION = "74.0-canonical-observation-layer"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -412,6 +414,37 @@ if st.session_state.force_rebuild:
         commercialization_data=commercialization_data,
         current_context=current_context,
     )
+
+    # Public Reader mode consumes the canonical analytical snapshot committed by
+    # the publication worker. Developer mode continues to derive from the local
+    # working data until an explicit refresh writes a new canonical snapshot.
+    if not developer_mode():
+        try:
+            from analytics.canonical_store import (
+                CANONICAL_SCHEMA_VERSION,
+                latest_canonical_snapshot,
+                load_canonical_domain_states,
+            )
+
+            canonical_meta = latest_canonical_snapshot()
+            canonical_id = str(canonical_meta.get("snapshot_id") or "")
+            canonical_states = load_canonical_domain_states(snapshot_id=canonical_id) if canonical_id else {}
+            if canonical_id and set(canonical_states) == set(DOMAIN_ORDER):
+                read_context = replace(
+                    read_context,
+                    domain_states=canonical_states,
+                    canonical_snapshot_id=canonical_id,
+                    canonical_schema_version=CANONICAL_SCHEMA_VERSION,
+                )
+                st.session_state.current_context_load_report.update({
+                    "canonical_snapshot_id": canonical_id,
+                    "canonical_schema_version": CANONICAL_SCHEMA_VERSION,
+                })
+        except Exception as exc:
+            st.session_state.current_context_load_report["canonical_read_error"] = (
+                f"{type(exc).__name__}: {exc}"
+            )
+
     reader_snapshot = build_reader_snapshot(read_context, context_report=context_refresh)
     platform_reads = reader_snapshot["reads"]
     st.session_state.current_context_load_report.update({
@@ -420,6 +453,8 @@ if st.session_state.force_rebuild:
         "evidence_architecture_version": reader_snapshot.get("evidence_architecture_version", ""),
         "editorial_briefing_version": reader_snapshot.get("editorial_briefing_version", ""),
         "evidence_snapshot_id": reader_snapshot.get("evidence_snapshot_id", ""),
+        "canonical_snapshot_id": reader_snapshot.get("canonical_snapshot_id", ""),
+        "canonical_schema_version": reader_snapshot.get("canonical_schema_version", ""),
         "snapshot_id": reader_snapshot.get("snapshot_id", context_refresh.get("snapshot_id", "")),
     })
     market_report = dict(st.session_state.get("market_universe_load_report", {}) or {})
@@ -449,6 +484,48 @@ if st.session_state.force_rebuild:
         edgar_refresh_token=st.session_state.edgar_refresh_token,
     )
     if load_policy.is_explicit_refresh:
+        try:
+            from analytics.canonical_store import persist_canonical_snapshot
+
+            read_context, canonical_report = persist_canonical_snapshot(
+                read_context,
+                observation_date=market_date(),
+                publication_source="desktop_refresh",
+                source_status={
+                    "market": market_report,
+                    "fred": fred_report,
+                    "finance": debt_markets_data.get("load_report", {}),
+                    "power_grid": energy_data.get("load_report", {}),
+                    "infrastructure": infrastructure_data.get("refresh_report", {}),
+                    "connectivity": connectivity_data.get("load_report", {}),
+                    "water": water_data.get("refresh_report", {}),
+                    "adoption": adoption_data.get("load_report", {}),
+                    "workforce": workforce_data.get("load_report", {}),
+                    "economic_outcomes": economic_impact_data.get("load_report", {}),
+                    "commercialization": commercialization_data.get("load_report", {}),
+                    "current_context": context_refresh,
+                },
+            )
+            st.session_state.snapshot_write_report["canonical"] = canonical_report
+
+            # Rebuild only the Reader snapshot from the persisted canonical
+            # domain state so developer-mode evidence and publication metadata
+            # are based on the same normalized analytical rows.
+            reader_snapshot = build_reader_snapshot(
+                read_context,
+                context_report=context_refresh,
+            )
+            platform_reads = reader_snapshot["reads"]
+            st.session_state.current_context_load_report.update({
+                "canonical_snapshot_id": canonical_report.get("snapshot_id", ""),
+                "canonical_schema_version": canonical_report.get("schema_version", ""),
+                "evidence_snapshot_id": reader_snapshot.get("evidence_snapshot_id", ""),
+            })
+        except Exception as exc:
+            st.session_state.snapshot_write_report.setdefault("errors", {})["canonical"] = (
+                f"{type(exc).__name__}: {exc}"
+            )
+
         refresh_retained_state_manifest(source="desktop_refresh")
         from helpers.build_release_manifest import build_manifest
         from helpers.atomic_io import atomic_write_json
@@ -492,6 +569,9 @@ if st.session_state.force_rebuild:
     st.session_state.dashboard_data = dashboard_data
     st.session_state.platform_reads = platform_reads
     st.session_state.current_context = current_context
+    st.session_state.canonical_domain_states = dict(read_context.domain_states or {})
+    st.session_state.canonical_snapshot_id = str(read_context.canonical_snapshot_id or "")
+    st.session_state.canonical_schema_version = str(read_context.canonical_schema_version or "")
     st.session_state.commentary_status = dict(reader_snapshot.get("commentary") or {})
     st.session_state.reader_artifact_cache_token = reader_artifact_cache_token()
     st.session_state.force_yfinance_refresh = False
@@ -517,6 +597,9 @@ commercialization_data = st.session_state.get("commercialization_data", {})
 dashboard_data = st.session_state.get("dashboard_data")
 platform_reads = st.session_state.get("platform_reads", {})
 current_context = st.session_state.get("current_context", {})
+canonical_domain_states = st.session_state.get("canonical_domain_states", {})
+canonical_snapshot_id = st.session_state.get("canonical_snapshot_id", "")
+canonical_schema_version = st.session_state.get("canonical_schema_version", "")
 
 # Commentary artifacts can be replaced by the publication worker while a
 # Streamlit session remains alive. Refresh only the Reader snapshot when that
@@ -540,6 +623,9 @@ if st.session_state.get("reader_artifact_cache_token") != current_reader_artifac
         economic_impact_data=economic_impact_data,
         commercialization_data=commercialization_data,
         current_context=current_context,
+        domain_states=canonical_domain_states,
+        canonical_snapshot_id=canonical_snapshot_id,
+        canonical_schema_version=canonical_schema_version,
     )
     reader_snapshot = build_reader_snapshot(
         reader_context,
@@ -595,6 +681,9 @@ if developer_mode():
         economic_impact_data=economic_impact_data,
         commercialization_data=commercialization_data,
         current_context=current_context,
+        domain_states=canonical_domain_states,
+        canonical_snapshot_id=canonical_snapshot_id,
+        canonical_schema_version=canonical_schema_version,
     )
     render_developer_tools(APP_VERSION, commentary_context=commentary_context)
 
@@ -628,6 +717,9 @@ else:
         current_context=current_context,
         market_universe_summary=market_universe_summary,
         dashboard_data=dashboard_data,
+        domain_states=canonical_domain_states,
+        canonical_snapshot_id=canonical_snapshot_id,
+        canonical_schema_version=canonical_schema_version,
         platform_reads=platform_reads,
     )
     render_research_dashboard(build_tabs(), dashboard_context)

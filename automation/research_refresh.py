@@ -85,7 +85,7 @@ def _phase_end(label: str, started: float, timings: dict[str, float]) -> None:
     print(f"[automation] DONE  {label} · {elapsed:.1f}s", flush=True)
 
 
-def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
+def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -> RefreshBundle:
     """Refresh and assemble one publication candidate in dependency order.
 
     The automation worker is the only non-developer runtime permitted to call
@@ -314,6 +314,29 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
         "current_context": context_refresh,
         "snapshot_write": snapshot_write_report,
     }
+
+    # The canonical analytical layer is the durable boundary consumed by
+    # editorial comparison and future point-in-time Reader products. Persist
+    # the finished deterministic domain state only after all provider and
+    # retained-snapshot work has completed.
+    try:
+        from analytics.canonical_store import persist_canonical_snapshot
+
+        context, canonical_report = persist_canonical_snapshot(
+            context,
+            observation_date=as_of or market_date(),
+            run_id=run_id,
+            publication_source="automation_refresh",
+            source_status={key: value for key, value in reports.items() if key != "snapshot_write"},
+        )
+    except Exception as exc:
+        canonical_report = {
+            "status": "failed",
+            "source_mode": "failed",
+            "error": f"{type(exc).__name__}: {exc}",
+        }
+    reports["canonical"] = canonical_report
+
     _phase_end("assemble + persist", phase_started, timings)
     return RefreshBundle(
         context=context,
@@ -326,7 +349,7 @@ def refresh_research_state(*, as_of=None, live: bool = True) -> RefreshBundle:
 def _report_mode(report: Any) -> str:
     if not isinstance(report, dict):
         return ""
-    return str(report.get("source_mode") or report.get("refresh_status") or "").strip().lower()
+    return str(report.get("source_mode") or report.get("refresh_status") or report.get("status") or "").strip().lower()
 
 
 def refresh_warnings(bundle: RefreshBundle) -> list[str]:

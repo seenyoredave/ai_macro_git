@@ -57,6 +57,7 @@ RELEASE_FILES = (
     "analytics/spatial_context.py",
     "analytics/data_center_metrics.py",
     "analytics/domain_state.py",
+    "analytics/canonical_store.py",
     "analytics/adoption_depth.py",
     "analytics/water_campus.py",
     "analytics/water_competition.py",
@@ -237,6 +238,14 @@ def build_manifest() -> dict:
     # inputs.  They live under openai_artifacts/ and are intentionally excluded
     # from ordinary release fingerprints and update packages.
     release_files = list(RELEASE_FILES)
+    canonical_root = PROJECT_ROOT / "data" / "canonical"
+    if canonical_root.exists():
+        release_files.extend(
+            path.relative_to(PROJECT_ROOT).as_posix()
+            for path in sorted(canonical_root.rglob("*.parquet"))
+            if path.is_file()
+        )
+    release_files = list(dict.fromkeys(release_files))
     for relative in release_files:
         path = PROJECT_ROOT / relative
         if not path.exists():

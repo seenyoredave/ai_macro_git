@@ -307,7 +307,7 @@ def main() -> int:
 
         status["phases"]["deterministic_refresh"] = {"status": "running"}
         refresh_started = time.perf_counter()
-        bundle = refresh_research_state()
+        bundle = refresh_research_state(run_id=run_id)
         refresh_elapsed = max(0.0, time.perf_counter() - refresh_started)
         warnings = refresh_warnings(bundle)
         if warnings:
@@ -329,6 +329,12 @@ def main() -> int:
         _log(f"deterministic refresh complete · {refresh_elapsed:.1f}s")
         status["current_context_snapshot_id"] = str(
             ((bundle.reports.get("current_context") or {}).get("snapshot_id") or "")
+        )
+        status["canonical_snapshot_id"] = str(
+            ((bundle.reports.get("canonical") or {}).get("snapshot_id") or "")
+        )
+        status["canonical_schema_version"] = str(
+            ((bundle.reports.get("canonical") or {}).get("schema_version") or "")
         )
 
         # Retained-state freshness advances only for files whose content hash
