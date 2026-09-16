@@ -2,20 +2,10 @@
   "auto_publish": true,
   "automation_enabled": true,
   "canonical_schema_version": "1.0.0",
-  "canonical_snapshot_id": "209cf7d474c78b770e0a5769",
+  "canonical_snapshot_id": "b2bd32cc51ba760ac20ebe6a",
   "changed_paths": [
-    "archive/benchmark_history.csv",
-    "archive/edgar_history.csv",
-    "archive/fred_history.csv",
-    "archive/macro_history.csv",
-    "archive/sector_history.csv",
-    "archive/yf_history.csv",
-    "automation_artifacts/call_journal.jsonl",
     "automation_artifacts/status.json",
-    "data/borrower_strain_fundamentals_history.csv",
-    "data/current_context_candidate_audit.csv",
-    "data/current_context_refresh_manifest.json",
-    "data/debt_markets_metadata.json",
+    "data/refresh_graph_state.json",
     "data/release_manifest.json",
     "data/retained_state_manifest.json",
     "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
@@ -24,37 +14,36 @@
     "data/water/derived/usgs_2015_county_summary.csv.gz",
     "data/water/derived/usgs_2015_reconciliation.csv.gz",
     "data/water/derived/water_observations.csv.gz",
-    "data/weekly_context_events.csv",
     "openai_artifacts/current.json",
-    "data/canonical/metric_sources.parquet",
-    "data/canonical/metrics.parquet",
-    "data/canonical/observations/2026/08/d177dfe52095ec325b86dcb1.parquet",
-    "data/canonical/observations/2026/09/209cf7d474c78b770e0a5769.parquet",
-    "data/canonical/snapshots/2026/08/d177dfe52095ec325b86dcb1.parquet",
-    "data/canonical/snapshots/2026/09/209cf7d474c78b770e0a5769.parquet",
-    "data/canonical/sources.parquet",
-    "data/refresh_graph_state.json",
-    "openai_artifacts/attempts/20260916T071751041723Z_30e758d3_d0d0ab72.json"
+    "data/canonical/observations/2026/09/b2bd32cc51ba760ac20ebe6a.parquet",
+    "data/canonical/snapshots/2026/09/b2bd32cc51ba760ac20ebe6a.parquet"
   ],
   "current_context_snapshot_id": "958c1b18d204ae23",
   "errors": [],
-  "evidence_snapshot_id": "30e758d34db9143ccc98ae7c",
-  "finished_at_utc": "2026-09-16T07:20:31.252390+00:00",
+  "evidence_snapshot_id": "5ccafb391d357ff1b597818b",
+  "finished_at_utc": "2026-09-16T16:51:32.420955+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
-    "request_attempts_this_run": 1,
+    "request_attempts_this_run": 0,
     "run_ceiling": 1,
-    "submitted_requests_this_run": 1,
-    "this_run": 1,
+    "submitted_requests_this_run": 0,
+    "this_run": 0,
     "today_after_run": 1,
-    "today_before_run": 0
+    "today_before_run": 1
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 726.72,
+      "elapsed_sec": 408.193,
       "refresh_graph": {
-        "changed_nodes": [],
+        "changed_nodes": [
+          "data_centers",
+          "connectivity",
+          "yfinance",
+          "edgar",
+          "fred",
+          "nyfed"
+        ],
         "failed_nodes": [
           "compute",
           "workforce",
@@ -66,178 +55,178 @@
           "adoption": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 18.704,
+            "elapsed_sec": 16.391,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "b206819d6fa39f9372cff25c",
-            "reason": "bootstrap",
+            "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "commercialization": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 1.144,
+            "elapsed_sec": 2.049,
             "error": "Parsed 2 of 3 required metrics; missing: Paying business users; Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "3eca4b8da5a3414257baaf2d",
-            "reason": "bootstrap",
+            "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "compute": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 46.859,
+            "elapsed_sec": 60.638,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "11fce2215af8c9bf8df7939d",
-            "reason": "bootstrap",
+            "reason": "retry_after_failed",
             "refresh": true,
             "status": "failed"
           },
           "connectivity": {
             "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 16.29,
+            "changed": true,
+            "elapsed_sec": 11.205,
             "error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)'))); ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
-            "first_signature": true,
-            "output_signature": "2ea594e302a8a6d25c33c6a6",
-            "reason": "bootstrap",
+            "first_signature": false,
+            "output_signature": "766d0fb81aac3124b3714f43",
+            "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "construction": {
-            "attempted_live": true,
+            "attempted_live": false,
             "changed": false,
-            "elapsed_sec": 46.859,
+            "elapsed_sec": 60.638,
             "error": "",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "13afac01f3b19d4456b9adac",
-            "reason": "bootstrap",
-            "refresh": true,
-            "status": "success"
+            "reason": "retained_not_due",
+            "refresh": false,
+            "status": "retained"
           },
           "current_context": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 20.442,
+            "elapsed_sec": 0.039,
             "error": "HTTPError: HTTP Error 403: Forbidden",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "b5f894f396a31efee5324ab4",
-            "reason": "bootstrap",
+            "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "data_centers": {
-            "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 46.859,
+            "attempted_live": false,
+            "changed": true,
+            "elapsed_sec": 60.638,
             "error": "",
-            "first_signature": true,
-            "output_signature": "08532bdbacb15897a0f64cb1",
-            "reason": "bootstrap",
-            "refresh": true,
-            "status": "success"
+            "first_signature": false,
+            "output_signature": "e6335da7434c919b0db40d39",
+            "reason": "retained_not_due",
+            "refresh": false,
+            "status": "retained"
           },
           "economic_outcomes": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 60.367,
+            "elapsed_sec": 60.34,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "90668ca504694e522b51c244",
-            "reason": "bootstrap",
+            "reason": "retry_after_failed",
             "refresh": true,
             "status": "failed"
           },
           "edgar": {
-            "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 167.257,
+            "attempted_live": false,
+            "changed": true,
+            "elapsed_sec": 0.218,
             "error": "",
-            "first_signature": true,
-            "output_signature": "0220980dfa51b7cfefa3944d",
-            "reason": "bootstrap",
-            "refresh": true,
-            "status": "success"
+            "first_signature": false,
+            "output_signature": "a39e2ea7f19738dca8be7485",
+            "reason": "retained_not_due",
+            "refresh": false,
+            "status": "retained"
           },
           "fred": {
-            "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 6.76,
+            "attempted_live": false,
+            "changed": true,
+            "elapsed_sec": 0.041,
             "error": "",
-            "first_signature": true,
-            "output_signature": "222823c467efa3ecd5a853c5",
-            "reason": "bootstrap",
-            "refresh": true,
-            "status": "success"
+            "first_signature": false,
+            "output_signature": "3c7859aba927f1f50c123ece",
+            "reason": "retained_not_due",
+            "refresh": false,
+            "status": "retained"
           },
           "grid_storage": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 78.922,
+            "elapsed_sec": 79.222,
             "error": "HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues; interconnection_queue: HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "ed632d5f9066983c12e97833",
-            "reason": "bootstrap",
+            "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "nyfed": {
-            "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 0.488,
+            "attempted_live": false,
+            "changed": true,
+            "elapsed_sec": 0.01,
             "error": "",
-            "first_signature": true,
-            "output_signature": "d47c1daa1422c11ba2f3db87",
-            "reason": "bootstrap",
-            "refresh": true,
-            "status": "success"
+            "first_signature": false,
+            "output_signature": "7b9ebaac4391f7d58778653c",
+            "reason": "retained_not_due",
+            "refresh": false,
+            "status": "retained"
           },
           "power_supply": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 78.922,
+            "elapsed_sec": 79.222,
             "error": "FRED: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=25); interconnection_queue: HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "a78eebf35a3c1c55405ccffe",
-            "reason": "bootstrap",
+            "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "water": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 37.054,
+            "elapsed_sec": 33.547,
             "error": "",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "c23b195e50bed192d240dc02",
-            "reason": "bootstrap",
+            "reason": "dependency_changed:data_centers",
             "refresh": true,
             "status": "success"
           },
           "workforce": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 48.368,
+            "elapsed_sec": 48.536,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
-            "first_signature": true,
+            "first_signature": false,
             "output_signature": "dcaf129f935d6547c1651b83",
-            "reason": "bootstrap",
+            "reason": "retry_after_failed",
             "refresh": true,
             "status": "failed"
           },
           "yfinance": {
-            "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 193.816,
+            "attempted_live": false,
+            "changed": true,
+            "elapsed_sec": 0.12,
             "error": "",
-            "first_signature": true,
-            "output_signature": "d6193899833f6f6a025bebbf",
-            "reason": "bootstrap",
-            "refresh": true,
-            "status": "success"
+            "first_signature": false,
+            "output_signature": "a85e4a331fa6f521d9538ae6",
+            "reason": "retained_not_due",
+            "refresh": false,
+            "status": "retained"
           }
         },
         "partial_nodes": [
@@ -249,9 +238,7 @@
           "current_context"
         ],
         "refreshed_nodes": [
-          "construction",
           "compute",
-          "data_centers",
           "connectivity",
           "power_supply",
           "grid_storage",
@@ -260,35 +247,32 @@
           "workforce",
           "economic_outcomes",
           "commercialization",
+          "current_context"
+        ],
+        "retained_nodes": [
+          "construction",
+          "data_centers",
           "yfinance",
           "edgar",
           "fred",
-          "nyfed",
-          "current_context"
+          "nyfed"
         ],
-        "retained_nodes": [],
         "state_status": "written"
       },
       "status": "passed",
       "subphases": {
-        "assemble + persist": 7.302,
-        "current context": 20.444,
-        "domain sources": 493.292,
-        "market sources": 205.681
+        "assemble + persist": 1.332,
+        "current context": 0.041,
+        "domain sources": 403.02,
+        "market sources": 3.799
       }
     },
     "evidence": {
       "artifact_current": false,
-      "artifact_editorially_current": false,
+      "artifact_editorially_current": true,
       "artifact_status": "validated",
       "editorial_refresh": {
-        "candidate_domains": [
-          "market",
-          "finance",
-          "data_center",
-          "grid_storage",
-          "water"
-        ],
+        "candidate_domains": [],
         "current_event_ids": [
           "auto-2026-09-15-61f85a46f993",
           "auto-2026-09-13-82b9b3bfee9b",
@@ -306,160 +290,67 @@
           "auto-2026-09-14-b01d76bf4f57",
           "auto-2026-09-13-bff8429fee53"
         ],
-        "material_domains": [
-          "market"
-        ],
-        "new_event_domains": [
-          "market",
-          "finance",
-          "data_center",
-          "grid_storage",
-          "water"
-        ],
-        "new_event_ids": [
-          "auto-2026-09-15-61f85a46f993",
-          "auto-2026-09-15-eb09bf00f92d",
-          "auto-2026-09-15-1a5bf2446194",
-          "auto-2026-09-08-27558647ca63",
-          "auto-2026-09-11-27211826c95a",
-          "auto-2026-09-15-147f6eab6958",
-          "auto-2026-09-15-cd3c59699eb7"
-        ],
-        "reason": "material_findings+new_developments",
-        "refresh_needed": true
+        "material_domains": [],
+        "new_event_domains": [],
+        "new_event_ids": [],
+        "reason": "no_material_editorial_change",
+        "refresh_needed": false
       },
-      "elapsed_sec": 0.22,
+      "elapsed_sec": 0.107,
       "materiality": {
         "baseline_available": true,
-        "change_count": 8,
+        "change_count": 1,
         "changes": [
-          {
-            "domain": "market",
-            "fact_id": "market.aei",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 32.236617114601536,
-            "old_value": 32.654778226274736,
-            "percentage_point_change": 0.5,
-            "relative_change": 0.015290519877675839
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.effective_firms",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 18.504006097751503,
-            "old_value": 18.455848186729423,
-            "percentage_point_change": null,
-            "relative_change": 0.00260935777834954
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.equal_weight_return",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.3242557206268477,
-            "old_value": 0.34026829793971974,
-            "percentage_point_change": 1.6000000000000014,
-            "relative_change": 0.047058823529411806
-          },
           {
             "domain": "market",
             "fact_id": "market.median_return",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.1480741240944501,
-            "old_value": 0.14256034140373275,
-            "percentage_point_change": 0.5,
-            "relative_change": 0.03496503496503496
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.positive_breadth",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.6127450980392157,
-            "old_value": 0.6274509803921569,
-            "percentage_point_change": 1.4000000000000057,
-            "relative_change": 0.022328548644338208
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.pressure",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 50.03023003088755,
-            "old_value": 50.900863312798926,
-            "percentage_point_change": 0.8999999999999986,
-            "relative_change": 0.017681728880157142
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.strong_sector_count",
-            "kind": "numeric_change",
-            "material": true,
-            "new_value": 2.0,
-            "old_value": 3.0,
-            "percentage_point_change": null,
-            "relative_change": 0.3333333333333333
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.top_10_share",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.6451191924598726,
-            "old_value": 0.6467714482550885,
-            "percentage_point_change": 0.20000000000000284,
-            "relative_change": 0.0030911901081916975
+            "new_value": 0.14807412409445003,
+            "old_value": 0.1480741240944501,
+            "percentage_point_change": 0.0,
+            "relative_change": 0.0
           }
         ],
-        "current_snapshot_id": "30e758d34db9143ccc98ae7c",
-        "decision": "generate_material_change",
+        "current_snapshot_id": "5ccafb391d357ff1b597818b",
+        "decision": "reuse_immaterial_change",
         "exact_match": false,
-        "immaterial_change_count": 7,
-        "material": true,
-        "material_change_count": 1,
+        "immaterial_change_count": 1,
+        "material": false,
+        "material_change_count": 0,
         "percentage_point_threshold": 2.0,
-        "previous_snapshot_id": "114fd905fa4c0cb68e593347",
+        "previous_snapshot_id": "30e758d34db9143ccc98ae7c",
         "relative_change_threshold": 0.1,
         "version": "1.2.0"
       },
       "status": "passed"
     },
     "openai": {
-      "api_status": "completed",
-      "attempt_id": "20260916T071751041723Z_30e758d3_d0d0ab72",
-      "elapsed_sec": 160.071,
-      "stage": "",
-      "status": "validated",
-      "validation": {
-        "checked_passages": 12,
-        "diagnostics": [],
-        "hard_errors": [],
-        "hard_failures": [],
-        "passed": true,
-        "publication_policy": "minimal_grounding_and_sanity_gate",
-        "validator_version": "5.1.0"
-      },
-      "validation_status": "passed"
+      "reason": "evidence_change_below_materiality_threshold",
+      "status": "skipped"
     },
     "publication": {
       "editorial_refresh_status": "current",
       "read_status": "new_or_current_read_ready",
       "status": "ready",
       "transaction_boundary": "git_commit"
+    },
+    "publication_lease": {
+      "expires_at": "2026-09-17T16:51:32.189798+00:00",
+      "published_at": "2026-09-16T16:51:32.189798+00:00",
+      "reason": "publishable_evidence_change_immaterial_no_paid_call",
+      "status": "renewed"
     }
   },
   "publish_ready": true,
   "result": "publish_ready",
-  "run_id": "20260916T070540Z_ef6db109",
+  "run_id": "20260916T164441Z_61618bb9",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-09-16T07:05:40.971102+00:00",
-  "trigger": "workflow_dispatch",
+  "started_at_utc": "2026-09-16T16:44:41.416503+00:00",
+  "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
@@ -478,9 +369,6 @@
     "refresh node workforce: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "refresh node economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "refresh node commercialization: Parsed 2 of 3 required metrics; missing: Paying business users; Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
-    "refresh node current_context: HTTPError: HTTP Error 403: Forbidden",
-    "snapshot yfinance: YFinance refreshed partially and retained current-best market state. Live=203/204; retained ticker rows=1; missing tickers=0; retained field fills=22.",
-    "snapshot finance:debt:ORCL: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebt: prior period 2022-05-31 is not within 62 days of 2021-05-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-08-31",
-    "snapshot finance:debt:SMCI: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebtCurrent;LongTermDebtNoncurrent: prior period 2014-12-31 is not within 62 days of 2013-12-31; LongTermDebt: prior period 2023-06-30 is not within 62 days of 2022-06-30; LongTermDebtAndCapitalLeaseObligations: prior period 2013-03-31 is not within 62 days of 2012-03-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-06-30"
+    "refresh node current_context: HTTPError: HTTP Error 403: Forbidden"
   ]
 }

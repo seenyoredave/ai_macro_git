@@ -6,7 +6,7 @@
   "files": {
     "ai_macro.py": {
       "bytes": 36249,
-      "sha256": "5bb372334b853d352ca96a14bab669b7c1b7ce5b126789c7fd4372c573b7c18a"
+      "sha256": "751deb39eddea5ed35a2bdeb8c985c947dfab6c2eda2240a117c8e7de51a8cb7"
     },
     "analytics/adoption_depth.py": {
       "bytes": 12905,
@@ -317,6 +317,10 @@
       "bytes": 9866,
       "sha256": "896f1915fd775212fb9f9ce5a5615c18b104a4a4db80438805074382bd16c3b9"
     },
+    "data/canonical/observations/2026/09/b2bd32cc51ba760ac20ebe6a.parquet": {
+      "bytes": 9866,
+      "sha256": "86ec87c2aa228033f606bc18b4e1ebe4315203c210a12c7cecabb2e8e1402b19"
+    },
     "data/canonical/snapshots/2026/08/d177dfe52095ec325b86dcb1.parquet": {
       "bytes": 4369,
       "sha256": "517612e02793b889e7656869f1a0982cdeba044314d5c80bc026475237a52258"
@@ -324,6 +328,10 @@
     "data/canonical/snapshots/2026/09/209cf7d474c78b770e0a5769.parquet": {
       "bytes": 15547,
       "sha256": "2cafd82e445f6aa5e7f8fbe56c6dc10607d1212242a1d804686f5527a7b75f60"
+    },
+    "data/canonical/snapshots/2026/09/b2bd32cc51ba760ac20ebe6a.parquet": {
+      "bytes": 14211,
+      "sha256": "66f0ff51df0eef17d9898dac9d896c0baf7133d338ef06b008fcbd68b19843f8"
     },
     "data/canonical/sources.parquet": {
       "bytes": 3477,
@@ -432,11 +440,11 @@
     },
     "data/refresh_graph_state.json": {
       "bytes": 7706,
-      "sha256": "5f0cd6fd1043d0d384fde37c842a1c7ec6d2b377926ecc27cdd094f71ff2a4c8"
+      "sha256": "5c4a0358f90065cbb98c5d8df0e2ec52e30fa02b5337a13c7f8e98aea5f2c1ff"
     },
     "data/retained_state_manifest.json": {
-      "bytes": 41463,
-      "sha256": "b1ff5ec138922373495e7998ea863e493463c0e8bc91b702c0ebc26dcad189d4"
+      "bytes": 42119,
+      "sha256": "9483a7a511e0f172ced3bff995b42651bcaba4f46f59cadcebfa36369cd1d6cf"
     },
     "data/weekly_context_events.csv": {
       "bytes": 27000,
@@ -652,8 +660,8 @@
       "sha256": "e81b9529d426bbcf676157ac3ac544684d4dbaa033bb17b18a5341ad7757abfc"
     },
     "rendering/adoption.py": {
-      "bytes": 16521,
-      "sha256": "348d5279853bf3795c2733e72963bf0299664cc74f9718adc984fda401da802c"
+      "bytes": 15704,
+      "sha256": "77e740623b4de7360bcc55b46e6faa20fba7fa2b7df2a15bd8cbe20d37cef6bc"
     },
     "rendering/charts_adoption.py": {
       "bytes": 9289,
@@ -676,36 +684,36 @@
       "sha256": "94201b4e3e7f70d95409edc987400e337e89f279c603ede9097ac25af194a79f"
     },
     "rendering/comparison.py": {
-      "bytes": 32830,
-      "sha256": "a9d75f8a2a0b00273a0e7e7c26b8beff28f796b47e0e457e34244d097f5f95f6"
+      "bytes": 33453,
+      "sha256": "7e84cc171a6d8e664efb85b428ac8ae3f50e7dc892800d314474dba569d173bc"
     },
     "rendering/components.py": {
-      "bytes": 21702,
-      "sha256": "673587fa37b7c4ef48c61b74213e09667472aa98fa3417f1e5d377282ab4b4f7"
+      "bytes": 21503,
+      "sha256": "1359109224b5b476bd498ad4aba00f74ac17b398cee68458219d4b244027e9f9"
     },
     "rendering/dashboard.py": {
-      "bytes": 5831,
-      "sha256": "bd840511dae58d6d002a73a0b5c8a557299041ec2bae792b83cb7066f29ec7bc"
+      "bytes": 5902,
+      "sha256": "4f4b67b2c87360f214741916981f3eb6d3d8ee41a4b5e3e2417d61c2c1c232c7"
     },
     "rendering/data_center.py": {
-      "bytes": 15255,
-      "sha256": "240237996e3d44659424bf3cb69ae3819fc3ab7238b4049cfa5c13d69d168709"
+      "bytes": 15699,
+      "sha256": "93275b81275bb6f2bcdba6fe5313974556438b46dc8eb3d1f96b63fcee037b37"
     },
     "rendering/dataframe.py": {
       "bytes": 2942,
       "sha256": "7351b4b243bcd3f65bfcf80b1997204a04511685e5abdda38ea1208dfa20838d"
     },
     "rendering/evidence.py": {
-      "bytes": 64099,
-      "sha256": "93cec83fe9c7c297ae3a68d9a63301a4adf34251a7bd96faec806d70921a126b"
+      "bytes": 78975,
+      "sha256": "eaba0f590adcbff1af0e6f663dd9345c9a5860499cb4a9a359bbfcee11ef5032"
     },
     "rendering/finance.py": {
-      "bytes": 24210,
-      "sha256": "85a812f739b2d3b8060f1536d09705eb69658131bb4ec3fc25b431ddef4ee89d"
+      "bytes": 20352,
+      "sha256": "73f5fb0fd48250c203f4396f5b7017c4f103e4605a4f03f730e52c4467cf2874"
     },
     "rendering/layout_contracts.py": {
-      "bytes": 12302,
-      "sha256": "42e02b4e46eee422a36d3d6e1fe71d0602c2696a7a14463228234e2a420f6e4e"
+      "bytes": 12140,
+      "sha256": "786ed9d37abfc2b02da4f9833195df77cf7bc5f6899c4899e27c26ba586ecdbf"
     },
     "rendering/macro.py": {
       "bytes": 11884,
@@ -716,12 +724,12 @@
       "sha256": "ef5a51d3d6c4a508c9e6bd449c09a28b208c2bde1ce1d66ad07677240fdfccb5"
     },
     "rendering/market.py": {
-      "bytes": 21367,
-      "sha256": "269f7491df06d458e5be92476085eb5f9b11a2b86c21da97a0edfdd5c77dbd98"
+      "bytes": 20202,
+      "sha256": "0a5c0e8a14c32f9064c1020c9fc0c3401b604acfae8a95a923a043d7905e8e5a"
     },
     "rendering/power.py": {
-      "bytes": 26162,
-      "sha256": "a610bb527a7ccee1127378416a8d61cfc26e84f9464ad8832062b881e60b7974"
+      "bytes": 25240,
+      "sha256": "9d06746ed2a8c2f7c05811b80586713defc570c173c36f18829ceacbe822810e"
     },
     "rendering/read_markup.py": {
       "bytes": 5973,
@@ -733,15 +741,15 @@
     },
     "rendering/theme.css": {
       "bytes": 59969,
-      "sha256": "10c9ddd927318a334527962aac8e8e3acda3addaca5ac95a959ee1764ada44a8"
+      "sha256": "e9a60f2d1cc92c6f2fa181c6bc7ce80c948a92e115a7294a9e48addea4b15aa3"
     },
     "rendering/visual_system.py": {
       "bytes": 4762,
       "sha256": "6587cfb6a0de7807069f7396f4c7a3022c3d34776ab59c2fa37013918a26912c"
     },
     "rendering/water.py": {
-      "bytes": 29946,
-      "sha256": "866ed8e07c6f5ec2eeefeb0bc66c1400d2105116133659600b5123de5e2d6c85"
+      "bytes": 30834,
+      "sha256": "6f6818aefd0a5a0eef42eeafe31928ea8541eea114beb475190fe9d6a8a087b2"
     },
     "requirements-dev.txt": {
       "bytes": 20,
@@ -804,7 +812,7 @@
       "sha256": "596de294f35709293d75621955b2839bc4d573b8907d460eb633b0565f0f48df"
     }
   },
-  "generated_at_utc": "2026-09-16T07:17:49+00:00",
+  "generated_at_utc": "2026-09-16T16:51:32+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -815,6 +823,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "328aee7b6fecbfa9870c",
+  "release_id": "07af069865afd63cda21",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }
