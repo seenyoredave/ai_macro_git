@@ -106,8 +106,8 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.2.1"
-APP_STATE_SCHEMA_VERSION = "74.0-canonical-observation-layer"
+APP_VERSION = "v3.0.3.0"
+APP_STATE_SCHEMA_VERSION = "75.0-global-comparison-state"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -531,6 +531,36 @@ if st.session_state.force_rebuild:
         from helpers.atomic_io import atomic_write_json
         atomic_write_json(build_manifest(), PROJECT_ROOT / "data" / "release_manifest.json")
 
+    # Resolve one canonical comparison pair for the entire application.  Phase 3
+    # rendering will consume this state later; establishing it here prevents
+    # individual tabs from inventing their own historical baselines.
+    comparison_state = None
+    comparison_change_set = None
+    try:
+        from analytics.comparison_state import resolve_comparison_state
+        from analytics.change_engine import build_change_set
+
+        comparison_state = resolve_comparison_state()
+        comparison_change_set = build_change_set(comparison_state)
+        st.session_state.current_context_load_report.update({
+            "comparison_state_version": comparison_state.version,
+            "comparison_status": comparison_state.status,
+            "comparison_head_snapshot_id": (
+                comparison_state.head.snapshot_id if comparison_state.head else ""
+            ),
+            "comparison_baseline_snapshot_id": (
+                comparison_state.baseline.snapshot_id if comparison_state.baseline else ""
+            ),
+            "comparison_change_engine_version": comparison_change_set.version,
+            "comparison_material_change_count": int(
+                comparison_change_set.summary.get("material_change_count", 0) or 0
+            ),
+        })
+    except Exception as exc:
+        st.session_state.current_context_load_report["comparison_state_error"] = (
+            f"{type(exc).__name__}: {exc}"
+        )
+
 
     # Report archive status after persistence, not the pre-refresh status captured
     # before provider work. This makes a successful manual refresh visible
@@ -572,6 +602,8 @@ if st.session_state.force_rebuild:
     st.session_state.canonical_domain_states = dict(read_context.domain_states or {})
     st.session_state.canonical_snapshot_id = str(read_context.canonical_snapshot_id or "")
     st.session_state.canonical_schema_version = str(read_context.canonical_schema_version or "")
+    st.session_state.comparison_state = comparison_state
+    st.session_state.comparison_change_set = comparison_change_set
     st.session_state.commentary_status = dict(reader_snapshot.get("commentary") or {})
     st.session_state.reader_artifact_cache_token = reader_artifact_cache_token()
     st.session_state.force_yfinance_refresh = False
@@ -600,6 +632,8 @@ current_context = st.session_state.get("current_context", {})
 canonical_domain_states = st.session_state.get("canonical_domain_states", {})
 canonical_snapshot_id = st.session_state.get("canonical_snapshot_id", "")
 canonical_schema_version = st.session_state.get("canonical_schema_version", "")
+comparison_state = st.session_state.get("comparison_state")
+comparison_change_set = st.session_state.get("comparison_change_set")
 
 # Commentary artifacts can be replaced by the publication worker while a
 # Streamlit session remains alive. Refresh only the Reader snapshot when that
@@ -684,6 +718,8 @@ if developer_mode():
         domain_states=canonical_domain_states,
         canonical_snapshot_id=canonical_snapshot_id,
         canonical_schema_version=canonical_schema_version,
+        comparison_state=comparison_state,
+        comparison_change_set=comparison_change_set,
     )
     render_developer_tools(APP_VERSION, commentary_context=commentary_context)
 
@@ -720,6 +756,8 @@ else:
         domain_states=canonical_domain_states,
         canonical_snapshot_id=canonical_snapshot_id,
         canonical_schema_version=canonical_schema_version,
+        comparison_state=comparison_state,
+        comparison_change_set=comparison_change_set,
         platform_reads=platform_reads,
     )
     render_research_dashboard(build_tabs(), dashboard_context)

@@ -34,4 +34,6 @@ class DashboardContext:
     dashboard_data: dict | None = None
     canonical_snapshot_id: str = ""
     canonical_schema_version: str = ""
+    comparison_state: Any = None
+    comparison_change_set: Any = None
     platform_reads: dict = field(default_factory=dict)

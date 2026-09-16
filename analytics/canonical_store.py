@@ -746,6 +746,47 @@ def latest_canonical_snapshot(*, root: Path = PROJECT_ROOT) -> dict[str, Any]:
     return {column: _json_safe(row.get(column)) for column in _SNAPSHOT_COLUMNS}
 
 
+def canonical_snapshot_history(
+    *,
+    root: Path = PROJECT_ROOT,
+    limit: int | None = None,
+    ascending: bool = False,
+) -> pd.DataFrame:
+    """Return canonical publication snapshots in deterministic chronological order."""
+    snapshots = _snapshot_frame(root=root)
+    if snapshots.empty:
+        return pd.DataFrame(columns=list(_SNAPSHOT_COLUMNS))
+    ordered = snapshots.sort_values(
+        ["observation_date", "created_at_utc", "snapshot_id"],
+        ascending=bool(ascending),
+        kind="stable",
+    )
+    if limit is not None:
+        ordered = ordered.head(max(1, int(limit)))
+    return ordered[list(_SNAPSHOT_COLUMNS)].reset_index(drop=True)
+
+
+def canonical_snapshot_by_id(
+    snapshot_id: str,
+    *,
+    root: Path = PROJECT_ROOT,
+) -> dict[str, Any]:
+    """Return metadata for one exact canonical snapshot id."""
+    chosen = str(snapshot_id or "").strip()
+    if not chosen:
+        return {}
+    snapshots = _snapshot_frame(root=root)
+    if snapshots.empty:
+        return {}
+    matches = snapshots.loc[snapshots["snapshot_id"].astype(str).eq(chosen)]
+    if matches.empty:
+        return {}
+    if len(matches) > 1:
+        raise ValueError(f"Canonical snapshot {chosen} appears more than once.")
+    row = matches.iloc[0]
+    return {column: _json_safe(row.get(column)) for column in _SNAPSHOT_COLUMNS}
+
+
 def load_canonical_domain_states(
     *,
     snapshot_id: str | None = None,

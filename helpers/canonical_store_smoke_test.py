@@ -14,7 +14,9 @@ from analytics.canonical_store import (  # noqa: E402
     CANONICAL_SCHEMA_VERSION,
     canonical_metric_history,
     canonical_snapshot_as_of,
+    canonical_snapshot_by_id,
     canonical_snapshot_diff,
+    canonical_snapshot_history,
     latest_canonical_snapshot,
     load_canonical_domain_states,
     persist_canonical_snapshot,
@@ -130,6 +132,13 @@ def main() -> None:
 
         latest = latest_canonical_snapshot(root=root)
         _check(latest.get("snapshot_id") == second["snapshot_id"], "Latest canonical snapshot lookup is wrong")
+        history_rows = canonical_snapshot_history(root=root, ascending=True)
+        _check(
+            history_rows["snapshot_id"].tolist() == [first["snapshot_id"], second["snapshot_id"]],
+            "Canonical snapshot history ordering changed",
+        )
+        exact = canonical_snapshot_by_id(first["snapshot_id"], root=root)
+        _check(exact.get("snapshot_id") == first["snapshot_id"], "Exact canonical snapshot lookup failed")
         states = load_canonical_domain_states(snapshot_id=second["snapshot_id"], root=root)
         _check(float(states["market"].metrics["smoke_value"]) == 2.0, "Canonical state round trip changed a numeric metric")
 
