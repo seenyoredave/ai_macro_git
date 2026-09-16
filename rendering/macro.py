@@ -22,6 +22,7 @@ from rendering.components import (
     render_tab_header,
 )
 from rendering.spatial import render_spatial_explorer
+from rendering.comparison import comparison_ready, comparison_subtitle, render_macro_change_overview
 
 
 def _transmission_value(context: DashboardContext, domain: str, key: str) -> float:
@@ -250,10 +251,20 @@ def render_macro_tab(
     )
     _render_floating_terms("macro")
     render_domain_read(tab_read, label="Read", domain="macro", macro=True)
+    if comparison_ready(context.comparison_change_set):
+        render_section(
+            "What changed",
+            comparison_subtitle(context.comparison_change_set),
+            first=True,
+        )
+        render_macro_change_overview(context.comparison_change_set)
+        first_transmission = False
+    else:
+        first_transmission = True
     render_section(
         "Economic transmission",
         "Market pricing, funding, buildout, adoption, and economic results.",
-        first=True,
+        first=first_transmission,
     )
     _render_transmission_board(context)
     render_section(

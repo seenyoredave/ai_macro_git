@@ -19,6 +19,7 @@ from rendering.dataframe import arrow_safe_dataframe
 from rendering.power import _power_source_rows
 from rendering.evidence_tables import _component_table, render_edgar_data, render_macro_data, render_sector_scoreboard
 from rendering.finance import _debt_market_source_rows, _private_capital_detail_table
+from rendering.comparison import render_change_evidence
 
 
 def _water_evidence_payload(water_data) -> dict:
@@ -1183,6 +1184,8 @@ def render_evidence_tab(
     economic_impact_data=None,
     platform_reads=None,
     evidence_packets=None,
+    comparison_state=None,
+    comparison_change_set=None,
 ):
     render_tab_header(
         "Evidence",
@@ -1198,6 +1201,18 @@ def render_evidence_tab(
     )
     with st.expander("Read the evidence standards", expanded=False):
         st.markdown(EVIDENCE_STANDARDS)
+
+    render_section(
+        "Change evidence",
+        "Trace a changed analytical metric from its prior value to its source register and published Read linkage.",
+        compact=True,
+    )
+    render_change_evidence(
+        comparison_state,
+        comparison_change_set,
+        platform_reads=platform_reads,
+        evidence_packets=evidence_packets,
+    )
 
     render_section(
         "Read citations",

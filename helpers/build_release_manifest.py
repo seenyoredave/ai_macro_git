@@ -146,6 +146,7 @@ RELEASE_FILES = (
     "loaders/current_context_loader.py",
     "loaders/commercialization_loader.py",
     "rendering/components.py",
+    "rendering/comparison.py",
     "rendering/layout_contracts.py",
     "rendering/dashboard.py",
     "rendering/macro.py",

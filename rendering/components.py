@@ -202,6 +202,12 @@ def render_tab_header(title: str, subtitle: str, meta: str | None = None) -> Non
         """,
         unsafe_allow_html=True,
     )
+    from rendering.comparison import render_domain_change_line
+
+    render_domain_change_line(
+        title,
+        st.session_state.get("comparison_change_set"),
+    )
 
 def render_line_break() -> None:
     st.markdown("<br>", unsafe_allow_html=True)

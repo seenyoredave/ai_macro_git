@@ -13,10 +13,12 @@ sys.path.insert(0, str(ROOT))
 from analytics.canonical_store import (  # noqa: E402
     CANONICAL_SCHEMA_VERSION,
     canonical_metric_history,
+    canonical_metric_sources,
     canonical_snapshot_as_of,
     canonical_snapshot_by_id,
     canonical_snapshot_diff,
     canonical_snapshot_history,
+    canonical_snapshot_source_status,
     latest_canonical_snapshot,
     load_canonical_domain_states,
     persist_canonical_snapshot,
@@ -139,6 +141,16 @@ def main() -> None:
         )
         exact = canonical_snapshot_by_id(first["snapshot_id"], root=root)
         _check(exact.get("snapshot_id") == first["snapshot_id"], "Exact canonical snapshot lookup failed")
+        source_status = canonical_snapshot_source_status(first["snapshot_id"], root=root)
+        _check(
+            (source_status.get("market") or {}).get("source_mode") == "test",
+            "Canonical snapshot source-status payload changed",
+        )
+        metric_sources = canonical_metric_sources("market.smoke_value", root=root)
+        _check(
+            {"YFinance", "SEC EDGAR"}.issubset(set(metric_sources["source_label"].astype(str))),
+            "Canonical metric source registry lookup failed",
+        )
         states = load_canonical_domain_states(snapshot_id=second["snapshot_id"], root=root)
         _check(float(states["market"].metrics["smoke_value"]) == 2.0, "Canonical state round trip changed a numeric metric")
 

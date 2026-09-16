@@ -787,6 +787,54 @@ def canonical_snapshot_by_id(
     return {column: _json_safe(row.get(column)) for column in _SNAPSHOT_COLUMNS}
 
 
+def canonical_snapshot_source_status(
+    snapshot_id: str,
+    *,
+    root: Path = PROJECT_ROOT,
+) -> dict[str, Any]:
+    """Return the structured provider-status payload stored with one snapshot."""
+    metadata = canonical_snapshot_by_id(snapshot_id, root=root)
+    raw = metadata.get("source_status_json") if metadata else None
+    if isinstance(raw, dict):
+        return dict(raw)
+    text = str(raw or "").strip()
+    if not text:
+        return {}
+    try:
+        payload = json.loads(text)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return {}
+    return dict(payload) if isinstance(payload, dict) else {}
+
+
+def canonical_metric_sources(
+    metric_id: str,
+    *,
+    root: Path = PROJECT_ROOT,
+) -> pd.DataFrame:
+    """Return the registered source foundation for one canonical metric id."""
+    chosen = str(metric_id or "").strip()
+    columns = ["metric_id", "source_id", "source_label", "source_url", "provenance_scope"]
+    if not chosen:
+        return pd.DataFrame(columns=columns)
+    paths = _root_paths(root)
+    relations = _read_parquet(paths["metric_sources"], _METRIC_SOURCE_COLUMNS)
+    sources = _read_parquet(paths["sources"], _SOURCE_COLUMNS)
+    if relations.empty or sources.empty:
+        return pd.DataFrame(columns=columns)
+    rows = relations.loc[relations["metric_id"].astype(str).eq(chosen)].copy()
+    if rows.empty:
+        return pd.DataFrame(columns=columns)
+    rows = rows[["metric_id", "source_id", "provenance_scope"]].merge(
+        sources[["source_id", "source_label", "source_url"]],
+        on="source_id",
+        how="left",
+    )
+    return rows[columns].drop_duplicates().sort_values(
+        ["source_label", "source_id"], kind="stable"
+    ).reset_index(drop=True)
+
+
 def load_canonical_domain_states(
     *,
     snapshot_id: str | None = None,

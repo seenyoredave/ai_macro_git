@@ -149,4 +149,6 @@ def render_research_dashboard(tabs, context: DashboardContext):
                 context.economic_impact_data,
                 platform_reads=platform_reads,
                 evidence_packets=evidence_packets,
+                comparison_state=context.comparison_state,
+                comparison_change_set=context.comparison_change_set,
             )

@@ -99,6 +99,7 @@ from loaders.current_context_daily import (
     refresh_current_context_once_daily,
 )
 from rendering.components import render_masthead, render_platform_purpose
+from rendering.comparison import render_global_comparison_controls
 from rendering.snapshot_status import market_snapshot_label
 from rendering.dashboard import render_research_dashboard
 from rendering.theme import inject_research_theme
@@ -106,8 +107,8 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.3.0"
-APP_STATE_SCHEMA_VERSION = "75.0-global-comparison-state"
+APP_VERSION = "v3.0.4.0"
+APP_STATE_SCHEMA_VERSION = "76.0-point-in-time-research-ui"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -732,6 +733,15 @@ render_masthead(
 render_platform_purpose(METRIC_DEFINITIONS["Purpose Statement"])
 
 developer_canvas_view = st.session_state.get("developer_canvas_view", "Dashboard") if developer_mode() else "Dashboard"
+if not (developer_mode() and developer_canvas_view == "Basket / Tier diagnostics"):
+    comparison_state, comparison_change_set = render_global_comparison_controls(
+        canonical_snapshot_id=canonical_snapshot_id,
+        current_state=comparison_state,
+        current_change_set=comparison_change_set,
+    )
+    st.session_state.comparison_state = comparison_state
+    st.session_state.comparison_change_set = comparison_change_set
+
 if developer_mode() and developer_canvas_view == "Basket / Tier diagnostics":
     render_basket_tier_developer_tool(sector_data)
 else:
