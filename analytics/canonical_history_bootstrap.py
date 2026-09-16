@@ -6,8 +6,9 @@ Parquet snapshots did not exist yet.  This module imports only those legacy rows
 that contain a complete deterministic domain-state payload; ordinary macro rows
 are never promoted into canonical history.
 
-The migration is intentionally owner-invoked.  Application startup, public
-Reader sessions, and scheduled automation do not call it.
+The migration is write-authorized only in developer or automation runtimes.
+Public Reader sessions never invoke or persist it. Scheduled automation may run
+it idempotently so reconstructed history crosses the normal publication boundary.
 """
 
 from __future__ import annotations
@@ -391,11 +392,11 @@ def bootstrap_legacy_canonical_history(
         report["status"] = "nothing_to_write"
         return report
 
-    from config.deployment import developer_mode, repository_writes_enabled
+    from config.deployment import repository_writes_enabled
 
-    if not developer_mode() or not repository_writes_enabled():
+    if not repository_writes_enabled():
         raise PermissionError(
-            "Canonical history bootstrap writes require AI_MACRO_MODE=developer."
+            "Canonical history bootstrap writes require developer or automation mode."
         )
 
     from analytics.canonical_store import persist_canonical_snapshot

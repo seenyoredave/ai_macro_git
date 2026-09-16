@@ -696,6 +696,27 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
     graph_report = plan.compact_report()
     reports["refresh_graph"] = graph_report
 
+    # Historical canonical reconstruction is automation-owned retained state.
+    # Run the migration inside the same publication transaction so the Git
+    # transport, rather than an owner commit, publishes the resulting Parquet.
+    try:
+        from analytics.canonical_history_bootstrap import bootstrap_legacy_canonical_history
+
+        canonical_history_bootstrap_report = bootstrap_legacy_canonical_history(write=True)
+        canonical_history_bootstrap_report["source_mode"] = (
+            "failed"
+            if canonical_history_bootstrap_report.get("errors")
+            else str(canonical_history_bootstrap_report.get("status") or "unknown")
+        )
+    except Exception as exc:
+        canonical_history_bootstrap_report = {
+            "status": "failed",
+            "source_mode": "failed",
+            "error": f"{type(exc).__name__}: {exc}",
+            "errors": [f"{type(exc).__name__}: {exc}"],
+        }
+    reports["canonical_history_bootstrap"] = canonical_history_bootstrap_report
+
     try:
         from analytics.canonical_store import persist_canonical_snapshot
 
