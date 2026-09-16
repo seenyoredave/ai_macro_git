@@ -13,7 +13,6 @@ from rendering.charts_data_center import (
     data_center_state_pipeline,
 )
 from rendering.charts_infrastructure import data_center_connectivity_state
-from rendering.common import _render_floating_terms
 from rendering.components import (
     fmt_number,
     render_domain_read,
@@ -287,8 +286,8 @@ def render_data_center_tab(infrastructure_data, tab_read=None):
         "Data Centers",
         "U.S. data-center campuses, development status, published capacity, operators, and connectivity.",
         "Universal Data Center Registry",
+        terms_key="data_center",
     )
-    _render_floating_terms("data_center")
     render_domain_read(tab_read, label="Read", domain="data_centers")
     campuses = _campuses(infrastructure_data)
     inventory = _inventory(infrastructure_data)

@@ -99,7 +99,7 @@ from loaders.current_context_daily import (
     refresh_current_context_once_daily,
 )
 from rendering.components import render_masthead, render_platform_purpose
-from rendering.comparison import render_global_comparison_controls
+from rendering.comparison import resolve_comparison_selection
 from rendering.snapshot_status import market_snapshot_label
 from rendering.dashboard import render_research_dashboard
 from rendering.theme import inject_research_theme
@@ -107,7 +107,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.4.0"
+APP_VERSION = "v3.0.4.4"
 APP_STATE_SCHEMA_VERSION = "76.0-point-in-time-research-ui"
 
 st.set_page_config(
@@ -734,7 +734,7 @@ render_platform_purpose(METRIC_DEFINITIONS["Purpose Statement"])
 
 developer_canvas_view = st.session_state.get("developer_canvas_view", "Dashboard") if developer_mode() else "Dashboard"
 if not (developer_mode() and developer_canvas_view == "Basket / Tier diagnostics"):
-    comparison_state, comparison_change_set = render_global_comparison_controls(
+    comparison_state, comparison_change_set = resolve_comparison_selection(
         canonical_snapshot_id=canonical_snapshot_id,
         current_state=comparison_state,
         current_change_set=comparison_change_set,

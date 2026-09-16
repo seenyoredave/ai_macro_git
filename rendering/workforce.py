@@ -13,7 +13,6 @@ from rendering.charts_workforce import (
     occupation_exposure_by_group,
     workforce_outcomes_matrix,
 )
-from rendering.common import _render_floating_terms
 from rendering.components import (
     fmt_date,
     fmt_number,
@@ -120,8 +119,7 @@ def _render_workforce_ledger(data: dict) -> None:
 
 def render_workforce_tab(workforce_data: dict, tab_read=None) -> None:
     inject_panel_height_rules({})
-    render_tab_header("Workforce", "Employment, hiring, separations, real pay, and task exposure in AI-linked industries.", "U.S. Bureau of Labor Statistics")
-    _render_floating_terms("workforce")
+    render_tab_header("Workforce", "Employment, hiring, separations, real pay, and task exposure in AI-linked industries.", "U.S. Bureau of Labor Statistics", terms_key="workforce")
     render_domain_read(tab_read, label="Read", domain="workforce")
     _render_signature(workforce_data)
     _render_pulse(workforce_data)

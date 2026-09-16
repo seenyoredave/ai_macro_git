@@ -21,7 +21,7 @@ from rendering.charts_market import (
     sector_signal_anatomy_chart,
     speculative_load_matrix,
 )
-from rendering.common import _forward_multiple_text, _render_floating_terms
+from rendering.common import _forward_multiple_text
 from rendering.components import fmt_date, fmt_number, inject_panel_height_rules, render_domain_read, render_panel_heading, render_section, render_signal_rail, render_statline, render_tab_header
 from rendering.sector_dossier import build_structure_interpretation, build_structure_snapshot
 from rendering.tables import _company_table
@@ -469,8 +469,8 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
         "Market",
         "Market value, returns, breadth, valuation, and company fundamentals across the AI equity universe.",
         "YFinance + SEC EDGAR",
+        terms_key="market",
     )
-    _render_floating_terms("market")
     render_domain_read(tab_read, label="Read", domain="market")
     _render_market_ledger_summary(market_ledger, (market_universe_summary or {}).get("valuation_context"))
     render_signal_rail(_assessment_stats(macro_df, sector_data), key_prefix="sector-cross-state")

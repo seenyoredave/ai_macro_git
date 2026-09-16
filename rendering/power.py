@@ -28,7 +28,6 @@ from rendering.charts_energy import (
     retail_price_history,
     wholesale_price_history,
 )
-from rendering.common import _render_floating_terms
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.components import (
     inject_panel_height_rules,
@@ -524,8 +523,7 @@ def render_power_tab(fred_data, regime_metrics, power_data, dashboard_data, infr
     del fred_data, regime_metrics, dashboard_data
     _inject_power_page_theme()
     inject_panel_height_rules({"power-panel-demand-history": 520, "power-panel-large-load-profile": 520, "power-panel-gas-pipeline": 455, "power-panel-lng": 455})
-    render_tab_header("Power", "Electricity demand, generation, planned capacity, prices, and natural-gas infrastructure.", "EIA / FRED / facility registry")
-    _render_floating_terms("power")
+    render_tab_header("Power", "Electricity demand, generation, planned capacity, prices, and natural-gas infrastructure.", "EIA / FRED / facility registry", terms_key="power")
     context = _power_context(power_data, infrastructure_data or {})
     render_domain_read(tab_read, label="Read", domain="power")
     _render_power_pulse(context)

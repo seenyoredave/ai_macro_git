@@ -11,7 +11,6 @@ from rendering.charts_adoption import (
     adoption_sector_bars,
     consumer_adoption_history,
 )
-from rendering.common import _render_floating_terms
 from rendering.commercialization import filtered_ledger, metric_value
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.components import (
@@ -269,8 +268,8 @@ def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=Non
         "Adoption",
         "Personal use, business use, workplace deployment, employee tasks, and paid adoption.",
         "RPS / U.S. Census BTOS / primary provider disclosures",
+        terms_key="adoption",
     )
-    _render_floating_terms("adoption")
     render_domain_read(tab_read, label="Read", domain="adoption")
 
     render_section("Current adoption", "Reported personal and business AI use.", first=True, compact=True)

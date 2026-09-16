@@ -14,12 +14,12 @@ from rendering.adoption import _adoption_source_rows
 from rendering.charts_common import COLORS
 from rendering.charts_finance import component_bars
 from rendering.common import _coverage_text, _display_text
+from rendering.comparison import render_change_evidence
 from rendering.components import fmt_number, render_line_break, render_section, render_static_table, render_tab_header
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.power import _power_source_rows
 from rendering.evidence_tables import _component_table, render_edgar_data, render_macro_data, render_sector_scoreboard
 from rendering.finance import _debt_market_source_rows, _private_capital_detail_table
-from rendering.comparison import render_change_evidence
 
 
 def _water_evidence_payload(water_data) -> dict:
@@ -1080,7 +1080,6 @@ def _render_current_context_evidence(read: dict) -> None:
         render_section(
             "Recent context",
             "Current developments are sourced separately from retained analytical evidence.",
-            compact=True,
         )
         st.markdown('<div class="rm-evidence-context-grid">' + ''.join(cards) + '</div>', unsafe_allow_html=True)
 
@@ -1107,7 +1106,6 @@ def _render_evidence_trace(platform_reads: dict | None, evidence_packets: dict |
     render_section(
         "Evidence used in the Read",
         "Analytical records cited by the published Read.",
-        compact=True,
     )
     _render_cited_facts(read, packet)
 
@@ -1197,15 +1195,19 @@ def render_evidence_tab(
         "Research standards",
         "Source selection, corroboration, and the boundary between evidence and interpretation.",
         first=True,
-        compact=True,
     )
     with st.expander("Read the evidence standards", expanded=False):
         st.markdown(EVIDENCE_STANDARDS)
 
     render_section(
-        "Change evidence",
-        "Trace a changed analytical metric from its prior value to its source register and published Read linkage.",
-        compact=True,
+        "Read citations",
+        "Open a published Read and inspect the analytical records it cites.",
+    )
+    selected = _render_evidence_trace(platform_reads, evidence_packets)
+
+    render_section(
+        "Change inspection",
+        "Inspect a point-in-time metric change, its source register, and its published Read linkage.",
     )
     render_change_evidence(
         comparison_state,
@@ -1215,16 +1217,8 @@ def render_evidence_tab(
     )
 
     render_section(
-        "Read citations",
-        "Open a published Read and inspect the analytical records it cites.",
-        compact=True,
-    )
-    selected = _render_evidence_trace(platform_reads, evidence_packets)
-
-    render_section(
         "Technical records",
         "Formulas, coverage tables, source registers, and underlying observations.",
-        compact=True,
     )
     with st.expander("Open technical records", expanded=False):
         st.markdown("**Claim lineage**")

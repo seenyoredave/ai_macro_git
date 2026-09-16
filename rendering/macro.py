@@ -11,7 +11,7 @@ from rendering.labels import adoption_label, power_capacity_gap_label, speculati
 from rendering.charts_common import history_from_frame
 from rendering.charts_finance import current_gap_bars
 from rendering.charts_infrastructure import infrastructure_leadership_rotation
-from rendering.common import _fallback, _fred_value, _metric_context, _render_floating_terms, _value
+from rendering.common import _fallback, _fred_value, _metric_context, _value
 from rendering.components import (
     fmt_number,
     metric_card,
@@ -22,7 +22,11 @@ from rendering.components import (
     render_tab_header,
 )
 from rendering.spatial import render_spatial_explorer
-from rendering.comparison import comparison_ready, comparison_subtitle, render_macro_change_overview
+from rendering.comparison import (
+    comparison_ready,
+    render_macro_change_overview,
+    render_macro_comparison_toolbar,
+)
 
 
 def _transmission_value(context: DashboardContext, domain: str, key: str) -> float:
@@ -248,16 +252,16 @@ def render_macro_tab(
         "AI Macro",
         "Investment, infrastructure, adoption, and U.S. economic data related to AI.",
         "YFinance / SEC / FRED / Census / EIA",
+        terms_key="macro",
     )
-    _render_floating_terms("macro")
     render_domain_read(tab_read, label="Read", domain="macro", macro=True)
-    if comparison_ready(context.comparison_change_set):
-        render_section(
-            "What changed",
-            comparison_subtitle(context.comparison_change_set),
-            first=True,
-        )
-        render_macro_change_overview(context.comparison_change_set)
+    comparison_state, comparison_change_set = render_macro_comparison_toolbar(
+        canonical_snapshot_id=context.canonical_snapshot_id,
+        current_state=context.comparison_state,
+        current_change_set=context.comparison_change_set,
+    )
+    if comparison_ready(comparison_change_set):
+        render_macro_change_overview(comparison_change_set)
         first_transmission = False
     else:
         first_transmission = True

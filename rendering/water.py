@@ -20,7 +20,6 @@ from rendering.charts_water import (
     water_top_withdrawals_2020,
     wastewater_construction_history,
 )
-from rendering.common import _render_floating_terms
 from rendering.components import (
     fmt_number,
     render_domain_read,
@@ -622,8 +621,8 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
         "Water",
         "Drought, public-water service areas, campus water records, national withdrawals, and water infrastructure.",
         "USGS / U.S. Drought Monitor / EPA / EIA / U.S. Census Bureau",
+        terms_key="water",
     )
-    _render_floating_terms("water")
     render_domain_read(tab_read, label="Read", domain="water")
     _render_local_exposure(context)
     _render_campus_dossier(context)

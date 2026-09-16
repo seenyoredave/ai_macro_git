@@ -19,7 +19,7 @@ from analytics.comparison_state import ComparisonState
 from config.deployment import PROJECT_ROOT
 
 
-CHANGE_ENGINE_VERSION = "1.0.0"
+CHANGE_ENGINE_VERSION = "1.0.1"
 CHANGE_POLICY_VERSION = "1.0.0"
 NUMERIC_TOLERANCE = 1e-12
 RELATIVE_MATERIALITY_THRESHOLD = 0.10
@@ -55,6 +55,12 @@ CHANGE_CLASS_ORDER = {
     "quality_changed": 5,
     "unchanged": 9,
 }
+
+COVERAGE_CHANGE_CLASSES = frozenset({
+    "metric_new",
+    "metric_unavailable",
+    "metric_restored",
+})
 
 _INVALID_QUALITY = {"", "missing", "unavailable", "failed", "error"}
 
@@ -376,6 +382,9 @@ def _summary(frame: pd.DataFrame, comparison: ComparisonState, *, status: str) -
             "metric_count": 0,
             "changed_metric_count": 0,
             "material_change_count": 0,
+            "comparable_change_count": 0,
+            "material_comparable_change_count": 0,
+            "coverage_change_count": 0,
             "incremental_change_count": 0,
             "threshold_crossing_count": 0,
             "new_metric_count": 0,
@@ -383,10 +392,15 @@ def _summary(frame: pd.DataFrame, comparison: ComparisonState, *, status: str) -
             "restored_metric_count": 0,
             "changed_domains": [],
             "material_domains": [],
+            "comparable_domains": [],
+            "coverage_domains": [],
         }
 
     changed = frame.loc[frame["classification"].ne("unchanged")]
     material = changed.loc[changed["material"].astype(bool)]
+    coverage = changed.loc[changed["classification"].isin(COVERAGE_CHANGE_CLASSES)]
+    comparable = changed.loc[~changed["classification"].isin(COVERAGE_CHANGE_CLASSES)]
+    comparable_material = comparable.loc[comparable["material"].astype(bool)]
     counts = changed["classification"].value_counts().to_dict()
     return {
         "status": status,
@@ -398,6 +412,9 @@ def _summary(frame: pd.DataFrame, comparison: ComparisonState, *, status: str) -
         "metric_count": int(len(frame)),
         "changed_metric_count": int(len(changed)),
         "material_change_count": int(len(material)),
+        "comparable_change_count": int(len(comparable)),
+        "material_comparable_change_count": int(len(comparable_material)),
+        "coverage_change_count": int(len(coverage)),
         "incremental_change_count": int(counts.get("incremental_change", 0)),
         "threshold_crossing_count": int(counts.get("regime_threshold_crossed", 0)),
         "new_metric_count": int(counts.get("metric_new", 0)),
@@ -405,6 +422,8 @@ def _summary(frame: pd.DataFrame, comparison: ComparisonState, *, status: str) -
         "restored_metric_count": int(counts.get("metric_restored", 0)),
         "changed_domains": sorted(set(changed["domain"].dropna().astype(str))),
         "material_domains": sorted(set(material["domain"].dropna().astype(str))),
+        "comparable_domains": sorted(set(comparable["domain"].dropna().astype(str))),
+        "coverage_domains": sorted(set(coverage["domain"].dropna().astype(str))),
     }
 
 
@@ -454,6 +473,7 @@ def build_change_set(
 
 
 __all__ = [
+    "COVERAGE_CHANGE_CLASSES",
     "CHANGE_ENGINE_VERSION",
     "CHANGE_POLICY_VERSION",
     "CHANGE_CLASS_ORDER",

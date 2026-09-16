@@ -17,7 +17,7 @@ from rendering.charts_finance import (
     financial_conditions_history,
     private_capital_realization_map,
 )
-from rendering.common import _render_floating_terms, _value
+from rendering.common import _value
 from rendering.commercialization import filtered_ledger, metric_value
 from rendering.components import (
     fmt_date,
@@ -521,8 +521,8 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
         "Finance",
         "Cash flow, capital spending, debt, commitments, credit conditions, and private-fund returns.",
         "SEC / company disclosures / CalSTRS / ILPA / FRED / New York Fed / Chicago Fed",
+        terms_key="finance",
     )
-    _render_floating_terms("finance")
     render_domain_read(tab_read, label="Read", domain="finance")
 
     render_section(

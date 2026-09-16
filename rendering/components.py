@@ -181,33 +181,60 @@ def render_platform_purpose(statement: str) -> None:
                 unsafe_allow_html=True,
             )
 
-def render_tab_header(title: str, subtitle: str, meta: str | None = None) -> None:
+def render_tab_header(
+    title: str,
+    subtitle: str,
+    meta: str | None = None,
+    *,
+    terms_key: str | None = None,
+) -> None:
     profile = domain_profile(title)
-    meta_html = f'<div class="rm-tabmeta">{html.escape(meta)}</div>' if meta else ""
     stage_html = ""
     style = ""
     if profile is not None:
         stage_html = f'<div class="rm-tabkicker">{html.escape(profile.stage)}</div>'
         style = f' style="--rm-tab-accent: var(--rm-{html.escape(profile.accent, quote=True)})"'
-    st.markdown(
-        f"""
-        <div class="rm-tabhead"{style}>
-            <div>
-                {stage_html}
-                <div class="rm-tabtitle">{html.escape(title)}</div>
-                <div class="rm-tabcopy">{html.escape(subtitle)}</div>
-            </div>
-            {meta_html}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+
+    tool_key = str(terms_key or title).strip().casefold().replace(" ", "-").replace("&", "and")
+    with st.container(key=f"domain-header-{tool_key}"):
+        title_col, terms_col = st.columns([5.4, 1.45], vertical_alignment="bottom")
+        with title_col:
+            st.markdown(
+                f"""
+                <div class="rm-tabhead"{style}>
+                    {stage_html}
+                    <div class="rm-tabtitle">{html.escape(title)}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        with terms_col:
+            if terms_key:
+                from rendering.common import _render_floating_terms
+
+                _render_floating_terms(terms_key)
+
+        copy_col, meta_col = st.columns([5.4, 1.45], vertical_alignment="top")
+        with copy_col:
+            st.markdown(
+                f'<div class="rm-tabcopy">{html.escape(subtitle)}</div>',
+                unsafe_allow_html=True,
+            )
+        with meta_col:
+            if meta:
+                st.markdown(
+                    f'<div class="rm-tabmeta">{html.escape(meta)}</div>',
+                    unsafe_allow_html=True,
+                )
+
     from rendering.comparison import render_domain_change_line
 
     render_domain_change_line(
         title,
         st.session_state.get("comparison_change_set"),
     )
+
 
 def render_line_break() -> None:
     st.markdown("<br>", unsafe_allow_html=True)

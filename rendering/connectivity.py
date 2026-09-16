@@ -13,7 +13,6 @@ from rendering.charts_connectivity import (
     middle_mile_awards_by_state,
 )
 from rendering.charts_infrastructure import data_center_connectivity_state
-from rendering.common import _render_floating_terms
 from rendering.components import (
     fmt_number,
     render_compact_chart_rail,
@@ -176,8 +175,7 @@ def render_connectivity_tab(connectivity_data: dict | None, infrastructure_data:
     if not connectivity and isinstance(infrastructure_data, dict):
         connectivity = infrastructure_data.get("connectivity", {}) or {}
     _inject_connectivity_theme()
-    render_tab_header("Connectivity", "Submarine cables, internet exchanges, middle-mile fiber, and links to major data-center markets.", "FCC / Internet Society Pulse / PeeringDB / TeleGeography / NTIA")
-    _render_floating_terms("connectivity")
+    render_tab_header("Connectivity", "Submarine cables, internet exchanges, middle-mile fiber, and links to major data-center markets.", "FCC / Internet Society Pulse / PeeringDB / TeleGeography / NTIA", terms_key="connectivity")
     render_domain_read(tab_read, label="Read", domain="connectivity")
     _render_national_pulse(connectivity)
     _render_submarine(connectivity)

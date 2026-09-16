@@ -15,7 +15,6 @@ from rendering.charts_infrastructure import (
     compute_project_state_sites,
     compute_critical_supply_chain,
 )
-from rendering.common import _render_floating_terms
 from rendering.commercialization import filtered_ledger, metric_value
 from rendering.components import (
     inject_panel_height_rules,
@@ -203,8 +202,7 @@ def render_compute_tab(infrastructure_data, commercialization_data=None, tab_rea
     m3_history = compute.get("m3_history")
     if isinstance(m3_history, pd.DataFrame) and not m3_history.empty:
         sources.insert(1, "Census")
-    render_tab_header("Compute", "U.S. compute manufacturing, factory capacity, orders, investment, projects, and AI service costs.", " / ".join(sources))
-    _render_floating_terms("compute")
+    render_tab_header("Compute", "U.S. compute manufacturing, factory capacity, orders, investment, projects, and AI service costs.", " / ".join(sources), terms_key="compute")
     render_domain_read(tab_read, label="Read", domain="compute")
     _render_manufacturing_output(infrastructure_data)
     _render_capacity_and_demand(infrastructure_data)

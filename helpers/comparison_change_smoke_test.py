@@ -293,6 +293,10 @@ def main() -> None:
     _check(changes.summary["threshold_crossing_count"] == 2, "Threshold crossing count changed")
     _check(changes.summary["changed_metric_count"] == 9, "Changed metric count changed")
     _check(changes.summary["material_change_count"] == 7, "Material change count changed")
+    _check(changes.summary["comparable_change_count"] == 6, "Comparable change count changed")
+    _check(changes.summary["material_comparable_change_count"] == 4, "Comparable material count changed")
+    _check(changes.summary["coverage_change_count"] == 3, "Coverage change count changed")
+    _check(set(changes.summary["coverage_domains"]) == {"adoption", "compute", "power"}, "Coverage domains changed")
     _check("market" in changes.summary["material_domains"], "Material domain summary lost Market")
 
     no_baseline = build_change_set(current_only, diff_frame=_diff())

@@ -21,7 +21,6 @@ from rendering.charts_grid_storage import (
     storage_duration_distribution,
     storage_pipeline_by_region,
 )
-from rendering.common import _render_floating_terms
 from rendering.components import (
     fmt_number,
     render_deliverability_screen,
@@ -288,8 +287,8 @@ def render_grid_storage_tab(energy_data: dict, infrastructure_data: dict, tab_re
         "Grid & Storage",
         "Interconnection queues, reserve margins, battery storage, and grid construction spending.",
         "Berkeley Lab / NERC / EIA / U.S. Census Bureau",
+        terms_key="grid_storage",
     )
-    _render_floating_terms("grid_storage")
     render_domain_read(tab_read, label="Read", domain="grid_storage")
     _render_deliverability_screen(context)
     _render_queue_conversion(context)

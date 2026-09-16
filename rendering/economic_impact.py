@@ -12,7 +12,6 @@ from rendering.charts_economic_impact import (
     productivity_index,
     worker_capture_history,
 )
-from rendering.common import _render_floating_terms
 from rendering.commercialization import filtered_ledger, metric_value
 from rendering.components import (
     fmt_date,
@@ -150,8 +149,7 @@ def _render_economic_ledger(data: dict, commercialization_data) -> None:
         st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", height=440, hide_index=True)
 
 def render_economic_impact_tab(economic_impact_data: dict, commercialization_data=None, tab_read=None) -> None:
-    render_tab_header("Economic Outcomes", "Productivity, worker compensation, real earnings, investment, output, and labor costs.", "BLS / BEA / FRED / primary company disclosures")
-    _render_floating_terms("economic_impact")
+    render_tab_header("Economic Outcomes", "Productivity, worker compensation, real earnings, investment, output, and labor costs.", "BLS / BEA / FRED / primary company disclosures", terms_key="economic_impact")
     render_domain_read(tab_read, label="Read", domain="economic_outcomes")
     _render_pulse(economic_impact_data, commercialization_data)
     _render_distribution_of_gains(economic_impact_data)
