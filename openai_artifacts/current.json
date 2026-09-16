@@ -1613,13 +1613,78 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "114fd905fa4c0cb68e593347",
-    "expires_at": "2026-09-16T11:27:10.461989+00:00",
+    "current_evidence_snapshot_id": "9b05ef900efcf14efb4b09d0",
+    "expires_at": "2026-09-17T01:44:16.548938+00:00",
     "lease_hours": 24,
-    "materiality": {},
-    "published_at": "2026-09-15T11:27:10.461989+00:00",
-    "renewal_count": 0,
-    "source": "generation"
+    "materiality": {
+      "baseline_available": true,
+      "change_count": 5,
+      "changes": [
+        {
+          "domain": "market",
+          "fact_id": "market.aei",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 32.654778243235825,
+          "old_value": 32.654778226274736,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.effective_firms",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 18.503143124235898,
+          "old_value": 18.455848186729423,
+          "percentage_point_change": null,
+          "relative_change": 0.0025625989674363616
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.equal_weight_return",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.34026829221269544,
+          "old_value": 0.34026829793971974,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.pressure",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 50.90156395821934,
+          "old_value": 50.900863312798926,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.top_10_share",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.6451357666261437,
+          "old_value": 0.6467714482550885,
+          "percentage_point_change": 0.20000000000000284,
+          "relative_change": 0.0030911901081916975
+        }
+      ],
+      "current_snapshot_id": "9b05ef900efcf14efb4b09d0",
+      "decision": "reuse_immaterial_change",
+      "exact_match": false,
+      "immaterial_change_count": 5,
+      "material": false,
+      "material_change_count": 0,
+      "percentage_point_threshold": 2.0,
+      "previous_snapshot_id": "114fd905fa4c0cb68e593347",
+      "relative_change_threshold": 0.1,
+      "version": "1.2.0"
+    },
+    "published_at": "2026-09-16T01:44:16.548938+00:00",
+    "renewal_count": 1,
+    "source": "automation_unavailable_fallback"
   },
   "raw_responses": {
     "editorial_synthesis": {

@@ -1,12 +1,36 @@
 {
   "auto_publish": true,
   "automation_enabled": true,
-  "current_context_snapshot_id": "c5053d98e8dc7ddb",
-  "errors": [
-    "RuntimeError: Insufficient daily paid-call allowance for a complete generation: 2/2 already reserved."
+  "changed_paths": [
+    "archive/benchmark_history.csv",
+    "archive/macro_history.csv",
+    "archive/sector_history.csv",
+    "archive/yf_history.csv",
+    "automation_artifacts/status.json",
+    "data/commercialization/commercialization_ledger.csv",
+    "data/connectivity/ixp_snapshot.csv",
+    "data/connectivity/national_summary.csv",
+    "data/current_context_candidate_audit.csv",
+    "data/current_context_refresh_manifest.json",
+    "data/debt_markets_metadata.json",
+    "data/infrastructure/source_manifest.csv",
+    "data/release_manifest.json",
+    "data/retained_state_manifest.json",
+    "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
+    "data/water/derived/epa_pws_facility_matches.csv.gz",
+    "data/water/derived/usdm_county_drought_snapshot.csv.gz",
+    "data/water/derived/usgs_2015_county_summary.csv.gz",
+    "data/water/derived/usgs_2015_reconciliation.csv.gz",
+    "data/water/derived/water_national_summary.json",
+    "data/water/derived/water_observations.csv.gz",
+    "data/water/source_manifest.csv",
+    "data/weekly_context_events.csv",
+    "openai_artifacts/current.json"
   ],
-  "evidence_snapshot_id": "61f1799fcfdc3a97555119af",
-  "finished_at_utc": "2026-09-15T17:06:16.701626+00:00",
+  "current_context_snapshot_id": "7d4572aeefc4c225",
+  "errors": [],
+  "evidence_snapshot_id": "9b05ef900efcf14efb4b09d0",
+  "finished_at_utc": "2026-09-16T01:44:16.780990+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
@@ -19,13 +43,13 @@
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 930.321,
+      "elapsed_sec": 821.26,
       "status": "passed",
       "subphases": {
-        "assemble + persist": 3.819,
-        "current context": 35.912,
-        "domain sources": 448.231,
-        "market sources": 442.359
+        "assemble + persist": 5.112,
+        "current context": 42.271,
+        "domain sources": 451.993,
+        "market sources": 321.883
       }
     },
     "evidence": {
@@ -35,17 +59,18 @@
       "editorial_refresh": {
         "candidate_domains": [
           "market",
-          "finance",
           "data_center",
+          "grid_storage",
           "water"
         ],
         "current_event_ids": [
+          "auto-2026-09-15-61f85a46f993",
           "auto-2026-09-13-82b9b3bfee9b",
           "auto-2026-09-14-631ffe75b015",
-          "auto-2026-09-15-9ea8f353f54d",
+          "auto-2026-09-15-eb09bf00f92d",
+          "auto-2026-09-15-1a5bf2446194",
           "auto-2026-09-14-85801fa80dd7",
-          "auto-2026-09-15-5243d4a041a3",
-          "auto-2026-09-15-c63c818acccd",
+          "auto-2026-09-11-27211826c95a",
           "auto-2026-09-15-147f6eab6958",
           "auto-2026-09-11-e414e75f96f7",
           "auto-2026-09-13-ec19a05d9797",
@@ -53,118 +78,88 @@
           "auto-2026-09-14-b01d76bf4f57",
           "auto-2026-09-13-bff8429fee53",
           "auto-2026-09-09-b7c111f6f91f",
-          "auto-2026-09-11-50f9dd139633",
-          "auto-2026-09-14-c0e1be873cd7"
+          "auto-2026-09-11-50f9dd139633"
         ],
-        "material_domains": [
-          "market"
-        ],
+        "material_domains": [],
         "new_event_domains": [
-          "finance",
+          "market",
           "data_center",
+          "grid_storage",
           "water"
         ],
         "new_event_ids": [
-          "auto-2026-09-15-9ea8f353f54d",
+          "auto-2026-09-15-61f85a46f993",
+          "auto-2026-09-15-eb09bf00f92d",
+          "auto-2026-09-15-1a5bf2446194",
+          "auto-2026-09-11-27211826c95a",
           "auto-2026-09-15-147f6eab6958",
-          "auto-2026-09-15-cd3c59699eb7",
-          "auto-2026-09-14-c0e1be873cd7"
+          "auto-2026-09-15-cd3c59699eb7"
         ],
-        "reason": "material_findings+new_developments",
+        "reason": "new_developments",
         "refresh_needed": true
       },
-      "elapsed_sec": 0.471,
+      "elapsed_sec": 0.537,
       "materiality": {
         "baseline_available": true,
-        "change_count": 8,
+        "change_count": 5,
         "changes": [
           {
             "domain": "market",
             "fact_id": "market.aei",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 32.48704504135517,
+            "new_value": 32.654778243235825,
             "old_value": 32.654778226274736,
-            "percentage_point_change": 0.20000000000000284,
-            "relative_change": 0.006116207951070423
+            "percentage_point_change": 0.0,
+            "relative_change": 0.0
           },
           {
             "domain": "market",
             "fact_id": "market.effective_firms",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 18.559556947685945,
+            "new_value": 18.503143124235898,
             "old_value": 18.455848186729423,
             "percentage_point_change": null,
-            "relative_change": 0.005619289880759485
+            "relative_change": 0.0025625989674363616
           },
           {
             "domain": "market",
             "fact_id": "market.equal_weight_return",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.3275877562845561,
+            "new_value": 0.34026829221269544,
             "old_value": 0.34026829793971974,
-            "percentage_point_change": 1.2000000000000028,
-            "relative_change": 0.035294117647058906
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.median_return",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.15430433352548623,
-            "old_value": 0.14256034140373275,
-            "percentage_point_change": 1.0999999999999996,
-            "relative_change": 0.0769230769230769
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.positive_breadth",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.6225490196078431,
-            "old_value": 0.6274509803921569,
-            "percentage_point_change": 0.4000000000000057,
-            "relative_change": 0.006379585326953838
+            "percentage_point_change": 0.0,
+            "relative_change": 0.0
           },
           {
             "domain": "market",
             "fact_id": "market.pressure",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 50.038548517340274,
+            "new_value": 50.90156395821934,
             "old_value": 50.900863312798926,
-            "percentage_point_change": 0.8999999999999986,
-            "relative_change": 0.017681728880157142
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.strong_sector_count",
-            "kind": "numeric_change",
-            "material": true,
-            "new_value": 2.0,
-            "old_value": 3.0,
-            "percentage_point_change": null,
-            "relative_change": 0.3333333333333333
+            "percentage_point_change": 0.0,
+            "relative_change": 0.0
           },
           {
             "domain": "market",
             "fact_id": "market.top_10_share",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.6443713395699746,
+            "new_value": 0.6451357666261437,
             "old_value": 0.6467714482550885,
-            "percentage_point_change": 0.29999999999999716,
-            "relative_change": 0.004636785162287436
+            "percentage_point_change": 0.20000000000000284,
+            "relative_change": 0.0030911901081916975
           }
         ],
-        "current_snapshot_id": "61f1799fcfdc3a97555119af",
-        "decision": "generate_material_change",
+        "current_snapshot_id": "9b05ef900efcf14efb4b09d0",
+        "decision": "reuse_immaterial_change",
         "exact_match": false,
-        "immaterial_change_count": 7,
-        "material": true,
-        "material_change_count": 1,
+        "immaterial_change_count": 5,
+        "material": false,
+        "material_change_count": 0,
         "percentage_point_threshold": 2.0,
         "previous_snapshot_id": "114fd905fa4c0cb68e593347",
         "relative_change_threshold": 0.1,
@@ -173,32 +168,35 @@
       "status": "passed"
     },
     "openai": {
-      "status": "running"
+      "api_status": "not_attempted",
+      "elapsed_sec": 0.458,
+      "generation_status": "unavailable",
+      "reason": "Insufficient daily paid-call allowance for a complete generation: 2/2 already reserved.",
+      "status": "retained_prior",
+      "validation_status": "not_completed"
+    },
+    "publication": {
+      "editorial_refresh_status": "retained_prior",
+      "read_status": "prior_read_retained",
+      "status": "ready_with_prior_commentary",
+      "transaction_boundary": "git_commit"
+    },
+    "publication_lease": {
+      "expires_at": "2026-09-17T01:44:16.548938+00:00",
+      "published_at": "2026-09-16T01:44:16.548938+00:00",
+      "reason": "prior_publishable_read_retained_after_editorial_failure",
+      "status": "renewed"
     }
   },
-  "publish_ready": false,
-  "result": "exception",
-  "run_id": "20260915T165044Z_b4a1e60d",
+  "publish_ready": true,
+  "result": "publish_ready",
+  "run_id": "20260916T013032Z_744e3a09",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-09-15T16:50:44.385127+00:00",
-  "traceback_tail": [
-    "Traceback (most recent call last):",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/runner.py\", line 402, in main",
-    "    generation = _generate_commentary(",
-    "        bundle.context,",
-    "    ...<2 lines>...",
-    "        materiality=materiality,",
-    "    )",
-    "  File \"/home/runner/work/ai_macro_git/ai_macro_git/automation/runner.py\", line 196, in _generate_commentary",
-    "    raise RuntimeError(",
-    "    ...<2 lines>...",
-    "    )",
-    "RuntimeError: Insufficient daily paid-call allowance for a complete generation: 2/2 already reserved."
-  ],
-  "trigger": "schedule",
+  "started_at_utc": "2026-09-16T01:30:32.964073+00:00",
+  "trigger": "workflow_dispatch",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
@@ -209,7 +207,9 @@
     "economic_outcomes: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
     "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
     "commercialization: Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
+    "snapshot yfinance: YFinance refreshed partially and retained current-best market state. Live=201/204; retained ticker rows=3; missing tickers=0; retained field fills=22.",
     "snapshot finance:debt:ORCL: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebt: prior period 2022-05-31 is not within 62 days of 2021-05-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-08-31",
-    "snapshot finance:debt:SMCI: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebtCurrent;LongTermDebtNoncurrent: prior period 2014-12-31 is not within 62 days of 2013-12-31; LongTermDebt: prior period 2023-06-30 is not within 62 days of 2022-06-30; LongTermDebtAndCapitalLeaseObligations: prior period 2013-03-31 is not within 62 days of 2012-03-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-06-30"
+    "snapshot finance:debt:SMCI: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebtCurrent;LongTermDebtNoncurrent: prior period 2014-12-31 is not within 62 days of 2013-12-31; LongTermDebt: prior period 2023-06-30 is not within 62 days of 2022-06-30; LongTermDebtAndCapitalLeaseObligations: prior period 2013-03-31 is not within 62 days of 2012-03-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-06-30",
+    "OpenAI commentary refresh was unavailable (Insufficient daily paid-call allowance for a complete generation: 2/2 already reserved.); the prior publishable Read was retained."
   ]
 }
