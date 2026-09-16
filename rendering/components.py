@@ -228,12 +228,6 @@ def render_tab_header(
                     unsafe_allow_html=True,
                 )
 
-    from rendering.comparison import render_domain_change_line
-
-    render_domain_change_line(
-        title,
-        st.session_state.get("comparison_change_set"),
-    )
 
 
 def render_line_break() -> None:
@@ -607,7 +601,7 @@ def inject_panel_height_rules(rules: dict[str, int]) -> None:
             f'div[class*="st-key-{html.escape(clean_key)}"] {{ min-height: {max(int(height), 0)}px; }}'
         )
     if declarations:
-        st.markdown(f"<style>{''.join(declarations)}</style>", unsafe_allow_html=True)
+        st.html(f"<style>{''.join(declarations)}</style>")
 
 
 def render_panel_heading(title: str, meta: str | None = None) -> None:

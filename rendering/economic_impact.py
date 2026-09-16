@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_economic_impact import (
     earnings_distribution_change,
@@ -165,5 +166,5 @@ def render_economic_impact_tab(economic_impact_data: dict, commercialization_dat
         ("Manufacturing real output", _metric_text(mout), fmt_date(mout.get("date"))),
         ("Nonfarm unit labor costs", _metric_text(ulc), fmt_date(ulc.get("date"))),
     ], key_prefix="economic-impact-production")
-    _render_economic_ledger(economic_impact_data, commercialization_data)
+    render_evidence_gateway("economic_impact")
 

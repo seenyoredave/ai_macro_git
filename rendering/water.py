@@ -10,6 +10,7 @@ from loaders.data_center_registry import campus_display_labels, campus_display_n
 from analytics.water_campus import campus_water_dossier, county_water_exposure_profile
 from analytics.water_competition import current_top_withdrawal_profile
 from analytics.water_local import local_water_constraint_summary
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart, selection_points
 from rendering.charts_water import (
     county_state_for_fips,
@@ -629,19 +630,4 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
     _render_system_context_workbench(context, infrastructure_data)
     _render_coverage(context)
 
-    with st.expander("Water data", expanded=False):
-        view = st.radio(
-            "Ledger",
-            ["Campus profile", "County exposure", "County drought snapshot", "EPA service-area matches", "Campus records", "Thermoelectric plants"],
-            horizontal=True,
-            key="water-ledger-view",
-        )
-        frames = {
-            "Campus profile": context.get("dossier"),
-            "County exposure": context.get("county_profile"),
-            "County drought snapshot": context.get("water", {}).get("usdm_county_drought"),
-            "EPA service-area matches": context.get("water", {}).get("epa_pws_matches"),
-            "Campus records": context.get("campuses"),
-            "Thermoelectric plants": context.get("water", {}).get("eia_plants"),
-        }
-        st.dataframe(arrow_safe_dataframe(frames.get(view)), width="stretch", height=460, hide_index=True)
+    render_evidence_gateway("water")

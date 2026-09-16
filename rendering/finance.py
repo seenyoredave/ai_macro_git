@@ -8,6 +8,7 @@ from analytics.financial_conditions import nfci_direction, nfci_snapshot
 from analytics.private_capital import build_private_capital_realization
 from analytics.trend_engine import calc_trailing_point_change
 from config.debt_markets_config import DEBT_MARKET_SERIES
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.charts_common import COLORS, clean_history, history_from_frame, single_history
@@ -568,5 +569,5 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
     else:
         _render_financial_condition_detail(title="Borrower Strain", trend=borrower_trend, components=borrower_strain.get("components", {}), detail_table=pd.DataFrame())
 
-    _render_finance_ledger(commercialization_data, debt_markets_data, borrower_strain, lender_strain)
+    render_evidence_gateway("finance")
 

@@ -11,6 +11,7 @@ from analytics.grid_deliverability import (
     reserve_margin_profile,
     storage_duration_profile,
 )
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_energy import queue_by_region, queue_by_technology
 from rendering.charts_grid_storage import (
@@ -296,18 +297,4 @@ def render_grid_storage_tab(energy_data: dict, infrastructure_data: dict, tab_re
     _render_queue_regions(context)
     _render_investment(context)
 
-    with st.expander("Grid and storage data", expanded=False):
-        ledger_view = st.radio(
-            "Ledger",
-            ["Interconnection requests", "Queue outcomes", "Queue conditions by region", "Reserve margins", "Operating storage"],
-            horizontal=True,
-            key="grid-storage-ledger-view",
-        )
-        frames = {
-            "Interconnection requests": context.get("development", {}).get("active_queue"),
-            "Queue outcomes": context.get("queue_outcomes"),
-            "Queue conditions by region": context.get("queue_regions"),
-            "Reserve margins": context.get("reserve_margins"),
-            "Operating storage": context.get("storage_duration"),
-        }
-        st.dataframe(arrow_safe_dataframe(frames.get(ledger_view)), width="stretch", height=430, hide_index=True)
+    render_evidence_gateway("grid_storage")

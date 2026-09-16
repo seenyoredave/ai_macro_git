@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_workforce import (
     current_momentum,
@@ -124,5 +125,5 @@ def render_workforce_tab(workforce_data: dict, tab_read=None) -> None:
     _render_signature(workforce_data)
     _render_pulse(workforce_data)
     _render_workforce_channels(workforce_data)
-    _render_workforce_ledger(workforce_data)
+    render_evidence_gateway("workforce")
 

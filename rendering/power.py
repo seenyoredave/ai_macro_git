@@ -14,6 +14,7 @@ from analytics.energy_pulse import (
     supply_snapshot,
 )
 from config.energy_config import ENERGY_SERIES
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_data_center import ACTIVE_CAMPUS_STATUSES
 from rendering.charts_energy import (
@@ -139,7 +140,7 @@ def _active_campuses(infrastructure_data):
     return clean.loc[status.eq("operational") | status.isin(active_statuses)].copy()
 
 def _inject_power_page_theme() -> None:
-    st.markdown(
+    st.html(
         """
         <style>
         div[class*="st-key-power-panel-"] {
@@ -252,7 +253,6 @@ def _inject_power_page_theme() -> None:
         }
         </style>
         """,
-        unsafe_allow_html=True,
     )
 
 
@@ -531,5 +531,5 @@ def render_power_tab(fred_data, regime_metrics, power_data, dashboard_data, infr
     _render_supply(context)
     _render_buildout(context)
     _render_prices(context, power_data)
-    _render_power_ledger(context, power_data)
+    render_evidence_gateway("power")
 

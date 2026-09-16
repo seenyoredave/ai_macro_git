@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.charts_data_center import (
     ACTIVE_CAMPUS_STATUSES,
     data_center_capacity_distribution,
@@ -28,7 +29,7 @@ from rendering.visual_system import render_plotly_chart
 
 
 def _inject_data_center_page_theme() -> None:
-    st.markdown(
+    st.html(
         """
         <style>
         div[class*="st-key-data-center-panel-"] {
@@ -41,7 +42,6 @@ def _inject_data_center_page_theme() -> None:
         div[class*="st-key-statline-data-center-geography-"] { border-top-color: rgba(96, 165, 250, 0.74) !important; }
         </style>
         """,
-        unsafe_allow_html=True,
     )
 
 
@@ -297,7 +297,7 @@ def render_data_center_tab(infrastructure_data, tab_read=None):
     _render_scale(campuses)
     _render_development_profile(inventory)
     _render_connectivity_operator_structure(connectivity, campuses)
-    _render_data_center_ledger(campuses, infrastructure_data)
+    render_evidence_gateway("data_center")
 
 
 __all__ = [

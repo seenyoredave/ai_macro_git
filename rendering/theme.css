@@ -94,7 +94,7 @@ div[data-testid="stTabs"] [role="tablist"] {
     min-width: 0;
     gap: 1.35rem;
     border-bottom: 1px solid var(--rm-border);
-    margin-bottom: 1.1rem;
+    margin-bottom: 1.35rem;
 }
 
 div[data-testid="stTabs"] button[role="tab"] {
@@ -2223,31 +2223,35 @@ div[class*="st-key-change-evidence-inspector"] div[data-testid="stSelectbox"] [d
     }
 }
 
-/* Two-row domain header: title/terms above, subtitle/sources below. */
+/* Two-row domain header: fixed rhythm across every research tab. */
+div[class*="st-key-domain-header-"] {
+    margin-top: 0;
+    margin-bottom: 1.02rem;
+}
 div[class*="st-key-domain-header-"] > div[data-testid="stVerticalBlock"] {
-    gap: 0.08rem;
+    gap: 0.34rem;
 }
 div[class*="st-key-domain-header-"] .rm-tabhead {
-    margin: 0.2rem 0 0;
+    margin: 0;
+}
+div[class*="st-key-domain-header-"] .rm-tabkicker {
+    margin-bottom: 0.44rem;
+}
+div[class*="st-key-domain-header-"] .rm-tabtitle::after {
+    margin-top: 0.5rem;
 }
 div[class*="st-key-domain-header-"] .rm-tabcopy,
 div[class*="st-key-domain-header-"] .rm-tabmeta {
     margin-top: 0;
+    padding-top: 0.12rem;
 }
 div[class*="st-key-domain-header-"] div[class*="st-key-floating-terms-"] {
-    margin-bottom: 0.02rem;
+    margin-bottom: 0;
 }
 
 
 /* v3.0.4.4 page rhythm: consistent breathing room on Macro and Evidence. */
-/* Macro header: keep the subtitle/source row visually separate from the Read. */
-div[class*="st-key-domain-header-macro"] {
-    margin-bottom: 0.78rem;
-}
-div[class*="st-key-domain-header-macro"] .rm-tabcopy,
-div[class*="st-key-domain-header-macro"] .rm-tabmeta {
-    padding-bottom: 0.08rem;
-}
+/* Macro uses the same domain-header rhythm as the rest of the Reader. */
 
 /* Macro comparison: use a steady vertical rhythm between major analytical blocks. */
 .rm-domain-read.macro {
@@ -2332,4 +2336,27 @@ div[class*="st-key-change-evidence-inspector"] > div[data-testid="stVerticalBloc
     div[class*="st-key-change-evidence-inspector"] {
         padding: 0.85rem 0.78rem 0.9rem;
     }
+}
+
+/* v3.0.5.0 shared domain evidence gateway. */
+div[class*="st-key-evidence-gateway-"] {
+    background: rgba(15, 23, 42, 0.42);
+    border-color: rgba(148, 163, 184, 0.14) !important;
+    padding: 0.82rem 0.9rem;
+}
+.rm-evidence-gateway {
+    min-width: 0;
+}
+.rm-evidence-gateway-kicker {
+    color: #7f8ba1;
+    font-size: 0.62rem;
+    font-weight: 780;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+.rm-evidence-gateway-copy {
+    color: #c8d2df;
+    font-size: 0.78rem;
+    line-height: 1.48;
+    margin-top: 0.22rem;
 }

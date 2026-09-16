@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_infrastructure import (
     compute_capacity_utilization_history,
@@ -209,5 +210,5 @@ def render_compute_tab(infrastructure_data, commercialization_data=None, tab_rea
     _render_serving_economics(commercialization_data)
     _render_critical_supply_chain(infrastructure_data)
     _render_domestic_buildout(infrastructure_data)
-    _render_compute_ledger(infrastructure_data, commercialization_data)
+    render_evidence_gateway("compute")
 

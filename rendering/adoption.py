@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_adoption import (
     adoption_depth_bars,
@@ -307,4 +308,4 @@ def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=Non
                 key="adoption-sector-breadth",
             )
 
-    _render_adoption_ledger(adoption_data, commercialization_data)
+    render_evidence_gateway("adoption")

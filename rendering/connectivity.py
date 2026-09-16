@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_connectivity import (
     cable_pipeline_status,
@@ -38,7 +39,7 @@ def _money_billions(value) -> str:
 
 
 def _inject_connectivity_theme() -> None:
-    st.markdown(
+    st.html(
         """
         <style>
         div[class*="st-key-connectivity-panel-"] {
@@ -51,7 +52,6 @@ def _inject_connectivity_theme() -> None:
         }
         </style>
         """,
-        unsafe_allow_html=True,
     )
 
 
@@ -182,5 +182,5 @@ def render_connectivity_tab(connectivity_data: dict | None, infrastructure_data:
     _render_interconnection(connectivity)
     _render_middle_mile(connectivity)
     _render_compute_transport(connectivity)
-    _render_connectivity_ledger(connectivity)
+    render_evidence_gateway("connectivity")
 

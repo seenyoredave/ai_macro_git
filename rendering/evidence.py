@@ -5,8 +5,11 @@ import html
 import pandas as pd
 import streamlit as st
 
+from analytics.capital_commitments import load_commitment_components
 from analytics.hhi_engine import sector_hhi_component_breakdown
+from analytics.market_ledger import build_market_ledger
 from analytics.private_capital import build_private_capital_realization
+from analytics.water_campus import campus_water_dossier, county_water_exposure_profile
 from config.benchmark_config import QQQ_WEIGHTS_EFFECTIVE_DATE
 from config.factor_config import FACTOR_DISPLAY_NAMES
 from rendering.visual_system import render_plotly_chart
@@ -15,11 +18,23 @@ from rendering.charts_common import COLORS
 from rendering.charts_finance import component_bars
 from rendering.common import _coverage_text, _display_text
 from rendering.comparison import render_change_evidence
+from rendering.commercialization import filtered_ledger
 from rendering.components import fmt_number, render_line_break, render_section, render_static_table, render_tab_header
+from rendering.data_center import _campus_detail, _operator_detail
 from rendering.dataframe import arrow_safe_dataframe
-from rendering.power import _power_source_rows
-from rendering.evidence_tables import _component_table, render_edgar_data, render_macro_data, render_sector_scoreboard
+from rendering.evidence_gateway import EVIDENCE_LOOKUP as _EVIDENCE_LOOKUP
+from rendering.evidence_tables import (
+    _borrower_strain_component_table,
+    _component_table,
+    _lender_strain_component_table,
+    render_edgar_data,
+    render_macro_data,
+    render_sector_scoreboard,
+)
 from rendering.finance import _debt_market_source_rows, _private_capital_detail_table
+from rendering.grid_storage import _context as _grid_storage_context
+from rendering.power import _active_campuses as _active_power_campuses, _power_source_rows
+from rendering.tables import _company_table
 
 
 def _water_evidence_payload(water_data) -> dict:
@@ -760,82 +775,355 @@ def _render_adoption_outcomes_evidence(adoption_data, workforce_data, economic_i
 
 
 
-_EVIDENCE_LOOKUP = {
-    "market": {
-        "label": "Market",
-        "definition": "Equity performance, participation, concentration, and trading pressure across the configured 204-company AI market universe; not the entire stock market.",
-        "datasets": "Retained market-price history · sector history · SEC filing-derived company records",
-        "detail_view": "Market & finance",
-    },
-    "finance": {
-        "label": "Finance",
-        "definition": "Funding capacity, credit conditions, borrower and lender stress, and cash realization in the covered company and fund records.",
-        "datasets": "Retained market and SEC histories · Federal Reserve financial-condition series · private-capital fund records",
-        "detail_view": "Market & finance",
-    },
-    "compute": {
-        "label": "Compute",
-        "definition": "U.S. compute-manufacturing output, utilization, investment, and announced production projects; project announcements are not operating capacity.",
-        "datasets": "Federal Reserve manufacturing history · BEA investment · Census construction · compute project ledger",
-        "detail_view": "Compute & data centers",
-    },
-    "data_center": {
-        "label": "Data Centers",
-        "definition": "Project stages, campus locations, and published capacity from the project registry; the registry is evidence of development activity, not a census of the national fleet.",
-        "datasets": "Facility registry · campus registry · data-center project records · reviewed identity decisions",
-        "detail_view": "Compute & data centers",
-    },
-    "connectivity": {
-        "label": "Connectivity",
-        "definition": "Public evidence of network reach and interconnection depth, including cables, IXPs, facilities, middle-mile awards, and campus proximity; private routes are not fully observed.",
-        "datasets": "Cable systems · IXP registry · interconnection facilities · NTIA middle-mile awards",
-        "detail_view": "Connectivity",
-    },
-    "power": {
-        "label": "Power",
-        "definition": "Electricity demand, operating and planned generation, prices, and large-load context; published data-center MW is not metered electricity demand.",
-        "datasets": "EIA electricity records · FRED series · generator pipeline · data-center campus power records",
-        "detail_view": "Power & grid",
-    },
-    "grid_storage": {
-        "label": "Grid & Storage",
-        "definition": "Interconnection progress, historical queue outcomes, reserve margins, storage duration, and grid construction; queued capacity is not connected capacity.",
-        "datasets": "Berkeley Lab grid-connection records · NERC reserve margins · EIA storage · electric-power construction history",
-        "detail_view": "Power & grid",
-    },
-    "water": {
-        "label": "Water",
-        "definition": "Regional water exposure and facility-level disclosure. State and national water totals provide context but cannot establish supply at a specific campus.",
-        "datasets": "USGS water-use records · U.S. Drought Monitor / NOAA · EIA thermoelectric records · facility water disclosures",
-        "detail_view": "Water",
-    },
-    "adoption": {
-        "label": "Adoption",
-        "definition": "Reported consumer use and business adoption. Expected future use is intent, not completed deployment, and provider users are not a national adoption rate.",
-        "datasets": "Consumer-use history · Census BTOS business adoption · provider commercialization disclosures",
-        "detail_view": "Adoption & outcomes",
-    },
-    "workforce": {
-        "label": "Workforce",
-        "definition": "Observed employment, real pay, openings, hires, quits, layoffs, and a separate task-exposure benchmark. Exposure is not observed displacement.",
-        "datasets": "Occupation exposure benchmark · BLS employment and earnings · BLS JOLTS labor flows",
-        "detail_view": "Adoption & outcomes",
-    },
-    "economic_impact": {
-        "label": "Economic Outcomes",
-        "definition": "Economy-wide productivity, output, compensation, labor share, earnings, and investment. These outcomes do not identify AI as the sole cause.",
-        "datasets": "BLS productivity and compensation · CPS earnings · BEA investment · FRED · provider commercialization disclosures",
-        "detail_view": "Adoption & outcomes",
-    },
-}
 
 
-def _sync_evidence_detail_view() -> None:
-    selected = st.session_state.get("evidence-lookup-domain")
-    spec = _EVIDENCE_LOOKUP.get(selected)
-    if spec:
-        st.session_state["evidence-view"] = spec["detail_view"]
+def _market_company_records(sector_data, scope: str) -> pd.DataFrame:
+    sector_data = sector_data or {}
+    if scope == "Full market universe":
+        ledger = build_market_ledger(sector_data)
+        frame = (ledger or {}).get("companies", pd.DataFrame())
+        return frame if isinstance(frame, pd.DataFrame) else pd.DataFrame()
+    frame = sector_data.get(scope)
+    if not isinstance(frame, pd.DataFrame):
+        return pd.DataFrame()
+    return _company_table(frame)
 
+
+def _render_market_reference_records(sector_data) -> None:
+    sectors = [
+        key for key, frame in (sector_data or {}).items()
+        if isinstance(frame, pd.DataFrame) and not frame.empty
+    ]
+    options = ["Full market universe", *sectors]
+    scope = st.selectbox(
+        "Company record scope",
+        options,
+        format_func=lambda value: value if value == "Full market universe" else sector_display_name(value),
+        key="evidence-market-company-scope",
+    )
+    render_static_table(_market_company_records(sector_data, scope))
+
+
+def _render_finance_reference_records(commercialization_data, debt_markets_data, regime_metrics) -> None:
+    options = [
+        "Commercial disclosures",
+        "Forward commitment records",
+        "Private-fund records",
+        "Debt-market readings",
+        "Borrower stress components",
+        "Lender stress components",
+    ]
+    view = st.radio("Reference dataset", options, horizontal=True, key="evidence-finance-reference-view")
+    borrower_strain = (regime_metrics or {}).get("Borrower Strain Components", {}) or {}
+    lender_strain = (regime_metrics or {}).get("Lender Strain Components", {}) or {}
+    if view == "Forward commitment records":
+        frame = load_commitment_components()
+        columns = [
+            "Ticker", "Category", "Value", "As Of Date", "Filing Date",
+            "Scope", "Carried Forward", "Source URL",
+        ]
+        frame = frame[[column for column in columns if column in frame.columns]].copy()
+    elif view == "Private-fund records":
+        realization = build_private_capital_realization()
+        frame = _private_capital_detail_table(realization.get("funds", pd.DataFrame()))
+    elif view == "Debt-market readings":
+        frame = _debt_market_source_rows(debt_markets_data)
+    elif view == "Borrower stress components":
+        frame = _borrower_strain_component_table(borrower_strain)
+    elif view == "Lender stress components":
+        frame = _lender_strain_component_table(lender_strain)
+    else:
+        frame = filtered_ledger(
+            commercialization_data,
+            pillars=["Revenue realization", "Cost pressure", "Capital burden"],
+        )
+    render_static_table(frame)
+
+
+def _render_compute_reference_records(infrastructure_data, commercialization_data) -> None:
+    projects = (((infrastructure_data or {}).get("compute_manufacturing", {}) or {}).get("projects"))
+    view = st.radio(
+        "Reference dataset",
+        ["Manufacturing projects", "AI service-cost disclosures"],
+        horizontal=True,
+        key="evidence-compute-reference-view",
+    )
+    if view == "AI service-cost disclosures":
+        frame = filtered_ledger(
+            commercialization_data,
+            pillars=["Compute economics", "Revenue realization", "Cost pressure"],
+        )
+    else:
+        frame = projects if isinstance(projects, pd.DataFrame) else pd.DataFrame()
+    render_static_table(frame)
+
+
+def _render_data_center_reference_records(infrastructure_data) -> None:
+    infrastructure = infrastructure_data or {}
+    campuses = infrastructure.get("data_center_registry")
+    campuses = campuses if isinstance(campuses, pd.DataFrame) else pd.DataFrame()
+    entities = infrastructure.get("data_center_entities")
+    entities = entities if isinstance(entities, pd.DataFrame) else pd.DataFrame()
+    options = ["Campuses", "Operators"] + (["Hierarchy"] if not entities.empty else [])
+    view = st.radio("Reference dataset", options, horizontal=True, key="evidence-data-center-reference-view")
+    if view == "Operators":
+        frame = _operator_detail(campuses)
+    elif view == "Hierarchy":
+        columns = [
+            "Entity Level", "Entity Name", "Entity ID", "Parent Entity ID", "Campus ID",
+            "Operator", "State", "County", "Square Feet",
+        ]
+        frame = entities[[column for column in columns if column in entities.columns]].copy()
+    else:
+        frame = _campus_detail(campuses)
+    render_static_table(frame)
+
+
+def _render_connectivity_reference_records(connectivity_data) -> None:
+    connectivity = connectivity_data or {}
+    facilities = connectivity.get("interconnection_facilities")
+    facility_summary = connectivity.get("interconnection_facility_summary")
+    facility_frame = facilities if isinstance(facilities, pd.DataFrame) and not facilities.empty else facility_summary
+    datasets = {
+        "Cable systems": connectivity.get("submarine_cable_systems"),
+        "Landing markets": connectivity.get("cable_landing_markets"),
+        "IXP registry": connectivity.get("ixp_snapshot"),
+        "Interconnection facilities": facility_frame,
+        "Middle-mile awards": connectivity.get("middle_mile_awards"),
+        "Campus connectivity": connectivity.get("campus_connectivity_snapshot"),
+    }
+    view = st.radio("Reference dataset", list(datasets), horizontal=True, key="evidence-connectivity-reference-view")
+    render_static_table(datasets.get(view) if isinstance(datasets.get(view), pd.DataFrame) else pd.DataFrame())
+
+
+def _render_power_reference_records(energy_data, infrastructure_data) -> None:
+    energy = energy_data or {}
+    datasets = {
+        "Retail demand & prices": energy.get("retail_history"),
+        "Generation": energy.get("generation_history"),
+        "Capacity snapshot": energy.get("capacity_snapshot"),
+        "Generator pipeline": energy.get("generator_pipeline"),
+        "Wholesale prices": energy.get("wholesale_prices"),
+        "Large-load campuses": _active_power_campuses(infrastructure_data or {}),
+        "Gas pipelines": energy.get("gas_pipeline_projects"),
+        "LNG projects": energy.get("lng_projects"),
+    }
+    view = st.radio("Reference dataset", list(datasets), horizontal=True, key="evidence-power-reference-view")
+    render_static_table(datasets.get(view) if isinstance(datasets.get(view), pd.DataFrame) else pd.DataFrame())
+
+
+def _render_grid_storage_reference_records(energy_data, infrastructure_data) -> None:
+    context = _grid_storage_context(energy_data or {}, infrastructure_data or {})
+    datasets = {
+        "Interconnection requests": context.get("development", {}).get("active_queue"),
+        "Queue outcomes": context.get("queue_outcomes"),
+        "Queue conditions by region": context.get("queue_regions"),
+        "Reserve margins": context.get("reserve_margins"),
+        "Operating storage": context.get("storage_duration"),
+    }
+    view = st.radio("Reference dataset", list(datasets), horizontal=True, key="evidence-grid-storage-reference-view")
+    render_static_table(datasets.get(view) if isinstance(datasets.get(view), pd.DataFrame) else pd.DataFrame())
+
+
+def _water_campuses(water_data, infrastructure_data) -> pd.DataFrame:
+    water = _water_evidence_payload(water_data or {})
+    campuses = water.get("campus_context")
+    if not isinstance(campuses, pd.DataFrame):
+        campuses = (infrastructure_data or {}).get("data_center_registry")
+    return campuses if isinstance(campuses, pd.DataFrame) else pd.DataFrame()
+
+
+def _render_water_reference_records(water_data, infrastructure_data) -> None:
+    water = _water_evidence_payload(water_data or {})
+    campuses = _water_campuses(water_data, infrastructure_data)
+    datasets = {
+        "Campus profile": campus_water_dossier(campuses),
+        "County exposure": county_water_exposure_profile(campuses),
+        "County drought snapshot": water.get("usdm_county_drought"),
+        "EPA service-area matches": water.get("epa_pws_matches"),
+        "Campus records": campuses,
+        "Thermoelectric plants": water.get("eia_plants"),
+    }
+    view = st.radio("Reference dataset", list(datasets), horizontal=True, key="evidence-water-reference-view")
+    render_static_table(datasets.get(view) if isinstance(datasets.get(view), pd.DataFrame) else pd.DataFrame())
+
+
+def _render_adoption_reference_records(adoption_data, commercialization_data) -> None:
+    adoption = adoption_data or {}
+    datasets = {
+        "People history": adoption.get("consumer_history"),
+        "Business history": adoption.get("national_history"),
+        "AI supplement": ((adoption.get("depth") or {}).get("table")),
+        "Industry snapshot": adoption.get("sector_snapshot"),
+        "Paid disclosures": filtered_ledger(
+            commercialization_data,
+            pillars=["Paid demand", "Enterprise adoption", "Reach"],
+        ),
+    }
+    view = st.radio("Reference dataset", list(datasets), horizontal=True, key="evidence-adoption-reference-view")
+    render_static_table(datasets.get(view) if isinstance(datasets.get(view), pd.DataFrame) else pd.DataFrame())
+
+
+def _render_workforce_reference_records(workforce_data) -> None:
+    workforce = workforce_data or {}
+    datasets = {
+        "Employment": workforce.get("employment_history"),
+        "Hourly earnings": workforce.get("earnings_history"),
+        "Labor flows": workforce.get("labor_flows_history"),
+        "Job openings": workforce.get("job_openings_history"),
+        "Occupation exposure": workforce.get("occupation_exposure"),
+        "Inflation": workforce.get("cpi_history"),
+    }
+    view = st.radio("Reference dataset", list(datasets), horizontal=True, key="evidence-workforce-reference-view")
+    render_static_table(datasets.get(view) if isinstance(datasets.get(view), pd.DataFrame) else pd.DataFrame())
+
+
+def _render_economic_reference_records(economic_impact_data, commercialization_data) -> None:
+    data = economic_impact_data or {}
+    datasets = {
+        "Productivity and costs": data.get("productivity_history"),
+        "Worker compensation": data.get("value_transmission_history"),
+        "Earnings distribution": data.get("earnings_distribution_history"),
+        "Information investment": data.get("investment_history"),
+        "Inflation": data.get("cpi_history"),
+        "Provider revenue and paid use": filtered_ledger(
+            commercialization_data,
+            pillars=["Revenue realization", "Paid demand", "Enterprise adoption"],
+        ),
+    }
+    view = st.radio("Reference dataset", list(datasets), horizontal=True, key="evidence-economic-reference-view")
+    render_static_table(datasets.get(view) if isinstance(datasets.get(view), pd.DataFrame) else pd.DataFrame())
+
+
+def _render_domain_reference_records(
+    selected: str,
+    *,
+    sector_data,
+    regime_metrics,
+    energy_data,
+    debt_markets_data,
+    infrastructure_data,
+    connectivity_data,
+    water_data,
+    adoption_data,
+    workforce_data,
+    economic_impact_data,
+    commercialization_data,
+) -> None:
+    if selected == "market":
+        _render_market_reference_records(sector_data)
+    elif selected == "finance":
+        _render_finance_reference_records(commercialization_data, debt_markets_data, regime_metrics)
+    elif selected == "compute":
+        _render_compute_reference_records(infrastructure_data, commercialization_data)
+    elif selected == "data_center":
+        _render_data_center_reference_records(infrastructure_data)
+    elif selected == "connectivity":
+        _render_connectivity_reference_records(connectivity_data)
+    elif selected == "power":
+        _render_power_reference_records(energy_data, infrastructure_data)
+    elif selected == "grid_storage":
+        _render_grid_storage_reference_records(energy_data, infrastructure_data)
+    elif selected == "water":
+        _render_water_reference_records(water_data, infrastructure_data)
+    elif selected == "adoption":
+        _render_adoption_reference_records(adoption_data, commercialization_data)
+    elif selected == "workforce":
+        _render_workforce_reference_records(workforce_data)
+    elif selected == "economic_impact":
+        _render_economic_reference_records(economic_impact_data, commercialization_data)
+    else:
+        raise KeyError(f"Unknown evidence domain: {selected}")
+
+
+def _render_domain_technical_records(
+    selected: str,
+    *,
+    fred_data,
+    sector_data,
+    sector_metrics,
+    regime_metrics,
+    energy_data,
+    debt_markets_data,
+    dashboard_data,
+    infrastructure_data,
+    connectivity_data,
+    water_data,
+    adoption_data,
+    workforce_data,
+    economic_impact_data,
+) -> None:
+    if selected == "market":
+        render_section("Sector scoreboard", "Comparable conditions across the AI-equity sector baskets.", first=True, compact=True)
+        render_sector_scoreboard((dashboard_data or {}).get("macro_df", pd.DataFrame()))
+        render_section("Factor and pressure data", "Underlying factor scores, trading-pressure components, and concentration contributors.", compact=True)
+        _render_sector_factor_pressure_data(sector_data, sector_metrics)
+        render_edgar_data(sector_data)
+    elif selected == "finance":
+        render_section("Financial observations", "Retained financial-condition, credit, and private-capital records.", first=True)
+        render_macro_data(fred_data)
+        with st.expander("Debt-market observations", expanded=False):
+            render_static_table(_debt_market_source_rows(debt_markets_data))
+        with st.expander("Private-capital fund observations", expanded=False):
+            realization = build_private_capital_realization()
+            render_static_table(_private_capital_detail_table(realization.get("funds", pd.DataFrame())))
+    elif selected == "compute":
+        compute = ((infrastructure_data or {}).get("compute_manufacturing", {}) or {})
+        render_section("Compute-manufacturing evidence", "Series definitions and announced manufacturing projects.", first=True)
+        with st.expander("G.17 series definitions", expanded=False):
+            render_static_table(compute.get("series_contract", pd.DataFrame()))
+        with st.expander("Infrastructure source register", expanded=False):
+            render_static_table((infrastructure_data or {}).get("infrastructure_source_manifest", pd.DataFrame()))
+    elif selected == "data_center":
+        grades, fields = _data_center_registry_coverage_tables(infrastructure_data or {})
+        render_section("Registry coverage", "Campus identity, capacity-field coverage, and source quality.", first=True)
+        render_static_table(_data_center_registry_summary(infrastructure_data or {}))
+        with st.expander("Campus evidence grades", expanded=False):
+            render_static_table(grades)
+        with st.expander("Campus field coverage", expanded=False):
+            render_static_table(fields)
+        with st.expander("Reviewed identity decisions", expanded=False):
+            render_static_table((infrastructure_data or {}).get("data_center_identity_decisions", pd.DataFrame()))
+        with st.expander("Infrastructure source register", expanded=False):
+            render_static_table((infrastructure_data or {}).get("infrastructure_source_manifest", pd.DataFrame()))
+    elif selected == "connectivity":
+        render_section("Connectivity source register", "Public network and infrastructure sources used in the domain.", first=True)
+        render_static_table((connectivity_data or {}).get("source_manifest", pd.DataFrame()))
+    elif selected == "power":
+        render_section("Power source register", "Dataset readings, observation dates, coverage, and custodians.", first=True)
+        render_static_table(_power_source_rows(energy_data or {}))
+    elif selected == "grid_storage":
+        context = _grid_storage_context(energy_data or {}, infrastructure_data or {})
+        render_section("Grid & Storage source register", "Interconnection, reliability, storage, and construction evidence.", first=True)
+        render_static_table(context.get("source_manifest", pd.DataFrame()))
+        with st.expander("Electric-power construction chronology", expanded=False):
+            construction = (infrastructure_data or {}).get("construction_history")
+            if isinstance(construction, pd.DataFrame) and not construction.empty:
+                mask = construction.get("Series", pd.Series("", index=construction.index)).astype(str).eq("Electric Power Construction")
+                render_static_table(construction.loc[mask].copy())
+            else:
+                render_static_table(pd.DataFrame())
+    elif selected == "water":
+        water = _water_evidence_payload(water_data or {})
+        render_section("Water evidence coverage", "National accounts, campus disclosure, and source coverage.", first=True)
+        render_static_table(_water_evidence_summary_rows(water))
+        with st.expander("Water source register", expanded=False):
+            render_static_table(water.get("source_manifest", pd.DataFrame()))
+        with st.expander("Water field dictionary", expanded=False):
+            render_static_table(water.get("field_dictionary", pd.DataFrame()))
+        with st.expander("USGS county reconciliation", expanded=False):
+            render_static_table(water.get("usgs_reconciliation", pd.DataFrame()))
+    elif selected == "adoption":
+        render_section("Adoption source observations", "Consumer-use, business-adoption, and integration records.", first=True)
+        render_static_table(_adoption_source_rows(adoption_data or {}))
+    elif selected == "workforce":
+        render_section("Workforce source register", "Official labor-market sources and retained coverage.", first=True)
+        render_static_table((workforce_data or {}).get("source_manifest", pd.DataFrame()))
+    elif selected == "economic_impact":
+        render_section("Economic Outcomes source register", "Productivity, compensation, earnings, output, and investment sources.", first=True)
+        render_static_table((economic_impact_data or {}).get("source_manifest", pd.DataFrame()))
+    else:
+        raise KeyError(f"Unknown evidence domain: {selected}")
 
 def _source_role_label(reference: dict, event: dict | None = None) -> str:
     role = str((event or {}).get("evidence_role") or reference.get("evidence_role") or "").strip().casefold()
@@ -1088,15 +1376,14 @@ def _render_evidence_trace(platform_reads: dict | None, evidence_packets: dict |
     reads = platform_reads or {}
     packets = evidence_packets or {}
     options = list(_EVIDENCE_LOOKUP)
-    if "evidence-view" not in st.session_state:
-        st.session_state["evidence-view"] = _EVIDENCE_LOOKUP[options[0]]["detail_view"]
+    if st.session_state.get("evidence-lookup-domain") not in options:
+        st.session_state["evidence-lookup-domain"] = options[0]
 
     selected = st.selectbox(
         "Evidence for",
         options,
         format_func=lambda key: _EVIDENCE_LOOKUP[key]["label"],
         key="evidence-lookup-domain",
-        on_change=_sync_evidence_detail_view,
     )
     spec = _EVIDENCE_LOOKUP[selected]
     read = dict(reads.get(selected) or {})
@@ -1180,6 +1467,7 @@ def render_evidence_tab(
     adoption_data=None,
     workforce_data=None,
     economic_impact_data=None,
+    commercialization_data=None,
     platform_reads=None,
     evidence_packets=None,
     comparison_state=None,
@@ -1216,42 +1504,52 @@ def render_evidence_tab(
         evidence_packets=evidence_packets,
     )
 
+    spec = _EVIDENCE_LOOKUP[selected]
+    render_section(
+        "Reference records",
+        f"Underlying {spec['label']} datasets used by the analytical views.",
+    )
+    with st.expander(f"Open {spec['label']} reference records", expanded=False):
+        _render_domain_reference_records(
+            selected,
+            sector_data=sector_data,
+            regime_metrics=regime_metrics,
+            energy_data=energy_data,
+            debt_markets_data=debt_markets_data,
+            infrastructure_data=infrastructure_data,
+            connectivity_data=connectivity_data,
+            water_data=water_data,
+            adoption_data=adoption_data,
+            workforce_data=workforce_data,
+            economic_impact_data=economic_impact_data,
+            commercialization_data=commercialization_data,
+        )
+
     render_section(
         "Technical records",
-        "Formulas, coverage tables, source registers, and underlying observations.",
+        "Coverage, source registers, lineage, formulas, and analytical construction.",
     )
-    with st.expander("Open technical records", expanded=False):
-        st.markdown("**Claim lineage**")
-        st.caption("Claims, current-context sources, and provenance for the selected Read.")
+    with st.expander(f"Open {spec['label']} technical records", expanded=False):
+        _render_domain_technical_records(
+            selected,
+            fred_data=fred_data,
+            sector_data=sector_data,
+            sector_metrics=sector_metrics,
+            regime_metrics=regime_metrics,
+            energy_data=energy_data,
+            debt_markets_data=debt_markets_data,
+            dashboard_data=dashboard_data,
+            infrastructure_data=infrastructure_data,
+            connectivity_data=connectivity_data,
+            water_data=water_data,
+            adoption_data=adoption_data,
+            workforce_data=workforce_data,
+            economic_impact_data=economic_impact_data,
+        )
+
+    with st.expander("Open claim lineage", expanded=False):
         _render_lineage_audit(selected, platform_reads)
 
-        st.markdown("---")
-        st.markdown("**Detailed source records**")
-        view = st.selectbox(
-            "Record group",
-            [
-                "Metrics",
-                "Market & finance",
-                "Compute & data centers",
-                "Connectivity",
-                "Power & grid",
-                "Water",
-                "Adoption & outcomes",
-            ],
-            key="evidence-view",
-        )
-        if view == "Metrics":
-            _render_metric_evidence(regime_metrics)
-        elif view == "Market & finance":
-            _render_market_finance_evidence(fred_data, sector_data, sector_metrics, debt_markets_data, dashboard_data)
-        elif view == "Compute & data centers":
-            _render_compute_data_center_evidence(infrastructure_data)
-        elif view == "Connectivity":
-            _render_connectivity_evidence(connectivity_data)
-        elif view == "Power & grid":
-            _render_power_grid_evidence(energy_data, infrastructure_data)
-        elif view == "Water":
-            _render_water_evidence(water_data, infrastructure_data)
-        else:
-            _render_adoption_outcomes_evidence(adoption_data, workforce_data, economic_impact_data)
+    with st.expander("Open platform metric methods", expanded=False):
+        _render_metric_evidence(regime_metrics)
 

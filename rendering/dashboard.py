@@ -147,6 +147,7 @@ def render_research_dashboard(tabs, context: DashboardContext):
                 context.adoption_data,
                 context.workforce_data,
                 context.economic_impact_data,
+                commercialization_data=context.commercialization_data,
                 platform_reads=platform_reads,
                 evidence_packets=evidence_packets,
                 comparison_state=context.comparison_state,

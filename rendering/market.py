@@ -9,6 +9,7 @@ import streamlit as st
 from analytics.market_ledger import build_market_ledger
 from analytics.sector_assessment import select_current_sector_assessment
 from config.factor_config import FACTOR_DISPLAY_NAMES
+from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.labels import sector_display_name
@@ -29,7 +30,7 @@ from rendering.tables import _company_table
 
 def _inject_market_page_theme() -> None:
     """Apply a contained visual system to Market-tab panels and stat cards."""
-    st.markdown(
+    st.html(
         """
         <style>
         div[class*="st-key-market-panel-"] {
@@ -84,7 +85,6 @@ def _inject_market_page_theme() -> None:
         }
         </style>
         """,
-        unsafe_allow_html=True,
     )
 
 
@@ -508,5 +508,5 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
         "Sector detail",
         "Select a sector for factors, market structure, fundamentals, and trading pressure.",
     )
-    selection = _render_sector_detail(sector_data, sector_metrics, macro_df)
-    _render_market_constituent_ledger(selection, market_ledger)
+    _render_sector_detail(sector_data, sector_metrics, macro_df)
+    render_evidence_gateway("market")
