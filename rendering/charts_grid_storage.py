@@ -24,6 +24,31 @@ def grid_construction_history(history: pd.DataFrame | None, *, height: int = 410
     return add_axis_headroom(_base_layout(fig, height=height, legend=False, margin=dict(l=54, r=20, t=24, b=38)), upper=0.12, lower=0.05)
 
 
+
+def data_center_capacity_by_state(profile: pd.DataFrame | None, *, height: int = 430, top_n: int = 10):
+    frame = profile.copy() if isinstance(profile, pd.DataFrame) else pd.DataFrame()
+    if not frame.empty:
+        frame["Capacity GW"] = pd.to_numeric(frame.get("Capacity GW"), errors="coerce")
+        frame = frame.dropna(subset=["Capacity GW"]).nlargest(top_n, "Capacity GW").sort_values("Capacity GW", ascending=True, kind="stable")
+    customdata = None
+    if not frame.empty:
+        customdata = np.stack([
+            pd.to_numeric(frame.get("Campuses"), errors="coerce").fillna(0),
+            pd.to_numeric(frame.get("Capacity Records"), errors="coerce").fillna(0),
+        ], axis=-1)
+    fig = go.Figure(go.Bar(
+        x=frame.get("Capacity GW", []), y=frame.get("State", []), orientation="h",
+        marker_color=COLORS["violet"], customdata=customdata,
+        text=[f"{value:,.1f} GW" for value in frame.get("Capacity GW", [])],
+        textposition="outside", cliponaxis=False,
+        hovertemplate=("%{y}<br>Published / planned campus capacity: %{x:,.1f} GW"
+                       "<br>Active campuses: %{customdata[0]:,.0f}"
+                       "<br>Campuses with capacity: %{customdata[1]:,.0f}<extra></extra>"),
+    ))
+    fig.update_xaxes(title="Published / planned campus capacity", ticksuffix=" GW")
+    fig.update_yaxes(title="")
+    return add_axis_headroom(_base_layout(fig, height=height, legend=False, margin=dict(l=44, r=78, t=20, b=48)), axis="x", upper=0.18, lower=0.0, include_zero=True)
+
 def storage_pipeline_by_region(queue: pd.DataFrame | None, *, height: int = 420, top_n: int = 10):
     clean = queue.copy() if isinstance(queue, pd.DataFrame) else pd.DataFrame()
     if clean.empty:

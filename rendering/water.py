@@ -29,7 +29,6 @@ from rendering.components import (
     render_statline,
     render_tab_header,
 )
-from rendering.dataframe import arrow_safe_dataframe
 
 STATE_NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -89,6 +88,60 @@ def _latest_county_snapshot(context: dict) -> str:
     return dates.max().strftime("%Y-%m-%d")
 
 
+def _current_state_stats(context: dict):
+    summary = context["summary"]
+    local = context["local_summary"]
+    campuses = int(summary.get("campuses", len(context["campuses"])) or 0)
+    mapped = int(local.get("campuses", campuses) or 0)
+    drought_covered = int(local.get("campuses_with_county_drought_data", 0) or 0)
+    d2 = int(local.get("campuses_in_counties_with_d2", 0) or 0)
+    direct = int(summary.get("direct_water_evidence_records", 0) or 0)
+    quantified = (
+        int(summary.get("quantified_withdrawal_records", 0) or 0)
+        + int(summary.get("quantified_consumption_records", 0) or 0)
+    )
+    return [
+        ("Tracked campuses", f"{campuses:,}", "Universal Data Center Registry"),
+        (
+            "County drought coverage",
+            f"{drought_covered:,} / {mapped:,}",
+            f"{_pct(local.get('county_drought_coverage_share'))} of mapped campuses",
+        ),
+        (
+            "D2+ exposure",
+            f"{d2:,}",
+            f"{_pct(local.get('campuses_in_counties_with_d2_share'))} of campuses with county data",
+        ),
+        (
+            "Direct water evidence",
+            f"{direct:,}",
+            f"{(direct / max(campuses, 1)) * 100.0:.1f}% of tracked campuses",
+        ),
+        ("Quantified records", f"{quantified:,}", "withdrawal / consumption observations"),
+    ]
+
+
+def _render_current_state(context: dict) -> None:
+    render_section(
+        "Current state",
+        "Current campus exposure and the evidence available to measure water use.",
+        first=True,
+        compact=True,
+    )
+    render_statline(_current_state_stats(context), key_prefix="water-current-state")
+    with st.container(border=True, key="water-current-observability"):
+        render_panel_heading(
+            "Water observability",
+            "County drought, public-water service areas, and direct campus disclosure",
+        )
+        render_plotly_chart(
+            water_local_context_coverage(context["summary"], height=430),
+            width="stretch",
+            config={"displayModeBar": False, "responsive": True},
+            key="water-current-observability-chart",
+        )
+
+
 def _local_exposure_stats(context: dict):
     local = context["local_summary"]
     mapped = int(local.get("campuses", 0) or 0)
@@ -109,7 +162,6 @@ def _render_local_exposure(context: dict) -> None:
     render_section(
         "County drought",
         "Current U.S. county drought classifications.",
-        first=True,
     )
     render_statline(_local_exposure_stats(context), key_prefix="water-local-exposure")
     county_drought = context["water"].get("usdm_county_drought")
@@ -482,51 +534,45 @@ def _render_campus_dossier(context: dict) -> None:
     row["Campus Name"] = display_names.iloc[selected_position]
     st.markdown(_campus_profile_html(row), unsafe_allow_html=True)
 
-def _coverage_stats(context: dict):
+def _evidence_coverage_stats(context: dict):
     summary = context["summary"]
     campuses = int(summary.get("campuses", len(context["campuses"])) or 0)
     denominator = max(campuses, 1)
     pws_resolved = int(summary.get("pws_service_area_query_resolved_records", 0) or 0)
     pws_overlap = int(summary.get("pws_service_area_overlap_records", 0) or 0)
     direct = int(summary.get("direct_water_evidence_records", 0) or 0)
-    quantified = int(summary.get("quantified_withdrawal_records", 0) or 0) + int(summary.get("quantified_consumption_records", 0) or 0)
+    withdrawals = int(summary.get("quantified_withdrawal_records", 0) or 0)
+    consumption = int(summary.get("quantified_consumption_records", 0) or 0)
     return [
-        ("Campuses", f"{campuses:,}", "Universal Data Center Registry"),
-        ("EPA point queries resolved", f"{pws_resolved:,}", f"{pws_resolved / denominator * 100.0:.1f}% of campuses"),
+        (
+            "EPA point queries resolved",
+            f"{pws_resolved:,}",
+            f"{pws_resolved / denominator * 100.0:.1f}% of campuses",
+        ),
         ("EPA boundary overlaps", f"{pws_overlap:,}", "community-water service areas"),
-        ("Direct / quantified", f"{direct:,} / {quantified:,}", "campus evidence / quantified records"),
+        (
+            "Direct water evidence",
+            f"{direct:,}",
+            f"{direct / denominator * 100.0:.1f}% of campuses",
+        ),
+        ("Quantified withdrawals", f"{withdrawals:,}", "campus records"),
+        ("Quantified consumption", f"{consumption:,}", "campus records"),
     ]
 
 
 def _render_coverage(context: dict) -> None:
-    campuses = context["campuses"]
-    summary = context["summary"]
     render_section(
         "Water disclosure coverage",
         "Coverage of county drought, public-water service areas, and campus-level water records.",
     )
-    render_statline(_coverage_stats(context), key_prefix="water-observability")
-    with st.container(border=True, key="full-width-layout-water-observability"):
-        view = st.radio(
-            "Water evidence view",
-            ["Coverage layers", "Direct evidence by state"],
-            horizontal=True,
-            label_visibility="collapsed",
-            key="water-observability-view",
-        )
-        if view == "Direct evidence by state":
-            render_panel_heading("Campus water records by state", "Campus records")
-            figure = water_state_evidence_profile(campuses, height=450)
-            chart_key = "water-state-evidence-profile"
-        else:
-            render_panel_heading("Campus water disclosure", "Mapped campus coverage")
-            figure = water_local_context_coverage(summary, height=450)
-            chart_key = "water-local-context-coverage"
+    render_statline(_evidence_coverage_stats(context), key_prefix="water-evidence-coverage")
+    with st.container(border=True, key="full-width-layout-water-evidence-coverage"):
+        render_panel_heading("Campus water records by state", "Campus records")
         render_plotly_chart(
-            figure,
+            water_state_evidence_profile(context["campuses"], height=450),
             width="stretch",
             config={"displayModeBar": False, "responsive": True},
-            key=chart_key,
+            key="water-state-evidence-profile",
         )
 
 
@@ -625,9 +671,9 @@ def render_water_tab(water_data: dict, infrastructure_data: dict, tab_read=None)
         terms_key="water",
     )
     render_domain_read(tab_read, label="Read", domain="water")
-    _render_local_exposure(context)
+    _render_current_state(context)
     _render_campus_dossier(context)
+    _render_local_exposure(context)
     _render_system_context_workbench(context, infrastructure_data)
     _render_coverage(context)
-
     render_evidence_gateway("water")

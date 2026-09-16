@@ -11,7 +11,6 @@ from analytics.sector_assessment import select_current_sector_assessment
 from config.factor_config import FACTOR_DISPLAY_NAMES
 from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
-from rendering.dataframe import arrow_safe_dataframe
 from rendering.labels import sector_display_name
 from rendering.charts_market import (
     concentration_history_chart,
@@ -25,7 +24,6 @@ from rendering.charts_market import (
 from rendering.common import _forward_multiple_text
 from rendering.components import fmt_date, fmt_number, inject_panel_height_rules, render_domain_read, render_panel_heading, render_section, render_signal_rail, render_statline, render_tab_header
 from rendering.sector_dossier import build_structure_interpretation, build_structure_snapshot
-from rendering.tables import _company_table
 
 
 def _inject_market_page_theme() -> None:
@@ -371,7 +369,6 @@ def _render_market_ledger_summary(ledger, valuation_context=None):
 
 
 def _render_market_structure(ledger):
-    history_meta = (ledger or {}).get("history_metadata", {}) or {}
     return_meta = (ledger or {}).get("return_metadata", {}) or {}
 
     render_section(
@@ -399,55 +396,32 @@ def _render_market_structure(ledger):
                     key="market-return-contribution-1y",
                 )
 
-        lower_left, lower_right = st.columns(2, gap="large")
-        with lower_left:
-            with st.container(border=True, key="market-panel-concentration-history"):
-                render_panel_heading("Market concentration", _history_label(history_meta))
-                render_plotly_chart(
-                    concentration_history_chart((ledger or {}).get("history", pd.DataFrame())),
-                    width="stretch",
-                    config={"displayModeBar": False, "responsive": True},
-                    key="market-concentration-history",
-                )
-        with lower_right:
-            with st.container(border=True, key="market-panel-participation-history"):
-                render_panel_heading("Largest companies and the rest of the market", _history_label(history_meta))
-                render_plotly_chart(
-                    participation_history_chart((ledger or {}).get("history", pd.DataFrame())),
-                    width="stretch",
-                    config={"displayModeBar": False, "responsive": True},
-                    key="market-participation-history",
-                )
 
-
-def _render_market_constituent_ledger(selection: dict | None, ledger: dict) -> None:
+def _render_market_history(ledger):
+    history_meta = (ledger or {}).get("history_metadata", {}) or {}
     render_section(
-        "Company data",
-        "Company-level records used in the market and sector views.",
+        "Historical development",
+        "How concentration and participation across the covered public-equity universe have changed through time.",
     )
-    with st.expander("Company records", expanded=False):
-        options = ["Selected sector", "Full market universe"] if selection else ["Full market universe"]
-        view = st.radio(
-            "Constituent view",
-            options,
-            horizontal=True,
-            label_visibility="collapsed",
-            key="market-constituent-ledger-view",
-        )
-        if view == "Selected sector" and selection:
-            st.caption(
-                f"{sector_display_name(selection['sector'])} · {selection['company_count']} included companies · monetary values in USD millions."
+    left, right = st.columns(2, gap="large")
+    with left:
+        with st.container(border=True, key="market-panel-concentration-history"):
+            render_panel_heading("Market concentration", _history_label(history_meta))
+            render_plotly_chart(
+                concentration_history_chart((ledger or {}).get("history", pd.DataFrame())),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="market-concentration-history",
             )
-            frame = _company_table(selection["frame"])
-        else:
-            st.caption("Companies included in the market-value and return-contribution calculations.")
-            frame = (ledger or {}).get("companies", pd.DataFrame())
-        st.dataframe(
-            arrow_safe_dataframe(frame),
-            width="stretch",
-            hide_index=True,
-            height=460,
-        )
+    with right:
+        with st.container(border=True, key="market-panel-participation-history"):
+            render_panel_heading("Largest companies and the rest of the market", _history_label(history_meta))
+            render_plotly_chart(
+                participation_history_chart((ledger or {}).get("history", pd.DataFrame())),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="market-participation-history",
+            )
 
 
 def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_data, market_universe_summary=None, tab_read=None):
@@ -509,4 +483,5 @@ def render_market_tab(sector_metrics, sector_data, regime_metrics, dashboard_dat
         "Select a sector for factors, market structure, fundamentals, and trading pressure.",
     )
     _render_sector_detail(sector_data, sector_metrics, macro_df)
+    _render_market_history(market_ledger)
     render_evidence_gateway("market")

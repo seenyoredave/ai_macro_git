@@ -16,21 +16,17 @@ from rendering.charts_infrastructure import (
     compute_project_state_sites,
     compute_critical_supply_chain,
 )
-from rendering.commercialization import filtered_ledger, metric_value
+from rendering.commercialization import metric_value
 from rendering.components import (
     inject_panel_height_rules,
     fmt_date,
     fmt_number,
-    render_compact_chart_rail,
     render_domain_read,
-    render_metric_stack,
     render_panel_heading,
     render_section,
-    render_statline,
     render_summary_row,
     render_tab_header,
 )
-from rendering.dataframe import arrow_safe_dataframe
 
 
 def _compute_data(infrastructure_data):
@@ -61,23 +57,37 @@ def _growth_detail(item):
     return f"{change} · {fmt_date((item or {}).get('date'))}"
 
 
-def _render_manufacturing_output(infrastructure_data):
-    compute = _compute_data(infrastructure_data)
-    history = compute.get("history")
+def _render_current_state(infrastructure_data):
     computers = _series_item(infrastructure_data, "Computer and Peripheral Equipment Output")
     communications = _series_item(infrastructure_data, "Communications Equipment Output")
     semiconductors = _series_item(infrastructure_data, "Semiconductor and Electronic Component Output")
+    semiconductor_utilization = _series_item(infrastructure_data, "Semiconductor and Electronic Component Capacity Utilization")
 
-    render_section("Manufacturing output", "U.S. output of computers, communications equipment, and semiconductor components.", first=True)
+    render_section(
+        "Current state",
+        "Current U.S. compute-manufacturing output and semiconductor factory utilization.",
+        first=True,
+    )
     render_summary_row([
         ("Computers / peripherals", _index_value(computers), _growth_detail(computers)),
         ("Communications equipment", _index_value(communications), _growth_detail(communications)),
         ("Semiconductors / components", _index_value(semiconductors), _growth_detail(semiconductors)),
-    ], key_prefix="compute-output")
+        ("Semiconductor utilization", _index_value(semiconductor_utilization, suffix="%"), fmt_date(semiconductor_utilization.get("date"))),
+    ], key_prefix="compute-current-state")
+
+
+def _render_manufacturing_output(infrastructure_data):
+    compute = _compute_data(infrastructure_data)
+    history = compute.get("history")
+    render_section(
+        "Manufacturing output",
+        "U.S. output of computers, communications equipment, and semiconductor components.",
+    )
     with st.container(key="full-width-layout-compute-manufacturing-hero"):
         with st.container(border=True, key="compute-panel-output-history"):
             render_panel_heading("Compute-manufacturing output", "Federal Reserve G.17 · 2017=100 · ten-year history")
             render_plotly_chart(compute_manufacturing_output_history(history, height=500, years=10), width="stretch", config={"displayModeBar": True, "responsive": True}, key="compute-output-history")
+
 
 def _render_capacity_and_demand(infrastructure_data):
     compute = _compute_data(infrastructure_data)
@@ -117,26 +127,6 @@ def _render_capacity_and_demand(infrastructure_data):
                 render_panel_heading("Capacity utilization", "Federal Reserve G.17 · percent")
                 figure, chart_key = compute_capacity_utilization_history(history, height=430, years=10), "compute-utilization-history"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=chart_key)
-
-def _project_detail(projects: pd.DataFrame) -> pd.DataFrame:
-    if projects is None or not isinstance(projects, pd.DataFrame) or projects.empty:
-        return pd.DataFrame()
-    fields = [
-        "Recipient",
-        "Facility",
-        "City",
-        "State",
-        "Supply Chain Layer",
-        "Technology",
-        "Planned Output",
-        "Production Timeline",
-        "Expected CapEx USD B",
-        "Direct Funding USD B",
-        "Available Loan USD B",
-    ]
-    fields = [field for field in fields if field in projects.columns]
-    return projects[fields].reset_index(drop=True)
-
 
 def _render_critical_supply_chain(infrastructure_data):
     compute = _compute_data(infrastructure_data)
@@ -186,16 +176,6 @@ def _render_serving_economics(commercialization_data):
         ("Serving unit cost", fmt_number(alphabet_efficiency, 0, suffix="% lower"), "Alphabet · during 2025"),
     ], key_prefix="compute-serving-economics")
 
-def _render_compute_ledger(infrastructure_data, commercialization_data):
-    projects = _compute_data(infrastructure_data).get("projects")
-    with st.expander("Compute data", expanded=False):
-        view = st.radio("Ledger", ["Manufacturing projects", "AI service-cost disclosures"], horizontal=True, key="compute-ledger-view")
-        if view == "AI service-cost disclosures":
-            frame = filtered_ledger(commercialization_data, pillars=["Compute economics", "Revenue realization", "Cost pressure"])
-        else:
-            frame = _project_detail(projects if isinstance(projects, pd.DataFrame) else pd.DataFrame())
-        st.dataframe(arrow_safe_dataframe(frame), width="stretch", hide_index=True, height=440)
-
 def render_compute_tab(infrastructure_data, commercialization_data=None, tab_read=None):
     inject_panel_height_rules({"compute-panel-capacity-demand-selected": 470, "compute-panel-buildout-selected": 500})
     compute = _compute_data(infrastructure_data)
@@ -205,10 +185,11 @@ def render_compute_tab(infrastructure_data, commercialization_data=None, tab_rea
         sources.insert(1, "Census")
     render_tab_header("Compute", "U.S. compute manufacturing, factory capacity, orders, investment, projects, and AI service costs.", " / ".join(sources), terms_key="compute")
     render_domain_read(tab_read, label="Read", domain="compute")
-    _render_manufacturing_output(infrastructure_data)
+    _render_current_state(infrastructure_data)
     _render_capacity_and_demand(infrastructure_data)
-    _render_serving_economics(commercialization_data)
     _render_critical_supply_chain(infrastructure_data)
     _render_domestic_buildout(infrastructure_data)
+    _render_serving_economics(commercialization_data)
+    _render_manufacturing_output(infrastructure_data)
     render_evidence_gateway("compute")
 

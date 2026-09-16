@@ -19,7 +19,6 @@ from rendering.visual_system import render_plotly_chart
 from rendering.charts_data_center import ACTIVE_CAMPUS_STATUSES
 from rendering.charts_energy import (
     capacity_changes,
-    commercial_markets,
     electricity_demand_history,
     gas_pipeline_capacity,
     generation_change,
@@ -29,14 +28,11 @@ from rendering.charts_energy import (
     retail_price_history,
     wholesale_price_history,
 )
-from rendering.dataframe import arrow_safe_dataframe
 from rendering.components import (
     inject_panel_height_rules,
     fmt_date,
     fmt_number,
-    render_compact_chart_rail,
     render_domain_read,
-    render_metric_stack,
     render_panel_heading,
     render_section,
     render_statline,
@@ -504,20 +500,6 @@ def _render_prices(context: dict, power_data) -> None:
                 render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=chart_key)
 
 
-def _render_power_ledger(context: dict, power_data) -> None:
-    datasets = {
-        "Retail demand & prices": context.get("retail"),
-        "Generation": context.get("generation"),
-        "Capacity snapshot": context.get("capacity"),
-        "Generator pipeline": context.get("pipeline"),
-        "Wholesale prices": context.get("wholesale"),
-        "Large-load campuses": context.get("campuses"),
-        "Gas pipelines": _market_frame(power_data, "gas_pipeline_projects"),
-        "LNG projects": _market_frame(power_data, "lng_projects"),
-    }
-    with st.expander("Power data", expanded=False):
-        view = st.radio("Dataset", list(datasets), horizontal=True, key="power-ledger-view")
-        st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", hide_index=True, height=460)
 
 def render_power_tab(fred_data, regime_metrics, power_data, dashboard_data, infrastructure_data=None, tab_read=None):
     del fred_data, regime_metrics, dashboard_data

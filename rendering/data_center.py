@@ -23,7 +23,6 @@ from rendering.components import (
     render_summary_row,
     render_tab_header,
 )
-from rendering.dataframe import arrow_safe_dataframe
 from rendering.spatial import render_spatial_explorer
 from rendering.visual_system import render_plotly_chart
 
@@ -124,6 +123,7 @@ def _operator_detail(campuses: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+
 def _render_pulse(campuses: pd.DataFrame, infrastructure_data: dict) -> None:
     summary = dict((infrastructure_data or {}).get("data_center_registry_summary", {}) or {})
     active = _active_campuses(campuses)
@@ -135,7 +135,6 @@ def _render_pulse(campuses: pd.DataFrame, infrastructure_data: dict) -> None:
         "Campus inventory",
         "The campus registry used across Data Centers, Water, Power, Grid & Storage, and Connectivity.",
         first=True,
-        compact=True,
     )
     render_statline(
         [
@@ -264,20 +263,31 @@ def _render_connectivity_operator_structure(connectivity: dict | None, campuses:
             )
 
 
-def _render_data_center_ledger(campuses: pd.DataFrame, infrastructure_data: dict) -> None:
-    entities = (infrastructure_data or {}).get("data_center_entities")
-    entities = entities.copy() if isinstance(entities, pd.DataFrame) else pd.DataFrame()
-    with st.expander("Universal data-center registry", expanded=False):
-        options = ["Campuses", "Operators"] + (["Hierarchy"] if not entities.empty else [])
-        view = st.radio("Registry view", options, horizontal=True, key="data-center-ledger-view")
-        if view == "Operators":
-            frame = _operator_detail(campuses)
-        elif view == "Hierarchy":
-            columns = ["Entity Level", "Entity Name", "Entity ID", "Parent Entity ID", "Campus ID", "Operator", "State", "County", "Square Feet"]
-            frame = entities[[column for column in columns if column in entities.columns]].copy()
-        else:
-            frame = _campus_detail(campuses)
-        st.dataframe(arrow_safe_dataframe(frame), width="stretch", hide_index=True, height=480)
+def _render_evidence_coverage(campuses: pd.DataFrame) -> None:
+    total = len(campuses)
+    capacity = _campus_capacity(campuses)
+    latitude = pd.to_numeric(campuses.get("Latitude", pd.Series(np.nan, index=campuses.index)), errors="coerce")
+    longitude = pd.to_numeric(campuses.get("Longitude", pd.Series(np.nan, index=campuses.index)), errors="coerce")
+    mapped = latitude.notna() & longitude.notna()
+    sources = campuses.get("Source URL", pd.Series("", index=campuses.index)).fillna("").astype(str).str.strip().ne("")
+    grades = campuses.get("Evidence Grade", pd.Series("", index=campuses.index)).fillna("").astype(str).str.upper().str.strip()
+
+    def share(count: int) -> str:
+        return fmt_number((count / total * 100.0) if total else np.nan, 1, suffix="%")
+
+    render_section(
+        "Evidence coverage",
+        "Location, capacity, source, and evidence-grade coverage across the universal campus registry.",
+    )
+    render_summary_row(
+        [
+            ("Capacity coverage", share(int(capacity.notna().sum())), f"{int(capacity.notna().sum()):,} of {total:,} campuses"),
+            ("Mapped coverage", share(int(mapped.sum())), f"{int(mapped.sum()):,} of {total:,} campuses"),
+            ("Source coverage", share(int(sources.sum())), f"{int(sources.sum()):,} campuses with source URL"),
+            ("Higher-grade evidence", f"{int(grades.isin({'A', 'B'}).sum()):,}", "A/B evidence grade"),
+        ],
+        key_prefix="data-center-evidence-coverage",
+    )
 
 
 def render_data_center_tab(infrastructure_data, tab_read=None):
@@ -293,10 +303,11 @@ def render_data_center_tab(infrastructure_data, tab_read=None):
     inventory = _inventory(infrastructure_data)
     connectivity = (infrastructure_data or {}).get("connectivity", {}) or {}
     _render_pulse(campuses, infrastructure_data)
-    _render_geography(campuses, infrastructure_data)
-    _render_scale(campuses)
     _render_development_profile(inventory)
+    _render_scale(campuses)
+    _render_geography(campuses, infrastructure_data)
     _render_connectivity_operator_structure(connectivity, campuses)
+    _render_evidence_coverage(campuses)
     render_evidence_gateway("data_center")
 
 

@@ -107,7 +107,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.5.1"
+APP_VERSION = "v3.0.5.7"
 APP_STATE_SCHEMA_VERSION = "76.0-point-in-time-research-ui"
 
 st.set_page_config(

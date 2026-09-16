@@ -16,16 +16,13 @@ from rendering.charts_connectivity import (
 from rendering.charts_infrastructure import data_center_connectivity_state
 from rendering.components import (
     fmt_number,
-    render_compact_chart_rail,
     render_domain_read,
-    render_metric_stack,
     render_panel_heading,
     render_section,
     render_statline,
     render_summary_row,
     render_tab_header,
 )
-from rendering.dataframe import arrow_safe_dataframe
 
 
 def _count(value) -> int:
@@ -55,16 +52,21 @@ def _inject_connectivity_theme() -> None:
     )
 
 
-def _render_national_pulse(connectivity: dict) -> None:
+def _render_current_state(connectivity: dict) -> None:
     national = connectivity.get("national_summary", {}) or {}
     coverage = connectivity.get("coverage", {}) or {}
-    render_section("Network overview", "U.S.-connected submarine cables, internet exchanges, and federally funded middle-mile fiber.", first=True, compact=True)
     facility_count = _count(national.get("PeeringDB Facilities"))
     facility_floor = _count(national.get("PeeringDB Facility Coverage Floor") or coverage.get("facility_search_floor"))
     facility_value = f"{facility_count:,}" if facility_count else f"{facility_floor:,}+"
+    render_section(
+        "Network overview",
+        "U.S.-connected submarine cables, internet exchanges, and federally funded middle-mile fiber.",
+        first=True,
+        compact=True,
+    )
     render_statline([
-        ("FCC-licensed systems", f"{_count(national.get('U.S. International Submarine Cable Systems')):,}", "U.S.-international systems"),
-        ("U.S.-connected catalog", f"{_count(national.get('U.S.-Connected Cable Catalog Entries')):,}", "published system entries"),
+        ("States with network gap", f"{_count(coverage.get('mismatch_states')):,}", "data-center capacity with limited public interconnection depth"),
+        ("Campuses screened", f"{_count(coverage.get('campuses_screened')):,}", "data-center connectivity context"),
         ("Active IXPs", f"{_count(national.get('Active IXPs')):,}", f"{_count(national.get('Combined Reported Members')):,} memberships"),
         ("Interconnection facilities", facility_value, "PeeringDB records"),
         ("Middle-mile fiber", f"{_count(national.get('Middle-Mile New Fiber Miles')):,}+ mi", f"{_count(national.get('Middle-Mile Award Records')):,} awards"),
@@ -131,7 +133,7 @@ def _render_middle_mile(connectivity: dict) -> None:
             render_panel_heading("Middle-mile awards by state or territory", "Awarded funding")
             render_plotly_chart(middle_mile_awards_by_state(awards, height=520), width="stretch", config={"displayModeBar": False, "responsive": True}, key="connectivity-middle-mile-awards")
 
-def _render_compute_transport(connectivity: dict) -> None:
+def _render_ai_network_interaction(connectivity: dict) -> None:
     state = connectivity.get("state_summary")
     campuses = connectivity.get("campus_connectivity_snapshot")
     coverage = connectivity.get("coverage", {}) or {}
@@ -154,33 +156,48 @@ def _render_compute_transport(connectivity: dict) -> None:
                 figure, key = data_center_connectivity_state(state, height=520, lens=lens), "connectivity-state-mismatch"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key)
 
-def _render_connectivity_ledger(connectivity: dict) -> None:
-    facilities = connectivity.get("interconnection_facilities")
-    facility_summary = connectivity.get("interconnection_facility_summary")
-    facility_frame = facilities if isinstance(facilities, pd.DataFrame) and not facilities.empty else facility_summary
-    datasets = {
-        "Cable systems": connectivity.get("submarine_cable_systems"),
-        "Landing markets": connectivity.get("cable_landing_markets"),
-        "IXP registry": connectivity.get("ixp_snapshot"),
-        "Interconnection facilities": facility_frame,
-        "Middle-mile awards": connectivity.get("middle_mile_awards"),
-        "Campus connectivity": connectivity.get("campus_connectivity_snapshot"),
-    }
-    with st.expander("Connectivity data", expanded=False):
-        view = st.radio("Dataset", list(datasets), horizontal=True, key="connectivity-ledger-view")
-        st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", hide_index=True, height=480)
+def _coverage_ratio(numerator, denominator) -> str:
+    numerator_value = _count(numerator)
+    denominator_value = _count(denominator)
+    if denominator_value <= 0:
+        return "n/a"
+    return fmt_number(numerator_value / denominator_value * 100.0, 0, suffix="%")
+
+
+def _render_evidence_coverage(connectivity: dict) -> None:
+    coverage = connectivity.get("coverage", {}) or {}
+    screened = _count(coverage.get("campuses_screened"))
+    landing = _count(coverage.get("campuses_with_landing_proximity"))
+    facilities = _count(coverage.get("campuses_with_live_facility_proximity"))
+    render_section(
+        "Evidence coverage",
+        "Public-network observations available for the current data-center connectivity screen.",
+    )
+    render_statline([
+        ("Campuses screened", f"{screened:,}", "connectivity comparison set"),
+        ("Landing proximity", f"{landing:,}", f"{_coverage_ratio(landing, screened)} of screened campuses"),
+        ("Facility proximity", f"{facilities:,}", f"{_coverage_ratio(facilities, screened)} of screened campuses"),
+        ("States with IXP evidence", f"{_count(coverage.get('states_with_ixp_evidence')):,}", "reported public interconnection activity"),
+    ], key_prefix="connectivity-evidence-coverage")
+
 
 def render_connectivity_tab(connectivity_data: dict | None, infrastructure_data: dict | None = None, tab_read=None) -> None:
     connectivity = connectivity_data if isinstance(connectivity_data, dict) else {}
     if not connectivity and isinstance(infrastructure_data, dict):
         connectivity = infrastructure_data.get("connectivity", {}) or {}
     _inject_connectivity_theme()
-    render_tab_header("Connectivity", "Submarine cables, internet exchanges, middle-mile fiber, and links to major data-center markets.", "FCC / Internet Society Pulse / PeeringDB / TeleGeography / NTIA", terms_key="connectivity")
+    render_tab_header(
+        "Connectivity",
+        "Submarine cables, internet exchanges, middle-mile fiber, and links to major data-center markets.",
+        "FCC / Internet Society Pulse / PeeringDB / TeleGeography / NTIA",
+        terms_key="connectivity",
+    )
     render_domain_read(tab_read, label="Read", domain="connectivity")
-    _render_national_pulse(connectivity)
-    _render_submarine(connectivity)
+    _render_current_state(connectivity)
+    _render_ai_network_interaction(connectivity)
     _render_interconnection(connectivity)
+    _render_submarine(connectivity)
     _render_middle_mile(connectivity)
-    _render_compute_transport(connectivity)
+    _render_evidence_coverage(connectivity)
     render_evidence_gateway("connectivity")
 

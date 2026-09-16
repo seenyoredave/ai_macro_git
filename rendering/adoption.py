@@ -12,8 +12,7 @@ from rendering.charts_adoption import (
     adoption_sector_bars,
     consumer_adoption_history,
 )
-from rendering.commercialization import filtered_ledger, metric_value
-from rendering.dataframe import arrow_safe_dataframe
+from rendering.commercialization import metric_value
 from rendering.components import (
     fmt_date,
     fmt_number,
@@ -250,18 +249,6 @@ def _render_paid_adoption(commercialization_data):
         ("Gemini Enterprise", fmt_number(gemini_enterprise, 0, suffix="M"), "paid seats"),
     ], key_prefix="adoption-paid")
 
-
-def _render_adoption_ledger(adoption_data, commercialization_data):
-    datasets = {
-        "People history": (adoption_data or {}).get("consumer_history"),
-        "Business history": (adoption_data or {}).get("national_history"),
-        "AI supplement": ((adoption_data or {}).get("depth") or {}).get("table"),
-        "Industry snapshot": (adoption_data or {}).get("sector_snapshot"),
-        "Paid disclosures": filtered_ledger(commercialization_data, pillars=["Paid demand", "Enterprise adoption", "Reach"]),
-    }
-    with st.expander("Adoption data", expanded=False):
-        view = st.radio("Dataset", list(datasets), horizontal=True, key="adoption-ledger-view")
-        st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", hide_index=True, height=440)
 
 
 def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=None):

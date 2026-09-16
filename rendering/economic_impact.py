@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -13,20 +12,16 @@ from rendering.charts_economic_impact import (
     productivity_index,
     worker_capture_history,
 )
-from rendering.commercialization import filtered_ledger, metric_value
+from rendering.commercialization import metric_value
 from rendering.components import (
     fmt_date,
     fmt_number,
-    render_compact_chart_rail,
     render_domain_read,
-    render_metric_stack,
     render_panel_heading,
     render_section,
-    render_statline,
     render_summary_row,
     render_tab_header,
 )
-from rendering.dataframe import arrow_safe_dataframe
 from rendering.layout_contracts import value_realization_bridge_html
 
 
@@ -68,16 +63,64 @@ def _build_value_bridge(data: dict, commercialization_data) -> dict[str, object]
     }
 
 
-def _render_pulse(data: dict, commercialization_data) -> None:
-    render_section("AI revenue and national outcomes", "Provider AI revenue alongside productivity, real compensation, and household earnings.", first=True, compact=True)
+def _render_current_state(data: dict, commercialization_data) -> None:
+    render_section(
+        "AI revenue and national outcomes",
+        "Provider AI revenue alongside productivity, real compensation, and household earnings.",
+        first=True,
+    )
     bridge = _build_value_bridge(data, commercialization_data)
     with st.container(key="economic-outcomes-value-bridge"):
-        st.markdown(value_realization_bridge_html(commercial_value=bridge["commercial_value"], production_value=bridge["production_value"], distribution_rows=bridge["distribution_rows"], namespace="economic-outcomes-overview"), unsafe_allow_html=True, width="stretch")
+        st.markdown(
+            value_realization_bridge_html(
+                commercial_value=bridge["commercial_value"],
+                production_value=bridge["production_value"],
+                distribution_rows=bridge["distribution_rows"],
+                namespace="economic-outcomes-overview",
+            ),
+            unsafe_allow_html=True,
+            width="stretch",
+        )
+
+
+def _render_commercial_signal(commercialization_data) -> None:
+    microsoft_arr = metric_value(commercialization_data, "Microsoft", "Annual revenue run rate")
+    openai_arr = metric_value(commercialization_data, "OpenAI", "Annualized revenue run rate")
+    alphabet_backlog = metric_value(commercialization_data, "Alphabet", "Backlog")
+    openai_business = metric_value(commercialization_data, "OpenAI", "Paying business users")
+    if all(pd.isna(value) for value in [microsoft_arr, openai_arr, alphabet_backlog, openai_business]):
+        return
+    render_section(
+        "AI commercial signal",
+        "Provider revenue, contracted demand, and paid business use that directly describe AI commercialization.",
+    )
+    render_summary_row(
+        [
+            ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), "provider-defined AI business"),
+            ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "company-reported floor"),
+            ("Google Cloud backlog", "$" + fmt_number(alphabet_backlog, 0, suffix="B"), "AI-influenced cloud backlog"),
+            ("OpenAI paying business users", fmt_number(openai_business, 1, suffix="M"), "paid business users"),
+        ],
+        key_prefix="economic-impact-commercial-signal",
+    )
+
+
+def _render_macro_validation(data: dict) -> None:
+    render_section(
+        "Macro validation",
+        "Economy-wide productivity, output, compensation, and labor-cost outcomes tracked alongside the AI investment cycle.",
+    )
     with st.container(key="full-width-layout-economic-realized-history"):
         with st.container(border=True, key="economic-outcomes-overview-realized"):
             render_panel_heading("Productivity, output, and labor costs", "BLS indexes · 2017 = 100")
             render_summary_row(_realized_growth_metrics(data), key_prefix="economic-impact-current-growth")
-            render_plotly_chart(productivity_index(data.get("productivity_history"), height=460), width="stretch", config={"responsive": True}, key="economic-impact-index-history")
+            render_plotly_chart(
+                productivity_index(data.get("productivity_history"), height=460),
+                width="stretch",
+                config={"responsive": True},
+                key="economic-impact-index-history",
+            )
+
 
 def _realized_growth_metrics(data: dict) -> list[tuple[str, str, str]]:
     return [
@@ -88,34 +131,14 @@ def _realized_growth_metrics(data: dict) -> list[tuple[str, str, str]]:
     ]
 
 
-def _participation_metrics(data: dict) -> list[tuple[str, str, str]]:
-    capture = data.get("capture_summary", {}) or {}
-    median = capture.get("median_real_earnings", {}) or {}
-    summary = data.get("earnings_distribution_summary")
-    summary = summary.copy() if isinstance(summary, pd.DataFrame) else pd.DataFrame()
-    peers = summary.loc[summary.get("Series", pd.Series("", index=summary.index)).astype(str).ne("All full-time workers")].copy() if not summary.empty else pd.DataFrame()
-    if not peers.empty:
-        peers["Since 2020"] = pd.to_numeric(peers.get("Since 2020"), errors="coerce")
-        valid = peers.dropna(subset=["Since 2020"])
-        strongest = valid.sort_values("Since 2020", ascending=False).iloc[0] if not valid.empty else pd.Series(dtype=object)
-        weakest = valid.sort_values("Since 2020", ascending=True).iloc[0] if not valid.empty else pd.Series(dtype=object)
-    else:
-        strongest = weakest = pd.Series(dtype=object)
-    return [
-        ("Typical worker", fmt_number(median.get("Since 2020"), 1, signed=True, suffix="%"), "real median weekly earnings since 2020"),
-        ("Women-to-men earnings", fmt_number(capture.get("women_to_men_earnings_pct"), 1, suffix="%"), "current four-quarter average"),
-        ("Strongest group growth", str(strongest.get("Series") or "n/a"), fmt_number(strongest.get("Since 2020"), 1, signed=True, suffix="% since 2020")),
-        ("Broad-participation spread", fmt_number(capture.get("group_growth_spread_ppts"), 1, suffix=" pts"), f"{str(weakest.get('Series') or 'weakest group')} to strongest"),
-    ]
-
-
 def _render_distribution_of_gains(data: dict) -> None:
     capture = data.get("capture_summary", {}) or {}
-    productivity = capture.get("productivity", {}) or {}; real_comp = capture.get("real_compensation", {}) or {}; labor_share = capture.get("labor_share", {}) or {}
+    real_comp = capture.get("real_compensation", {}) or {}
     render_section("Productivity and pay", "Nonfarm-business productivity, real compensation, and median real earnings since 2020.")
+    median = capture.get("median_real_earnings", {}) or {}
     render_summary_row([
-        ("Productivity since 2020", fmt_number(productivity.get("since_2020"), 1, signed=True, suffix="%"), fmt_date(productivity.get("date"))),
         ("Real compensation since 2020", fmt_number(real_comp.get("since_2020"), 1, signed=True, suffix="%"), fmt_date(real_comp.get("date"))),
+        ("Typical worker", fmt_number(median.get("Since 2020"), 1, signed=True, suffix="%"), "real median weekly earnings since 2020"),
         ("Productivity–comp gap", fmt_number(capture.get("productivity_real_comp_gap"), 1, signed=True, suffix=" pts"), "positive = productivity ahead"),
         ("Broad-participation spread", fmt_number(capture.get("group_growth_spread_ppts"), 1, suffix=" pts"), "weakest to strongest group"),
     ], key_prefix="economic-impact-distribution")
@@ -136,35 +159,47 @@ def _render_distribution_of_gains(data: dict) -> None:
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=chart_key)
 
 
-def _render_economic_ledger(data: dict, commercialization_data) -> None:
-    datasets = {
-        "Productivity and costs": data.get("productivity_history"),
-        "Worker compensation": data.get("value_transmission_history"),
-        "Earnings distribution": data.get("earnings_distribution_history"),
-        "Information investment": data.get("investment_history"),
-        "Inflation": data.get("cpi_history"),
-        "Provider revenue and paid use": filtered_ledger(commercialization_data, pillars=["Revenue realization", "Paid demand", "Enterprise adoption"]),
-    }
-    with st.expander("Economic-outcomes data", expanded=False):
-        view = st.radio("Ledger", list(datasets), horizontal=True, key="economic-impact-ledger-view")
-        st.dataframe(arrow_safe_dataframe(datasets.get(view)), width="stretch", height=440, hide_index=True)
-
 def render_economic_impact_tab(economic_impact_data: dict, commercialization_data=None, tab_read=None) -> None:
-    render_tab_header("Economic Outcomes", "Productivity, worker compensation, real earnings, investment, output, and labor costs.", "BLS / BEA / FRED / primary company disclosures", terms_key="economic_impact")
+    render_tab_header(
+        "Economic Outcomes",
+        "Productivity, worker compensation, real earnings, investment, output, and labor costs.",
+        "BLS / BEA / FRED / primary company disclosures",
+        terms_key="economic_impact",
+    )
     render_domain_read(tab_read, label="Read", domain="economic_outcomes")
-    _render_pulse(economic_impact_data, commercialization_data)
+    _render_current_state(economic_impact_data, commercialization_data)
+    _render_commercial_signal(commercialization_data)
+    _render_macro_validation(economic_impact_data)
     _render_distribution_of_gains(economic_impact_data)
-    render_section("Investment, output, and productivity", "Information-processing investment, real value-added output, and productivity since 2020.")
+
+    render_section(
+        "Investment, output, and productivity",
+        "Information-processing investment, real value-added output, and productivity since 2020.",
+    )
     with st.container(key="full-width-layout-economic-investment-validation"):
         with st.container(border=True, key="economic-impact-panel-validation"):
             render_panel_heading("Investment, output, and productivity", "Each series rebased to its first 2020 observation")
-            render_plotly_chart(investment_vs_output(economic_impact_data.get("investment_history"), economic_impact_data.get("productivity_history"), height=470), width="stretch", config={"displayModeBar": False, "responsive": True}, key="economic-impact-investment-validation")
-    render_section("Production and labor costs", "Manufacturing productivity, inflation-adjusted output, and unit labor costs.")
-    mprod = economic_impact_data.get("manufacturing_productivity", {}); mout = economic_impact_data.get("manufacturing_output", {}); ulc = economic_impact_data.get("nonfarm_unit_labor_cost", {})
-    render_summary_row([
-        ("Manufacturing productivity", _metric_text(mprod), fmt_date(mprod.get("date"))),
-        ("Manufacturing real output", _metric_text(mout), fmt_date(mout.get("date"))),
-        ("Nonfarm unit labor costs", _metric_text(ulc), fmt_date(ulc.get("date"))),
-    ], key_prefix="economic-impact-production")
+            render_plotly_chart(
+                investment_vs_output(economic_impact_data.get("investment_history"), economic_impact_data.get("productivity_history"), height=470),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="economic-impact-investment-validation",
+            )
+
+    render_section(
+        "Production and labor costs",
+        "Manufacturing productivity, inflation-adjusted output, and unit labor costs.",
+    )
+    mprod = economic_impact_data.get("manufacturing_productivity", {})
+    mout = economic_impact_data.get("manufacturing_output", {})
+    ulc = economic_impact_data.get("nonfarm_unit_labor_cost", {})
+    render_summary_row(
+        [
+            ("Manufacturing productivity", _metric_text(mprod), fmt_date(mprod.get("date"))),
+            ("Manufacturing real output", _metric_text(mout), fmt_date(mout.get("date"))),
+            ("Nonfarm unit labor costs", _metric_text(ulc), fmt_date(ulc.get("date"))),
+        ],
+        key_prefix="economic-impact-production",
+    )
     render_evidence_gateway("economic_impact")
 

@@ -113,7 +113,7 @@ def main() -> None:
     _check("commercialization_data=context.commercialization_data" in dashboard_source, "Evidence is missing commercialization reference data")
 
     app_source = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    _check('APP_VERSION = "v3.0.5.1"' in app_source, "Pass 1 feature version is incorrect")
+    _check('APP_VERSION = "v3.0.5.' in app_source, "Pass 1 architecture must remain in the v3.0.5 patch line")
 
     print({"status": "PASS", "domains": len(EXPECTED_DOMAINS), "route": "water -> EVIDENCE"})
 

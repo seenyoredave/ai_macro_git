@@ -287,12 +287,7 @@ def value_realization_bridge_html(
     distribution_rows: Sequence[Sequence[object]],
     namespace: str,
 ) -> str:
-    """Build the commercial-to-household outcomes bridge.
-
-    The bridge uses three economic layers rather than presenting worker
-    outcomes as a false five-step chronology. Compensation, labor share,
-    median earnings, and participation are parallel distribution readings.
-    """
+    """Build parallel current-state readings for commercialization and macro outcomes."""
     clean_namespace = html.escape(str(namespace), quote=True)
     distribution_html: list[str] = []
     for row in distribution_rows:
@@ -310,24 +305,24 @@ def value_realization_bridge_html(
         f'<article class="rm-value-bridge" data-rm-value-bridge="{clean_namespace}">'
         '<header class="rm-value-bridge-header">'
         '<div>'
-        '<div class="rm-value-bridge-title">AI revenue and national outcomes</div>'
-        '<div class="rm-value-bridge-subtitle">Provider revenue, productivity, compensation, labor share, and earnings</div>'
+        '<div class="rm-value-bridge-title">AI commercialization and macro outcomes</div>'
+        '<div class="rm-value-bridge-subtitle">Parallel readings of provider revenue, productivity, compensation, labor share, and earnings</div>'
         '</div>'
         '<div class="rm-value-bridge-period">2020 to latest observation</div>'
         '</header>'
         '<div class="rm-value-bridge-track">'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--commercial">'
-        '<div class="rm-value-bridge-kicker">Provider revenue</div>'
+        '<div class="rm-value-bridge-kicker">AI commercial signal</div>'
         f'<div class="rm-value-bridge-primary">{html.escape(str(commercial_value))}</div>'
         '<div class="rm-value-bridge-note">Annualized provider revenue disclosures</div>'
         '</section>'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--production">'
-        '<div class="rm-value-bridge-kicker">Productivity</div>'
+        '<div class="rm-value-bridge-kicker">Macro productivity</div>'
         f'<div class="rm-value-bridge-primary">{html.escape(str(production_value))}</div>'
         '<div class="rm-value-bridge-note">Nonfarm-business productivity</div>'
         '</section>'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--distribution">'
-        '<div class="rm-value-bridge-kicker">Worker outcomes</div>'
+        '<div class="rm-value-bridge-kicker">Distribution</div>'
         f'<div class="rm-value-bridge-readings">{"".join(distribution_html)}</div>'
         '</section>'
         '</div>'

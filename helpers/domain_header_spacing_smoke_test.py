@@ -17,7 +17,7 @@ def main() -> None:
     components = (ROOT / "rendering" / "components.py").read_text(encoding="utf-8")
     theme = (ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
 
-    _check('APP_VERSION = "v3.0.5.1"' in app, "Header refinement patch version is incorrect")
+    _check('APP_VERSION = "v3.0.5.' in app, "Header refinement must remain in the v3.0.5 patch line")
 
     header_start = components.index("def render_tab_header(")
     header_end = components.index("def render_line_break", header_start)

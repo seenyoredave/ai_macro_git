@@ -1381,7 +1381,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
     .rm-dossier-group + .rm-dossier-group { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.14); }
 }
 
-/* Economic Outcomes bridge: three economic layers, one continuous object. */
+/* Economic Outcomes: parallel current-state readings across three economic layers. */
 .rm-value-bridge {
     background: linear-gradient(105deg, rgba(15, 23, 42, 0.90), rgba(13, 25, 39, 0.78));
     border: 1px solid rgba(148, 163, 184, 0.22);
@@ -1430,24 +1430,7 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
 .rm-value-bridge-layer + .rm-value-bridge-layer {
     border-left: 1px solid rgba(148, 163, 184, 0.14);
 }
-.rm-value-bridge-layer:not(:last-of-type)::after {
-    align-items: center;
-    background: #111827;
-    border: 1px solid rgba(52, 211, 153, 0.30);
-    border-radius: 0;
-    color: #6ee7b7;
-    content: "\203A";
-    display: flex;
-    font-size: 1rem;
-    font-weight: 700;
-    height: 1.45rem;
-    justify-content: center;
-    position: absolute;
-    right: -0.66rem;
-    top: calc(50% - 0.72rem);
-    width: 1.3rem;
-    z-index: 2;
-}
+
 .rm-value-bridge-kicker,
 .rm-value-bridge-reading > div {
     color: #8f9aad;
@@ -1491,7 +1474,6 @@ div[class*="st-key-economic-outcomes-overview-realized"] .rm-summary-row {
     .rm-value-bridge-period { text-align: left; }
     .rm-value-bridge-track { grid-template-columns: 1fr !important; }
     .rm-value-bridge-layer + .rm-value-bridge-layer { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.14); }
-    .rm-value-bridge-layer:not(:last-of-type)::after { bottom: -0.72rem; left: calc(50% - 0.65rem); right: auto; top: auto; transform: rotate(90deg); }
 }
 
 /* v6.10 presentation proof set: editorial hierarchy before repeated panel furniture. */

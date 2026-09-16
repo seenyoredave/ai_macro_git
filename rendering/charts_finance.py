@@ -211,7 +211,8 @@ def funding_history(history: pd.DataFrame, *, years=5):
         )
     fig.add_hline(y=0, line_dash="dot", line_color="#64748b", opacity=0.6)
     fig.add_hline(y=1, line_dash="dot", line_color="#64748b", opacity=0.6)
-    fig = _base_layout(fig, height=330, legend=False, margin=dict(l=42, r=18, t=18, b=36))
+    fig.update_yaxes(title="Ratio to current CapEx")
+    fig = _base_layout(fig, height=350, legend=True, margin=dict(l=54, r=18, t=34, b=36))
     return add_axis_headroom(fig, upper=0.20, lower=0.10, extra_values=[0, 1])
 
 

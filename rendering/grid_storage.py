@@ -15,6 +15,7 @@ from rendering.evidence_gateway import render_evidence_gateway
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_energy import queue_by_region, queue_by_technology
 from rendering.charts_grid_storage import (
+    data_center_capacity_by_state,
     grid_construction_history,
     queue_age_by_region,
     queue_conversion_funnel,
@@ -29,9 +30,9 @@ from rendering.components import (
     render_panel_heading,
     render_section,
     render_statline,
+    render_summary_row,
     render_tab_header,
 )
-from rendering.dataframe import arrow_safe_dataframe
 
 
 def _frame(data: dict, key: str) -> pd.DataFrame:
@@ -41,6 +42,45 @@ def _frame(data: dict, key: str) -> pd.DataFrame:
 
 def _construction_item(infrastructure_data: dict) -> dict:
     return (((infrastructure_data or {}).get("series", {}) or {}).get("Electric Power Construction", {}) or {})
+
+
+def _data_center_state_capacity(infrastructure_data: dict) -> tuple[pd.DataFrame, dict]:
+    campuses = (infrastructure_data or {}).get("data_center_registry")
+    campuses = campuses.copy() if isinstance(campuses, pd.DataFrame) else pd.DataFrame()
+    if campuses.empty:
+        return pd.DataFrame(columns=["State", "Capacity GW", "Campuses", "Capacity Records"]), {
+            "active_campuses": 0,
+            "capacity_gw": np.nan,
+            "capacity_records": 0,
+            "states_with_capacity": 0,
+        }
+
+    active_statuses = {"Operational", "Expanding", "Under construction", "Approved / permitted / under construction", "Proposed", "Planned", "Announced"}
+    status = campuses.get("Status", pd.Series("", index=campuses.index)).fillna("").astype(str)
+    active = campuses.loc[status.isin(active_statuses)].copy()
+    planned = pd.to_numeric(active.get("Planned Data Center Capacity MW", pd.Series(np.nan, index=active.index)), errors="coerce")
+    published = pd.to_numeric(active.get("Published Capacity Estimate MW", pd.Series(np.nan, index=active.index)), errors="coerce")
+    active["Capacity MW"] = planned.combine_first(published).where(lambda values: values > 0)
+    active["State"] = active.get("State", pd.Series("", index=active.index)).fillna("").astype(str).str.strip()
+
+    state = (
+        active.loc[active["State"].ne("")]
+        .groupby("State", as_index=False)
+        .agg(**{
+            "Capacity MW": ("Capacity MW", lambda values: values.sum(min_count=1)),
+            "Campuses": ("Campus ID", "nunique"),
+            "Capacity Records": ("Capacity MW", lambda values: int(values.notna().sum())),
+        })
+    )
+    state["Capacity GW"] = pd.to_numeric(state["Capacity MW"], errors="coerce") / 1000.0
+    state = state[["State", "Capacity GW", "Campuses", "Capacity Records"]].sort_values("Capacity GW", ascending=False, na_position="last", kind="stable")
+    total_capacity = pd.to_numeric(active["Capacity MW"], errors="coerce").sum(min_count=1) / 1000.0
+    return state, {
+        "active_campuses": int(active.get("Campus ID", pd.Series(dtype=object)).nunique()),
+        "capacity_gw": total_capacity,
+        "capacity_records": int(active["Capacity MW"].notna().sum()),
+        "states_with_capacity": int(state.loc[pd.to_numeric(state["Capacity GW"], errors="coerce").gt(0), "State"].nunique()),
+    }
 
 
 def _context(energy_data: dict, infrastructure_data: dict) -> dict:
@@ -61,6 +101,7 @@ def _context(energy_data: dict, infrastructure_data: dict) -> dict:
     storage_queue_gw = storage_mw.sum(min_count=1) / 1000.0
     storage_share = storage_mw.sum(min_count=1) / submitted_mw.sum(min_count=1) * 100.0 if submitted_mw.sum(min_count=1) > 0 else np.nan
     duration_frame, duration_summary = storage_duration_profile(operating)
+    data_center_states, data_center_summary = _data_center_state_capacity(infrastructure_data)
     return {
         "queue": queue,
         "summary": summary,
@@ -77,6 +118,8 @@ def _context(energy_data: dict, infrastructure_data: dict) -> dict:
         "storage_duration": duration_frame,
         "storage_duration_summary": duration_summary,
         "source_manifest": _frame(energy_data, "grid_storage_source_manifest"),
+        "data_center_states": data_center_states,
+        "data_center_summary": data_center_summary,
     }
 
 
@@ -148,6 +191,43 @@ def _render_deliverability_screen(context: dict) -> None:
         ],
         key_prefix="grid-storage-deliverability",
     )
+
+
+def _render_ai_grid_deliverability(context: dict) -> None:
+    development = context["development"]
+    data_centers = context.get("data_center_summary", {}) or {}
+    render_section(
+        "Data-center load and grid deliverability",
+        "State-level data-center capacity and regional interconnection maturity as complementary views of large-load growth and grid delivery.",
+    )
+    render_summary_row(
+        [
+            ("Active data-center campuses", f"{int(data_centers.get('active_campuses', 0) or 0):,}", f"{int(data_centers.get('capacity_records', 0) or 0):,} with published / planned MW"),
+            ("Published / planned campus capacity", fmt_number(data_centers.get("capacity_gw"), 1, suffix=" GW"), f"{int(data_centers.get('states_with_capacity', 0) or 0):,} states with capacity"),
+            ("Active interconnection queue", fmt_number(development.get("headline_queue_gw"), 0, suffix=" GW"), f"{int(development.get('queue_projects', 0) or 0):,} requests"),
+            ("Advanced-stage share", fmt_number(development.get("advanced_share"), 1, suffix="%"), "executed IA or construction"),
+        ],
+        key_prefix="grid-storage-ai-interface",
+    )
+    left, right = st.columns(2, gap="large")
+    with left:
+        with st.container(border=True, key="grid-storage-panel-data-center-load"):
+            render_panel_heading("Data-center capacity by state", "Active campuses with published or planned MW")
+            render_plotly_chart(
+                data_center_capacity_by_state(context.get("data_center_states"), height=460),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="grid-storage-data-center-state-capacity",
+            )
+    with right:
+        with st.container(border=True, key="grid-storage-panel-ai-queue-age"):
+            render_panel_heading("Interconnection maturity by region", "Largest active queues")
+            render_plotly_chart(
+                queue_age_by_region(context.get("queue_regions"), height=460),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="grid-storage-ai-queue-age",
+            )
 
 
 def _render_queue_conversion(context: dict) -> None:
@@ -233,16 +313,12 @@ def _render_queue_regions(context: dict) -> None:
     with st.container(border=True, key="full-width-layout-grid-storage-regional-maturity"):
         view = st.radio(
             "Queue view",
-            ["Age", "Technology", "Region"],
+            ["Technology", "Region"],
             horizontal=True,
             label_visibility="collapsed",
             key="grid-storage-queue-view",
         )
-        if view == "Age":
-            render_panel_heading("Median queue age by region", "Active requests through year-end 2025")
-            figure = queue_age_by_region(regions, height=450)
-            chart_key = "grid-storage-queue-age"
-        elif view == "Region":
+        if view == "Region":
             render_panel_heading("Active queue by region", "Submitted generation and storage components")
             figure = queue_by_region(development.get("active_queue"), height=450)
             chart_key = "grid-storage-queue-region"
@@ -292,6 +368,7 @@ def render_grid_storage_tab(energy_data: dict, infrastructure_data: dict, tab_re
     )
     render_domain_read(tab_read, label="Read", domain="grid_storage")
     _render_deliverability_screen(context)
+    _render_ai_grid_deliverability(context)
     _render_queue_conversion(context)
     _render_reliability_storage(context)
     _render_queue_regions(context)
