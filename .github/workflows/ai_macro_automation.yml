@@ -7,12 +7,17 @@ on:
   workflow_dispatch:
     inputs:
       allow_paid:
-        description: Permit the bounded two-call OpenAI generation when evidence is material
+        description: Permit the bounded one-call OpenAI generation when evidence is material
         required: true
         default: false
         type: boolean
       publish:
         description: Permit publication to main when the transaction completes
+        required: true
+        default: false
+        type: boolean
+      full_refresh:
+        description: Force every research source node to refresh regardless of cadence
         required: true
         default: false
         type: boolean
@@ -61,6 +66,7 @@ jobs:
           AUTO_PUBLISH: ${{ vars.AUTO_PUBLISH }}
           AI_MACRO_MANUAL_ALLOW_PAID: ${{ inputs.allow_paid || false }}
           AI_MACRO_MANUAL_ALLOW_PUBLISH: ${{ inputs.publish || false }}
+          AI_MACRO_FORCE_FULL_REFRESH: ${{ inputs.full_refresh || false }}
           AI_MACRO_MAX_PAID_CALLS_PER_RUN: ${{ vars.AI_MACRO_MAX_PAID_CALLS_PER_RUN }}
           AI_MACRO_MAX_PAID_CALLS_PER_DAY: ${{ vars.AI_MACRO_MAX_PAID_CALLS_PER_DAY }}
           AI_MACRO_OPENAI_REASONING: xhigh
@@ -111,6 +117,7 @@ jobs:
             automation_artifacts/runs.jsonl
             automation_artifacts/call_journal.jsonl
             automation_artifacts/retained_state_manifest.json
+            data/refresh_graph_state.json
             openai_artifacts/attempts/*.json
 
       - name: Refresh timings
@@ -126,10 +133,22 @@ jobs:
           status = json.loads(status_path.read_text(encoding="utf-8")) if status_path.exists() else {}
           phases = status.get("phases") or {}
           refresh = phases.get("deterministic_refresh") or {}
+          graph = refresh.get("refresh_graph") or {}
           lines = ["## AI Macro automation", "", f"Result: `{status.get('result', 'missing')}`", "", "### Refresh timings"]
           for label, seconds in (refresh.get("subphases") or {}).items():
               lines.append(f"- {label}: `{seconds}s`")
-          lines.extend(["", f"Paid calls this run: `{(status.get('paid_calls') or {}).get('this_run', 0)}`"])
+          refreshed = graph.get("refreshed_nodes") or []
+          retained = graph.get("retained_nodes") or []
+          changed = graph.get("changed_nodes") or []
+          lines.extend([
+              "",
+              "### Incremental refresh",
+              f"- Provider nodes refreshed: `{len(refreshed)}` ({', '.join(refreshed) or 'none'})",
+              f"- Provider nodes retained: `{len(retained)}` ({', '.join(retained) or 'none'})",
+              f"- Semantic source changes: `{len(changed)}` ({', '.join(changed) or 'none'})",
+              "",
+              f"Paid calls this run: `{(status.get('paid_calls') or {}).get('this_run', 0)}`",
+          ])
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
               handle.write("\n".join(lines) + "\n")
           PY

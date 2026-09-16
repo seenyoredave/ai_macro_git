@@ -325,6 +325,7 @@ def main() -> int:
             "status": "passed",
             "elapsed_sec": round(refresh_elapsed, 3),
             "subphases": dict(bundle.timings),
+            "refresh_graph": dict(bundle.refresh_graph_report or {}),
         }
         _log(f"deterministic refresh complete · {refresh_elapsed:.1f}s")
         status["current_context_snapshot_id"] = str(

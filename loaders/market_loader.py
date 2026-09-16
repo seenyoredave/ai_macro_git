@@ -17,6 +17,7 @@ from archive.archive_reader import (
     rows_for_date,
 )
 from config.debug_config import debug_print
+from config.deployment import automation_mode
 from config.market_clock import (
     is_market_hours,
     market_cache_token,
@@ -698,6 +699,29 @@ def load_sector_data(tickers, sector=None):
         "edgar": load_edgar(tickers, allow_live=False),
     }
 
+def _market_source_concurrency_enabled(
+    *,
+    force_yfinance_refresh: bool,
+    allow_yfinance_live: bool,
+    force_edgar_refresh: bool,
+    allow_edgar_live: bool,
+) -> bool:
+    """Overlap market providers only in the headless automation runtime.
+
+    Streamlit cache-decorated loader boundaries must remain on the script thread
+    in developer mode; moving them to worker threads produces repeated missing
+    ScriptRunContext warnings. The automation worker installs a headless
+    Streamlit stub, so the independent provider legs can safely overlap there.
+    """
+    return bool(
+        automation_mode()
+        and force_yfinance_refresh
+        and allow_yfinance_live
+        and force_edgar_refresh
+        and allow_edgar_live
+    )
+
+
 def load_market_universe(
     tickers,
     *,
@@ -746,25 +770,47 @@ def _load_market_universe_cached(
     yf_archive_status = describe_yf_archive_status(tickers, sector=None)
     edgar_archive_status = describe_edgar_archive_status(tickers)
 
-    yf_started = time.perf_counter()
-    raw_yf = load_yfinance(
-        tuple(sorted(tickers.items())),
-        sector=None,
-        force_refresh=force_yfinance_refresh,
-        refresh_token=yfinance_refresh_token,
-        clock_token=clock_token,
-        allow_live=allow_yfinance_live,
-    )
-    yf_elapsed = time.perf_counter() - yf_started
+    def load_yfinance_leg():
+        started = time.perf_counter()
+        payload = load_yfinance(
+            tuple(sorted(tickers.items())),
+            sector=None,
+            force_refresh=force_yfinance_refresh,
+            refresh_token=yfinance_refresh_token,
+            clock_token=clock_token,
+            allow_live=allow_yfinance_live,
+        )
+        return payload, time.perf_counter() - started
 
-    edgar_started = time.perf_counter()
-    raw_edgar, edgar_runtime_report = load_edgar_with_report(
-        tickers,
-        force_refresh=force_edgar_refresh,
-        allow_live=allow_edgar_live,
-        refresh_token=edgar_refresh_token,
+    def load_edgar_leg():
+        started = time.perf_counter()
+        payload, report = load_edgar_with_report(
+            tickers,
+            force_refresh=force_edgar_refresh,
+            allow_live=allow_edgar_live,
+            refresh_token=edgar_refresh_token,
+        )
+        return payload, report, time.perf_counter() - started
+
+    # YFinance and SEC Company Facts are independent upstream providers. When
+    # both live legs are explicitly authorized, overlap their network latency
+    # while preserving each loader's own retry/rate-limit policy. Retained or
+    # single-provider rebuilds stay serial and deterministic.
+    concurrent_live = _market_source_concurrency_enabled(
+        force_yfinance_refresh=force_yfinance_refresh,
+        allow_yfinance_live=allow_yfinance_live,
+        force_edgar_refresh=force_edgar_refresh,
+        allow_edgar_live=allow_edgar_live,
     )
-    edgar_elapsed = time.perf_counter() - edgar_started
+    if concurrent_live:
+        with ThreadPoolExecutor(max_workers=2, thread_name_prefix="market-source") as executor:
+            yf_future = executor.submit(load_yfinance_leg)
+            edgar_future = executor.submit(load_edgar_leg)
+            raw_yf, yf_elapsed = yf_future.result()
+            raw_edgar, edgar_runtime_report, edgar_elapsed = edgar_future.result()
+    else:
+        raw_yf, yf_elapsed = load_yfinance_leg()
+        raw_edgar, edgar_runtime_report, edgar_elapsed = load_edgar_leg()
 
     yf_runtime_report = dict(getattr(raw_yf, "attrs", {}).get("load_report", {}))
 

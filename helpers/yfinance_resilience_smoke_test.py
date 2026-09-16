@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 import sys
 import types
 
@@ -264,6 +265,31 @@ def main() -> None:
         raise AssertionError(f"Missing benchmark member still caused a hard failure: {unavailable_benchmark}")
     if unavailable_benchmark.get("missing_tickers") != ["TSLA"]:
         raise AssertionError(f"Missing benchmark member diagnostics changed: {unavailable_benchmark}")
+
+    original_mode = os.environ.get("AI_MACRO_MODE")
+    try:
+        os.environ["AI_MACRO_MODE"] = "developer"
+        if market_loader._market_source_concurrency_enabled(
+            force_yfinance_refresh=True,
+            allow_yfinance_live=True,
+            force_edgar_refresh=True,
+            allow_edgar_live=True,
+        ):
+            raise AssertionError("Developer Streamlit mode must keep cached market loaders on the script thread")
+
+        os.environ["AI_MACRO_MODE"] = "automation"
+        if not market_loader._market_source_concurrency_enabled(
+            force_yfinance_refresh=True,
+            allow_yfinance_live=True,
+            force_edgar_refresh=True,
+            allow_edgar_live=True,
+        ):
+            raise AssertionError("Headless automation lost independent market-provider concurrency")
+    finally:
+        if original_mode is None:
+            os.environ.pop("AI_MACRO_MODE", None)
+        else:
+            os.environ["AI_MACRO_MODE"] = original_mode
 
     label = market_snapshot_label(resolved)
     expected_label = "Market data through 8.7.2026 · 2/3 current · 1 retained from 8.5.2026"

@@ -106,7 +106,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.1.0"
+APP_VERSION = "v3.0.2.1"
 APP_STATE_SCHEMA_VERSION = "74.0-canonical-observation-layer"
 
 st.set_page_config(

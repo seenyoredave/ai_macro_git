@@ -46,6 +46,7 @@ RELEASE_FILES = (
     "automation/runner.py",
     "automation/status.py",
     "automation/retained_state.py",
+    "automation/refresh_graph.py",
     "automation/git_transport.py",
     "tooling/__init__.py",
     "tooling/repository_policy.py",
@@ -245,6 +246,9 @@ def build_manifest() -> dict:
             for path in sorted(canonical_root.rglob("*.parquet"))
             if path.is_file()
         )
+    refresh_graph_state = PROJECT_ROOT / "data" / "refresh_graph_state.json"
+    if refresh_graph_state.exists():
+        release_files.append(refresh_graph_state.relative_to(PROJECT_ROOT).as_posix())
     release_files = list(dict.fromkeys(release_files))
     for relative in release_files:
         path = PROJECT_ROOT / relative
