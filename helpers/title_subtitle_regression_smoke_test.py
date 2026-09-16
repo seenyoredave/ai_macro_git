@@ -96,8 +96,8 @@ def _tab_header(path: Path) -> tuple[str | None, str | None, str | None]:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    if 'APP_VERSION = "v3.0.5.8"' not in app:
-        raise AssertionError("Title/subtitle protection must remain active in v3.0.5.8")
+    if 'APP_VERSION = "v3.0.5.' not in app:
+        raise AssertionError("Title/subtitle protection must remain active throughout v3.0.5.x")
 
     for filename, expected in EXPECTED_HEADERS.items():
         path = ROOT / "rendering" / filename

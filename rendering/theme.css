@@ -2342,3 +2342,110 @@ div[class*="st-key-evidence-gateway-"] {
     line-height: 1.48;
     margin-top: 0.22rem;
 }
+
+/* v3.0.5.9 visual consistency calibration. */
+/* Keep the approved information architecture and copy intact; this layer only
+   regularizes spacing, stat-rail alignment, panel rhythm, and Evidence density. */
+
+/* A first compact section is still a first section. Earlier rules allowed the
+   compact modifier to re-introduce top padding and a negative offset. */
+.rm-section.first.compact {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Stat rails should scan on one baseline even when labels and notes wrap. */
+.rm-summary-row {
+    margin-bottom: 0.82rem;
+}
+.rm-summary-card--row .rm-summary-label {
+    align-items: flex-end;
+    display: flex;
+    min-height: 1.72rem;
+}
+.rm-summary-card--row .rm-summary-note {
+    margin-top: auto;
+    padding-top: 0.34rem;
+}
+
+/* Give panel headings and their analytical object one consistent handoff. */
+.rm-panel-head {
+    margin-bottom: 0.5rem;
+}
+[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPlotlyChart"] {
+    margin-bottom: 0.08rem;
+}
+div[class*="st-key-full-width-layout-"] {
+    margin-bottom: 0.18rem;
+}
+
+/* Evidence is one inspector: compact domain control, stable tab rail, and
+   readable technical tables instead of forced one-line warehouse rows. */
+div[class*="st-key-evidence-inspector"] {
+    margin-top: 0.18rem;
+}
+div[class*="st-key-evidence-lookup-domain"] {
+    margin: 0.05rem 0 0.5rem;
+    max-width: 30rem;
+}
+div[class*="st-key-evidence-inspector"] [data-baseweb="tab-list"] {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    gap: 1.05rem;
+}
+div[class*="st-key-evidence-inspector"] button[data-baseweb="tab"] {
+    background: transparent !important;
+    color: #8794a7 !important;
+    font-size: 0.72rem !important;
+    font-weight: 760 !important;
+    letter-spacing: 0.025em !important;
+    min-height: 2.65rem !important;
+    padding: 0.52rem 0.08rem 0.62rem !important;
+}
+div[class*="st-key-evidence-inspector"] button[data-baseweb="tab"][aria-selected="true"] {
+    color: #e4eaf2 !important;
+}
+div[class*="st-key-evidence-inspector"] [data-baseweb="tab-highlight"] {
+    background-color: rgba(96, 165, 250, 0.88) !important;
+    height: 2px !important;
+}
+div[class*="st-key-evidence-inspector"] [role="tabpanel"] {
+    padding-top: 0.28rem;
+}
+div[class*="st-key-evidence-inspector"] .rm-table td {
+    max-width: 34rem;
+    min-width: 6.5rem;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+div[class*="st-key-evidence-inspector"] .rm-table th {
+    white-space: nowrap;
+}
+div[class*="st-key-evidence-inspector"] .stExpander {
+    margin-top: 0.12rem;
+}
+
+@media (max-width: 900px) {
+    .rm-summary-card--row .rm-summary-label {
+        min-height: 0;
+    }
+    .rm-summary-card--row .rm-summary-note {
+        margin-top: 0.32rem;
+        padding-top: 0;
+    }
+    .rm-summary-row .rm-summary-card--row:last-child:nth-child(odd),
+    .rm-signal-rail .rm-signal-item:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+    div[class*="st-key-evidence-lookup-domain"] {
+        max-width: none;
+    }
+    div[class*="st-key-evidence-inspector"] [data-baseweb="tab-list"] {
+        gap: 0.68rem;
+        overflow-x: auto;
+    }
+    div[class*="st-key-evidence-inspector"] button[data-baseweb="tab"] {
+        white-space: nowrap;
+    }
+}
+
