@@ -1,17 +1,17 @@
 {
   "files": {
     "archive/benchmark_history.csv": {
-      "bytes": 7283,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "f763265e921a4feacdc7af307fdec676b6fcf7db9ca19289b070e7b715b4b876",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 7482,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "f399fa9fc8bb041c69a5241adeb87793d649c4de2181eda48235563d909a9d3b",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "archive/edgar_history.csv": {
-      "bytes": 1158688,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "e0f5ab8d1c72d6e25b0bc2612a712da922a4dbcca825b976a5b5d0eb369e0134",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 1182573,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "d7718f08e28f19f60914fb95c2dd54401b06258fb66bd7df20a76ee461ca9108",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "archive/energy_history.csv": {
@@ -22,31 +22,31 @@
       "updated_by": "automation_refresh"
     },
     "archive/fred_history.csv": {
-      "bytes": 22070,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "f6d7c35bfa831f45760d2be63c48f67d125bdae0af46d2297e50bcd4ae885c4f",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 22828,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "e4887e4e642363018d5f6f87beef2aade565ee3f78d4e6e28e3652ef97ccb096",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "archive/macro_history.csv": {
-      "bytes": 55827,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "a316c39db9e1e2edad864b2b716c4a30a653a8f9ae23f61b4360f93a0f6d67b0",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 56556,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "ffb964a7d6b3238b9e53ef28c05727a179b58268e2476be2030ecd6dd2dda0fd",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "archive/sector_history.csv": {
-      "bytes": 89774,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "fdbc152717e6599ce368e9b15ff02f2a238719fbcfe8943decae1aa1ff214956",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 92594,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "cda0a8133974e4dfacafe9352827501c4e8e9e82c566c8beef9bdf2ed9c4b3a6",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "archive/yf_history.csv": {
-      "bytes": 3795681,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "319cb65d64d4533b570e2d7fc2b7f772c88d2586811c089f0f50a624bac264a6",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 3909370,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "dee9aaa9b5bcc1570ad07b969cec56434318c1606961d88155dd06be7937595f",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/adoption/raw/census/National_2026-07-31.xlsx": {
@@ -113,10 +113,10 @@
       "updated_by": "v7.2.0_bootstrap"
     },
     "data/borrower_strain_fundamentals_history.csv": {
-      "bytes": 116525,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "7b4eed9baefac668149d913fd1129ad09b422464172a58a1e06070f0e4900960",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 120394,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "64bca2a75d715948e60dab72b6c5506a244ced453c7b8ddcf0c390fe9b9d6a9f",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/borrower_strain_history.csv": {
@@ -154,6 +154,13 @@
       "updated_at_utc": "2026-09-16T07:17:48+00:00",
       "updated_by": "automation_refresh"
     },
+    "data/canonical/observations/2026/09/1aed43d8414d3ff24261a977.parquet": {
+      "bytes": 9864,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "3d2c726b5201f3bd03caa9d70150bf072e641df2bf9b1c6ed99dc095f15ffa88",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
+      "updated_by": "automation_refresh"
+    },
     "data/canonical/observations/2026/09/209cf7d474c78b770e0a5769.parquet": {
       "bytes": 9866,
       "run_id": "20260916T070540Z_ef6db109",
@@ -173,6 +180,13 @@
       "run_id": "20260916T070540Z_ef6db109",
       "sha256": "517612e02793b889e7656869f1a0982cdeba044314d5c80bc026475237a52258",
       "updated_at_utc": "2026-09-16T07:17:48+00:00",
+      "updated_by": "automation_refresh"
+    },
+    "data/canonical/snapshots/2026/09/1aed43d8414d3ff24261a977.parquet": {
+      "bytes": 16385,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "5f3855fefbcfd02948275eb914933329c4ab8ee638f7ba5e6e86ae101e9f1517",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/canonical/snapshots/2026/09/209cf7d474c78b770e0a5769.parquet": {
@@ -233,9 +247,9 @@
     },
     "data/commercialization/commercialization_ledger.csv": {
       "bytes": 5843,
-      "run_id": "20260916T013032Z_744e3a09",
-      "sha256": "1e41d627f17d9d4d3aeba9a1bea04f16ca03cae91c9ab695216d8bd696abb9e5",
-      "updated_at_utc": "2026-09-16T01:44:15+00:00",
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "942a1e02ed0de35348de4fb6f0dfcb3e2be508317257d7f8bb5c3f544f4ef73c",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/commercialization/source_manifest.csv": {
@@ -275,9 +289,9 @@
     },
     "data/connectivity/ixp_snapshot.csv": {
       "bytes": 49272,
-      "run_id": "20260916T013032Z_744e3a09",
-      "sha256": "8b8f1833e33de5ec26e596201e3bd1da8d41734d87dc81d0b015eb520ef8365a",
-      "updated_at_utc": "2026-09-16T01:44:15+00:00",
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "aa8aa8f3de5ee0efc76db362a07ac6e4312d1c4c3804d56871fc3eab87a02adb",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/connectivity/middle_mile_awards.csv": {
@@ -296,9 +310,9 @@
     },
     "data/connectivity/national_summary.csv": {
       "bytes": 770,
-      "run_id": "20260916T013032Z_744e3a09",
-      "sha256": "8153ad953e4d0a223f84766ba14a0f6560e07cf65d6817b2990214c74fe9bdbe",
-      "updated_at_utc": "2026-09-16T01:44:15+00:00",
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "91644119eeb1a6ae0e26d61d1f2b66a647bcd3602118253a82d53dd35ab56817",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/connectivity/source_manifest.csv": {
@@ -323,17 +337,17 @@
       "updated_by": "v7.2.0_bootstrap"
     },
     "data/current_context_candidate_audit.csv": {
-      "bytes": 2561989,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "bc44971a4fbad8073c9e2547c40e3dbcea5e1ec0a247d14c05f7620c841f86f4",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 2760526,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "7b201343a300e97303b5c4f0685648dbaf1126fed9335e4f3513ce1628bf0756",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/current_context_refresh_manifest.json": {
-      "bytes": 36471,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "e12d6490d3f9924b86f16a10662341f432de964d1233c175b5fb5410d40d7724",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 42348,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "0cf0fb1880a96e92fdfd4b66eb1529be01b9aa83bc0f11e9bac8186dd63a53c9",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/data_center_construction_history.csv": {
@@ -498,17 +512,17 @@
       "updated_by": "automation_refresh"
     },
     "data/energy_wholesale_prices.csv": {
-      "bytes": 181707,
-      "run_id": "20260915T040249Z_cfddec0b",
-      "sha256": "19f6030de15eec443e60cc89aefffcf14a48fd185bec1c6488978f58103564d2",
-      "updated_at_utc": "2026-09-15T04:16:43+00:00",
+      "bytes": 185216,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "a761c556ff1b92900ac010a59067da92ef42eaf59df1d3fd2fa870da3b39a880",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/finance/nfci_anfci_history.csv": {
-      "bytes": 70263,
-      "run_id": "20260915T040249Z_cfddec0b",
-      "sha256": "b456f1789062df2fe48a960b9e295977e16493a1035dc5ec7e96f74d0cc19984",
-      "updated_at_utc": "2026-09-15T04:16:43+00:00",
+      "bytes": 70276,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "0cded497f76df3293de6dba2963dbabbf0d0b7c95e4a55d5eef942db1f866840",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/finance/raw/nyfed/market_cmdi_2026-07-29.xlsx": {
@@ -814,9 +828,9 @@
     },
     "data/refresh_graph_state.json": {
       "bytes": 7706,
-      "run_id": "20260916T164441Z_61618bb9",
-      "sha256": "5c4a0358f90065cbb98c5d8df0e2ec52e30fa02b5337a13c7f8e98aea5f2c1ff",
-      "updated_at_utc": "2026-09-16T16:51:31+00:00",
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "61fa8264112d6a2501c185dd59d7192d9ae686985c1485cc3892eaeb1b8d44f5",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/v650_public_data_manifest.csv": {
@@ -981,10 +995,10 @@
       "updated_by": "automation_refresh"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 27000,
-      "run_id": "20260916T070540Z_ef6db109",
-      "sha256": "4dd61cda123b8c7006e5ca3d6726fd610c4894e153a3e8ca234068711ae0c99c",
-      "updated_at_utc": "2026-09-16T07:17:49+00:00",
+      "bytes": 37240,
+      "run_id": "20260917T165130Z_64b16de0",
+      "sha256": "7761155e66b69f9d36a901f76ffcb4923060e3851d0ee8f219fcef82eaa59ca5",
+      "updated_at_utc": "2026-09-17T17:03:34+00:00",
       "updated_by": "automation_refresh"
     },
     "data/workforce_ces_history.csv": {
@@ -1016,8 +1030,8 @@
       "updated_by": "v7.2.0_bootstrap"
     }
   },
-  "generated_at_utc": "2026-09-16T16:51:31+00:00",
+  "generated_at_utc": "2026-09-17T17:03:34+00:00",
   "manifest_version": "1.0",
-  "run_id": "20260916T164441Z_61618bb9",
+  "run_id": "20260917T165130Z_64b16de0",
   "source": "automation_refresh"
 }
