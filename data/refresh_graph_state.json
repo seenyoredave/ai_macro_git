@@ -1,72 +1,72 @@
 {
   "graph_version": "1.0.0",
-  "last_canonical_snapshot_id": "1aed43d8414d3ff24261a977",
-  "last_observation_date": "2026-09-17",
-  "last_run_id": "20260917T165130Z_64b16de0",
+  "last_canonical_snapshot_id": "c9e7bfee0c7770deedcc05ee",
+  "last_observation_date": "2026-09-18",
+  "last_run_id": "20260918T161910Z_9b6fc3a0",
   "nodes": {
     "adoption": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
       "last_output_signature": "b206819d6fa39f9372cff25c",
       "last_status": "partial"
     },
     "commercialization": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_changed_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "Parsed 2 of 3 required metrics; missing: Paying business users; Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
-      "last_output_signature": "75fbc6596c6fe10046b6fcfc",
+      "last_output_signature": "cc47803a1cf074622935c209",
       "last_status": "partial"
     },
     "compute": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
-      "last_output_signature": "11fce2215af8c9bf8df7939d",
+      "last_output_signature": "65289dcd5c56730964228644",
       "last_status": "failed"
     },
     "connectivity": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_changed_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)'))); ValueError: TeleGeography catalog refresh returned only 0 candidate systems; SSLError: HTTPSConnectionPool(host='broadbandusa.ntia.gov', port=443): Max retries exceeded with url: /news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))",
-      "last_output_signature": "08e5ea9aee7ff490c738c9ba",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
+      "last_output_signature": "34766710a4d585cdb30e2367",
       "last_status": "partial"
     },
     "construction": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-09-16T07:05:42.687453+00:00",
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "",
       "last_output_signature": "13afac01f3b19d4456b9adac",
       "last_status": "success",
-      "last_success_at_utc": "2026-09-16T07:05:42.687453+00:00",
+      "last_success_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_success_trigger": ""
     },
     "current_context": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_changed_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "HTTPError: HTTP Error 403: Forbidden",
-      "last_output_signature": "14309acb90b9ef674b7f7c4b",
+      "last_output_signature": "7e5bd5b931e96fa452d67663",
       "last_status": "partial"
     },
     "data_centers": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-09-16T07:05:42.687453+00:00",
-      "last_changed_at_utc": "2026-09-16T16:44:43.630499+00:00",
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "",
-      "last_output_signature": "e6335da7434c919b0db40d39",
+      "last_output_signature": "08532bdbacb15897a0f64cb1",
       "last_status": "success",
-      "last_success_at_utc": "2026-09-16T07:05:42.687453+00:00",
+      "last_success_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_success_trigger": ""
     },
     "economic_outcomes": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
       "last_output_signature": "90668ca504694e522b51c244",
@@ -74,27 +74,27 @@
     },
     "edgar": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_changed_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "",
-      "last_output_signature": "0220980dfa51b7cfefa3944d",
+      "last_output_signature": "22ff9711512dd0014972a586",
       "last_status": "success",
-      "last_success_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_success_trigger": "2026-09-17"
+      "last_success_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_success_trigger": "2026-09-18"
     },
     "fred": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_changed_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "",
-      "last_output_signature": "41dfdd628f9e4b2af7edeb30",
+      "last_output_signature": "131d7b93b134e49524f2ddb3",
       "last_status": "success",
-      "last_success_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_success_trigger": "2026-09-17"
+      "last_success_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_success_trigger": "2026-09-18"
     },
     "grid_storage": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues; interconnection_queue: HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues",
       "last_output_signature": "ed632d5f9066983c12e97833",
@@ -111,8 +111,8 @@
       "last_success_trigger": "2026-08-26"
     },
     "power_supply": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "FRED: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=25); interconnection_queue: HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues",
       "last_output_signature": "a78eebf35a3c1c55405ccffe",
@@ -120,17 +120,17 @@
     },
     "water": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-09-16T16:44:43.630499+00:00",
-      "last_changed_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "",
-      "last_output_signature": "20093d6f107e1827622cafb6",
+      "last_output_signature": "93a9640d99c844eeb5817da5",
       "last_status": "success",
-      "last_success_at_utc": "2026-09-16T16:44:43.630499+00:00",
+      "last_success_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_success_trigger": ""
     },
     "workforce": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
       "last_output_signature": "dcaf129f935d6547c1651b83",
@@ -138,14 +138,14 @@
     },
     "yfinance": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_changed_at_utc": "2026-09-17T16:51:32.133804+00:00",
+      "last_attempt_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_changed_at_utc": "2026-09-18T16:19:11.201550+00:00",
       "last_error": "",
-      "last_output_signature": "3f71a0deffb38bccfa8a76f3",
+      "last_output_signature": "cc7fc415e42ab04a6d7257a3",
       "last_status": "success",
-      "last_success_at_utc": "2026-09-17T16:51:32.133804+00:00",
-      "last_success_trigger": "2026-09-17"
+      "last_success_at_utc": "2026-09-18T16:19:11.201550+00:00",
+      "last_success_trigger": "2026-09-18"
     }
   },
-  "updated_at_utc": "2026-09-17T16:51:32.133804+00:00"
+  "updated_at_utc": "2026-09-18T16:19:11.201550+00:00"
 }
