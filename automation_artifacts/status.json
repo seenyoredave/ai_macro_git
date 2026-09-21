@@ -2,7 +2,7 @@
   "auto_publish": true,
   "automation_enabled": true,
   "canonical_schema_version": "1.0.0",
-  "canonical_snapshot_id": "c9e7bfee0c7770deedcc05ee",
+  "canonical_snapshot_id": "0829261ef7e2215db8828444",
   "changed_paths": [
     "archive/benchmark_history.csv",
     "archive/edgar_history.csv",
@@ -20,6 +20,7 @@
     "data/connectivity/national_summary.csv",
     "data/current_context_candidate_audit.csv",
     "data/current_context_refresh_manifest.json",
+    "data/energy_series_history.csv",
     "data/infrastructure/source_manifest.csv",
     "data/refresh_graph_state.json",
     "data/release_manifest.json",
@@ -34,14 +35,14 @@
     "data/water/source_manifest.csv",
     "data/weekly_context_events.csv",
     "openai_artifacts/current.json",
-    "data/canonical/observations/2026/09/c9e7bfee0c7770deedcc05ee.parquet",
-    "data/canonical/snapshots/2026/09/c9e7bfee0c7770deedcc05ee.parquet",
-    "openai_artifacts/attempts/20260918T163015357120Z_9383df98_b72d1084.json"
+    "data/canonical/observations/2026/09/0829261ef7e2215db8828444.parquet",
+    "data/canonical/snapshots/2026/09/0829261ef7e2215db8828444.parquet",
+    "openai_artifacts/attempts/20260921T182415097385Z_b8a0820a_cf3ff07f.json"
   ],
-  "current_context_snapshot_id": "d098753b99077ad9",
+  "current_context_snapshot_id": "d8e6f7002d990fac",
   "errors": [],
-  "evidence_snapshot_id": "9383df98d954078f91f6eebd",
-  "finished_at_utc": "2026-09-18T16:34:43.643948+00:00",
+  "evidence_snapshot_id": "b8a0820a8eac077be92c3747",
+  "finished_at_utc": "2026-09-21T18:26:19.436214+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
@@ -54,17 +55,15 @@
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 663.137,
+      "elapsed_sec": 772.19,
       "refresh_graph": {
         "changed_nodes": [
           "compute",
-          "data_centers",
           "connectivity",
+          "power_supply",
           "water",
           "commercialization",
           "yfinance",
-          "edgar",
-          "fred",
           "current_context"
         ],
         "failed_nodes": [
@@ -78,7 +77,7 @@
           "adoption": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 15.231,
+            "elapsed_sec": 19.363,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
             "first_signature": false,
             "output_signature": "b206819d6fa39f9372cff25c",
@@ -89,10 +88,10 @@
           "commercialization": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 1.794,
+            "elapsed_sec": 1.466,
             "error": "Parsed 2 of 3 required metrics; missing: Paying business users; Parsed 0 of 2 required metrics; missing: Annual revenue run rate; Annual revenue run-rate growth",
             "first_signature": false,
-            "output_signature": "cc47803a1cf074622935c209",
+            "output_signature": "ae7920d804db62844bafaeab",
             "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
@@ -100,10 +99,10 @@
           "compute": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 36.992,
+            "elapsed_sec": 47.672,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
             "first_signature": false,
-            "output_signature": "65289dcd5c56730964228644",
+            "output_signature": "13c37757af4390aaf0c4eabe",
             "reason": "retry_after_failed",
             "refresh": true,
             "status": "failed"
@@ -111,10 +110,10 @@
           "connectivity": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 10.979,
+            "elapsed_sec": 15.562,
             "error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
             "first_signature": false,
-            "output_signature": "34766710a4d585cdb30e2367",
+            "output_signature": "734257cd509dac40d2cda114",
             "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
@@ -122,7 +121,7 @@
           "construction": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 36.992,
+            "elapsed_sec": 47.672,
             "error": "",
             "first_signature": false,
             "output_signature": "13afac01f3b19d4456b9adac",
@@ -133,18 +132,18 @@
           "current_context": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 23.562,
+            "elapsed_sec": 62.982,
             "error": "HTTPError: HTTP Error 403: Forbidden",
             "first_signature": false,
-            "output_signature": "7e5bd5b931e96fa452d67663",
+            "output_signature": "fb80c498c22e42bd17b246ed",
             "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "data_centers": {
             "attempted_live": true,
-            "changed": true,
-            "elapsed_sec": 36.992,
+            "changed": false,
+            "elapsed_sec": 47.672,
             "error": "",
             "first_signature": false,
             "output_signature": "08532bdbacb15897a0f64cb1",
@@ -155,7 +154,7 @@
           "economic_outcomes": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 60.254,
+            "elapsed_sec": 60.293,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
             "first_signature": false,
             "output_signature": "90668ca504694e522b51c244",
@@ -165,8 +164,8 @@
           },
           "edgar": {
             "attempted_live": true,
-            "changed": true,
-            "elapsed_sec": 128.147,
+            "changed": false,
+            "elapsed_sec": 168.981,
             "error": "",
             "first_signature": false,
             "output_signature": "22ff9711512dd0014972a586",
@@ -176,8 +175,8 @@
           },
           "fred": {
             "attempted_live": true,
-            "changed": true,
-            "elapsed_sec": 5.567,
+            "changed": false,
+            "elapsed_sec": 8.29,
             "error": "",
             "first_signature": false,
             "output_signature": "131d7b93b134e49524f2ddb3",
@@ -188,7 +187,7 @@
           "grid_storage": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 78.109,
+            "elapsed_sec": 80.51,
             "error": "HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues; interconnection_queue: HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues",
             "first_signature": false,
             "output_signature": "ed632d5f9066983c12e97833",
@@ -199,7 +198,7 @@
           "nyfed": {
             "attempted_live": false,
             "changed": false,
-            "elapsed_sec": 0.008,
+            "elapsed_sec": 0.011,
             "error": "",
             "first_signature": false,
             "output_signature": "7b9ebaac4391f7d58778653c",
@@ -209,11 +208,11 @@
           },
           "power_supply": {
             "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 78.109,
+            "changed": true,
+            "elapsed_sec": 80.51,
             "error": "FRED: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=25); interconnection_queue: HTTPError: 403 Client Error: Forbidden for url: https://emp.lbl.gov/queues",
             "first_signature": false,
-            "output_signature": "a78eebf35a3c1c55405ccffe",
+            "output_signature": "ec7695ca7ff5c2d193f57a70",
             "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
@@ -221,10 +220,10 @@
           "water": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 30.904,
+            "elapsed_sec": 35.093,
             "error": "",
             "first_signature": false,
-            "output_signature": "93a9640d99c844eeb5817da5",
+            "output_signature": "ee10b643ff13b0c3b0c96df9",
             "reason": "cadence_elapsed",
             "refresh": true,
             "status": "success"
@@ -232,7 +231,7 @@
           "workforce": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 48.296,
+            "elapsed_sec": 48.3,
             "error": "ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)",
             "first_signature": false,
             "output_signature": "dcaf129f935d6547c1651b83",
@@ -243,10 +242,10 @@
           "yfinance": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 176.407,
+            "elapsed_sec": 189.713,
             "error": "",
             "first_signature": false,
-            "output_signature": "cc7fc415e42ab04a6d7257a3",
+            "output_signature": "4db65f609909722ca1fece9b",
             "reason": "release_trigger_changed",
             "refresh": true,
             "status": "success"
@@ -284,10 +283,10 @@
       },
       "status": "passed",
       "subphases": {
-        "assemble + persist": 5.676,
-        "current context": 23.564,
-        "domain sources": 448.755,
-        "market sources": 185.141
+        "assemble + persist": 8.948,
+        "current context": 62.985,
+        "domain sources": 497.342,
+        "market sources": 202.914
       }
     },
     "evidence": {
@@ -300,48 +299,57 @@
           "finance",
           "data_center",
           "grid_storage",
+          "adoption",
           "economic_impact"
         ],
         "current_event_ids": [
           "auto-2026-09-15-61f85a46f993",
-          "auto-2026-09-13-82b9b3bfee9b",
           "auto-2026-09-16-089033b7f4df",
-          "auto-2026-09-14-631ffe75b015",
+          "auto-2026-09-16-8511f942661f",
           "auto-2026-09-15-eb09bf00f92d",
           "auto-2026-09-15-1a5bf2446194",
-          "auto-2026-09-14-85801fa80dd7",
+          "auto-2026-09-16-fb3b755020c9",
+          "auto-2026-09-18-61a4a30eb6dc",
           "auto-2026-09-16-8b62d6980a3e",
-          "auto-2026-09-11-27211826c95a",
+          "auto-2026-09-21-b29cc7ddb408",
           "auto-2026-09-16-68cf9d5c0864",
+          "auto-2026-09-18-a595d54ba5b7",
           "auto-2026-09-15-147f6eab6958",
           "auto-2026-09-18-e3e728303381",
           "auto-2026-09-16-b216308133cb",
-          "auto-2026-09-11-e414e75f96f7",
-          "auto-2026-09-13-ec19a05d9797"
+          "auto-2026-09-21-2da9589b8445"
         ],
         "material_domains": [
           "market"
         ],
         "new_event_domains": [
+          "market",
           "finance",
           "data_center",
           "grid_storage",
+          "adoption",
           "economic_impact"
         ],
         "new_event_ids": [
           "auto-2026-09-16-089033b7f4df",
+          "auto-2026-09-16-8511f942661f",
+          "auto-2026-09-16-fb3b755020c9",
+          "auto-2026-09-18-61a4a30eb6dc",
           "auto-2026-09-16-8b62d6980a3e",
+          "auto-2026-09-21-b29cc7ddb408",
           "auto-2026-09-16-68cf9d5c0864",
+          "auto-2026-09-18-a595d54ba5b7",
           "auto-2026-09-18-e3e728303381",
-          "auto-2026-09-16-b216308133cb"
+          "auto-2026-09-16-b216308133cb",
+          "auto-2026-09-21-2da9589b8445"
         ],
         "reason": "material_findings+new_developments",
         "refresh_needed": true
       },
-      "elapsed_sec": 0.085,
+      "elapsed_sec": 0.115,
       "materiality": {
         "baseline_available": true,
-        "change_count": 16,
+        "change_count": 17,
         "changes": [
           {
             "domain": "finance",
@@ -368,67 +376,77 @@
             "fact_id": "market.aei",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 30.940478600158,
+            "new_value": 33.03258444370261,
             "old_value": 32.236617114601536,
-            "percentage_point_change": 1.3000000000000043,
-            "relative_change": 0.04037267080745355
+            "percentage_point_change": 0.7999999999999972,
+            "relative_change": 0.024844720496894318
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.crowded_sector_count",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 3.0,
+            "old_value": 2.0,
+            "percentage_point_change": null,
+            "relative_change": 0.5
           },
           {
             "domain": "market",
             "fact_id": "market.effective_firms",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 18.43642537252393,
+            "new_value": 18.655947402355352,
             "old_value": 18.504006097751503,
             "percentage_point_change": null,
-            "relative_change": 0.0036522213011907596
+            "relative_change": 0.008211265376869482
           },
           {
             "domain": "market",
             "fact_id": "market.equal_weight_return",
             "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.3045292224481937,
+            "material": true,
+            "new_value": 0.3502939836792315,
             "old_value": 0.3242557206268477,
-            "percentage_point_change": 1.8999999999999986,
-            "relative_change": 0.05864197530864194
+            "percentage_point_change": 2.6000000000000014,
+            "relative_change": 0.08024691358024696
           },
           {
             "domain": "market",
             "fact_id": "market.median_return",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.13855008693855964,
+            "new_value": 0.1579957400448211,
             "old_value": 0.1480741240944501,
-            "percentage_point_change": 0.9000000000000004,
-            "relative_change": 0.060810810810810835
+            "percentage_point_change": 1.0,
+            "relative_change": 0.06756756756756756
           },
           {
             "domain": "market",
             "fact_id": "market.positive_breadth",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.6176470588235294,
+            "new_value": 0.6274509803921569,
             "old_value": 0.6127450980392157,
-            "percentage_point_change": 0.5,
-            "relative_change": 0.008156606851549756
+            "percentage_point_change": 1.4000000000000057,
+            "relative_change": 0.02283849918433941
           },
           {
             "domain": "market",
             "fact_id": "market.pressure",
             "kind": "numeric_change",
-            "material": false,
-            "new_value": 49.84534436828538,
+            "material": true,
+            "new_value": 52.643141562220336,
             "old_value": 50.03023003088755,
-            "percentage_point_change": 0.20000000000000284,
-            "relative_change": 0.0040000000000000565
+            "percentage_point_change": 2.6000000000000014,
+            "relative_change": 0.052000000000000025
           },
           {
             "domain": "market",
             "fact_id": "market.strong_sector_count",
             "kind": "numeric_change",
             "material": true,
-            "new_value": 1.0,
+            "new_value": 3.0,
             "old_value": 2.0,
             "percentage_point_change": null,
             "relative_change": 0.5
@@ -438,10 +456,10 @@
             "fact_id": "market.top_10_share",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.6470265062175307,
+            "new_value": 0.6445971845498129,
             "old_value": 0.6451191924598726,
-            "percentage_point_change": 0.20000000000000284,
-            "relative_change": 0.003100775193798494
+            "percentage_point_change": 0.0,
+            "relative_change": 0.0
           },
           {
             "domain": "water",
@@ -504,12 +522,12 @@
             "relative_change": 0.02822164866430309
           }
         ],
-        "current_snapshot_id": "9383df98d954078f91f6eebd",
+        "current_snapshot_id": "b8a0820a8eac077be92c3747",
         "decision": "generate_material_change",
         "exact_match": false,
-        "immaterial_change_count": 15,
+        "immaterial_change_count": 13,
         "material": true,
-        "material_change_count": 1,
+        "material_change_count": 4,
         "percentage_point_threshold": 2.0,
         "previous_snapshot_id": "30e758d34db9143ccc98ae7c",
         "relative_change_threshold": 0.1,
@@ -519,20 +537,26 @@
     },
     "openai": {
       "api_status": "completed",
-      "attempt_id": "20260918T163015357120Z_9383df98_b72d1084",
-      "elapsed_sec": 267.929,
+      "attempt_id": "20260921T182415097385Z_b8a0820a_cf3ff07f",
+      "elapsed_sec": 124.144,
       "generation_status": "rejected_hard_validation",
       "reason": "editorial validation returned rejected_hard_validation",
       "stage": "editorial_synthesis",
       "status": "retained_prior",
       "validation": {
-        "checked_passages": 13,
+        "checked_passages": 14,
         "diagnostics": [
           {
             "message": "Semicolon present; review for clause stacking.",
             "reason": "semicolon",
-            "scope": "macro.paragraphs[1]",
-            "text": "At the grid interface, proposed capacity remains much larger than capacity in advanced stages. The active queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Only 13% of the 2000\u20132020 queue cohort reached operation; that result is a caution, not a forecast for current projects. Microsoft is reportedly preserving its ability to challenge a decision on data-center transmission costs, a current example of transmission pricing being contested alongside the physical interconnection challenge."
+            "scope": "finance.body",
+            "text": "The Federal Reserve raised its target range by a quarter point to 3.75%\u20134%. At the same time, banks reportedly provided a $22 billion chip loan to a Blackstone-Alphabet AI cloud venture, while Oracle\u2019s $18 billion data-center debt was reported under pressure. The NFCI is -0.56, with a three-month change of -0.06; borrower strain is 26.0 and lender strain is -13.5. The opposite-signed strain readings and project-level reports do not indicate a uniform funding market: one very large package was assembled as another came under pressure."
+          },
+          {
+            "message": "Semicolon present; review for clause stacking.",
+            "reason": "semicolon",
+            "scope": "macro.paragraphs[0]",
+            "text": "Very large AI-related infrastructure financings are still being assembled, but the funding backdrop is not uniform. The Federal Reserve raised its target range by a quarter point to 3.75%\u20134%. Banks nevertheless reportedly provided a $22 billion chip loan to a Blackstone-Alphabet AI cloud venture, while Oracle\u2019s $18 billion data-center debt was reported under pressure. One transaction shows that capital remains available at scale; the other cautions against extending that conclusion to every project."
           }
         ],
         "hard_errors": [
@@ -549,7 +573,7 @@
             "reason": "unsupported_numeric_tokens"
           },
           {
-            "label": "macro.paragraphs[2]",
+            "label": "macro.paragraphs[0]",
             "message": "Passage contains numbers not present in its cited support.",
             "numeric_tokens": [
               "3.75"
@@ -570,20 +594,20 @@
       "transaction_boundary": "git_commit"
     },
     "publication_lease": {
-      "expires_at": "2026-09-19T16:34:42.551366+00:00",
-      "published_at": "2026-09-18T16:34:42.551366+00:00",
+      "expires_at": "2026-09-22T18:26:18.182850+00:00",
+      "published_at": "2026-09-21T18:26:18.182850+00:00",
       "reason": "prior_publishable_read_retained_after_editorial_failure",
       "status": "renewed"
     }
   },
   "publish_ready": true,
   "result": "publish_ready",
-  "run_id": "20260918T161910Z_9b6fc3a0",
+  "run_id": "20260921T181120Z_9d6a6cd6",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-09-18T16:19:10.165909+00:00",
+  "started_at_utc": "2026-09-21T18:11:20.133303+00:00",
   "trigger": "schedule",
   "warnings": [
     "infrastructure: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=30)",
