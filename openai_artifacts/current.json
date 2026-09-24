@@ -1600,13 +1600,53 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "fe8fe97305d7bae2ab693a82",
-    "expires_at": "2026-09-24T17:01:49.266317+00:00",
+    "current_evidence_snapshot_id": "0aa01bd4eef5872984ba059f",
+    "expires_at": "2026-09-25T17:16:21.294211+00:00",
     "lease_hours": 24,
     "materiality": {
       "baseline_available": true,
-      "change_count": 18,
+      "change_count": 21,
       "changes": [
+        {
+          "domain": "adoption",
+          "fact_id": "adoption.current_business_use_pct",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 23.8,
+          "old_value": 23.2,
+          "percentage_point_change": 0.6000000000000014,
+          "relative_change": 0.025862068965517303
+        },
+        {
+          "domain": "adoption",
+          "fact_id": "adoption.expected_adoption_gap_ppts",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 3.8000000000000007,
+          "old_value": 4.100000000000001,
+          "percentage_point_change": 0.2999999999999998,
+          "relative_change": 0.07317073170731704
+        },
+        {
+          "domain": "adoption",
+          "fact_id": "adoption.expected_business_use_pct",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 27.6,
+          "old_value": 27.3,
+          "percentage_point_change": 0.3000000000000007,
+          "relative_change": 0.010989010989011014
+        },
+        {
+          "domain": "adoption",
+          "fact_id": "adoption.leading_sector_use_pct",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 49.0,
+          "old_value": 43.5,
+          "percentage_point_change": 5.5,
+          "relative_change": 0.12643678160919541
+        },
         {
           "domain": "connectivity",
           "fact_id": "connectivity.interconnection_facilities_or_floor",
@@ -1642,10 +1682,10 @@
           "fact_id": "market.aei",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 32.543717550214524,
+          "new_value": 31.7291909340383,
           "old_value": 32.236617114601536,
-          "percentage_point_change": 0.29999999999999716,
-          "relative_change": 0.009316770186335315
+          "percentage_point_change": 0.5000000000000036,
+          "relative_change": 0.015527950310559115
         },
         {
           "domain": "market",
@@ -1662,30 +1702,30 @@
           "fact_id": "market.effective_firms",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 18.882402195726886,
+          "new_value": 18.877289470311595,
           "old_value": 18.504006097751503,
           "percentage_point_change": null,
-          "relative_change": 0.020449414898396693
+          "relative_change": 0.020173111194848294
         },
         {
           "domain": "market",
           "fact_id": "market.equal_weight_return",
           "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.3351178339209215,
+          "material": true,
+          "new_value": 0.3509695828319253,
           "old_value": 0.3242557206268477,
-          "percentage_point_change": 1.1000000000000014,
-          "relative_change": 0.033950617283950664
+          "percentage_point_change": 2.700000000000003,
+          "relative_change": 0.08333333333333343
         },
         {
           "domain": "market",
           "fact_id": "market.median_return",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 0.14169791625659256,
+          "new_value": 0.15487316605297752,
           "old_value": 0.1480741240944501,
-          "percentage_point_change": 0.6000000000000014,
-          "relative_change": 0.04054054054054063
+          "percentage_point_change": 0.6999999999999993,
+          "relative_change": 0.047297297297297244
         },
         {
           "domain": "market",
@@ -1702,27 +1742,17 @@
           "fact_id": "market.pressure",
           "kind": "numeric_change",
           "material": true,
-          "new_value": 51.97569354742912,
+          "new_value": 52.2027874930363,
           "old_value": 50.03023003088755,
-          "percentage_point_change": 2.0,
-          "relative_change": 0.04
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.strong_sector_count",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 3.0,
-          "old_value": 2.0,
-          "percentage_point_change": null,
-          "relative_change": 0.5
+          "percentage_point_change": 2.200000000000003,
+          "relative_change": 0.04400000000000006
         },
         {
           "domain": "market",
           "fact_id": "market.top_10_share",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 0.6418158365338725,
+          "new_value": 0.6423842348804686,
           "old_value": 0.6451191924598726,
           "percentage_point_change": 0.29999999999999716,
           "relative_change": 0.00465116279069763
@@ -1732,75 +1762,75 @@
           "fact_id": "water.campuses_in_counties_with_25pct_d2_area",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 254.0,
+          "new_value": 261.0,
           "old_value": 247.0,
           "percentage_point_change": null,
-          "relative_change": 0.02834008097165992
+          "relative_change": 0.05668016194331984
         },
         {
           "domain": "water",
           "fact_id": "water.campuses_in_counties_with_25pct_d2_share_pct",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 0.17712691771269176,
+          "new_value": 0.18200836820083682,
           "old_value": 0.17224546722454673,
-          "percentage_point_change": 0.5,
-          "relative_change": 0.029069767441860465
+          "percentage_point_change": 1.0,
+          "relative_change": 0.05813953488372093
         },
         {
           "domain": "water",
           "fact_id": "water.campuses_in_counties_with_d2_area",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 284.0,
+          "new_value": 302.0,
           "old_value": 275.0,
           "percentage_point_change": null,
-          "relative_change": 0.03272727272727273
+          "relative_change": 0.09818181818181818
         },
         {
           "domain": "water",
           "fact_id": "water.campuses_in_counties_with_d2_share_pct",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 0.19804741980474197,
+          "new_value": 0.2105997210599721,
           "old_value": 0.19177126917712692,
-          "percentage_point_change": 0.6000000000000014,
-          "relative_change": 0.031250000000000076
+          "percentage_point_change": 1.9000000000000021,
+          "relative_change": 0.09895833333333345
         },
         {
           "domain": "water",
           "fact_id": "water.published_capacity_in_counties_with_25pct_d2_gw",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 71.91028,
+          "new_value": 69.96028,
           "old_value": 70.4268,
           "percentage_point_change": null,
-          "relative_change": 0.021064140355660062
+          "relative_change": 0.006624182839487279
         },
         {
           "domain": "water",
           "fact_id": "water.published_capacity_in_counties_with_d2_gw",
           "kind": "numeric_change",
-          "material": false,
-          "new_value": 77.54058,
+          "material": true,
+          "new_value": 88.72608,
           "old_value": 75.41232000000001,
           "percentage_point_change": null,
-          "relative_change": 0.02822164866430309
+          "relative_change": 0.1765462195036565
         }
       ],
-      "current_snapshot_id": "fe8fe97305d7bae2ab693a82",
+      "current_snapshot_id": "0aa01bd4eef5872984ba059f",
       "decision": "generate_material_change",
       "exact_match": false,
-      "immaterial_change_count": 15,
+      "immaterial_change_count": 16,
       "material": true,
-      "material_change_count": 3,
+      "material_change_count": 5,
       "percentage_point_threshold": 2.0,
       "previous_snapshot_id": "30e758d34db9143ccc98ae7c",
       "relative_change_threshold": 0.1,
       "version": "1.2.0"
     },
-    "published_at": "2026-09-23T17:01:49.266317+00:00",
-    "renewal_count": 6,
+    "published_at": "2026-09-24T17:16:21.294211+00:00",
+    "renewal_count": 7,
     "source": "automation_generation_fallback"
   },
   "raw_responses": {
