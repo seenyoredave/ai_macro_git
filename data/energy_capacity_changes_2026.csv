@@ -47,6 +47,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,1.0,66087.0,Quail Ranch Solar and Battery Energy Storage System,IPP,Quail Ranch Solar and BESS,NM,67204.0,QRBES,100.0,Batteries,MWH,BA,Addition,Battery storage,2026-01-01
 2026,1.0,67456.0,SMT Dallas III LLC,Commercial,SMT Dallas III BESS,TX,69367.0,SMTD3,10.0,Batteries,MWH,BA,Addition,Battery storage,2026-01-01
 2026,1.0,16609.0,San Diego Gas & Electric Co,Electric Utility,Santee BESS,CA,67118.0,1,10.0,Batteries,MWH,BA,Addition,Battery storage,2026-01-01
+2026,1.0,67939.0,"South River Phase 2, LLC",IPP,South River 2,NJ,70244.0,SOUR2,10.0,Batteries,MWH,BA,Addition,Battery storage,2026-01-01
 2026,1.0,60531.0,Standard Solar,IPP,Pennsville Landfill (CSG),NJ,69525.0,PNSVL,4.3,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-01-01
 2026,1.0,60531.0,Standard Solar,IPP,Pluma - Reynolds (CSG),NM,69557.0,REYNO,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-01-01
 2026,1.0,67870.0,Swire Coca-Cola,Commercial,Swire Coca-Cola Draper,UT,70112.0,11794,3.7,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-01-01
@@ -61,12 +62,12 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,2.0,67388.0,Grenergy USA LLC,IPP,BESS La Feria,TX,69296.0,LFBA1,10.0,Batteries,MWH,BA,Addition,Battery storage,2026-02-01
 2026,2.0,67530.0,"Heritage Energy Holdings, LLC",IPP,Lone Wolfe Phase One,TX,69580.0,LW1,1.1,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-02-01
 2026,2.0,9417.0,Interstate Power and Light Co,Electric Utility,Wever Solar (150MW),IA,67538.0,BESS1,99.0,Batteries,MWH,BA,Addition,Battery storage,2026-02-01
-2026,2.0,66817.0,"KDC Solar Madera, LLC",IPP,Ardagh Solar,CA,68427.0,1,10.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-02-01
 2026,2.0,13781.0,Northern States Power Co - Minnesota,Electric Utility,Wheaton,WI,4014.0,WHT08,223.1,Natural Gas Fired Combustion Turbine,NG,GT,Addition,Natural gas,2026-02-01
 2026,2.0,67494.0,On Energy Storage,IPP,Alamo Clean Energy Center (BESS),TX,69453.0,ALBA1,10.1,Batteries,MWH,BA,Addition,Battery storage,2026-02-01
 2026,2.0,67494.0,On Energy Storage,IPP,Fort Stockton Clean Energy Center (BESS),TX,69455.0,FSBA1,10.1,Batteries,MWH,BA,Addition,Battery storage,2026-02-01
 2026,2.0,67494.0,On Energy Storage,IPP,North Pecos Clean Energy Center (BESS),TX,69458.0,NPBA1,10.0,Batteries,MWH,BA,Addition,Battery storage,2026-02-01
 2026,2.0,58764.0,"Origis Energy USA, Inc",IPP,Wheatland,IN,68534.0,OEIN1,150.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-02-01
+2026,2.0,67854.0,"Percy Renewables 1, LLC",IPP,IL - Nexamp Percy (CSG),IL,70065.0,PERCY,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-02-01
 2026,2.0,67230.0,Platinum Energy Storage LLC,IPP,Platinum Storage,TX,69044.0,PLAT,300.0,Batteries,MWH,BA,Addition,Battery storage,2026-02-01
 2026,2.0,65869.0,Prologis Logistics Services Incorporated,IPP,Gourmet Lane - SLNNJ480,NJ,69434.0,NN480,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-02-01
 2026,2.0,65869.0,Prologis Logistics Services Incorporated,IPP,IPC 16 - SLCVA516,CA,68795.0,CV516,1.7,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-02-01
@@ -130,6 +131,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,3.0,16572.0,Salt River Project,Electric Utility,Copper Crossing Energy and Research Cent,AZ,58413.0,CXS01,16.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-03-01
 2026,3.0,16572.0,Salt River Project,Electric Utility,Copper Crossing Energy and Research Cent,AZ,58413.0,CXS02,16.4,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-03-01
 2026,3.0,16572.0,Salt River Project,Electric Utility,Copper Crossing Energy and Research Cent,AZ,58413.0,CXS03,18.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-03-01
+2026,3.0,17166.0,Sierra Pacific Power Co,Electric Utility,Sierra Solar Hybrid,NV,67978.0,SSES1,400.0,Batteries,MWH,BA,Addition,Battery storage,2026-03-01
 2026,3.0,60531.0,Standard Solar,IPP,Kieffer Funk,MD,69570.0,KIEFF,12.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-03-01
 2026,3.0,60531.0,Standard Solar,IPP,Sunrise Solar Lincoln DE (CSG),DE,69561.0,LINCO,4.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-03-01
 2026,3.0,65815.0,Sunraycer Assets I LLC,IPP,"Midpoint Solar, LLC",TX,66897.0,MIDPV,97.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-03-01
@@ -183,6 +185,8 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,4.0,67601.0,Granite Mountain BESS East LLC,IPP,Granite Mountain BESS East,UT,69679.0,GMEBA,80.0,Batteries,MWH,BA,Addition,Battery storage,2026-04-01
 2026,4.0,65076.0,"HEN Infrastructure, L.L.C.",IPP,Olney,TX,65832.0,OLNYD,9.9,Petroleum Liquids,DFO,IC,Addition,Other thermal,2026-04-01
 2026,4.0,66319.0,"Heartwood Solar, LLC",IPP,Heartwood Solar,MI,67677.0,HWS,150.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-04-01
+2026,4.0,67986.0,"IL Solar St Joseph Project1, LLC",IPP,IL-Forefront Ameren-St. Joseph 1,IL,70351.0,JOE01,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-04-01
+2026,4.0,67987.0,"IL Solar St Joseph Project2, LLC",IPP,IL-Forefront-Ameren-St. Joseph 2,IL,70352.0,JOE02,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-04-01
 2026,4.0,67231.0,"Iron Springs BESS, LLC",IPP,Iron Springs BESS,UT,69041.0,ISBA,80.0,Batteries,MWH,BA,Addition,Battery storage,2026-04-01
 2026,4.0,11269.0,Lower Colorado River Authority,Electric Utility,Timmerman Power Plant,TX,66335.0,G11,18.6,Natural Gas Internal Combustion Engine,NG,IC,Addition,Natural gas,2026-04-01
 2026,4.0,11269.0,Lower Colorado River Authority,Electric Utility,Timmerman Power Plant,TX,66335.0,G12,18.6,Natural Gas Internal Combustion Engine,NG,IC,Addition,Natural gas,2026-04-01
@@ -251,6 +255,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,5.0,65206.0,Eureka North Solar LLC,IPP,Eureka North Solar,NY,66042.0,63232,3.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
 2026,5.0,65205.0,Eureka South Solar LLC,IPP,Eureka South Solar,NY,66041.0,63231,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
 2026,5.0,22500.0,"Evergy Kansas Central, Inc",Electric Utility,Chanute Solar,KS,69036.0,CHANS,6.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
+2026,5.0,67952.0,"Freeport Solar South, LLC",IPP,IL - Ameresco - Freeport South,IL,70279.0,FRPTS,3.9,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
 2026,5.0,67582.0,"Intersect USA, LLC",IPP,"IP Radian, LLC",TX,64859.0,RADBA,160.0,Batteries,MWH,BA,Addition,Battery storage,2026-05-01
 2026,5.0,49893.0,Invenergy Services LLC,IPP,Yum Yum Solar LLC,TN,63026.0,GEN1,147.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
 2026,5.0,67853.0,"Kewanee Renewables, LLC",IPP,IL - Nexamp Kewanee,IL,70064.0,KWNEE,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
@@ -290,6 +295,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,5.0,61950.0,Terra-Gen Operating Co-Solar,IPP,"Desert Breeze Solar, LLC",CA,68045.0,LOC3,125.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
 2026,5.0,67153.0,Tesoro RV & Boat Storage,Commercial,Tesoro RV & Boat Storage,CA,68908.0,45067,2.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-05-01
 2026,5.0,63527.0,"Westlands Cherry, LLC",IPP,Cherry,CA,63850.0,BESS1,40.0,Batteries,MWH,BA,Addition,Battery storage,2026-05-01
+2026,6.0,67965.0,"1150th Sun, LLC",IPP,1150th Sun,IL,70292.0,14591,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,66784.0,"311SV 8me, LLC",IPP,Catclaw Solar,AZ,68414.0,CC8,200.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,66784.0,"311SV 8me, LLC",IPP,Catclaw Solar,AZ,68414.0,SV,250.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
 2026,6.0,64904.0,AES Clean Energy,IPP,Geer Road Solar 3 CSG,NY,67413.0,GEER3,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
@@ -315,6 +321,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,6.0,65677.0,Dimension Energy LLC,IPP,Chaberton Solar Biggins Creek LLC,DE,69832.0,BIGGC,4.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,65677.0,Dimension Energy LLC,IPP,Chaberton Solar Blue Hen LLC,DE,69831.0,BLUHN,4.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,65677.0,Dimension Energy LLC,IPP,Corfee Solar LLC,IL,69849.0,CORFE,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,6.0,65677.0,Dimension Energy LLC,IPP,"Gerstenschlager Family Solar 1, LLC (CSG)",IL,69846.0,GRST1,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,65677.0,Dimension Energy LLC,IPP,"Gracy Solar 1, LLC",IL,69839.0,GRACY,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,65677.0,Dimension Energy LLC,IPP,Hampden CSG 1 LLC,PA,69830.0,HMPD1,1.8,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,65677.0,Dimension Energy LLC,IPP,Kanesolar01 LLC,IL,69829.0,KANE1,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
@@ -323,6 +330,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,6.0,67773.0,"Dusty Rose Wind, LLC",IPP,Dusty Rose Wind,CO,69893.0,5937,502.0,Onshore Wind Turbine,WND,WT,Addition,Wind,2026-06-01
 2026,6.0,56201.0,Engie North America,IPP,Desna,TX,65876.0,DESNA,200.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
 2026,6.0,67162.0,"Ferdinand Grid, LLC",IPP,Ferdinand Energy Center,TX,68915.0,1,200.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
+2026,6.0,67951.0,"Freeport Solar North, LLC",IPP,IL - Ameresco - Freeport North,IL,70278.0,FRPTN,2.7,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,62759.0,Geronimo Power,IPP,Blevins Solar & Storage,TX,69414.0,BSLR2,132.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,62759.0,Geronimo Power,IPP,Blevins Solar & Storage,TX,69414.0,BSLR3,138.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,66232.0,"Green River Energy Center, LLC",IPP,Green River Energy Center - Hybrid,UT,67501.0,GRBS,400.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
@@ -336,6 +344,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,6.0,49893.0,Invenergy Services LLC,IPP,Split Rail Solar Energy LLC,MO,69475.0,SPTRL,300.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,67316.0,Juniper Sol Solar,IPP,Juniper Sol Solar CSG,NM,69270.0,JUNIP,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,66950.0,Lydian Energy,IPP,Headcamp BESS,TX,68580.0,MHB,150.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
+2026,6.0,67992.0,MD - Ameresco - Swanton Mt. Zion ANEM - A1,IPP,Swanton MD Mt Zion Rd ANEM Solar LLC (CSG),MD,70342.0,ZION1,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,66680.0,Mondu Solar LLC,IPP,Mondu Solar LLC,LA,68263.0,M4515,150.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,56990.0,NJR Clean Energy Ventures Corporation,IPP,Mansfield Landfill,CT,69515.0,MNSFL,1.8,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,65088.0,"Nighthawk Energy Storage, LLC",IPP,"Nighthawk Energy Storage, LLC",CA,65889.0,BESS,300.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
@@ -349,6 +358,7 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,6.0,65869.0,Prologis Logistics Services Incorporated,IPP,Prologis Portside 2509 - SLSAV502,GA,69436.0,SA502,2.2,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,67270.0,"RPCA Solar 10, LLC",IPP,Redemeyer Road Solar,CA,69136.0,REDBA,4.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
 2026,6.0,67270.0,"RPCA Solar 10, LLC",IPP,Redemeyer Road Solar,CA,69136.0,REDPV,4.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,6.0,67192.0,RWE Clean Energy,IPP,"Crowned Heron 1 - Storage, LLC",TX,68499.0,CWHBA,150.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
 2026,6.0,67314.0,Rockhound Sol,IPP,Rockhound Sol Solar CSG,NM,69266.0,ROCKH,4.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,66583.0,"SR Arcadia South, LLC",IPP,SR Arcadia,LA,68094.0,ARCAD,4.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,66589.0,"SR Dumas, LLC",IPP,SR Dumas,AR,68100.0,DUMAS,4.8,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
@@ -360,11 +370,18 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,6.0,16572.0,Salt River Project,Electric Utility,Coolidge Generation Station,AZ,56948.0,COE16,42.0,Natural Gas Fired Combustion Turbine,NG,GT,Addition,Natural gas,2026-06-01
 2026,6.0,16572.0,Salt River Project,Electric Utility,Coolidge Generation Station,AZ,56948.0,COE17,42.0,Natural Gas Fired Combustion Turbine,NG,GT,Addition,Natural gas,2026-06-01
 2026,6.0,16572.0,Salt River Project,Electric Utility,Coolidge Generation Station,AZ,56948.0,COE18,42.0,Natural Gas Fired Combustion Turbine,NG,GT,Addition,Natural gas,2026-06-01
+2026,6.0,60531.0,Standard Solar,IPP,Citrine NJ - West Pkwy,NJ,69555.0,WESTP,2.3,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,60531.0,Standard Solar,IPP,NL IL Bastian CSG,IL,70045.0,BASTN,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,60531.0,Standard Solar,IPP,NL IL Kane Rd CSG,IL,70044.0,KNERD,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,60531.0,Standard Solar,IPP,Pluma - SLT Hidalgo CSG,NM,69559.0,DALGO,3.8,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,60531.0,Standard Solar,IPP,SPG IL Valley Run CSG,IL,69788.0,VARUN,2.3,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,65815.0,Sunraycer Assets I LLC,IPP,"Midpoint Solar, LLC",TX,66897.0,MIDBA,50.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
+2026,6.0,67967.0,Swanton MD Coopers Ln CSEGS Solar LLC,IPP,Swanton MD Coopers CDG A2,MD,70361.0,COOP2,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,6.0,67967.0,Swanton MD Coopers Ln CSEGS Solar LLC,IPP,Swanton MD Coopers CDG A3,MD,70362.0,COOP3,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,6.0,67967.0,Swanton MD Coopers Ln CSEGS Solar LLC,IPP,Swanton MD Coopers CDG A4,MD,70363.0,COOP4,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,6.0,67948.0,Swanton MD Mt Zion Rd CSEGS Solar LLC,IPP,Swanton MD Mt Zion Rd CDG A2,MD,70274.0,ZION2,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,6.0,67948.0,Swanton MD Mt Zion Rd CSEGS Solar LLC,IPP,Swanton MD Mt Zion Rd CDG A3,MD,70273.0,ZION3,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,6.0,67948.0,Swanton MD Mt Zion Rd CSEGS Solar LLC,IPP,Swanton MD Mt Zion Rd CDG A4,MD,70272.0,ZION4,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,24211.0,Tucson Electric Power Co,Electric Utility,Roadrunner Reserve Phase 2,AZ,68937.0,RDR2,200.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
 2026,6.0,20323.0,"Wellhead Services, Inc",IPP,Chula Vista Energy Center 2,CA,67878.0,BESS1,50.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
 2026,6.0,20323.0,"Wellhead Services, Inc",IPP,North Johnson Energy Center,CA,69030.0,BESS1,50.0,Batteries,MWH,BA,Addition,Battery storage,2026-06-01
@@ -374,6 +391,61 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,6.0,63689.0,"Wonderful Renewable Energy, LLC.",Industrial,North Kern Water Storage District,CA,70085.0,NKWSD,3.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,63689.0,"Wonderful Renewable Energy, LLC.",Industrial,Ranch 3461,CA,70086.0,3461,2.8,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
 2026,6.0,63689.0,"Wonderful Renewable Energy, LLC.",Industrial,Rosedale,CA,70088.0,ROSED,1.8,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-06-01
+2026,7.0,67018.0,64NB 8me LLC,IPP,Aratina Solar Center 1A,CA,68661.0,64BES,75.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67018.0,64NB 8me LLC,IPP,Aratina Solar Center 1A,CA,68661.0,64NB8,120.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,60796.0,91MC 8me LLC,IPP,Aratina Solar Center 1B,CA,61167.0,91MC8,80.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,60796.0,91MC 8me LLC,IPP,Aratina Solar Center 1B,CA,61167.0,BESS,50.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67968.0,"ATLAS Solar V, LLC",IPP,"ATLAS Solar V, LLC",AZ,69237.0,ATL5,200.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67416.0,Buda Infra LLC,IPP,Buda BESS,TX,69324.0,BUDA,9.9,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,66217.0,Copia Power,IPP,Centennial Flats,AZ,68466.0,CFB2,89.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,66217.0,Copia Power,IPP,Centennial Flats,AZ,68466.0,CFPV2,166.7,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67413.0,County Rd Infra LLC,IPP,County Road BESS,TX,69422.0,CTRD,9.9,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,61060.0,Cypress Creek Renewables,IPP,Destiny Storage,TX,67654.0,DESTS,200.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67294.0,"Deer Creek Solar I, LLC",IPP,Deer Creek Hybrid,CA,69121.0,DERBA,50.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67294.0,"Deer Creek Solar I, LLC",IPP,Deer Creek Hybrid,CA,69121.0,DERPV,50.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,65677.0,Dimension Energy LLC,IPP,Bayonne Solar 2 LLC (CSG),NJ,69833.0,BAYO2,2.1,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,65677.0,Dimension Energy LLC,IPP,CVE US IL Ridge Farm 324 LLC (CSG),IL,69840.0,RIDGF,2.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,65677.0,Dimension Energy LLC,IPP,"Paris Solar, LLC (CSG)",IL,69838.0,PARIS,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,65677.0,Dimension Energy LLC,IPP,Starke Solar LLC (CSG),NJ,69835.0,STARK,2.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67331.0,"Dunkirk Solar One, LLC",IPP,"Dunkirk Solar One, LLC",NY,69229.0,21687,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67372.0,"Dunkirk Solar Two, LLC",IPP,Dunkirk Solar Two,NY,69274.0,21687,4.8,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67337.0,"ESTX-PLD-HOUSTON2, LLC",IPP,SAHARA BESS (SOHO BESS),TX,69200.0,SOHO1,204.4,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67337.0,"ESTX-PLD-HOUSTON2, LLC",IPP,SAHARA BESS (SOHO BESS),TX,69200.0,SOHO2,204.3,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67336.0,"Elawan Pitts Dudik Solar II, LLC",IPP,Pitts Dudik Solar II,TX,69674.0,PDII,30.4,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67414.0,Elm St Infra LLC,IPP,Elm Street BESS,TX,69322.0,ELMST,9.9,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,61194.0,Generate Capital,IPP,KE109,IL,69202.0,11203,3.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,61194.0,Generate Capital,IPP,KN07,IL,69203.0,11227,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,61194.0,Generate Capital,IPP,Route 14-1,NY,69208.0,11036,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,61194.0,Generate Capital,IPP,Route 14-2,NY,69209.0,11037,5.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,61194.0,Generate Capital,IPP,Thoroman,IL,69217.0,11219,2.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67839.0,"Generate USF La Mirada, LLC",IPP,CA- US Foods- La Mirada,CA,70040.0,LMBA,1.4,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67839.0,"Generate USF La Mirada, LLC",IPP,CA- US Foods- La Mirada,CA,70040.0,LMPV,2.6,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,49893.0,Invenergy Services LLC,IPP,Trade Post Solar,IN,69111.0,TRADE,200.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,68012.0,"KSI III Consolidated, LLC",IPP,Lincoln Solar LLC (OR),OR,70412.0,3002,3.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,11018.0,Lincoln Electric System,Electric Utility,2nd & N BESS,NE,70226.0,1,3.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,65043.0,Madison Energy Investments LLC,IPP,St. Josephs Wayne,NJ,70036.0,SP418,2.5,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67585.0,Maricopa Solar,IPP,Maricopa Solar,AZ,69684.0,70124,550.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67504.0,"Marubeni Power International, Inc.",IPP,Cotulla BESS 1,TX,69510.0,COTUL,9.9,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67504.0,"Marubeni Power International, Inc.",IPP,Palmview BESS,TX,69511.0,PALMV,9.9,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67504.0,"Marubeni Power International, Inc.",IPP,SE Edinburg BESS,TX,69512.0,SEEDI,9.9,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,66445.0,"NineDot Holdings, LLC",IPP,"Mourning Dove Clean Energy, LLC",NY,70314.0,ND010,3.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,62646.0,"Painter Energy Storage, LLC",IPP,Painter Energy Storage,CA,62729.0,PAIN1,10.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,67170.0,"Pastoria Power, LLC",IPP,Pastoria Power Bank,CA,69858.0,GEN1,80.0,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,66002.0,"Pastoria Solar Energy Company, LLC",IPP,Pastoria Solar,CA,67105.0,CPP01,105.2,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,66449.0,"Potter Solar, LLC",IPP,Potter Solar,PA,67876.0,ENX35,35.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67356.0,"RPC Merchant, LLC",IPP,Pyote Gas,TX,69269.0,PYOT1,2.5,Natural Gas Internal Combustion Engine,NG,IC,Addition,Natural gas,2026-07-01
+2026,7.0,67356.0,"RPC Merchant, LLC",IPP,Pyote Gas,TX,69269.0,PYOT2,2.5,Natural Gas Internal Combustion Engine,NG,IC,Addition,Natural gas,2026-07-01
+2026,7.0,67356.0,"RPC Merchant, LLC",IPP,Pyote Gas,TX,69269.0,PYOT3,2.5,Natural Gas Internal Combustion Engine,NG,IC,Addition,Natural gas,2026-07-01
+2026,7.0,67356.0,"RPC Merchant, LLC",IPP,Pyote Gas,TX,69269.0,PYOT4,2.5,Natural Gas Internal Combustion Engine,NG,IC,Addition,Natural gas,2026-07-01
+2026,7.0,67185.0,Ridge Farm Renewables LLC PV,IPP,Ridge Farm Renewables LLC PV,IL,68973.0,13359,4.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,66653.0,"SR Adamsville, LLC",IPP,SR Adamsville,TN,68224.0,ADAMV,25.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,66667.0,"SR Sequatchie, LLC",IPP,SR Sequatchie,TN,68254.0,SEQUA,8.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,60520.0,SoCore Energy LLC,IPP,Mingoville PV I,PA,68597.0,PV1,3.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,60520.0,SoCore Energy LLC,IPP,Mingoville PV II,PA,68598.0,PV1,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,65815.0,Sunraycer Assets I LLC,IPP,Gaia Hybrid,TX,66342.0,GAIAB,76.8,Batteries,MWH,BA,Addition,Battery storage,2026-07-01
+2026,7.0,65815.0,Sunraycer Assets I LLC,IPP,Gaia Hybrid,TX,66342.0,GAIAS,152.7,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,67967.0,Swanton MD Coopers Ln CSEGS Solar LLC,IPP,Swanton Coopers ANEM,MD,70293.0,COOP1,2.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
+2026,7.0,61950.0,Terra-Gen Operating Co-Solar,IPP,"Lockhart Solar PV IV, LLC",CA,67510.0,LOC4,80.0,Solar Photovoltaic,SUN,PV,Addition,Solar,2026-07-01
 2026,1.0,13048.0,City of Mountain Lake - (MN),Electric Utility,Mountain Lake,MN,1998.0,2,0.9,Natural Gas Internal Combustion Engine,NG,IC,Retirement,Natural gas,2026-01-01
 2026,1.0,64954.0,Contango Oil and Gas,Industrial,Elk Basin Gasoline Plant,WY,52127.0,GEN1,0.8,Other Gases,OG,ST,Retirement,Other thermal,2026-01-01
 2026,1.0,16024.0,Riverwood Intl USA Inc,Industrial,Graphic Packaging Intl Macon Mill,GA,54464.0,0002,4.7,Wood/Wood Waste Biomass,BLQ,ST,Retirement,Other renewables,2026-01-01
@@ -398,9 +470,14 @@ Year,Month,Entity ID,Entity Name,Plant Producer Type,Plant Name,Plant State,Plan
 2026,5.0,59526.0,State Correctnl Inst Laurel Highlands,Commercial,Glades Pike Generation Plant,PA,59759.0,CAT1,1.6,Landfill Gas,LFG,IC,Retirement,Other renewables,2026-05-01
 2026,5.0,59526.0,State Correctnl Inst Laurel Highlands,Commercial,Glades Pike Generation Plant,PA,59759.0,CAT2,1.6,Landfill Gas,LFG,IC,Retirement,Other renewables,2026-05-01
 2026,6.0,14605.0,City of Peabody - (MA),Electric Utility,Waters River,MA,1678.0,1,16.0,Natural Gas Fired Combustion Turbine,NG,GT,Retirement,Natural gas,2026-06-01
+2026,6.0,5416.0,"Duke Energy Carolinas, LLC",Electric Utility,DE Solar 10240 Old Dowd Rd,NC,57334.0,PV01,1.9,Solar Photovoltaic,SUN,PV,Retirement,Solar,2026-06-01
+2026,6.0,5416.0,"Duke Energy Carolinas, LLC",Electric Utility,DE Solar 657 Brigham Rd,NC,57335.0,PV01,1.3,Solar Photovoltaic,SUN,PV,Retirement,Solar,2026-06-01
 2026,6.0,10451.0,Kotzebue Electric Assn Inc,Electric Utility,Kotzebue Hybrid,AK,6304.0,11wt,0.1,Onshore Wind Turbine,WND,WT,Retirement,Wind,2026-06-01
 2026,6.0,67818.0,"MPH Elwood, LLC",IPP,MPH Elwood,IL,69979.0,GT1,150.0,Natural Gas Fired Combustion Turbine,NG,GT,Retirement,Natural gas,2026-06-01
 2026,6.0,67818.0,"MPH Elwood, LLC",IPP,MPH Elwood,IL,69979.0,GT2,150.0,Natural Gas Fired Combustion Turbine,NG,GT,Retirement,Natural gas,2026-06-01
 2026,6.0,12199.0,Montana-Dakota Utilities Co,Electric Utility,Glen Ullin Station 6,ND,57172.0,1,5.3,All Other,WH,ST,Retirement,Other,2026-06-01
 2026,6.0,21048.0,Wyandotte Municipal Serv Comm - (MI),Electric Utility,Wyandotte,MI,1866.0,4,10.5,Natural Gas Steam Turbine,NG,ST,Retirement,Natural gas,2026-06-01
 2026,6.0,21048.0,Wyandotte Municipal Serv Comm - (MI),Electric Utility,Wyandotte,MI,1866.0,7,32.0,Natural Gas Steam Turbine,NG,ST,Retirement,Natural gas,2026-06-01
+2026,7.0,56953.0,"Bos Dairy, LLC",Industrial,"Bos Dairy, LLC",IN,57625.0,BOS4,0.9,Natural Gas Internal Combustion Engine,NG,IC,Retirement,Natural gas,2026-07-01
+2026,7.0,54878.0,Oregon Environmental Industries LLC,Commercial,Dry Creek LFG to Energy Project,OR,56461.0,DC1,1.5,Landfill Gas,LFG,IC,Retirement,Other renewables,2026-07-01
+2026,7.0,54878.0,Oregon Environmental Industries LLC,Commercial,Dry Creek LFG to Energy Project,OR,56461.0,DC2,1.5,Landfill Gas,LFG,IC,Retirement,Other renewables,2026-07-01

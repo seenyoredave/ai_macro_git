@@ -1600,12 +1600,12 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "0aa01bd4eef5872984ba059f",
-    "expires_at": "2026-09-25T17:16:21.294211+00:00",
+    "current_evidence_snapshot_id": "5c4b528c4e674b9c4f8f9872",
+    "expires_at": "2026-09-26T17:20:29.963415+00:00",
     "lease_hours": 24,
     "materiality": {
       "baseline_available": true,
-      "change_count": 21,
+      "change_count": 28,
       "changes": [
         {
           "domain": "adoption",
@@ -1678,14 +1678,34 @@
           "relative_change": 0.09090909090908908
         },
         {
+          "domain": "grid_storage",
+          "fact_id": "grid_storage.operating_storage_four_hour_plus_share_pct",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 46.12774499236587,
+          "old_value": 45.519002565136965,
+          "percentage_point_change": 0.6000000000000014,
+          "relative_change": 0.013186813186813218
+        },
+        {
+          "domain": "grid_storage",
+          "fact_id": "grid_storage.operating_storage_weighted_duration_hours",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 2.7613644585521695,
+          "old_value": 2.745263630620276,
+          "percentage_point_change": null,
+          "relative_change": 0.005864947814959252
+        },
+        {
           "domain": "market",
           "fact_id": "market.aei",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 31.7291909340383,
+          "new_value": 32.910079609255575,
           "old_value": 32.236617114601536,
-          "percentage_point_change": 0.5000000000000036,
-          "relative_change": 0.015527950310559115
+          "percentage_point_change": 0.6999999999999957,
+          "relative_change": 0.021739130434782473
         },
         {
           "domain": "market",
@@ -1702,60 +1722,110 @@
           "fact_id": "market.effective_firms",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 18.877289470311595,
+          "new_value": 18.76995547378696,
           "old_value": 18.504006097751503,
           "percentage_point_change": null,
-          "relative_change": 0.020173111194848294
+          "relative_change": 0.01437252963658364
         },
         {
           "domain": "market",
           "fact_id": "market.equal_weight_return",
           "kind": "numeric_change",
           "material": true,
-          "new_value": 0.3509695828319253,
+          "new_value": 0.3789272555282077,
           "old_value": 0.3242557206268477,
-          "percentage_point_change": 2.700000000000003,
-          "relative_change": 0.08333333333333343
+          "percentage_point_change": 5.5,
+          "relative_change": 0.1697530864197531
         },
         {
           "domain": "market",
           "fact_id": "market.median_return",
           "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.15487316605297752,
+          "material": true,
+          "new_value": 0.1653730274437517,
           "old_value": 0.1480741240944501,
-          "percentage_point_change": 0.6999999999999993,
-          "relative_change": 0.047297297297297244
+          "percentage_point_change": 1.6999999999999993,
+          "relative_change": 0.11486486486486482
         },
         {
           "domain": "market",
           "fact_id": "market.positive_breadth",
           "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.6274509803921569,
+          "material": true,
+          "new_value": 0.6421568627450981,
           "old_value": 0.6127450980392157,
-          "percentage_point_change": 1.4000000000000057,
-          "relative_change": 0.02283849918433941
+          "percentage_point_change": 2.9000000000000057,
+          "relative_change": 0.04730831973898868
         },
         {
           "domain": "market",
           "fact_id": "market.pressure",
           "kind": "numeric_change",
-          "material": true,
-          "new_value": 52.2027874930363,
+          "material": false,
+          "new_value": 51.26635307607413,
           "old_value": 50.03023003088755,
-          "percentage_point_change": 2.200000000000003,
-          "relative_change": 0.04400000000000006
+          "percentage_point_change": 1.2999999999999972,
+          "relative_change": 0.025999999999999943
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.strong_sector_count",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 3.0,
+          "old_value": 2.0,
+          "percentage_point_change": null,
+          "relative_change": 0.5
         },
         {
           "domain": "market",
           "fact_id": "market.top_10_share",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 0.6423842348804686,
+          "new_value": 0.6430379053397998,
           "old_value": 0.6451191924598726,
-          "percentage_point_change": 0.29999999999999716,
-          "relative_change": 0.00465116279069763
+          "percentage_point_change": 0.20000000000000284,
+          "relative_change": 0.003100775193798494
+        },
+        {
+          "domain": "power",
+          "fact_id": "power.commercial_growth",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 3.108894807574436,
+          "old_value": 3.0237516355750893,
+          "percentage_point_change": 0.10000000000000009,
+          "relative_change": 0.03333333333333336
+        },
+        {
+          "domain": "power",
+          "fact_id": "power.demand_growth",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 1.2462913628498606,
+          "old_value": 1.3016885066733819,
+          "percentage_point_change": 0.10000000000000009,
+          "relative_change": 0.07692307692307698
+        },
+        {
+          "domain": "power",
+          "fact_id": "power.planned_net_gw",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 225.23700000000002,
+          "old_value": 228.6532,
+          "percentage_point_change": null,
+          "relative_change": 0.01494053002538331
+        },
+        {
+          "domain": "power",
+          "fact_id": "power.retail_price_growth",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 4.431018842080903,
+          "old_value": 4.438732887813002,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
         },
         {
           "domain": "water",
@@ -1818,19 +1888,19 @@
           "relative_change": 0.1765462195036565
         }
       ],
-      "current_snapshot_id": "0aa01bd4eef5872984ba059f",
+      "current_snapshot_id": "5c4b528c4e674b9c4f8f9872",
       "decision": "generate_material_change",
       "exact_match": false,
-      "immaterial_change_count": 16,
+      "immaterial_change_count": 21,
       "material": true,
-      "material_change_count": 5,
+      "material_change_count": 7,
       "percentage_point_threshold": 2.0,
       "previous_snapshot_id": "30e758d34db9143ccc98ae7c",
       "relative_change_threshold": 0.1,
       "version": "1.2.0"
     },
-    "published_at": "2026-09-24T17:16:21.294211+00:00",
-    "renewal_count": 7,
+    "published_at": "2026-09-25T17:20:29.963415+00:00",
+    "renewal_count": 8,
     "source": "automation_generation_fallback"
   },
   "raw_responses": {
