@@ -1,7 +1,7 @@
 {
-  "as_of": "2026-09-29",
+  "as_of": "2026-09-30",
   "audit_path": "data/current_context_candidate_audit.csv",
-  "candidate_count": 1939,
+  "candidate_count": 2174,
   "continuity": {
     "attempted": 0,
     "domains": [],
@@ -17,9 +17,11 @@
       "E": 11
     },
     "available_events_by_tier": {
-      "A": 5,
-      "B": 6,
-      "C": 10
+      "A": 7,
+      "B": 7,
+      "C": 9,
+      "D": 9,
+      "E": 9
     },
     "expanded_discovery_required": true,
     "hard_window_days": 10,
@@ -43,8 +45,8 @@
     "retained_baseline_domains": [
       "adoption",
       "compute",
-      "connectivity",
       "data_center",
+      "economic_impact",
       "finance",
       "grid_storage",
       "market",
@@ -55,30 +57,30 @@
     "selected_domain_count": 11,
     "selected_domains": [
       "market",
+      "compute",
       "data_center",
+      "connectivity",
       "power",
-      "water",
-      "workforce",
-      "economic_impact"
+      "workforce"
     ],
     "selected_domains_by_tier": {
-      "A": 3,
-      "B": 1,
+      "A": 4,
+      "B": 0,
       "C": 2,
       "D": 0,
       "E": 0
     },
-    "selected_event_count": 10,
+    "selected_event_count": 9,
     "selected_events_by_tier": {
-      "A": 5,
-      "B": 1,
-      "C": 4,
+      "A": 7,
+      "B": 0,
+      "C": 2,
       "D": 0,
       "E": 0
     },
     "selection_basis": "significance_first",
-    "selection_max_tier": "C",
-    "selection_max_tier_label": "Expanded window",
+    "selection_max_tier": "E",
+    "selection_max_tier_label": "Minimum threshold",
     "selection_target_max": 15,
     "selection_target_min": 10,
     "tier_reached": "C",
@@ -102,7 +104,7 @@
     {
       "domain": "connectivity",
       "error": "",
-      "item_count": 50,
+      "item_count": 56,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center fiber OR AI fiber backbone OR cloud fiber network)",
@@ -111,7 +113,7 @@
     {
       "domain": "connectivity",
       "error": "",
-      "item_count": 17,
+      "item_count": 19,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(submarine cable cloud OR submarine cable data center OR cable landing station)",
@@ -120,7 +122,7 @@
     {
       "domain": "connectivity",
       "error": "",
-      "item_count": 1,
+      "item_count": 0,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(internet exchange data center OR peering facility OR interconnection facility)",
@@ -136,9 +138,45 @@
       "status": "ok"
     },
     {
-      "domain": "compute",
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 55,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(data center interconnection OR AI interconnection queue OR large load interconnection)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 53,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(transmission data center OR grid upgrade data center OR substation data center)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
       "error": "",
       "item_count": 21,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(battery storage data center OR grid storage AI load)",
+      "status": "ok"
+    },
+    {
+      "domain": "grid_storage",
+      "error": "",
+      "item_count": 0,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(transformer shortage OR transmission congestion OR renewable curtailment)",
+      "status": "ok"
+    },
+    {
+      "domain": "compute",
+      "error": "",
+      "item_count": 28,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI chips OR GPU supply OR AI accelerator supply OR HBM AI)",
@@ -147,7 +185,7 @@
     {
       "domain": "compute",
       "error": "",
-      "item_count": 63,
+      "item_count": 62,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(semiconductor fab AI OR advanced packaging AI OR foundry AI)",
@@ -156,7 +194,7 @@
     {
       "domain": "compute",
       "error": "",
-      "item_count": 58,
+      "item_count": 53,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI chip export controls OR semiconductor export restrictions)",
@@ -165,7 +203,7 @@
     {
       "domain": "compute",
       "error": "",
-      "item_count": 16,
+      "item_count": 22,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(Nvidia AMD Broadcom TSMC AI capacity OR semiconductor capacity AI)",
@@ -174,7 +212,7 @@
     {
       "domain": "water",
       "error": "",
-      "item_count": 44,
+      "item_count": 49,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center water OR data center wastewater OR data center cooling water)",
@@ -201,7 +239,7 @@
     {
       "domain": "water",
       "error": "",
-      "item_count": 56,
+      "item_count": 63,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(water utility data center OR wastewater capacity data center)",
@@ -210,7 +248,7 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 66,
+      "item_count": 69,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center construction OR data center campus OR hyperscale campus)",
@@ -219,7 +257,7 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 64,
+      "item_count": 67,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center permit OR data center moratorium OR data center zoning)",
@@ -228,7 +266,7 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 12,
+      "item_count": 16,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center capacity OR colocation capacity OR hyperscaler campus)",
@@ -237,7 +275,7 @@
     {
       "domain": "data_center",
       "error": "",
-      "item_count": 59,
+      "item_count": 63,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center project delay OR data center cancellation OR data center approval)",
@@ -246,7 +284,7 @@
     {
       "domain": "power",
       "error": "",
-      "item_count": 62,
+      "item_count": 63,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center electricity demand OR AI electricity demand OR utility load forecast data center)",
@@ -264,7 +302,7 @@
     {
       "domain": "power",
       "error": "",
-      "item_count": 0,
+      "item_count": 71,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(power generation data center OR gas turbine data center OR nuclear data center)",
@@ -273,52 +311,16 @@
     {
       "domain": "power",
       "error": "",
-      "item_count": 7,
+      "item_count": 8,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(electricity price data center OR power price industrial load)",
       "status": "ok"
     },
     {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 0,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(data center interconnection OR AI interconnection queue OR large load interconnection)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 0,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(transmission data center OR grid upgrade data center OR substation data center)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 20,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(battery storage data center OR grid storage AI load)",
-      "status": "ok"
-    },
-    {
-      "domain": "grid_storage",
-      "error": "",
-      "item_count": 0,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(transformer shortage OR transmission congestion OR renewable curtailment)",
-      "status": "ok"
-    },
-    {
       "domain": "adoption",
       "error": "",
-      "item_count": 64,
+      "item_count": 66,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(enterprise AI adoption OR business AI use OR generative AI adoption)",
@@ -327,7 +329,7 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 14,
+      "item_count": 18,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI deployment survey business OR enterprise AI survey)",
@@ -336,7 +338,7 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 28,
+      "item_count": 35,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI agents enterprise deployment OR AI copilots business use)",
@@ -345,7 +347,7 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 12,
+      "item_count": 14,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(company AI rollout OR AI implementation enterprise)",
@@ -372,7 +374,7 @@
     {
       "domain": "workforce",
       "error": "",
-      "item_count": 62,
+      "item_count": 59,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI wages OR AI skills OR AI occupations OR labor market AI)",
@@ -381,16 +383,52 @@
     {
       "domain": "workforce",
       "error": "",
-      "item_count": 18,
+      "item_count": 27,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(automation jobs AI OR generative AI labor market)",
       "status": "ok"
     },
     {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 70,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI productivity OR generative AI productivity OR labor productivity AI)",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 9,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI GDP OR AI economic output OR AI value added)",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 12,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI investment productivity OR software investment productivity)",
+      "status": "ok"
+    },
+    {
+      "domain": "economic_impact",
+      "error": "",
+      "item_count": 0,
+      "lookback_days": 10,
+      "provider": "google_news_rss",
+      "query": "(AI unit labor cost OR AI compensation OR AI income)",
+      "status": "ok"
+    },
+    {
       "domain": "market",
       "error": "",
-      "item_count": 63,
+      "item_count": 59,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI earnings OR AI guidance OR semiconductor earnings OR cloud earnings)",
@@ -399,7 +437,7 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 24,
+      "item_count": 25,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(hyperscaler capex OR AI spending OR data center capex)",
@@ -426,7 +464,7 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 37,
+      "item_count": 46,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI stocks rally OR AI stocks selloff OR AI valuation OR market breadth technology)",
@@ -435,7 +473,7 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 46,
+      "item_count": 52,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "((OpenAI OR Anthropic OR xAI OR Google DeepMind) (AI safety OR AI development OR slowdown OR pause OR pacing OR regulation OR risk))",
@@ -444,7 +482,7 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 59,
+      "item_count": 51,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "((Sam Altman OR Dario Amodei OR Elon Musk OR Demis Hassabis OR Jensen Huang) AI)",
@@ -462,7 +500,7 @@
     {
       "domain": "market",
       "error": "",
-      "item_count": 4,
+      "item_count": 12,
       "lookback_days": 10,
       "provider": "tier2_outbound",
       "query": "https://www.techmeme.com/feed.xml",
@@ -478,45 +516,9 @@
       "status": "ok"
     },
     {
-      "domain": "economic_impact",
-      "error": "",
-      "item_count": 69,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(AI productivity OR generative AI productivity OR labor productivity AI)",
-      "status": "ok"
-    },
-    {
-      "domain": "economic_impact",
-      "error": "",
-      "item_count": 9,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(AI GDP OR AI economic output OR AI value added)",
-      "status": "ok"
-    },
-    {
-      "domain": "economic_impact",
-      "error": "",
-      "item_count": 9,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(AI investment productivity OR software investment productivity)",
-      "status": "ok"
-    },
-    {
-      "domain": "economic_impact",
-      "error": "",
-      "item_count": 0,
-      "lookback_days": 10,
-      "provider": "google_news_rss",
-      "query": "(AI unit labor cost OR AI compensation OR AI income)",
-      "status": "ok"
-    },
-    {
       "domain": "finance",
       "error": "",
-      "item_count": 62,
+      "item_count": 66,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(data center debt OR AI infrastructure financing OR project finance data center)",
@@ -534,7 +536,7 @@
     {
       "domain": "finance",
       "error": "",
-      "item_count": 8,
+      "item_count": 7,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(private credit technology OR private credit data center)",
@@ -543,7 +545,7 @@
     {
       "domain": "finance",
       "error": "",
-      "item_count": 9,
+      "item_count": 12,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI venture funding OR AI private equity OR AI fundraise)",
@@ -570,7 +572,7 @@
     {
       "domain": "finance",
       "error": "",
-      "item_count": 13,
+      "item_count": 14,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(private equity fund close OR technology exits OR private equity distributions)",
@@ -579,7 +581,7 @@
     {
       "domain": "finance",
       "error": "",
-      "item_count": 30,
+      "item_count": 33,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(Federal Reserve rates OR interest rates technology investment)",
@@ -606,7 +608,7 @@
     {
       "domain": "finance",
       "error": "",
-      "item_count": 59,
+      "item_count": 58,
       "lookback_days": 10,
       "provider": "tier2_outbound",
       "query": "https://abnormalreturns.com/feed",
@@ -642,7 +644,7 @@
     {
       "domain": "global",
       "error": "",
-      "item_count": 64,
+      "item_count": 67,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI slowdown OR AI pause OR AI safety OR AI regulation OR AI development pace OR AI race)",
@@ -651,7 +653,7 @@
     {
       "domain": "global",
       "error": "",
-      "item_count": 58,
+      "item_count": 61,
       "lookback_days": 10,
       "provider": "google_news_rss",
       "query": "(AI stocks OR semiconductor stocks OR AI infrastructure spending OR AI capex)",
@@ -660,7 +662,7 @@
     {
       "domain": "approved_sources",
       "error": "",
-      "item_count": 5,
+      "item_count": 8,
       "lookback_days": 10,
       "provider": "approved_source_sweep",
       "query": "(AI OR \"artificial intelligence\" OR OpenAI OR Anthropic OR xAI OR Nvidia OR \"data center\" OR datacenter OR semiconductor OR chip OR hyperscaler OR cloud OR \"AI stocks\" OR \"AI spending\" OR \"AI investment\" OR productivity OR workforce OR jobs) (site:reuters.com OR site:axios.com OR site:cnbc.com OR site:bloomberg.com OR site:ft.com OR site:wsj.com OR site:barrons.com OR site:investors.com OR site:morningstar.com)",
@@ -669,7 +671,7 @@
     {
       "domain": "approved_sources",
       "error": "",
-      "item_count": 6,
+      "item_count": 4,
       "lookback_days": 10,
       "provider": "approved_source_sweep",
       "query": "(AI OR \"artificial intelligence\" OR \"data center\" OR datacenter OR \"large load\" OR power OR electricity OR grid OR transmission OR interconnection OR generation OR storage OR water) (site:datacenterdynamics.com OR site:utilitydive.com OR site:rtoinsider.com OR site:spglobal.com OR site:constructiondive.com)",
@@ -694,6 +696,42 @@
       "status": "ok"
     },
     {
+      "domain": "market",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "Breakingviews - COMMENTARY: Jensen Huang's invisible hand is tied on AI safety",
+      "status": "ok"
+    },
+    {
+      "domain": "market",
+      "error": "",
+      "item_count": 100,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "ai ai safety",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 3,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "Aterio Flags Delay Risk for Oracle\u2019s 1.3 GW Wisconsin Data Center",
+      "status": "ok"
+    },
+    {
+      "domain": "data_center",
+      "error": "",
+      "item_count": 5,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "data center delay 1.3 gw",
+      "status": "ok"
+    },
+    {
       "domain": "adoption",
       "error": "",
       "item_count": 2,
@@ -705,7 +743,7 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 57,
+      "item_count": 47,
       "lookback_days": 7,
       "provider": "event_evidence_search",
       "query": "ai enterprise ai 30",
@@ -714,7 +752,7 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 2,
+      "item_count": 3,
       "lookback_days": 7,
       "provider": "event_evidence_search",
       "query": "Workato Customers Surpass 1.1 Billion Enterprise AI Actions Processed and Share Results at World of Workato 2026",
@@ -723,10 +761,28 @@
     {
       "domain": "adoption",
       "error": "",
-      "item_count": 48,
+      "item_count": 59,
       "lookback_days": 7,
       "provider": "event_evidence_search",
       "query": "ai enterprise ai 1.1 billion 2026",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 1,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "Genius Match Introduces Geni, an AI Hiring Platform Bringing Intelligence and Trust Back to Hiring",
+      "status": "ok"
+    },
+    {
+      "domain": "workforce",
+      "error": "",
+      "item_count": 100,
+      "lookback_days": 7,
+      "provider": "event_evidence_search",
+      "query": "ai hiring",
       "status": "ok"
     },
     {
@@ -737,52 +793,43 @@
       "provider": "event_evidence_search",
       "query": "COMMENTARY: These workers say an AI hiring platform discriminated against them. But who should pay?",
       "status": "ok"
-    },
-    {
-      "domain": "workforce",
-      "error": "",
-      "item_count": 100,
-      "lookback_days": 10,
-      "provider": "event_evidence_search",
-      "query": "ai hiring",
-      "status": "ok"
     }
   ],
   "fresh_selected_counts": {
     "adoption": 0,
-    "compute": 0,
-    "connectivity": 0,
+    "compute": 1,
+    "connectivity": 1,
     "data_center": 1,
-    "economic_impact": 1,
+    "economic_impact": 0,
     "finance": 0,
     "grid_storage": 0,
-    "market": 1,
-    "power": 2,
-    "water": 2,
-    "workforce": 3
+    "market": 4,
+    "power": 1,
+    "water": 0,
+    "workforce": 1
   },
   "grounding": {
     "alternate_source_grounded": 0,
-    "approved_evidence_candidates": 67,
-    "approved_source_sweep_candidates": 17,
-    "approved_source_sweep_grounded": 4,
-    "attempted": 19,
+    "approved_evidence_candidates": 79,
+    "approved_source_sweep_candidates": 18,
+    "approved_source_sweep_grounded": 1,
+    "attempted": 27,
     "by_domain": {
       "adoption": {
         "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 4,
-        "approved_source_sweep_candidates": 2,
+        "approved_evidence_candidates": 3,
+        "approved_source_sweep_candidates": 1,
         "attempted": 2,
         "direct_source_grounded": 0,
-        "discovered": 116,
-        "discovery_leads": 57,
+        "discovered": 129,
+        "discovery_leads": 61,
         "discovery_leads_resolved": 0,
         "evidence_resolution_attempts": 0,
         "failed": 2,
-        "metadata_qualified": 61,
+        "metadata_qualified": 64,
         "metadata_rejection_reasons": [
           {
-            "count": 55,
+            "count": 65,
             "reason": "no domain relevance term"
           }
         ],
@@ -801,83 +848,23 @@
       },
       "compute": {
         "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 4,
-        "approved_source_sweep_candidates": 2,
-        "attempted": 0,
+        "approved_evidence_candidates": 6,
+        "approved_source_sweep_candidates": 4,
+        "attempted": 1,
         "direct_source_grounded": 0,
-        "discovered": 158,
-        "discovery_leads": 35,
+        "discovered": 164,
+        "discovery_leads": 39,
         "discovery_leads_resolved": 0,
         "evidence_resolution_attempts": 0,
         "failed": 0,
-        "metadata_qualified": 39,
+        "metadata_qualified": 45,
         "metadata_rejection_reasons": [
           {
-            "count": 71,
+            "count": 69,
             "reason": "insufficient domain materiality"
           },
           {
-            "count": 47,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 1,
-            "reason": "outside tier lookback window"
-          }
-        ],
-        "preground_duplicates_clustered": 0,
-        "preground_retained_duplicates_skipped": 4,
-        "preground_unique_candidates": 0,
-        "rejection_reasons": [],
-        "selected": 0,
-        "succeeded": 0,
-        "trusted_headline_grounded": 0
-      },
-      "connectivity": {
-        "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 0,
-        "approved_source_sweep_candidates": 0,
-        "attempted": 0,
-        "direct_source_grounded": 0,
-        "discovered": 68,
-        "discovery_leads": 34,
-        "discovery_leads_resolved": 0,
-        "evidence_resolution_attempts": 0,
-        "failed": 0,
-        "metadata_qualified": 34,
-        "metadata_rejection_reasons": [
-          {
-            "count": 34,
-            "reason": "no domain relevance term"
-          }
-        ],
-        "preground_duplicates_clustered": 0,
-        "preground_retained_duplicates_skipped": 0,
-        "preground_unique_candidates": 0,
-        "rejection_reasons": [],
-        "selected": 0,
-        "succeeded": 0,
-        "trusted_headline_grounded": 0
-      },
-      "data_center": {
-        "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 7,
-        "approved_source_sweep_candidates": 2,
-        "attempted": 2,
-        "direct_source_grounded": 0,
-        "discovered": 192,
-        "discovery_leads": 77,
-        "discovery_leads_resolved": 0,
-        "evidence_resolution_attempts": 0,
-        "failed": 1,
-        "metadata_qualified": 84,
-        "metadata_rejection_reasons": [
-          {
-            "count": 79,
-            "reason": "insufficient domain materiality"
-          },
-          {
-            "count": 28,
+            "count": 49,
             "reason": "no domain relevance term"
           },
           {
@@ -887,32 +874,27 @@
         ],
         "preground_duplicates_clustered": 0,
         "preground_retained_duplicates_skipped": 3,
-        "preground_unique_candidates": 2,
-        "rejection_reasons": [
-          {
-            "count": 1,
-            "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
-          }
-        ],
+        "preground_unique_candidates": 1,
+        "rejection_reasons": [],
         "selected": 1,
         "succeeded": 1,
         "trusted_headline_grounded": 1
       },
-      "economic_impact": {
+      "connectivity": {
         "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 2,
-        "approved_source_sweep_candidates": 1,
+        "approved_evidence_candidates": 1,
+        "approved_source_sweep_candidates": 0,
         "attempted": 1,
         "direct_source_grounded": 0,
-        "discovered": 91,
-        "discovery_leads": 64,
+        "discovered": 75,
+        "discovery_leads": 37,
         "discovery_leads_resolved": 0,
         "evidence_resolution_attempts": 0,
         "failed": 0,
-        "metadata_qualified": 66,
+        "metadata_qualified": 38,
         "metadata_rejection_reasons": [
           {
-            "count": 25,
+            "count": 37,
             "reason": "no domain relevance term"
           }
         ],
@@ -924,25 +906,90 @@
         "succeeded": 1,
         "trusted_headline_grounded": 1
       },
-      "finance": {
+      "data_center": {
         "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 17,
+        "approved_evidence_candidates": 8,
         "approved_source_sweep_candidates": 1,
-        "attempted": 0,
+        "attempted": 4,
         "direct_source_grounded": 0,
-        "discovered": 241,
-        "discovery_leads": 69,
+        "discovered": 198,
+        "discovery_leads": 78,
         "discovery_leads_resolved": 0,
         "evidence_resolution_attempts": 0,
-        "failed": 0,
+        "failed": 3,
         "metadata_qualified": 86,
         "metadata_rejection_reasons": [
           {
-            "count": 118,
+            "count": 82,
+            "reason": "insufficient domain materiality"
+          },
+          {
+            "count": 30,
+            "reason": "no domain relevance term"
+          }
+        ],
+        "preground_duplicates_clustered": 0,
+        "preground_retained_duplicates_skipped": 3,
+        "preground_unique_candidates": 4,
+        "rejection_reasons": [
+          {
+            "count": 2,
+            "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+          },
+          {
+            "count": 1,
+            "reason": "underlying source could not be established; approved headline metadata was not usable: headline fallback is limited to approved reported sources"
+          }
+        ],
+        "selected": 1,
+        "succeeded": 1,
+        "trusted_headline_grounded": 1
+      },
+      "economic_impact": {
+        "alternate_source_grounded": 0,
+        "approved_evidence_candidates": 3,
+        "approved_source_sweep_candidates": 2,
+        "attempted": 0,
+        "direct_source_grounded": 0,
+        "discovered": 93,
+        "discovery_leads": 64,
+        "discovery_leads_resolved": 0,
+        "evidence_resolution_attempts": 0,
+        "failed": 0,
+        "metadata_qualified": 67,
+        "metadata_rejection_reasons": [
+          {
+            "count": 26,
+            "reason": "no domain relevance term"
+          }
+        ],
+        "preground_duplicates_clustered": 0,
+        "preground_retained_duplicates_skipped": 1,
+        "preground_unique_candidates": 0,
+        "rejection_reasons": [],
+        "selected": 0,
+        "succeeded": 0,
+        "trusted_headline_grounded": 0
+      },
+      "finance": {
+        "alternate_source_grounded": 0,
+        "approved_evidence_candidates": 17,
+        "approved_source_sweep_candidates": 2,
+        "attempted": 0,
+        "direct_source_grounded": 0,
+        "discovered": 250,
+        "discovery_leads": 70,
+        "discovery_leads_resolved": 0,
+        "evidence_resolution_attempts": 0,
+        "failed": 0,
+        "metadata_qualified": 87,
+        "metadata_rejection_reasons": [
+          {
+            "count": 128,
             "reason": "no domain relevance term"
           },
           {
-            "count": 35,
+            "count": 33,
             "reason": "outside tier lookback window"
           },
           {
@@ -960,61 +1007,70 @@
       },
       "grid_storage": {
         "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 0,
+        "approved_evidence_candidates": 5,
         "approved_source_sweep_candidates": 0,
-        "attempted": 0,
+        "attempted": 2,
         "direct_source_grounded": 0,
-        "discovered": 20,
-        "discovery_leads": 4,
+        "discovered": 120,
+        "discovery_leads": 8,
         "discovery_leads_resolved": 0,
         "evidence_resolution_attempts": 0,
-        "failed": 0,
-        "metadata_qualified": 4,
+        "failed": 2,
+        "metadata_qualified": 13,
         "metadata_rejection_reasons": [
           {
-            "count": 14,
+            "count": 85,
             "reason": "no domain relevance term"
           },
           {
-            "count": 2,
+            "count": 21,
             "reason": "insufficient domain materiality"
+          },
+          {
+            "count": 1,
+            "reason": "preview/calendar item is not a completed development"
           }
         ],
         "preground_duplicates_clustered": 0,
-        "preground_retained_duplicates_skipped": 0,
-        "preground_unique_candidates": 0,
-        "rejection_reasons": [],
+        "preground_retained_duplicates_skipped": 2,
+        "preground_unique_candidates": 2,
+        "rejection_reasons": [
+          {
+            "count": 2,
+            "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
+          }
+        ],
         "selected": 0,
         "succeeded": 0,
         "trusted_headline_grounded": 0
       },
       "market": {
         "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 18,
-        "approved_source_sweep_candidates": 3,
-        "attempted": 3,
+        "approved_evidence_candidates": 17,
+        "approved_source_sweep_candidates": 2,
+        "attempted": 8,
         "direct_source_grounded": 0,
-        "discovered": 370,
+        "discovered": 393,
         "discovery_leads": 155,
         "discovery_leads_resolved": 0,
         "evidence_resolution_attempts": 0,
-        "failed": 0,
-        "metadata_qualified": 173,
+        "failed": 1,
+        "metadata_qualified": 172,
         "metadata_rejection_reasons": [
           {
-            "count": 137,
+            "count": 153,
             "reason": "no domain relevance term"
           },
           {
-            "count": 36,
+            "count": 44,
             "reason": "insufficient domain materiality"
           },
           {
-            "count": 22,
+            "count": 19,
             "reason": "outside tier lookback window"
           },
           {
-            "count": 1,
+            "count": 4,
             "reason": "preview/calendar item is not a completed development"
           },
           {
@@ -1023,89 +1079,34 @@
           }
         ],
         "preground_duplicates_clustered": 0,
-        "preground_retained_duplicates_skipped": 2,
-        "preground_unique_candidates": 3,
-        "rejection_reasons": [],
-        "selected": 1,
-        "succeeded": 3,
-        "trusted_headline_grounded": 3
+        "preground_retained_duplicates_skipped": 3,
+        "preground_unique_candidates": 8,
+        "rejection_reasons": [
+          {
+            "count": 1,
+            "reason": "underlying source could not be established; approved headline metadata was not usable: trusted publisher headline is commentary/preview rather than a reported development"
+          }
+        ],
+        "selected": 4,
+        "succeeded": 7,
+        "trusted_headline_grounded": 7
       },
       "power": {
         "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 3,
+        "approved_evidence_candidates": 5,
         "approved_source_sweep_candidates": 0,
         "attempted": 2,
         "direct_source_grounded": 0,
-        "discovered": 126,
-        "discovery_leads": 11,
+        "discovered": 195,
+        "discovery_leads": 29,
         "discovery_leads_resolved": 0,
         "evidence_resolution_attempts": 0,
         "failed": 0,
-        "metadata_qualified": 14,
+        "metadata_qualified": 34,
         "metadata_rejection_reasons": [
           {
-            "count": 112,
+            "count": 159,
             "reason": "no domain relevance term"
-          }
-        ],
-        "preground_duplicates_clustered": 0,
-        "preground_retained_duplicates_skipped": 1,
-        "preground_unique_candidates": 2,
-        "rejection_reasons": [],
-        "selected": 2,
-        "succeeded": 2,
-        "trusted_headline_grounded": 2
-      },
-      "water": {
-        "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 4,
-        "approved_source_sweep_candidates": 3,
-        "attempted": 2,
-        "direct_source_grounded": 0,
-        "discovered": 100,
-        "discovery_leads": 14,
-        "discovery_leads_resolved": 0,
-        "evidence_resolution_attempts": 0,
-        "failed": 0,
-        "metadata_qualified": 18,
-        "metadata_rejection_reasons": [
-          {
-            "count": 73,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 9,
-            "reason": "insufficient domain materiality"
-          }
-        ],
-        "preground_duplicates_clustered": 0,
-        "preground_retained_duplicates_skipped": 1,
-        "preground_unique_candidates": 2,
-        "rejection_reasons": [],
-        "selected": 2,
-        "succeeded": 2,
-        "trusted_headline_grounded": 2
-      },
-      "workforce": {
-        "alternate_source_grounded": 0,
-        "approved_evidence_candidates": 8,
-        "approved_source_sweep_candidates": 3,
-        "attempted": 7,
-        "direct_source_grounded": 0,
-        "discovered": 143,
-        "discovery_leads": 61,
-        "discovery_leads_resolved": 0,
-        "evidence_resolution_attempts": 0,
-        "failed": 1,
-        "metadata_qualified": 69,
-        "metadata_rejection_reasons": [
-          {
-            "count": 71,
-            "reason": "no domain relevance term"
-          },
-          {
-            "count": 1,
-            "reason": "explicitly excluded"
           },
           {
             "count": 1,
@@ -1113,47 +1114,119 @@
           },
           {
             "count": 1,
-            "reason": "social media is excluded from discovery, corroboration, evidence, and citation"
+            "reason": "insufficient domain materiality"
           }
         ],
         "preground_duplicates_clustered": 0,
-        "preground_retained_duplicates_skipped": 1,
+        "preground_retained_duplicates_skipped": 3,
+        "preground_unique_candidates": 2,
+        "rejection_reasons": [],
+        "selected": 1,
+        "succeeded": 2,
+        "trusted_headline_grounded": 2
+      },
+      "water": {
+        "alternate_source_grounded": 0,
+        "approved_evidence_candidates": 3,
+        "approved_source_sweep_candidates": 3,
+        "attempted": 0,
+        "direct_source_grounded": 0,
+        "discovered": 110,
+        "discovery_leads": 14,
+        "discovery_leads_resolved": 0,
+        "evidence_resolution_attempts": 0,
+        "failed": 0,
+        "metadata_qualified": 17,
+        "metadata_rejection_reasons": [
+          {
+            "count": 80,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 13,
+            "reason": "insufficient domain materiality"
+          }
+        ],
+        "preground_duplicates_clustered": 0,
+        "preground_retained_duplicates_skipped": 2,
+        "preground_unique_candidates": 0,
+        "rejection_reasons": [],
+        "selected": 0,
+        "succeeded": 0,
+        "trusted_headline_grounded": 0
+      },
+      "workforce": {
+        "alternate_source_grounded": 0,
+        "approved_evidence_candidates": 11,
+        "approved_source_sweep_candidates": 3,
+        "attempted": 7,
+        "direct_source_grounded": 0,
+        "discovered": 144,
+        "discovery_leads": 67,
+        "discovery_leads_resolved": 0,
+        "evidence_resolution_attempts": 0,
+        "failed": 3,
+        "metadata_qualified": 78,
+        "metadata_rejection_reasons": [
+          {
+            "count": 65,
+            "reason": "no domain relevance term"
+          },
+          {
+            "count": 1,
+            "reason": "explicitly excluded"
+          }
+        ],
+        "preground_duplicates_clustered": 0,
+        "preground_retained_duplicates_skipped": 3,
         "preground_unique_candidates": 7,
         "rejection_reasons": [
           {
             "count": 1,
+            "reason": "attributed commentary without a new empirical release is not a Current Context development"
+          },
+          {
+            "count": 1,
             "reason": "underlying source could not be established; approved headline metadata was not usable: trusted publisher headline is commentary/preview rather than a reported development"
+          },
+          {
+            "count": 1,
+            "reason": "underlying source could not be established; approved headline metadata was not usable: headline fallback is limited to approved reported sources"
           }
         ],
-        "selected": 3,
-        "succeeded": 6,
-        "trusted_headline_grounded": 6
+        "selected": 1,
+        "succeeded": 4,
+        "trusted_headline_grounded": 4
       }
     },
-    "discovery_leads": 581,
+    "discovery_leads": 622,
     "discovery_leads_resolved": 0,
-    "failed": 4,
+    "failed": 11,
     "preground_duplicates_clustered": 0,
-    "preground_retained_duplicates_skipped": 14,
-    "preground_unique_candidates": 19,
-    "reader_qualified_after_dedup": 10,
+    "preground_retained_duplicates_skipped": 22,
+    "preground_unique_candidates": 27,
+    "reader_qualified_after_dedup": 9,
     "rejection_reasons": [
       {
-        "count": 2,
-        "reason": "underlying source could not be established; approved headline metadata was not usable: headline fallback is limited to approved reported sources"
-      },
-      {
-        "count": 1,
+        "count": 4,
         "reason": "publisher page predates the Current Context window; discovery appears to be a recrawl/reindex"
       },
       {
-        "count": 1,
+        "count": 4,
+        "reason": "underlying source could not be established; approved headline metadata was not usable: headline fallback is limited to approved reported sources"
+      },
+      {
+        "count": 2,
         "reason": "underlying source could not be established; approved headline metadata was not usable: trusted publisher headline is commentary/preview rather than a reported development"
+      },
+      {
+        "count": 1,
+        "reason": "attributed commentary without a new empirical release is not a Current Context development"
       }
     ],
-    "succeeded": 15,
-    "trusted_headline_grounded": 15,
-    "unique_grounded_after_dedup": 10,
+    "succeeded": 16,
+    "trusted_headline_grounded": 16,
+    "unique_grounded_after_dedup": 9,
     "version": "4.6"
   },
   "providers": [
@@ -1164,118 +1237,109 @@
     "tier2_outbound"
   ],
   "publication_status": "selected_and_merged",
-  "qualified_count": 10,
+  "qualified_count": 9,
   "registry_path": "data/weekly_context_events.csv",
-  "registry_rows_added": 10,
-  "retrieved_at": "2026-09-29T18:11:43+00:00",
+  "registry_rows_added": 9,
+  "retrieved_at": "2026-09-30T18:09:18+00:00",
   "selected": {
     "adoption": [],
-    "compute": [],
-    "connectivity": [],
-    "data_center": [
+    "compute": [
       {
-        "event_date": "2026-09-22",
-        "event_id": "auto-2026-09-22-f821b680a422",
-        "qualification_tier": "C",
-        "qualification_tier_label": "Expanded window",
-        "rank_score": 119.5,
-        "source_name": "Data Center Dynamics",
-        "source_url": "https://www.datacenterdynamics.com/en/news/bdx-breaks-ground-on-ai-campus-2-in-jatiluhur-indonesia/"
-      }
-    ],
-    "economic_impact": [
-      {
-        "event_date": "2026-09-29",
-        "event_id": "auto-2026-09-29-08e7b2432d19",
+        "event_date": "2026-09-30",
+        "event_id": "auto-2026-09-30-dcd4392b8256",
         "qualification_tier": "A",
         "qualification_tier_label": "Preferred",
-        "rank_score": 118.5,
+        "rank_score": 108.5,
         "source_name": "The Register",
-        "source_url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOMjloX3d1UGp1Rl9NVHF4VUZKSFgzZGczcHFaYzRhdldndUgxb3lUMVRtM3B4ektCallCY0U1YjhwOE1hNk9semw5ZGZDTVlPYXZJbktJSl9rUnpZSUNXNHRpanBseGRrelN5cThwc2FuQ3g4MWJ1UnhvejBYbXVBZUdGRE5EMlVsQnY3SHJOdXJJR0RhbDNpblBTQnhVWmV3YVI4RXZkQXphWWxERGJab200VllJQUZnUEl3Q0NvNFMtMjQ0REpjczBGN3g?oc=5"
+        "source_url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOMGVaMDdENFlHV19qZTNlUmxkWHZkYm1jLXZpQ2ZkcGljc0MzeHdqZU9nVlFYSEtreGg1R2RydmJrT0hwc0tkeEVMazFwMGdocHJiUDZyQzdQaF8tTEthSzd4dVZKRi1ZX0YtbnhSeVlCclVzVjlGLWNnWVc4MlplYVhrdkRNQm9wbTJYU1dvNDFtMnlnUHFqbmdNUDA0bzBjVEMybzZpWFVWUlBIRUdmYWJaRGw5LXdDb3RwWFhTc1FpQQ?oc=5"
       }
     ],
+    "connectivity": [
+      {
+        "event_date": "2026-09-30",
+        "event_id": "auto-2026-09-30-b8e0d2fc03f4",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
+        "rank_score": 114.5,
+        "source_name": "Morningstar",
+        "source_url": "https://www.morningstar.com/news/pr-newswire/20260930ln60486/ekinops-powers-bluebird-fibers-midwest-network-investments-for-growing-infrastructure-demand"
+      }
+    ],
+    "data_center": [
+      {
+        "event_date": "2026-09-23",
+        "event_id": "auto-2026-09-23-21db59afa1b7",
+        "qualification_tier": "C",
+        "qualification_tier_label": "Expanded window",
+        "rank_score": 115.5,
+        "source_name": "Construction Dive",
+        "source_url": "https://www.constructiondive.com/news/the-next-data-center-bottleneck-isnt-power-its-public-support/831072/"
+      }
+    ],
+    "economic_impact": [],
     "finance": [],
     "grid_storage": [],
     "market": [
       {
-        "event_date": "2026-09-28",
-        "event_id": "auto-2026-09-28-1c5ec2b1cf4b",
+        "event_date": "2026-09-29",
+        "event_id": "auto-2026-09-29-d79799b99cd3",
         "qualification_tier": "A",
         "qualification_tier_label": "Preferred",
-        "rank_score": 126.0,
+        "rank_score": 151.5,
+        "source_name": "Reuters",
+        "source_url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQaFI3SDBna2ppaVVKa0FJWjRYdzZicnJCdnBRRGtmQ1ZncnVfWWZQLU9oSHJqZ0RyZ0hnVDduR0VhSTV2R1BpbWQ2dEdBUlFRdWtMYm5pWDI0bU82YWhkZ0ZZSTAzOEpKTXRBQ2lrUVVSQ21QUmttWlVBaHlqMk8yUXd2N0ZhLTBOTF9zNTdDM1FFLWdza3BNTHdxMlkwMURE?oc=5"
+      },
+      {
+        "event_date": "2026-09-29",
+        "event_id": "auto-2026-09-29-3cce62864517",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
+        "rank_score": 121.5,
+        "source_name": "Investor's Business Daily",
+        "source_url": "https://www.investors.com/market-trend/the-big-picture/ai-stocks-market-trading-action-chip-gearmakers-1-trillion-value/"
+      },
+      {
+        "event_date": "2026-09-29",
+        "event_id": "auto-2026-09-29-485900d20d5b",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
+        "rank_score": 120.0,
         "source_name": "Financial Times",
-        "source_url": "https://www.ft.com/content/5c627794-766b-49db-ab96-7532731e7084?syn-25a6b1a6=1"
+        "source_url": "https://www.ft.com/content/a8c1d14d-97aa-4b09-8162-adbcac1d0029?syn-25a6b1a6=1"
+      },
+      {
+        "event_date": "2026-09-30",
+        "event_id": "auto-2026-09-30-596adde2fb07",
+        "qualification_tier": "A",
+        "qualification_tier_label": "Preferred",
+        "rank_score": 114.5,
+        "source_name": "Semiconductor Engineering",
+        "source_url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE4tQlBoTHFNVkRkbkhDTGR6ajk0cFJMUGh6d2RfMnBCampqekFEd3dRRlhjd0VpTHk2ZmhwUmRmZ3FycnNoeUpfdEZaTkN1X1hGQ2xOMTVzLUZqMVRJYV90eEZDeEE?oc=5"
       }
     ],
     "power": [
       {
-        "event_date": "2026-09-29",
-        "event_id": "auto-2026-09-29-4149dec3a191",
+        "event_date": "2026-09-30",
+        "event_id": "auto-2026-09-30-2328d60e50e0",
         "qualification_tier": "C",
         "qualification_tier_label": "Expanded window",
         "rank_score": 109.5,
         "source_name": "Utility Dive",
-        "source_url": "https://www.utilitydive.com/news/the-data-center-boom-continues-apace-but-projects-face-mounting-obstacles/830496/"
-      },
-      {
-        "event_date": "2026-09-28",
-        "event_id": "auto-2026-09-28-c687afab06ac",
-        "qualification_tier": "C",
-        "qualification_tier_label": "Expanded window",
-        "rank_score": 108.5,
-        "source_name": "Utility Dive",
-        "source_url": "https://www.utilitydive.com/spons/from-data-centers-to-ai-factories-what-utilities-need-to-know-about-the-ne/831041/"
+        "source_url": "https://www.utilitydive.com/news/pjm-delays-backstop-procurement-ferc-data-center/831751/"
       }
     ],
-    "water": [
-      {
-        "event_date": "2026-09-29",
-        "event_id": "auto-2026-09-29-7ceb0efd9eb3",
-        "qualification_tier": "B",
-        "qualification_tier_label": "Strong",
-        "rank_score": 112.5,
-        "source_name": "EE Times",
-        "source_url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOZTFoaF9Ldk5UZjk4ZDRlMDNrdHNXTTVnNDEtU0pnYUZramdDUmFlN0g2Ymt5UFNsNnBqWGxjY2l6eEN3T3dEbk1MMWdxS0hSS19EaXhoQVhqVlBwNW9WQmgxOUdKLWZGQnRVaVBWb2k5ZVY2amhidl9QUl9NT0F4bzU3RVR1Zw?oc=5"
-      },
-      {
-        "event_date": "2026-09-21",
-        "event_id": "auto-2026-09-21-9252f7dbbc01",
-        "qualification_tier": "C",
-        "qualification_tier_label": "Expanded window",
-        "rank_score": 104.0,
-        "source_name": "EE Times",
-        "source_url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQY2RZaXNMMGo5UTROc09pRXhpVFpXZjZoeWFhVDlfekNoYWZXVTJRMXhyX0NiT0JaR3UySFd5SmEwZjFtTGJNYTdQN1k3RzBDaEo3cHFaWDZOZmN2UWpfMmRXakFBYlJSY0RQOFZEcFlUX2t3QnhwS24xUV9kck5fTWVDNFlGMWk5ZF9xWGJZYw?oc=5"
-      }
-    ],
+    "water": [],
     "workforce": [
       {
         "event_date": "2026-09-29",
-        "event_id": "auto-2026-09-29-8858dd6e0d27",
+        "event_id": "auto-2026-09-29-9ae7eef6739b",
         "qualification_tier": "A",
         "qualification_tier_label": "Preferred",
-        "rank_score": 158.5,
-        "source_name": "Barron's",
-        "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOQmpaOGZWRUdTbVQwVlFsNFJmcFQzNXdKZ3FfWFZnT0F0bFZVOE5lbWJUMFlrMFVpYVRELVhjaExvLWhtSjVJWUxQb21nNWw0X2pmemFBcTBGeFIwQktURWV6VGRBQ2dPRzQ2WW80UlBpLTJSZm9JTENiUWNjSFRUMjdITWM?oc=5"
-      },
-      {
-        "event_date": "2026-09-28",
-        "event_id": "auto-2026-09-28-c76b9b3b5d80",
-        "qualification_tier": "A",
-        "qualification_tier_label": "Preferred",
-        "rank_score": 110.0,
-        "source_name": "Semiconductor Engineering",
-        "source_url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOOGp4X0dkU2NWMm11LWcwR1RDT19acTdTamlaM3N6d2VpMkxEaGdlSEdZLVdpTi1XemRnbW52QXpZQ0ZvSHBFcDVTTnd4ejRzYXl1aklJdUlIOTZlNHJPVGRGTk4xNElXU1RhVG56VlNrMTVfRVdlekFNN1RlR29VTXFBOVRyeXFTZVZJU1NFQmwwTzJNallmRkhlTUNNakZXT1E?oc=5"
-      },
-      {
-        "event_date": "2026-09-25",
-        "event_id": "auto-2026-09-25-0c591ff0a300",
-        "qualification_tier": "A",
-        "qualification_tier_label": "Preferred",
-        "rank_score": 107.0,
-        "source_name": "Semiconductor Engineering",
-        "source_url": "https://semiengineering.com/job/siemens-digital-industries-senior-software-developer-algorithms-and-ai-for-chip-design-automation-remote-us/"
+        "rank_score": 118.0,
+        "source_name": "CNBC",
+        "source_url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOOHh4Y29BX3U3NU5XbUtKRFNIQXNpNE1hWHlqaENNWVBvWGEwWjdLNFdRUHVaYWFRVjJQbEJ5OVRZN29TaFBtV2p4cS1UcHc0TGQxTEdVaFlwSWcwV0Y0dUNFTkZGVlZUd1VYWUlQMEtIWU5LOGg4TVUwVmVkSXBQZGJHNHBuV1VaZUNLMXFIQWNkcU80MHc?oc=5"
       }
     ]
   },
-  "snapshot_id": "258d8f90e3214aa2"
+  "snapshot_id": "95d9cf3bd2ca0231"
 }

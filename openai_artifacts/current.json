@@ -1,15 +1,15 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20260929T181232594826Z_e5d67c6e_1ab35e6e",
+  "attempt_id": "20260930T180957980197Z_308fcc02_ba2d92f4",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
-    "workforce",
-    "economic_impact"
+    "finance"
   ],
   "editorial_context_event_ids": [
     "auto-2026-09-27-8233f6e6bf2a",
     "auto-2026-09-29-8858dd6e0d27",
+    "auto-2026-09-29-d79799b99cd3",
     "auto-2026-09-24-167bf8ca52a9",
     "auto-2026-09-21-8d10a12fd42b",
     "auto-2026-09-28-7b38f24759ff",
@@ -17,22 +17,21 @@
     "auto-2026-09-28-1c5ec2b1cf4b",
     "auto-2026-09-24-40fbeed15a26",
     "auto-2026-09-24-459a78e51bfc",
+    "auto-2026-09-29-3cce62864517",
     "auto-2026-09-21-b29cc7ddb408",
     "auto-2026-09-22-f821b680a422",
-    "auto-2026-09-28-5a4eea6bb428",
     "auto-2026-09-21-28805dc200b1",
-    "auto-2026-09-29-08e7b2432d19",
-    "auto-2026-09-24-f7f6f2c73542"
+    "auto-2026-09-29-08e7b2432d19"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
-      "workforce",
-      "economic_impact"
+      "finance"
     ],
     "current_event_ids": [
       "auto-2026-09-27-8233f6e6bf2a",
       "auto-2026-09-29-8858dd6e0d27",
+      "auto-2026-09-29-d79799b99cd3",
       "auto-2026-09-24-167bf8ca52a9",
       "auto-2026-09-21-8d10a12fd42b",
       "auto-2026-09-28-7b38f24759ff",
@@ -40,31 +39,28 @@
       "auto-2026-09-28-1c5ec2b1cf4b",
       "auto-2026-09-24-40fbeed15a26",
       "auto-2026-09-24-459a78e51bfc",
+      "auto-2026-09-29-3cce62864517",
       "auto-2026-09-21-b29cc7ddb408",
       "auto-2026-09-22-f821b680a422",
-      "auto-2026-09-28-5a4eea6bb428",
       "auto-2026-09-21-28805dc200b1",
-      "auto-2026-09-29-08e7b2432d19",
-      "auto-2026-09-24-f7f6f2c73542"
-    ],
-    "material_domains": [],
-    "new_event_domains": [
-      "market",
-      "workforce",
-      "economic_impact"
-    ],
-    "new_event_ids": [
-      "auto-2026-09-29-8858dd6e0d27",
-      "auto-2026-09-28-1c5ec2b1cf4b",
       "auto-2026-09-29-08e7b2432d19"
     ],
-    "reason": "new_developments",
+    "material_domains": [
+      "finance"
+    ],
+    "new_event_domains": [
+      "market"
+    ],
+    "new_event_ids": [
+      "auto-2026-09-29-d79799b99cd3",
+      "auto-2026-09-29-3cce62864517"
+    ],
+    "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
     "market",
-    "workforce",
-    "economic_impact"
+    "finance"
   ],
   "evidence_packets": {
     "adoption": {
@@ -831,24 +827,24 @@
         },
         {
           "context": "",
-          "display": "-0.56",
+          "display": "-0.55",
           "id": "finance.nfci",
           "label": "Chicago Fed NFCI",
-          "value": -0.555
+          "value": -0.548
         },
         {
           "context": "",
-          "display": "-0.05",
+          "display": "-0.04",
           "id": "finance.nfci_change",
           "label": "Three-month change in NFCI",
-          "value": -0.050000000000000044
+          "value": -0.03700000000000003
         },
         {
           "context": "",
-          "display": "0.21",
+          "display": "0.20",
           "id": "finance.bond_distress",
           "label": "Corporate bond market distress",
-          "value": 0.21
+          "value": 0.2
         },
         {
           "context": "",
@@ -1082,52 +1078,52 @@
       "facts": [
         {
           "context": "",
-          "display": "31.6",
+          "display": "33.0",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 31.625061245730997
+          "value": 32.98418321621356
         },
         {
           "context": "",
-          "display": "48.3",
+          "display": "48.8",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 48.290245752924896
+          "value": 48.75047534363669
         },
         {
           "context": "",
-          "display": "61.3%",
+          "display": "63.2%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6127450980392157
+          "value": 0.6323529411764706
         },
         {
           "context": "",
-          "display": "12.7%",
+          "display": "13.1%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.1266105391493465
+          "value": 0.13127284055947064
         },
         {
           "context": "",
-          "display": "34.7%",
+          "display": "35.4%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.3467341218796022
+          "value": 0.35443402678253266
         },
         {
           "context": "",
-          "display": "64.3%",
+          "display": "64.5%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6434902053255253
+          "value": 0.6454387396307651
         },
         {
           "context": "",
-          "display": "18.7",
+          "display": "18.5",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.688024354871608
+          "value": 18.512141011619182
         },
         {
           "context": "",
@@ -1144,7 +1140,7 @@
           "value": 2.0
         }
       ],
-      "importance": 19.34902053255253,
+      "importance": 19.54387396307652,
       "label": "Market",
       "references": [
         {
@@ -1564,19 +1560,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "e5d67c6eefd0e495930187af",
-  "generated_at": "2026-09-29T18:13:49.080523+00:00",
+  "evidence_snapshot_id": "308fcc023b84556d16368d87",
+  "generated_at": "2026-09-30T18:11:04.238755+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 76.481956072,
-      "input_tokens": 3775,
+      "elapsed_sec": 66.25407729799997,
+      "input_tokens": 3697,
       "model": "gpt-5.6-sol",
-      "output_tokens": 6371,
-      "poll_attempts": 34,
+      "output_tokens": 4807,
+      "poll_attempts": 29,
       "poll_errors": [],
-      "response_id": "resp_0203be0fb8c95142006abbff919b4c87d196a66ea61cbfbe44",
+      "response_id": "resp_0d3c8a479d200758006abd5077f7a887d0bd00efca5eadd87b",
       "terminal_status": "completed",
-      "total_tokens": 10146
+      "total_tokens": 8504
     }
   },
   "max_output_tokens": null,
@@ -1587,11 +1583,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "e5d67c6eefd0e495930187af",
-    "expires_at": "2026-09-30T18:13:49.082325+00:00",
+    "current_evidence_snapshot_id": "308fcc023b84556d16368d87",
+    "expires_at": "2026-10-01T18:11:04.240902+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-09-29T18:13:49.082325+00:00",
+    "published_at": "2026-09-30T18:11:04.240902+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1599,24 +1595,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 34,
+        "poll_attempts": 29,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0203be0fb8c95142006abbff919b4c87d196a66ea61cbfbe44",
+        "response_id": "resp_0d3c8a479d200758006abd5077f7a887d0bd00efca5eadd87b",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index increased slightly to 31.6, but average sector trading pressure eased to 48.3. Positive one-year returns now cover 61.3% of companies, down slightly, while the median one-year return also edged lower to 12.7%. The signal is mixed: the aggregate index improved, but participation and typical performance softened.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The AI equity index edges up as return breadth slips\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at just 0.8%. Two channels have positive real-earnings growth. Barron's reports an expectation that AI will create more jobs than layoffs, though with painful disruption. That is a forward-looking judgment; the current measures still show narrow gains across the tracked labor channels.\",\"event_ids\":[\"auto-2026-09-29-8858dd6e0d27\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Job-creation expectations run ahead of current labor breadth\",\"event_ids\":[\"auto-2026-09-29-8858dd6e0d27\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% as real output rose 2.5%. Real hourly compensation increased 0.6%, while unit labor costs grew 1.4%, indicating positive aggregate performance without a comparable increase in real compensation. A report that investors are pricing in a 32.6% AI productivity boost for software engineers describes an expectation for a specific workforce segment, not an economy-wide result. The current aggregate data do not identify AI's contribution.\",\"event_ids\":[\"auto-2026-09-29-08e7b2432d19\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity is rising, but compensation gains remain modest\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Data-center development is extensive, while tracked labor gains remain narrow\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]},\"paragraphs\":[{\"text\":\"Nearly one-quarter of businesses report current AI use, and 27.6% expect to use it within six months. Available records list 1,556 data-center sites in development, equivalent to 0.51 times the operating base. Commercial electricity demand grew 3.1%, compared with 1.2% for total retail demand. These measures show meaningful adoption, a sizable development base and faster commercial power-demand growth, though they do not identify AI's contribution to the electricity increase.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"power.commercial_growth\",\"power.demand_growth\"]},{\"text\":\"Broader labor gains are harder to see. Only one tracked AI-linked labor channel has positive employment growth, and its leader\u2014power and communication construction\u2014is growing just 0.8%; only two have positive real-earnings growth. Barron's reports that AI should create more jobs than layoffs while still causing painful disruption. That is a forecast, while the current tracked data show limited employment and earnings breadth.\",\"event_ids\":[\"auto-2026-09-29-8858dd6e0d27\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},{\"text\":\"At the economy-wide level, nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. These are positive output and productivity readings, not a measure of AI's contribution. A separate report says investors are pricing in a 32.6% AI productivity boost for software engineers. The measures are not directly comparable, but the contrast shows that some market expectations are far larger than the productivity growth currently visible in aggregate data.\",\"event_ids\":[\"auto-2026-09-29-08e7b2432d19\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose slightly to 33.0. Positive one-year returns now extend to 63.2% of covered companies, while the median one-year return increased to 13.1%. The concurrent gains in the index, breadth and typical return amount to a modestly firmer market signal. Reuters reports that Anthropic\u2019s IPO prospectus has sharpened attention to AI valuations, keeping pricing under scrutiny even as performance broadens.\",\"event_ids\":[\"auto-2026-09-29-d79799b99cd3\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Return breadth improves alongside the AI equity index\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI edged up to -0.55 but remains below zero, while its three-month change is -0.04. Corporate bond market distress declined slightly to 0.20, and borrower strain is 26.0. These measures do not indicate broad credit deterioration, but they do not preclude concentrated risk. CNBC reports that higher bond yields have increased pressure on debt-hungry AI companies, distinguishing benign aggregate conditions from the funding sensitivity of individual firms.\",\"event_ids\":[\"auto-2026-09-27-8233f6e6bf2a\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"Broad financial conditions remain loose despite debt-dependent AI risk\",\"event_ids\":[\"auto-2026-09-27-8233f6e6bf2a\"],\"fact_ids\":[\"finance.nfci\",\"finance.bond_distress\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Market support remains, but financing and grid execution are testing the AI buildout\",\"event_ids\":[\"auto-2026-09-27-8233f6e6bf2a\",\"auto-2026-09-24-167bf8ca52a9\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"finance.nfci\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Capital markets remain broadly supportive of the AI sector, but that support is not indiscriminate. The AI Equity Index edged up to 33.0, positive one-year returns cover 63.2% of tracked companies and broad financial conditions remain loose. At the same time, Reuters reports that Anthropic\u2019s IPO prospectus has intensified attention to AI valuations, while CNBC reports that higher bond yields have increased risk for debt-hungry AI companies. The aggregate backdrop remains favorable, but valuation and funding are receiving greater scrutiny at individual firms.\",\"event_ids\":[\"auto-2026-09-29-d79799b99cd3\",\"auto-2026-09-27-8233f6e6bf2a\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"finance.nfci\",\"finance.bond_distress\"]},{\"text\":\"The physical expansion is large, but the power pipeline remains a filter between proposed and operating capacity. Available records show 1,556 data-center sites in development, equal to about half the operating base. The active interconnection queue contains 2,061 GW, yet only 24.2% has reached the executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort ultimately became operational. That historical rate is not a forecast for today\u2019s projects, but it shows why queue size alone overstates deliverable capacity. S&P Global also reports that data centers are compounding transmission congestion.\",\"event_ids\":[\"auto-2026-09-24-167bf8ca52a9\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"The economic case for this investment ultimately depends on deployment and measurable gains. Businesses reporting current AI use account for 23.8%, with 27.6% expecting to use it within six months. Nonfarm-business productivity grew 2.2% and real output grew 2.5%, but those aggregate figures do not isolate AI\u2019s contribution. The tracked labor channels remain narrow: only one has positive employment growth, and only two have positive real-earnings growth. Adoption is meaningful, but these measures do not yet establish a broadly distributed labor-market or economic payoff from AI.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1790705627.0,
+      "completed_at": 1790791862.0,
       "conversation": null,
-      "created_at": 1790705553.0,
+      "created_at": 1790791799.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0203be0fb8c95142006abbff919b4c87d196a66ea61cbfbe44",
+      "id": "resp_0d3c8a479d200758006abd5077f7a887d0bd00efca5eadd87b",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1629,7 +1625,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbff93e84887d1803342c3fe654627",
+          "id": "rs_0d3c8a479d200758006abd507af17c87d0adb21d10a000e9ae",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1637,7 +1633,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbff9a0f7887d19a661fb6e7f673ba",
+          "id": "rs_0d3c8a479d200758006abd50820dec87d09a841302ed1db9be",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1645,7 +1641,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffa0ed1087d189a529df50969831",
+          "id": "rs_0d3c8a479d200758006abd50890acc87d0b2e24d87a40bddc9",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1653,7 +1649,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffa75ac887d185be0fe63a8aca10",
+          "id": "rs_0d3c8a479d200758006abd50905ac487d0bf45664af6425fb8",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1661,7 +1657,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffad6b3087d195c4f4cc2e7c5673",
+          "id": "rs_0d3c8a479d200758006abd5098530487d0ac5c51333cd21fb0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1669,7 +1665,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffb3d54887d1bd7bdc157dcf0087",
+          "id": "rs_0d3c8a479d200758006abd509ea00087d0bf6e999aae6cc3b5",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1677,7 +1673,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffb9b3a087d1957243d466f13224",
+          "id": "rs_0d3c8a479d200758006abd50a54c3087d0b83a43dd8123980c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1685,31 +1681,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffc0a97487d192dfbcd453bee11d",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffc616c087d190e74083c60cbc55",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffcc7bc087d1828b6a841d2d0baf",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0203be0fb8c95142006abbffd2627887d19a9a367dd2186167",
+          "id": "rs_0d3c8a479d200758006abd50abb1ac87d08f177815d8bb49ef",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1719,11 +1691,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index increased slightly to 31.6, but average sector trading pressure eased to 48.3. Positive one-year returns now cover 61.3% of companies, down slightly, while the median one-year return also edged lower to 12.7%. The signal is mixed: the aggregate index improved, but participation and typical performance softened.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The AI equity index edges up as return breadth slips\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at just 0.8%. Two channels have positive real-earnings growth. Barron's reports an expectation that AI will create more jobs than layoffs, though with painful disruption. That is a forward-looking judgment; the current measures still show narrow gains across the tracked labor channels.\",\"event_ids\":[\"auto-2026-09-29-8858dd6e0d27\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Job-creation expectations run ahead of current labor breadth\",\"event_ids\":[\"auto-2026-09-29-8858dd6e0d27\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% as real output rose 2.5%. Real hourly compensation increased 0.6%, while unit labor costs grew 1.4%, indicating positive aggregate performance without a comparable increase in real compensation. A report that investors are pricing in a 32.6% AI productivity boost for software engineers describes an expectation for a specific workforce segment, not an economy-wide result. The current aggregate data do not identify AI's contribution.\",\"event_ids\":[\"auto-2026-09-29-08e7b2432d19\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity is rising, but compensation gains remain modest\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Data-center development is extensive, while tracked labor gains remain narrow\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]},\"paragraphs\":[{\"text\":\"Nearly one-quarter of businesses report current AI use, and 27.6% expect to use it within six months. Available records list 1,556 data-center sites in development, equivalent to 0.51 times the operating base. Commercial electricity demand grew 3.1%, compared with 1.2% for total retail demand. These measures show meaningful adoption, a sizable development base and faster commercial power-demand growth, though they do not identify AI's contribution to the electricity increase.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"power.commercial_growth\",\"power.demand_growth\"]},{\"text\":\"Broader labor gains are harder to see. Only one tracked AI-linked labor channel has positive employment growth, and its leader\u2014power and communication construction\u2014is growing just 0.8%; only two have positive real-earnings growth. Barron's reports that AI should create more jobs than layoffs while still causing painful disruption. That is a forecast, while the current tracked data show limited employment and earnings breadth.\",\"event_ids\":[\"auto-2026-09-29-8858dd6e0d27\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},{\"text\":\"At the economy-wide level, nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. These are positive output and productivity readings, not a measure of AI's contribution. A separate report says investors are pricing in a 32.6% AI productivity boost for software engineers. The measures are not directly comparable, but the contrast shows that some market expectations are far larger than the productivity growth currently visible in aggregate data.\",\"event_ids\":[\"auto-2026-09-29-08e7b2432d19\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose slightly to 33.0. Positive one-year returns now extend to 63.2% of covered companies, while the median one-year return increased to 13.1%. The concurrent gains in the index, breadth and typical return amount to a modestly firmer market signal. Reuters reports that Anthropic\u2019s IPO prospectus has sharpened attention to AI valuations, keeping pricing under scrutiny even as performance broadens.\",\"event_ids\":[\"auto-2026-09-29-d79799b99cd3\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Return breadth improves alongside the AI equity index\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI edged up to -0.55 but remains below zero, while its three-month change is -0.04. Corporate bond market distress declined slightly to 0.20, and borrower strain is 26.0. These measures do not indicate broad credit deterioration, but they do not preclude concentrated risk. CNBC reports that higher bond yields have increased pressure on debt-hungry AI companies, distinguishing benign aggregate conditions from the funding sensitivity of individual firms.\",\"event_ids\":[\"auto-2026-09-27-8233f6e6bf2a\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"Broad financial conditions remain loose despite debt-dependent AI risk\",\"event_ids\":[\"auto-2026-09-27-8233f6e6bf2a\"],\"fact_ids\":[\"finance.nfci\",\"finance.bond_distress\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Market support remains, but financing and grid execution are testing the AI buildout\",\"event_ids\":[\"auto-2026-09-27-8233f6e6bf2a\",\"auto-2026-09-24-167bf8ca52a9\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"finance.nfci\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Capital markets remain broadly supportive of the AI sector, but that support is not indiscriminate. The AI Equity Index edged up to 33.0, positive one-year returns cover 63.2% of tracked companies and broad financial conditions remain loose. At the same time, Reuters reports that Anthropic\u2019s IPO prospectus has intensified attention to AI valuations, while CNBC reports that higher bond yields have increased risk for debt-hungry AI companies. The aggregate backdrop remains favorable, but valuation and funding are receiving greater scrutiny at individual firms.\",\"event_ids\":[\"auto-2026-09-29-d79799b99cd3\",\"auto-2026-09-27-8233f6e6bf2a\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"finance.nfci\",\"finance.bond_distress\"]},{\"text\":\"The physical expansion is large, but the power pipeline remains a filter between proposed and operating capacity. Available records show 1,556 data-center sites in development, equal to about half the operating base. The active interconnection queue contains 2,061 GW, yet only 24.2% has reached the executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort ultimately became operational. That historical rate is not a forecast for today\u2019s projects, but it shows why queue size alone overstates deliverable capacity. S&P Global also reports that data centers are compounding transmission congestion.\",\"event_ids\":[\"auto-2026-09-24-167bf8ca52a9\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"The economic case for this investment ultimately depends on deployment and measurable gains. Businesses reporting current AI use account for 23.8%, with 27.6% expecting to use it within six months. Nonfarm-business productivity grew 2.2% and real output grew 2.5%, but those aggregate figures do not isolate AI\u2019s contribution. The tracked labor channels remain narrow: only one has positive employment growth, and only two have positive real-earnings growth. Adoption is meaningful, but these measures do not yet establish a broadly distributed labor-market or economic payoff from AI.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0203be0fb8c95142006abbffd3d5a087d186343912ff8f2f8b",
+          "id": "msg_0d3c8a479d200758006abd50adca8887d0a0432f5ae880afce",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -1896,16 +1868,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 3775,
+        "input_tokens": 3697,
         "input_tokens_details": {
-          "cache_write_tokens": 3772,
+          "cache_write_tokens": 3694,
           "cached_tokens": 0
         },
-        "output_tokens": 6371,
+        "output_tokens": 4807,
         "output_tokens_details": {
-          "reasoning_tokens": 5286
+          "reasoning_tokens": 3778
         },
-        "total_tokens": 10146
+        "total_tokens": 8504
       },
       "user": null
     }
@@ -2261,12 +2233,12 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "The Chicago Fed NFCI is -0.56, with a three-month change of -0.05, indicating that broad financial conditions remain on the loose side. Borrower strain is 26.0, while lender strain is -13.5. CNBC reports that a spike in bond yields has increased risk for debt-hungry AI companies. Broad credit conditions can therefore remain supportive while firms that rely heavily on borrowing face more specific pressure.",
+      "analysis": "The Chicago Fed NFCI edged up to -0.55 but remains below zero, while its three-month change is -0.04. Corporate bond market distress declined slightly to 0.20, and borrower strain is 26.0. These measures do not indicate broad credit deterioration, but they do not preclude concentrated risk. CNBC reports that higher bond yields have increased pressure on debt-hungry AI companies, distinguishing benign aggregate conditions from the funding sensitivity of individual firms.",
       "analysis_sentences": [
-        "The Chicago Fed NFCI is -0.56, with a three-month change of -0.05, indicating that broad financial conditions remain on the loose side.",
-        "Borrower strain is 26.0, while lender strain is -13.5.",
-        "CNBC reports that a spike in bond yields has increased risk for debt-hungry AI companies.",
-        "Broad credit conditions can therefore remain supportive while firms that rely heavily on borrowing face more specific pressure."
+        "The Chicago Fed NFCI edged up to -0.55 but remains below zero, while its three-month change is -0.04.",
+        "Corporate bond market distress declined slightly to 0.20, and borrower strain is 26.0.",
+        "These measures do not indicate broad credit deterioration, but they do not preclude concentrated risk.",
+        "CNBC reports that higher bond yields have increased pressure on debt-hungry AI companies, distinguishing benign aggregate conditions from the funding sensitivity of individual firms."
       ],
       "claim_support": [
         {
@@ -2274,10 +2246,11 @@
             "auto-2026-09-27-8233f6e6bf2a"
           ],
           "fact_ids": [
-            "finance.nfci"
+            "finance.nfci",
+            "finance.bond_distress"
           ],
           "field": "headline",
-          "text": "Loose broad conditions coexist with higher yield risk for debt-dependent AI companies"
+          "text": "Broad financial conditions remain loose despite debt-dependent AI risk"
         },
         {
           "event_ids": [
@@ -2286,18 +2259,18 @@
           "fact_ids": [
             "finance.nfci",
             "finance.nfci_change",
-            "finance.borrower_strain",
-            "finance.lender_strain"
+            "finance.bond_distress",
+            "finance.borrower_strain"
           ],
           "field": "body",
-          "text": "The Chicago Fed NFCI is -0.56, with a three-month change of -0.05, indicating that broad financial conditions remain on the loose side. Borrower strain is 26.0, while lender strain is -13.5. CNBC reports that a spike in bond yields has increased risk for debt-hungry AI companies. Broad credit conditions can therefore remain supportive while firms that rely heavily on borrowing face more specific pressure."
+          "text": "The Chicago Fed NFCI edged up to -0.55 but remains below zero, while its three-month change is -0.04. Corporate bond market distress declined slightly to 0.20, and borrower strain is 26.0. These measures do not indicate broad credit deterioration, but they do not preclude concentrated risk. CNBC reports that higher bond yields have increased pressure on debt-hungry AI companies, distinguishing benign aggregate conditions from the funding sensitivity of individual firms."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "43ee6a57705444c0b5b6dc41",
-      "generated_at": "2026-09-28T19:51:33.394715+00:00",
+      "evidence_snapshot_id": "308fcc023b84556d16368d87",
+      "generated_at": "2026-09-30T18:11:04.238527+00:00",
       "generator": "openai",
-      "headline": "Loose broad conditions coexist with higher yield risk for debt-dependent AI companies",
+      "headline": "Broad financial conditions remain loose despite debt-dependent AI risk",
       "label": "Finance",
       "references": [
         {
@@ -2402,133 +2375,142 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Nearly one-quarter of businesses report current AI use, and 27.6% expect to use it within six months. Available records list 1,556 data-center sites in development, equivalent to 0.51 times the operating base. Commercial electricity demand grew 3.1%, compared with 1.2% for total retail demand. These measures show meaningful adoption, a sizable development base and faster commercial power-demand growth, though they do not identify AI's contribution to the electricity increase. Broader labor gains are harder to see. Only one tracked AI-linked labor channel has positive employment growth, and its leader\u2014power and communication construction\u2014is growing just 0.8%; only two have positive real-earnings growth. Barron's reports that AI should create more jobs than layoffs while still causing painful disruption. That is a forecast, while the current tracked data show limited employment and earnings breadth. At the economy-wide level, nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. These are positive output and productivity readings, not a measure of AI's contribution. A separate report says investors are pricing in a 32.6% AI productivity boost for software engineers. The measures are not directly comparable, but the contrast shows that some market expectations are far larger than the productivity growth currently visible in aggregate data.",
+      "analysis": "Capital markets remain broadly supportive of the AI sector, but that support is not indiscriminate. The AI Equity Index edged up to 33.0, positive one-year returns cover 63.2% of tracked companies and broad financial conditions remain loose. At the same time, Reuters reports that Anthropic\u2019s IPO prospectus has intensified attention to AI valuations, while CNBC reports that higher bond yields have increased risk for debt-hungry AI companies. The aggregate backdrop remains favorable, but valuation and funding are receiving greater scrutiny at individual firms. The physical expansion is large, but the power pipeline remains a filter between proposed and operating capacity. Available records show 1,556 data-center sites in development, equal to about half the operating base. The active interconnection queue contains 2,061 GW, yet only 24.2% has reached the executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort ultimately became operational. That historical rate is not a forecast for today\u2019s projects, but it shows why queue size alone overstates deliverable capacity. S&P Global also reports that data centers are compounding transmission congestion. The economic case for this investment ultimately depends on deployment and measurable gains. Businesses reporting current AI use account for 23.8%, with 27.6% expecting to use it within six months. Nonfarm-business productivity grew 2.2% and real output grew 2.5%, but those aggregate figures do not isolate AI\u2019s contribution. The tracked labor channels remain narrow: only one has positive employment growth, and only two have positive real-earnings growth. Adoption is meaningful, but these measures do not yet establish a broadly distributed labor-market or economic payoff from AI.",
       "analysis_paragraphs": [
-        "Nearly one-quarter of businesses report current AI use, and 27.6% expect to use it within six months. Available records list 1,556 data-center sites in development, equivalent to 0.51 times the operating base. Commercial electricity demand grew 3.1%, compared with 1.2% for total retail demand. These measures show meaningful adoption, a sizable development base and faster commercial power-demand growth, though they do not identify AI's contribution to the electricity increase.",
-        "Broader labor gains are harder to see. Only one tracked AI-linked labor channel has positive employment growth, and its leader\u2014power and communication construction\u2014is growing just 0.8%; only two have positive real-earnings growth. Barron's reports that AI should create more jobs than layoffs while still causing painful disruption. That is a forecast, while the current tracked data show limited employment and earnings breadth.",
-        "At the economy-wide level, nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. These are positive output and productivity readings, not a measure of AI's contribution. A separate report says investors are pricing in a 32.6% AI productivity boost for software engineers. The measures are not directly comparable, but the contrast shows that some market expectations are far larger than the productivity growth currently visible in aggregate data."
+        "Capital markets remain broadly supportive of the AI sector, but that support is not indiscriminate. The AI Equity Index edged up to 33.0, positive one-year returns cover 63.2% of tracked companies and broad financial conditions remain loose. At the same time, Reuters reports that Anthropic\u2019s IPO prospectus has intensified attention to AI valuations, while CNBC reports that higher bond yields have increased risk for debt-hungry AI companies. The aggregate backdrop remains favorable, but valuation and funding are receiving greater scrutiny at individual firms.",
+        "The physical expansion is large, but the power pipeline remains a filter between proposed and operating capacity. Available records show 1,556 data-center sites in development, equal to about half the operating base. The active interconnection queue contains 2,061 GW, yet only 24.2% has reached the executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort ultimately became operational. That historical rate is not a forecast for today\u2019s projects, but it shows why queue size alone overstates deliverable capacity. S&P Global also reports that data centers are compounding transmission congestion.",
+        "The economic case for this investment ultimately depends on deployment and measurable gains. Businesses reporting current AI use account for 23.8%, with 27.6% expecting to use it within six months. Nonfarm-business productivity grew 2.2% and real output grew 2.5%, but those aggregate figures do not isolate AI\u2019s contribution. The tracked labor channels remain narrow: only one has positive employment growth, and only two have positive real-earnings growth. Adoption is meaningful, but these measures do not yet establish a broadly distributed labor-market or economic payoff from AI."
       ],
       "analysis_sentences": [
-        "Nearly one-quarter of businesses report current AI use, and 27.6% expect to use it within six months.",
-        "Available records list 1,556 data-center sites in development, equivalent to 0.51 times the operating base.",
-        "Commercial electricity demand grew 3.1%, compared with 1.2% for total retail demand.",
-        "These measures show meaningful adoption, a sizable development base and faster commercial power-demand growth, though they do not identify AI's contribution to the electricity increase.",
-        "Broader labor gains are harder to see.",
-        "Only one tracked AI-linked labor channel has positive employment growth, and its leader\u2014power and communication construction\u2014is growing just 0.8%; only two have positive real-earnings growth.",
-        "Barron's reports that AI should create more jobs than layoffs while still causing painful disruption.",
-        "That is a forecast, while the current tracked data show limited employment and earnings breadth.",
-        "At the economy-wide level, nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%.",
-        "These are positive output and productivity readings, not a measure of AI's contribution.",
-        "A separate report says investors are pricing in a 32.6% AI productivity boost for software engineers.",
-        "The measures are not directly comparable, but the contrast shows that some market expectations are far larger than the productivity growth currently visible in aggregate data."
+        "Capital markets remain broadly supportive of the AI sector, but that support is not indiscriminate.",
+        "The AI Equity Index edged up to 33.0, positive one-year returns cover 63.2% of tracked companies and broad financial conditions remain loose.",
+        "At the same time, Reuters reports that Anthropic\u2019s IPO prospectus has intensified attention to AI valuations, while CNBC reports that higher bond yields have increased risk for debt-hungry AI companies.",
+        "The aggregate backdrop remains favorable, but valuation and funding are receiving greater scrutiny at individual firms.",
+        "The physical expansion is large, but the power pipeline remains a filter between proposed and operating capacity.",
+        "Available records show 1,556 data-center sites in development, equal to about half the operating base.",
+        "The active interconnection queue contains 2,061 GW, yet only 24.2% has reached the executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort ultimately became operational.",
+        "That historical rate is not a forecast for today\u2019s projects, but it shows why queue size alone overstates deliverable capacity.",
+        "S&P Global also reports that data centers are compounding transmission congestion.",
+        "The economic case for this investment ultimately depends on deployment and measurable gains.",
+        "Businesses reporting current AI use account for 23.8%, with 27.6% expecting to use it within six months.",
+        "Nonfarm-business productivity grew 2.2% and real output grew 2.5%, but those aggregate figures do not isolate AI\u2019s contribution.",
+        "The tracked labor channels remain narrow: only one has positive employment growth, and only two have positive real-earnings growth.",
+        "Adoption is meaningful, but these measures do not yet establish a broadly distributed labor-market or economic payoff from AI."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-09-27-8233f6e6bf2a",
+            "auto-2026-09-24-167bf8ca52a9"
+          ],
+          "fact_ids": [
+            "market.aei",
+            "market.positive_breadth",
+            "finance.nfci",
+            "grid_storage.advanced_share"
+          ],
+          "field": "headline",
+          "text": "Market support remains, but financing and grid execution are testing the AI buildout"
+        },
+        {
+          "event_ids": [
+            "auto-2026-09-29-d79799b99cd3",
+            "auto-2026-09-27-8233f6e6bf2a"
+          ],
+          "fact_ids": [
+            "market.aei",
+            "market.positive_breadth",
+            "finance.nfci",
+            "finance.bond_distress"
+          ],
+          "field": "paragraphs[0]",
+          "text": "Capital markets remain broadly supportive of the AI sector, but that support is not indiscriminate. The AI Equity Index edged up to 33.0, positive one-year returns cover 63.2% of tracked companies and broad financial conditions remain loose. At the same time, Reuters reports that Anthropic\u2019s IPO prospectus has intensified attention to AI valuations, while CNBC reports that higher bond yields have increased risk for debt-hungry AI companies. The aggregate backdrop remains favorable, but valuation and funding are receiving greater scrutiny at individual firms."
+        },
+        {
+          "event_ids": [
+            "auto-2026-09-24-167bf8ca52a9"
+          ],
           "fact_ids": [
             "data_center.development_sites",
             "data_center.development_to_operating",
-            "workforce.employment_breadth",
-            "workforce.real_earnings_breadth"
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct"
           ],
-          "field": "headline",
-          "text": "Data-center development is extensive, while tracked labor gains remain narrow"
+          "field": "paragraphs[1]",
+          "text": "The physical expansion is large, but the power pipeline remains a filter between proposed and operating capacity. Available records show 1,556 data-center sites in development, equal to about half the operating base. The active interconnection queue contains 2,061 GW, yet only 24.2% has reached the executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort ultimately became operational. That historical rate is not a forecast for today\u2019s projects, but it shows why queue size alone overstates deliverable capacity. S&P Global also reports that data centers are compounding transmission congestion."
         },
         {
           "event_ids": [],
           "fact_ids": [
             "adoption.current_business_use_pct",
             "adoption.expected_business_use_pct",
-            "data_center.development_sites",
-            "data_center.development_to_operating",
-            "power.commercial_growth",
-            "power.demand_growth"
-          ],
-          "field": "paragraphs[0]",
-          "text": "Nearly one-quarter of businesses report current AI use, and 27.6% expect to use it within six months. Available records list 1,556 data-center sites in development, equivalent to 0.51 times the operating base. Commercial electricity demand grew 3.1%, compared with 1.2% for total retail demand. These measures show meaningful adoption, a sizable development base and faster commercial power-demand growth, though they do not identify AI's contribution to the electricity increase."
-        },
-        {
-          "event_ids": [
-            "auto-2026-09-29-8858dd6e0d27"
-          ],
-          "fact_ids": [
-            "workforce.employment_breadth",
-            "workforce.real_earnings_breadth",
-            "workforce.strongest_channel",
-            "workforce.strongest_channel_growth"
-          ],
-          "field": "paragraphs[1]",
-          "text": "Broader labor gains are harder to see. Only one tracked AI-linked labor channel has positive employment growth, and its leader\u2014power and communication construction\u2014is growing just 0.8%; only two have positive real-earnings growth. Barron's reports that AI should create more jobs than layoffs while still causing painful disruption. That is a forecast, while the current tracked data show limited employment and earnings breadth."
-        },
-        {
-          "event_ids": [
-            "auto-2026-09-29-08e7b2432d19"
-          ],
-          "fact_ids": [
             "economic_impact.productivity_growth",
             "economic_impact.real_output_growth",
-            "economic_impact.real_compensation_growth",
-            "economic_impact.unit_labor_cost_growth"
+            "workforce.employment_breadth",
+            "workforce.real_earnings_breadth"
           ],
           "field": "paragraphs[2]",
-          "text": "At the economy-wide level, nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. These are positive output and productivity readings, not a measure of AI's contribution. A separate report says investors are pricing in a 32.6% AI productivity boost for software engineers. The measures are not directly comparable, but the contrast shows that some market expectations are far larger than the productivity growth currently visible in aggregate data."
+          "text": "The economic case for this investment ultimately depends on deployment and measurable gains. Businesses reporting current AI use account for 23.8%, with 27.6% expecting to use it within six months. Nonfarm-business productivity grew 2.2% and real output grew 2.5%, but those aggregate figures do not isolate AI\u2019s contribution. The tracked labor channels remain narrow: only one has positive employment growth, and only two have positive real-earnings growth. Adoption is meaningful, but these measures do not yet establish a broadly distributed labor-market or economic payoff from AI."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "data_center.development_sites",
-          "label": "Sites in development in available project records",
-          "value": "1,556"
+          "fact_id": "market.aei",
+          "label": "AI Equity Index",
+          "value": "33.0"
         },
         {
           "context": "",
-          "fact_id": "data_center.development_to_operating",
-          "label": "Development sites relative to operating sites",
-          "value": "0.51x"
+          "fact_id": "market.positive_breadth",
+          "label": "Covered companies with positive one-year returns",
+          "value": "63.2%"
         },
         {
           "context": "",
-          "fact_id": "workforce.employment_breadth",
-          "label": "Tracked AI-linked labor channels with positive employment growth",
-          "value": "1"
+          "fact_id": "finance.nfci",
+          "label": "Chicago Fed NFCI",
+          "value": "-0.55"
         }
       ],
-      "evidence_snapshot_id": "e5d67c6eefd0e495930187af",
-      "generated_at": "2026-09-29T18:13:49.080331+00:00",
+      "evidence_snapshot_id": "308fcc023b84556d16368d87",
+      "generated_at": "2026-09-30T18:11:04.238527+00:00",
       "generator": "openai",
-      "headline": "Data-center development is extensive, while tracked labor gains remain narrow",
+      "headline": "Market support remains, but financing and grid execution are testing the AI buildout",
       "label": "AI Macro",
       "references": [
         {
-          "source_label": "Pew / Data Center Map",
-          "source_url": "https://www.pewresearch.org/short-reads/2026/04/13/most-new-data-centers-in-the-us-are-coming-to-rural-areas/"
+          "source_label": "YFinance",
+          "source_url": "https://finance.yahoo.com/"
         },
         {
-          "source_label": "FracTracker Alliance",
-          "source_url": "https://fractracker.org/2026/04/open-u-s-data-centers-tracker/"
+          "source_label": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "Deduplicated campus records",
-          "source_url": ""
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
         },
         {
-          "source_label": "Gigawatt Map",
-          "source_url": "https://gigawattmap.com/"
+          "source_label": "Chicago Fed NFCI",
+          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
         },
         {
-          "source_label": "Primary project disclosures",
-          "source_url": ""
+          "source_label": "New York Fed CMDI",
+          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
         },
         {
-          "source_label": "U.S. EIA",
-          "source_url": "https://www.eia.gov/electricity/data.php"
+          "source_label": "CalSTRS PE Performance",
+          "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"
         }
       ],
       "selected_domains": [
+        "market",
+        "finance",
         "data_center",
-        "power",
+        "grid_storage",
         "adoption",
         "workforce",
         "economic_impact"
@@ -2536,39 +2518,42 @@
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index increased slightly to 31.6, but average sector trading pressure eased to 48.3. Positive one-year returns now cover 61.3% of companies, down slightly, while the median one-year return also edged lower to 12.7%. The signal is mixed: the aggregate index improved, but participation and typical performance softened.",
+      "analysis": "The AI Equity Index rose slightly to 33.0. Positive one-year returns now extend to 63.2% of covered companies, while the median one-year return increased to 13.1%. The concurrent gains in the index, breadth and typical return amount to a modestly firmer market signal. Reuters reports that Anthropic\u2019s IPO prospectus has sharpened attention to AI valuations, keeping pricing under scrutiny even as performance broadens.",
       "analysis_sentences": [
-        "The AI Equity Index increased slightly to 31.6, but average sector trading pressure eased to 48.3.",
-        "Positive one-year returns now cover 61.3% of companies, down slightly, while the median one-year return also edged lower to 12.7%.",
-        "The signal is mixed: the aggregate index improved, but participation and typical performance softened."
+        "The AI Equity Index rose slightly to 33.0.",
+        "Positive one-year returns now extend to 63.2% of covered companies, while the median one-year return increased to 13.1%.",
+        "The concurrent gains in the index, breadth and typical return amount to a modestly firmer market signal.",
+        "Reuters reports that Anthropic\u2019s IPO prospectus has sharpened attention to AI valuations, keeping pricing under scrutiny even as performance broadens."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "market.aei",
-            "market.positive_breadth"
+            "market.positive_breadth",
+            "market.median_return"
           ],
           "field": "headline",
-          "text": "The AI equity index edges up as return breadth slips"
+          "text": "Return breadth improves alongside the AI equity index"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-09-29-d79799b99cd3"
+          ],
           "fact_ids": [
             "market.aei",
-            "market.pressure",
             "market.positive_breadth",
             "market.median_return"
           ],
           "field": "body",
-          "text": "The AI Equity Index increased slightly to 31.6, but average sector trading pressure eased to 48.3. Positive one-year returns now cover 61.3% of companies, down slightly, while the median one-year return also edged lower to 12.7%. The signal is mixed: the aggregate index improved, but participation and typical performance softened."
+          "text": "The AI Equity Index rose slightly to 33.0. Positive one-year returns now extend to 63.2% of covered companies, while the median one-year return increased to 13.1%. The concurrent gains in the index, breadth and typical return amount to a modestly firmer market signal. Reuters reports that Anthropic\u2019s IPO prospectus has sharpened attention to AI valuations, keeping pricing under scrutiny even as performance broadens."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "e5d67c6eefd0e495930187af",
-      "generated_at": "2026-09-29T18:13:49.080331+00:00",
+      "evidence_snapshot_id": "308fcc023b84556d16368d87",
+      "generated_at": "2026-09-30T18:11:04.238527+00:00",
       "generator": "openai",
-      "headline": "The AI equity index edges up as return breadth slips",
+      "headline": "Return breadth improves alongside the AI equity index",
       "label": "Market",
       "references": [
         {
@@ -2578,6 +2563,10 @@
         {
           "source_label": "SEC EDGAR",
           "source_url": "https://www.sec.gov/edgar/search/"
+        },
+        {
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQaFI3SDBna2ppaVVKa0FJWjRYdzZicnJCdnBRRGtmQ1ZncnVfWWZQLU9oSHJqZ0RyZ0hnVDduR0VhSTV2R1BpbWQ2dEdBUlFRdWtMYm5pWDI0bU82YWhkZ0ZZSTAzOEpKTXRBQ2lrUVVSQ21QUmttWlVBaHlqMk8yUXd2N0ZhLTBOTF9zNTdDM1FFLWdza3BNTHdxMlkwMURE?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2769,19 +2758,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 10,
+    "checked_passages": 8,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "workforce.body",
-        "text": "Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at just 0.8%. Two channels have positive real-earnings growth. Barron's reports an expectation that AI will create more jobs than layoffs, though with painful disruption. That is a forward-looking judgment; the current measures still show narrow gains across the tracked labor channels."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
         "scope": "macro.paragraphs[1]",
-        "text": "Broader labor gains are harder to see. Only one tracked AI-linked labor channel has positive employment growth, and its leader\u2014power and communication construction\u2014is growing just 0.8%; only two have positive real-earnings growth. Barron's reports that AI should create more jobs than layoffs while still causing painful disruption. That is a forecast, while the current tracked data show limited employment and earnings breadth."
+        "text": "The physical expansion is large, but the power pipeline remains a filter between proposed and operating capacity. Available records show 1,556 data-center sites in development, equal to about half the operating base. The active interconnection queue contains 2,061 GW, yet only 24.2% has reached the executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort ultimately became operational. That historical rate is not a forecast for today\u2019s projects, but it shows why queue size alone overstates deliverable capacity. S&P Global also reports that data centers are compounding transmission congestion."
       }
     ],
     "hard_errors": [],
