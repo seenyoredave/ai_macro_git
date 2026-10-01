@@ -1583,13 +1583,166 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "308fcc023b84556d16368d87",
-    "expires_at": "2026-10-01T18:11:04.240902+00:00",
+    "current_evidence_snapshot_id": "5545d5c142608cdf9b6dec36",
+    "expires_at": "2026-10-02T18:54:07.080292+00:00",
     "lease_hours": 24,
-    "materiality": {},
-    "published_at": "2026-09-30T18:11:04.240902+00:00",
-    "renewal_count": 0,
-    "source": "generation"
+    "materiality": {
+      "baseline_available": true,
+      "change_count": 14,
+      "changes": [
+        {
+          "domain": "market",
+          "fact_id": "market.aei",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 33.9962565032075,
+          "old_value": 32.98418321621356,
+          "percentage_point_change": 1.0,
+          "relative_change": 0.030303030303030304
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.effective_firms",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 18.73270450874546,
+          "old_value": 18.512141011619182,
+          "percentage_point_change": null,
+          "relative_change": 0.011914532035372953
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.equal_weight_return",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.34018719005299564,
+          "old_value": 0.35443402678253266,
+          "percentage_point_change": 1.3999999999999986,
+          "relative_change": 0.03954802259887002
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.median_return",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.12952063951631299,
+          "old_value": 0.13127284055947064,
+          "percentage_point_change": 0.09999999999999964,
+          "relative_change": 0.007633587786259515
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.pressure",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 48.66336060297386,
+          "old_value": 48.75047534363669,
+          "percentage_point_change": 0.09999999999999432,
+          "relative_change": 0.002049180327868736
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.strong_sector_count",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 3.0,
+          "old_value": 2.0,
+          "percentage_point_change": null,
+          "relative_change": 0.5
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.top_10_share",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.6418180227766701,
+          "old_value": 0.6454387396307651,
+          "percentage_point_change": 0.29999999999999716,
+          "relative_change": 0.00465116279069763
+        },
+        {
+          "domain": "water",
+          "fact_id": "water.campuses_in_counties_with_25pct_d2_area",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 318.0,
+          "old_value": 261.0,
+          "percentage_point_change": null,
+          "relative_change": 0.21839080459770116
+        },
+        {
+          "domain": "water",
+          "fact_id": "water.campuses_in_counties_with_25pct_d2_share_pct",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.2217573221757322,
+          "old_value": 0.18200836820083682,
+          "percentage_point_change": 4.0,
+          "relative_change": 0.21978021978021978
+        },
+        {
+          "domain": "water",
+          "fact_id": "water.campuses_in_counties_with_d2_area",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 350.0,
+          "old_value": 302.0,
+          "percentage_point_change": null,
+          "relative_change": 0.15894039735099338
+        },
+        {
+          "domain": "water",
+          "fact_id": "water.campuses_in_counties_with_d2_share_pct",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.24407252440725244,
+          "old_value": 0.2105997210599721,
+          "percentage_point_change": 3.299999999999997,
+          "relative_change": 0.1563981042654027
+        },
+        {
+          "domain": "water",
+          "fact_id": "water.highest_county_d2_location",
+          "kind": "categorical_change",
+          "material": true,
+          "new_value": "Crittenden, AR",
+          "old_value": "Pulaski, AR"
+        },
+        {
+          "domain": "water",
+          "fact_id": "water.published_capacity_in_counties_with_25pct_d2_gw",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 79.60856999999999,
+          "old_value": 69.96028,
+          "percentage_point_change": null,
+          "relative_change": 0.13791096890978694
+        },
+        {
+          "domain": "water",
+          "fact_id": "water.published_capacity_in_counties_with_d2_gw",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 97.88414000000002,
+          "old_value": 88.72608,
+          "percentage_point_change": null,
+          "relative_change": 0.10321722767420831
+        }
+      ],
+      "current_snapshot_id": "5545d5c142608cdf9b6dec36",
+      "decision": "generate_material_change",
+      "exact_match": false,
+      "immaterial_change_count": 6,
+      "material": true,
+      "material_change_count": 8,
+      "percentage_point_threshold": 2.0,
+      "previous_snapshot_id": "308fcc023b84556d16368d87",
+      "relative_change_threshold": 0.1,
+      "version": "1.2.0"
+    },
+    "published_at": "2026-10-01T18:54:07.080292+00:00",
+    "renewal_count": 1,
+    "source": "automation_generation_fallback"
   },
   "raw_responses": {
     "editorial_synthesis": {

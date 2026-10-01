@@ -133,52 +133,52 @@
       "sha256": "1681ceb9d25b09bcaf7c0cb9dbbb193abc4d2e46a79755f4933881aacfd4136d"
     },
     "archive/benchmark_history.csv": {
-      "bytes": 9256,
+      "bytes": 9454,
       "date_column": "Date",
-      "date_max": "2026-09-30",
+      "date_max": "2026-10-01",
       "date_min": "2026-06-12",
-      "rows": 49,
-      "sha256": "6cc0dd28a3bd9d70895a0e75d562327af753d0abd7e88a4036b74af5e0d264a8"
+      "rows": 50,
+      "sha256": "f702965734c051a724939f55663ed81fb56b8e05d56be6555aeb0024b5d3ef5b"
     },
     "archive/edgar_history.csv": {
-      "bytes": 1397522,
+      "bytes": 1421405,
       "date_column": "Date",
-      "date_max": "2026-09-30",
+      "date_max": "2026-10-01",
       "date_min": "2026-06-14",
-      "rows": 11294,
-      "sha256": "1553fbe07dff3995cbb7306253b7ff3586f2dacd89791dcffae6c0f605d5a0a1"
+      "rows": 11486,
+      "sha256": "ff1949a7d56eca5550fdbdcecd99d5579749517338c0fb64fb306771610a297d"
     },
     "archive/fred_history.csv": {
-      "bytes": 29652,
+      "bytes": 30410,
       "date_column": "Date",
-      "date_max": "2026-09-30",
+      "date_max": "2026-10-01",
       "date_min": "2026-06-14",
-      "rows": 48,
-      "sha256": "ab4d0065eb66900846f9eed21b8c861b7b6d995c797111d249a9d37d3036fac1"
+      "rows": 49,
+      "sha256": "9ada004b563e151bc12571a7ca41ae6ec4d5f9f3375796d235e798cc6e9ce8df"
     },
     "archive/macro_history.csv": {
-      "bytes": 63112,
+      "bytes": 63837,
       "date_column": "Date",
-      "date_max": "2026-09-30",
+      "date_max": "2026-10-01",
       "date_min": "2026-06-12",
-      "rows": 49,
-      "sha256": "22881f1c6f5c73b983681c69d53a9aaf3792a4d128124ac8d6bdfbe54ac526d0"
+      "rows": 50,
+      "sha256": "57780b583b59d2d669bc6dcc7ea2c9c787d9c2cb063c29314d641ec6d9790724"
     },
     "archive/sector_history.csv": {
-      "bytes": 118020,
+      "bytes": 120852,
       "date_column": "Date",
-      "date_max": "2026-09-30",
+      "date_max": "2026-10-01",
       "date_min": "2026-06-12",
-      "rows": 735,
-      "sha256": "f9bef6bfa400a008d7557d5d973fab10e81415c26e237cf0f9db55f17e4dad5c"
+      "rows": 750,
+      "sha256": "05eaf6dcf17ace8bdfce58f8f66d1049c583f581bc04704cd00b9589bc05709f"
     },
     "archive/yf_history.csv": {
-      "bytes": 4931834,
+      "bytes": 5045439,
       "date_column": "Date",
-      "date_max": "2026-09-30",
+      "date_max": "2026-10-01",
       "date_min": "2026-06-12",
-      "rows": 10404,
-      "sha256": "c9ab3d6e49d52ca8b6001ef904f67a9a5473ad3cdbfa759c14af982a142bc96d"
+      "rows": 10608,
+      "sha256": "aaa924b3c9e14734d80e70d857b2ff6c08cd3487ac45fdb2ba7bf41fe72c8cdb"
     },
     "assets/geo/us_counties.geojson": {
       "bytes": 2563127,
@@ -294,12 +294,12 @@
       "sha256": "6845626acf1893af6e804a1a22201feff8637679b02b0594adb319f03c75bdc4"
     },
     "data/borrower_strain_fundamentals_history.csv": {
-      "bytes": 155215,
+      "bytes": 159084,
       "date_column": "Date",
-      "date_max": "2026-09-30",
+      "date_max": "2026-10-01",
       "date_min": "2014-12-31",
-      "rows": 430,
-      "sha256": "ce602b2671ca9921af3ff1c75e6ca478f41d5ba02ea484f339317306c01c5921"
+      "rows": 440,
+      "sha256": "51b61fd90e57c4f7310872437f45f891cc3aa32bf8abbb28cbff3f50c1ba7212"
     },
     "data/canonical/metric_sources.parquet": {
       "bytes": 5019,
@@ -361,6 +361,10 @@
       "bytes": 9864,
       "sha256": "a8c92f80cc5f95eb511d10afcade4e4080205142b5c105377a722de8b71ddaae"
     },
+    "data/canonical/observations/2026/10/ae37fa08fb62ae00daa1089d.parquet": {
+      "bytes": 9863,
+      "sha256": "058d7680ca2272d88548d00688d82ad61adfcc70c03182e3bc4c1375757dc6cb"
+    },
     "data/canonical/snapshots/2026/08/d177dfe52095ec325b86dcb1.parquet": {
       "bytes": 4369,
       "sha256": "517612e02793b889e7656869f1a0982cdeba044314d5c80bc026475237a52258"
@@ -413,6 +417,10 @@
       "bytes": 16614,
       "sha256": "2c19bef2fc44497f839d3ced59ef740a85ef2faec392feeb19e6f3620a15ddfe"
     },
+    "data/canonical/snapshots/2026/10/ae37fa08fb62ae00daa1089d.parquet": {
+      "bytes": 15996,
+      "sha256": "ded2bd89efb93d9b2941ea4a4433634b82c036be5775a70857bc3c4b13eb7a3c"
+    },
     "data/canonical/sources.parquet": {
       "bytes": 3477,
       "sha256": "f4b64b27bd12520d682012827d26008fbdb194095f3c4c68504b68e1e5f72e0d"
@@ -433,7 +441,7 @@
       "date_max": "2026-06-30",
       "date_min": "2025-12-31",
       "rows": 19,
-      "sha256": "fc85c2b2e7154c178b1be1b0c7b9dd6677f47afe0e1e2420c744211d5f0835cc"
+      "sha256": "6f837379e334abbdd8c9a224c44df3f9adcb0729f235726263e84f4d91631e32"
     },
     "data/commercialization/source_manifest.csv": {
       "bytes": 1095,
@@ -520,16 +528,16 @@
     },
     "data/refresh_graph_state.json": {
       "bytes": 6928,
-      "sha256": "27bc7c440be1eb4af8cec62edba036e99d72318422f242330103c5a2862396e7"
+      "sha256": "e810639a02d1c1be2227027538e9b73138ee421ab101e08c881ec3b1a6ae9dfb"
     },
     "data/retained_state_manifest.json": {
-      "bytes": 48708,
-      "sha256": "9650f4eb0a13f2012a816016582bc06e9c32010c2dd293ec1895359a42e9628d"
+      "bytes": 49364,
+      "sha256": "f0f1391a3711cf046a8892f96ea9f6512a731ba835746e0bf8a64e25ecfb5603"
     },
     "data/weekly_context_events.csv": {
-      "bytes": 100846,
-      "rows": 99,
-      "sha256": "ecd20db896da0c0f27f3bd77118590a99df483b0bcdc11ac244077e3a5a694c2"
+      "bytes": 110016,
+      "rows": 109,
+      "sha256": "bc404c46a962e96ee45ef1d7bb11ed09776dd2695348ed518555e6de9bfd8854"
     },
     "developer/load_report.py": {
       "bytes": 8466,
@@ -892,7 +900,7 @@
       "sha256": "596de294f35709293d75621955b2839bc4d573b8907d460eb633b0565f0f48df"
     }
   },
-  "generated_at_utc": "2026-09-30T18:09:57+00:00",
+  "generated_at_utc": "2026-10-01T18:34:04+00:00",
   "manifest_version": "1.0",
   "metric_versions": {
     "adi": "1.0",
@@ -903,6 +911,6 @@
     "power_stress": "3.0",
     "trading_pressure": "4.0"
   },
-  "release_id": "121cd435eee8c00ea02c",
+  "release_id": "ee991d74244894fd80c6",
   "scope": "Critical retained archives, analytical contracts, and identity decisions"
 }
