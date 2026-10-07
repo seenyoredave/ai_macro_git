@@ -1,81 +1,80 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261002T180242068405Z_5409479d_e1f47734",
+  "attempt_id": "20261007T190210424809Z_cd4018c4_ddb54ddf",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
     "compute",
-    "data_center",
-    "grid_storage",
-    "water",
+    "connectivity",
+    "power",
     "workforce"
   ],
   "editorial_context_event_ids": [
-    "auto-2026-09-30-8aae32451c9b",
-    "auto-2026-09-27-8233f6e6bf2a",
-    "auto-2026-09-29-8858dd6e0d27",
-    "auto-2026-09-29-d79799b99cd3",
-    "auto-2026-09-24-167bf8ca52a9",
+    "auto-2026-10-01-cea9991fa4e4",
+    "auto-2026-10-07-45b2323f28a5",
+    "auto-2026-10-05-8559d73be953",
     "auto-2026-10-02-fb7f46139088",
-    "auto-2026-09-28-7b38f24759ff",
+    "auto-2026-10-05-7d9e4ebb6539",
     "auto-2026-10-01-65117afe1f78",
     "auto-2026-10-01-2d90f1e5b6d8",
+    "auto-2026-10-06-e1a80bd58ccd",
+    "auto-2026-09-28-1c5ec2b1cf4b",
+    "auto-2026-09-29-a96b1b55cd95",
     "auto-2026-09-30-bfd802ee92af",
-    "auto-2026-09-29-08e7b2432d19",
-    "auto-2026-09-24-459a78e51bfc",
-    "auto-2026-09-29-9ae7eef6739b",
-    "auto-2026-09-23-21db59afa1b7",
-    "auto-2026-10-01-3a8bc6348a69"
+    "auto-2026-10-02-7e65c549c244",
+    "auto-2026-10-01-3a8bc6348a69",
+    "auto-2026-10-01-ec17e1eb4036",
+    "auto-2026-09-30-b8e0d2fc03f4"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
       "compute",
-      "data_center",
-      "grid_storage",
-      "water",
+      "connectivity",
+      "power",
       "workforce"
     ],
     "current_event_ids": [
-      "auto-2026-09-30-8aae32451c9b",
-      "auto-2026-09-27-8233f6e6bf2a",
-      "auto-2026-09-29-8858dd6e0d27",
-      "auto-2026-09-29-d79799b99cd3",
-      "auto-2026-09-24-167bf8ca52a9",
+      "auto-2026-10-01-cea9991fa4e4",
+      "auto-2026-10-07-45b2323f28a5",
+      "auto-2026-10-05-8559d73be953",
       "auto-2026-10-02-fb7f46139088",
-      "auto-2026-09-28-7b38f24759ff",
+      "auto-2026-10-05-7d9e4ebb6539",
       "auto-2026-10-01-65117afe1f78",
       "auto-2026-10-01-2d90f1e5b6d8",
+      "auto-2026-10-06-e1a80bd58ccd",
+      "auto-2026-09-28-1c5ec2b1cf4b",
+      "auto-2026-09-29-a96b1b55cd95",
       "auto-2026-09-30-bfd802ee92af",
-      "auto-2026-09-29-08e7b2432d19",
-      "auto-2026-09-24-459a78e51bfc",
-      "auto-2026-09-29-9ae7eef6739b",
-      "auto-2026-09-23-21db59afa1b7",
-      "auto-2026-10-01-3a8bc6348a69"
+      "auto-2026-10-02-7e65c549c244",
+      "auto-2026-10-01-3a8bc6348a69",
+      "auto-2026-10-01-ec17e1eb4036",
+      "auto-2026-09-30-b8e0d2fc03f4"
     ],
     "material_domains": [
-      "market",
-      "grid_storage",
-      "water"
+      "finance"
     ],
     "new_event_domains": [
       "market",
       "finance",
       "compute",
-      "data_center",
+      "connectivity",
+      "power",
       "workforce"
     ],
     "new_event_ids": [
-      "auto-2026-09-30-8aae32451c9b",
-      "auto-2026-10-02-fb7f46139088",
-      "auto-2026-10-01-65117afe1f78",
-      "auto-2026-10-01-2d90f1e5b6d8",
-      "auto-2026-09-30-bfd802ee92af",
-      "auto-2026-09-29-9ae7eef6739b",
-      "auto-2026-09-23-21db59afa1b7",
-      "auto-2026-10-01-3a8bc6348a69"
+      "auto-2026-10-01-cea9991fa4e4",
+      "auto-2026-10-07-45b2323f28a5",
+      "auto-2026-10-05-8559d73be953",
+      "auto-2026-10-05-7d9e4ebb6539",
+      "auto-2026-10-06-e1a80bd58ccd",
+      "auto-2026-09-28-1c5ec2b1cf4b",
+      "auto-2026-09-29-a96b1b55cd95",
+      "auto-2026-10-02-7e65c549c244",
+      "auto-2026-10-01-ec17e1eb4036",
+      "auto-2026-09-30-b8e0d2fc03f4"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -83,8 +82,9 @@
   "editorial_update_domains": [
     "market",
     "finance",
-    "grid_storage",
-    "water"
+    "connectivity",
+    "power",
+    "workforce"
   ],
   "evidence_packets": {
     "adoption": {
@@ -851,17 +851,17 @@
         },
         {
           "context": "",
-          "display": "-0.55",
+          "display": "-0.49",
           "id": "finance.nfci",
           "label": "Chicago Fed NFCI",
-          "value": -0.548
+          "value": -0.494
         },
         {
           "context": "",
-          "display": "-0.04",
+          "display": "0.02",
           "id": "finance.nfci_change",
           "label": "Three-month change in NFCI",
-          "value": -0.03700000000000003
+          "value": 0.016000000000000014
         },
         {
           "context": "",
@@ -1102,52 +1102,52 @@
       "facts": [
         {
           "context": "",
-          "display": "35.9",
+          "display": "36.7",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 35.8595723519297
+          "value": 36.71469285614432
         },
         {
           "context": "",
-          "display": "49.3",
+          "display": "50.4",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 49.314510035701915
+          "value": 50.387160672989694
         },
         {
           "context": "",
-          "display": "63.7%",
+          "display": "62.7%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6372549019607843
+          "value": 0.6274509803921569
         },
         {
           "context": "",
-          "display": "13.1%",
+          "display": "13.7%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.1307352467501981
+          "value": 0.13735946505725682
         },
         {
           "context": "",
-          "display": "34.6%",
+          "display": "33.7%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.34605722231358005
+          "value": 0.33694642958434856
         },
         {
           "context": "",
-          "display": "64.2%",
+          "display": "64.5%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6416733222627663
+          "value": 0.6449355772271125
         },
         {
           "context": "",
-          "display": "18.7",
+          "display": "18.6",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.743553933058735
+          "value": 18.630689843421557
         },
         {
           "context": "",
@@ -1164,7 +1164,7 @@
           "value": 2.0
         }
       ],
-      "importance": 19.167332226276628,
+      "importance": 19.493557722711245,
       "label": "Market",
       "references": [
         {
@@ -1584,19 +1584,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "5409479d76652ace82ab6cab",
-  "generated_at": "2026-10-02T18:05:05.175139+00:00",
+  "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+  "generated_at": "2026-10-07T19:04:54.985007+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 143.10055133800006,
-      "input_tokens": 4393,
+      "elapsed_sec": 164.555628985,
+      "input_tokens": 4125,
       "model": "gpt-5.6-sol",
-      "output_tokens": 11198,
-      "poll_attempts": 65,
+      "output_tokens": 13912,
+      "poll_attempts": 74,
       "poll_errors": [],
-      "response_id": "resp_0c7d380fcc02683f006abff1c3276c87d19ec2672274fcab58",
+      "response_id": "resp_07dd3155907fbfd7006ac6973386d087d0a0f193fdf110d5f2",
       "terminal_status": "completed",
-      "total_tokens": 15591
+      "total_tokens": 18037
     }
   },
   "max_output_tokens": null,
@@ -1607,121 +1607,36 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "4af150ff89d44f35938f7abe",
-    "expires_at": "2026-10-07T18:33:38.744538+00:00",
+    "current_evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+    "expires_at": "2026-10-08T19:04:54.987132+00:00",
     "lease_hours": 24,
-    "materiality": {
-      "baseline_available": true,
-      "change_count": 7,
-      "changes": [
-        {
-          "domain": "market",
-          "fact_id": "market.aei",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 36.80754224038107,
-          "old_value": 35.8595723519297,
-          "percentage_point_change": 0.8999999999999986,
-          "relative_change": 0.025069637883008318
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.effective_firms",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 18.71663448255282,
-          "old_value": 18.743553933058735,
-          "percentage_point_change": null,
-          "relative_change": 0.0014361977777563213
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.equal_weight_return",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.331126707032747,
-          "old_value": 0.34605722231358005,
-          "percentage_point_change": 1.5,
-          "relative_change": 0.04335260115606936
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.median_return",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.1373226052668265,
-          "old_value": 0.1307352467501981,
-          "percentage_point_change": 0.5999999999999996,
-          "relative_change": 0.045801526717557224
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.positive_breadth",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.6176470588235294,
-          "old_value": 0.6372549019607843,
-          "percentage_point_change": 1.9000000000000057,
-          "relative_change": 0.029827315541601344
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.pressure",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 51.340007064785475,
-          "old_value": 49.314510035701915,
-          "percentage_point_change": 2.0,
-          "relative_change": 0.04056795131845842
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.top_10_share",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.6433625896784788,
-          "old_value": 0.6416733222627663,
-          "percentage_point_change": 0.09999999999999432,
-          "relative_change": 0.0015576323987538056
-        }
-      ],
-      "current_snapshot_id": "4af150ff89d44f35938f7abe",
-      "decision": "generate_material_change",
-      "exact_match": false,
-      "immaterial_change_count": 6,
-      "material": true,
-      "material_change_count": 1,
-      "percentage_point_threshold": 2.0,
-      "previous_snapshot_id": "5409479d76652ace82ab6cab",
-      "relative_change_threshold": 0.1,
-      "version": "1.2.0"
-    },
-    "published_at": "2026-10-06T18:33:38.744538+00:00",
-    "renewal_count": 1,
-    "source": "automation_generation_fallback"
+    "materiality": {},
+    "published_at": "2026-10-07T19:04:54.987132+00:00",
+    "renewal_count": 0,
+    "source": "generation"
   },
   "raw_responses": {
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 65,
+        "poll_attempts": 74,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0c7d380fcc02683f006abff1c3276c87d19ec2672274fcab58",
+        "response_id": "resp_07dd3155907fbfd7006ac6973386d087d0a0f193fdf110d5f2",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 35.9, while the share of covered companies with positive one-year returns increased only slightly to 63.7% and the median return slipped to 13.1%. The stronger index alongside softer typical performance indicates that gains remain uneven. CNBC reported that Micron beat earnings estimates and issued strong guidance as its data-center revenue increased elevenfold. That is a significant company-level result, but it does not establish broad earnings strength across the sector.\",\"event_ids\":[\"auto-2026-09-30-8aae32451c9b\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Index strength runs ahead of broader returns\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"At the measured level, operating cash flow covers current CapEx 1.42 times, providing a substantial source of internal funding. Cash reserves equal 0.96 years of CapEx, so cash alone falls just short of one year at the current spending rate. Borrower strain is 26.0, compared with lender strain of -13.5. The combination supports current spending from operations, but with a limited cash cushion and divergent conditions for borrowers and lenders.\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Operations cover current CapEx, but reserves provide less than a year of coverage\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Electric-power construction growth increased materially to 10.8%. The active interconnection queue stands at 2,061 GW, and only 24.2% is in executed-agreement or construction stages; storage accounts for 552.7 GW of the queue. S&P Global reports that data centers are adding to transmission congestion. Faster construction is a meaningful counterweight, but most requested capacity has not reached an advanced stage.\",\"event_ids\":[\"auto-2026-09-24-167bf8ca52a9\"],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\"]},\"headline\":{\"text\":\"Grid construction accelerates while most queued capacity remains at early stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.advanced_share\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 350, or 24.4%, are in counties where some area is under D2-or-worse drought. The stricter screen\u2014at least 25% of the county under D2-or-worse drought\u2014covers 318 campuses, or 22.2%. Both measures increased materially. These are county-level geographic screens: they do not show that a campus itself lies within the drought area or how much water it consumes.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure broadens materially across tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI market pricing strengthens, but financing and physical execution remain uneven\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\",\"grid_storage.electric_power_construction_growth\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Market support has strengthened, but not evenly. The AI Equity Index rose materially to 35.9, while the share of companies with positive one-year returns edged up to 63.7% and the median return slipped to 13.1%. CNBC reported that Micron beat earnings estimates and issued strong guidance as data-center revenue increased elevenfold. That result shows substantial demand in one part of the hardware chain, but the market measures still point to uneven gains across the wider group.\",\"event_ids\":[\"auto-2026-09-30-8aae32451c9b\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},{\"text\":\"The investment cycle retains internal financial support: operating cash flow covers current CapEx 1.42 times. Yet cash reserves equal 0.96 years of CapEx, borrower strain stands at 26.0 and lender strain is -13.5. The physical side has a similar split. Electric-power construction grew 10.8%, but only 24.2% of the 2,061 GW active interconnection queue has reached an executed-agreement or construction stage. Spending and construction are active; the harder question is how much proposed capacity can clear financing and grid connection.\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\",\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},{\"text\":\"Execution is also increasingly local. Available records contain 1,556 sites in development, about half the 3,068 operating sites. Construction Dive reports that public support is emerging as a data-center bottleneck, while the drought screen now places 24.4% of campuses with county data in counties containing some D2-or-worse drought; 22.2% are in counties where at least a quarter of the area is affected. County overlap does not establish site-level drought or water demand, and these developments do not show how many projects will be delayed. They reinforce why development-site counts should not be treated as completed capacity.\",\"event_ids\":[\"auto-2026-09-23-21db59afa1b7\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 36.7 and the median one-year return rose to 13.7%, but the share of covered companies with positive one-year returns slipped to 62.7%. Gains therefore persisted without becoming more broadly distributed. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season. That strengthens the near-term earnings narrative, but it does not show that results are improving across the full set of covered companies.\",\"event_ids\":[\"auto-2026-10-07-45b2323f28a5\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},\"headline\":{\"text\":\"AI shares advance without broader participation\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.49 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5, leaving a pronounced split beneath the aggregate measure. Morningstar reported that AI financing partnerships are credit-positive for Nvidia and data-center operators. That assessment points to benefits for the named participants, not uniformly easier financing for borrowers.\",\"event_ids\":[\"auto-2026-10-05-7d9e4ebb6539\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"The NFCI increases amid a wide borrower-lender strain gap\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]}},{\"domain\":\"connectivity\",\"body\":{\"text\":\"Public records list 168 active U.S. internet exchange points with 2,805 combined reported members. They also list 90 U.S. international submarine cable systems and 115 U.S.-connected cable catalog entries. Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment. Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market.\",\"event_ids\":[\"auto-2026-09-30-b8e0d2fc03f4\"],\"fact_ids\":[\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\",\"connectivity.us_connected_cable_catalog_entries\"]},\"headline\":{\"text\":\"Exchange points and subsea cables give the U.S. a broad interconnection footprint\",\"event_ids\":[],\"fact_ids\":[\"connectivity.active_ixps\",\"connectivity.international_submarine_cable_systems\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change.\",\"event_ids\":[\"auto-2026-10-05-8559d73be953\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Commercial demand leads electricity growth as faster grid studies are proposed\",\"event_ids\":[\"auto-2026-10-05-8559d73be953\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint. The report does not amount to broad acceleration across the tracked labor channels.\",\"event_ids\":[\"auto-2026-10-02-7e65c549c244\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"Sector-specific AI hiring contrasts with narrow tracked job growth\",\"event_ids\":[\"auto-2026-10-02-7e65c549c244\"],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Market support and physical expansion coexist with narrow labor gains\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"power.commercial_growth\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Investor support remains constructive but selective. The AI Equity Index edged up to 36.7 and the median one-year return reached 13.7%, while the share of covered companies with positive one-year returns fell to 62.7%. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season, but the return data still show uneven participation. Financing is also mixed: the NFCI is -0.49 after a 0.02 rise over three months, while borrower strain is 26.0 and lender strain is -13.5.\",\"event_ids\":[\"auto-2026-10-07-45b2323f28a5\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"Computer and peripheral-equipment output is growing 9.2%, and semiconductor and electronic-component output 11.5%. Commercial electricity demand growth of 3.1% is also outpacing total retail demand growth of 1.2%. These are broad industry measures rather than AI-only series, but they describe an expanding hardware and power context for the buildout. Grid execution remains separate from the size of the pipeline: only 24.2% of the active interconnection queue is in executed-agreement or construction stages. Utility Dive reported that MISO proposed fast-track studies for large loads and generation. The proposal is a procedural change, not delivered capacity.\",\"event_ids\":[\"auto-2026-10-05-8559d73be953\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"power.commercial_growth\",\"power.demand_growth\",\"grid_storage.advanced_share\"]},{\"text\":\"Broader diffusion is less evident in labor and business use. Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at 0.8%, and two have positive real-earnings growth. CNBC reported surging Wall Street AI hiring, which provides a sector-specific contrast rather than evidence of broad acceleration. Current AI use is reported by 23.8% of businesses, with 27.6% expecting use within six months. These measures leave diffusion through firms and the labor market incomplete even as selected industries report strong AI hiring.\",\"event_ids\":[\"auto-2026-10-02-7e65c549c244\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1790964304.0,
+      "completed_at": 1791399893.0,
       "conversation": null,
-      "created_at": 1790964163.0,
+      "created_at": 1791399731.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0c7d380fcc02683f006abff1c3276c87d19ec2672274fcab58",
+      "id": "resp_07dd3155907fbfd7006ac6973386d087d0a0f193fdf110d5f2",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1734,7 +1649,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1c59bf087d184a5aaae3a5dcc0f",
+          "id": "rs_07dd3155907fbfd7006ac69736922c87d0a24b36457ab5d093",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1742,7 +1657,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1cc346887d1b8adb9ec6681268e",
+          "id": "rs_07dd3155907fbfd7006ac6973d4a5087d0b7860f91671c212a",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1750,7 +1665,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1d33e3487d19d0d5dc948f60dac",
+          "id": "rs_07dd3155907fbfd7006ac69744864487d0be3010ed01e39ae0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1758,7 +1673,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1dac0e887d1ac1e5d66cfd22920",
+          "id": "rs_07dd3155907fbfd7006ac6974b961c87d0ad44a9c418ecc80d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1766,7 +1681,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1e1c86c87d18b34c41e48d2c49a",
+          "id": "rs_07dd3155907fbfd7006ac69751ce0087d0a637cb0a6fbd58d4",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1774,7 +1689,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1e9395887d18aa687209157bf31",
+          "id": "rs_07dd3155907fbfd7006ac6975851bc87d0995fcf12dbcf4bbb",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1782,7 +1697,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1f058e887d199fc9ad5b352ab7e",
+          "id": "rs_07dd3155907fbfd7006ac6975edbe087d0a3eca68d2e3d749f",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1790,7 +1705,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1f72b6c87d1ab7806f2bb6f65fb",
+          "id": "rs_07dd3155907fbfd7006ac69765970487d092d9b0a384995743",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1798,7 +1713,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff1fe66d487d191488de9b5fc6f51",
+          "id": "rs_07dd3155907fbfd7006ac6976c3c5887d0a39ed87711b36d0e",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1806,7 +1721,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff205302887d18026717d1c0f4e99",
+          "id": "rs_07dd3155907fbfd7006ac69772e0b487d0859bcc7a41a0d558",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1814,7 +1729,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff20bb14c87d1ad16d863b0255953",
+          "id": "rs_07dd3155907fbfd7006ac6977a02f087d0b0c72f349201841b",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1822,7 +1737,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff212d7cc87d1b3592ba074c7758e",
+          "id": "rs_07dd3155907fbfd7006ac6977fe2c887d08a90ff80157f98b2",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1830,7 +1745,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff2195be087d1b2cd771b62347351",
+          "id": "rs_07dd3155907fbfd7006ac69784b7c487d0bd1ee46547a2ce03",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1838,7 +1753,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff220556087d18518792fc8d4d438",
+          "id": "rs_07dd3155907fbfd7006ac6978aa63c87d0b137cffc1087c688",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1846,7 +1761,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff227642c87d1b1f94af330495f39",
+          "id": "rs_07dd3155907fbfd7006ac69790161c87d09058ce78b470330a",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1854,7 +1769,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff22e545487d1a5b89620a7c6860d",
+          "id": "rs_07dd3155907fbfd7006ac69795937c87d0b6bbb4cb5db09348",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1862,7 +1777,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff2333e6c87d19b337eaa5db86c08",
+          "id": "rs_07dd3155907fbfd7006ac6979b341c87d0a7e6ac4383d73f1f",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1870,7 +1785,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff2390d6887d1a6e83f50e0209329",
+          "id": "rs_07dd3155907fbfd7006ac697a188d887d0abf64ed1be74f1bb",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1878,7 +1793,47 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c7d380fcc02683f006abff23f60b887d1ba720ea64cb19f74",
+          "id": "rs_07dd3155907fbfd7006ac697a7831c87d09c64809881bef41a",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_07dd3155907fbfd7006ac697ae15a087d0a8c30b21a8529f6b",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_07dd3155907fbfd7006ac697b47b7c87d08cffde27344f1164",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_07dd3155907fbfd7006ac697b9d23c87d0975c0bf78a4d1707",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_07dd3155907fbfd7006ac697bf44e087d09fda660d3729fc19",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_07dd3155907fbfd7006ac697c5b9e487d08059f95f6374c99d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1888,11 +1843,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 35.9, while the share of covered companies with positive one-year returns increased only slightly to 63.7% and the median return slipped to 13.1%. The stronger index alongside softer typical performance indicates that gains remain uneven. CNBC reported that Micron beat earnings estimates and issued strong guidance as its data-center revenue increased elevenfold. That is a significant company-level result, but it does not establish broad earnings strength across the sector.\",\"event_ids\":[\"auto-2026-09-30-8aae32451c9b\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Index strength runs ahead of broader returns\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"At the measured level, operating cash flow covers current CapEx 1.42 times, providing a substantial source of internal funding. Cash reserves equal 0.96 years of CapEx, so cash alone falls just short of one year at the current spending rate. Borrower strain is 26.0, compared with lender strain of -13.5. The combination supports current spending from operations, but with a limited cash cushion and divergent conditions for borrowers and lenders.\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Operations cover current CapEx, but reserves provide less than a year of coverage\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Electric-power construction growth increased materially to 10.8%. The active interconnection queue stands at 2,061 GW, and only 24.2% is in executed-agreement or construction stages; storage accounts for 552.7 GW of the queue. S&P Global reports that data centers are adding to transmission congestion. Faster construction is a meaningful counterweight, but most requested capacity has not reached an advanced stage.\",\"event_ids\":[\"auto-2026-09-24-167bf8ca52a9\"],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\"]},\"headline\":{\"text\":\"Grid construction accelerates while most queued capacity remains at early stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.advanced_share\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 350, or 24.4%, are in counties where some area is under D2-or-worse drought. The stricter screen\u2014at least 25% of the county under D2-or-worse drought\u2014covers 318 campuses, or 22.2%. Both measures increased materially. These are county-level geographic screens: they do not show that a campus itself lies within the drought area or how much water it consumes.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure broadens materially across tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI market pricing strengthens, but financing and physical execution remain uneven\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\",\"grid_storage.electric_power_construction_growth\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Market support has strengthened, but not evenly. The AI Equity Index rose materially to 35.9, while the share of companies with positive one-year returns edged up to 63.7% and the median return slipped to 13.1%. CNBC reported that Micron beat earnings estimates and issued strong guidance as data-center revenue increased elevenfold. That result shows substantial demand in one part of the hardware chain, but the market measures still point to uneven gains across the wider group.\",\"event_ids\":[\"auto-2026-09-30-8aae32451c9b\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},{\"text\":\"The investment cycle retains internal financial support: operating cash flow covers current CapEx 1.42 times. Yet cash reserves equal 0.96 years of CapEx, borrower strain stands at 26.0 and lender strain is -13.5. The physical side has a similar split. Electric-power construction grew 10.8%, but only 24.2% of the 2,061 GW active interconnection queue has reached an executed-agreement or construction stage. Spending and construction are active; the harder question is how much proposed capacity can clear financing and grid connection.\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\",\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},{\"text\":\"Execution is also increasingly local. Available records contain 1,556 sites in development, about half the 3,068 operating sites. Construction Dive reports that public support is emerging as a data-center bottleneck, while the drought screen now places 24.4% of campuses with county data in counties containing some D2-or-worse drought; 22.2% are in counties where at least a quarter of the area is affected. County overlap does not establish site-level drought or water demand, and these developments do not show how many projects will be delayed. They reinforce why development-site counts should not be treated as completed capacity.\",\"event_ids\":[\"auto-2026-09-23-21db59afa1b7\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 36.7 and the median one-year return rose to 13.7%, but the share of covered companies with positive one-year returns slipped to 62.7%. Gains therefore persisted without becoming more broadly distributed. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season. That strengthens the near-term earnings narrative, but it does not show that results are improving across the full set of covered companies.\",\"event_ids\":[\"auto-2026-10-07-45b2323f28a5\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},\"headline\":{\"text\":\"AI shares advance without broader participation\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.49 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5, leaving a pronounced split beneath the aggregate measure. Morningstar reported that AI financing partnerships are credit-positive for Nvidia and data-center operators. That assessment points to benefits for the named participants, not uniformly easier financing for borrowers.\",\"event_ids\":[\"auto-2026-10-05-7d9e4ebb6539\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"The NFCI increases amid a wide borrower-lender strain gap\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]}},{\"domain\":\"connectivity\",\"body\":{\"text\":\"Public records list 168 active U.S. internet exchange points with 2,805 combined reported members. They also list 90 U.S. international submarine cable systems and 115 U.S.-connected cable catalog entries. Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment. Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market.\",\"event_ids\":[\"auto-2026-09-30-b8e0d2fc03f4\"],\"fact_ids\":[\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\",\"connectivity.us_connected_cable_catalog_entries\"]},\"headline\":{\"text\":\"Exchange points and subsea cables give the U.S. a broad interconnection footprint\",\"event_ids\":[],\"fact_ids\":[\"connectivity.active_ixps\",\"connectivity.international_submarine_cable_systems\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change.\",\"event_ids\":[\"auto-2026-10-05-8559d73be953\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Commercial demand leads electricity growth as faster grid studies are proposed\",\"event_ids\":[\"auto-2026-10-05-8559d73be953\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint. The report does not amount to broad acceleration across the tracked labor channels.\",\"event_ids\":[\"auto-2026-10-02-7e65c549c244\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"Sector-specific AI hiring contrasts with narrow tracked job growth\",\"event_ids\":[\"auto-2026-10-02-7e65c549c244\"],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Market support and physical expansion coexist with narrow labor gains\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"power.commercial_growth\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Investor support remains constructive but selective. The AI Equity Index edged up to 36.7 and the median one-year return reached 13.7%, while the share of covered companies with positive one-year returns fell to 62.7%. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season, but the return data still show uneven participation. Financing is also mixed: the NFCI is -0.49 after a 0.02 rise over three months, while borrower strain is 26.0 and lender strain is -13.5.\",\"event_ids\":[\"auto-2026-10-07-45b2323f28a5\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"Computer and peripheral-equipment output is growing 9.2%, and semiconductor and electronic-component output 11.5%. Commercial electricity demand growth of 3.1% is also outpacing total retail demand growth of 1.2%. These are broad industry measures rather than AI-only series, but they describe an expanding hardware and power context for the buildout. Grid execution remains separate from the size of the pipeline: only 24.2% of the active interconnection queue is in executed-agreement or construction stages. Utility Dive reported that MISO proposed fast-track studies for large loads and generation. The proposal is a procedural change, not delivered capacity.\",\"event_ids\":[\"auto-2026-10-05-8559d73be953\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"power.commercial_growth\",\"power.demand_growth\",\"grid_storage.advanced_share\"]},{\"text\":\"Broader diffusion is less evident in labor and business use. Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at 0.8%, and two have positive real-earnings growth. CNBC reported surging Wall Street AI hiring, which provides a sector-specific contrast rather than evidence of broad acceleration. Current AI use is reported by 23.8% of businesses, with 27.6% expecting use within six months. These measures leave diffusion through firms and the labor market incomplete even as selected industries report strong AI hiring.\",\"event_ids\":[\"auto-2026-10-02-7e65c549c244\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0c7d380fcc02683f006abff246531087d1bb30d2f50876f41e",
+          "id": "msg_07dd3155907fbfd7006ac697ca85e087d09039cb1074330864",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2065,16 +2020,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4393,
+        "input_tokens": 4125,
         "input_tokens_details": {
-          "cache_write_tokens": 4390,
+          "cache_write_tokens": 4122,
           "cached_tokens": 0
         },
-        "output_tokens": 11198,
+        "output_tokens": 13912,
         "output_tokens_details": {
-          "reasoning_tokens": 9804
+          "reasoning_tokens": 12326
         },
-        "total_tokens": 15591
+        "total_tokens": 18037
       },
       "user": null
     }
@@ -2202,60 +2157,44 @@
       "version": "6.1.0"
     },
     "connectivity": {
-      "analysis": "The public map lists 168 active U.S. internet exchange points, the sites where networks exchange traffic. Despite the national exchange-point footprint, 19 states combine data-center development with limited visible public interconnection depth. Private routes and bilateral links may sit outside public records. The state count therefore measures visible public interconnection.",
+      "analysis": "Public records list 168 active U.S. internet exchange points with 2,805 combined reported members. They also list 90 U.S. international submarine cable systems and 115 U.S.-connected cable catalog entries. Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment. Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market.",
       "analysis_sentences": [
-        "The public map lists 168 active U.S. internet exchange points, the sites where networks exchange traffic.",
-        "Despite the national exchange-point footprint, 19 states combine data-center development with limited visible public interconnection depth.",
-        "Private routes and bilateral links may sit outside public records.",
-        "The state count therefore measures visible public interconnection."
+        "Public records list 168 active U.S.",
+        "internet exchange points with 2,805 combined reported members.",
+        "They also list 90 U.S.",
+        "international submarine cable systems and 115 U.S.-connected cable catalog entries.",
+        "Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment.",
+        "Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market."
       ],
       "claim_support": [
         {
+          "event_ids": [],
           "fact_ids": [
             "connectivity.active_ixps",
-            "connectivity.high_capacity_low_public_connectivity_states"
+            "connectivity.international_submarine_cable_systems"
           ],
           "field": "headline",
-          "inference": "interpretation",
-          "text": "Public network visibility is uneven around data-center development"
+          "text": "Exchange points and subsea cables give the U.S. a broad interconnection footprint"
         },
         {
-          "fact_ids": [
-            "connectivity.active_ixps"
+          "event_ids": [
+            "auto-2026-09-30-b8e0d2fc03f4"
           ],
-          "field": "analysis[0]",
-          "inference": "observation",
-          "text": "The public map lists 168 active U.S. internet exchange points, the sites where networks exchange traffic."
-        },
-        {
-          "fact_ids": [
-            "connectivity.high_capacity_low_public_connectivity_states"
-          ],
-          "field": "analysis[1]",
-          "inference": "observation",
-          "text": "Despite the national exchange-point footprint, 19 states combine data-center development with limited visible public interconnection depth."
-        },
-        {
           "fact_ids": [
             "connectivity.active_ixps",
-            "connectivity.high_capacity_low_public_connectivity_states"
+            "connectivity.combined_ixp_members",
+            "connectivity.international_submarine_cable_systems",
+            "connectivity.us_connected_cable_catalog_entries"
           ],
-          "field": "analysis[2]",
-          "inference": "interpretation",
-          "text": "Private routes and bilateral links may sit outside public records."
-        },
-        {
-          "fact_ids": [
-            "connectivity.high_capacity_low_public_connectivity_states"
-          ],
-          "field": "analysis[3]",
-          "inference": "interpretation",
-          "text": "The state count therefore measures visible public interconnection."
+          "field": "body",
+          "text": "Public records list 168 active U.S. internet exchange points with 2,805 combined reported members. They also list 90 U.S. international submarine cable systems and 115 U.S.-connected cable catalog entries. Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment. Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market."
         }
       ],
       "domain": "connectivity",
+      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+      "generated_at": "2026-10-07T19:04:54.984793+00:00",
       "generator": "openai",
-      "headline": "Public network visibility is uneven around data-center development",
+      "headline": "Exchange points and subsea cables give the U.S. a broad interconnection footprint",
       "label": "Connectivity",
       "references": [
         {
@@ -2277,9 +2216,13 @@
         {
           "source_label": "NTIA Middle Mile Program",
           "source_url": "https://broadbandusa.ntia.gov/news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program"
+        },
+        {
+          "source_label": "Morningstar",
+          "source_url": "https://www.morningstar.com/news/pr-newswire/20260930ln60486/ekinops-powers-bluebird-fibers-midwest-network-investments-for-growing-infrastructure-demand"
         }
       ],
-      "version": "4.5.0"
+      "version": "6.1.0"
     },
     "data_center": {
       "analysis": "Available records list 3,068 operating sites and 1,556 sites in development, equivalent to roughly one development site for every two operating sites. Separately, 894 sites are tracked in the active pipeline. Recent reports identify two concrete execution risks: a Texas moratorium on data-center approvals was broadened to include environmental permits, while Oracle issued a force majeure notice following setbacks at Project Jupiter. These cases do not establish a failure rate for the wider pipeline, but they show why site counts should not be read as completed capacity.",
@@ -2430,40 +2373,43 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "At the measured level, operating cash flow covers current CapEx 1.42 times, providing a substantial source of internal funding. Cash reserves equal 0.96 years of CapEx, so cash alone falls just short of one year at the current spending rate. Borrower strain is 26.0, compared with lender strain of -13.5. The combination supports current spending from operations, but with a limited cash cushion and divergent conditions for borrowers and lenders.",
+      "analysis": "The Chicago Fed NFCI stands at -0.49 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5, leaving a pronounced split beneath the aggregate measure. Morningstar reported that AI financing partnerships are credit-positive for Nvidia and data-center operators. That assessment points to benefits for the named participants, not uniformly easier financing for borrowers.",
       "analysis_sentences": [
-        "At the measured level, operating cash flow covers current CapEx 1.42 times, providing a substantial source of internal funding.",
-        "Cash reserves equal 0.96 years of CapEx, so cash alone falls just short of one year at the current spending rate.",
-        "Borrower strain is 26.0, compared with lender strain of -13.5.",
-        "The combination supports current spending from operations, but with a limited cash cushion and divergent conditions for borrowers and lenders."
+        "The Chicago Fed NFCI stands at -0.49 after a 0.02 increase over three months.",
+        "Borrower strain is 26.0, compared with lender strain of -13.5, leaving a pronounced split beneath the aggregate measure.",
+        "Morningstar reported that AI financing partnerships are credit-positive for Nvidia and data-center operators.",
+        "That assessment points to benefits for the named participants, not uniformly easier financing for borrowers."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years"
+            "finance.nfci_change",
+            "finance.borrower_strain",
+            "finance.lender_strain"
           ],
           "field": "headline",
-          "text": "Operations cover current CapEx, but reserves provide less than a year of coverage"
+          "text": "The NFCI increases amid a wide borrower-lender strain gap"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-05-7d9e4ebb6539"
+          ],
           "fact_ids": [
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
+            "finance.nfci",
+            "finance.nfci_change",
             "finance.borrower_strain",
             "finance.lender_strain"
           ],
           "field": "body",
-          "text": "At the measured level, operating cash flow covers current CapEx 1.42 times, providing a substantial source of internal funding. Cash reserves equal 0.96 years of CapEx, so cash alone falls just short of one year at the current spending rate. Borrower strain is 26.0, compared with lender strain of -13.5. The combination supports current spending from operations, but with a limited cash cushion and divergent conditions for borrowers and lenders."
+          "text": "The Chicago Fed NFCI stands at -0.49 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5, leaving a pronounced split beneath the aggregate measure. Morningstar reported that AI financing partnerships are credit-positive for Nvidia and data-center operators. That assessment points to benefits for the named participants, not uniformly easier financing for borrowers."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "5409479d76652ace82ab6cab",
-      "generated_at": "2026-10-02T18:05:05.174812+00:00",
+      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+      "generated_at": "2026-10-07T19:04:54.984793+00:00",
       "generator": "openai",
-      "headline": "Operations cover current CapEx, but reserves provide less than a year of coverage",
+      "headline": "The NFCI increases amid a wide borrower-lender strain gap",
       "label": "Finance",
       "references": [
         {
@@ -2497,6 +2443,10 @@
         {
           "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        },
+        {
+          "source_label": "Morningstar",
+          "source_url": "https://www.morningstar.com/bonds/ai-financing-partnerships-are-credit-positive-nvidia-data-center-operators"
         }
       ],
       "version": "6.1.0"
@@ -2564,83 +2514,87 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Market support has strengthened, but not evenly. The AI Equity Index rose materially to 35.9, while the share of companies with positive one-year returns edged up to 63.7% and the median return slipped to 13.1%. CNBC reported that Micron beat earnings estimates and issued strong guidance as data-center revenue increased elevenfold. That result shows substantial demand in one part of the hardware chain, but the market measures still point to uneven gains across the wider group. The investment cycle retains internal financial support: operating cash flow covers current CapEx 1.42 times. Yet cash reserves equal 0.96 years of CapEx, borrower strain stands at 26.0 and lender strain is -13.5. The physical side has a similar split. Electric-power construction grew 10.8%, but only 24.2% of the 2,061 GW active interconnection queue has reached an executed-agreement or construction stage. Spending and construction are active; the harder question is how much proposed capacity can clear financing and grid connection. Execution is also increasingly local. Available records contain 1,556 sites in development, about half the 3,068 operating sites. Construction Dive reports that public support is emerging as a data-center bottleneck, while the drought screen now places 24.4% of campuses with county data in counties containing some D2-or-worse drought; 22.2% are in counties where at least a quarter of the area is affected. County overlap does not establish site-level drought or water demand, and these developments do not show how many projects will be delayed. They reinforce why development-site counts should not be treated as completed capacity.",
+      "analysis": "Investor support remains constructive but selective. The AI Equity Index edged up to 36.7 and the median one-year return reached 13.7%, while the share of covered companies with positive one-year returns fell to 62.7%. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season, but the return data still show uneven participation. Financing is also mixed: the NFCI is -0.49 after a 0.02 rise over three months, while borrower strain is 26.0 and lender strain is -13.5. Computer and peripheral-equipment output is growing 9.2%, and semiconductor and electronic-component output 11.5%. Commercial electricity demand growth of 3.1% is also outpacing total retail demand growth of 1.2%. These are broad industry measures rather than AI-only series, but they describe an expanding hardware and power context for the buildout. Grid execution remains separate from the size of the pipeline: only 24.2% of the active interconnection queue is in executed-agreement or construction stages. Utility Dive reported that MISO proposed fast-track studies for large loads and generation. The proposal is a procedural change, not delivered capacity. Broader diffusion is less evident in labor and business use. Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at 0.8%, and two have positive real-earnings growth. CNBC reported surging Wall Street AI hiring, which provides a sector-specific contrast rather than evidence of broad acceleration. Current AI use is reported by 23.8% of businesses, with 27.6% expecting use within six months. These measures leave diffusion through firms and the labor market incomplete even as selected industries report strong AI hiring.",
       "analysis_paragraphs": [
-        "Market support has strengthened, but not evenly. The AI Equity Index rose materially to 35.9, while the share of companies with positive one-year returns edged up to 63.7% and the median return slipped to 13.1%. CNBC reported that Micron beat earnings estimates and issued strong guidance as data-center revenue increased elevenfold. That result shows substantial demand in one part of the hardware chain, but the market measures still point to uneven gains across the wider group.",
-        "The investment cycle retains internal financial support: operating cash flow covers current CapEx 1.42 times. Yet cash reserves equal 0.96 years of CapEx, borrower strain stands at 26.0 and lender strain is -13.5. The physical side has a similar split. Electric-power construction grew 10.8%, but only 24.2% of the 2,061 GW active interconnection queue has reached an executed-agreement or construction stage. Spending and construction are active; the harder question is how much proposed capacity can clear financing and grid connection.",
-        "Execution is also increasingly local. Available records contain 1,556 sites in development, about half the 3,068 operating sites. Construction Dive reports that public support is emerging as a data-center bottleneck, while the drought screen now places 24.4% of campuses with county data in counties containing some D2-or-worse drought; 22.2% are in counties where at least a quarter of the area is affected. County overlap does not establish site-level drought or water demand, and these developments do not show how many projects will be delayed. They reinforce why development-site counts should not be treated as completed capacity."
+        "Investor support remains constructive but selective. The AI Equity Index edged up to 36.7 and the median one-year return reached 13.7%, while the share of covered companies with positive one-year returns fell to 62.7%. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season, but the return data still show uneven participation. Financing is also mixed: the NFCI is -0.49 after a 0.02 rise over three months, while borrower strain is 26.0 and lender strain is -13.5.",
+        "Computer and peripheral-equipment output is growing 9.2%, and semiconductor and electronic-component output 11.5%. Commercial electricity demand growth of 3.1% is also outpacing total retail demand growth of 1.2%. These are broad industry measures rather than AI-only series, but they describe an expanding hardware and power context for the buildout. Grid execution remains separate from the size of the pipeline: only 24.2% of the active interconnection queue is in executed-agreement or construction stages. Utility Dive reported that MISO proposed fast-track studies for large loads and generation. The proposal is a procedural change, not delivered capacity.",
+        "Broader diffusion is less evident in labor and business use. Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at 0.8%, and two have positive real-earnings growth. CNBC reported surging Wall Street AI hiring, which provides a sector-specific contrast rather than evidence of broad acceleration. Current AI use is reported by 23.8% of businesses, with 27.6% expecting use within six months. These measures leave diffusion through firms and the labor market incomplete even as selected industries report strong AI hiring."
       ],
       "analysis_sentences": [
-        "Market support has strengthened, but not evenly.",
-        "The AI Equity Index rose materially to 35.9, while the share of companies with positive one-year returns edged up to 63.7% and the median return slipped to 13.1%.",
-        "CNBC reported that Micron beat earnings estimates and issued strong guidance as data-center revenue increased elevenfold.",
-        "That result shows substantial demand in one part of the hardware chain, but the market measures still point to uneven gains across the wider group.",
-        "The investment cycle retains internal financial support: operating cash flow covers current CapEx 1.42 times.",
-        "Yet cash reserves equal 0.96 years of CapEx, borrower strain stands at 26.0 and lender strain is -13.5.",
-        "The physical side has a similar split.",
-        "Electric-power construction grew 10.8%, but only 24.2% of the 2,061 GW active interconnection queue has reached an executed-agreement or construction stage.",
-        "Spending and construction are active; the harder question is how much proposed capacity can clear financing and grid connection.",
-        "Execution is also increasingly local.",
-        "Available records contain 1,556 sites in development, about half the 3,068 operating sites.",
-        "Construction Dive reports that public support is emerging as a data-center bottleneck, while the drought screen now places 24.4% of campuses with county data in counties containing some D2-or-worse drought; 22.2% are in counties where at least a quarter of the area is affected.",
-        "County overlap does not establish site-level drought or water demand, and these developments do not show how many projects will be delayed.",
-        "They reinforce why development-site counts should not be treated as completed capacity."
+        "Investor support remains constructive but selective.",
+        "The AI Equity Index edged up to 36.7 and the median one-year return reached 13.7%, while the share of covered companies with positive one-year returns fell to 62.7%.",
+        "The Financial Times reported that robust AI spending was supporting expectations for another strong U.S.",
+        "earnings season, but the return data still show uneven participation.",
+        "Financing is also mixed: the NFCI is -0.49 after a 0.02 rise over three months, while borrower strain is 26.0 and lender strain is -13.5.",
+        "Computer and peripheral-equipment output is growing 9.2%, and semiconductor and electronic-component output 11.5%.",
+        "Commercial electricity demand growth of 3.1% is also outpacing total retail demand growth of 1.2%.",
+        "These are broad industry measures rather than AI-only series, but they describe an expanding hardware and power context for the buildout.",
+        "Grid execution remains separate from the size of the pipeline: only 24.2% of the active interconnection queue is in executed-agreement or construction stages.",
+        "Utility Dive reported that MISO proposed fast-track studies for large loads and generation.",
+        "The proposal is a procedural change, not delivered capacity.",
+        "Broader diffusion is less evident in labor and business use.",
+        "Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at 0.8%, and two have positive real-earnings growth.",
+        "CNBC reported surging Wall Street AI hiring, which provides a sector-specific contrast rather than evidence of broad acceleration.",
+        "Current AI use is reported by 23.8% of businesses, with 27.6% expecting use within six months.",
+        "These measures leave diffusion through firms and the labor market incomplete even as selected industries report strong AI hiring."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "market.aei",
-            "market.median_return",
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
-            "finance.borrower_strain",
-            "finance.lender_strain",
-            "grid_storage.electric_power_construction_growth",
-            "grid_storage.advanced_share"
+            "compute.computer_output_growth",
+            "compute.semiconductor_output_growth",
+            "power.commercial_growth",
+            "workforce.employment_breadth"
           ],
           "field": "headline",
-          "text": "AI market pricing strengthens, but financing and physical execution remain uneven"
+          "text": "Market support and physical expansion coexist with narrow labor gains"
         },
         {
           "event_ids": [
-            "auto-2026-09-30-8aae32451c9b"
+            "auto-2026-10-07-45b2323f28a5"
           ],
           "fact_ids": [
             "market.aei",
+            "market.median_return",
             "market.positive_breadth",
-            "market.median_return"
+            "finance.nfci",
+            "finance.nfci_change",
+            "finance.borrower_strain",
+            "finance.lender_strain"
           ],
           "field": "paragraphs[0]",
-          "text": "Market support has strengthened, but not evenly. The AI Equity Index rose materially to 35.9, while the share of companies with positive one-year returns edged up to 63.7% and the median return slipped to 13.1%. CNBC reported that Micron beat earnings estimates and issued strong guidance as data-center revenue increased elevenfold. That result shows substantial demand in one part of the hardware chain, but the market measures still point to uneven gains across the wider group."
-        },
-        {
-          "event_ids": [],
-          "fact_ids": [
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
-            "finance.borrower_strain",
-            "finance.lender_strain",
-            "grid_storage.electric_power_construction_growth",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share"
-          ],
-          "field": "paragraphs[1]",
-          "text": "The investment cycle retains internal financial support: operating cash flow covers current CapEx 1.42 times. Yet cash reserves equal 0.96 years of CapEx, borrower strain stands at 26.0 and lender strain is -13.5. The physical side has a similar split. Electric-power construction grew 10.8%, but only 24.2% of the 2,061 GW active interconnection queue has reached an executed-agreement or construction stage. Spending and construction are active; the harder question is how much proposed capacity can clear financing and grid connection."
+          "text": "Investor support remains constructive but selective. The AI Equity Index edged up to 36.7 and the median one-year return reached 13.7%, while the share of covered companies with positive one-year returns fell to 62.7%. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season, but the return data still show uneven participation. Financing is also mixed: the NFCI is -0.49 after a 0.02 rise over three months, while borrower strain is 26.0 and lender strain is -13.5."
         },
         {
           "event_ids": [
-            "auto-2026-09-23-21db59afa1b7"
+            "auto-2026-10-05-8559d73be953"
           ],
           "fact_ids": [
-            "data_center.operating_sites",
-            "data_center.development_sites",
-            "data_center.development_to_operating",
-            "water.campuses_in_counties_with_d2_share_pct",
-            "water.campuses_in_counties_with_25pct_d2_share_pct"
+            "compute.computer_output_growth",
+            "compute.semiconductor_output_growth",
+            "power.commercial_growth",
+            "power.demand_growth",
+            "grid_storage.advanced_share"
+          ],
+          "field": "paragraphs[1]",
+          "text": "Computer and peripheral-equipment output is growing 9.2%, and semiconductor and electronic-component output 11.5%. Commercial electricity demand growth of 3.1% is also outpacing total retail demand growth of 1.2%. These are broad industry measures rather than AI-only series, but they describe an expanding hardware and power context for the buildout. Grid execution remains separate from the size of the pipeline: only 24.2% of the active interconnection queue is in executed-agreement or construction stages. Utility Dive reported that MISO proposed fast-track studies for large loads and generation. The proposal is a procedural change, not delivered capacity."
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-02-7e65c549c244"
+          ],
+          "fact_ids": [
+            "workforce.employment_breadth",
+            "workforce.strongest_channel",
+            "workforce.strongest_channel_growth",
+            "workforce.real_earnings_breadth",
+            "adoption.current_business_use_pct",
+            "adoption.expected_business_use_pct"
           ],
           "field": "paragraphs[2]",
-          "text": "Execution is also increasingly local. Available records contain 1,556 sites in development, about half the 3,068 operating sites. Construction Dive reports that public support is emerging as a data-center bottleneck, while the drought screen now places 24.4% of campuses with county data in counties containing some D2-or-worse drought; 22.2% are in counties where at least a quarter of the area is affected. County overlap does not establish site-level drought or water demand, and these developments do not show how many projects will be delayed. They reinforce why development-site counts should not be treated as completed capacity."
+          "text": "Broader diffusion is less evident in labor and business use. Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at 0.8%, and two have positive real-earnings growth. CNBC reported surging Wall Street AI hiring, which provides a sector-specific contrast rather than evidence of broad acceleration. Current AI use is reported by 23.8% of businesses, with 27.6% expecting use within six months. These measures leave diffusion through firms and the labor market incomplete even as selected industries report strong AI hiring."
         }
       ],
       "domain": "macro",
@@ -2649,25 +2603,25 @@
           "context": "",
           "fact_id": "market.aei",
           "label": "AI Equity Index",
-          "value": "35.9"
+          "value": "36.7"
         },
         {
           "context": "",
-          "fact_id": "market.median_return",
-          "label": "Median one-year return",
-          "value": "13.1%"
+          "fact_id": "compute.computer_output_growth",
+          "label": "Computer and peripheral equipment output growth",
+          "value": "9.2%"
         },
         {
           "context": "",
-          "fact_id": "finance.internal_funding_coverage",
-          "label": "Operating cash flow coverage of current CapEx",
-          "value": "1.42x"
+          "fact_id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth",
+          "value": "11.5%"
         }
       ],
-      "evidence_snapshot_id": "5409479d76652ace82ab6cab",
-      "generated_at": "2026-10-02T18:05:05.174812+00:00",
+      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+      "generated_at": "2026-10-07T19:04:54.984793+00:00",
       "generator": "openai",
-      "headline": "AI market pricing strengthens, but financing and physical execution remain uneven",
+      "headline": "Market support and physical expansion coexist with narrow labor gains",
       "label": "AI Macro",
       "references": [
         {
@@ -2698,49 +2652,52 @@
       "selected_domains": [
         "market",
         "finance",
-        "data_center",
+        "compute",
+        "power",
         "grid_storage",
-        "water"
+        "adoption",
+        "workforce"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index rose materially to 35.9, while the share of covered companies with positive one-year returns increased only slightly to 63.7% and the median return slipped to 13.1%. The stronger index alongside softer typical performance indicates that gains remain uneven. CNBC reported that Micron beat earnings estimates and issued strong guidance as its data-center revenue increased elevenfold. That is a significant company-level result, but it does not establish broad earnings strength across the sector.",
+      "analysis": "The AI Equity Index edged up to 36.7 and the median one-year return rose to 13.7%, but the share of covered companies with positive one-year returns slipped to 62.7%. Gains therefore persisted without becoming more broadly distributed. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season. That strengthens the near-term earnings narrative, but it does not show that results are improving across the full set of covered companies.",
       "analysis_sentences": [
-        "The AI Equity Index rose materially to 35.9, while the share of covered companies with positive one-year returns increased only slightly to 63.7% and the median return slipped to 13.1%.",
-        "The stronger index alongside softer typical performance indicates that gains remain uneven.",
-        "CNBC reported that Micron beat earnings estimates and issued strong guidance as its data-center revenue increased elevenfold.",
-        "That is a significant company-level result, but it does not establish broad earnings strength across the sector."
+        "The AI Equity Index edged up to 36.7 and the median one-year return rose to 13.7%, but the share of covered companies with positive one-year returns slipped to 62.7%.",
+        "Gains therefore persisted without becoming more broadly distributed.",
+        "The Financial Times reported that robust AI spending was supporting expectations for another strong U.S.",
+        "earnings season.",
+        "That strengthens the near-term earnings narrative, but it does not show that results are improving across the full set of covered companies."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "market.aei",
-            "market.positive_breadth",
-            "market.median_return"
+            "market.median_return",
+            "market.positive_breadth"
           ],
           "field": "headline",
-          "text": "Index strength runs ahead of broader returns"
+          "text": "AI shares advance without broader participation"
         },
         {
           "event_ids": [
-            "auto-2026-09-30-8aae32451c9b"
+            "auto-2026-10-07-45b2323f28a5"
           ],
           "fact_ids": [
             "market.aei",
-            "market.positive_breadth",
-            "market.median_return"
+            "market.median_return",
+            "market.positive_breadth"
           ],
           "field": "body",
-          "text": "The AI Equity Index rose materially to 35.9, while the share of covered companies with positive one-year returns increased only slightly to 63.7% and the median return slipped to 13.1%. The stronger index alongside softer typical performance indicates that gains remain uneven. CNBC reported that Micron beat earnings estimates and issued strong guidance as its data-center revenue increased elevenfold. That is a significant company-level result, but it does not establish broad earnings strength across the sector."
+          "text": "The AI Equity Index edged up to 36.7 and the median one-year return rose to 13.7%, but the share of covered companies with positive one-year returns slipped to 62.7%. Gains therefore persisted without becoming more broadly distributed. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season. That strengthens the near-term earnings narrative, but it does not show that results are improving across the full set of covered companies."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "5409479d76652ace82ab6cab",
-      "generated_at": "2026-10-02T18:05:05.174812+00:00",
+      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+      "generated_at": "2026-10-07T19:04:54.984793+00:00",
       "generator": "openai",
-      "headline": "Index strength runs ahead of broader returns",
+      "headline": "AI shares advance without broader participation",
       "label": "Market",
       "references": [
         {
@@ -2752,50 +2709,51 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "CNBC",
-          "source_url": "https://www.cnbc.com/2026/09/30/micron-mu-q4-earnings-report-2026.html"
+          "source_label": "Financial Times",
+          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOZk1oQnFmYjdtRWFEeFNTZlEtZU9IVGV1Y24wcGJVa2pJY2JURGJORXpGTHRnUVRucUxRYmpMNndGaEdLaU9PZDIybFpXeXlVUURrSUttWG5WUmZzUjZJSk5EYlRDYzF6c3hvMXI4d2ExT3ItVjFMVEdveGpwUkF0dVBHdXI?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "power": {
-      "analysis": "Commercial electricity demand growth increased slightly to 3.1%, while total retail demand growth eased to 1.2%. Net planned generation additions through the pipeline horizon slipped to 225.2 GW, and retail electricity price growth eased slightly to 4.4%. Google reportedly agreed to support nuclear uprates at Georgia Power's Vogtle and Hatch plants, providing one route to additional output from existing facilities. It does not establish when the wider planned pipeline will be delivered.",
+      "analysis": "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change.",
       "analysis_sentences": [
-        "Commercial electricity demand growth increased slightly to 3.1%, while total retail demand growth eased to 1.2%.",
-        "Net planned generation additions through the pipeline horizon slipped to 225.2 GW, and retail electricity price growth eased slightly to 4.4%.",
-        "Google reportedly agreed to support nuclear uprates at Georgia Power's Vogtle and Hatch plants, providing one route to additional output from existing facilities.",
-        "It does not establish when the wider planned pipeline will be delivered."
+        "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%.",
+        "Net planned generation additions total 225.2 GW through the pipeline horizon.",
+        "Utility Dive reported that MISO proposed a fast-track study process for large loads and generation.",
+        "The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-05-8559d73be953"
+          ],
           "fact_ids": [
             "power.commercial_growth",
-            "power.demand_growth",
-            "power.planned_net_gw"
+            "power.demand_growth"
           ],
           "field": "headline",
-          "text": "Commercial electricity demand outpaces total demand as planned additions edge down"
+          "text": "Commercial demand leads electricity growth as faster grid studies are proposed"
         },
         {
           "event_ids": [
-            "auto-2026-09-22-301fc5949b19"
+            "auto-2026-10-05-8559d73be953"
           ],
           "fact_ids": [
             "power.commercial_growth",
             "power.demand_growth",
-            "power.planned_net_gw",
-            "power.retail_price_growth"
+            "power.retail_price_growth",
+            "power.planned_net_gw"
           ],
           "field": "body",
-          "text": "Commercial electricity demand growth increased slightly to 3.1%, while total retail demand growth eased to 1.2%. Net planned generation additions through the pipeline horizon slipped to 225.2 GW, and retail electricity price growth eased slightly to 4.4%. Google reportedly agreed to support nuclear uprates at Georgia Power's Vogtle and Hatch plants, providing one route to additional output from existing facilities. It does not establish when the wider planned pipeline will be delivered."
+          "text": "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change."
         }
       ],
       "domain": "power",
-      "evidence_snapshot_id": "43ee6a57705444c0b5b6dc41",
-      "generated_at": "2026-09-28T19:51:33.394715+00:00",
+      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+      "generated_at": "2026-10-07T19:04:54.984793+00:00",
       "generator": "openai",
-      "headline": "Commercial electricity demand outpaces total demand as planned additions edge down",
+      "headline": "Commercial demand leads electricity growth as faster grid studies are proposed",
       "label": "Power",
       "references": [
         {
@@ -2811,8 +2769,8 @@
           "source_url": ""
         },
         {
-          "source_label": "Data Center Dynamics",
-          "source_url": "https://www.datacenterdynamics.com/en/news/google-inks-deal-to-support-nuclear-uprates-at-georgia-powers-vogtle-and-hatch-plants/"
+          "source_label": "Utility Dive",
+          "source_url": "https://www.utilitydive.com/news/miso-large-load-generation-study-lars-ferc/832114/"
         }
       ],
       "version": "6.1.0"
@@ -2878,44 +2836,43 @@
       "version": "6.1.0"
     },
     "workforce": {
-      "analysis": "Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at just 0.8%. Two channels have positive real-earnings growth. Barron's reports an expectation that AI will create more jobs than layoffs, though with painful disruption. That is a forward-looking judgment; the current measures still show narrow gains across the tracked labor channels.",
+      "analysis": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint. The report does not amount to broad acceleration across the tracked labor channels.",
       "analysis_sentences": [
-        "Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at just 0.8%.",
-        "Two channels have positive real-earnings growth.",
-        "Barron's reports an expectation that AI will create more jobs than layoffs, though with painful disruption.",
-        "That is a forward-looking judgment; the current measures still show narrow gains across the tracked labor channels."
+        "Only one tracked AI-linked labor channel has positive employment growth.",
+        "Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth.",
+        "CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint.",
+        "The report does not amount to broad acceleration across the tracked labor channels."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-09-29-8858dd6e0d27"
+            "auto-2026-10-02-7e65c549c244"
           ],
           "fact_ids": [
-            "workforce.employment_breadth",
-            "workforce.real_earnings_breadth"
+            "workforce.employment_breadth"
           ],
           "field": "headline",
-          "text": "Job-creation expectations run ahead of current labor breadth"
+          "text": "Sector-specific AI hiring contrasts with narrow tracked job growth"
         },
         {
           "event_ids": [
-            "auto-2026-09-29-8858dd6e0d27"
+            "auto-2026-10-02-7e65c549c244"
           ],
           "fact_ids": [
             "workforce.employment_breadth",
-            "workforce.real_earnings_breadth",
             "workforce.strongest_channel",
-            "workforce.strongest_channel_growth"
+            "workforce.strongest_channel_growth",
+            "workforce.real_earnings_breadth"
           ],
           "field": "body",
-          "text": "Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at just 0.8%. Two channels have positive real-earnings growth. Barron's reports an expectation that AI will create more jobs than layoffs, though with painful disruption. That is a forward-looking judgment; the current measures still show narrow gains across the tracked labor channels."
+          "text": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint. The report does not amount to broad acceleration across the tracked labor channels."
         }
       ],
       "domain": "workforce",
-      "evidence_snapshot_id": "e5d67c6eefd0e495930187af",
-      "generated_at": "2026-09-29T18:13:49.080331+00:00",
+      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+      "generated_at": "2026-10-07T19:04:54.984793+00:00",
       "generator": "openai",
-      "headline": "Job-creation expectations run ahead of current labor breadth",
+      "headline": "Sector-specific AI hiring contrasts with narrow tracked job growth",
       "label": "Workforce",
       "references": [
         {
@@ -2931,8 +2888,8 @@
           "source_url": "https://www.bls.gov/jlt/"
         },
         {
-          "source_label": "Barron's",
-          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOQmpaOGZWRUdTbVQwVlFsNFJmcFQzNXdKZ3FfWFZnT0F0bFZVOE5lbWJUMFlrMFVpYVRELVhjaExvLWhtSjVJWUxQb21nNWw0X2pmemFBcTBGeFIwQktURWV6VGRBQ2dPRzQ2WW80UlBpLTJSZm9JTENiUWNjSFRUMjdITWM?oc=5"
+          "source_label": "CNBC",
+          "source_url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE02YlRuZjNhMDVHX3U3M3p0Uy1XZnRqekVBUmFudXhzREVFcl9Bel9LOHF6Y1NZdjgzejZQQXNIRGJIMm5qdTM0bG15dmY5dXdka3VPR3BpSDhUdDM1WWJnM0dvMFlQcFRTeWlrYmpZaEFqS0hYcGhZZkpKMnY?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2945,25 +2902,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 12,
+    "checked_passages": 14,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "grid_storage.body",
-        "text": "Electric-power construction growth increased materially to 10.8%. The active interconnection queue stands at 2,061 GW, and only 24.2% is in executed-agreement or construction stages; storage accounts for 552.7 GW of the queue. S&P Global reports that data centers are adding to transmission congestion. Faster construction is a meaningful counterweight, but most requested capacity has not reached an advanced stage."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "macro.paragraphs[1]",
-        "text": "The investment cycle retains internal financial support: operating cash flow covers current CapEx 1.42 times. Yet cash reserves equal 0.96 years of CapEx, borrower strain stands at 26.0 and lender strain is -13.5. The physical side has a similar split. Electric-power construction grew 10.8%, but only 24.2% of the 2,061 GW active interconnection queue has reached an executed-agreement or construction stage. Spending and construction are active; the harder question is how much proposed capacity can clear financing and grid connection."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "macro.paragraphs[2]",
-        "text": "Execution is also increasingly local. Available records contain 1,556 sites in development, about half the 3,068 operating sites. Construction Dive reports that public support is emerging as a data-center bottleneck, while the drought screen now places 24.4% of campuses with county data in counties containing some D2-or-worse drought; 22.2% are in counties where at least a quarter of the area is affected. County overlap does not establish site-level drought or water demand, and these developments do not show how many projects will be delayed. They reinforce why development-site counts should not be treated as completed capacity."
+        "scope": "power.body",
+        "text": "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change."
       }
     ],
     "hard_errors": [],
