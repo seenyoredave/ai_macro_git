@@ -1,0 +1,2894 @@
+{
+  "api_call_contract": {
+    "editorial_calls": 1,
+    "retries": 0
+  },
+  "artifact_version": "4.0.0",
+  "attempt_id": "20261009T183057371776Z_c419022f_1f20f51e",
+  "bootstrap": false,
+  "candidate_domains": [
+    "market",
+    "compute",
+    "power",
+    "grid_storage",
+    "adoption",
+    "workforce",
+    "economic_impact"
+  ],
+  "editorial_briefing": {
+    "assignment": "Write a current AI Macro update from the briefing. Update only domain Reads that materially improve on the prior publication.",
+    "briefing_version": "1.1.0",
+    "candidate_domains": [
+      "market",
+      "compute",
+      "power",
+      "grid_storage",
+      "adoption",
+      "workforce",
+      "economic_impact"
+    ],
+    "findings": [
+      {
+        "domain": "market",
+        "facts": [
+          {
+            "change": "increased slightly",
+            "fact_id": "market.aei",
+            "finding": "AI Equity Index: 37.5"
+          },
+          {
+            "change": "increased slightly",
+            "fact_id": "market.pressure",
+            "finding": "Average sector trading pressure: 52.1"
+          },
+          {
+            "change": "decreased slightly",
+            "fact_id": "market.positive_breadth",
+            "finding": "Covered companies with positive one-year returns: 62.3%"
+          },
+          {
+            "change": "increased materially",
+            "fact_id": "market.median_return",
+            "finding": "Median one-year return: 15.6%"
+          }
+        ],
+        "label": "Market",
+        "update_candidate": true
+      },
+      {
+        "domain": "finance",
+        "facts": [
+          {
+            "fact_id": "finance.borrower_strain",
+            "finding": "Borrower strain: 26.0"
+          },
+          {
+            "fact_id": "finance.lender_strain",
+            "finding": "Lender strain: -13.5"
+          },
+          {
+            "fact_id": "finance.internal_funding_coverage",
+            "finding": "Operating cash flow coverage of current CapEx: 1.42x"
+          },
+          {
+            "fact_id": "finance.cash_reserve_coverage_years",
+            "finding": "Cash reserves relative to current CapEx: 0.96 years"
+          }
+        ],
+        "label": "Finance",
+        "update_candidate": false
+      },
+      {
+        "domain": "compute",
+        "facts": [
+          {
+            "fact_id": "compute.computer_output_growth",
+            "finding": "Computer and peripheral equipment output growth: 9.2%"
+          },
+          {
+            "fact_id": "compute.semiconductor_output_growth",
+            "finding": "Semiconductor and electronic component output growth: 11.5%"
+          },
+          {
+            "fact_id": "compute.computer_utilization",
+            "finding": "Computer and peripheral equipment capacity utilization: 81.7%"
+          },
+          {
+            "fact_id": "compute.semiconductor_utilization",
+            "finding": "Semiconductor capacity utilization: 72.2%"
+          }
+        ],
+        "label": "Compute",
+        "update_candidate": true
+      },
+      {
+        "domain": "data_center",
+        "facts": [
+          {
+            "fact_id": "data_center.operating_sites",
+            "finding": "Operating sites in available project records: 3,068"
+          },
+          {
+            "fact_id": "data_center.development_sites",
+            "finding": "Sites in development in available project records: 1,556"
+          },
+          {
+            "fact_id": "data_center.development_to_operating",
+            "finding": "Development sites relative to operating sites: 0.51x"
+          },
+          {
+            "fact_id": "data_center.tracked_pipeline_sites",
+            "finding": "Tracked active pipeline sites: 894"
+          }
+        ],
+        "label": "Data Centers",
+        "update_candidate": false
+      },
+      {
+        "domain": "connectivity",
+        "facts": [
+          {
+            "change": "increased slightly",
+            "fact_id": "connectivity.interconnection_facilities_or_floor",
+            "finding": "PeeringDB interconnection facilities or coverage floor: 1,378"
+          },
+          {
+            "fact_id": "connectivity.active_ixps",
+            "finding": "Active U.S. internet exchange points: 168"
+          },
+          {
+            "fact_id": "connectivity.combined_ixp_members",
+            "finding": "Combined reported IXP members: 2,805"
+          },
+          {
+            "fact_id": "connectivity.international_submarine_cable_systems",
+            "finding": "U.S. international submarine cable systems: 90"
+          }
+        ],
+        "label": "Connectivity",
+        "update_candidate": false
+      },
+      {
+        "domain": "power",
+        "facts": [
+          {
+            "fact_id": "power.demand_growth",
+            "finding": "Total retail electricity demand growth: 1.2%"
+          },
+          {
+            "fact_id": "power.commercial_growth",
+            "finding": "Commercial electricity demand growth: 3.1%"
+          },
+          {
+            "fact_id": "power.planned_net_gw",
+            "finding": "Net planned generation additions through the pipeline horizon: 225.2 GW"
+          },
+          {
+            "fact_id": "power.retail_price_growth",
+            "finding": "Retail electricity price growth: 4.4%"
+          }
+        ],
+        "label": "Power",
+        "update_candidate": true
+      },
+      {
+        "domain": "grid_storage",
+        "facts": [
+          {
+            "fact_id": "grid_storage.queue_gw",
+            "finding": "Active interconnection queue: 2061 GW"
+          },
+          {
+            "fact_id": "grid_storage.advanced_share",
+            "finding": "Queue share in executed-agreement or construction stages: 24.2%"
+          },
+          {
+            "fact_id": "grid_storage.storage_queue_gw",
+            "finding": "Storage capacity in the active queue: 552.7 GW"
+          },
+          {
+            "fact_id": "grid_storage.historical_operational_pct",
+            "finding": "2000\u20132020 queue cohort that reached operation: 13%"
+          }
+        ],
+        "label": "Grid & Storage",
+        "update_candidate": true
+      },
+      {
+        "domain": "water",
+        "facts": [
+          {
+            "change": "increased slightly",
+            "fact_id": "water.campuses_in_counties_with_d2_area",
+            "finding": "Campuses in counties with some D2-or-worse drought area: 354"
+          },
+          {
+            "change": "increased slightly",
+            "fact_id": "water.campuses_in_counties_with_d2_share_pct",
+            "finding": "Share of campuses with county drought data in counties with some D2-or-worse drought area: 24.7%"
+          },
+          {
+            "change": "decreased slightly",
+            "fact_id": "water.campuses_in_counties_with_25pct_d2_area",
+            "finding": "Campuses in counties with at least 25% D2-or-worse drought area: 310"
+          },
+          {
+            "change": "decreased slightly",
+            "fact_id": "water.campuses_in_counties_with_25pct_d2_share_pct",
+            "finding": "Share of campuses with county drought data in counties with at least 25% D2-or-worse drought area: 21.6%"
+          }
+        ],
+        "label": "Water",
+        "update_candidate": false
+      },
+      {
+        "domain": "adoption",
+        "facts": [
+          {
+            "change": "increased slightly",
+            "fact_id": "adoption.expected_business_use_pct",
+            "finding": "Businesses expecting AI use within six months: 27.7%"
+          },
+          {
+            "change": "increased slightly",
+            "fact_id": "adoption.expected_adoption_gap_ppts",
+            "finding": "Expected-minus-current business AI-use gap: 3.9 percentage points"
+          },
+          {
+            "change": "increased materially",
+            "fact_id": "adoption.sector_coverage",
+            "finding": "Share of BTOS sectors with a current-use reading: 100.0%"
+          },
+          {
+            "change": "increased slightly",
+            "fact_id": "adoption.leading_sector_use_pct",
+            "finding": "Highest BTOS sector current AI-use reading: 50.2%"
+          }
+        ],
+        "label": "Adoption",
+        "update_candidate": true
+      },
+      {
+        "domain": "workforce",
+        "facts": [
+          {
+            "fact_id": "workforce.employment_breadth",
+            "finding": "Tracked AI-linked labor channels with positive employment growth: 1"
+          },
+          {
+            "fact_id": "workforce.real_earnings_breadth",
+            "finding": "Tracked AI-linked labor channels with positive real-earnings growth: 2"
+          },
+          {
+            "fact_id": "workforce.strongest_channel",
+            "finding": "Tracked channel with the strongest employment growth: Power & communication construction"
+          },
+          {
+            "fact_id": "workforce.strongest_channel_growth",
+            "finding": "Strongest tracked-channel employment growth: 0.8%"
+          }
+        ],
+        "label": "Workforce",
+        "update_candidate": true
+      },
+      {
+        "domain": "economic_impact",
+        "facts": [
+          {
+            "fact_id": "economic_impact.productivity_growth",
+            "finding": "Nonfarm-business productivity growth: 2.2%"
+          },
+          {
+            "fact_id": "economic_impact.real_output_growth",
+            "finding": "Nonfarm-business real output growth: 2.5%"
+          },
+          {
+            "fact_id": "economic_impact.real_compensation_growth",
+            "finding": "Real hourly compensation growth: 0.6%"
+          },
+          {
+            "fact_id": "economic_impact.unit_labor_cost_growth",
+            "finding": "Unit labor cost growth: 1.4%"
+          }
+        ],
+        "label": "Economic Outcomes",
+        "update_candidate": true
+      }
+    ],
+    "prior_publication": {
+      "adoption": {
+        "body": "Current AI use increased slightly to 23.8% of businesses, while expected use within six months rose to 27.6%. The gap narrowed to 3.8 percentage points, putting stated near-term intentions closer to reported deployment. Adoption remains uneven: the leading sector's current-use reading rose materially to 49.0%, more than twice the all-business rate.",
+        "headline": "Business AI use rises as the near-term intention gap narrows"
+      },
+      "compute": {
+        "body": "Computer and peripheral-equipment output grew 9.2%, with capacity utilization at 81.7%. Semiconductor and electronic-component output grew 11.5%, but utilization was lower at 72.2%. Output is rising in both industries, while the utilization gap indicates different pressure on installed capacity.",
+        "headline": "Compute output is growing under different capacity conditions"
+      },
+      "economic_impact": {
+        "body": "Nonfarm-business productivity grew 2.2% as real output rose 2.5%. Real hourly compensation increased 0.6%, while unit labor costs grew 1.4%, indicating positive aggregate performance without a comparable increase in real compensation. A report that investors are pricing in a 32.6% AI productivity boost for software engineers describes an expectation for a specific workforce segment, not an economy-wide result. The current aggregate data do not identify AI's contribution.",
+        "headline": "Productivity is rising, but compensation gains remain modest"
+      },
+      "grid_storage": {
+        "body": "Electric-power construction growth increased materially to 10.8%. The active interconnection queue stands at 2,061 GW, and only 24.2% is in executed-agreement or construction stages; storage accounts for 552.7 GW of the queue. S&P Global reports that data centers are adding to transmission congestion. Faster construction is a meaningful counterweight, but most requested capacity has not reached an advanced stage.",
+        "headline": "Grid construction accelerates while most queued capacity remains at early stages"
+      },
+      "macro": {
+        "body": "Investor support remains constructive but selective. The AI Equity Index edged up to 36.7 and the median one-year return reached 13.7%, while the share of covered companies with positive one-year returns fell to 62.7%. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season, but the return data still show uneven participation. Financing is also mixed: the NFCI is -0.49 after a 0.02 rise over three months, while borrower strain is 26.0 and lender strain is -13.5. Computer and peripheral-equipment output is growing 9.2%, and semiconductor and electronic-component output 11.5%. Commercial electricity demand growth of 3.1% is also outpacing total retail demand growth of 1.2%. These are broad industry measures rather than AI-only series, but they describe an expanding hardware and power context for the buildout. Grid execution remains separate from the size of the pipeline: only 24.2% of the active interconnection queue is in executed-agreement or construction stages. Utility Dive reported that MISO proposed fast-track studies for large loads and generation. The proposal is a procedural change, not delivered capacity. Broader diffusion is less evident in labor and business use. Only one tracked AI-linked labor channel has positive employment growth, led by power and communication construction at 0.8%, and two have positive real-earnings growth. CNBC reported surging Wall Street AI hiring, which provides a sector-specific contrast rather than evidence of broad acceleration. Current AI use is reported by 23.8% of businesses, with 27.6% expecting use within six months. These measures leave diffusion through firms and the labor market incomplete even as selected industries report strong AI hiring.",
+        "headline": "Market support and physical expansion coexist with narrow labor gains"
+      },
+      "market": {
+        "body": "The AI Equity Index edged up to 36.7 and the median one-year return rose to 13.7%, but the share of covered companies with positive one-year returns slipped to 62.7%. Gains therefore persisted without becoming more broadly distributed. The Financial Times reported that robust AI spending was supporting expectations for another strong U.S. earnings season. That strengthens the near-term earnings narrative, but it does not show that results are improving across the full set of covered companies.",
+        "headline": "AI shares advance without broader participation"
+      },
+      "power": {
+        "body": "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change.",
+        "headline": "Commercial demand leads electricity growth as faster grid studies are proposed"
+      },
+      "workforce": {
+        "body": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint. The report does not amount to broad acceleration across the tracked labor channels.",
+        "headline": "Sector-specific AI hiring contrasts with narrow tracked job growth"
+      }
+    },
+    "recent_developments": [
+      {
+        "date": "2026-10-08",
+        "development": "From Process Learning To Production Control: Trends In Advanced Packaging And Implications To Characterization And Test.",
+        "domain": "compute",
+        "event_id": "auto-2026-10-08-35e73caedfc6",
+        "new_since_prior_publication": true,
+        "priority": 143.0,
+        "source": "Semiconductor Engineering"
+      },
+      {
+        "date": "2026-10-01",
+        "development": "Anthropic's IPO pitch embraces AI's promise and peril.",
+        "domain": "market",
+        "event_id": "auto-2026-10-01-cea9991fa4e4",
+        "new_since_prior_publication": false,
+        "priority": 141.5,
+        "source": "Reuters"
+      },
+      {
+        "date": "2026-10-08",
+        "development": "In the Small Business Credit Survey (SBCS) reported on findings from the 2025 survey, 46 percent of firms with at least one employee stated that their business or employees were using AI tools, with another 15 percent planning to adopt them in the next twelve months.",
+        "domain": "workforce",
+        "event_id": "auto-2026-10-08-6f12584f804f",
+        "new_since_prior_publication": true,
+        "priority": 135.5,
+        "source": "Liberty Street Economics"
+      },
+      {
+        "date": "2026-10-07",
+        "development": "Robust AI spending sets investors up for another bumper US earnings season.",
+        "domain": "market",
+        "event_id": "auto-2026-10-07-45b2323f28a5",
+        "new_since_prior_publication": false,
+        "priority": 132.0,
+        "source": "Financial Times"
+      },
+      {
+        "date": "2026-10-08",
+        "development": "Massive AI Spending Is Helping Power the Economy. Productivity Gains Can Wait.",
+        "domain": "economic_impact",
+        "event_id": "auto-2026-10-08-5c0a7756bc40",
+        "new_since_prior_publication": true,
+        "priority": 131.5,
+        "source": "Barron's"
+      },
+      {
+        "date": "2026-10-05",
+        "development": "MISO proposes fast-track large load, generation study process.",
+        "domain": "power",
+        "event_id": "auto-2026-10-05-8559d73be953",
+        "new_since_prior_publication": false,
+        "priority": 129.0,
+        "source": "Utility Dive"
+      },
+      {
+        "date": "2026-10-05",
+        "development": "AI Financing Partnerships Are Credit-Positive for Nvidia and Data Center Operators.",
+        "domain": "finance",
+        "event_id": "auto-2026-10-05-7d9e4ebb6539",
+        "new_since_prior_publication": false,
+        "priority": 128.0,
+        "source": "Morningstar"
+      },
+      {
+        "date": "2026-10-06",
+        "development": "Companies cutting jobs as investments shift toward AI.",
+        "domain": "workforce",
+        "event_id": "auto-2026-10-06-0a3a404e4516",
+        "new_since_prior_publication": true,
+        "priority": 126.0,
+        "source": "Reuters"
+      },
+      {
+        "date": "2026-10-08",
+        "development": "Finding Critical Defects Before They Become Costly Failures: Process Control For Hybrid Bonding And Advanced Packaging.",
+        "domain": "compute",
+        "event_id": "auto-2026-10-08-ea50382f467a",
+        "new_since_prior_publication": true,
+        "priority": 125.5,
+        "source": "Semiconductor Engineering"
+      },
+      {
+        "date": "2026-10-09",
+        "development": "PJM approves fast-track interconnection for 2.1 GW from Engie, LS Power.",
+        "domain": "grid_storage",
+        "event_id": "auto-2026-10-09-15a67b7cd7fe",
+        "new_since_prior_publication": true,
+        "priority": 125.0,
+        "source": "Utility Dive"
+      },
+      {
+        "date": "2026-10-06",
+        "development": "Silicon Valley thinks AI will kill jobs. Economists are not convinced.",
+        "domain": "workforce",
+        "event_id": "auto-2026-10-06-1faf6bb5114f",
+        "new_since_prior_publication": true,
+        "priority": 125.0,
+        "source": "Financial Times"
+      },
+      {
+        "date": "2026-10-08",
+        "development": "Shift Left Complicates Fab Data Management.",
+        "domain": "compute",
+        "event_id": "auto-2026-10-08-66eec6d146e7",
+        "new_since_prior_publication": true,
+        "priority": 123.0,
+        "source": "Semiconductor Engineering"
+      },
+      {
+        "date": "2026-10-05",
+        "development": "Amazon, Constellation sign 20-year PPA to expand Maryland nuclear plant.",
+        "domain": "power",
+        "event_id": "auto-2026-10-05-6909d6790041",
+        "new_since_prior_publication": true,
+        "priority": 122.5,
+        "source": "Utility Dive"
+      },
+      {
+        "date": "2026-10-06",
+        "development": "Ultra-Compact Photonic Bends Reduce Loss While Meeting Foundry Rules (Georgia Tech).",
+        "domain": "compute",
+        "event_id": "auto-2026-10-06-e1a80bd58ccd",
+        "new_since_prior_publication": false,
+        "priority": 122.0,
+        "source": "Semiconductor Engineering"
+      },
+      {
+        "date": "2026-10-05",
+        "development": "Hidden capacity: The overlooked opportunity in North America\u2019s race for power.",
+        "domain": "power",
+        "event_id": "auto-2026-10-05-22ac6bc4c019",
+        "new_since_prior_publication": true,
+        "priority": 121.0,
+        "source": "Utility Dive"
+      }
+    ],
+    "style_reference": "AI Macro is a research platform that examines the development of the U.S. AI economy from capital investment and physical construction through deployment, adoption, and economic results. It uses publicly available data to relate corporate and market activity to the physical systems required to support the buildout. It evaluates the extent to which that investment produces durable economic value and how its effects are transmitted through the broader U.S. economy."
+  },
+  "evidence_packets": {
+    "adoption": {
+      "boundaries": [
+        "Expected business use represents stated six-month intent.",
+        "Provider subscriber counts are platform-specific reach measures.",
+        "The implied OpenAI subscriber share divides separately disclosed subscriber and weekly-user floors; it is not a national adoption rate or a cohort conversion measure.",
+        "The Census AI supplement covers November 17, 2025 through February 8, 2026 and is a dated structural benchmark, not a time series of adoption depth."
+      ],
+      "domain": "adoption",
+      "facts": [
+        {
+          "context": "",
+          "display": "23.8%",
+          "id": "adoption.current_business_use_pct",
+          "label": "Businesses reporting current AI use",
+          "value": 23.8
+        },
+        {
+          "context": "",
+          "display": "27.7%",
+          "id": "adoption.expected_business_use_pct",
+          "label": "Businesses expecting AI use within six months",
+          "value": 27.7
+        },
+        {
+          "context": "",
+          "display": "3.9 percentage points",
+          "id": "adoption.expected_adoption_gap_ppts",
+          "label": "Expected-minus-current business AI-use gap",
+          "value": 3.8999999999999986
+        },
+        {
+          "context": "",
+          "display": "61.8%",
+          "id": "adoption.consumer_overall_pct",
+          "label": "Adults age 18\u201364 reporting some generative-AI use",
+          "value": 61.7802431014
+        },
+        {
+          "context": "",
+          "display": "54.8%",
+          "id": "adoption.consumer_personal_pct",
+          "label": "Adults reporting personal generative-AI use",
+          "value": 54.8077960521
+        },
+        {
+          "context": "",
+          "display": "45.2%",
+          "id": "adoption.consumer_work_pct",
+          "label": "Adults reporting generative-AI use for work",
+          "value": 45.1993181231
+        },
+        {
+          "context": "",
+          "display": "54.2%",
+          "id": "adoption.consumer_active_pct",
+          "label": "Adults reporting generative-AI use in the prior week",
+          "value": 54.2087424858
+        },
+        {
+          "context": "",
+          "display": "15.4%",
+          "id": "adoption.consumer_daily_pct",
+          "label": "Adults reporting daily generative-AI use",
+          "value": 15.4386318268
+        },
+        {
+          "context": "",
+          "display": "13.8 percentage points",
+          "id": "adoption.consumer_change_ppts",
+          "label": "Change in overall consumer use across the retained series",
+          "value": 13.804690254100002
+        },
+        {
+          "context": "",
+          "display": "100.0%",
+          "id": "adoption.sector_coverage",
+          "label": "Share of BTOS sectors with a current-use reading",
+          "value": 1.0
+        },
+        {
+          "context": "",
+          "display": "Information",
+          "id": "adoption.leading_sector",
+          "label": "BTOS sector with the highest current AI-use reading",
+          "value": "Information"
+        },
+        {
+          "context": "",
+          "display": "50.2%",
+          "id": "adoption.leading_sector_use_pct",
+          "label": "Highest BTOS sector current AI-use reading",
+          "value": 50.2
+        },
+        {
+          "context": "",
+          "display": "22.6%",
+          "id": "adoption.worker_ai_use_pct",
+          "label": "Businesses reporting employee AI use for work tasks",
+          "value": 22.6
+        },
+        {
+          "context": "",
+          "display": "20.8%",
+          "id": "adoption.worker_genai_use_pct",
+          "label": "Businesses reporting employee Generative AI use for work tasks",
+          "value": 20.8
+        },
+        {
+          "context": "",
+          "display": "57.0%",
+          "id": "adoption.function_le3_share_pct",
+          "label": "Functional AI adopters using three or fewer business functions",
+          "value": 57.0
+        },
+        {
+          "context": "",
+          "display": "65.0%",
+          "id": "adoption.task_le3_share_pct",
+          "label": "Businesses reporting employee Generative AI use across three or fewer task categories",
+          "value": 65.0
+        },
+        {
+          "context": "",
+          "display": "Sales and marketing",
+          "id": "adoption.top_function",
+          "label": "Most common six-month AI business-function deployment among functional adopters",
+          "value": "Sales and marketing"
+        },
+        {
+          "context": "",
+          "display": "51.6%",
+          "id": "adoption.top_function_use_pct",
+          "label": "Functional adopters reporting AI deployment in the leading business function",
+          "value": 51.624548736462096
+        },
+        {
+          "context": "",
+          "display": "Writing or editing documents, emails, or communications",
+          "id": "adoption.top_task",
+          "label": "Most common employee Generative AI task among businesses reporting employee Generative AI use",
+          "value": "Writing or editing documents, emails, or communications"
+        },
+        {
+          "context": "",
+          "display": "85.4%",
+          "id": "adoption.top_task_use_pct",
+          "label": "Businesses reporting employee Generative AI use in the leading task category",
+          "value": 85.4
+        },
+        {
+          "context": "",
+          "display": "35.7%",
+          "id": "adoption.organizational_change_share_pct",
+          "label": "AI-using businesses reporting an organizational adjustment",
+          "value": 35.7
+        },
+        {
+          "context": "",
+          "display": "43.7%",
+          "id": "adoption.task_augmentation_pct",
+          "label": "AI-using businesses reporting task augmentation",
+          "value": 43.7
+        },
+        {
+          "context": "",
+          "display": "10.1%",
+          "id": "adoption.task_substitution_pct",
+          "label": "AI-using businesses reporting task substitution",
+          "value": 10.1
+        },
+        {
+          "context": "",
+          "display": "10.6%",
+          "id": "adoption.task_creation_pct",
+          "label": "AI-using businesses reporting new task creation",
+          "value": 10.6
+        },
+        {
+          "context": "",
+          "display": "2.0%",
+          "id": "adoption.employment_decrease_pct",
+          "label": "Businesses reporting an AI-related employment decrease",
+          "value": 2.0
+        },
+        {
+          "context": "",
+          "display": "95.7%",
+          "id": "adoption.employment_unchanged_pct",
+          "label": "AI-using businesses reporting no AI-related employment change",
+          "value": 95.7
+        },
+        {
+          "context": "",
+          "display": "50.0 million",
+          "id": "adoption.chatgpt_subscribers_m",
+          "label": "OpenAI reported ChatGPT subscribers",
+          "value": 50.0
+        },
+        {
+          "context": "",
+          "display": "5.6%",
+          "id": "adoption.implied_subscriber_share_pct",
+          "label": "Implied OpenAI subscriber share of reported ChatGPT weekly users",
+          "value": 5.555555555555555
+        },
+        {
+          "context": "",
+          "display": "9.0 million",
+          "id": "adoption.openai_paying_business_users_m",
+          "label": "OpenAI reported paying business users",
+          "value": 9.0
+        },
+        {
+          "context": "",
+          "display": "8.0 million",
+          "id": "adoption.gemini_enterprise_paid_seats_m",
+          "label": "Alphabet reported paid Gemini enterprise seats",
+          "value": 8.0
+        }
+      ],
+      "importance": 69.0234512705,
+      "label": "Adoption",
+      "references": [
+        {
+          "source_label": "Real-Time Population Survey via FRED",
+          "source_url": "https://fred.stlouisfed.org/release?rid=524"
+        },
+        {
+          "source_label": "U.S. Census BTOS",
+          "source_url": "https://www.census.gov/hfp/btos/"
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "compute": {
+      "boundaries": [
+        "Announced projects represent investment commitments; operating capacity requires in-service evidence.",
+        "Provider serving-cost disclosures apply to the reporting provider and disclosed workload scope."
+      ],
+      "domain": "compute",
+      "facts": [
+        {
+          "context": "",
+          "display": "9.2%",
+          "id": "compute.computer_output_growth",
+          "label": "Computer and peripheral equipment output growth",
+          "value": 0.09247983352669742
+        },
+        {
+          "context": "",
+          "display": "11.5%",
+          "id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth",
+          "value": 0.11465238662263166
+        },
+        {
+          "context": "",
+          "display": "81.7%",
+          "id": "compute.computer_utilization",
+          "label": "Computer and peripheral equipment capacity utilization",
+          "value": 81.6758
+        },
+        {
+          "context": "",
+          "display": "72.2%",
+          "id": "compute.semiconductor_utilization",
+          "label": "Semiconductor capacity utilization",
+          "value": 72.1577
+        },
+        {
+          "context": "",
+          "display": "15.9%",
+          "id": "compute.information_processing_investment_growth",
+          "label": "Information-processing investment growth",
+          "value": 0.1592742836027563
+        },
+        {
+          "context": "",
+          "display": "$362.0B",
+          "id": "compute.project_capex_b",
+          "label": "Expected investment in announced U.S. compute-manufacturing projects",
+          "value": 362.026
+        },
+        {
+          "context": "",
+          "display": "17",
+          "id": "compute.project_sites",
+          "label": "Announced U.S. compute-manufacturing project sites",
+          "value": 17.0
+        },
+        {
+          "context": "",
+          "display": "4",
+          "id": "compute.critical_layers_covered",
+          "label": "Tracked AI supply-chain layers with announced domestic projects",
+          "value": 4.0
+        },
+        {
+          "context": "",
+          "display": "4",
+          "id": "compute.critical_layers_total",
+          "label": "Tracked critical AI supply-chain layers",
+          "value": 4.0
+        },
+        {
+          "context": "",
+          "display": "11",
+          "id": "compute.core_ai_sites",
+          "label": "Core-AI manufacturing project sites",
+          "value": 11.0
+        },
+        {
+          "context": "",
+          "display": "$348.0B",
+          "id": "compute.core_ai_capex_b",
+          "label": "Expected investment in core-AI manufacturing projects",
+          "value": 348.026
+        },
+        {
+          "context": "",
+          "display": "1.9 GW",
+          "id": "compute.available_compute_gw",
+          "label": "OpenAI reported available compute",
+          "value": 1.9
+        },
+        {
+          "context": "",
+          "display": "78.0%",
+          "id": "compute.serving_cost_reduction_pct",
+          "label": "Alphabet reported serving unit-cost reduction",
+          "value": 78.0
+        }
+      ],
+      "importance": 35.0,
+      "label": "Compute",
+      "references": [
+        {
+          "source_label": "Federal Reserve G.17",
+          "source_url": "https://www.federalreserve.gov/releases/g17/current/"
+        },
+        {
+          "source_label": "BEA Fixed Assets",
+          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
+        },
+        {
+          "source_label": "Census Construction Spending",
+          "source_url": "https://www.census.gov/constructionspending"
+        },
+        {
+          "source_label": "Primary project disclosures",
+          "source_url": ""
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet AI serving economics",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "connectivity": {
+      "boundaries": [
+        "Public IXP and cable records measure visible interconnection and route infrastructure.",
+        "Campus-level capacity requires route, service, and deliverability evidence tied to the site."
+      ],
+      "domain": "connectivity",
+      "facts": [
+        {
+          "context": "",
+          "display": "168",
+          "id": "connectivity.active_ixps",
+          "label": "Active U.S. internet exchange points",
+          "value": 168.0
+        },
+        {
+          "context": "",
+          "display": "2,805",
+          "id": "connectivity.combined_ixp_members",
+          "label": "Combined reported IXP members",
+          "value": 2805.0
+        },
+        {
+          "context": "",
+          "display": "90",
+          "id": "connectivity.international_submarine_cable_systems",
+          "label": "U.S. international submarine cable systems",
+          "value": 90.0
+        },
+        {
+          "context": "",
+          "display": "115",
+          "id": "connectivity.us_connected_cable_catalog_entries",
+          "label": "U.S.-connected cable catalog entries",
+          "value": 115.0
+        },
+        {
+          "context": "",
+          "display": "24",
+          "id": "connectivity.future_or_current_year_cable_entries",
+          "label": "Future or current-year cable entries",
+          "value": 24.0
+        },
+        {
+          "context": "",
+          "display": "1,378",
+          "id": "connectivity.interconnection_facilities_or_floor",
+          "label": "PeeringDB interconnection facilities or coverage floor",
+          "value": 1378.0
+        },
+        {
+          "context": "",
+          "display": "12,500 miles",
+          "id": "connectivity.middle_mile_new_fiber_miles",
+          "label": "Federally supported middle-mile new fiber",
+          "value": 12500.0
+        },
+        {
+          "context": "",
+          "display": "19",
+          "id": "connectivity.high_capacity_low_public_connectivity_states",
+          "label": "States with data-center development but limited visible public interconnection depth",
+          "value": 19.0
+        },
+        {
+          "context": "",
+          "display": "225",
+          "id": "connectivity.campuses_screened",
+          "label": "Data-center campuses screened for connectivity context",
+          "value": 225.0
+        },
+        {
+          "context": "",
+          "display": "40",
+          "id": "connectivity.population_centers_with_ixp",
+          "label": "Population centers over 300k with an IXP",
+          "value": 40.0
+        },
+        {
+          "context": "",
+          "display": "75",
+          "id": "connectivity.population_centers_total",
+          "label": "Population centers over 300k assessed",
+          "value": 75.0
+        }
+      ],
+      "importance": 94.0,
+      "label": "Connectivity",
+      "references": [
+        {
+          "source_label": "FCC submarine cable records",
+          "source_url": "https://www.fcc.gov/research-reports/guides/submarine-cable-landing-licenses"
+        },
+        {
+          "source_label": "Internet Society Pulse / PeeringDB",
+          "source_url": "https://pulse.internetsociety.org/en/ixp-tracker/country/US/"
+        },
+        {
+          "source_label": "PeeringDB facility registry",
+          "source_url": "https://www.peeringdb.com/advanced_search?country__in=US&reftag=fac"
+        },
+        {
+          "source_label": "TeleGeography Submarine Cable Map",
+          "source_url": "https://www.submarinecablemap.com/country/united-states"
+        },
+        {
+          "source_label": "NTIA Middle Mile Program",
+          "source_url": "https://broadbandusa.ntia.gov/news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "data_center": {
+      "boundaries": [
+        "The project registry is a curated research universe of observed U.S. data-center campuses and projects.",
+        "Published MW represents disclosed project scale; energized load requires explicit operating evidence."
+      ],
+      "domain": "data_center",
+      "facts": [
+        {
+          "context": "",
+          "display": "3,068",
+          "id": "data_center.operating_sites",
+          "label": "Operating sites in available project records",
+          "value": 3068.0
+        },
+        {
+          "context": "",
+          "display": "1,556",
+          "id": "data_center.development_sites",
+          "label": "Sites in development in available project records",
+          "value": 1556.0
+        },
+        {
+          "context": "",
+          "display": "0.51x",
+          "id": "data_center.development_to_operating",
+          "label": "Development sites relative to operating sites",
+          "value": 0.5071707953063885
+        },
+        {
+          "context": "",
+          "display": "894",
+          "id": "data_center.tracked_pipeline_sites",
+          "label": "Tracked active pipeline sites",
+          "value": 894.0
+        },
+        {
+          "context": "",
+          "display": "287.2 GW",
+          "id": "data_center.pipeline_capacity_gw",
+          "label": "Published capacity associated with development sites",
+          "value": 287.155
+        },
+        {
+          "context": "",
+          "display": "22.9 GW",
+          "id": "data_center.operating_capacity_gw",
+          "label": "Published capacity associated with operating sites",
+          "value": 22.9025
+        },
+        {
+          "context": "",
+          "display": "41.3%",
+          "id": "data_center.published_capacity_coverage",
+          "label": "Share of active campus records with published capacity",
+          "value": 0.412987012987013
+        }
+      ],
+      "importance": 57.82268578878748,
+      "label": "Data Centers",
+      "references": [
+        {
+          "source_label": "Pew / Data Center Map",
+          "source_url": "https://www.pewresearch.org/short-reads/2026/04/13/most-new-data-centers-in-the-us-are-coming-to-rural-areas/"
+        },
+        {
+          "source_label": "FracTracker Alliance",
+          "source_url": "https://fractracker.org/2026/04/open-u-s-data-centers-tracker/"
+        },
+        {
+          "source_label": "Deduplicated campus records",
+          "source_url": ""
+        },
+        {
+          "source_label": "Gigawatt Map",
+          "source_url": "https://gigawattmap.com/"
+        },
+        {
+          "source_label": "Primary project disclosures",
+          "source_url": ""
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "economic_impact": {
+      "boundaries": [
+        "Economy-wide productivity and output measure aggregate economic performance.",
+        "Provider revenue measures commercialization at the reporting provider."
+      ],
+      "domain": "economic_impact",
+      "facts": [
+        {
+          "context": "",
+          "display": "2.2%",
+          "id": "economic_impact.productivity_growth",
+          "label": "Nonfarm-business productivity growth",
+          "value": 2.2
+        },
+        {
+          "context": "",
+          "display": "2.5%",
+          "id": "economic_impact.real_output_growth",
+          "label": "Nonfarm-business real output growth",
+          "value": 2.5
+        },
+        {
+          "context": "",
+          "display": "0.6%",
+          "id": "economic_impact.real_compensation_growth",
+          "label": "Real hourly compensation growth",
+          "value": 0.5837482300278696
+        },
+        {
+          "context": "",
+          "display": "1.4%",
+          "id": "economic_impact.unit_labor_cost_growth",
+          "label": "Unit labor cost growth",
+          "value": 1.4
+        },
+        {
+          "context": "",
+          "display": "15.9%",
+          "id": "economic_impact.information_investment_growth",
+          "label": "Information-processing investment growth",
+          "value": 15.92742836027563
+        },
+        {
+          "context": "",
+          "display": "14.1%",
+          "id": "economic_impact.productivity_since_2020",
+          "label": "Productivity change since 2020",
+          "value": 14.098338730786498
+        },
+        {
+          "context": "",
+          "display": "4.5%",
+          "id": "economic_impact.real_compensation_since_2020",
+          "label": "Real hourly compensation change since 2020",
+          "value": 4.475884122330087
+        },
+        {
+          "context": "",
+          "display": "9.6 percentage points",
+          "id": "economic_impact.productivity_real_comp_gap",
+          "label": "Productivity minus real-compensation change since 2020",
+          "value": 9.622454608456412
+        },
+        {
+          "context": "",
+          "display": "-8.4%",
+          "id": "economic_impact.labor_share_since_2020",
+          "label": "Labor-share index change since 2020",
+          "value": -8.429996378194781
+        },
+        {
+          "context": "",
+          "display": "0.8%",
+          "id": "economic_impact.median_real_earnings_growth",
+          "label": "Median real weekly earnings growth",
+          "value": 0.8032128514056325
+        },
+        {
+          "context": "",
+          "display": "3.3 percentage points",
+          "id": "economic_impact.group_growth_spread_ppts",
+          "label": "Cross-group real-earnings growth spread",
+          "value": 3.300566845370434
+        },
+        {
+          "context": "",
+          "display": "$37.0B",
+          "id": "economic_impact.microsoft_ai_arr_b",
+          "label": "Microsoft reported AI annual revenue run rate",
+          "value": 37.0
+        },
+        {
+          "context": "",
+          "display": "$20.0B",
+          "id": "economic_impact.openai_arr_b",
+          "label": "OpenAI reported annualized revenue run rate",
+          "value": 20.0
+        },
+        {
+          "context": "",
+          "display": "82.0%",
+          "id": "economic_impact.alphabet_cloud_growth_pct",
+          "label": "Alphabet Cloud revenue growth",
+          "value": 82.0
+        },
+        {
+          "context": "",
+          "display": "40.0%",
+          "id": "economic_impact.openai_enterprise_share_pct",
+          "label": "OpenAI enterprise share of revenue",
+          "value": 40.0
+        }
+      ],
+      "importance": 48.112273042282055,
+      "label": "Economic Outcomes",
+      "references": [
+        {
+          "source_label": "BLS Labor Productivity and Costs",
+          "source_url": "https://www.bls.gov/productivity/"
+        },
+        {
+          "source_label": "BLS Current Population Survey",
+          "source_url": "https://www.bls.gov/cps/earnings.htm"
+        },
+        {
+          "source_label": "BEA Investment Accounts",
+          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
+        },
+        {
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
+        },
+        {
+          "source_label": "Microsoft FY2026 Q3 AI disclosure",
+          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "finance": {
+      "boundaries": [
+        "Company funding metrics describe the covered issuers.",
+        "Private-fund NAV represents remaining value; DPI represents realized cash distributions.",
+        "Provider revenue measures paid demand at the reporting provider."
+      ],
+      "domain": "finance",
+      "facts": [
+        {
+          "context": "",
+          "display": "26.0",
+          "id": "finance.borrower_strain",
+          "label": "Borrower strain",
+          "value": 25.957310081308705
+        },
+        {
+          "context": "",
+          "display": "-13.5",
+          "id": "finance.lender_strain",
+          "label": "Lender strain",
+          "value": -13.513176770094816
+        },
+        {
+          "context": "",
+          "display": "1.42x",
+          "id": "finance.internal_funding_coverage",
+          "label": "Operating cash flow coverage of current CapEx",
+          "value": 1.4235570068984105
+        },
+        {
+          "context": "",
+          "display": "0.96 years",
+          "id": "finance.cash_reserve_coverage_years",
+          "label": "Cash reserves relative to current CapEx",
+          "value": 0.9581958933673187
+        },
+        {
+          "context": "",
+          "display": "4.86x",
+          "id": "finance.forward_commitment_load",
+          "label": "Forward commitments relative to current CapEx",
+          "value": 4.857232432573818
+        },
+        {
+          "context": "",
+          "display": "0.4",
+          "id": "finance.debt_financing_pulse",
+          "label": "Definition-matched debt financing pulse",
+          "value": 0.44078894203573366
+        },
+        {
+          "context": "",
+          "display": "-0.49",
+          "id": "finance.nfci",
+          "label": "Chicago Fed NFCI",
+          "value": -0.494
+        },
+        {
+          "context": "",
+          "display": "0.02",
+          "id": "finance.nfci_change",
+          "label": "Three-month change in NFCI",
+          "value": 0.016000000000000014
+        },
+        {
+          "context": "",
+          "display": "0.20",
+          "id": "finance.bond_distress",
+          "label": "Corporate bond market distress",
+          "value": 0.2
+        },
+        {
+          "context": "",
+          "display": "1.18x",
+          "id": "finance.private_capital_dpi",
+          "label": "Mature technology-fund DPI",
+          "value": 1.1842385657863554
+        },
+        {
+          "context": "",
+          "display": "0.97x",
+          "id": "finance.private_capital_rvpi",
+          "label": "Mature technology-fund RVPI",
+          "value": 0.974091081680859
+        },
+        {
+          "context": "",
+          "display": "2.16x",
+          "id": "finance.private_capital_tvpi",
+          "label": "Mature technology-fund TVPI",
+          "value": 2.1583296474672142
+        },
+        {
+          "context": "",
+          "display": "54.9%",
+          "id": "finance.private_capital_realized_share",
+          "label": "Share of private-fund value already realized",
+          "value": 0.54868289798829
+        },
+        {
+          "context": "",
+          "display": "31",
+          "id": "finance.private_capital_mature_funds",
+          "label": "Public-LP mature fund records",
+          "value": 31.0
+        },
+        {
+          "context": "",
+          "display": "$37.0B",
+          "id": "finance.microsoft_ai_arr_b",
+          "label": "Microsoft reported AI annual revenue run rate",
+          "value": 37.0
+        },
+        {
+          "context": "",
+          "display": "123.0%",
+          "id": "finance.microsoft_ai_arr_growth_pct",
+          "label": "Microsoft AI annual revenue run-rate growth",
+          "value": 123.0
+        },
+        {
+          "context": "",
+          "display": "$20.0B",
+          "id": "finance.openai_arr_b",
+          "label": "OpenAI reported annualized revenue run rate",
+          "value": 20.0
+        },
+        {
+          "context": "",
+          "display": "$514.0B",
+          "id": "finance.alphabet_cloud_backlog_b",
+          "label": "Alphabet reported Cloud backlog",
+          "value": 514.0
+        }
+      ],
+      "importance": 75.0,
+      "label": "Finance",
+      "references": [
+        {
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
+        },
+        {
+          "source_label": "Chicago Fed NFCI",
+          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
+        },
+        {
+          "source_label": "New York Fed CMDI",
+          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
+        },
+        {
+          "source_label": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/edgar/search/"
+        },
+        {
+          "source_label": "CalSTRS PE Performance",
+          "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"
+        },
+        {
+          "source_label": "Microsoft FY2026 Q3 AI disclosure",
+          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
+        },
+        {
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
+        },
+        {
+          "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "grid_storage": {
+      "boundaries": [
+        "Queue capacity measures requested development; advanced-stage and historical conversion measures indicate maturity.",
+        "Storage duration measures time-shifting capability alongside transmission and interconnection conditions."
+      ],
+      "domain": "grid_storage",
+      "facts": [
+        {
+          "context": "",
+          "display": "2061 GW",
+          "id": "grid_storage.queue_gw",
+          "label": "Active interconnection queue",
+          "value": 2061.3275019726048
+        },
+        {
+          "context": "",
+          "display": "24.2%",
+          "id": "grid_storage.advanced_share",
+          "label": "Queue share in executed-agreement or construction stages",
+          "value": 24.245265300990745
+        },
+        {
+          "context": "",
+          "display": "552.7 GW",
+          "id": "grid_storage.storage_queue_gw",
+          "label": "Storage capacity in the active queue",
+          "value": 552.7496947276098
+        },
+        {
+          "context": "",
+          "display": "13%",
+          "id": "grid_storage.historical_operational_pct",
+          "label": "2000\u20132020 queue cohort that reached operation",
+          "value": 13.0
+        },
+        {
+          "context": "",
+          "display": "75%",
+          "id": "grid_storage.historical_withdrawn_pct",
+          "label": "2000\u20132020 queue cohort withdrawn",
+          "value": 75.0
+        },
+        {
+          "context": "",
+          "display": "5.0 years",
+          "id": "grid_storage.median_request_to_cod_years",
+          "label": "Median request-to-commercial-operation time for 2025 completions",
+          "value": 5.0
+        },
+        {
+          "context": "",
+          "display": "549.0 GW",
+          "id": "grid_storage.draft_or_executed_ia_gw",
+          "label": "Queue capacity with draft or executed interconnection agreements",
+          "value": 549.0
+        },
+        {
+          "context": "",
+          "display": "-0.9%",
+          "id": "grid_storage.lowest_extreme_margin_pct",
+          "label": "Lowest NERC extreme-conditions reserve margin",
+          "value": -0.9
+        },
+        {
+          "context": "",
+          "display": "NPCC-New England",
+          "id": "grid_storage.lowest_extreme_margin_area",
+          "label": "Area with the lowest NERC extreme-conditions margin",
+          "value": "NPCC-New England"
+        },
+        {
+          "context": "",
+          "display": "1",
+          "id": "grid_storage.negative_extreme_margin_areas",
+          "label": "NERC assessment areas with negative extreme-conditions margins",
+          "value": 1.0
+        },
+        {
+          "context": "",
+          "display": "2.8 hours",
+          "id": "grid_storage.operating_storage_weighted_duration_hours",
+          "label": "Weighted average duration of operating storage",
+          "value": 2.7613644585521695
+        },
+        {
+          "context": "",
+          "display": "46.1%",
+          "id": "grid_storage.operating_storage_four_hour_plus_share_pct",
+          "label": "Operating storage capacity with at least four hours duration",
+          "value": 46.12774499236587
+        },
+        {
+          "context": "",
+          "display": "10.8%",
+          "id": "grid_storage.electric_power_construction_growth",
+          "label": "Electric-power construction growth",
+          "value": 0.10801224201522408
+        }
+      ],
+      "importance": 70.0,
+      "label": "Grid & Storage",
+      "references": [
+        {
+          "source_label": "Berkeley Lab Queued Up",
+          "source_url": "https://emp.lbl.gov/queues"
+        },
+        {
+          "source_label": "NERC Summer Reliability Assessment",
+          "source_url": "https://www.nerc.com/pa/RAPA/ra/Reliability%20Assessments%20DL/2026-Summer-Reliability-Assessment.pdf"
+        },
+        {
+          "source_label": "U.S. EIA",
+          "source_url": "https://www.eia.gov/electricity/data.php"
+        },
+        {
+          "source_label": "Census Construction Spending",
+          "source_url": "https://www.census.gov/constructionspending"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "market": {
+      "boundaries": [
+        "Covered-company market measures describe the configured AI equity universe.",
+        "Concentration and breadth describe market participation and distribution."
+      ],
+      "domain": "market",
+      "facts": [
+        {
+          "context": "",
+          "display": "37.5",
+          "id": "market.aei",
+          "label": "AI Equity Index",
+          "value": 37.48103912652604
+        },
+        {
+          "context": "",
+          "display": "52.1",
+          "id": "market.pressure",
+          "label": "Average sector trading pressure",
+          "value": 52.073707737041225
+        },
+        {
+          "context": "",
+          "display": "62.3%",
+          "id": "market.positive_breadth",
+          "label": "Covered companies with positive one-year returns",
+          "value": 0.6225490196078431
+        },
+        {
+          "context": "",
+          "display": "15.6%",
+          "id": "market.median_return",
+          "label": "Median one-year return",
+          "value": 0.15637971816497542
+        },
+        {
+          "context": "",
+          "display": "31.2%",
+          "id": "market.equal_weight_return",
+          "label": "Equal-weight one-year return",
+          "value": 0.3123639049465964
+        },
+        {
+          "context": "",
+          "display": "64.3%",
+          "id": "market.top_10_share",
+          "label": "Top-ten share of covered market value",
+          "value": 0.642556209873419
+        },
+        {
+          "context": "",
+          "display": "18.8",
+          "id": "market.effective_firms",
+          "label": "Effective firm count",
+          "value": 18.757277193503867
+        },
+        {
+          "context": "",
+          "display": "3",
+          "id": "market.strong_sector_count",
+          "label": "Sectors above the strong-equity threshold",
+          "value": 3.0
+        },
+        {
+          "context": "",
+          "display": "2",
+          "id": "market.crowded_sector_count",
+          "label": "Sectors above the high-pressure threshold",
+          "value": 2.0
+        }
+      ],
+      "importance": 19.2556209873419,
+      "label": "Market",
+      "references": [
+        {
+          "source_label": "YFinance",
+          "source_url": "https://finance.yahoo.com/"
+        },
+        {
+          "source_label": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/edgar/search/"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "power": {
+      "boundaries": [
+        "Planned generation represents the development pipeline; placed-in-service capacity is measured separately.",
+        "Interconnection-queue maturity is measured in Grid & Storage."
+      ],
+      "domain": "power",
+      "facts": [
+        {
+          "context": "",
+          "display": "1.2%",
+          "id": "power.demand_growth",
+          "label": "Total retail electricity demand growth",
+          "value": 1.2462913628498606
+        },
+        {
+          "context": "",
+          "display": "3.1%",
+          "id": "power.commercial_growth",
+          "label": "Commercial electricity demand growth",
+          "value": 3.108894807574436
+        },
+        {
+          "context": "",
+          "display": "225.2 GW",
+          "id": "power.planned_net_gw",
+          "label": "Net planned generation additions through the pipeline horizon",
+          "value": 225.23700000000002
+        },
+        {
+          "context": "",
+          "display": "4.4%",
+          "id": "power.retail_price_growth",
+          "label": "Retail electricity price growth",
+          "value": 4.431018842080903
+        },
+        {
+          "context": "",
+          "display": "200,982 MW",
+          "id": "power.large_load_capacity_mw",
+          "label": "Published capacity associated with large-load campus records",
+          "value": 200982.128003608
+        },
+        {
+          "context": "",
+          "display": "2030",
+          "id": "power.pipeline_end_year",
+          "label": "Planned-generation pipeline end year",
+          "value": 2030.0
+        }
+      ],
+      "importance": 100.0,
+      "label": "Power",
+      "references": [
+        {
+          "source_label": "U.S. EIA",
+          "source_url": "https://www.eia.gov/electricity/data.php"
+        },
+        {
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
+        },
+        {
+          "source_label": "Data-center campus records",
+          "source_url": ""
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "water": {
+      "boundaries": [],
+      "domain": "water",
+      "facts": [
+        {
+          "context": "",
+          "display": "1,482",
+          "id": "water.campuses",
+          "label": "Data-center campuses",
+          "value": 1482.0
+        },
+        {
+          "context": "",
+          "display": "1,434",
+          "id": "water.campuses_with_county_drought_data",
+          "label": "Campuses with current county drought data",
+          "value": 1434.0
+        },
+        {
+          "context": "",
+          "display": "96.8%",
+          "id": "water.county_drought_coverage_share_pct",
+          "label": "Share of campuses with current county drought data",
+          "value": 0.9676113360323887
+        },
+        {
+          "context": "",
+          "display": "354",
+          "id": "water.campuses_in_counties_with_d2_area",
+          "label": "Campuses in counties with some D2-or-worse drought area",
+          "value": 354.0
+        },
+        {
+          "context": "",
+          "display": "24.7%",
+          "id": "water.campuses_in_counties_with_d2_share_pct",
+          "label": "Share of campuses with county drought data in counties with some D2-or-worse drought area",
+          "value": 0.24686192468619247
+        },
+        {
+          "context": "",
+          "display": "310",
+          "id": "water.campuses_in_counties_with_25pct_d2_area",
+          "label": "Campuses in counties with at least 25% D2-or-worse drought area",
+          "value": 310.0
+        },
+        {
+          "context": "",
+          "display": "21.6%",
+          "id": "water.campuses_in_counties_with_25pct_d2_share_pct",
+          "label": "Share of campuses with county drought data in counties with at least 25% D2-or-worse drought area",
+          "value": 0.21617852161785217
+        },
+        {
+          "context": "",
+          "display": "Crittenden, AR",
+          "id": "water.highest_county_d2_location",
+          "label": "Mapped county with the highest D2-or-worse drought-area share",
+          "value": "Crittenden, AR"
+        },
+        {
+          "context": "",
+          "display": "100.0%",
+          "id": "water.highest_county_d2_area_pct",
+          "label": "Highest mapped county D2-or-worse drought-area share",
+          "value": 100.0
+        },
+        {
+          "context": "",
+          "display": "34",
+          "id": "water.direct_evidence_campuses",
+          "label": "Campuses with direct water evidence",
+          "value": 34.0
+        },
+        {
+          "context": "",
+          "display": "2.3%",
+          "id": "water.direct_evidence_share_pct",
+          "label": "Campuses with direct water evidence",
+          "value": 2.2941970310391366
+        },
+        {
+          "context": "",
+          "display": "0",
+          "id": "water.quantified_withdrawal_campuses",
+          "label": "Campuses with quantified withdrawal records",
+          "value": 0.0
+        },
+        {
+          "context": "",
+          "display": "0",
+          "id": "water.quantified_consumption_campuses",
+          "label": "Campuses with quantified consumption records",
+          "value": 0.0
+        },
+        {
+          "context": "",
+          "display": "0",
+          "id": "water.quantified_use_campuses",
+          "label": "Campuses with quantified withdrawal or consumption records",
+          "value": 0.0
+        },
+        {
+          "context": "",
+          "display": "1,482",
+          "id": "water.pws_query_resolved_campuses",
+          "label": "Campus points with a resolved EPA service-area query",
+          "value": 1482.0
+        },
+        {
+          "context": "",
+          "display": "100.0%",
+          "id": "water.pws_query_resolution_share_pct",
+          "label": "Campus points with a resolved EPA service-area query",
+          "value": 1.0
+        },
+        {
+          "context": "",
+          "display": "231",
+          "id": "water.pws_service_area_overlap_campuses",
+          "label": "Campus points intersecting at least one EPA community-water service-area boundary",
+          "value": 231.0
+        },
+        {
+          "context": "",
+          "display": "15.6%",
+          "id": "water.pws_service_area_overlap_share_pct",
+          "label": "Campus points intersecting at least one EPA community-water service-area boundary",
+          "value": 0.15587044534412955
+        },
+        {
+          "context": "",
+          "display": "29.9%",
+          "id": "water.pws_provenance_classified_share_pct",
+          "label": "Share of EPA-overlap campuses with boundary provenance classified",
+          "value": 0.2987012987012987
+        },
+        {
+          "context": "",
+          "display": "162",
+          "id": "water.unclassified_pws_overlap_campuses",
+          "label": "Campus points with EPA service-area overlap and unclassified boundary provenance",
+          "value": 162.0
+        },
+        {
+          "context": "",
+          "display": "6",
+          "id": "water.ambiguous_pws_overlap_campuses",
+          "label": "Campus points intersecting more than one EPA community-water boundary",
+          "value": 6.0
+        },
+        {
+          "context": "",
+          "display": "45.2%",
+          "id": "water.published_capacity_coverage_share_pct",
+          "label": "Campuses with usable published capacity",
+          "value": 0.45209176788124156
+        },
+        {
+          "context": "",
+          "display": "100.5 GW",
+          "id": "water.published_capacity_in_counties_with_d2_gw",
+          "label": "Published data-center campus capacity in counties with D2-or-worse drought",
+          "value": 100.46414000000001
+        },
+        {
+          "context": "",
+          "display": "79.2 GW",
+          "id": "water.published_capacity_in_counties_with_25pct_d2_gw",
+          "label": "Published data-center campus capacity in counties with at least 25% D2-or-worse drought",
+          "value": 79.22821
+        },
+        {
+          "context": "",
+          "display": "108.4 Bgal/day",
+          "id": "water.irrigation_withdrawal_bgal_day_2020",
+          "label": "U.S. crop-irrigation withdrawals in 2020",
+          "value": 108.412
+        },
+        {
+          "context": "",
+          "display": "80.2 Bgal/day",
+          "id": "water.thermoelectric_withdrawal_bgal_day_2020",
+          "label": "U.S. thermoelectric-power withdrawals in 2020",
+          "value": 80.213
+        },
+        {
+          "context": "",
+          "display": "35.6 Bgal/day",
+          "id": "water.public_supply_withdrawal_bgal_day_2020",
+          "label": "U.S. public-supply withdrawals in 2020",
+          "value": 35.575
+        },
+        {
+          "context": "",
+          "display": "124.6 Bgal/day",
+          "id": "water.thermoelectric_reported_withdrawal_bgal_day_2024",
+          "label": "Reported thermoelectric withdrawals in 2024",
+          "value": 124.61096676438356
+        },
+        {
+          "context": "",
+          "display": "2.6 Bgal/day",
+          "id": "water.thermoelectric_reported_consumption_bgal_day_2024",
+          "label": "Reported thermoelectric consumption in 2024",
+          "value": 2.559680884931507
+        }
+      ],
+      "importance": 56.039757423813796,
+      "label": "Water",
+      "references": [
+        {
+          "source_label": "USGS Water Use",
+          "source_url": "https://www.usgs.gov/mission-areas/water-resources/science/water-use-united-states"
+        },
+        {
+          "source_label": "U.S. Drought Monitor county statistics",
+          "source_url": "https://droughtmonitor.unl.edu/DmData/DataDownload/WebServiceInfo.aspx"
+        },
+        {
+          "source_label": "EPA Public Water System Service Areas",
+          "source_url": "https://www.epa.gov/ground-water-and-drinking-water/public-water-system-service-areas"
+        },
+        {
+          "source_label": "U.S. EIA",
+          "source_url": "https://www.eia.gov/"
+        },
+        {
+          "source_label": "Data-center campus records",
+          "source_url": ""
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "workforce": {
+      "boundaries": [
+        "Task-exposure estimates measure the share of occupational tasks technically exposed to AI capabilities.",
+        "Tracked AI-linked channels are selected labor-market transmission channels."
+      ],
+      "domain": "workforce",
+      "facts": [
+        {
+          "context": "",
+          "display": "1",
+          "id": "workforce.employment_breadth",
+          "label": "Tracked AI-linked labor channels with positive employment growth",
+          "value": 1.0
+        },
+        {
+          "context": "",
+          "display": "2",
+          "id": "workforce.real_earnings_breadth",
+          "label": "Tracked AI-linked labor channels with positive real-earnings growth",
+          "value": 2.0
+        },
+        {
+          "context": "",
+          "display": "Power & communication construction",
+          "id": "workforce.strongest_channel",
+          "label": "Tracked channel with the strongest employment growth",
+          "value": "Power & communication construction"
+        },
+        {
+          "context": "",
+          "display": "0.8%",
+          "id": "workforce.strongest_channel_growth",
+          "label": "Strongest tracked-channel employment growth",
+          "value": 0.8443908323281235
+        },
+        {
+          "context": "",
+          "display": "Computing infrastructure",
+          "id": "workforce.weakest_channel",
+          "label": "Tracked channel with the weakest employment growth",
+          "value": "Computing infrastructure"
+        },
+        {
+          "context": "",
+          "display": "-4.1%",
+          "id": "workforce.weakest_channel_growth",
+          "label": "Weakest tracked-channel employment growth",
+          "value": -4.071458246780213
+        },
+        {
+          "context": "",
+          "display": "2.2%",
+          "id": "workforce.max_layoff_rate",
+          "label": "Highest layoff rate among tracked channels",
+          "value": 2.2
+        },
+        {
+          "context": "",
+          "display": "5.5%",
+          "id": "workforce.max_openings_rate",
+          "label": "Highest openings rate among tracked channels",
+          "value": 5.5
+        },
+        {
+          "context": "",
+          "display": "923",
+          "id": "workforce.occupation_exposure_count",
+          "label": "Occupations in the static task-exposure benchmark",
+          "value": 923.0
+        },
+        {
+          "context": "",
+          "display": "45.8%",
+          "id": "workforce.median_llm_software_exposure_pct",
+          "label": "Median software-adjusted LLM task exposure in the benchmark",
+          "value": 45.83333333333333
+        },
+        {
+          "context": "",
+          "display": "47.3%",
+          "id": "workforce.high_exposure_occupation_share_pct",
+          "label": "Benchmark occupations with at least 50% software-adjusted task exposure",
+          "value": 47.34561213434453
+        }
+      ],
+      "importance": 40.71458246780213,
+      "label": "Workforce",
+      "references": [
+        {
+          "source_label": "GPTs are GPTs occupation benchmark",
+          "source_url": "https://github.com/openai/GPTs-are-GPTs"
+        },
+        {
+          "source_label": "BLS Current Employment Statistics",
+          "source_url": "https://www.bls.gov/ces/"
+        },
+        {
+          "source_label": "BLS JOLTS",
+          "source_url": "https://www.bls.gov/jlt/"
+        }
+      ],
+      "version": "1.3.0"
+    }
+  },
+  "evidence_snapshot_id": "c419022ff2dc4e8c9451c04b",
+  "finished_at": "2026-10-09T18:33:14.215637+00:00",
+  "generated_output": {
+    "editorial_synthesis": {
+      "domain_reads": [
+        {
+          "body": {
+            "event_ids": [],
+            "fact_ids": [
+              "market.aei",
+              "market.median_return",
+              "market.positive_breadth"
+            ],
+            "text": "The AI Equity Index rose slightly to 37.5, and the median one-year return increased materially to 15.6%. Yet the share of covered companies with positive one-year returns slipped to 62.3%. The typical covered return improved, but gains did not spread to a larger share of companies."
+          },
+          "domain": "market",
+          "headline": {
+            "event_ids": [],
+            "fact_ids": [
+              "market.median_return",
+              "market.positive_breadth"
+            ],
+            "text": "AI equity returns improve without broader participation"
+          }
+        },
+        {
+          "body": {
+            "event_ids": [
+              "auto-2026-10-08-35e73caedfc6",
+              "auto-2026-10-08-ea50382f467a"
+            ],
+            "fact_ids": [
+              "compute.computer_output_growth",
+              "compute.semiconductor_output_growth",
+              "compute.computer_utilization",
+              "compute.semiconductor_utilization"
+            ],
+            "text": "Computer and peripheral-equipment output grew 9.2% with capacity utilization at 81.7%; semiconductor and electronic-component output grew 11.5% with utilization at 72.2%. Computer equipment is operating closer to measured capacity even though semiconductor output is growing faster. The lower semiconductor utilization rate does not show that every stage of production is unconstrained: recent reports examined the move toward production control in advanced packaging and critical-defect detection in hybrid bonding. Those reports identify process execution and quality control as active issues beyond the aggregate utilization measure."
+          },
+          "domain": "compute",
+          "headline": {
+            "event_ids": [
+              "auto-2026-10-08-35e73caedfc6",
+              "auto-2026-10-08-ea50382f467a"
+            ],
+            "fact_ids": [
+              "compute.computer_output_growth",
+              "compute.semiconductor_output_growth"
+            ],
+            "text": "Compute output grows as packaging reports focus on production control"
+          }
+        },
+        {
+          "body": {
+            "event_ids": [
+              "auto-2026-10-05-6909d6790041"
+            ],
+            "fact_ids": [
+              "power.commercial_growth",
+              "power.demand_growth",
+              "power.retail_price_growth",
+              "power.planned_net_gw"
+            ],
+            "text": "Commercial electricity demand is growing 3.1%, ahead of the 1.2% increase in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon, but that total does not establish when capacity will become available. Utility Dive reported that Amazon and Constellation signed a 20-year power-purchase agreement to expand a Maryland nuclear plant. The agreement is a concrete long-duration supply arrangement, but one contract does not resolve broader questions about regional delivery and timing."
+          },
+          "domain": "power",
+          "headline": {
+            "event_ids": [
+              "auto-2026-10-05-6909d6790041"
+            ],
+            "fact_ids": [
+              "power.commercial_growth"
+            ],
+            "text": "Amazon signs a 20-year nuclear agreement as commercial power demand rises"
+          }
+        },
+        {
+          "body": {
+            "event_ids": [
+              "auto-2026-10-09-15a67b7cd7fe"
+            ],
+            "fact_ids": [
+              "grid_storage.queue_gw",
+              "grid_storage.advanced_share",
+              "grid_storage.storage_queue_gw",
+              "grid_storage.historical_operational_pct"
+            ],
+            "text": "PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power, a concrete step for those projects. Systemwide, however, the active queue is 2,061 GW and only 24.2% is in executed-agreement or construction stages. Storage represents 552.7 GW of the queue. The historical record remains difficult: just 13% of the 2000\u20132020 queue cohort reached operation. The approval advances selected projects, not the wider queue."
+          },
+          "domain": "grid_storage",
+          "headline": {
+            "event_ids": [
+              "auto-2026-10-09-15a67b7cd7fe"
+            ],
+            "fact_ids": [
+              "grid_storage.queue_gw"
+            ],
+            "text": "PJM fast-tracks 2.1 GW against a 2,061 GW interconnection queue"
+          }
+        },
+        {
+          "body": {
+            "event_ids": [
+              "auto-2026-10-08-6f12584f804f"
+            ],
+            "fact_ids": [
+              "adoption.expected_business_use_pct",
+              "adoption.expected_adoption_gap_ppts",
+              "adoption.sector_coverage",
+              "adoption.leading_sector_use_pct"
+            ],
+            "text": "Businesses expecting to use AI within six months rose slightly to 27.7%, while the gap between expected and current use widened slightly to 3.9 percentage points. Current-use readings now cover every BTOS sector, and the leading sector registers 50.2%. A separate 2025 Small Business Credit Survey found that 46% of firms with employees reported using AI tools and another 15% planned to adopt them within a year. Because that survey covers a different business population and time horizon, its higher readings should not be compared directly with BTOS."
+          },
+          "domain": "adoption",
+          "headline": {
+            "event_ids": [],
+            "fact_ids": [
+              "adoption.expected_business_use_pct",
+              "adoption.expected_adoption_gap_ppts"
+            ],
+            "text": "Near-term AI adoption expectations edge higher but remain ahead of use"
+          }
+        },
+        {
+          "body": {
+            "event_ids": [
+              "auto-2026-10-06-0a3a404e4516",
+              "auto-2026-10-06-1faf6bb5114f"
+            ],
+            "fact_ids": [
+              "workforce.employment_breadth",
+              "workforce.real_earnings_breadth",
+              "workforce.strongest_channel",
+              "workforce.strongest_channel_growth"
+            ],
+            "text": "Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction leads the group at 0.8%. Two channels have positive real-earnings growth. Reuters reported companies cutting jobs as investment shifts toward AI, while the Financial Times reported that economists remain unconvinced by broad claims of AI-driven job loss. The tracked measures show no broad employment growth, but they do not establish why the other channels are not growing."
+          },
+          "domain": "workforce",
+          "headline": {
+            "event_ids": [
+              "auto-2026-10-06-0a3a404e4516",
+              "auto-2026-10-06-1faf6bb5114f"
+            ],
+            "fact_ids": [
+              "workforce.employment_breadth"
+            ],
+            "text": "Employment growth remains narrow amid an unsettled AI job-loss debate"
+          }
+        },
+        {
+          "body": {
+            "event_ids": [
+              "auto-2026-10-08-5c0a7756bc40"
+            ],
+            "fact_ids": [
+              "economic_impact.productivity_growth",
+              "economic_impact.real_output_growth",
+              "economic_impact.real_compensation_growth",
+              "economic_impact.unit_labor_cost_growth"
+            ],
+            "text": "Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. Barron's reported that heavy AI spending is supporting the economy while productivity gains from that investment may come later. The aggregate figures show positive productivity growth now, but they do not identify AI's contribution or show a comparable increase in real compensation."
+          },
+          "domain": "economic_impact",
+          "headline": {
+            "event_ids": [],
+            "fact_ids": [
+              "economic_impact.productivity_growth",
+              "economic_impact.real_compensation_growth"
+            ],
+            "text": "Productivity growth remains stronger than real compensation growth"
+          }
+        }
+      ],
+      "macro_read": {
+        "headline": {
+          "event_ids": [],
+          "fact_ids": [
+            "compute.computer_output_growth",
+            "compute.semiconductor_output_growth",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct",
+            "workforce.employment_breadth"
+          ],
+          "text": "Industrial expansion coexists with limited grid conversion and narrow job growth"
+        },
+        "paragraphs": [
+          {
+            "event_ids": [
+              "auto-2026-10-08-35e73caedfc6",
+              "auto-2026-10-08-ea50382f467a"
+            ],
+            "fact_ids": [
+              "market.aei",
+              "market.median_return",
+              "market.positive_breadth",
+              "compute.computer_output_growth",
+              "compute.semiconductor_output_growth"
+            ],
+            "text": "Investor and industrial indicators remain supportive, though not uniformly so. The AI Equity Index rose slightly to 37.5 and the median one-year return reached 15.6%, while the share of covered companies with gains slipped to 62.3%. Computer and peripheral-equipment output grew 9.2%, and semiconductor and electronic-component output grew 11.5%. Those are broad manufacturing measures rather than AI-only series. Recent reports on advanced packaging's move toward production control and on hybrid-bonding defect detection show that manufacturing execution is receiving attention alongside output growth."
+          },
+          {
+            "event_ids": [
+              "auto-2026-10-05-6909d6790041",
+              "auto-2026-10-09-15a67b7cd7fe"
+            ],
+            "fact_ids": [
+              "power.commercial_growth",
+              "power.demand_growth",
+              "power.planned_net_gw",
+              "grid_storage.queue_gw",
+              "grid_storage.advanced_share",
+              "grid_storage.historical_operational_pct"
+            ],
+            "text": "Power supply is drawing more concrete commitments, but delivery remains constrained. Commercial electricity demand is growing 3.1%, ahead of 1.2% total retail growth, and planned net generation additions stand at 225.2 GW. Utility Dive reported that Amazon and Constellation signed a 20-year agreement to expand a Maryland nuclear plant, while PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Yet only 24.2% of the 2,061 GW active queue is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. The contract and approval advance specific projects; they do not indicate rapid conversion of the full pipeline."
+          },
+          {
+            "event_ids": [
+              "auto-2026-10-08-6f12584f804f"
+            ],
+            "fact_ids": [
+              "adoption.expected_business_use_pct",
+              "adoption.expected_adoption_gap_ppts",
+              "workforce.employment_breadth",
+              "workforce.strongest_channel",
+              "workforce.strongest_channel_growth",
+              "economic_impact.productivity_growth",
+              "economic_impact.real_output_growth",
+              "economic_impact.real_compensation_growth"
+            ],
+            "text": "Diffusion beyond the buildout remains uneven. Businesses expecting AI use within six months rose to 27.7%, 3.9 percentage points above current use. A separate survey found that 46% of firms with employees were using AI tools and another 15% planned to adopt them within a year, although the different population and time horizon prevent a direct comparison. Only one tracked AI-linked labor channel had positive employment growth, led by power and communication construction at 0.8%. At the economy-wide level, productivity grew 2.2% and real output 2.5%, but real hourly compensation increased only 0.6%. These readings show positive aggregate performance, but not broad employment gains or a comparable rise in real compensation, and they do not isolate AI's contribution to productivity."
+          }
+        ]
+      }
+    }
+  },
+  "generation": {
+    "editorial_synthesis": {
+      "elapsed_sec": 136.83891479700003,
+      "input_tokens": 4418,
+      "model": "gpt-5.6-sol",
+      "output_tokens": 11870,
+      "poll_attempts": 63,
+      "poll_errors": [],
+      "response_id": "resp_0452a734e3ce085a006ac932e2177c87d1b023578ae146982e",
+      "terminal_status": "completed",
+      "total_tokens": 16288
+    }
+  },
+  "materiality": {
+    "baseline_available": true,
+    "change_count": 18,
+    "changes": [
+      {
+        "domain": "adoption",
+        "fact_id": "adoption.expected_adoption_gap_ppts",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 3.8999999999999986,
+        "old_value": 3.8000000000000007,
+        "percentage_point_change": 0.10000000000000009,
+        "relative_change": 0.026315789473684237
+      },
+      {
+        "domain": "adoption",
+        "fact_id": "adoption.expected_business_use_pct",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 27.7,
+        "old_value": 27.6,
+        "percentage_point_change": 0.09999999999999787,
+        "relative_change": 0.003623188405797024
+      },
+      {
+        "domain": "adoption",
+        "fact_id": "adoption.leading_sector_use_pct",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 50.2,
+        "old_value": 49.0,
+        "percentage_point_change": 1.2000000000000028,
+        "relative_change": 0.024489795918367405
+      },
+      {
+        "domain": "adoption",
+        "fact_id": "adoption.sector_coverage",
+        "kind": "numeric_change",
+        "material": true,
+        "new_value": 1.0,
+        "old_value": 0.95,
+        "percentage_point_change": 5.0,
+        "relative_change": 0.05263157894736842
+      },
+      {
+        "domain": "connectivity",
+        "fact_id": "connectivity.interconnection_facilities_or_floor",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 1378.0,
+        "old_value": 1377.0,
+        "percentage_point_change": null,
+        "relative_change": 0.0007262164124909223
+      },
+      {
+        "domain": "market",
+        "fact_id": "market.aei",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 37.48103912652604,
+        "old_value": 36.71469285614432,
+        "percentage_point_change": 0.7999999999999972,
+        "relative_change": 0.021798365122615723
+      },
+      {
+        "domain": "market",
+        "fact_id": "market.effective_firms",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 18.757277193503867,
+        "old_value": 18.630689843421557,
+        "percentage_point_change": null,
+        "relative_change": 0.006794560542105106
+      },
+      {
+        "domain": "market",
+        "fact_id": "market.equal_weight_return",
+        "kind": "numeric_change",
+        "material": true,
+        "new_value": 0.3123639049465964,
+        "old_value": 0.33694642958434856,
+        "percentage_point_change": 2.5000000000000036,
+        "relative_change": 0.0741839762611277
+      },
+      {
+        "domain": "market",
+        "fact_id": "market.median_return",
+        "kind": "numeric_change",
+        "material": true,
+        "new_value": 0.15637971816497542,
+        "old_value": 0.13735946505725682,
+        "percentage_point_change": 1.9000000000000004,
+        "relative_change": 0.13868613138686134
+      },
+      {
+        "domain": "market",
+        "fact_id": "market.positive_breadth",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 0.6225490196078431,
+        "old_value": 0.6274509803921569,
+        "percentage_point_change": 0.4000000000000057,
+        "relative_change": 0.006379585326953838
+      },
+      {
+        "domain": "market",
+        "fact_id": "market.pressure",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 52.073707737041225,
+        "old_value": 50.387160672989694,
+        "percentage_point_change": 1.7000000000000028,
+        "relative_change": 0.03373015873015879
+      },
+      {
+        "domain": "market",
+        "fact_id": "market.top_10_share",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 0.642556209873419,
+        "old_value": 0.6449355772271125,
+        "percentage_point_change": 0.20000000000000284,
+        "relative_change": 0.003100775193798494
+      },
+      {
+        "domain": "water",
+        "fact_id": "water.campuses_in_counties_with_25pct_d2_area",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 310.0,
+        "old_value": 318.0,
+        "percentage_point_change": null,
+        "relative_change": 0.025157232704402517
+      },
+      {
+        "domain": "water",
+        "fact_id": "water.campuses_in_counties_with_25pct_d2_share_pct",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 0.21617852161785217,
+        "old_value": 0.2217573221757322,
+        "percentage_point_change": 0.5999999999999979,
+        "relative_change": 0.02702702702702693
+      },
+      {
+        "domain": "water",
+        "fact_id": "water.campuses_in_counties_with_d2_area",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 354.0,
+        "old_value": 350.0,
+        "percentage_point_change": null,
+        "relative_change": 0.011428571428571429
+      },
+      {
+        "domain": "water",
+        "fact_id": "water.campuses_in_counties_with_d2_share_pct",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 0.24686192468619247,
+        "old_value": 0.24407252440725244,
+        "percentage_point_change": 0.3000000000000007,
+        "relative_change": 0.012295081967213144
+      },
+      {
+        "domain": "water",
+        "fact_id": "water.published_capacity_in_counties_with_25pct_d2_gw",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 79.22821,
+        "old_value": 79.60856999999999,
+        "percentage_point_change": null,
+        "relative_change": 0.0047778775576546835
+      },
+      {
+        "domain": "water",
+        "fact_id": "water.published_capacity_in_counties_with_d2_gw",
+        "kind": "numeric_change",
+        "material": false,
+        "new_value": 100.46414000000001,
+        "old_value": 97.88414000000002,
+        "percentage_point_change": null,
+        "relative_change": 0.02635769185896712
+      }
+    ],
+    "current_snapshot_id": "c419022ff2dc4e8c9451c04b",
+    "decision": "generate_material_change",
+    "exact_match": false,
+    "immaterial_change_count": 15,
+    "material": true,
+    "material_change_count": 3,
+    "percentage_point_threshold": 2.0,
+    "previous_snapshot_id": "cd4018c4cbce3975bdb7df3a",
+    "relative_change_threshold": 0.1,
+    "version": "1.2.0"
+  },
+  "max_output_tokens": null,
+  "model": "gpt-5.6",
+  "prompt_versions": {
+    "briefing": "1.1.0",
+    "editorial": "editorial-synthesis-reset-1.1",
+    "generator": "7.1.0"
+  },
+  "raw_responses": {
+    "editorial_synthesis": {
+      "_ai_macro_background": {
+        "deadline_seconds": 1200.0,
+        "poll_attempts": 63,
+        "poll_errors": [],
+        "request_timeout_seconds": 60.0,
+        "response_id": "resp_0452a734e3ce085a006ac932e2177c87d1b023578ae146982e",
+        "terminal_status": "completed"
+      },
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose slightly to 37.5, and the median one-year return increased materially to 15.6%. Yet the share of covered companies with positive one-year returns slipped to 62.3%. The typical covered return improved, but gains did not spread to a larger share of companies.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},\"headline\":{\"text\":\"AI equity returns improve without broader participation\",\"event_ids\":[],\"fact_ids\":[\"market.median_return\",\"market.positive_breadth\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Computer and peripheral-equipment output grew 9.2% with capacity utilization at 81.7%; semiconductor and electronic-component output grew 11.5% with utilization at 72.2%. Computer equipment is operating closer to measured capacity even though semiconductor output is growing faster. The lower semiconductor utilization rate does not show that every stage of production is unconstrained: recent reports examined the move toward production control in advanced packaging and critical-defect detection in hybrid bonding. Those reports identify process execution and quality control as active issues beyond the aggregate utilization measure.\",\"event_ids\":[\"auto-2026-10-08-35e73caedfc6\",\"auto-2026-10-08-ea50382f467a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Compute output grows as packaging reports focus on production control\",\"event_ids\":[\"auto-2026-10-08-35e73caedfc6\",\"auto-2026-10-08-ea50382f467a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, ahead of the 1.2% increase in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon, but that total does not establish when capacity will become available. Utility Dive reported that Amazon and Constellation signed a 20-year power-purchase agreement to expand a Maryland nuclear plant. The agreement is a concrete long-duration supply arrangement, but one contract does not resolve broader questions about regional delivery and timing.\",\"event_ids\":[\"auto-2026-10-05-6909d6790041\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Amazon signs a 20-year nuclear agreement as commercial power demand rises\",\"event_ids\":[\"auto-2026-10-05-6909d6790041\"],\"fact_ids\":[\"power.commercial_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power, a concrete step for those projects. Systemwide, however, the active queue is 2,061 GW and only 24.2% is in executed-agreement or construction stages. Storage represents 552.7 GW of the queue. The historical record remains difficult: just 13% of the 2000\u20132020 queue cohort reached operation. The approval advances selected projects, not the wider queue.\",\"event_ids\":[\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"PJM fast-tracks 2.1 GW against a 2,061 GW interconnection queue\",\"event_ids\":[\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses expecting to use AI within six months rose slightly to 27.7%, while the gap between expected and current use widened slightly to 3.9 percentage points. Current-use readings now cover every BTOS sector, and the leading sector registers 50.2%. A separate 2025 Small Business Credit Survey found that 46% of firms with employees reported using AI tools and another 15% planned to adopt them within a year. Because that survey covers a different business population and time horizon, its higher readings should not be compared directly with BTOS.\",\"event_ids\":[\"auto-2026-10-08-6f12584f804f\"],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.sector_coverage\",\"adoption.leading_sector_use_pct\"]},\"headline\":{\"text\":\"Near-term AI adoption expectations edge higher but remain ahead of use\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction leads the group at 0.8%. Two channels have positive real-earnings growth. Reuters reported companies cutting jobs as investment shifts toward AI, while the Financial Times reported that economists remain unconvinced by broad claims of AI-driven job loss. The tracked measures show no broad employment growth, but they do not establish why the other channels are not growing.\",\"event_ids\":[\"auto-2026-10-06-0a3a404e4516\",\"auto-2026-10-06-1faf6bb5114f\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Employment growth remains narrow amid an unsettled AI job-loss debate\",\"event_ids\":[\"auto-2026-10-06-0a3a404e4516\",\"auto-2026-10-06-1faf6bb5114f\"],\"fact_ids\":[\"workforce.employment_breadth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. Barron's reported that heavy AI spending is supporting the economy while productivity gains from that investment may come later. The aggregate figures show positive productivity growth now, but they do not identify AI's contribution or show a comparable increase in real compensation.\",\"event_ids\":[\"auto-2026-10-08-5c0a7756bc40\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity growth remains stronger than real compensation growth\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Industrial expansion coexists with limited grid conversion and narrow job growth\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Investor and industrial indicators remain supportive, though not uniformly so. The AI Equity Index rose slightly to 37.5 and the median one-year return reached 15.6%, while the share of covered companies with gains slipped to 62.3%. Computer and peripheral-equipment output grew 9.2%, and semiconductor and electronic-component output grew 11.5%. Those are broad manufacturing measures rather than AI-only series. Recent reports on advanced packaging's move toward production control and on hybrid-bonding defect detection show that manufacturing execution is receiving attention alongside output growth.\",\"event_ids\":[\"auto-2026-10-08-35e73caedfc6\",\"auto-2026-10-08-ea50382f467a\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]},{\"text\":\"Power supply is drawing more concrete commitments, but delivery remains constrained. Commercial electricity demand is growing 3.1%, ahead of 1.2% total retail growth, and planned net generation additions stand at 225.2 GW. Utility Dive reported that Amazon and Constellation signed a 20-year agreement to expand a Maryland nuclear plant, while PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Yet only 24.2% of the 2,061 GW active queue is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. The contract and approval advance specific projects; they do not indicate rapid conversion of the full pipeline.\",\"event_ids\":[\"auto-2026-10-05-6909d6790041\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Diffusion beyond the buildout remains uneven. Businesses expecting AI use within six months rose to 27.7%, 3.9 percentage points above current use. A separate survey found that 46% of firms with employees were using AI tools and another 15% planned to adopt them within a year, although the different population and time horizon prevent a direct comparison. Only one tracked AI-linked labor channel had positive employment growth, led by power and communication construction at 0.8%. At the economy-wide level, productivity grew 2.2% and real output 2.5%, but real hourly compensation increased only 0.6%. These readings show positive aggregate performance, but not broad employment gains or a comparable rise in real compensation, and they do not isolate AI's contribution to productivity.\",\"event_ids\":[\"auto-2026-10-08-6f12584f804f\"],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
+      "access_programs": null,
+      "background": true,
+      "billing": {
+        "payer": "developer"
+      },
+      "completed_at": 1791570793.0,
+      "conversation": null,
+      "created_at": 1791570658.0,
+      "error": null,
+      "frequency_penalty": 0.0,
+      "id": "resp_0452a734e3ce085a006ac932e2177c87d1b023578ae146982e",
+      "incomplete_details": null,
+      "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
+      "max_output_tokens": null,
+      "max_tool_calls": null,
+      "metadata": {},
+      "model": "gpt-5.6-sol",
+      "moderation": null,
+      "object": "response",
+      "output": [
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac932e42e9c87d1a22097bb43fe4c12",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac932eb3d3487d1863946b52eb35e7e",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac932f1b0dc87d1b69e06872cceb4ac",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac932f7f91c87d1902aaa86984d2014",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac932fe573c87d1becf265620dbdf39",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac93304581c87d1bad0c49663d17543",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac9330b3e3c87d1a6138d5d5c49f251",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac93311675887d19c03465f53724292",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac9331877c087d1b72d3bc8bb94ea5e",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac9331efb9087d19137952c55a7211e",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac93325927487d1819e16284db43c33",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac9332b421c87d19269c166f02476eb",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac93330d92087d1913769382093bda0",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac93336c92887d19f2e6fa799ba755d",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac9333cdb4087d18ba3657cc9b4930f",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac93344003887d187f565e98b9b0edd",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac9334a587087d1916e2a3b1fdd81e1",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac933505cac87d1ad764b5e0d39f307",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0452a734e3ce085a006ac9335600bc87d1bf8662b13182259e",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [
+            {
+              "annotations": [],
+              "logprobs": [],
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose slightly to 37.5, and the median one-year return increased materially to 15.6%. Yet the share of covered companies with positive one-year returns slipped to 62.3%. The typical covered return improved, but gains did not spread to a larger share of companies.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},\"headline\":{\"text\":\"AI equity returns improve without broader participation\",\"event_ids\":[],\"fact_ids\":[\"market.median_return\",\"market.positive_breadth\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Computer and peripheral-equipment output grew 9.2% with capacity utilization at 81.7%; semiconductor and electronic-component output grew 11.5% with utilization at 72.2%. Computer equipment is operating closer to measured capacity even though semiconductor output is growing faster. The lower semiconductor utilization rate does not show that every stage of production is unconstrained: recent reports examined the move toward production control in advanced packaging and critical-defect detection in hybrid bonding. Those reports identify process execution and quality control as active issues beyond the aggregate utilization measure.\",\"event_ids\":[\"auto-2026-10-08-35e73caedfc6\",\"auto-2026-10-08-ea50382f467a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Compute output grows as packaging reports focus on production control\",\"event_ids\":[\"auto-2026-10-08-35e73caedfc6\",\"auto-2026-10-08-ea50382f467a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, ahead of the 1.2% increase in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon, but that total does not establish when capacity will become available. Utility Dive reported that Amazon and Constellation signed a 20-year power-purchase agreement to expand a Maryland nuclear plant. The agreement is a concrete long-duration supply arrangement, but one contract does not resolve broader questions about regional delivery and timing.\",\"event_ids\":[\"auto-2026-10-05-6909d6790041\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Amazon signs a 20-year nuclear agreement as commercial power demand rises\",\"event_ids\":[\"auto-2026-10-05-6909d6790041\"],\"fact_ids\":[\"power.commercial_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power, a concrete step for those projects. Systemwide, however, the active queue is 2,061 GW and only 24.2% is in executed-agreement or construction stages. Storage represents 552.7 GW of the queue. The historical record remains difficult: just 13% of the 2000\u20132020 queue cohort reached operation. The approval advances selected projects, not the wider queue.\",\"event_ids\":[\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"PJM fast-tracks 2.1 GW against a 2,061 GW interconnection queue\",\"event_ids\":[\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses expecting to use AI within six months rose slightly to 27.7%, while the gap between expected and current use widened slightly to 3.9 percentage points. Current-use readings now cover every BTOS sector, and the leading sector registers 50.2%. A separate 2025 Small Business Credit Survey found that 46% of firms with employees reported using AI tools and another 15% planned to adopt them within a year. Because that survey covers a different business population and time horizon, its higher readings should not be compared directly with BTOS.\",\"event_ids\":[\"auto-2026-10-08-6f12584f804f\"],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.sector_coverage\",\"adoption.leading_sector_use_pct\"]},\"headline\":{\"text\":\"Near-term AI adoption expectations edge higher but remain ahead of use\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction leads the group at 0.8%. Two channels have positive real-earnings growth. Reuters reported companies cutting jobs as investment shifts toward AI, while the Financial Times reported that economists remain unconvinced by broad claims of AI-driven job loss. The tracked measures show no broad employment growth, but they do not establish why the other channels are not growing.\",\"event_ids\":[\"auto-2026-10-06-0a3a404e4516\",\"auto-2026-10-06-1faf6bb5114f\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Employment growth remains narrow amid an unsettled AI job-loss debate\",\"event_ids\":[\"auto-2026-10-06-0a3a404e4516\",\"auto-2026-10-06-1faf6bb5114f\"],\"fact_ids\":[\"workforce.employment_breadth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6% and unit labor costs 1.4%. Barron's reported that heavy AI spending is supporting the economy while productivity gains from that investment may come later. The aggregate figures show positive productivity growth now, but they do not identify AI's contribution or show a comparable increase in real compensation.\",\"event_ids\":[\"auto-2026-10-08-5c0a7756bc40\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity growth remains stronger than real compensation growth\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Industrial expansion coexists with limited grid conversion and narrow job growth\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Investor and industrial indicators remain supportive, though not uniformly so. The AI Equity Index rose slightly to 37.5 and the median one-year return reached 15.6%, while the share of covered companies with gains slipped to 62.3%. Computer and peripheral-equipment output grew 9.2%, and semiconductor and electronic-component output grew 11.5%. Those are broad manufacturing measures rather than AI-only series. Recent reports on advanced packaging's move toward production control and on hybrid-bonding defect detection show that manufacturing execution is receiving attention alongside output growth.\",\"event_ids\":[\"auto-2026-10-08-35e73caedfc6\",\"auto-2026-10-08-ea50382f467a\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]},{\"text\":\"Power supply is drawing more concrete commitments, but delivery remains constrained. Commercial electricity demand is growing 3.1%, ahead of 1.2% total retail growth, and planned net generation additions stand at 225.2 GW. Utility Dive reported that Amazon and Constellation signed a 20-year agreement to expand a Maryland nuclear plant, while PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Yet only 24.2% of the 2,061 GW active queue is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. The contract and approval advance specific projects; they do not indicate rapid conversion of the full pipeline.\",\"event_ids\":[\"auto-2026-10-05-6909d6790041\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Diffusion beyond the buildout remains uneven. Businesses expecting AI use within six months rose to 27.7%, 3.9 percentage points above current use. A separate survey found that 46% of firms with employees were using AI tools and another 15% planned to adopt them within a year, although the different population and time horizon prevent a direct comparison. Only one tracked AI-linked labor channel had positive employment growth, led by power and communication construction at 0.8%. At the economy-wide level, productivity grew 2.2% and real output 2.5%, but real hourly compensation increased only 0.6%. These readings show positive aggregate performance, but not broad employment gains or a comparable rise in real compensation, and they do not isolate AI's contribution to productivity.\",\"event_ids\":[\"auto-2026-10-08-6f12584f804f\"],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
+              "type": "output_text"
+            }
+          ],
+          "id": "msg_0452a734e3ce085a006ac9335a0e8887d18caef418167c30b8",
+          "phase": "final_answer",
+          "role": "assistant",
+          "status": "completed",
+          "type": "message"
+        }
+      ],
+      "parallel_tool_calls": true,
+      "presence_penalty": 0.0,
+      "previous_response_id": null,
+      "prompt": null,
+      "prompt_cache_key": null,
+      "prompt_cache_options": null,
+      "prompt_cache_retention": "24h",
+      "reasoning": {
+        "context": "all_turns",
+        "effort": "xhigh",
+        "generate_summary": null,
+        "mode": "standard",
+        "summary": null
+      },
+      "safety_identifier": null,
+      "service_tier": "default",
+      "status": "completed",
+      "store": false,
+      "temperature": 1.0,
+      "text": {
+        "format": {
+          "description": null,
+          "name": "GeneratedEditorialSynthesis",
+          "schema_": {
+            "$defs": {
+              "GeneratedDomainRead": {
+                "additionalProperties": false,
+                "properties": {
+                  "body": {
+                    "$ref": "#/$defs/SupportedPassage"
+                  },
+                  "domain": {
+                    "enum": [
+                      "market",
+                      "finance",
+                      "compute",
+                      "data_center",
+                      "connectivity",
+                      "power",
+                      "grid_storage",
+                      "water",
+                      "adoption",
+                      "workforce",
+                      "economic_impact"
+                    ],
+                    "title": "Domain",
+                    "type": "string"
+                  },
+                  "headline": {
+                    "$ref": "#/$defs/SupportedPassage"
+                  }
+                },
+                "required": [
+                  "domain",
+                  "headline",
+                  "body"
+                ],
+                "title": "GeneratedDomainRead",
+                "type": "object"
+              },
+              "GeneratedMacroRead": {
+                "additionalProperties": false,
+                "properties": {
+                  "headline": {
+                    "$ref": "#/$defs/SupportedPassage"
+                  },
+                  "paragraphs": {
+                    "items": {
+                      "$ref": "#/$defs/SupportedPassage"
+                    },
+                    "maxItems": 4,
+                    "minItems": 2,
+                    "title": "Paragraphs",
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "headline",
+                  "paragraphs"
+                ],
+                "title": "GeneratedMacroRead",
+                "type": "object"
+              },
+              "SupportedPassage": {
+                "additionalProperties": false,
+                "description": "One natural-language block plus the deterministic evidence used to support it.",
+                "properties": {
+                  "event_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Event Ids",
+                    "type": "array"
+                  },
+                  "fact_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Fact Ids",
+                    "type": "array"
+                  },
+                  "text": {
+                    "minLength": 1,
+                    "title": "Text",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text",
+                  "fact_ids",
+                  "event_ids"
+                ],
+                "title": "SupportedPassage",
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "description": "One publication candidate. The model writes; deterministic code decides whether it is safe to publish.",
+            "properties": {
+              "domain_reads": {
+                "items": {
+                  "$ref": "#/$defs/GeneratedDomainRead"
+                },
+                "title": "Domain Reads",
+                "type": "array"
+              },
+              "macro_read": {
+                "$ref": "#/$defs/GeneratedMacroRead"
+              }
+            },
+            "required": [
+              "domain_reads",
+              "macro_read"
+            ],
+            "title": "GeneratedEditorialSynthesis",
+            "type": "object"
+          },
+          "strict": true,
+          "type": "json_schema"
+        },
+        "verbosity": "medium"
+      },
+      "tool_choice": "auto",
+      "tool_usage": {
+        "image_gen": {
+          "input_tokens": 0,
+          "input_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 0
+          },
+          "output_tokens": 0,
+          "output_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 0
+          },
+          "total_tokens": 0
+        },
+        "web_search": {
+          "num_requests": 0
+        }
+      },
+      "tools": [],
+      "top_logprobs": 0,
+      "top_p": 0.98,
+      "truncation": "disabled",
+      "usage": {
+        "input_tokens": 4418,
+        "input_tokens_details": {
+          "cache_write_tokens": 4415,
+          "cached_tokens": 0
+        },
+        "output_tokens": 11870,
+        "output_tokens_details": {
+          "reasoning_tokens": 9654
+        },
+        "total_tokens": 16288
+      },
+      "user": null
+    }
+  },
+  "reasoning_effort": "xhigh",
+  "refresh_plan": {
+    "candidate_domains": [
+      "market",
+      "compute",
+      "power",
+      "grid_storage",
+      "adoption",
+      "workforce",
+      "economic_impact"
+    ],
+    "current_event_ids": [
+      "auto-2026-10-08-35e73caedfc6",
+      "auto-2026-10-01-cea9991fa4e4",
+      "auto-2026-10-08-6f12584f804f",
+      "auto-2026-10-07-45b2323f28a5",
+      "auto-2026-10-08-5c0a7756bc40",
+      "auto-2026-10-05-8559d73be953",
+      "auto-2026-10-05-7d9e4ebb6539",
+      "auto-2026-10-06-0a3a404e4516",
+      "auto-2026-10-08-ea50382f467a",
+      "auto-2026-10-09-15a67b7cd7fe",
+      "auto-2026-10-06-1faf6bb5114f",
+      "auto-2026-10-08-66eec6d146e7",
+      "auto-2026-10-05-6909d6790041",
+      "auto-2026-10-06-e1a80bd58ccd",
+      "auto-2026-10-05-22ac6bc4c019"
+    ],
+    "material_domains": [
+      "market",
+      "adoption"
+    ],
+    "new_event_domains": [
+      "compute",
+      "power",
+      "grid_storage",
+      "workforce",
+      "economic_impact"
+    ],
+    "new_event_ids": [
+      "auto-2026-10-08-35e73caedfc6",
+      "auto-2026-10-08-6f12584f804f",
+      "auto-2026-10-08-5c0a7756bc40",
+      "auto-2026-10-06-0a3a404e4516",
+      "auto-2026-10-08-ea50382f467a",
+      "auto-2026-10-09-15a67b7cd7fe",
+      "auto-2026-10-06-1faf6bb5114f",
+      "auto-2026-10-08-66eec6d146e7",
+      "auto-2026-10-05-6909d6790041",
+      "auto-2026-10-05-22ac6bc4c019"
+    ],
+    "reason": "material_findings+new_developments",
+    "refresh_needed": true
+  },
+  "saved_at": "2026-10-09T18:33:14.215651+00:00",
+  "service_version": "6.1.0",
+  "stage": "editorial_synthesis",
+  "stage_prompt_versions": {
+    "editorial_synthesis": "editorial-synthesis-reset-1.1"
+  },
+  "started_at": "2026-10-09T18:30:57.371830+00:00",
+  "status": "rejected_hard_validation",
+  "validation": {
+    "checked_passages": 18,
+    "diagnostics": [
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "compute.body",
+        "text": "Computer and peripheral-equipment output grew 9.2% with capacity utilization at 81.7%; semiconductor and electronic-component output grew 11.5% with utilization at 72.2%. Computer equipment is operating closer to measured capacity even though semiconductor output is growing faster. The lower semiconductor utilization rate does not show that every stage of production is unconstrained: recent reports examined the move toward production control in advanced packaging and critical-defect detection in hybrid bonding. Those reports identify process execution and quality control as active issues beyond the aggregate utilization measure."
+      },
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[1]",
+        "text": "Power supply is drawing more concrete commitments, but delivery remains constrained. Commercial electricity demand is growing 3.1%, ahead of 1.2% total retail growth, and planned net generation additions stand at 225.2 GW. Utility Dive reported that Amazon and Constellation signed a 20-year agreement to expand a Maryland nuclear plant, while PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Yet only 24.2% of the 2,061 GW active queue is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. The contract and approval advance specific projects; they do not indicate rapid conversion of the full pipeline."
+      }
+    ],
+    "hard_errors": [
+      "Domain Read cites a development assigned to another domain."
+    ],
+    "hard_failures": [
+      {
+        "event_ids": [
+          "auto-2026-10-08-6f12584f804f"
+        ],
+        "label": "adoption.body",
+        "message": "Domain Read cites a development assigned to another domain.",
+        "reason": "out_of_scope_event_ids"
+      }
+    ],
+    "passed": false,
+    "publication_policy": "minimal_grounding_and_sanity_gate",
+    "validator_version": "5.1.0"
+  }
+}
