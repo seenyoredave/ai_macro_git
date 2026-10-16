@@ -1,104 +1,69 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261015T170326912831Z_92f2b739_db0b7d24",
+  "attempt_id": "20261016T164407978692Z_42132438_8001a776",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
-    "data_center",
-    "connectivity",
-    "grid_storage",
-    "water",
-    "adoption",
-    "workforce",
-    "economic_impact"
+    "compute"
   ],
   "editorial_context_event_ids": [
+    "auto-2026-10-15-bde49f15ce34",
     "auto-2026-10-15-0a42b0b901a6",
     "auto-2026-10-12-d1e8d0a7c96d",
     "auto-2026-10-15-f129bad0f05e",
     "auto-2026-10-14-57e5b17c1bd6",
+    "auto-2026-10-16-f903651ff52a",
     "auto-2026-10-10-63bdd29969e8",
     "auto-2026-10-12-ce7bc0483a21",
     "auto-2026-10-14-382b7de30b7c",
     "auto-2026-10-15-1548ca166303",
     "auto-2026-10-09-e1198b607fc9",
     "auto-2026-10-15-49bffc829240",
-    "auto-2026-10-06-893bf9540062",
     "auto-2026-10-12-0c4c98040b3a",
     "auto-2026-10-12-abf9ea70529b",
-    "auto-2026-10-12-d94f55135e99",
-    "auto-2026-10-09-15a67b7cd7fe"
+    "auto-2026-10-12-d94f55135e99"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
-      "data_center",
-      "connectivity",
-      "grid_storage",
-      "water",
-      "adoption",
-      "workforce",
-      "economic_impact"
+      "compute"
     ],
     "current_event_ids": [
+      "auto-2026-10-15-bde49f15ce34",
       "auto-2026-10-15-0a42b0b901a6",
       "auto-2026-10-12-d1e8d0a7c96d",
       "auto-2026-10-15-f129bad0f05e",
       "auto-2026-10-14-57e5b17c1bd6",
+      "auto-2026-10-16-f903651ff52a",
       "auto-2026-10-10-63bdd29969e8",
       "auto-2026-10-12-ce7bc0483a21",
       "auto-2026-10-14-382b7de30b7c",
       "auto-2026-10-15-1548ca166303",
       "auto-2026-10-09-e1198b607fc9",
       "auto-2026-10-15-49bffc829240",
-      "auto-2026-10-06-893bf9540062",
       "auto-2026-10-12-0c4c98040b3a",
       "auto-2026-10-12-abf9ea70529b",
-      "auto-2026-10-12-d94f55135e99",
-      "auto-2026-10-09-15a67b7cd7fe"
+      "auto-2026-10-12-d94f55135e99"
     ],
     "material_domains": [
-      "market",
-      "water",
-      "adoption"
+      "market"
     ],
     "new_event_domains": [
-      "market",
       "finance",
-      "data_center",
-      "connectivity",
-      "grid_storage",
-      "workforce",
-      "economic_impact"
+      "compute"
     ],
     "new_event_ids": [
-      "auto-2026-10-15-0a42b0b901a6",
-      "auto-2026-10-12-d1e8d0a7c96d",
-      "auto-2026-10-15-f129bad0f05e",
-      "auto-2026-10-14-57e5b17c1bd6",
-      "auto-2026-10-10-63bdd29969e8",
-      "auto-2026-10-12-ce7bc0483a21",
-      "auto-2026-10-14-382b7de30b7c",
-      "auto-2026-10-15-1548ca166303",
-      "auto-2026-10-09-e1198b607fc9",
-      "auto-2026-10-15-49bffc829240",
-      "auto-2026-10-06-893bf9540062",
-      "auto-2026-10-12-0c4c98040b3a",
-      "auto-2026-10-12-abf9ea70529b",
-      "auto-2026-10-12-d94f55135e99",
-      "auto-2026-10-09-15a67b7cd7fe"
+      "auto-2026-10-15-bde49f15ce34",
+      "auto-2026-10-16-f903651ff52a"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
-    "market",
     "finance",
-    "grid_storage",
-    "water",
-    "adoption"
+    "compute"
   ],
   "evidence_packets": {
     "adoption": {
@@ -1116,52 +1081,52 @@
       "facts": [
         {
           "context": "",
-          "display": "30.2",
+          "display": "30.0",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 30.196549617144154
+          "value": 30.04805640780148
         },
         {
           "context": "",
-          "display": "49.2",
+          "display": "47.9",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 49.195732803309824
+          "value": 47.870370272328465
         },
         {
           "context": "",
-          "display": "62.7%",
+          "display": "62.3%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6274509803921569
+          "value": 0.6225490196078431
         },
         {
           "context": "",
-          "display": "11.4%",
+          "display": "11.3%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.11396613484561358
+          "value": 0.11265598170417856
         },
         {
           "context": "",
-          "display": "22.1%",
+          "display": "21.1%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.22144564230663552
+          "value": 0.21055101551656707
         },
         {
           "context": "",
           "display": "65.0%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6496402649034974
+          "value": 0.6501136981728268
         },
         {
           "context": "",
-          "display": "18.2",
+          "display": "18.1",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.207677520468547
+          "value": 18.129146775963775
         },
         {
           "context": "",
@@ -1172,13 +1137,13 @@
         },
         {
           "context": "",
-          "display": "3",
+          "display": "1",
           "id": "market.crowded_sector_count",
           "label": "Sectors above the high-pressure threshold",
-          "value": 3.0
+          "value": 1.0
         }
       ],
-      "importance": 19.964026490349738,
+      "importance": 20.011369817282684,
       "label": "Market",
       "references": [
         {
@@ -1598,19 +1563,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "92f2b739b543645142f20835",
-  "generated_at": "2026-10-15T17:05:23.686165+00:00",
+  "evidence_snapshot_id": "421324387ce45ee4c6735227",
+  "generated_at": "2026-10-16T16:45:32.646569+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 116.768834223,
-      "input_tokens": 4661,
+      "elapsed_sec": 84.66419391799991,
+      "input_tokens": 3894,
       "model": "gpt-5.6-sol",
-      "output_tokens": 10548,
-      "poll_attempts": 53,
+      "output_tokens": 7277,
+      "poll_attempts": 38,
       "poll_errors": [],
-      "response_id": "resp_0f3b3ef971424a01006ad1075fc2cc87d1a3e638df1e65ac3c",
+      "response_id": "resp_0e13864ca9e52870006ad25458c0c887d19e504910b0963bac",
       "terminal_status": "completed",
-      "total_tokens": 15209
+      "total_tokens": 11171
     }
   },
   "max_output_tokens": null,
@@ -1621,11 +1586,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "92f2b739b543645142f20835",
-    "expires_at": "2026-10-16T17:05:23.688034+00:00",
+    "current_evidence_snapshot_id": "421324387ce45ee4c6735227",
+    "expires_at": "2026-10-17T16:45:32.648287+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-10-15T17:05:23.688034+00:00",
+    "published_at": "2026-10-16T16:45:32.648287+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1633,24 +1598,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 53,
+        "poll_attempts": 38,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0f3b3ef971424a01006ad1075fc2cc87d1a3e638df1e65ac3c",
+        "response_id": "resp_0e13864ca9e52870006ad25458c0c887d19e504910b0963bac",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index fell materially to 30.2. The median one-year return declined to 11.4%, and the equal-weight return to 22.1%, both material decreases. Reuters nevertheless reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains, while Barron\u2019s reported that ASML shares fell after earnings pointed to soaring AI demand. Favorable demand and earnings expectations are not translating uniformly into equity gains.\",\"event_ids\":[\"auto-2026-10-09-e1198b607fc9\",\"auto-2026-10-14-382b7de30b7c\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]},\"headline\":{\"text\":\"AI equity readings weaken despite strong reported earnings expectations\",\"event_ids\":[\"auto-2026-10-09-e1198b607fc9\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI is -0.50 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5. Reuters reported that AI credit jitters drove U.S. technology default insurance to record highs, and the Financial Times reported investors selling data-center bonds. These reports identify stress in exposed instruments, but they do not establish system-wide tightening; the strain measures still show a pronounced borrower-lender split.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"AI credit concerns rise while the aggregate financing measure barely moves\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue remains 2,061 GW, but only 24.2% is at executed-agreement or construction stages. Storage accounts for 552.7 GW, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive reported that FERC rejected most of PJM\u2019s large-load interconnection plan, days after PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Individual projects can advance even while rules for larger-load connections remain unsettled; the decisions do not alter the low historical conversion rate.\",\"event_ids\":[\"auto-2026-10-12-d94f55135e99\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"Selective PJM decisions leave the broader queue constraint intact\",\"event_ids\":[\"auto-2026-10-12-d94f55135e99\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Of campuses with county drought data, 280, or 19.5%, are in counties where at least 25% of the area is under D2-or-worse drought; both the count and share decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 345 campuses, or 24.1%, and decreased slightly. These measures track county geography, not campus water consumption or the exact location of drought within a county.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"County-level drought exposure recedes among tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses expecting AI use within six months edged up to 27.7%, but the gap between expected and current use widened slightly to 3.9 percentage points. The highest sector current-use reading rose to 50.2%, and every BTOS sector now has a current-use reading. Full sector coverage makes the comparison more complete, but it does not change the central result: stated near-term adoption remains ahead of reported use.\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.sector_coverage\",\"adoption.leading_sector_use_pct\"]},\"headline\":{\"text\":\"Near-term AI intentions rise, but the adoption gap widens slightly\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI investment meets more selective markets and persistent delivery constraints\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-12-d94f55135e99\"],\"fact_ids\":[\"market.aei\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Public equity and credit markets are applying a sharper test to AI exposure. The AI Equity Index fell materially to 30.2 and the median one-year return to 11.4%, even as Reuters reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains. Reuters also reported record-high default insurance for U.S. technology credits amid AI concerns, and the Financial Times reported selling in data-center bonds. The Chicago Fed NFCI remains at -0.50 after a 0.02 increase over three months, so the reports point to stress in exposed assets rather than demonstrating broad financial tightening.\",\"event_ids\":[\"auto-2026-10-09-e1198b607fc9\",\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"finance.nfci\",\"finance.nfci_change\"]},{\"text\":\"Broad hardware production is expanding alongside a large data-center pipeline, although the production series are not AI-specific. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014roughly one for every two operating sites. Delivery is less certain: only 24.2% of the 2,061 GW active interconnection queue is at executed-agreement or construction stages, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s reports that FERC rejected most of PJM\u2019s large-load interconnection plan while PJM approved fast-track interconnection for 2.1 GW of named projects illustrate selective progress, not broad resolution of the queue.\",\"event_ids\":[\"auto-2026-10-12-d94f55135e99\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream diffusion remains less decisive. Businesses expecting AI use within six months edged up to 27.7%, but this is 3.9 percentage points above current use. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity is growing 2.2%, while real hourly compensation is growing 0.6%; these aggregate measures do not identify AI\u2019s contribution. The data therefore show positive productivity and a modest rise in adoption expectations, but not broad labor-market diffusion or a demonstrated economy-wide AI effect.\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal funding capacity coexists with borrower-level AI credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Compute output is growing as chip-policy uncertainty rises\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI infrastructure is expanding amid selective credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},\"paragraphs\":[{\"text\":\"AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1792083922.0,
+      "completed_at": 1792169130.0,
       "conversation": null,
-      "created_at": 1792083807.0,
+      "created_at": 1792169048.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0f3b3ef971424a01006ad1075fc2cc87d1a3e638df1e65ac3c",
+      "id": "resp_0e13864ca9e52870006ad25458c0c887d19e504910b0963bac",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1663,7 +1628,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107627fa087d1af8c65704c8ae9e0",
+          "id": "rs_0e13864ca9e52870006ad2545afebc87d198cc4f561e7dfe06",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1671,7 +1636,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad10768f9dc87d19f2992294aa43809",
+          "id": "rs_0e13864ca9e52870006ad25460a5ec87d195285b3bc955e825",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1679,7 +1644,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad1076f669487d18a36a847e98dbe33",
+          "id": "rs_0e13864ca9e52870006ad254671f2887d196a12331a8939d9b",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1687,7 +1652,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad1077543a487d1b8057d372efe3210",
+          "id": "rs_0e13864ca9e52870006ad2546db56c87d1a44563225de0998d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1695,7 +1660,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad1077b8c3487d1aeb7d2f3f815a425",
+          "id": "rs_0e13864ca9e52870006ad25474536887d187d6fe10d6d7b531",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1703,7 +1668,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad10781ab5887d1b13d25ea6129a5ab",
+          "id": "rs_0e13864ca9e52870006ad2547add3087d187f3bcb21a5e78c7",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1711,7 +1676,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad10787d3c487d1aa75025f46c31bf0",
+          "id": "rs_0e13864ca9e52870006ad25480e5b887d198fc72fd840a8530",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1719,7 +1684,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad1078e31dc87d1841d62e21ab2959c",
+          "id": "rs_0e13864ca9e52870006ad2548680c487d19472a8e9c95fe1a3",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1727,7 +1692,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107949cb487d188efd4a3b1c4fceb",
+          "id": "rs_0e13864ca9e52870006ad2548cfcfc87d1851c5059b5ecec81",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1735,7 +1700,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad1079a4e6c87d1bacbc1bc5ff15443",
+          "id": "rs_0e13864ca9e52870006ad254932b8c87d1bcbf03162ce90898",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1743,7 +1708,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107a0196487d18e33d4fa77fecdde",
+          "id": "rs_0e13864ca9e52870006ad25497f99087d1bf088f422776001f",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1751,47 +1716,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107a6095487d1a9e3145082056394",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107acd56887d1902841c016e95edf",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107b3068887d1a9946bc9b2242a67",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107b8c3f487d1a428b25a70d27cd3",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107bd87f887d1bb13b183582b7d81",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0f3b3ef971424a01006ad107c33ec487d1bd27cc27842820ec",
+          "id": "rs_0e13864ca9e52870006ad2549d08ac87d1aff62678f60c5211",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1801,11 +1726,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index fell materially to 30.2. The median one-year return declined to 11.4%, and the equal-weight return to 22.1%, both material decreases. Reuters nevertheless reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains, while Barron\u2019s reported that ASML shares fell after earnings pointed to soaring AI demand. Favorable demand and earnings expectations are not translating uniformly into equity gains.\",\"event_ids\":[\"auto-2026-10-09-e1198b607fc9\",\"auto-2026-10-14-382b7de30b7c\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]},\"headline\":{\"text\":\"AI equity readings weaken despite strong reported earnings expectations\",\"event_ids\":[\"auto-2026-10-09-e1198b607fc9\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI is -0.50 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5. Reuters reported that AI credit jitters drove U.S. technology default insurance to record highs, and the Financial Times reported investors selling data-center bonds. These reports identify stress in exposed instruments, but they do not establish system-wide tightening; the strain measures still show a pronounced borrower-lender split.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"AI credit concerns rise while the aggregate financing measure barely moves\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue remains 2,061 GW, but only 24.2% is at executed-agreement or construction stages. Storage accounts for 552.7 GW, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive reported that FERC rejected most of PJM\u2019s large-load interconnection plan, days after PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Individual projects can advance even while rules for larger-load connections remain unsettled; the decisions do not alter the low historical conversion rate.\",\"event_ids\":[\"auto-2026-10-12-d94f55135e99\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"Selective PJM decisions leave the broader queue constraint intact\",\"event_ids\":[\"auto-2026-10-12-d94f55135e99\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Of campuses with county drought data, 280, or 19.5%, are in counties where at least 25% of the area is under D2-or-worse drought; both the count and share decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 345 campuses, or 24.1%, and decreased slightly. These measures track county geography, not campus water consumption or the exact location of drought within a county.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"County-level drought exposure recedes among tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses expecting AI use within six months edged up to 27.7%, but the gap between expected and current use widened slightly to 3.9 percentage points. The highest sector current-use reading rose to 50.2%, and every BTOS sector now has a current-use reading. Full sector coverage makes the comparison more complete, but it does not change the central result: stated near-term adoption remains ahead of reported use.\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.sector_coverage\",\"adoption.leading_sector_use_pct\"]},\"headline\":{\"text\":\"Near-term AI intentions rise, but the adoption gap widens slightly\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI investment meets more selective markets and persistent delivery constraints\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-12-d94f55135e99\"],\"fact_ids\":[\"market.aei\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Public equity and credit markets are applying a sharper test to AI exposure. The AI Equity Index fell materially to 30.2 and the median one-year return to 11.4%, even as Reuters reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains. Reuters also reported record-high default insurance for U.S. technology credits amid AI concerns, and the Financial Times reported selling in data-center bonds. The Chicago Fed NFCI remains at -0.50 after a 0.02 increase over three months, so the reports point to stress in exposed assets rather than demonstrating broad financial tightening.\",\"event_ids\":[\"auto-2026-10-09-e1198b607fc9\",\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"finance.nfci\",\"finance.nfci_change\"]},{\"text\":\"Broad hardware production is expanding alongside a large data-center pipeline, although the production series are not AI-specific. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014roughly one for every two operating sites. Delivery is less certain: only 24.2% of the 2,061 GW active interconnection queue is at executed-agreement or construction stages, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s reports that FERC rejected most of PJM\u2019s large-load interconnection plan while PJM approved fast-track interconnection for 2.1 GW of named projects illustrate selective progress, not broad resolution of the queue.\",\"event_ids\":[\"auto-2026-10-12-d94f55135e99\",\"auto-2026-10-09-15a67b7cd7fe\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream diffusion remains less decisive. Businesses expecting AI use within six months edged up to 27.7%, but this is 3.9 percentage points above current use. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity is growing 2.2%, while real hourly compensation is growing 0.6%; these aggregate measures do not identify AI\u2019s contribution. The data therefore show positive productivity and a modest rise in adoption expectations, but not broad labor-market diffusion or a demonstrated economy-wide AI effect.\",\"event_ids\":[],\"fact_ids\":[\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal funding capacity coexists with borrower-level AI credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Compute output is growing as chip-policy uncertainty rises\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI infrastructure is expanding amid selective credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},\"paragraphs\":[{\"text\":\"AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0f3b3ef971424a01006ad107c76b7087d1b16c716c22d19250",
+          "id": "msg_0e13864ca9e52870006ad254a3526087d1b3200396a9369732",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -1978,16 +1903,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4661,
+        "input_tokens": 3894,
         "input_tokens_details": {
-          "cache_write_tokens": 4658,
+          "cache_write_tokens": 3891,
           "cached_tokens": 0
         },
-        "output_tokens": 10548,
+        "output_tokens": 7277,
         "output_tokens_details": {
-          "reasoning_tokens": 8677
+          "reasoning_tokens": 6214
         },
-        "total_tokens": 15209
+        "total_tokens": 11171
       },
       "user": null
     }
@@ -2049,41 +1974,44 @@
       "version": "6.1.0"
     },
     "compute": {
-      "analysis": "Computer and peripheral-equipment output grew 9.2%, with capacity utilization at 81.7%. Semiconductor and electronic-component output grew 11.5%, but utilization was lower at 72.2%. Output is rising in both industries, while the utilization gap indicates different pressure on installed capacity.",
+      "analysis": "Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock.",
       "analysis_sentences": [
-        "Computer and peripheral-equipment output grew 9.2%, with capacity utilization at 81.7%.",
-        "Semiconductor and electronic-component output grew 11.5%, but utilization was lower at 72.2%.",
-        "Output is rising in both industries, while the utilization gap indicates different pressure on installed capacity."
+        "Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components.",
+        "Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions.",
+        "The Financial Times reported that China unveiled draft export controls on AI technologies and chips.",
+        "Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-16-f903651ff52a"
+          ],
           "fact_ids": [
             "compute.computer_output_growth",
-            "compute.semiconductor_output_growth",
-            "compute.computer_utilization",
-            "compute.semiconductor_utilization"
+            "compute.semiconductor_output_growth"
           ],
           "field": "headline",
-          "text": "Compute output is growing under different capacity conditions"
+          "text": "Compute output is growing as chip-policy uncertainty rises"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-16-f903651ff52a"
+          ],
           "fact_ids": [
             "compute.computer_output_growth",
-            "compute.computer_utilization",
             "compute.semiconductor_output_growth",
+            "compute.computer_utilization",
             "compute.semiconductor_utilization"
           ],
           "field": "body",
-          "text": "Computer and peripheral-equipment output grew 9.2%, with capacity utilization at 81.7%. Semiconductor and electronic-component output grew 11.5%, but utilization was lower at 72.2%. Output is rising in both industries, while the utilization gap indicates different pressure on installed capacity."
+          "text": "Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock."
         }
       ],
       "domain": "compute",
-      "evidence_snapshot_id": "114fd905fa4c0cb68e593347",
-      "generated_at": "2026-09-15T11:27:10.458710+00:00",
+      "evidence_snapshot_id": "421324387ce45ee4c6735227",
+      "generated_at": "2026-10-16T16:45:32.646364+00:00",
       "generator": "openai",
-      "headline": "Compute output is growing under different capacity conditions",
+      "headline": "Compute output is growing as chip-policy uncertainty rises",
       "label": "Compute",
       "references": [
         {
@@ -2109,6 +2037,10 @@
         {
           "source_label": "Alphabet AI serving economics",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
+        },
+        {
+          "source_label": "Financial Times",
+          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQZFJrS1d0QjRNNDFCeDlGc2x2cHJhTWN6SEJtWjFucjRFWnc2LWlUMFFMbjFuX3BOWGpJcVhLdnVRRnFjaUVpRXh0UHNQcWl6UkF3clZ3VExPc1dVX1hvc2o4Tnl3Mm15VE03Y1h6NHJzU3hnUmlFWlpha0hkeElUaUg1SFY?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2330,47 +2262,45 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "The Chicago Fed NFCI is -0.50 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5. Reuters reported that AI credit jitters drove U.S. technology default insurance to record highs, and the Financial Times reported investors selling data-center bonds. These reports identify stress in exposed instruments, but they do not establish system-wide tightening; the strain measures still show a pronounced borrower-lender split.",
+      "analysis": "Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels.",
       "analysis_sentences": [
-        "The Chicago Fed NFCI is -0.50 after a 0.02 increase over three months.",
-        "Borrower strain is 26.0, compared with lender strain of -13.5.",
-        "Reuters reported that AI credit jitters drove U.S.",
-        "technology default insurance to record highs, and the Financial Times reported investors selling data-center bonds.",
-        "These reports identify stress in exposed instruments, but they do not establish system-wide tightening; the strain measures still show a pronounced borrower-lender split."
+        "Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex.",
+        "That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5.",
+        "CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt.",
+        "The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-15-f129bad0f05e",
-            "auto-2026-10-15-1548ca166303"
+            "auto-2026-10-15-bde49f15ce34"
           ],
           "fact_ids": [
-            "finance.nfci",
-            "finance.nfci_change"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.borrower_strain"
           ],
           "field": "headline",
-          "text": "AI credit concerns rise while the aggregate financing measure barely moves"
+          "text": "Internal funding capacity coexists with borrower-level AI credit stress"
         },
         {
           "event_ids": [
-            "auto-2026-10-15-f129bad0f05e",
-            "auto-2026-10-15-1548ca166303"
+            "auto-2026-10-15-bde49f15ce34"
           ],
           "fact_ids": [
-            "finance.nfci",
-            "finance.nfci_change",
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
             "finance.borrower_strain",
             "finance.lender_strain"
           ],
           "field": "body",
-          "text": "The Chicago Fed NFCI is -0.50 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5. Reuters reported that AI credit jitters drove U.S. technology default insurance to record highs, and the Financial Times reported investors selling data-center bonds. These reports identify stress in exposed instruments, but they do not establish system-wide tightening; the strain measures still show a pronounced borrower-lender split."
+          "text": "Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "92f2b739b543645142f20835",
-      "generated_at": "2026-10-15T17:05:23.685934+00:00",
+      "evidence_snapshot_id": "421324387ce45ee4c6735227",
+      "generated_at": "2026-10-16T16:45:32.646364+00:00",
       "generator": "openai",
-      "headline": "AI credit concerns rise while the aggregate financing measure barely moves",
+      "headline": "Internal funding capacity coexists with borrower-level AI credit stress",
       "label": "Finance",
       "references": [
         {
@@ -2406,12 +2336,8 @@
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
         },
         {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOa21Bbk9kN3JUMWZXLWNLVWFlRkQ1dDFSYnRQQzBRNDVudTYtaDhjcjcyenBQM0prdHlYY2ZxY25fZzdYQk9FYkh1N043NW83amxZbHVvZUxYUXk5YnVtR3NtaXdPMFFNa3Z4UUpYdWlXQzhmbjV2bF96TktQQ3VNOFFhLWMtcUE2NllOMzNsN3I?oc=5"
-        },
-        {
-          "source_label": "Financial Times",
-          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNeHNjZE1aMG8wWVBHLW9UeG15T3RSZzdSOFR4WGN5SEtyWTI2Y1g1MWtSUFZkYUFKc2QtS01JN2lHSW82bjdqVWNjV0w1WVNMU1B2U1BLZlB6QkpLc1ZSTUE4Ry1EMzVRa3RUT1J3azFYRjZnNVpTY0c5WERPV2thSlp4MkE?oc=5"
+          "source_label": "CNBC",
+          "source_url": "https://www.cnbc.com/2026/10/15/coreweave-credit-default-swaps-hit-distress-levels-as-investors-sour-on-ai-debt.html"
         }
       ],
       "version": "6.1.0"
@@ -2488,115 +2414,115 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Public equity and credit markets are applying a sharper test to AI exposure. The AI Equity Index fell materially to 30.2 and the median one-year return to 11.4%, even as Reuters reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains. Reuters also reported record-high default insurance for U.S. technology credits amid AI concerns, and the Financial Times reported selling in data-center bonds. The Chicago Fed NFCI remains at -0.50 after a 0.02 increase over three months, so the reports point to stress in exposed assets rather than demonstrating broad financial tightening. Broad hardware production is expanding alongside a large data-center pipeline, although the production series are not AI-specific. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014roughly one for every two operating sites. Delivery is less certain: only 24.2% of the 2,061 GW active interconnection queue is at executed-agreement or construction stages, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s reports that FERC rejected most of PJM\u2019s large-load interconnection plan while PJM approved fast-track interconnection for 2.1 GW of named projects illustrate selective progress, not broad resolution of the queue. Downstream diffusion remains less decisive. Businesses expecting AI use within six months edged up to 27.7%, but this is 3.9 percentage points above current use. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity is growing 2.2%, while real hourly compensation is growing 0.6%; these aggregate measures do not identify AI\u2019s contribution. The data therefore show positive productivity and a modest rise in adoption expectations, but not broad labor-market diffusion or a demonstrated economy-wide AI effect.",
+      "analysis": "AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing. The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output. Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed.",
       "analysis_paragraphs": [
-        "Public equity and credit markets are applying a sharper test to AI exposure. The AI Equity Index fell materially to 30.2 and the median one-year return to 11.4%, even as Reuters reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains. Reuters also reported record-high default insurance for U.S. technology credits amid AI concerns, and the Financial Times reported selling in data-center bonds. The Chicago Fed NFCI remains at -0.50 after a 0.02 increase over three months, so the reports point to stress in exposed assets rather than demonstrating broad financial tightening.",
-        "Broad hardware production is expanding alongside a large data-center pipeline, although the production series are not AI-specific. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014roughly one for every two operating sites. Delivery is less certain: only 24.2% of the 2,061 GW active interconnection queue is at executed-agreement or construction stages, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s reports that FERC rejected most of PJM\u2019s large-load interconnection plan while PJM approved fast-track interconnection for 2.1 GW of named projects illustrate selective progress, not broad resolution of the queue.",
-        "Downstream diffusion remains less decisive. Businesses expecting AI use within six months edged up to 27.7%, but this is 3.9 percentage points above current use. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity is growing 2.2%, while real hourly compensation is growing 0.6%; these aggregate measures do not identify AI\u2019s contribution. The data therefore show positive productivity and a modest rise in adoption expectations, but not broad labor-market diffusion or a demonstrated economy-wide AI effect."
+        "AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.",
+        "The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.",
+        "Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
       ],
       "analysis_sentences": [
-        "Public equity and credit markets are applying a sharper test to AI exposure.",
-        "The AI Equity Index fell materially to 30.2 and the median one-year return to 11.4%, even as Reuters reported that AI-related companies were expected to drive most third-quarter U.S.",
-        "earnings gains.",
-        "Reuters also reported record-high default insurance for U.S.",
-        "technology credits amid AI concerns, and the Financial Times reported selling in data-center bonds.",
-        "The Chicago Fed NFCI remains at -0.50 after a 0.02 increase over three months, so the reports point to stress in exposed assets rather than demonstrating broad financial tightening.",
-        "Broad hardware production is expanding alongside a large data-center pipeline, although the production series are not AI-specific.",
-        "Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014roughly one for every two operating sites.",
-        "Delivery is less certain: only 24.2% of the 2,061 GW active interconnection queue is at executed-agreement or construction stages, and only 13% of the 2000\u20132020 queue cohort reached operation.",
-        "Utility Dive\u2019s reports that FERC rejected most of PJM\u2019s large-load interconnection plan while PJM approved fast-track interconnection for 2.1 GW of named projects illustrate selective progress, not broad resolution of the queue.",
-        "Downstream diffusion remains less decisive.",
-        "Businesses expecting AI use within six months edged up to 27.7%, but this is 3.9 percentage points above current use.",
-        "Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%.",
-        "Nonfarm-business productivity is growing 2.2%, while real hourly compensation is growing 0.6%; these aggregate measures do not identify AI\u2019s contribution.",
-        "The data therefore show positive productivity and a modest rise in adoption expectations, but not broad labor-market diffusion or a demonstrated economy-wide AI effect."
+        "AI-linked market measures softened slightly again.",
+        "The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%.",
+        "Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps.",
+        "Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex.",
+        "The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.",
+        "The physical buildout remains active.",
+        "Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites.",
+        "Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors.",
+        "The Financial Times reported that China unveiled draft export controls on AI technologies and chips.",
+        "The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.",
+        "Investment plans still run ahead of delivered capacity and use.",
+        "In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational.",
+        "Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months.",
+        "Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution.",
+        "The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-15-f129bad0f05e",
-            "auto-2026-10-12-d94f55135e99"
+            "auto-2026-10-15-bde49f15ce34"
           ],
           "fact_ids": [
-            "market.aei",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
+            "finance.borrower_strain",
+            "finance.lender_strain",
+            "compute.computer_output_growth",
+            "compute.semiconductor_output_growth",
+            "data_center.development_sites",
+            "data_center.development_to_operating"
           ],
           "field": "headline",
-          "text": "AI investment meets more selective markets and persistent delivery constraints"
+          "text": "AI infrastructure is expanding amid selective credit stress"
         },
         {
           "event_ids": [
-            "auto-2026-10-09-e1198b607fc9",
-            "auto-2026-10-15-f129bad0f05e",
-            "auto-2026-10-15-1548ca166303"
+            "auto-2026-10-15-bde49f15ce34"
           ],
           "fact_ids": [
             "market.aei",
+            "market.positive_breadth",
             "market.median_return",
-            "finance.nfci",
-            "finance.nfci_change"
+            "finance.borrower_strain",
+            "finance.lender_strain",
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years"
           ],
           "field": "paragraphs[0]",
-          "text": "Public equity and credit markets are applying a sharper test to AI exposure. The AI Equity Index fell materially to 30.2 and the median one-year return to 11.4%, even as Reuters reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains. Reuters also reported record-high default insurance for U.S. technology credits amid AI concerns, and the Financial Times reported selling in data-center bonds. The Chicago Fed NFCI remains at -0.50 after a 0.02 increase over three months, so the reports point to stress in exposed assets rather than demonstrating broad financial tightening."
+          "text": "AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing."
         },
         {
           "event_ids": [
-            "auto-2026-10-12-d94f55135e99",
-            "auto-2026-10-09-15a67b7cd7fe"
+            "auto-2026-10-16-f903651ff52a"
           ],
           "fact_ids": [
             "compute.computer_output_growth",
             "compute.semiconductor_output_growth",
+            "compute.computer_utilization",
+            "compute.semiconductor_utilization",
             "data_center.development_sites",
-            "data_center.development_to_operating",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
+            "data_center.development_to_operating"
           ],
           "field": "paragraphs[1]",
-          "text": "Broad hardware production is expanding alongside a large data-center pipeline, although the production series are not AI-specific. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014roughly one for every two operating sites. Delivery is less certain: only 24.2% of the 2,061 GW active interconnection queue is at executed-agreement or construction stages, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s reports that FERC rejected most of PJM\u2019s large-load interconnection plan while PJM approved fast-track interconnection for 2.1 GW of named projects illustrate selective progress, not broad resolution of the queue."
+          "text": "The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output."
         },
         {
           "event_ids": [],
           "fact_ids": [
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct",
+            "adoption.current_business_use_pct",
             "adoption.expected_business_use_pct",
-            "adoption.expected_adoption_gap_ppts",
-            "workforce.employment_breadth",
-            "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "economic_impact.productivity_growth",
-            "economic_impact.real_compensation_growth"
+            "economic_impact.productivity_growth"
           ],
           "field": "paragraphs[2]",
-          "text": "Downstream diffusion remains less decisive. Businesses expecting AI use within six months edged up to 27.7%, but this is 3.9 percentage points above current use. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity is growing 2.2%, while real hourly compensation is growing 0.6%; these aggregate measures do not identify AI\u2019s contribution. The data therefore show positive productivity and a modest rise in adoption expectations, but not broad labor-market diffusion or a demonstrated economy-wide AI effect."
+          "text": "Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "market.aei",
-          "label": "AI Equity Index",
-          "value": "30.2"
+          "fact_id": "finance.borrower_strain",
+          "label": "Borrower strain",
+          "value": "26.0"
         },
         {
           "context": "",
-          "fact_id": "grid_storage.advanced_share",
-          "label": "Queue share in executed-agreement or construction stages",
-          "value": "24.2%"
+          "fact_id": "finance.lender_strain",
+          "label": "Lender strain",
+          "value": "-13.5"
         },
         {
           "context": "",
-          "fact_id": "grid_storage.historical_operational_pct",
-          "label": "2000\u20132020 queue cohort that reached operation",
-          "value": "13%"
+          "fact_id": "compute.computer_output_growth",
+          "label": "Computer and peripheral equipment output growth",
+          "value": "9.2%"
         }
       ],
-      "evidence_snapshot_id": "92f2b739b543645142f20835",
-      "generated_at": "2026-10-15T17:05:23.685934+00:00",
+      "evidence_snapshot_id": "421324387ce45ee4c6735227",
+      "generated_at": "2026-10-16T16:45:32.646364+00:00",
       "generator": "openai",
-      "headline": "AI investment meets more selective markets and persistent delivery constraints",
+      "headline": "AI infrastructure is expanding amid selective credit stress",
       "label": "AI Macro",
       "references": [
         {
@@ -2631,7 +2557,6 @@
         "data_center",
         "grid_storage",
         "adoption",
-        "workforce",
         "economic_impact"
       ],
       "version": "6.1.0"
@@ -2885,31 +2810,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 14,
+    "checked_passages": 8,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "finance.body",
-        "text": "The Chicago Fed NFCI is -0.50 after a 0.02 increase over three months. Borrower strain is 26.0, compared with lender strain of -13.5. Reuters reported that AI credit jitters drove U.S. technology default insurance to record highs, and the Financial Times reported investors selling data-center bonds. These reports identify stress in exposed instruments, but they do not establish system-wide tightening; the strain measures still show a pronounced borrower-lender split."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "grid_storage.body",
-        "text": "The active interconnection queue remains 2,061 GW, but only 24.2% is at executed-agreement or construction stages. Storage accounts for 552.7 GW, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive reported that FERC rejected most of PJM\u2019s large-load interconnection plan, days after PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Individual projects can advance even while rules for larger-load connections remain unsettled; the decisions do not alter the low historical conversion rate."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "water.body",
-        "text": "Of campuses with county drought data, 280, or 19.5%, are in counties where at least 25% of the area is under D2-or-worse drought; both the count and share decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 345 campuses, or 24.1%, and decreased slightly. These measures track county geography, not campus water consumption or the exact location of drought within a county."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
         "scope": "macro.paragraphs[2]",
-        "text": "Downstream diffusion remains less decisive. Businesses expecting AI use within six months edged up to 27.7%, but this is 3.9 percentage points above current use. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity is growing 2.2%, while real hourly compensation is growing 0.6%; these aggregate measures do not identify AI\u2019s contribution. The data therefore show positive productivity and a modest rise in adoption expectations, but not broad labor-market diffusion or a demonstrated economy-wide AI effect."
+        "text": "Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
       }
     ],
     "hard_errors": [],
