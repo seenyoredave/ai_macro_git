@@ -8,6 +8,7 @@ from typing import Any, Callable
 from analytics.dashboard_context import DashboardContext
 from analytics.read_briefing import build_editorial_briefing, editorial_refresh_plan
 from analytics.read_context import attach_current_context
+from analytics.domain_state import DomainState
 from analytics.read_evidence import (
     DOMAIN_LABELS,
     DOMAIN_ORDER,
@@ -340,7 +341,14 @@ def build_platform_reads(
     artifact_publishable = _artifact_is_publishable(stored)
     publication = publication_lease_state(stored)
 
-    if context.domain_states:
+    # A rerun can inherit an incomplete canonical state map while the worker
+    # replaces the retained Reader artifact. It cannot produce a valid packet
+    # set: every domain must be present and typed before reconstruction.
+    states = context.domain_states or {}
+    complete_states = set(states) == set(DOMAIN_ORDER) and all(
+        isinstance(states[domain], DomainState) for domain in DOMAIN_ORDER
+    )
+    if complete_states:
         packets = build_evidence_packets(context)
         packet_dicts = _packet_dicts(packets)
         snapshot = evidence_snapshot_id(packets)
@@ -375,6 +383,7 @@ def build_platform_reads(
 
     status = {
         "status": status_name,
+        "canonical_state_status": "complete" if complete_states else "incomplete" if states else "unavailable",
         "artifact_present": bool(stored),
         "artifact_validated": artifact_validated,
         "artifact_publishable": artifact_publishable,

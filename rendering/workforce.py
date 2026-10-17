@@ -15,7 +15,6 @@ from rendering.charts_workforce import (
     workforce_outcomes_matrix,
 )
 from rendering.components import (
-    fmt_date,
     fmt_number,
     inject_panel_height_rules,
     render_domain_read,
@@ -24,6 +23,7 @@ from rendering.components import (
     render_statline,
     render_tab_header,
 )
+from rendering.observation_meta import latest_observation, source_through
 
 
 def _row(frame: pd.DataFrame, series: str, metric: str | None = None) -> dict:
@@ -52,8 +52,8 @@ def _render_current_state(data: dict) -> None:
         [
             ("Employment breadth", f"{positive_jobs}/4", "direct production and deployment channels growing YoY"),
             ("Real-earnings breadth", f"{positive_real}/4", "direct channels with purchasing-power gains YoY"),
-            ("Information hires", fmt_number(information_hires.get("Value"), 1, suffix="%"), f"monthly hires rate · {fmt_date(information_hires.get('Date'))}"),
-            ("Information layoffs", fmt_number(information_layoffs.get("Value"), 1, suffix="%"), f"layoffs/discharges rate · {fmt_date(information_layoffs.get('Date'))}"),
+            ("Information hires", fmt_number(information_hires.get("Value"), 1, suffix="%"), source_through("BLS JOLTS", information_hires.get("Date"))),
+            ("Information layoffs", fmt_number(information_layoffs.get("Value"), 1, suffix="%"), source_through("BLS JOLTS", information_layoffs.get("Date"))),
         ],
         key_prefix="workforce-pulse",
     )
@@ -140,16 +140,6 @@ def _render_compensation(data: dict) -> None:
     )
     cpi_history = data.get("cpi_history")
     earnings_history_frame = data.get("earnings_history")
-    cpi_date = None
-    if isinstance(cpi_history, pd.DataFrame) and not cpi_history.empty:
-        cpi_dates = pd.to_datetime(cpi_history.get("Date"), errors="coerce", format="mixed")
-        earnings_end = (
-            pd.to_datetime(earnings_history_frame.get("Date"), errors="coerce", format="mixed").max()
-            if isinstance(earnings_history_frame, pd.DataFrame) and not earnings_history_frame.empty
-            else None
-        )
-        eligible = cpi_dates.loc[cpi_dates <= earnings_end] if pd.notna(earnings_end) else cpi_dates
-        cpi_date = eligible.max()
 
     with st.container(key="full-width-layout-workforce-compensation"):
         with st.container(border=True, key="workforce-panel-compensation"):
@@ -161,13 +151,7 @@ def _render_compensation(data: dict) -> None:
                 label_visibility="collapsed",
                 key="workforce-earnings-basis",
             )
-            subtitle = (
-                "BLS CES · nominal dollars per hour"
-                if basis == "Nominal"
-                else f"BLS CES · purchasing power in {fmt_date(cpi_date)} CPI dollars"
-            )
-            subtitle += " · dashed = U.S. total private"
-            render_panel_heading("Average hourly earnings", subtitle)
+            render_panel_heading("Average hourly earnings", source_through("BLS CES", latest_observation(earnings_history_frame)))
             render_plotly_chart(
                 earnings_history(
                     data.get("earnings_history"),

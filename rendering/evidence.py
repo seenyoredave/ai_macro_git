@@ -23,7 +23,7 @@ from rendering.commercialization import filtered_ledger
 from rendering.components import fmt_date, fmt_number, render_line_break, render_section, render_static_table, render_tab_header
 from rendering.data_center import _campus_detail, _operator_detail
 from rendering.dataframe import arrow_safe_dataframe
-from rendering.evidence_gateway import EVIDENCE_LOOKUP as _EVIDENCE_LOOKUP
+from rendering.evidence_gateway import EVIDENCE_LOOKUP as _EVIDENCE_LOOKUP, FINANCE_REFERENCE_DATASETS
 from rendering.evidence_tables import (
     _borrower_strain_component_table,
     _component_table,
@@ -837,18 +837,22 @@ def _lender_observation_rows(components):
 
 
 def _render_finance_reference_records(commercialization_data, debt_markets_data, regime_metrics) -> None:
-    options = [
-        "Commercial disclosures",
-        "Forward commitment records",
-        "Private-fund records",
-        "Debt-market readings",
-        "Credit spread changes",
-        "Borrower stress components",
-        "Lender stress components",
-        "Lender weekly observations",
-        "Lender fundamental observations",
-    ]
-    view = st.radio("Reference dataset", options, horizontal=True, key="evidence-finance-reference-view")
+    groups = {
+        "Commercial disclosures": "Company records",
+        "Forward commitment records": "Company records",
+        "Private-fund records": "Fund records",
+        "Debt-market readings": "Credit conditions",
+        "Credit spread changes": "Credit conditions",
+        "Borrower stress components": "Stress measures",
+        "Lender stress components": "Stress measures",
+        "Lender weekly observations": "Stress measures",
+        "Lender fundamental observations": "Stress measures",
+    }
+    view = st.selectbox(
+        "Finance reference dataset", FINANCE_REFERENCE_DATASETS,
+        format_func=lambda option: f"{groups[option]} · {option}",
+        key="evidence-finance-reference-view",
+    )
     borrower_strain = (regime_metrics or {}).get("Borrower Strain Components", {}) or {}
     lender_strain = (regime_metrics or {}).get("Lender Strain Components", {}) or {}
     if view == "Forward commitment records":
@@ -1538,76 +1542,81 @@ def render_evidence_tab(
         spec = _EVIDENCE_LOOKUP[selected]
 
         read_tab, change_tab, reference_tab, technical_tab = st.tabs(
-            ["Read citations", "Change inspection", "Reference records", "Technical records"]
+            ["Read citations", "Change inspection", "Reference records", "Technical records"],
+            key="evidence-layer", on_change="rerun",
         )
 
-        with read_tab:
-            render_section(
-                "Read citations",
-                "Open a published Read and inspect the analytical records it cites.",
-                first=True,
-            )
-            _render_evidence_trace(selected, platform_reads, evidence_packets)
-            with st.expander("Open claim lineage", expanded=False):
-                _render_lineage_audit(selected, platform_reads)
+        if read_tab.open:
+            with read_tab:
+                render_section(
+                    "Read citations",
+                    "Open a published Read and inspect the analytical records it cites.",
+                    first=True,
+                )
+                _render_evidence_trace(selected, platform_reads, evidence_packets)
+                with st.expander("Open claim lineage", expanded=False):
+                    _render_lineage_audit(selected, platform_reads)
 
-        with change_tab:
-            render_section(
-                "Change inspection",
-                "Inspect a point-in-time metric change, its source register, and its published Read linkage.",
-                first=True,
-            )
-            render_change_evidence(
-                comparison_state,
-                comparison_change_set,
-                platform_reads=platform_reads,
-                evidence_packets=evidence_packets,
-                domain_filter=selected,
-            )
+        if change_tab.open:
+            with change_tab:
+                render_section(
+                    "Change inspection",
+                    "Inspect a point-in-time metric change, its source register, and its published Read linkage.",
+                    first=True,
+                )
+                render_change_evidence(
+                    comparison_state,
+                    comparison_change_set,
+                    platform_reads=platform_reads,
+                    evidence_packets=evidence_packets,
+                    domain_filter=selected,
+                )
 
-        with reference_tab:
-            render_section(
-                "Reference records",
-                f"Underlying {spec['label']} datasets used by the analytical views.",
-                first=True,
-            )
-            _render_domain_reference_records(
-                selected,
-                sector_data=sector_data,
-                regime_metrics=regime_metrics,
-                energy_data=energy_data,
-                debt_markets_data=debt_markets_data,
-                infrastructure_data=infrastructure_data,
-                connectivity_data=connectivity_data,
-                water_data=water_data,
-                adoption_data=adoption_data,
-                workforce_data=workforce_data,
-                economic_impact_data=economic_impact_data,
-                commercialization_data=commercialization_data,
-            )
+        if reference_tab.open:
+            with reference_tab:
+                render_section(
+                    "Reference records",
+                    f"Underlying {spec['label']} datasets used by the analytical views.",
+                    first=True,
+                )
+                _render_domain_reference_records(
+                    selected,
+                    sector_data=sector_data,
+                    regime_metrics=regime_metrics,
+                    energy_data=energy_data,
+                    debt_markets_data=debt_markets_data,
+                    infrastructure_data=infrastructure_data,
+                    connectivity_data=connectivity_data,
+                    water_data=water_data,
+                    adoption_data=adoption_data,
+                    workforce_data=workforce_data,
+                    economic_impact_data=economic_impact_data,
+                    commercialization_data=commercialization_data,
+                )
 
-        with technical_tab:
-            render_section(
-                "Technical records",
-                "Coverage, source registers, lineage, formulas, and analytical construction.",
-                first=True,
-            )
-            _render_domain_technical_records(
-                selected,
-                fred_data=fred_data,
-                sector_data=sector_data,
-                sector_metrics=sector_metrics,
-                regime_metrics=regime_metrics,
-                energy_data=energy_data,
-                debt_markets_data=debt_markets_data,
-                dashboard_data=dashboard_data,
-                infrastructure_data=infrastructure_data,
-                connectivity_data=connectivity_data,
-                water_data=water_data,
-                adoption_data=adoption_data,
-                workforce_data=workforce_data,
-                economic_impact_data=economic_impact_data,
-            )
-            with st.expander("Open platform metric methods", expanded=False):
-                _render_metric_evidence(regime_metrics)
+        if technical_tab.open:
+            with technical_tab:
+                render_section(
+                    "Technical records",
+                    "Coverage, source registers, lineage, formulas, and analytical construction.",
+                    first=True,
+                )
+                _render_domain_technical_records(
+                    selected,
+                    fred_data=fred_data,
+                    sector_data=sector_data,
+                    sector_metrics=sector_metrics,
+                    regime_metrics=regime_metrics,
+                    energy_data=energy_data,
+                    debt_markets_data=debt_markets_data,
+                    dashboard_data=dashboard_data,
+                    infrastructure_data=infrastructure_data,
+                    connectivity_data=connectivity_data,
+                    water_data=water_data,
+                    adoption_data=adoption_data,
+                    workforce_data=workforce_data,
+                    economic_impact_data=economic_impact_data,
+                )
+                with st.expander("Open platform metric methods", expanded=False):
+                    _render_metric_evidence(regime_metrics)
 

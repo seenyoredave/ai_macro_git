@@ -19,7 +19,6 @@ from rendering.charts_infrastructure import (
 from rendering.commercialization import metric_value
 from rendering.components import (
     inject_panel_height_rules,
-    fmt_date,
     fmt_number,
     render_domain_read,
     render_panel_heading,
@@ -27,6 +26,7 @@ from rendering.components import (
     render_summary_row,
     render_tab_header,
 )
+from rendering.observation_meta import latest_observation, source_through
 
 
 def _compute_data(infrastructure_data):
@@ -51,10 +51,8 @@ def _compute_index_change(item):
     return "year over year n/a" if pd.isna(growth) else f"{growth * 100:+.1f}% year over year"
 
 
-def _growth_detail(item):
-    growth = pd.to_numeric((item or {}).get("yoy_growth"), errors="coerce")
-    change = "year over year n/a" if pd.isna(growth) else f"{growth * 100:+.1f}% year over year"
-    return f"{change} · {fmt_date((item or {}).get('date'))}"
+def _growth_detail(item, source="Federal Reserve G.17"):
+    return source_through(source, (item or {}).get("date"))
 
 
 def _render_current_state(infrastructure_data):
@@ -72,7 +70,7 @@ def _render_current_state(infrastructure_data):
         ("Computers / peripherals", _index_value(computers), _growth_detail(computers)),
         ("Communications equipment", _index_value(communications), _growth_detail(communications)),
         ("Semiconductors / components", _index_value(semiconductors), _growth_detail(semiconductors)),
-        ("Semiconductor utilization", _index_value(semiconductor_utilization, suffix="%"), fmt_date(semiconductor_utilization.get("date"))),
+        ("Semiconductor utilization", _index_value(semiconductor_utilization, suffix="%"), source_through("Federal Reserve G.17", semiconductor_utilization.get("date"))),
     ], key_prefix="compute-current-state")
 
 
@@ -85,7 +83,7 @@ def _render_manufacturing_output(infrastructure_data):
     )
     with st.container(key="full-width-layout-compute-manufacturing-hero"):
         with st.container(border=True, key="compute-panel-output-history"):
-            render_panel_heading("Compute-manufacturing output", "Federal Reserve G.17 · 2017=100 · ten-year history")
+            render_panel_heading("Compute-manufacturing output", source_through("Federal Reserve G.17", latest_observation(history)))
             render_plotly_chart(compute_manufacturing_output_history(history, height=500, years=10), width="stretch", config={"displayModeBar": True, "responsive": True}, key="compute-output-history")
 
 
@@ -100,9 +98,9 @@ def _render_capacity_and_demand(infrastructure_data):
 
     render_section("Factory capacity and demand", "Factory capacity, utilization, orders, backlogs, and information-processing investment.")
     render_summary_row([
-        ("Computer utilization", _index_value(computer_utilization, suffix="%"), fmt_date(computer_utilization.get("date"))),
-        ("Semiconductor utilization", _index_value(semiconductor_utilization, suffix="%"), fmt_date(semiconductor_utilization.get("date"))),
-        ("Information-processing investment", "$" + fmt_number(pd.to_numeric(investment.get("value"), errors="coerce") / 1000.0, 2, suffix="T"), _growth_detail(investment)),
+        ("Computer utilization", _index_value(computer_utilization, suffix="%"), source_through("Federal Reserve G.17", computer_utilization.get("date"))),
+        ("Semiconductor utilization", _index_value(semiconductor_utilization, suffix="%"), source_through("Federal Reserve G.17", semiconductor_utilization.get("date"))),
+        ("Information-processing investment", "$" + fmt_number(pd.to_numeric(investment.get("value"), errors="coerce") / 1000.0, 2, suffix="T"), _growth_detail(investment, "BEA")),
     ], key_prefix="compute-capacity-demand")
     views = ["Capacity utilization", "Manufacturing capacity"]
     if isinstance(m3_history, pd.DataFrame) and not m3_history.empty:

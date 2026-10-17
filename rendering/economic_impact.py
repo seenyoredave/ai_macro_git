@@ -14,7 +14,6 @@ from rendering.charts_economic_impact import (
 )
 from rendering.commercialization import metric_value
 from rendering.components import (
-    fmt_date,
     fmt_number,
     render_domain_read,
     render_panel_heading,
@@ -23,6 +22,7 @@ from rendering.components import (
     render_tab_header,
 )
 from rendering.layout_contracts import value_realization_bridge_html
+from rendering.observation_meta import source_through
 
 
 def _metric_text(payload: dict) -> str:
@@ -124,10 +124,10 @@ def _render_macro_validation(data: dict) -> None:
 
 def _realized_growth_metrics(data: dict) -> list[tuple[str, str, str]]:
     return [
-        ("Labor productivity", _metric_text(data.get("nonfarm_productivity", {})), fmt_date((data.get("nonfarm_productivity", {}) or {}).get("date"))),
-        ("Real output", _metric_text(data.get("nonfarm_output", {})), fmt_date((data.get("nonfarm_output", {}) or {}).get("date"))),
-        ("Hourly compensation", _metric_text(data.get("nonfarm_compensation", {})), fmt_date((data.get("nonfarm_compensation", {}) or {}).get("date"))),
-        ("Unit labor costs", _metric_text(data.get("nonfarm_unit_labor_cost", {})), fmt_date((data.get("nonfarm_unit_labor_cost", {}) or {}).get("date"))),
+        ("Labor productivity", _metric_text(data.get("nonfarm_productivity", {})), source_through("BLS", (data.get("nonfarm_productivity", {}) or {}).get("date"))),
+        ("Real output", _metric_text(data.get("nonfarm_output", {})), source_through("BLS", (data.get("nonfarm_output", {}) or {}).get("date"))),
+        ("Hourly compensation", _metric_text(data.get("nonfarm_compensation", {})), source_through("BLS", (data.get("nonfarm_compensation", {}) or {}).get("date"))),
+        ("Unit labor costs", _metric_text(data.get("nonfarm_unit_labor_cost", {})), source_through("BLS", (data.get("nonfarm_unit_labor_cost", {}) or {}).get("date"))),
     ]
 
 
@@ -137,7 +137,7 @@ def _render_distribution_of_gains(data: dict) -> None:
     render_section("Productivity and pay", "Nonfarm-business productivity, real compensation, and median real earnings since 2020.")
     median = capture.get("median_real_earnings", {}) or {}
     render_summary_row([
-        ("Real compensation since 2020", fmt_number(real_comp.get("since_2020"), 1, signed=True, suffix="%"), fmt_date(real_comp.get("date"))),
+        ("Real compensation since 2020", fmt_number(real_comp.get("since_2020"), 1, signed=True, suffix="%"), source_through("BLS", real_comp.get("date"))),
         ("Typical worker", fmt_number(median.get("Since 2020"), 1, signed=True, suffix="%"), "real median weekly earnings since 2020"),
         ("Productivity–comp gap", fmt_number(capture.get("productivity_real_comp_gap"), 1, signed=True, suffix=" pts"), "positive = productivity ahead"),
         ("Broad-participation spread", fmt_number(capture.get("group_growth_spread_ppts"), 1, suffix=" pts"), "weakest to strongest group"),
@@ -195,9 +195,9 @@ def render_economic_impact_tab(economic_impact_data: dict, commercialization_dat
     ulc = economic_impact_data.get("nonfarm_unit_labor_cost", {})
     render_summary_row(
         [
-            ("Manufacturing productivity", _metric_text(mprod), fmt_date(mprod.get("date"))),
-            ("Manufacturing real output", _metric_text(mout), fmt_date(mout.get("date"))),
-            ("Nonfarm unit labor costs", _metric_text(ulc), fmt_date(ulc.get("date"))),
+            ("Manufacturing productivity", _metric_text(mprod), source_through("BLS", mprod.get("date"))),
+            ("Manufacturing real output", _metric_text(mout), source_through("BLS", mout.get("date"))),
+            ("Nonfarm unit labor costs", _metric_text(ulc), source_through("BLS", ulc.get("date"))),
         ],
         key_prefix="economic-impact-production",
     )

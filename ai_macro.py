@@ -109,7 +109,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.6.1"
+APP_VERSION = "v3.0.6.4"
 APP_STATE_SCHEMA_VERSION = "77.0-weekly-credit"
 
 st.set_page_config(

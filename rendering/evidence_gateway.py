@@ -68,12 +68,25 @@ EVIDENCE_LOOKUP = {
 }
 
 
-def route_to_evidence(domain: str) -> None:
+def route_to_evidence(domain: str, dataset: str | None = None) -> None:
     """Prime the domain-specific Evidence view before Streamlit reruns."""
     if domain not in EVIDENCE_LOOKUP:
         raise KeyError(f"Unknown evidence domain: {domain}")
+    if dataset is not None and (domain != "finance" or dataset not in FINANCE_REFERENCE_DATASETS):
+        raise ValueError(f"Unknown Evidence dataset for {domain}: {dataset}")
     st.session_state["evidence-lookup-domain"] = domain
+    st.session_state["evidence-layer"] = "Reference records"
+    if dataset is not None:
+        st.session_state["evidence-finance-reference-view"] = dataset
     st.session_state["domain-navigation"] = EVIDENCE_TAB_LABEL
+
+
+FINANCE_REFERENCE_DATASETS = (
+    "Commercial disclosures", "Forward commitment records", "Private-fund records",
+    "Debt-market readings", "Credit spread changes", "Borrower stress components",
+    "Lender stress components", "Lender weekly observations",
+    "Lender fundamental observations",
+)
 
 
 def render_evidence_gateway(domain: str) -> None:

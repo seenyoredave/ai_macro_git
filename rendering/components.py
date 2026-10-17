@@ -9,6 +9,7 @@ import streamlit as st
 
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.read_markup import build_domain_read_html, domain_read_label
+from rendering.observation_meta import source_through
 from config.visual_design import domain_profile
 from rendering.layout_contracts import (
     delivery_pathway_stage_html,
@@ -215,18 +216,16 @@ def render_tab_header(
 
                 _render_floating_terms(terms_key)
 
-        copy_col, meta_col = st.columns([5.4, 1.45], vertical_alignment="top")
-        with copy_col:
-            st.markdown(
-                f'<div class="rm-tabcopy">{html.escape(subtitle)}</div>',
-                unsafe_allow_html=True,
-            )
-        with meta_col:
-            if meta:
-                st.markdown(
-                    f'<div class="rm-tabmeta">{html.escape(meta)}</div>',
-                    unsafe_allow_html=True,
-                )
+        details_class = "rm-tabdetails" if meta else "rm-tabdetails rm-tabdetails--no-meta"
+        meta_html = f'<div class="rm-tabmeta">{html.escape(meta)}</div>' if meta else ""
+        st.markdown(
+            f'<div class="{details_class}"{style}>'
+            '<div class="rm-tabline" aria-hidden="true"></div>'
+            f'<div class="rm-tabcopy">{html.escape(subtitle)}</div>'
+            f'{meta_html}'
+            '</div>',
+            unsafe_allow_html=True,
+        )
 
 
 
@@ -293,7 +292,6 @@ def metric_card(
     position = _rail_position(value, scale)
     zero = scale[0] < 0 < scale[1]
     latest_date = _latest_history_date(history)
-    date_text = fmt_date(fallback_date or latest_date)
     source_text = str(source or "").strip()
     invalid_source_labels = {
         "current", "current data", "live", "live data", "archive", "archived",
@@ -301,6 +299,7 @@ def metric_card(
     }
     if not source_text or source_text.lower() in invalid_source_labels:
         raise ValueError(f"metric_card requires an institutional or dataset source, received {source!r}")
+    source_label = source_through(source_text, fallback_date if fallback_date is not None else latest_date)
 
     st.markdown(
         f"""
@@ -331,8 +330,7 @@ def metric_card(
             <div class="rm-card-context">{html.escape(context)}</div>
             <div class="rm-rail">{zero_line}{marker}</div>
             <div class="rm-card-meta">
-                <span>{html.escape(source_text)}</span>
-                <span>{html.escape(date_text)}</span>
+                <span>{html.escape(source_label)}</span>
             </div>
             """,
             unsafe_allow_html=True,

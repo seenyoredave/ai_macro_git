@@ -17,12 +17,17 @@ def main() -> None:
     components = (ROOT / "rendering" / "components.py").read_text(encoding="utf-8")
     theme = (ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
 
-    _check('APP_VERSION = "v3.0.5.' in app, "Header refinement must remain in the v3.0.5 patch line")
+    _check('APP_VERSION = "v3.0.6.' in app, "Header refinement must remain in the v3.0.6 patch line")
 
     header_start = components.index("def render_tab_header(")
     header_end = components.index("def render_line_break", header_start)
     header_body = components[header_start:header_end]
     _check("render_domain_change_line" not in header_body, "Domain comparison blurb still renders in the header")
+    _check('class="rm-tabline"' in header_body and 'class="rm-tabmeta"' in header_body,
+           "Separator and source are not in the shared header layout")
+    _check("rm-tabtitle::after" not in theme, "Fixed-width title separator returned")
+    _check("grid-template-columns: minmax(0, 1fr) max-content;" in theme and "column-gap: 1in;" in theme,
+           "Separator does not leave room for the source line")
 
     height_start = components.index("def inject_panel_height_rules(")
     height_end = components.index("def render_panel_heading", height_start)

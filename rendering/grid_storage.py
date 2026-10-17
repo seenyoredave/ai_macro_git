@@ -12,6 +12,7 @@ from analytics.grid_deliverability import (
     storage_duration_profile,
 )
 from rendering.evidence_gateway import render_evidence_gateway
+from rendering.observation_meta import source_through
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_energy import queue_by_region, queue_by_technology
 from rendering.charts_grid_storage import (
@@ -344,12 +345,11 @@ def _render_investment(context: dict) -> None:
         [
             ("Current pace", "n/a" if pd.isna(investment["value"]) else f"${investment['value'] / 1000.0:.1f}B", "annual rate"),
             ("Year-over-year", fmt_number(investment["yoy"] * 100.0, 1, signed=True, suffix="%"), "construction spending"),
-            ("Latest observation", "n/a" if pd.isna(investment["date"]) else investment["date"].strftime("%Y-%m"), "U.S. Census Bureau"),
         ],
         key_prefix="grid-storage-investment",
     )
     with st.container(border=True, key="full-width-layout-grid-storage-investment"):
-        render_panel_heading("Electric-power construction", "Seasonally adjusted annual rate")
+        render_panel_heading("Electric-power construction", source_through("U.S. Census Bureau", investment["date"]))
         render_plotly_chart(
             grid_construction_history(context.get("construction"), height=400),
             width="stretch",

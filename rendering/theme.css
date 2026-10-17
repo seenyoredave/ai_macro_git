@@ -213,17 +213,24 @@ div[data-testid="stTabs"] button[role="tab"] span {
     text-transform: uppercase;
 }
 
-.rm-tabtitle {
-    position: relative;
+.rm-tabdetails {
+    --rm-tab-accent: var(--rm-violet);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    column-gap: 1in;
+    row-gap: 0.28rem;
+    align-items: start;
+    min-width: 0;
 }
 
-.rm-tabtitle::after {
+.rm-tabdetails--no-meta {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.rm-tabline {
     background: var(--rm-tab-accent);
     border-radius: 999px;
-    content: "";
-    display: block;
     height: 2px;
-    margin-top: 0.42rem;
     opacity: 0.7;
     width: 100%;
 }
@@ -237,23 +244,27 @@ div[data-testid="stTabs"] button[role="tab"] span {
 }
 
 .rm-tabcopy {
+    grid-column: 1;
+    grid-row: 2;
     color: var(--rm-muted);
     font-size: 0.91rem;
     line-height: 1.45;
     max-width: 900px;
-    margin-top: 0.28rem;
+    margin-top: 0;
 }
 
 .rm-tabmeta {
+    grid-column: 2;
+    grid-row: 2;
     color: #aab4c5;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.075em;
     line-height: 1.45;
-    margin-top: 0.24rem;
-    max-width: 24rem;
+    margin-top: 0;
     text-align: right;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .rm-section {
@@ -633,6 +644,14 @@ hr {
     .rm-mast-meta, .rm-tabmeta {
         text-align: left;
         white-space: normal;
+    }
+    .rm-tabdetails {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 0.35rem;
+    }
+    .rm-tabmeta {
+        grid-column: 1;
+        grid-row: 3;
     }
     .rm-statline {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2219,12 +2238,11 @@ div[class*="st-key-domain-header-"] .rm-tabhead {
 div[class*="st-key-domain-header-"] .rm-tabkicker {
     margin-bottom: 0.44rem;
 }
-div[class*="st-key-domain-header-"] .rm-tabtitle::after {
-    margin-top: 0.5rem;
+div[class*="st-key-domain-header-"] .rm-tabdetails {
+    margin-top: 0.16rem;
 }
 div[class*="st-key-domain-header-"] .rm-tabcopy,
 div[class*="st-key-domain-header-"] .rm-tabmeta {
-    margin-top: 0;
     padding-top: 0.12rem;
 }
 div[class*="st-key-domain-header-"] div[class*="st-key-floating-terms-"] {

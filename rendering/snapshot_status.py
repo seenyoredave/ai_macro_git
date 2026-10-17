@@ -6,6 +6,7 @@ import pandas as pd
 
 from archive.archive_reader import latest_ticker_rows, load_yf_history
 from config.sector_config import all_tickers
+from rendering.observation_meta import source_through
 
 
 def _market_dates(frame: pd.DataFrame | None) -> pd.Series:
@@ -28,10 +29,6 @@ def _retained_market_frame() -> pd.DataFrame | None:
     return latest
 
 
-def _format_date(value: pd.Timestamp) -> str:
-    return f"{value.month}.{value.day}.{value.year}"
-
-
 def market_snapshot_label(frame: pd.DataFrame | None = None) -> str | None:
     """Describe the actual per-ticker freshness of the market universe."""
     active = frame if isinstance(frame, pd.DataFrame) and not frame.empty else _retained_market_frame()
@@ -44,19 +41,17 @@ def market_snapshot_label(frame: pd.DataFrame | None = None) -> str | None:
     current = int((dates.dt.date == latest.date()).sum())
     total = int(len(dates))
     retained = max(0, total - current)
+    label = source_through("YFinance", latest)
     if retained == 0:
-        return f"Market data {_format_date(latest)}"
+        return label
 
     stale = dates.loc[dates.notna() & (dates.dt.date != latest.date())]
     stale_unique = sorted({pd.Timestamp(value) for value in stale})
     if len(stale_unique) == 1:
-        retained_detail = f"{retained} retained from {_format_date(stale_unique[0])}"
+        retained_detail = f"{retained} retained from {stale_unique[0]:%Y-%m-%d}"
     elif stale_unique:
-        retained_detail = f"{retained} retained · oldest {_format_date(stale_unique[0])}"
+        retained_detail = f"{retained} retained · oldest {stale_unique[0]:%Y-%m-%d}"
     else:
         retained_detail = f"{retained} retained"
 
-    return (
-        f"Market data through {_format_date(latest)} · "
-        f"{current}/{total} current · {retained_detail}"
-    )
+    return f"{label} · {retained_detail}"

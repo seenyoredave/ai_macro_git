@@ -29,6 +29,7 @@ from rendering.components import (
     render_statline,
     render_tab_header,
 )
+from rendering.observation_meta import latest_observation, source_through
 
 STATE_NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -79,13 +80,7 @@ def _pct(value) -> str:
 
 
 def _latest_county_snapshot(context: dict) -> str:
-    campuses = context["campuses"]
-    if campuses.empty or "County Drought Snapshot Date" not in campuses.columns:
-        return "current county snapshot"
-    dates = pd.to_datetime(campuses["County Drought Snapshot Date"], errors="coerce", format="mixed").dropna()
-    if dates.empty:
-        return "current county snapshot"
-    return dates.max().strftime("%Y-%m-%d")
+    return source_through("U.S. Drought Monitor", latest_observation(context["campuses"], "County Drought Snapshot Date"))
 
 
 def _current_state_stats(context: dict):
@@ -605,11 +600,9 @@ def _wastewater_stats(context: dict, infrastructure_data: dict):
     series = (((infrastructure_data or {}).get("series", {}) or {}).get("Public Sewage and Waste Disposal Construction", {}) or {})
     value = pd.to_numeric(series.get("value"), errors="coerce")
     growth = pd.to_numeric(series.get("yoy_growth"), errors="coerce")
-    date = pd.to_datetime(series.get("date"), errors="coerce", format="mixed")
     return [
         ("Current pace", "n/a" if pd.isna(value) else f"${value / 1000.0:.1f}B", "annual rate"),
         ("Year-over-year", fmt_number(growth * 100.0, 1, signed=True, suffix="%"), "construction spending"),
-        ("Latest observation", "n/a" if pd.isna(date) else date.strftime("%Y-%m"), "U.S. Census Bureau"),
     ]
 
 
@@ -645,7 +638,8 @@ def _render_system_context_workbench(context: dict, infrastructure_data: dict) -
             figure = thermoelectric_water_groups(water.get("eia_groups"), metric=metric, height=430)
             chart_key = "water-thermoelectric-groups"
         elif view == "Wastewater investment":
-            render_panel_heading("Wastewater-system construction", "Seasonally adjusted annual rate")
+            construction = (((infrastructure_data or {}).get("series", {}) or {}).get("Public Sewage and Waste Disposal Construction", {}) or {})
+            render_panel_heading("Wastewater-system construction", source_through("U.S. Census Bureau", construction.get("date")))
             render_statline(_wastewater_stats(context, infrastructure_data), key_prefix="water-context-wastewater")
             figure = wastewater_construction_history((infrastructure_data or {}).get("construction_history"), height=430)
             chart_key = "water-wastewater-construction-history"

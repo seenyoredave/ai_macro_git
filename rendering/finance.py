@@ -8,7 +8,8 @@ from analytics.financial_conditions import nfci_direction, nfci_snapshot
 from analytics.private_capital import build_private_capital_realization
 from analytics.trend_engine import calc_trailing_point_change
 from config.debt_markets_config import DEBT_MARKET_SERIES
-from rendering.evidence_gateway import render_evidence_gateway
+from rendering.evidence_gateway import render_evidence_gateway, route_to_evidence
+from rendering.observation_meta import source_through, latest_observation
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_common import COLORS, single_history
 from rendering.charts_finance import (
@@ -92,7 +93,7 @@ def _render_current_state(regime_metrics, debt_markets_data, fred_data, nfci_his
             (
                 "Bond-market distress",
                 fmt_number(bond.get("value"), 2),
-                f"New York Fed CMDI · {fmt_date(bond.get('date'))}",
+                source_through("New York Fed CMDI", bond.get("date")),
             ),
             (
                 "Broad financial conditions",
@@ -181,13 +182,13 @@ def _financial_condition_stats(*, value, trend):
     ]
 
 
+def _latest_strain_date(trend):
+    return latest_observation((trend or {}).get("history"))
+
+
 def _financial_condition_source_meta(trend, live_sources):
-    history = (trend or {}).get("history")
-    updated_date = None
-    if isinstance(history, pd.DataFrame) and not history.empty:
-        updated_date = pd.to_datetime(history.get("Date"), errors="coerce").max()
-    date_text = fmt_date(updated_date)
-    return f"{live_sources} · through {date_text}"
+    updated_date = _latest_strain_date(trend)
+    return source_through(live_sources, updated_date)
 
 
 def _render_financial_condition_summary(*, title, value, trend, live_sources):
@@ -213,12 +214,7 @@ def _render_financial_condition_detail(
 ):
     slug = title.lower().replace(" ", "-")
     with st.container(border=True, key=f"finance-panel-{slug}-detail"):
-        detail_meta = (
-            "Weekly lender conditions · version 4.0"
-            if title == "Lender Strain"
-            else "10-year history · component contribution"
-        )
-        render_panel_heading(f"{title} detail", detail_meta)
+        render_panel_heading(f"{title} detail", "10-year history · component contribution")
         history_col, components_col = st.columns([1.25, 1])
         with history_col:
             strain_history_figure = single_history(
@@ -244,6 +240,9 @@ def _render_financial_condition_detail(
                 config={"displayModeBar": True, "responsive": True},
                 key=f"finance-{slug}-components",
             )
+        if title == "Lender Strain":
+            st.button("Inspect lender records", key="finance-lender-evidence", on_click=route_to_evidence,
+                      args=("finance", "Lender weekly observations"))
 
 
 def _debt_market_item(debt_markets_data, name):
@@ -288,7 +287,9 @@ def _render_debt_markets(debt_markets_data):
             )
 
     with st.container(border=True):
-        render_panel_heading("Corporate bond market history", "New York Fed CMDI")
+        render_panel_heading("Corporate bond market history", source_through(
+            "New York Fed CMDI", _debt_market_item(debt_markets_data, "Corporate Bond Market Distress").get("date"),
+        ))
         render_plotly_chart(
             debt_market_history((debt_markets_data or {}).get("history"), years=10),
             width="stretch",
@@ -317,13 +318,11 @@ def _render_nfci(fred_data, nfci_history):
     change = snapshot.get("three_month_change")
     paired_value = f"{fmt_number(value, 3, signed=True)} / {fmt_number(anfci_value, 3, signed=True)}"
     with st.container(border=True):
-        render_panel_heading("Broad financial conditions")
+        render_panel_heading("Broad financial conditions", source_through("Chicago Fed / FRED", snapshot.get("as_of")))
         render_statline(
             [
                 ("NFCI/ANFCI", paired_value, "headline / macro-adjusted"),
                 ("3-month change", fmt_number(change, 3, signed=True), nfci_direction(change)),
-                ("Observation", fmt_date(snapshot.get("as_of")), "weekly observation"),
-                ("Source", "Chicago Fed NFCI", f"observed {fmt_date(snapshot.get('as_of'))}"),
             ],
             key_prefix="finance-nfci-confirmation",
         )
@@ -360,7 +359,6 @@ def _render_private_capital_realization():
     realization = build_private_capital_realization()
     metrics = realization.get("metrics", {}) or {}
     funds = realization.get("funds", pd.DataFrame())
-    as_of = fmt_date(realization.get("as_of"))
 
     if not metrics or funds is None or funds.empty:
         with st.container(border=True):
@@ -381,7 +379,7 @@ def _render_private_capital_realization():
         with st.container(border=True, key="finance-panel-realization-map"):
             render_panel_heading(
                 "Cash returned versus remaining fund value",
-                "Cash returned versus remaining value · bubble size reflects paid-in capital",
+                source_through("Public pension fund records", realization.get("as_of")),
             )
             render_plotly_chart(
                 private_capital_realization_map(funds),
@@ -391,7 +389,7 @@ def _render_private_capital_realization():
             )
         st.caption(
             f"{metrics.get('fund_count', 0)} funds across {metrics.get('manager_count', 0)} managers · "
-            f"{_fmt_dollars(metrics.get('paid_in'))} paid in · five-year-plus vintages · as of {as_of}."
+            f"{_fmt_dollars(metrics.get('paid_in'))} paid in · five-year-plus vintages."
         )
 
 def _render_commercial_realization(commercialization_data):
@@ -480,13 +478,11 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
             title="Lender Strain",
             value=_value(regime_metrics, "Lender Strain"),
             trend=lender_trend,
-            live_sources="Weekly FRED · credit and bank funding",
+            live_sources="FRED - SEC",
         )
 
-    if lender_strain.get("stale"):
-        st.caption(f"Weekly lender conditions retained through {fmt_date(lender_strain.get('as_of'))}.")
     momentum = lender_strain.get("loan_momentum", {})
-    render_statline([("Bank lending momentum", fmt_number(momentum.get("13_week_change_pct"), 2, signed=True, suffix="%"), f"13-week loan growth · H.8 · {fmt_date(momentum.get('as_of'))}")], key_prefix="finance-lending-momentum")
+    render_statline([("Bank lending momentum", fmt_number(momentum.get("13_week_change_pct"), 2, signed=True, suffix="%"), source_through("Fed H.8 / FRED", momentum.get("as_of")))], key_prefix="finance-lending-momentum")
 
     stress_view = st.radio(
         "Stress detail",

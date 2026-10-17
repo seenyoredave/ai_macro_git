@@ -24,6 +24,7 @@ from rendering.charts_market import (
 from rendering.common import _forward_multiple_text
 from rendering.components import fmt_date, fmt_number, inject_panel_height_rules, render_domain_read, render_panel_heading, render_section, render_signal_rail, render_statline, render_tab_header
 from rendering.sector_dossier import build_structure_interpretation, build_structure_snapshot
+from rendering.observation_meta import source_through
 
 
 def _inject_market_page_theme() -> None:
@@ -319,36 +320,21 @@ def _market_ledger_stats(ledger, valuation_context=None):
     ]
     valuation = valuation_context or {}
     cape = pd.to_numeric(valuation.get("cape"), errors="coerce")
-    peak = pd.to_numeric(valuation.get("historical_peak"), errors="coerce")
     if pd.notna(cape):
-        peak_text = f"Dec 1999 peak {fmt_number(peak, 1)}×" if pd.notna(peak) else "Long-run valuation context"
-        as_of = pd.to_datetime(valuation.get("as_of_date"), errors="coerce")
-        if pd.notna(as_of):
-            peak_text += f" · as of {as_of.strftime('%b %d, %Y').replace(' 0', ' ')}"
-        stats.append(("Shiller CAPE", fmt_number(cape, 1, suffix="×"), peak_text))
+        stats.append(("Shiller CAPE", fmt_number(cape, 1, suffix="×"), source_through("Multpl / Shiller", valuation.get("as_of_date"))))
     return stats
 
 
 def _history_label(metadata):
     metadata = metadata or {}
-    start = metadata.get("start_date")
     end = metadata.get("end_date")
-    if not start or not end:
-        return "Comparable market history"
-    return f"Market structure · {start} to {end}"
+    return source_through("YFinance archive", end)
 
 
 def _one_year_return_label(metadata):
     metadata = metadata or {}
     as_of_date = metadata.get("as_of_date")
-    company_count = int(metadata.get("company_count", 0) or 0)
-    universe_count = int(metadata.get("universe_count", 0) or 0)
-    coverage = (
-        f"{company_count} of {universe_count} companies"
-        if universe_count > 0
-        else "Company contribution"
-    )
-    return f"{coverage} · as of {as_of_date}" if as_of_date else coverage
+    return source_through("YFinance", as_of_date)
 
 
 def _render_market_ledger_summary(ledger, valuation_context=None):

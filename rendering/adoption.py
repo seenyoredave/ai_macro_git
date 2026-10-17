@@ -22,6 +22,7 @@ from rendering.components import (
     render_summary_row,
     render_tab_header,
 )
+from rendering.observation_meta import latest_observation, source_through
 
 
 def _consumer_payload(adoption_data: dict, key: str) -> dict:
@@ -99,10 +100,10 @@ def _societal_metrics(adoption_data):
     active = _consumer_payload(adoption_data, "consumer_active")
     daily = _consumer_payload(adoption_data, "consumer_daily")
     return [
-        ("Any-purpose use", fmt_number(overall.get("value"), 1, suffix="%"), f"adults age 18–64 · {fmt_date(overall.get('date'))}"),
-        ("Personal / outside work", fmt_number(personal.get("value"), 1, suffix="%"), f"adults age 18–64 · {fmt_date(personal.get('date'))}"),
-        ("Used last week", fmt_number(active.get("value"), 1, suffix="%"), f"adults age 18–64 · {fmt_date(active.get('date'))}"),
-        ("Daily use", fmt_number(daily.get("value"), 1, suffix="%"), f"adults age 18–64 · {fmt_date(daily.get('date'))}"),
+        ("Any-purpose use", fmt_number(overall.get("value"), 1, suffix="%"), source_through("RPS / FRED", overall.get("date"))),
+        ("Personal / outside work", fmt_number(personal.get("value"), 1, suffix="%"), source_through("RPS / FRED", personal.get("date"))),
+        ("Used last week", fmt_number(active.get("value"), 1, suffix="%"), source_through("RPS / FRED", active.get("date"))),
+        ("Daily use", fmt_number(daily.get("value"), 1, suffix="%"), source_through("RPS / FRED", daily.get("date"))),
     ]
 
 
@@ -120,7 +121,7 @@ def _business_metrics(adoption_data):
         metrics.append((
             "12-month change",
             fmt_number(annual, 1, signed=True, suffix=" pp"),
-            fmt_date((adoption_data or {}).get("snapshot_date")),
+            source_through("Census BTOS", (adoption_data or {}).get("snapshot_date")),
         ))
     return metrics
 
@@ -135,10 +136,9 @@ def _render_business_integration(adoption_data):
             st.info("Detailed Census business-integration measures are unavailable in this release.")
         return
 
-    reference_end = fmt_date(depth.get("reference_end"))
     render_section(
         "Business integration",
-        f"AI deployment across business functions and organizational changes · reference period through {reference_end}.",
+        source_through("Census BTOS AI Supplement", depth.get("reference_end")),
     )
     integration_metrics = []
     function_le3 = pd.to_numeric(depth.get("function_le3_share_pct"), errors="coerce")
@@ -195,10 +195,9 @@ def _render_worker_integration(adoption_data):
     if (not isinstance(tasks, pd.DataFrame) or tasks.empty) and pd.isna(worker_ai) and pd.isna(worker_genai):
         return
 
-    reference_end = fmt_date(depth.get("reference_end"))
     render_section(
         "Worker use",
-        f"Employee AI use, GenAI task categories, and reported changes in work tasks · through {reference_end}.",
+        source_through("Census BTOS AI Supplement", depth.get("reference_end")),
     )
     worker_metrics = []
     if pd.notna(worker_ai):
@@ -270,11 +269,11 @@ def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=Non
         with st.container(border=True, key="adoption-panel-trajectory"):
             view = st.radio("Use view", ["People", "Business"], horizontal=True, label_visibility="collapsed", key="adoption-trajectory-view")
             if view == "Business":
-                render_panel_heading("Business AI use over time", "Census BTOS / employer businesses / 95% confidence intervals")
+                render_panel_heading("Business AI use over time", source_through("Census BTOS", latest_observation((adoption_data or {}).get("national_history"))))
                 figure, key = adoption_history((adoption_data or {}).get("national_history")), "adoption-national-history"
                 render_summary_row(_business_metrics(adoption_data), key_prefix="adoption-business-summary")
             else:
-                render_panel_heading("Personal AI use over time", "Real-Time Population Survey · quarterly · adults age 18–64")
+                render_panel_heading("Personal AI use over time", source_through("RPS / FRED", latest_observation((adoption_data or {}).get("consumer_history"))))
                 figure, key = consumer_adoption_history((adoption_data or {}).get("consumer_history")), "adoption-consumer-history"
                 render_summary_row(_societal_metrics(adoption_data), key_prefix="adoption-societal-summary")
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=key)
@@ -287,7 +286,7 @@ def render_adoption_tab(adoption_data, commercialization_data=None, tab_read=Non
     render_section("AI use by industry", "Current and expected AI use across major U.S. industries.")
     with st.container(key="full-width-layout-adoption-industry-breadth"):
         with st.container(border=True, key="adoption-panel-industry-breadth"):
-            render_panel_heading("AI use by industry", "Latest published observation / 95% confidence intervals")
+            render_panel_heading("AI use by industry", source_through("Census BTOS", (adoption_data or {}).get("snapshot_date")))
             render_plotly_chart(
                 adoption_sector_bars((adoption_data or {}).get("sector_snapshot")),
                 width="stretch",

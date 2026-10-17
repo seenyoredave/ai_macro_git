@@ -25,7 +25,7 @@ def _ordered(body: str, tokens: list[str]) -> None:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    _check('APP_VERSION = "v3.0.5.' in app, "Water architecture must remain in the v3.0.5 patch line")
+    _check('APP_VERSION = "v3.0.6.' in app, "Water architecture must remain in the v3.0.6 patch line")
 
     water = (ROOT / "rendering" / "water.py").read_text(encoding="utf-8")
     tab = _body(water, "render_water_tab")

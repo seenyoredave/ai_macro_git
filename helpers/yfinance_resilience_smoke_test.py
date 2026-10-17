@@ -292,7 +292,7 @@ def main() -> None:
             os.environ["AI_MACRO_MODE"] = original_mode
 
     label = market_snapshot_label(resolved)
-    expected_label = "Market data through 8.7.2026 · 2/3 current · 1 retained from 8.5.2026"
+    expected_label = "YFinance · through 2026-08-07 · 1 retained from 2026-08-05"
     if label != expected_label:
         raise AssertionError(f"Mixed market freshness label changed: {label!r}")
 
