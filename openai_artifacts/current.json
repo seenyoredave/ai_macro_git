@@ -1,69 +1,76 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261016T164407978692Z_42132438_8001a776",
+  "attempt_id": "20261017T184133303952Z_1e0119a7_df40e0ce",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
-    "compute"
+    "compute",
+    "workforce"
   ],
   "editorial_context_event_ids": [
+    "auto-2026-10-15-2014e74babb5",
     "auto-2026-10-15-bde49f15ce34",
+    "auto-2026-10-16-d73bfbb1ecdf",
     "auto-2026-10-15-0a42b0b901a6",
     "auto-2026-10-12-d1e8d0a7c96d",
     "auto-2026-10-15-f129bad0f05e",
     "auto-2026-10-14-57e5b17c1bd6",
     "auto-2026-10-16-f903651ff52a",
-    "auto-2026-10-10-63bdd29969e8",
     "auto-2026-10-12-ce7bc0483a21",
     "auto-2026-10-14-382b7de30b7c",
     "auto-2026-10-15-1548ca166303",
     "auto-2026-10-09-e1198b607fc9",
     "auto-2026-10-15-49bffc829240",
     "auto-2026-10-12-0c4c98040b3a",
-    "auto-2026-10-12-abf9ea70529b",
-    "auto-2026-10-12-d94f55135e99"
+    "auto-2026-10-12-abf9ea70529b"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
-      "compute"
+      "compute",
+      "workforce"
     ],
     "current_event_ids": [
+      "auto-2026-10-15-2014e74babb5",
       "auto-2026-10-15-bde49f15ce34",
+      "auto-2026-10-16-d73bfbb1ecdf",
       "auto-2026-10-15-0a42b0b901a6",
       "auto-2026-10-12-d1e8d0a7c96d",
       "auto-2026-10-15-f129bad0f05e",
       "auto-2026-10-14-57e5b17c1bd6",
       "auto-2026-10-16-f903651ff52a",
-      "auto-2026-10-10-63bdd29969e8",
       "auto-2026-10-12-ce7bc0483a21",
       "auto-2026-10-14-382b7de30b7c",
       "auto-2026-10-15-1548ca166303",
       "auto-2026-10-09-e1198b607fc9",
       "auto-2026-10-15-49bffc829240",
       "auto-2026-10-12-0c4c98040b3a",
-      "auto-2026-10-12-abf9ea70529b",
-      "auto-2026-10-12-d94f55135e99"
+      "auto-2026-10-12-abf9ea70529b"
     ],
     "material_domains": [
-      "market"
+      "market",
+      "finance",
+      "compute",
+      "workforce"
     ],
     "new_event_domains": [
-      "finance",
-      "compute"
+      "market",
+      "finance"
     ],
     "new_event_ids": [
-      "auto-2026-10-15-bde49f15ce34",
-      "auto-2026-10-16-f903651ff52a"
+      "auto-2026-10-15-2014e74babb5",
+      "auto-2026-10-16-d73bfbb1ecdf"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
+    "market",
     "finance",
-    "compute"
+    "compute",
+    "workforce"
   ],
   "evidence_packets": {
     "adoption": {
@@ -317,31 +324,31 @@
       "facts": [
         {
           "context": "",
-          "display": "9.2%",
+          "display": "6.5%",
           "id": "compute.computer_output_growth",
           "label": "Computer and peripheral equipment output growth",
-          "value": 0.09247983352669742
+          "value": 0.06489906306787407
         },
         {
           "context": "",
-          "display": "11.5%",
+          "display": "19.9%",
           "id": "compute.semiconductor_output_growth",
           "label": "Semiconductor and electronic component output growth",
-          "value": 0.11465238662263166
+          "value": 0.19899255735903942
         },
         {
           "context": "",
-          "display": "81.7%",
+          "display": "81.3%",
           "id": "compute.computer_utilization",
           "label": "Computer and peripheral equipment capacity utilization",
-          "value": 81.6758
+          "value": 81.3339
         },
         {
           "context": "",
-          "display": "72.2%",
+          "display": "76.5%",
           "id": "compute.semiconductor_utilization",
           "label": "Semiconductor capacity utilization",
-          "value": 72.1577
+          "value": 76.5104
         },
         {
           "context": "",
@@ -668,10 +675,10 @@
         },
         {
           "context": "",
-          "display": "15.9%",
+          "display": "16.8%",
           "id": "economic_impact.information_investment_growth",
           "label": "Information-processing investment growth",
-          "value": 15.92742836027563
+          "value": 16.819019599244676
         },
         {
           "context": "",
@@ -696,10 +703,10 @@
         },
         {
           "context": "",
-          "display": "-8.4%",
+          "display": "-8.5%",
           "id": "economic_impact.labor_share_since_2020",
           "label": "Labor-share index change since 2020",
-          "value": -8.429996378194781
+          "value": -8.52886187217965
         },
         {
           "context": "",
@@ -795,10 +802,10 @@
         },
         {
           "context": "",
-          "display": "-13.5",
+          "display": "15.7",
           "id": "finance.lender_strain",
           "label": "Lender strain",
-          "value": -13.513176770094816
+          "value": 15.700777197103504
         },
         {
           "context": "",
@@ -1081,69 +1088,69 @@
       "facts": [
         {
           "context": "",
-          "display": "30.0",
+          "display": "29.6",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 30.04805640780148
+          "value": 29.565730486075168
         },
         {
           "context": "",
           "display": "47.9",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 47.870370272328465
+          "value": 47.92805801525662
         },
         {
           "context": "",
-          "display": "62.3%",
+          "display": "61.8%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6225490196078431
+          "value": 0.6176470588235294
         },
         {
           "context": "",
-          "display": "11.3%",
+          "display": "11.4%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.11265598170417856
+          "value": 0.11403870901783786
         },
         {
           "context": "",
-          "display": "21.1%",
+          "display": "20.0%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.21055101551656707
+          "value": 0.19952717753837437
         },
         {
           "context": "",
           "display": "65.0%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6501136981728268
+          "value": 0.6504283704716508
         },
         {
           "context": "",
           "display": "18.1",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.129146775963775
+          "value": 18.094327815908734
         },
         {
           "context": "",
-          "display": "1",
+          "display": "0",
           "id": "market.strong_sector_count",
           "label": "Sectors above the strong-equity threshold",
-          "value": 1.0
+          "value": 0.0
         },
         {
           "context": "",
-          "display": "1",
+          "display": "3",
           "id": "market.crowded_sector_count",
           "label": "Sectors above the high-pressure threshold",
-          "value": 1.0
+          "value": 3.0
         }
       ],
-      "importance": 20.011369817282684,
+      "importance": 20.434269513924832,
       "label": "Market",
       "references": [
         {
@@ -1503,10 +1510,10 @@
         },
         {
           "context": "",
-          "display": "-4.1%",
+          "display": "-4.7%",
           "id": "workforce.weakest_channel_growth",
           "label": "Weakest tracked-channel employment growth",
-          "value": -4.071458246780213
+          "value": -4.723913499895027
         },
         {
           "context": "",
@@ -1544,7 +1551,7 @@
           "value": 47.34561213434453
         }
       ],
-      "importance": 40.71458246780213,
+      "importance": 47.23913499895027,
       "label": "Workforce",
       "references": [
         {
@@ -1563,19 +1570,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "421324387ce45ee4c6735227",
-  "generated_at": "2026-10-16T16:45:32.646569+00:00",
+  "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
+  "generated_at": "2026-10-17T18:45:46.170398+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 84.66419391799991,
-      "input_tokens": 3894,
+      "elapsed_sec": 252.85916713400013,
+      "input_tokens": 4031,
       "model": "gpt-5.6-sol",
-      "output_tokens": 7277,
-      "poll_attempts": 38,
+      "output_tokens": 8938,
+      "poll_attempts": 117,
       "poll_errors": [],
-      "response_id": "resp_0e13864ca9e52870006ad25458c0c887d19e504910b0963bac",
+      "response_id": "resp_0ff1dc6ec9b5e660006ad3c15e160887d0a4c87efce9c65041",
       "terminal_status": "completed",
-      "total_tokens": 11171
+      "total_tokens": 12969
     }
   },
   "max_output_tokens": null,
@@ -1586,11 +1593,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "421324387ce45ee4c6735227",
-    "expires_at": "2026-10-17T16:45:32.648287+00:00",
+    "current_evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
+    "expires_at": "2026-10-18T18:45:46.173698+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-10-16T16:45:32.648287+00:00",
+    "published_at": "2026-10-17T18:45:46.173698+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1598,24 +1605,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 38,
+        "poll_attempts": 117,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0e13864ca9e52870006ad25458c0c887d19e504910b0963bac",
+        "response_id": "resp_0ff1dc6ec9b5e660006ad3c15e160887d0a4c87efce9c65041",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal funding capacity coexists with borrower-level AI credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Compute output is growing as chip-policy uncertainty rises\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI infrastructure is expanding amid selective credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},\"paragraphs\":[{\"text\":\"AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings remain mixed alongside firmer chip-demand confidence\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Lender strain rises as data-center bonds come under pressure\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Semiconductor and electronic-component output growth accelerated materially to 19.9%, while capacity utilization rose to 76.5%. Computer and peripheral-equipment output growth slowed materially to 6.5%, and utilization edged down to 81.3%. Both segments are still expanding, but the latest acceleration is concentrated in semiconductors.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},\"headline\":{\"text\":\"Semiconductor production accelerates as computer-equipment growth cools\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"AI-linked employment growth is confined to one tracked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Semiconductor output accelerates while lender strain rises materially\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"finance.lender_strain\"]},\"paragraphs\":[{\"text\":\"Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},{\"text\":\"The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"compute.semiconductor_output_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1792169130.0,
+      "completed_at": 1792262743.0,
       "conversation": null,
-      "created_at": 1792169048.0,
+      "created_at": 1792262494.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0e13864ca9e52870006ad25458c0c887d19e504910b0963bac",
+      "id": "resp_0ff1dc6ec9b5e660006ad3c15e160887d0a4c87efce9c65041",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1628,7 +1635,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad2545afebc87d198cc4f561e7dfe06",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c161f75487d088cf66376cef10fa",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1636,7 +1643,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad25460a5ec87d195285b3bc955e825",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c173a01887d09e6a729cbb8458aa",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1644,7 +1651,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad254671f2887d196a12331a8939d9b",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c18520a087d096922ef2ea5865c8",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1652,7 +1659,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad2546db56c87d1a44563225de0998d",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c1969a5887d0962491713bcb0326",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1660,7 +1667,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad25474536887d187d6fe10d6d7b531",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c1aa162c87d0838353050c9079e8",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1668,7 +1675,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad2547add3087d187f3bcb21a5e78c7",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c1bb8f1c87d0ae7a9b767077f5a9",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1676,7 +1683,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad25480e5b887d198fc72fd840a8530",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c1cc921487d08054259fe30f1e99",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1684,7 +1691,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad2548680c487d19472a8e9c95fe1a3",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c1dda29487d0beee512d2055e67e",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1692,7 +1699,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad2548cfcfc87d1851c5059b5ecec81",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c1eb8f3c87d0855d51080cef0ff1",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1700,7 +1707,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad254932b8c87d1bcbf03162ce90898",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c1f9c6c887d097e3eb4fb579dede",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1708,7 +1715,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad25497f99087d1bf088f422776001f",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c2075d0087d0a6a2c2e5d4d1569b",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1716,7 +1723,31 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0e13864ca9e52870006ad2549d08ac87d1aff62678f60c5211",
+          "id": "rs_0ff1dc6ec9b5e660006ad3c21a2f2c87d0ac201fcc2fc13c73",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0ff1dc6ec9b5e660006ad3c224947487d09c84ee1bd2f27e98",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0ff1dc6ec9b5e660006ad3c22e52cc87d090b2fdeee806429a",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0ff1dc6ec9b5e660006ad3c23884e887d0b835e8214a9ef863",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1726,11 +1757,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal funding capacity coexists with borrower-level AI credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Compute output is growing as chip-policy uncertainty rises\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI infrastructure is expanding amid selective credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},\"paragraphs\":[{\"text\":\"AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.\",\"event_ids\":[\"auto-2026-10-16-f903651ff52a\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings remain mixed alongside firmer chip-demand confidence\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Lender strain rises as data-center bonds come under pressure\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Semiconductor and electronic-component output growth accelerated materially to 19.9%, while capacity utilization rose to 76.5%. Computer and peripheral-equipment output growth slowed materially to 6.5%, and utilization edged down to 81.3%. Both segments are still expanding, but the latest acceleration is concentrated in semiconductors.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},\"headline\":{\"text\":\"Semiconductor production accelerates as computer-equipment growth cools\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"AI-linked employment growth is confined to one tracked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Semiconductor output accelerates while lender strain rises materially\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"finance.lender_strain\"]},\"paragraphs\":[{\"text\":\"Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},{\"text\":\"The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"compute.semiconductor_output_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0e13864ca9e52870006ad254a3526087d1b3200396a9369732",
+          "id": "msg_0ff1dc6ec9b5e660006ad3c2439b1c87d0be2680b902c82daf",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -1903,16 +1934,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 3894,
+        "input_tokens": 4031,
         "input_tokens_details": {
-          "cache_write_tokens": 3891,
+          "cache_write_tokens": 4028,
           "cached_tokens": 0
         },
-        "output_tokens": 7277,
+        "output_tokens": 8938,
         "output_tokens_details": {
-          "reasoning_tokens": 6214
+          "reasoning_tokens": 7718
         },
-        "total_tokens": 11171
+        "total_tokens": 12969
       },
       "user": null
     }
@@ -1974,44 +2005,39 @@
       "version": "6.1.0"
     },
     "compute": {
-      "analysis": "Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock.",
+      "analysis": "Semiconductor and electronic-component output growth accelerated materially to 19.9%, while capacity utilization rose to 76.5%. Computer and peripheral-equipment output growth slowed materially to 6.5%, and utilization edged down to 81.3%. Both segments are still expanding, but the latest acceleration is concentrated in semiconductors.",
       "analysis_sentences": [
-        "Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components.",
-        "Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions.",
-        "The Financial Times reported that China unveiled draft export controls on AI technologies and chips.",
-        "Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock."
+        "Semiconductor and electronic-component output growth accelerated materially to 19.9%, while capacity utilization rose to 76.5%.",
+        "Computer and peripheral-equipment output growth slowed materially to 6.5%, and utilization edged down to 81.3%.",
+        "Both segments are still expanding, but the latest acceleration is concentrated in semiconductors."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-16-f903651ff52a"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "compute.computer_output_growth",
-            "compute.semiconductor_output_growth"
+            "compute.semiconductor_output_growth",
+            "compute.computer_output_growth"
           ],
           "field": "headline",
-          "text": "Compute output is growing as chip-policy uncertainty rises"
+          "text": "Semiconductor production accelerates as computer-equipment growth cools"
         },
         {
-          "event_ids": [
-            "auto-2026-10-16-f903651ff52a"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "compute.computer_output_growth",
             "compute.semiconductor_output_growth",
-            "compute.computer_utilization",
-            "compute.semiconductor_utilization"
+            "compute.semiconductor_utilization",
+            "compute.computer_output_growth",
+            "compute.computer_utilization"
           ],
           "field": "body",
-          "text": "Output is growing 9.2% for computer and peripheral equipment and 11.5% for semiconductor and electronic components. Capacity utilization is 81.7% in computer equipment versus 72.2% in semiconductors, so the two industries are expanding under different capacity conditions. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. Because the controls remain a proposal, the development adds supply-chain uncertainty rather than evidence of a current production shock."
+          "text": "Semiconductor and electronic-component output growth accelerated materially to 19.9%, while capacity utilization rose to 76.5%. Computer and peripheral-equipment output growth slowed materially to 6.5%, and utilization edged down to 81.3%. Both segments are still expanding, but the latest acceleration is concentrated in semiconductors."
         }
       ],
       "domain": "compute",
-      "evidence_snapshot_id": "421324387ce45ee4c6735227",
-      "generated_at": "2026-10-16T16:45:32.646364+00:00",
+      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
+      "generated_at": "2026-10-17T18:45:46.170029+00:00",
       "generator": "openai",
-      "headline": "Compute output is growing as chip-policy uncertainty rises",
+      "headline": "Semiconductor production accelerates as computer-equipment growth cools",
       "label": "Compute",
       "references": [
         {
@@ -2037,10 +2063,6 @@
         {
           "source_label": "Alphabet AI serving economics",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
-        },
-        {
-          "source_label": "Financial Times",
-          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQZFJrS1d0QjRNNDFCeDlGc2x2cHJhTWN6SEJtWjFucjRFWnc2LWlUMFFMbjFuX3BOWGpJcVhLdnVRRnFjaUVpRXh0UHNQcWl6UkF3clZ3VExPc1dVX1hvc2o4Tnl3Mm15VE03Y1h6NHJzU3hnUmlFWlpha0hkeElUaUg1SFY?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2262,45 +2284,43 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels.",
+      "analysis": "Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally.",
       "analysis_sentences": [
-        "Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex.",
-        "That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5.",
-        "CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt.",
-        "The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels."
+        "Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0.",
+        "Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang.",
+        "Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending.",
+        "Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-15-bde49f15ce34"
+            "auto-2026-10-16-d73bfbb1ecdf"
           ],
           "fact_ids": [
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
-            "finance.borrower_strain"
+            "finance.lender_strain"
           ],
           "field": "headline",
-          "text": "Internal funding capacity coexists with borrower-level AI credit stress"
+          "text": "Lender strain rises as data-center bonds come under pressure"
         },
         {
           "event_ids": [
-            "auto-2026-10-15-bde49f15ce34"
+            "auto-2026-10-16-d73bfbb1ecdf"
           ],
           "fact_ids": [
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
+            "finance.lender_strain",
             "finance.borrower_strain",
-            "finance.lender_strain"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years"
           ],
           "field": "body",
-          "text": "Operating cash flow covers current capital spending 1.42 times, while cash reserves equal 0.96 years of current capex. That indicates meaningful capacity to finance investment internally, even as borrower strain stands at 26.0 against lender strain of -13.5. CNBC reported that CoreWeave\u2019s credit-default swaps reached distressed levels as investors turned more cautious on AI debt. The contrast points to pressure in exposed borrowers rather than uniform stress across financing channels."
+          "text": "Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "421324387ce45ee4c6735227",
-      "generated_at": "2026-10-16T16:45:32.646364+00:00",
+      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
+      "generated_at": "2026-10-17T18:45:46.170029+00:00",
       "generator": "openai",
-      "headline": "Internal funding capacity coexists with borrower-level AI credit stress",
+      "headline": "Lender strain rises as data-center bonds come under pressure",
       "label": "Finance",
       "references": [
         {
@@ -2336,8 +2356,8 @@
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
         },
         {
-          "source_label": "CNBC",
-          "source_url": "https://www.cnbc.com/2026/10/15/coreweave-credit-default-swaps-hit-distress-levels-as-investors-sour-on-ai-debt.html"
+          "source_label": "Morningstar",
+          "source_url": "https://www.morningstar.com/bonds/coreweave-data-center-bonds-slide-capex-debt-overhang-concerns"
         }
       ],
       "version": "6.1.0"
@@ -2414,115 +2434,103 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing. The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output. Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed.",
+      "analysis": "Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating. The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity. Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven.",
       "analysis_paragraphs": [
-        "AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.",
-        "The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.",
-        "Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
+        "Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating.",
+        "The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.",
+        "Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
       ],
       "analysis_sentences": [
-        "AI-linked market measures softened slightly again.",
-        "The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%.",
-        "Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps.",
-        "Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex.",
-        "The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing.",
-        "The physical buildout remains active.",
-        "Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites.",
-        "Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors.",
-        "The Financial Times reported that China unveiled draft export controls on AI technologies and chips.",
-        "The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output.",
-        "Investment plans still run ahead of delivered capacity and use.",
-        "In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational.",
-        "Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months.",
-        "Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution.",
-        "The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
+        "Compute-manufacturing momentum has shifted toward semiconductors.",
+        "Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%.",
+        "Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%.",
+        "Both manufacturing groups are expanding, but only the semiconductor side is accelerating.",
+        "The financing picture moved in a less favorable direction.",
+        "Lender strain increased materially to 15.7, alongside borrower strain of 26.0.",
+        "Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang.",
+        "Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending.",
+        "Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.",
+        "Public markets and labor remain less uniform.",
+        "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%.",
+        "Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%.",
+        "Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-15-bde49f15ce34"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "finance.borrower_strain",
-            "finance.lender_strain",
-            "compute.computer_output_growth",
             "compute.semiconductor_output_growth",
-            "data_center.development_sites",
-            "data_center.development_to_operating"
+            "finance.lender_strain"
           ],
           "field": "headline",
-          "text": "AI infrastructure is expanding amid selective credit stress"
+          "text": "Semiconductor output accelerates while lender strain rises materially"
+        },
+        {
+          "event_ids": [],
+          "fact_ids": [
+            "compute.semiconductor_output_growth",
+            "compute.semiconductor_utilization",
+            "compute.computer_output_growth",
+            "compute.computer_utilization"
+          ],
+          "field": "paragraphs[0]",
+          "text": "Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating."
         },
         {
           "event_ids": [
-            "auto-2026-10-15-bde49f15ce34"
+            "auto-2026-10-16-d73bfbb1ecdf"
+          ],
+          "fact_ids": [
+            "finance.lender_strain",
+            "finance.borrower_strain",
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years"
+          ],
+          "field": "paragraphs[1]",
+          "text": "The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity."
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-15-2014e74babb5"
           ],
           "fact_ids": [
             "market.aei",
             "market.positive_breadth",
             "market.median_return",
-            "finance.borrower_strain",
-            "finance.lender_strain",
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years"
-          ],
-          "field": "paragraphs[0]",
-          "text": "AI-linked market measures softened slightly again. The AI Equity Index is 30.0, 62.3% of covered companies have positive one-year returns, and the median return is 11.3%. Credit is more uneven: borrower strain is 26.0 while lender strain is -13.5, and CNBC reported distressed pricing in CoreWeave\u2019s credit-default swaps. Operating cash flow nevertheless covers current capex 1.42 times and cash reserves equal 0.96 years of capex. The evidence points to stress in exposed borrowers, but does not demonstrate a broad withdrawal of financing."
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-16-f903651ff52a"
-          ],
-          "fact_ids": [
-            "compute.computer_output_growth",
-            "compute.semiconductor_output_growth",
-            "compute.computer_utilization",
-            "compute.semiconductor_utilization",
-            "data_center.development_sites",
-            "data_center.development_to_operating"
-          ],
-          "field": "paragraphs[1]",
-          "text": "The physical buildout remains active. Computer and peripheral-equipment output is growing 9.2%, semiconductor and electronic-component output 11.5%, and available records list 1,556 data-center sites in development\u2014about one for every two operating sites. Capacity conditions differ, with utilization at 81.7% for computer equipment and 72.2% for semiconductors. The Financial Times reported that China unveiled draft export controls on AI technologies and chips. The proposal introduces policy risk to the supply chain, but does not show an immediate interruption to output."
-        },
-        {
-          "event_ids": [],
-          "fact_ids": [
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct",
-            "adoption.current_business_use_pct",
-            "adoption.expected_business_use_pct",
-            "economic_impact.productivity_growth"
+            "workforce.employment_breadth",
+            "workforce.strongest_channel",
+            "workforce.weakest_channel_growth",
+            "compute.semiconductor_output_growth"
           ],
           "field": "paragraphs[2]",
-          "text": "Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
+          "text": "Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "finance.borrower_strain",
-          "label": "Borrower strain",
-          "value": "26.0"
+          "fact_id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth",
+          "value": "19.9%"
         },
         {
           "context": "",
           "fact_id": "finance.lender_strain",
           "label": "Lender strain",
-          "value": "-13.5"
+          "value": "15.7"
         },
         {
           "context": "",
-          "fact_id": "compute.computer_output_growth",
-          "label": "Computer and peripheral equipment output growth",
-          "value": "9.2%"
+          "fact_id": "compute.semiconductor_utilization",
+          "label": "Semiconductor capacity utilization",
+          "value": "76.5%"
         }
       ],
-      "evidence_snapshot_id": "421324387ce45ee4c6735227",
-      "generated_at": "2026-10-16T16:45:32.646364+00:00",
+      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
+      "generated_at": "2026-10-17T18:45:46.170029+00:00",
       "generator": "openai",
-      "headline": "AI infrastructure is expanding amid selective credit stress",
+      "headline": "Semiconductor output accelerates while lender strain rises materially",
       "label": "AI Macro",
       "references": [
         {
@@ -2554,53 +2562,51 @@
         "market",
         "finance",
         "compute",
-        "data_center",
-        "grid_storage",
-        "adoption",
-        "economic_impact"
+        "workforce"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index fell materially to 30.2. The median one-year return declined to 11.4%, and the equal-weight return to 22.1%, both material decreases. Reuters nevertheless reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains, while Barron\u2019s reported that ASML shares fell after earnings pointed to soaring AI demand. Favorable demand and earnings expectations are not translating uniformly into equity gains.",
+      "analysis": "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened.",
       "analysis_sentences": [
-        "The AI Equity Index fell materially to 30.2.",
-        "The median one-year return declined to 11.4%, and the equal-weight return to 22.1%, both material decreases.",
-        "Reuters nevertheless reported that AI-related companies were expected to drive most third-quarter U.S.",
-        "earnings gains, while Barron\u2019s reported that ASML shares fell after earnings pointed to soaring AI demand.",
-        "Favorable demand and earnings expectations are not translating uniformly into equity gains."
+        "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%.",
+        "The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9.",
+        "Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come.",
+        "That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-09-e1198b607fc9"
+            "auto-2026-10-15-2014e74babb5"
           ],
           "fact_ids": [
             "market.aei",
+            "market.pressure",
+            "market.positive_breadth",
             "market.median_return"
           ],
           "field": "headline",
-          "text": "AI equity readings weaken despite strong reported earnings expectations"
+          "text": "AI equity readings remain mixed alongside firmer chip-demand confidence"
         },
         {
           "event_ids": [
-            "auto-2026-10-09-e1198b607fc9",
-            "auto-2026-10-14-382b7de30b7c"
+            "auto-2026-10-15-2014e74babb5"
           ],
           "fact_ids": [
             "market.aei",
+            "market.positive_breadth",
             "market.median_return",
-            "market.equal_weight_return"
+            "market.pressure"
           ],
           "field": "body",
-          "text": "The AI Equity Index fell materially to 30.2. The median one-year return declined to 11.4%, and the equal-weight return to 22.1%, both material decreases. Reuters nevertheless reported that AI-related companies were expected to drive most third-quarter U.S. earnings gains, while Barron\u2019s reported that ASML shares fell after earnings pointed to soaring AI demand. Favorable demand and earnings expectations are not translating uniformly into equity gains."
+          "text": "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "92f2b739b543645142f20835",
-      "generated_at": "2026-10-15T17:05:23.685934+00:00",
+      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
+      "generated_at": "2026-10-17T18:45:46.170029+00:00",
       "generator": "openai",
-      "headline": "AI equity readings weaken despite strong reported earnings expectations",
+      "headline": "AI equity readings remain mixed alongside firmer chip-demand confidence",
       "label": "Market",
       "references": [
         {
@@ -2612,12 +2618,8 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNNWN6RHkzeE9oNGpRQTJpQjZNamoyTS01YldNYndxS0c3ZEhYcGREZHkwN1o0aFRsVWJfOEU5dEZDWDVRUFdDUDlVenBlVGtOSG93MkJfLXp3UThXaFFKQ2x2ekVkMmdTMUxKV0tQd3pOekN0UGc3dFpURTU3NUpQS1RJR0V2MmVoSjFiTUJfbk1HMmhQZHhKN0R0ME5iUmhtV2tNWlkzY3JYNFVa?oc=5"
-        },
-        {
-          "source_label": "Barron's",
-          "source_url": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBpbkxpTFBzSFJrQVlNUlVPeFhaTjM1cmMzVFYydUJEMkN1Y0RjbmFSZ0FZRVk5R0h2d1MxNjdLU3hZNXpyTU42LTM2ZWVxcTBUN1AzSjlsRFpEdkd0MHJGRW8tNndSdVVkU3NYc3owWXJtdXFYWEE?oc=5"
+          "source_label": "Morningstar",
+          "source_url": "https://www.morningstar.com/company-reports/1502862-tsmc-earnings-higher-confidence-in-artificial-intelligence-demand-but-guidance-to-follow?listing=0P000005AR"
         }
       ],
       "version": "6.1.0"
@@ -2744,43 +2746,39 @@
       "version": "6.1.0"
     },
     "workforce": {
-      "analysis": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint. The report does not amount to broad acceleration across the tracked labor channels.",
+      "analysis": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel.",
       "analysis_sentences": [
         "Only one tracked AI-linked labor channel has positive employment growth.",
-        "Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth.",
-        "CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint.",
-        "The report does not amount to broad acceleration across the tracked labor channels."
+        "Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration.",
+        "Positive real-earnings growth is present in two channels.",
+        "Employment gains are therefore confined to a single tracked channel."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-02-7e65c549c244"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "workforce.employment_breadth"
           ],
           "field": "headline",
-          "text": "Sector-specific AI hiring contrasts with narrow tracked job growth"
+          "text": "AI-linked employment growth is confined to one tracked channel"
         },
         {
-          "event_ids": [
-            "auto-2026-10-02-7e65c549c244"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "workforce.employment_breadth",
             "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
+            "workforce.weakest_channel_growth",
             "workforce.real_earnings_breadth"
           ],
           "field": "body",
-          "text": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. CNBC reported that Wall Street AI hiring is surging, providing a sector-specific counterpoint. The report does not amount to broad acceleration across the tracked labor channels."
+          "text": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel."
         }
       ],
       "domain": "workforce",
-      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
-      "generated_at": "2026-10-07T19:04:54.984793+00:00",
+      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
+      "generated_at": "2026-10-17T18:45:46.170029+00:00",
       "generator": "openai",
-      "headline": "Sector-specific AI hiring contrasts with narrow tracked job growth",
+      "headline": "AI-linked employment growth is confined to one tracked channel",
       "label": "Workforce",
       "references": [
         {
@@ -2794,10 +2792,6 @@
         {
           "source_label": "BLS JOLTS",
           "source_url": "https://www.bls.gov/jlt/"
-        },
-        {
-          "source_label": "CNBC",
-          "source_url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE02YlRuZjNhMDVHX3U3M3p0Uy1XZnRqekVBUmFudXhzREVFcl9Bel9LOHF6Y1NZdjgzejZQQXNIRGJIMm5qdTM0bG15dmY5dXdka3VPR3BpSDhUdDM1WWJnM0dvMFlQcFRTeWlrYmpZaEFqS0hYcGhZZkpKMnY?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2810,13 +2804,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 8,
+    "checked_passages": 12,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
         "scope": "macro.paragraphs[2]",
-        "text": "Investment plans still run ahead of delivered capacity and use. In the broader power system, only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, while 13% of the 2000\u20132020 cohort ultimately became operational. Businesses report current AI use of 23.8%, compared with 27.7% expecting use within six months. Nonfarm-business productivity is growing 2.2%, but that aggregate measure does not identify AI\u2019s contribution. The buildout is substantial; evidence of completed delivery and an AI-specific economic payoff remains less developed."
+        "text": "Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
       }
     ],
     "hard_errors": [],
