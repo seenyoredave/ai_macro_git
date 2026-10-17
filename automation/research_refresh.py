@@ -44,6 +44,8 @@ from loaders.fred_loader import describe_fred_load, load_fred
 from loaders.infrastructure_loader import load_infrastructure_data
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
+from loaders.credit_conditions_loader import load_credit_conditions
+from loaders.bdc_filings_loader import refresh_bdc_filings
 from loaders.snapshot_writer import persist_refresh_snapshots
 from loaders.water_loader import load_water_utilization_data
 from loaders.workforce_loader import load_workforce_data
@@ -517,6 +519,8 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         semantic_output=raw_universe_data.get("yfinance"),
         elapsed_sec=float((market_report.get("yfinance") or {}).get("elapsed_sec") or market_elapsed),
     )
+    bdc_report = refresh_bdc_filings(force_refresh=edgar_live, allow_live=edgar_live)
+    market_report.setdefault("edgar", {})["bdc_filings"] = bdc_report
     _record_node(
         plan,
         "edgar",
@@ -559,12 +563,14 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         refresh_token=token if fred_live else 0,
         allow_live=fred_live,
     )
+    credit_conditions = load_credit_conditions(force_refresh=fred_live, allow_live=fred_live)
+    fred_report["credit_conditions"] = credit_conditions["load_report"]
     _record_node(
         plan,
         "fred",
         attempted_live=fred_live,
         report=fred_report,
-        semantic_output={"fred": fred_data, "nfci": nfci_history},
+        semantic_output={"fred": fred_data, "nfci": nfci_history, "credit_conditions": credit_conditions["history"]},
         elapsed_sec=fred_elapsed,
     )
 

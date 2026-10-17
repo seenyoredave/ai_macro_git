@@ -237,6 +237,9 @@ def append_macro_history(
         ),
         "Borrower Committed Burden": _component_value(regime_metrics, "Borrower Strain Components", "Committed Burden"),
         "Borrower Contingent Exposure": _component_value(regime_metrics, "Borrower Strain Components", "Contingent Exposure"),
+        "Lender Weekly Credit Conditions": _component_value(regime_metrics, "Lender Strain Components", "Credit conditions"),
+        "Lender Bank Borrowing Reliance": _component_value(regime_metrics, "Lender Strain Components", "Bank borrowing reliance"),
+        "Lender Bank Cash Buffer": _component_value(regime_metrics, "Lender Strain Components", "Bank cash buffer"),
         "Lender Credit Tightening": _component_value(
             regime_metrics,
             "Lender Strain Components",

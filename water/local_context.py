@@ -61,20 +61,32 @@ def refresh_local_water_context(campuses: pd.DataFrame | None, *, pws_max_worker
     if not frame.empty and ("Campus ID" not in frame.columns or frame["Campus ID"].duplicated().any()):
         raise ValueError("Local water refresh requires one row per Campus ID")
     states=frame.get("State",pd.Series(dtype=str)).fillna("").astype(str).str.upper().str.strip().tolist() if not frame.empty else []
-    fresh_county,usdm_report=fetch_county_drought(states); retained_county=pd.DataFrame()
+    retained_county=pd.DataFrame()
     if USDM_PATH.exists() and USDM_PATH.stat().st_size:
         try: retained_county=pd.read_csv(USDM_PATH,dtype={"FIPS":str})
         except Exception: retained_county=pd.DataFrame()
-    requested_states={str(v or "").upper().strip() for v in states if str(v or "").strip()}; refreshed_states=set(fresh_county.get("State",pd.Series(dtype=str)).fillna("").astype(str).str.upper().str.strip()) if not fresh_county.empty else set()
+    # Retained counties are also displayed on the national map. Refresh their
+    # states even when today's campus registry has no campus in those states.
+    states=sorted({str(v or "").upper().strip() for v in states if str(v or "").strip()} | set(retained_county.get("State",pd.Series(dtype=str)).dropna().astype(str).str.upper().str.strip()))
+    fresh_county,usdm_report=fetch_county_drought(states)
+    requested_states=set(states); refreshed_states=set(fresh_county.get("State",pd.Series(dtype=str)).fillna("").astype(str).str.upper().str.strip()) if not fresh_county.empty else set()
     if retained_county.empty: county_drought=fresh_county
     elif fresh_county.empty: county_drought=retained_county
     else:
-        keep=~retained_county.get("State",pd.Series("",index=retained_county.index)).fillna("").astype(str).str.upper().str.strip().isin(refreshed_states); county_drought=pd.concat([retained_county.loc[keep],fresh_county],ignore_index=True)
+        fresh_fips=fresh_county["FIPS"].astype(str).str.replace(r"\.0$","",regex=True).str.zfill(5)
+        keep=~retained_county["FIPS"].astype(str).str.replace(r"\.0$","",regex=True).str.zfill(5).isin(fresh_fips); county_drought=pd.concat([retained_county.loc[keep],fresh_county],ignore_index=True)
     if not county_drought.empty:
         county_drought["FIPS"]=county_drought["FIPS"].astype(str).str.replace(r"\.0$","",regex=True).str.zfill(5); county_drought=county_drought.drop_duplicates("FIPS",keep="last").sort_values(["State","FIPS"],kind="stable").reset_index(drop=True)
     if not fresh_county.empty: persist_county_drought(county_drought,USDM_PATH)
     retained_states=set(retained_county.get("State",pd.Series(dtype=str)).fillna("").astype(str).str.upper().str.strip()) if not retained_county.empty else set(); unresolved=requested_states-refreshed_states-retained_states
     usdm_report["county_rows"]=int(len(county_drought)); usdm_report["retained_fallback_states"]=int(len((requested_states-refreshed_states)&retained_states))
+    dates=pd.to_datetime(county_drought.get("Snapshot Date",pd.Series(dtype=str)),errors="coerce")
+    stale=dates.isna() | dates.lt(pd.Timestamp(date.today())-pd.Timedelta(days=10))
+    if stale.any():
+        stale_states=sorted(set(county_drought.loc[stale,"State"].fillna("").astype(str)))
+        usdm_report.setdefault("errors",{})["stale_retained_counties"]="Retained weekly drought data is stale in: "+", ".join(stale_states)
+    usdm_report["oldest_snapshot_date"]=str(dates.min().date()) if dates.notna().any() else None
+    usdm_report["latest_snapshot_date"]=str(dates.max().date()) if dates.notna().any() else None
     if not fresh_county.empty and not unresolved and not (usdm_report.get("errors") or {}): usdm_report["source_mode"]="live_refresh"
     elif not county_drought.empty: usdm_report["source_mode"]="partial_refresh" if fresh_county is not None and not fresh_county.empty else "retained_fallback"
     pws_matches,pws_report=refresh_campus_matches(frame,cache_path=PWS_PATH,max_workers=pws_max_workers,persist=True)

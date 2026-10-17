@@ -469,6 +469,37 @@ def _hydrate_information_investment(payload, fred=None):
     }
     return out
 
+def _persist_live_series_history(name, series):
+    """Persist the full history already fetched for a headline observation."""
+    if not repository_writes_enabled():
+        return
+    contracts = {
+        "Industrial Production": (INDPRO_HISTORY_PATH, "Observation Date", "Industrial Production"),
+        "Info Processing Investment Level": (INFO_INVESTMENT_HISTORY_PATH, "Observation Date", "Info Processing Investment Level"),
+        "Business Loan Tightening": (PROJECT_ROOT / "data/bank_credit_tightening_history.csv", "Date", "Tightening Percent"),
+        "Bank Tier 1 Capital Ratio": (PROJECT_ROOT / "data/bank_tier1_capital_history.csv", "Date", "Tier 1 Capital Ratio (%)"),
+        "Business Loan Delinquency": (PROJECT_ROOT / "data/business_loan_delinquency_history.csv", "Date", "Business Loan Delinquency Rate (%)"),
+    }
+    if name not in contracts:
+        return
+    target, date_column, value_column = contracts[name]
+    history = pd.DataFrame({date_column: pd.DatetimeIndex(series.index),
+                            value_column: series.to_numpy(dtype=float)})
+    if target.exists() and target.stat().st_size:
+        retained = pd.read_csv(target)
+        previous = pd.to_datetime(retained[date_column], errors="coerce")
+        if not previous.dropna().empty and history[date_column].max() < previous.max():
+            raise ValueError(f"{name} source history is older than retained observations")
+        if not retained.empty:
+            template = retained.assign(_date=previous).sort_values("_date").iloc[-1]
+            for column in retained.columns:
+                if column not in {date_column, value_column}:
+                    history[column] = template[column]
+            history = history[retained.columns]
+    history[date_column] = history[date_column].dt.date.astype(str)
+    atomic_write_csv(history, target)
+
+
 def _fill_failed_from_archive(data, fallback):
     if not fallback:
         return data
@@ -607,6 +638,7 @@ def load_fred(
                 raise ValueError("No data returned")
 
             series_cache[name] = clean
+            _persist_live_series_history(name, clean)
             latest_date = pd.Timestamp(clean.index[-1])
 
             data[name] = {

@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from io import StringIO
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import requests
 import streamlit as st
+from loaders.official_series_refresh import fetch_fred_series_batch
 
 from config.deployment import repository_writes_enabled
 from helpers.atomic_io import atomic_write_csv
@@ -73,32 +72,36 @@ def _atomic_csv(frame: pd.DataFrame, path: Path) -> None:
 
 
 def _fetch_fred_series(series: dict[str, str]) -> pd.DataFrame:
-    ids = ",".join(series.values())
-    response = requests.get(
-        f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={ids}",
-        timeout=30,
-        headers={"User-Agent": "ai-macro-compute/1.0"},
-    )
-    response.raise_for_status()
-    frame = pd.read_csv(StringIO(response.text))
-    date_column = next((column for column in ["DATE", "observation_date", "date"] if column in frame.columns), None)
-    if date_column is None:
-        raise ValueError("FRED compute response did not contain an observation date")
-    rename = {date_column: "Observation Date"}
-    rename.update({series_id: metric for metric, series_id in series.items()})
-    output = frame.rename(columns=rename)
-    for metric in series:
-        if metric not in output.columns:
-            output[metric] = np.nan
-        output[metric] = pd.to_numeric(output[metric], errors="coerce")
-    output["Observation Date"] = pd.to_datetime(output["Observation Date"], errors="coerce")
-    return (
-        output[["Observation Date", *series]]
-        .dropna(subset=["Observation Date"])
-        .sort_values("Observation Date", kind="stable")
-        .drop_duplicates("Observation Date", keep="last")
-        .reset_index(drop=True)
-    )
+    fetched = fetch_fred_series_batch(series.values())
+    parts = []
+    errors = dict(getattr(fetched, "errors", {}))
+    for metric, series_id in series.items():
+        frame = fetched.get(series_id)
+        if frame is None or frame.empty:
+            errors.setdefault(series_id, "No numeric observations returned")
+            continue
+        parts.append(frame.rename(columns={"Date": "Observation Date", "Value": metric}).set_index("Observation Date"))
+    if not parts:
+        raise ValueError("No recognized compute series returned")
+    output = pd.concat(parts, axis=1).sort_index().reset_index()
+    output.attrs["errors"] = errors
+    return output
+
+
+def _merge_provider_history(retained: pd.DataFrame, fresh: pd.DataFrame, series: dict[str, str]) -> tuple[pd.DataFrame, dict]:
+    errors = dict(fresh.attrs.get("errors", {}))
+    fresh = fresh.copy()
+    for metric, series_id in series.items():
+        previous = retained.loc[retained[metric].notna(), "Observation Date"] if metric in retained else pd.Series(dtype="datetime64[ns]")
+        current = fresh.loc[fresh[metric].notna(), "Observation Date"] if metric in fresh else pd.Series(dtype="datetime64[ns]")
+        if current.empty:
+            errors.setdefault(series_id, "No numeric observations returned")
+        elif not previous.empty and current.max() < previous.max():
+            fresh[metric] = np.nan
+            errors[series_id] = "Source history is older than retained observations; retained series preserved"
+    old = retained.set_index("Observation Date")
+    new = fresh.set_index("Observation Date")
+    return new.combine_first(old).sort_index().reset_index(), errors
 
 
 def _normalize_history(frame: pd.DataFrame) -> pd.DataFrame:
@@ -201,7 +204,7 @@ def _series_summary(history: pd.DataFrame, column: str) -> dict:
     }
 
 
-def _quality_summary(validation: pd.DataFrame) -> dict:
+def _quality_summary(validation: pd.DataFrame, history: pd.DataFrame | None = None) -> dict:
     if validation is None or validation.empty:
         return {
             "status": "unvalidated",
@@ -213,10 +216,24 @@ def _quality_summary(validation: pd.DataFrame) -> dict:
     statuses = validation.get("comparison_status", pd.Series("", index=validation.index)).fillna("").astype(str)
     checked = pd.to_datetime(validation.get("checked_on"), errors="coerce", format="mixed")
     issues = int((~statuses.eq("pass_current")).sum())
+    expired = checked.isna() | ((pd.Timestamp.now().normalize() - checked).dt.days > 45)
+    if isinstance(history, pd.DataFrame) and not history.empty:
+        for index, row in validation.iterrows():
+            metric = str(row.get("metric", ""))
+            if metric not in history:
+                expired.loc[index] = True
+                continue
+            available = history.loc[history[metric].notna()].sort_values("Observation Date")
+            if not available.empty:
+                last = available.iloc[-1]
+                expected_date = pd.to_datetime(row.get("retained_latest_observation_date"), errors="coerce")
+                expected_value = pd.to_numeric(row.get("retained_latest_value"), errors="coerce")
+                if last["Observation Date"] != expected_date or not np.isclose(last[metric], expected_value, rtol=1e-8, equal_nan=False):
+                    expired.loc[index] = True
     return {
-        "status": "validated_current" if issues == 0 else "needs_remediation",
+        "status": "needs_remediation" if issues else "validation_outdated" if expired.any() else "validated_current",
         "series_checked": int(len(validation)),
-        "series_current": int(statuses.eq("pass_current").sum()),
+        "series_current": int((statuses.eq("pass_current") & ~expired).sum()),
         "series_needing_remediation": issues,
         "checked_on": None if checked.dropna().empty else checked.max().date().isoformat(),
     }
@@ -344,11 +361,15 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
 
     if live_refresh:
         try:
-            refreshed = _normalize_history(_fetch_fred_series({**OUTPUT_SERIES, **CAPACITY_SERIES, **UTILIZATION_SERIES}))
+            contracts = {**OUTPUT_SERIES, **CAPACITY_SERIES, **UTILIZATION_SERIES}
+            fresh = _fetch_fred_series(contracts)
+            merged, errors = _merge_provider_history(history, fresh, contracts)
+            refresh_errors.update(errors)
+            refreshed = _normalize_history(merged)
             if not refreshed.empty:
                 output = refreshed.copy()
                 output["Observation Date"] = output["Observation Date"].dt.date.astype(str)
-                output["Source"] = "Federal Reserve G.17 / FRED public CSV"
+                output["Source"] = "Federal Reserve G.17 / FRED"
                 output["Evidence Class"] = "agency_index"
                 output["Evidence Grade"] = "A"
                 output["Resilience Grade"] = "R1"
@@ -359,11 +380,14 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
             debug_print(f"Compute G.17 refresh failed -> {exc}")
             refresh_errors["g17"] = f"{type(exc).__name__}: {exc}"
         try:
-            refreshed_m3 = _normalize_m3_history(_fetch_fred_series(M3_SERIES))
+            fresh = _fetch_fred_series(M3_SERIES)
+            merged, errors = _merge_provider_history(m3_history, fresh, M3_SERIES)
+            refresh_errors.update(errors)
+            refreshed_m3 = _normalize_m3_history(merged)
             if not refreshed_m3.empty:
                 output = refreshed_m3.copy()
                 output["Observation Date"] = output["Observation Date"].dt.date.astype(str)
-                output["Source"] = "U.S. Census Bureau M3 / FRED public CSV"
+                output["Source"] = "U.S. Census Bureau M3 / FRED"
                 output["Evidence Class"] = "agency_estimate"
                 output["Evidence Grade"] = "A"
                 output["Resilience Grade"] = "R1"
@@ -420,7 +444,7 @@ def load_compute_manufacturing_data(force_refresh: bool = False, refresh_token: 
         "field_dictionary": _load_csv(FIELD_DICTIONARY_PATH),
         "series_contract": series_contract,
         "series_validation": series_validation,
-        "quality_summary": _quality_summary(series_validation),
+        "quality_summary": _quality_summary(series_validation, history),
         "output_series": OUTPUT_SERIES.copy(),
         "capacity_series": CAPACITY_SERIES.copy(),
         "utilization_series": UTILIZATION_SERIES.copy(),

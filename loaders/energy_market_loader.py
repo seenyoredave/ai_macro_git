@@ -144,10 +144,23 @@ def _latest_pipeline_url() -> str:
 
 
 def _latest_queue_url() -> str:
-    return _discover_download_url(
-        LBNL_QUEUE_PAGE_URL,
-        r"lbnl_ix_queue_data_file_thru\d{4}\.xlsx(?:$|\?)",
-    )
+    # The EMP landing page can reject automated clients. The same workbook is
+    # published in Berkeley Lab's official ETA publication repository.
+    pattern = r"lbnl_ix_queue_data_file_thru\d{4}\.xlsx(?:$|\?)"
+    current_year = int(market_date().year)
+    pages = [LBNL_QUEUE_PAGE_URL]
+    for year in (current_year, current_year - 1):
+        pages.extend([
+            f"https://eta.lbl.gov/publications/queued-{year}-edition-characteristics",
+            f"https://eta-publications.lbl.gov/publications/queued-{year}-edition-characteristics",
+        ])
+    errors = []
+    for page in pages:
+        try:
+            return _discover_download_url(page, pattern)
+        except Exception as exc:
+            errors.append(f"{page}: {type(exc).__name__}")
+    raise ValueError("No official Berkeley Lab queue download resolved; " + "; ".join(errors))
 
 
 def _wholesale_urls() -> list[tuple[str, int]]:
@@ -222,7 +235,6 @@ def _parse_retail(content):
 
 def _parse_generation(content):
     raw = pd.read_excel(BytesIO(content), header=None, engine="openpyxl")
-    headers = [str(value).replace("\n", " ").strip() for value in raw.iloc[3].tolist()]
     columns = {
         "Coal": "Coal",
         "Natural gas": "Natural Gas",
@@ -232,37 +244,45 @@ def _parse_generation(content):
         "Wind + other renewables": "Renewable Sources Excluding Hydroelectric and Solar",
         "Other": "Other",
     }
-    annual = raw.iloc[5:15].copy()
-    annual.columns = headers
-    annual = annual.loc[_number(annual["Period"]).notna()].copy()
-    annual["Year"] = _number(annual["Period"]).astype(int)
+    header_index = None
+    for index in range(min(15, len(raw))):
+        labels = [re.sub(r"\s+", " ", str(value)).strip() for value in raw.iloc[index]]
+        if "Period" in labels and set(columns.values()).issubset(labels):
+            header_index, headers = index, labels
+            break
+    if header_index is None:
+        raise ValueError("EIA generation workbook header contract changed")
+    period_index = headers.index("Period")
+    months = {name.casefold(): index for index, name in enumerate(
+        ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 1)}
+    months["sept"] = 9
     rows = []
-    for label, column in columns.items():
-        rows.append(pd.DataFrame({
-            "Period Type": "Annual",
-            "Date": pd.to_datetime(annual["Year"].astype(str) + "-12-31"),
-            "Source": label,
-            "Generation GWh": _number(annual[column]),
-        }))
-    months = {"January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6, "July": 7, "August": 8, "Sept": 9, "October": 10, "November": 11, "December": 12}
     year = None
-    for index in range(15, min(47, len(raw))):
-        label = str(raw.iloc[index, 0]).strip()
-        if label.startswith("Year "):
-            year = int(label.split()[-1])
+    for index in range(header_index + 1, len(raw)):
+        label = str(raw.iloc[index, period_index]).strip()
+        year_match = re.fullmatch(r"Year\s+(\d{4})(?:\s.*)?", label, re.I)
+        if year_match:
+            year = int(year_match.group(1))
             continue
-        if year is None or label not in months:
-            continue
+        annual = pd.to_numeric(label, errors="coerce")
+        if pd.notna(annual) and 1900 <= annual <= 2100 and float(annual).is_integer():
+            period_type, timestamp = "Annual", pd.Timestamp(int(annual), 12, 31)
+        else:
+            month_label = re.sub(r"[.*†‡]+$", "", label).strip().casefold()
+            month = months.get(month_label)
+            if year is None or month is None:
+                continue
+            period_type, timestamp = "Monthly", pd.Timestamp(year, month, 1)
         for source, column in columns.items():
             value = pd.to_numeric(raw.iloc[index, headers.index(column)], errors="coerce")
-            if pd.notna(value):
-                rows.append(pd.DataFrame([{
-                    "Period Type": "Monthly",
-                    "Date": pd.Timestamp(year, months[label], 1),
-                    "Source": source,
-                    "Generation GWh": float(value),
-                }]))
-    return pd.concat(rows, ignore_index=True)
+            if pd.notna(value) and np.isfinite(value):
+                rows.append({"Period Type": period_type, "Date": timestamp,
+                             "Source": source, "Generation GWh": float(value)})
+    result = pd.DataFrame(rows)
+    if result.empty or not result["Period Type"].eq("Monthly").any():
+        raise ValueError("EIA generation workbook returned no monthly observations")
+    return result.sort_values(["Period Type", "Date", "Source"]).drop_duplicates(
+        ["Period Type", "Date", "Source"], keep="last").reset_index(drop=True)
 
 
 def _parse_generators(content):
@@ -550,6 +570,27 @@ def _refresh(scope: str = "all"):
                     raise TypeError(
                         f"{name} parser returned {type(frame).__name__}, expected DataFrame"
                     )
+                required_nonempty = {"retail_history", "generation_history", "operating_generators",
+                                     "capacity_snapshot", "interconnection_queue",
+                                     "interconnection_queue_summary", "wholesale_prices"}
+                if name in required_nonempty and frame.empty:
+                    raise ValueError(f"{name} parser returned an empty table; retained data preserved")
+                date_column = {"generation_history": "Date", "retail_history": "Date",
+                               "capacity_changes": "Date", "wholesale_prices": "Trade Date",
+                               "interconnection_queue_summary": "As Of Year"}.get(name)
+                retained = frames.get(name, pd.DataFrame())
+                if date_column and date_column in frame and date_column in retained and not retained.empty:
+                    candidate = frame
+                    previous = retained
+                    if name == "generation_history":
+                        candidate = frame.loc[frame["Period Type"].eq("Monthly")]
+                        previous = retained.loc[retained["Period Type"].eq("Monthly")]
+                    parse = pd.to_numeric if date_column == "As Of Year" else pd.to_datetime
+                    latest = parse(candidate[date_column], errors="coerce").max()
+                    retained_latest = parse(previous[date_column], errors="coerce").max()
+                    if pd.isna(latest) or (pd.notna(retained_latest) and latest < retained_latest):
+                        raise ValueError(f"{name} source is older than retained data; retained data preserved")
+            for name, frame in updates.items():
                 _write(frame, PATHS[name])
                 frames[name] = frame
                 refreshed.append(name)

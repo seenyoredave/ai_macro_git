@@ -157,6 +157,9 @@ def fetch_county_drought(
             if normalized.empty:
                 errors[state] = "No county rows returned."
             else:
+                dates = pd.to_datetime(normalized["Snapshot Date"], errors="coerce")
+                if dates.isna().any() or dates.gt(pd.Timestamp(target)).any() or dates.lt(pd.Timestamp(target - timedelta(days=10))).any():
+                    raise ValueError("County response did not contain a current weekly snapshot; retained data preserved")
                 frames.append(normalized)
         except Exception as exc:  # provider failure becomes an explicit partial-refresh report
             errors[state] = f"{type(exc).__name__}: {exc}"

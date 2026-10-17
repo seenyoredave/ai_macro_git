@@ -12,6 +12,7 @@ from analytics.private_capital import build_private_capital_realization
 from analytics.water_campus import campus_water_dossier, county_water_exposure_profile
 from config.benchmark_config import QQQ_WEIGHTS_EFFECTIVE_DATE
 from config.factor_config import FACTOR_DISPLAY_NAMES
+from loaders.credit_conditions_loader import load_credit_conditions, spread_snapshot
 from rendering.visual_system import render_plotly_chart
 from rendering.adoption import _adoption_source_rows
 from rendering.charts_common import COLORS
@@ -19,7 +20,7 @@ from rendering.charts_finance import component_bars
 from rendering.common import _coverage_text, _display_text
 from rendering.comparison import render_change_evidence
 from rendering.commercialization import filtered_ledger
-from rendering.components import fmt_number, render_line_break, render_section, render_static_table, render_tab_header
+from rendering.components import fmt_date, fmt_number, render_line_break, render_section, render_static_table, render_tab_header
 from rendering.data_center import _campus_detail, _operator_detail
 from rendering.dataframe import arrow_safe_dataframe
 from rendering.evidence_gateway import EVIDENCE_LOOKUP as _EVIDENCE_LOOKUP
@@ -104,7 +105,7 @@ def _coverage_rows(regime_metrics):
         ("Power Stress Index", (regime_metrics or {}).get("Power Stress Components", {}), 3),
         ("Power Capacity Gap", (regime_metrics or {}).get("Power Capacity Gap Components", {}), 4),
         ("Borrower Strain", (regime_metrics or {}).get("Borrower Strain Components", {}), 4),
-        ("Lender Strain", (regime_metrics or {}).get("Lender Strain Components", {}), 4),
+        ("Lender Strain", (regime_metrics or {}).get("Lender Strain Components", {}), 3),
     ]
     rows = []
     for product, result, total in groups:
@@ -804,14 +805,48 @@ def _render_market_reference_records(sector_data) -> None:
     render_static_table(_market_company_records(sector_data, scope))
 
 
+def _credit_spread_observation_rows():
+    snapshot = spread_snapshot(load_credit_conditions())
+    return pd.DataFrame([
+        {
+            "Series": f"{label} OAS",
+            "Observation": fmt_date(snapshot[label]["date"]),
+            "Spread (bp)": snapshot[label]["value"],
+            **{f"{n}-observation change (bp)": snapshot[label]["changes"].get(n, float("nan")) for n in (1, 5, 20)},
+            "Retrieved": snapshot[label].get("retrieved_at"),
+            "Source": f"https://fred.stlouisfed.org/series/{'BAMLC0A0CM' if label == 'IG' else 'BAMLH0A0HYM2'}",
+        }
+        for label in ("IG", "HY")
+    ])
+
+
+def _lender_observation_rows(components):
+    return pd.DataFrame([
+        {
+            "Component": name,
+            "Measure": payload.get("raw"),
+            "Units": payload.get("units", "%"),
+            "Observation": payload.get("as_of"),
+            "Retrieved": payload.get("retrieved_at"),
+            "Weight": payload.get("weight"),
+            "Source": payload.get("source"),
+            "Oldest cohort observation": payload.get("oldest_cohort_observation"),
+        }
+        for name, payload in (components or {}).items()
+    ])
+
+
 def _render_finance_reference_records(commercialization_data, debt_markets_data, regime_metrics) -> None:
     options = [
         "Commercial disclosures",
         "Forward commitment records",
         "Private-fund records",
         "Debt-market readings",
+        "Credit spread changes",
         "Borrower stress components",
         "Lender stress components",
+        "Lender weekly observations",
+        "Lender fundamental observations",
     ]
     view = st.radio("Reference dataset", options, horizontal=True, key="evidence-finance-reference-view")
     borrower_strain = (regime_metrics or {}).get("Borrower Strain Components", {}) or {}
@@ -828,10 +863,16 @@ def _render_finance_reference_records(commercialization_data, debt_markets_data,
         frame = _private_capital_detail_table(realization.get("funds", pd.DataFrame()))
     elif view == "Debt-market readings":
         frame = _debt_market_source_rows(debt_markets_data)
+    elif view == "Credit spread changes":
+        frame = _credit_spread_observation_rows()
     elif view == "Borrower stress components":
         frame = _borrower_strain_component_table(borrower_strain)
     elif view == "Lender stress components":
         frame = _lender_strain_component_table(lender_strain)
+    elif view == "Lender weekly observations":
+        frame = _lender_observation_rows(lender_strain.get("components"))
+    elif view == "Lender fundamental observations":
+        frame = _lender_observation_rows(lender_strain.get("fundamentals"))
     else:
         frame = filtered_ledger(
             commercialization_data,

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta
-from io import BytesIO, StringIO
+from io import BytesIO
 from pathlib import Path
 import time as time_module
 
@@ -14,7 +14,6 @@ from archive.archive_reader import load_energy_history
 from config.debug_config import debug_print
 from config.energy_config import (
     ENERGY_DATA_VERSION,
-    ENERGY_FRED_CSV_URL,
     ENERGY_POWER_SERIES,
     ENERGY_PUBLIC_SERIES,
     ENERGY_REFRESH_SERIES,
@@ -28,6 +27,7 @@ from config.deployment import repository_writes_enabled
 from helpers.atomic_io import atomic_write_csv
 from config.market_clock import EASTERN_TIME, eastern_now, utc_now
 from loaders.energy_market_loader import load_energy_market_data
+from loaders.official_series_refresh import fetch_fred_series_batch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ENERGY_SERIES_HISTORY_PATH = PROJECT_ROOT / "data" / "energy_series_history.csv"
@@ -189,15 +189,22 @@ def _normalize_fred_csv(frame: pd.DataFrame | None) -> pd.DataFrame:
     return _normalize_long_history(pd.concat(rows, ignore_index=True))
 
 def _fetch_public_energy_history() -> pd.DataFrame:
-    response = requests.get(
-        ENERGY_FRED_CSV_URL,
-        timeout=ENERGY_REQUEST_TIMEOUT,
-        headers={"User-Agent": "ai-macro-energy-tab/1.1"},
-    )
-    response.raise_for_status()
-    history = _normalize_fred_csv(pd.read_csv(StringIO(response.text)))
+    contracts = {**ENERGY_PUBLIC_SERIES, **ENERGY_POWER_SERIES}
+    fetched = fetch_fred_series_batch(spec["series_id"] for spec in contracts.values())
+    rows = []
+    errors = dict(getattr(fetched, "errors", {}))
+    for name, spec in contracts.items():
+        frame = fetched.get(spec["series_id"])
+        if frame is None or frame.empty:
+            errors.setdefault(spec["series_id"], "No numeric observations returned")
+            continue
+        part = frame.copy()
+        part["Series"] = name
+        rows.append(part[["Date", "Series", "Value"]])
+    history = _normalize_long_history(pd.concat(rows, ignore_index=True)) if rows else _empty_history()
     if history.empty:
         raise ValueError("FRED returned no recognized Energy series")
+    history.attrs["errors"] = errors
     return history
 
 _MONTHS = {
@@ -670,7 +677,9 @@ def _load_energy_data_cached(
             fetchers.append(("EIA retail prices", _fetch_retail_price_history))
         for label, fetcher in fetchers:
             try:
-                fresh_frames.append(fetcher())
+                fresh = fetcher()
+                fresh_frames.append(fresh)
+                refresh_errors.extend(f"{label} {sid}: {message}" for sid, message in fresh.attrs.get("errors", {}).items())
             except Exception as source_exc:
                 refresh_errors.append(f"{label}: {type(source_exc).__name__}: {source_exc}")
         if not fresh_frames:

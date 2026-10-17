@@ -155,10 +155,12 @@ def load_bdc_impairment_history(path=None):
     ].copy()
 
     rows = []
-    for observation_date, group in frame.groupby("Date", sort=True):
+    for observation_date in sorted(frame["Date"].unique()):
+        group = frame.loc[frame["Date"].le(observation_date)].sort_values("Date", kind="stable").drop_duplicates("Ticker", keep="last")
         total_cost = float(group["Portfolio Cost ($mm)"].sum())
         row = {
             "Date": observation_date,
+            "Oldest Cohort Observation": group["Date"].min().date().isoformat(),
             "Portfolio Cost ($mm)": total_cost,
             "Observations": int(group["Ticker"].nunique()),
             "Cohort": ", ".join(sorted(group["Ticker"].unique())),
@@ -200,7 +202,7 @@ def load_bdc_impairment_history(path=None):
         "Date", "Weighted Nonaccrual at Cost (%)", "Weighted Nonaccrual at Fair Value (%)",
         "Weighted PIK Income Share (%)", "Weighted NAV Change (%)",
         "Weighted Net Losses / Portfolio (%)", "Weighted Debt to Equity (x)",
-        "Portfolio Cost ($mm)", "Observations", "Cohort", "Source URL", "Metric Coverage",
+        "Portfolio Cost ($mm)", "Observations", "Cohort", "Source URL", "Metric Coverage", "Oldest Cohort Observation",
     ]
     if not rows:
         return pd.DataFrame(columns=columns)
@@ -647,7 +649,7 @@ def _component_payload(
     payload.update(extras or {})
     return payload
 
-def calculate_lender_strain(
+def _calculate_slow_lender_context(
     fred_data=None,
     *,
     bank_path=None,
@@ -793,6 +795,7 @@ def calculate_lender_strain(
             source=bdc_source,
             source_url=bdc_row.get("Source URL", "") if bdc_row is not None else "",
             extras={
+                "oldest_cohort_observation": bdc_row.get("Oldest Cohort Observation") if bdc_row is not None else None,
                 "cohort": bdc_row.get("Cohort", "") if bdc_row is not None else "",
                 "portfolio_cost_mm": bdc_row.get("Portfolio Cost ($mm)", np.nan) if bdc_row is not None else np.nan,
                 "metric_coverage": bdc_row.get("Metric Coverage", {}) if bdc_row is not None else {},
@@ -852,3 +855,16 @@ def calculate_lender_strain(
             ),
         },
     }
+
+
+def calculate_lender_strain(fred_data=None, *, bank_path=None, bank_capital_path=None, bdc_path=None, business_delinquency_path=None, pe_path=None, credit_data=None):
+    from loaders.credit_conditions_loader import load_credit_conditions
+    from analytics.weekly_lender_conditions import calculate_weekly_lender_conditions
+
+    result = calculate_weekly_lender_conditions(credit_data if credit_data is not None else load_credit_conditions())
+    slow = _calculate_slow_lender_context(fred_data, bank_path=bank_path, bank_capital_path=bank_capital_path, bdc_path=bdc_path, business_delinquency_path=business_delinquency_path, pe_path=pe_path)
+    result["fundamentals"] = slow["components"]
+    for component in result["fundamentals"].values():
+        component["weight"] = 0.0
+        component["active_weight"] = 0.0
+    return result

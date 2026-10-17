@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from datetime import date
+from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
 import os
 from pathlib import Path
+import threading
+import time
 from typing import Iterable
 
 import pandas as pd
@@ -13,8 +16,72 @@ from config.deployment import repository_writes_enabled
 from helpers.atomic_io import atomic_write_csv
 
 FRED_CSV_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv"
+FRED_API_URL = "https://api.stlouisfed.org/fred/series/observations"
 DEFAULT_TIMEOUT = 30
 AUTOMATION_TIMEOUT = 12
+_API_LOCK = threading.Lock()
+_API_NEXT_REQUEST = 0.0
+
+
+class FredSeriesBatch(dict):
+    """Successful series plus individual failures; failed series are never erased."""
+
+    def __init__(self, *args, errors=None, network_requests=0, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.errors = dict(errors or {})
+        self.network_requests = int(network_requests)
+
+
+def _fred_api_key() -> str:
+    key = str(os.getenv("FRED_API_KEY", "") or "").strip()
+    if key:
+        return key
+    try:
+        import streamlit as st
+        return str(st.secrets.get("FRED_API_KEY", "") or "").strip()
+    except Exception:
+        return ""
+
+
+def _wait_for_fred_slot() -> None:
+    # Share the rate budget across domain loaders within this process.
+    global _API_NEXT_REQUEST
+    with _API_LOCK:
+        now = time.monotonic()
+        if _API_NEXT_REQUEST > now:
+            time.sleep(_API_NEXT_REQUEST - now)
+        _API_NEXT_REQUEST = time.monotonic() + 0.6
+
+
+def _fetch_api_series(series_id: str, key: str, start_date: str | None, timeout: int) -> pd.DataFrame:
+    params = {"api_key": key, "file_type": "json", "series_id": series_id,
+              "sort_order": "asc", "limit": 100000}
+    if start_date:
+        params["observation_start"] = str(start_date)
+    _wait_for_fred_slot()
+    try:
+        response = requests.get(FRED_API_URL, params=params, timeout=timeout)
+        # Do not put the authenticated request URL into logs or retained reports.
+        if response.status_code != 200:
+            raise ValueError(f"FRED API HTTP {response.status_code} for {series_id}")
+        payload = response.json()
+        rows = payload.get("observations", [])
+        if int(payload.get("count", len(rows))) > len(rows):
+            raise ValueError(f"FRED API history was truncated for {series_id}")
+        raw = pd.DataFrame(rows)
+        if not {"date", "value"}.issubset(raw.columns):
+            raise ValueError(f"FRED API returned no recognized observations for {series_id}")
+        frame = pd.DataFrame({"Date": pd.to_datetime(raw["date"], errors="coerce"),
+                              "Value": pd.to_numeric(raw["value"], errors="coerce")})
+        frame = frame.replace([float("inf"), float("-inf")], float("nan"))
+        frame = frame.dropna().sort_values("Date").drop_duplicates("Date", keep="last")
+        if frame.empty:
+            raise ValueError(f"FRED API returned no numeric observations for {series_id}")
+        return frame.reset_index(drop=True)
+    except Exception as exc:
+        if isinstance(exc, ValueError) and str(exc).startswith("FRED API"):
+            raise
+        raise RuntimeError(f"FRED API {type(exc).__name__} for {series_id}") from None
 
 
 def _request_timeout(timeout: int | None = None) -> int:
@@ -60,15 +127,32 @@ def fetch_fred_series_batch(
     start_date: str | None = None,
     timeout: int | None = None,
 ) -> dict[str, pd.DataFrame]:
-    """Return multiple official FRED series with one network request.
+    """Use the authenticated API when configured, otherwise the public CSV.
 
-    The graph CSV endpoint accepts comma-separated series IDs.  Batching keeps
-    unattended refreshes from paying one full network timeout per retained
-    series when FRED is slow or unreachable.
+    API failures are isolated by series. A configured but failing API is reported
+    directly instead of repeating a known-broken graph request for every series.
     """
     ids = list(dict.fromkeys(str(series_id).strip() for series_id in series_ids if str(series_id).strip()))
     if not ids:
-        return {}
+        return FredSeriesBatch()
+    key = _fred_api_key()
+    if key:
+        def fetch(series_id):
+            try:
+                return series_id, _fetch_api_series(series_id, key, start_date, _request_timeout(timeout)), None
+            except Exception as exc:
+                return series_id, None, str(exc)
+        with ThreadPoolExecutor(max_workers=min(3, len(ids))) as pool:
+            results = list(pool.map(fetch, ids))
+        output = FredSeriesBatch(network_requests=len(ids))
+        for series_id, frame, error in results:
+            if error:
+                output.errors[series_id] = error
+            else:
+                output[series_id] = frame
+        if not output:
+            raise RuntimeError("; ".join(output.errors.values()))
+        return output
     params = {"id": ",".join(ids)}
     if start_date:
         params["cosd"] = str(start_date)
@@ -79,7 +163,10 @@ def fetch_fred_series_batch(
         headers={"User-Agent": "ai-macro-domain-refresh/1.1"},
     )
     response.raise_for_status()
-    return _parse_fred_response(response.content, ids)
+    output = FredSeriesBatch(_parse_fred_response(response.content, ids), network_requests=1)
+    output.errors = {sid: "FRED CSV returned no numeric observations" for sid in ids
+                     if sid not in output or output[sid].empty}
+    return output
 
 
 def fetch_fred_series(
@@ -90,13 +177,14 @@ def fetch_fred_series(
 ) -> pd.DataFrame:
     """Return one official FRED series as Date/Value after contract validation."""
     clean_id = str(series_id).strip()
-    result = fetch_fred_series_batch(
+    batch = fetch_fred_series_batch(
         [clean_id],
         start_date=start_date,
         timeout=timeout,
-    ).get(clean_id)
-    if result is None:
-        raise ValueError(f"FRED contract changed for {clean_id}; series column not found")
+    )
+    result = batch.get(clean_id)
+    if result is None or result.empty:
+        raise ValueError(getattr(batch, "errors", {}).get(clean_id, f"FRED returned no observations for {clean_id}"))
     return result
 
 
@@ -135,6 +223,7 @@ def refresh_templated_history(
 
     try:
         fetched_by_series = fetch_fred_series_batch(series_ids, start_date=start_date)
+        errors.update(getattr(fetched_by_series, "errors", {}))
     except Exception as exc:
         message = f"{type(exc).__name__}: {exc}"
         fetched_by_series = {}
@@ -150,6 +239,10 @@ def refresh_templated_history(
             errors.setdefault(series_id, "ValueError: source returned no numeric observations")
             continue
         template = template_rows[series_id]
+        previous = pd.to_datetime(retained.loc[retained[series_id_column].astype(str).str.strip().eq(series_id), date_column], errors="coerce")
+        if not previous.dropna().empty and fetched["Date"].max() < previous.max():
+            errors[series_id] = "Source history is older than retained observations; retained series preserved"
+            continue
         metadata = {
             column: template[column]
             for column in retained.columns
@@ -195,7 +288,7 @@ def refresh_templated_history(
         "refreshed_series": successful,
         "errors": errors,
         "returned_rows": int(len(combined)),
-        "network_requests": 1 if series_ids else 0,
+        "network_requests": getattr(fetched_by_series, "network_requests", len(series_ids) if _fred_api_key() else int(bool(series_ids))),
     }
     return combined, report
 
@@ -213,6 +306,11 @@ def refresh_single_series(
         fetched = fetch_fred_series(series_id, start_date=start_date)
         if fetched.empty:
             raise ValueError("source returned no numeric observations")
+        if target.exists() and target.stat().st_size:
+            retained = pd.read_csv(target)
+            previous = pd.to_datetime(retained[output_date_column], errors="coerce")
+            if not previous.dropna().empty and fetched["Date"].max() < previous.max():
+                raise ValueError("Source history is older than retained observations; retained series preserved")
         output = fetched.rename(
             columns={"Date": output_date_column, "Value": output_value_column}
         )

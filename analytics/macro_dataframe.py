@@ -5,7 +5,6 @@ import pandas as pd
 
 from analytics.borrower_strain_engine import normalize_borrower_strain_history
 from analytics.borrower_strain_history import combine_borrower_strain_history
-from analytics.lender_strain_engine import normalize_lender_strain_history
 from analytics.power_engine import normalize_power_stress_history
 from analytics.regime_engine import (
     AEI_VERSION,
@@ -204,7 +203,6 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
     signed_capital_history = normalize_borrower_strain_history(
         combine_borrower_strain_history(macro_history)
     )
-    signed_lender_strain_history = normalize_lender_strain_history(macro_history)
 
     if regime_metrics.get("Borrower Strain Source") == "Current":
         signed_capital_history = _append_current_metric_observation(
@@ -220,7 +218,7 @@ def build_macro_dashboard_data(sector_metrics, regime_metrics=None):
         .get("history")
     )
     if not isinstance(native_lender_strain_history, pd.DataFrame) or native_lender_strain_history.empty:
-        native_lender_strain_history = signed_lender_strain_history
+        native_lender_strain_history = pd.DataFrame(columns=["Date", "Lender Strain", "Lender Strain Version"])
 
     trends = {
         "aei_trend": _build_version_aware_aei_trend(

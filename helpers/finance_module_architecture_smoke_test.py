@@ -25,7 +25,7 @@ def _ordered(body: str, tokens: list[str]) -> None:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    _check('APP_VERSION = "v3.0.5.' in app, "Finance architecture must remain in the v3.0.5 patch line")
+    _check('APP_VERSION = "v3.0.6.' in app, "Finance credit upgrade must use the v3.0.6 feature line")
 
     source = (ROOT / "rendering" / "finance.py").read_text(encoding="utf-8")
     tab = _body(source, "render_finance_tab")
@@ -40,6 +40,7 @@ def main() -> None:
             '"Private-fund cash returns"',
             "_render_private_capital_realization()",
             '"Credit conditions"',
+            "render_credit_spreads()",
             "_render_debt_markets(debt_markets_data)",
             "_render_nfci(fred_data, nfci_history)",
             '"Borrower and lender stress"',

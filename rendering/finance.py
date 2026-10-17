@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from rendering.credit_spreads import render_credit_spreads
 from analytics.financial_conditions import nfci_direction, nfci_snapshot
 from analytics.private_capital import build_private_capital_realization
 from analytics.trend_engine import calc_trailing_point_change
@@ -209,14 +210,11 @@ def _render_financial_condition_detail(
     title,
     trend,
     components,
-    detail_table,
-    supplemental_tables=(),
 ):
-    del detail_table, supplemental_tables
     slug = title.lower().replace(" ", "-")
     with st.container(border=True, key=f"finance-panel-{slug}-detail"):
         detail_meta = (
-            "10-year history · FRED and direct BDC data"
+            "Weekly lender conditions · version 4.0"
             if title == "Lender Strain"
             else "10-year history · component contribution"
         )
@@ -246,6 +244,7 @@ def _render_financial_condition_detail(
                 config={"displayModeBar": True, "responsive": True},
                 key=f"finance-{slug}-components",
             )
+
 
 def _debt_market_item(debt_markets_data, name):
     return (((debt_markets_data or {}).get("series", {}) or {}).get(name, {}) or {})
@@ -452,8 +451,9 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
 
     render_section(
         "Credit conditions",
-        "Corporate-bond distress and Chicago Fed financial-conditions indexes.",
+        "Daily corporate credit spreads, bond-market distress, and Chicago Fed financial conditions.",
     )
+    render_credit_spreads()
     _render_debt_markets(debt_markets_data)
     _render_nfci(fred_data, nfci_history)
 
@@ -480,8 +480,13 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
             title="Lender Strain",
             value=_value(regime_metrics, "Lender Strain"),
             trend=lender_trend,
-            live_sources="FRED + SEC",
+            live_sources="Weekly FRED · credit and bank funding",
         )
+
+    if lender_strain.get("stale"):
+        st.caption(f"Weekly lender conditions retained through {fmt_date(lender_strain.get('as_of'))}.")
+    momentum = lender_strain.get("loan_momentum", {})
+    render_statline([("Bank lending momentum", fmt_number(momentum.get("13_week_change_pct"), 2, signed=True, suffix="%"), f"13-week loan growth · H.8 · {fmt_date(momentum.get('as_of'))}")], key_prefix="finance-lending-momentum")
 
     stress_view = st.radio(
         "Stress detail",
@@ -495,14 +500,12 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
             title="Lender Strain",
             trend=lender_trend,
             components=lender_strain.get("components", {}),
-            detail_table=pd.DataFrame(),
         )
     else:
         _render_financial_condition_detail(
             title="Borrower Strain",
             trend=borrower_trend,
             components=borrower_strain.get("components", {}),
-            detail_table=pd.DataFrame(),
         )
 
     render_evidence_gateway("finance")

@@ -145,7 +145,7 @@ def _lender_strain_component_table(lender_strain_result):
                 measure = f"Business-loan delinquency bridge: {fmt_decimal(raw)}%"
             if evidence_mode:
                 measure += f"; current evidence: {evidence_mode}"
-        else:
+        elif name == "PE Portfolio Financing Strain":
             reported_assets = pd.to_numeric(
                 payload.get("reported_assets_bn", np.nan), errors="coerce"
             )
@@ -154,6 +154,9 @@ def _lender_strain_component_table(lender_strain_result):
                 f"PIK / borrowings: {fmt_decimal(secondary)}%; "
                 f"reported assets {fmt_dollars(reported_assets * 1e9)}"
             )
+
+        else:
+            measure = f"{fmt_decimal(raw)} {payload.get('units', '')}"
 
         normalization = payload.get("normalization", {}) or {}
         if name == "PE Portfolio Financing Strain":
@@ -166,7 +169,7 @@ def _lender_strain_component_table(lender_strain_result):
             )
             normalization_text = " / ".join(methods)
         else:
-            normalization_text = str(normalization.get("method", ""))
+            normalization_text = str(normalization.get("method", "")) if isinstance(normalization, dict) else str(normalization)
 
         rows.append({
             "Component": name,

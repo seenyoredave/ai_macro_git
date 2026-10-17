@@ -90,6 +90,8 @@ from loaders.fred_loader import describe_fred_load, latest_fred_archive_date, lo
 from loaders.market_loader import describe_edgar_archive_status, describe_yf_archive_status, load_market_universe
 from loaders.market_valuation_loader import load_market_valuation_context
 from loaders.nfci_loader import load_nfci_history
+from loaders.credit_conditions_loader import load_credit_conditions
+from loaders.bdc_filings_loader import refresh_bdc_filings
 from loaders.snapshot_writer import persist_refresh_snapshots
 from loaders.current_context_loader import load_current_context
 from loaders.current_context_daily import (
@@ -107,8 +109,8 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.5.9"
-APP_STATE_SCHEMA_VERSION = "76.0-point-in-time-research-ui"
+APP_VERSION = "v3.0.6.1"
+APP_STATE_SCHEMA_VERSION = "77.0-weekly-credit"
 
 st.set_page_config(
     page_title="AI Macro",
@@ -238,6 +240,17 @@ if st.session_state.force_rebuild:
         refresh_token=st.session_state.fred_refresh_token,
         allow_live=load_policy.allows_live(RefreshSource.FRED),
     )
+
+    credit_conditions = load_credit_conditions(
+        force_refresh=st.session_state.force_fred_refresh,
+        allow_live=load_policy.allows_live(RefreshSource.FRED),
+    )
+    fred_report["credit_conditions"] = credit_conditions["load_report"]
+    bdc_report = refresh_bdc_filings(
+        force_refresh=st.session_state.force_edgar_refresh,
+        allow_live=load_policy.allows_live(RefreshSource.EDGAR),
+    )
+    fred_report["bdc_filings"] = bdc_report
 
     energy_market_scope = (
         "all" if refreshing("power") and refreshing("grid_storage")

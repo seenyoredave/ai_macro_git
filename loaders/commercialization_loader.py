@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 import requests
 import streamlit as st
+from bs4 import BeautifulSoup
 
 from config.deployment import repository_writes_enabled
 from helpers.atomic_io import atomic_write_csv
@@ -79,7 +80,12 @@ def _normalize(frame: pd.DataFrame) -> pd.DataFrame:
 def _text(url: str) -> str:
     response = requests.get(url, timeout=30, headers={"User-Agent":"ai-macro-commercialization/1.1"})
     response.raise_for_status()
-    return re.sub(r"\s+", " ", response.text.replace("\u2011", "-").replace("\u2013", "-").replace("\u2014", "-"))
+    soup = BeautifulSoup(response.text, "html.parser")
+    for element in soup(["script", "style", "noscript"]):
+        element.decompose()
+    text = soup.get_text(" ", strip=True)
+    text = text.replace("\u2011", "-").replace("\u2013", "-").replace("\u2014", "-")
+    return re.sub(r"\s+", " ", text)
 
 
 def _number(text: str, pattern: str, *, scale: float = 1.0) -> float | None:
@@ -94,7 +100,7 @@ def _parse_contract(key: str, text: str) -> dict[tuple[str, str, str, str], floa
         return {
             ("OpenAI","ChatGPT","Reach","Weekly active users"): _number(text, r"more than\s+([\d,.]+)\s+million weekly active users"),
             ("OpenAI","ChatGPT","Paid demand","Consumer subscribers"): _number(text, r"(?:over|more than)\s+([\d,.]+)\s+million (?:consumer )?subscribers"),
-            ("OpenAI","ChatGPT for Work","Paid demand","Paying business users"): _number(text, r"more than\s+([\d,.]+)\s+million paying business users"),
+            ("OpenAI","ChatGPT for Work","Paid demand","Paying business users"): _number(text, r"(?:more than|over)\s+([\d,.]+)\s+million paying business users"),
         }
     if key == "openai_economics":
         return {
@@ -103,8 +109,8 @@ def _parse_contract(key: str, text: str) -> dict[tuple[str, str, str, str], floa
         }
     if key == "microsoft_ai_arr":
         return {
-            ("Microsoft","AI business","Revenue realization","Annual revenue run rate"): _number(text, r"annual revenue run rate (?:of )?\$?([\d,.]+)\s+billion"),
-            ("Microsoft","AI business","Revenue realization","Annual revenue run-rate growth"): _number(text, r"growing\s+([\d,.]+)%\s+year-over-year"),
+            ("Microsoft","AI business","Revenue realization","Annual revenue run rate"): _number(text, r"annual revenue run rate (?:of )?\$\s*([\d,.]+)\s+billion"),
+            ("Microsoft","AI business","Revenue realization","Annual revenue run-rate growth"): _number(text, r"annual revenue run rate.{0,100}?(?:growing|up)\s+([\d,.]+)\s*%\s+year-over-year"),
         }
     if key == "alphabet_q2":
         return {

@@ -245,19 +245,13 @@ At least three of the four components must be valid. The internal 0–100 advers
 """,
 
     "Lender Strain": """
-Measures deterioration across a selected U.S. lender-channel proxy using bank lending standards, aggregate bank capital, credit impairment, and lagged private-equity fund aggregates.
+Weekly lender conditions, version 4.0. Scale: -100 to +100; positive values indicate tighter credit conditions, greater reliance on borrowing, or smaller cash buffers.
 
-Bank Channel = 0.50(Bank Credit Tightening) + 0.50(Bank Capital Strain)
+Lender Strain = 0.50(Credit Conditions) + 0.25(Bank Borrowing Reliance) + 0.25(Bank Cash Buffer).
 
-Nonbank Channel = 0.50(Private Credit Impairment) + 0.50(PE Portfolio Financing Strain)
+Credit Conditions is 100 × tanh(Chicago Fed NFCI credit subindex). Borrowing reliance is bank borrowings divided by deposits; cash buffer is cash divided by assets. H.8 amounts are converted to consistent dollar units and matched on observation date. The two funding ratios use trailing five-year percentile ranks, with at least 53 weekly observations; a lower cash ratio raises strain. All three components are required.
 
-Lender Strain = 2 × [0.60(Bank Channel) + 0.40(Nonbank Channel) - 50]
-
-Fixed component weights are 30% Bank Credit Tightening, 30% Bank Capital Strain, 20% Private Credit Impairment, and 20% PE Portfolio Financing Strain. All four pillars must be valid. Scale: -100 to +100.
-
-The ten-year history uses the Federal Reserve business-loan delinquency rate before the listed-BDC nonaccrual series begins in late 2025. The current reading uses the listed-BDC series. The historical bridge and direct series are normalized independently before entering the fixed-weight composite.
-
-**Interpretation:** Positive values indicate tighter behavior or greater impairment in the selected proxy set. Negative values indicate stronger conditions. It is not a real-time census of banks, private credit, or private equity, and it is not AI-specific.
+The history reconstructs this formula throughout using current-vintage source histories. Quarterly lending standards, capital, delinquency, BDC nonaccruals, and older private-fund statistics appear separately with their observation dates. Loan growth is displayed as lending momentum. Daily IG/HY OAS is shown separately in Credit spreads.
 """,
 
     "NFCI": """
