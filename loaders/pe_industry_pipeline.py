@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import sys
 from urllib.parse import urljoin, urlparse
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -36,6 +37,8 @@ KPMG_SEEDS = (
 ACG_SEEDS = (
     "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective",
     "https://www.acg.org/news-trends/news/gf-data-reports-show-stronger-financing-markets-fueled-ma-gains-q1",
+    "https://www.acg.org/news-trends/news/gf-data-releases-q3-2025-ma-and-leverage-reports",
+    "https://www.acg.org/news-trends/news/gf-data-releases-q2-2025-ma-and-leverage-reports",
 )
 COLUMNS = ("source", "metric", "period", "period_end", "geography", "value", "unit",
            "population", "sample_count", "precision", "source_url", "published_on", "definition")
@@ -58,7 +61,15 @@ def fetch(url: str, source: str, *, limit=8_000_000) -> bytes:
     user_agent = (os.environ.get("SEC_USER_AGENT") or "").strip() if source == "sec" else ""
     user_agent = user_agent or "AI Macro PE research (public disclosure retrieval)"
     req = Request(url, headers={"User-Agent": user_agent, "Accept": "text/html,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,*/*"})
-    with urlopen(req, timeout=30) as response:
+    try:
+        response = urlopen(req, timeout=30)
+    except HTTPError as exc:
+        exc.close()
+        if source == "sec" and exc.code in (403, 429):
+            identity = "SEC_USER_AGENT is not set locally" if not os.environ.get("SEC_USER_AGENT", "").strip() else "SEC_USER_AGENT is set"
+            raise SourceFormatError(f"SEC HTTP {exc.code}: request denied ({identity}); retain prior observations and verify on GitHub Actions") from exc
+        raise
+    with response:
         if not _safe_source_url(response.geturl(), source):
             raise SourceFormatError(f"Unexpected {source} redirect: {response.geturl()}")
         data = response.read(limit + 1)
@@ -131,16 +142,29 @@ def validate_observations(rows: list[dict], source: str) -> pd.DataFrame:
         for period, group in frame.groupby("period_end"):
             if set(group.metric) != expected_metrics:
                 raise SourceFormatError(f"Incomplete SEC {period}")
-            if group.period.nunique() != 1 or group.geography.ne("United States").any():
-                raise SourceFormatError("SEC period or geography mismatch")
+            if (group.period.nunique() != 1 or not group.period.iloc[0].endswith("Q4")
+                    or group.geography.ne("SEC Form PF reporting population").any()):
+                raise SourceFormatError("SEC annual period or reporting population mismatch")
         if len(frame.period_end.unique()) < 4:
-            raise SourceFormatError("SEC history too short")
+            raise SourceFormatError("SEC annual history too short")
     if source == "kpmg":
         for period, group in frame.groupby("period_end"):
-            if set(group.metric) != expected_metrics or group.period.nunique() != 1 or group.geography.ne("Global").any():
-                raise SourceFormatError(f"Incomplete global H1 observations for {period}")
-    if source == "acg" and frame.geography.ne("Not specified").any():
-        raise SourceFormatError("ACG sample geography mismatch")
+            year = int(str(period)[:4])
+            present = set(group.metric)
+            # The Q2 2025 public press release has a direct fundraising
+            # observation and a recoverable Q1+Q2 deal pair, but does not
+            # disclose a global H1 exit value/count pair. Keep the gap visible.
+            required = expected_metrics if year >= 2026 else {"deal_value", "fundraising"}
+            if (not required <= present or group.period.nunique() != 1 or
+                    group.period.iloc[0] != f"H1 {year}" or group.geography.ne("Global").any()):
+                raise SourceFormatError(f"Incomplete or mismatched global H1 observations for {period}")
+    if source == "acg":
+        if frame.geography.ne("Not specified").any():
+            raise SourceFormatError("ACG sample geography mismatch")
+        if not frame.population.isin({
+                "GF Data contributing PE-sponsored transactions ($1m-$500m EV)",
+                "GF Data contributing PE-sponsored transactions ($10m-$500m EV)"}).all():
+            raise SourceFormatError("Unverified GF Data deal-size population")
     frame["value"] = numeric.astype(float)
     return frame.sort_values(["period_end", "metric"], kind="stable").reset_index(drop=True)
 
@@ -167,7 +191,7 @@ def source_candidate(source: str) -> tuple[list[dict], list[str]]:
     except Exception as exc:
         discovered = []
         problems.append(f"{source} index: {type(exc).__name__}: {exc}")
-    candidates = list(dict.fromkeys((*seeds, *discovered)))[:10]
+    candidates = list(dict.fromkeys((*seeds, *discovered)))[:12]
     obs = {}
     for url in candidates:
         try:
@@ -190,9 +214,16 @@ def persist_source(source: str, new: pd.DataFrame, path: Path) -> dict:
         if new.period_end.max() < old.period_end.max():
             raise SourceFormatError("New source is older than retained data")
         # Retain historical records when release index pagination changes.
+        prior = old.set_index(["metric", "period_end"])
+        incoming = new.set_index(["metric", "period_end"])
+        for key in prior.index.intersection(incoming.index):
+            previous, current = prior.loc[key], incoming.loc[key]
+            if (previous["value"] != current["value"] or previous["sample_count"] != current["sample_count"]
+                    or previous["population"] != current["population"]):
+                raise SourceFormatError(f"Published {source} observation changed; review required: {key}")
+        # Preserve the first validated source/provenance for unchanged periods.
         both = pd.concat([old, new], ignore_index=True)
-        both = both.sort_values(["metric", "period_end", "published_on"], kind="stable")
-        both = both.drop_duplicates(["metric", "period_end"], keep="last")
+        both = both.drop_duplicates(["metric", "period_end"], keep="first")
         validated = validate_observations(both.to_dict("records"), source)
         changed = not validated.to_csv(index=False).strip() == old.to_csv(index=False).strip()
     else:
@@ -206,6 +237,8 @@ def persist_source(source: str, new: pd.DataFrame, path: Path) -> dict:
 
 
 def run(*, out_dir: Path, selected=SOURCES) -> list[dict]:
+    if out_dir.resolve() == PRODUCTION.resolve() and os.environ.get("AI_MACRO_MODE") != "automation":
+        raise PermissionError("Publishing PE industry history requires authorized automation mode")
     results = []
     for source in selected:
         path = out_dir / f"pe_industry_{source}.csv"

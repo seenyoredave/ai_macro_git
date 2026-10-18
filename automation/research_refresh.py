@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import hashlib
+from pathlib import Path
 from datetime import datetime, timezone
 import time
 from typing import Any
@@ -45,6 +47,7 @@ from loaders.infrastructure_loader import load_infrastructure_data
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
 from loaders.private_capital_loader import PRIVATE_CAPITAL_REFRESH_VERSION, refresh_private_capital
+from loaders.pe_industry_pipeline import PRODUCTION as PE_INDUSTRY_DIR, run as refresh_pe_industry
 from loaders.credit_conditions_loader import load_credit_conditions
 from loaders.bdc_filings_loader import refresh_bdc_filings
 from loaders.snapshot_writer import persist_refresh_snapshots
@@ -95,6 +98,7 @@ _NODE_SOURCE_MAP: dict[str, tuple[RefreshSource, ...]] = {
     # generic snapshot_writer authorization.
     "commercialization": (),
     "private_capital": (),
+    "pe_industry": (),
 }
 
 
@@ -579,6 +583,36 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         semantic_output={"as_of": private_report.get("source_as_of"), "source_url": private_report.get("source_url"), "snapshot_signature": private_report.get("snapshot_signature")},
         elapsed_sec=_elapsed(private_started),
     )
+    # PE industry is an independently scheduled retained source. Its three
+    # definitions are validated separately, so one blocked publisher cannot
+    # erase a previously published source or interrupt the other two.
+    pe_industry_live = live and plan.should_refresh("pe_industry")
+    pe_industry_started = time.perf_counter()
+    pe_industry_results = (refresh_pe_industry(out_dir=PE_INDUSTRY_DIR)
+                           if pe_industry_live else [])
+    pe_industry_failures = {
+        row["source"]: row.get("error", "source unavailable")
+        for row in pe_industry_results if row["status"] in {"unavailable", "retained_on_failure"}
+    }
+    pe_industry_report = {
+        "source_mode": ("partial_refresh" if pe_industry_failures else "live_refresh")
+                       if pe_industry_live else "retained",
+        "results": pe_industry_results,
+        "errors": pe_industry_failures,
+    }
+    pe_industry_signature = {
+        source: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+        for source in ("sec", "kpmg", "acg")
+        for path in (PE_INDUSTRY_DIR / f"pe_industry_{source}.csv",)
+    }
+    _record_node(
+        plan,
+        "pe_industry",
+        attempted_live=pe_industry_live,
+        report=pe_industry_report,
+        semantic_output=pe_industry_signature,
+        elapsed_sec=_elapsed(pe_industry_started),
+    )
     _record_node(
         plan,
         "fred",
@@ -710,6 +744,7 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         "economic_outcomes": economic_impact_data.get("load_report", {}),
         "commercialization": commercialization_data.get("load_report", {}),
         "private_capital": private_report,
+        "pe_industry": pe_industry_report,
         "current_context": context_refresh,
         "snapshot_write": snapshot_write_report,
     }
