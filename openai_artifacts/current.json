@@ -1593,13 +1593,144 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
-    "expires_at": "2026-10-18T18:45:46.173698+00:00",
+    "current_evidence_snapshot_id": "7869a16ec3d1cabcef271d1d",
+    "expires_at": "2026-10-19T09:06:10.027896+00:00",
     "lease_hours": 24,
-    "materiality": {},
-    "published_at": "2026-10-17T18:45:46.173698+00:00",
-    "renewal_count": 0,
-    "source": "generation"
+    "materiality": {
+      "baseline_available": true,
+      "change_count": 12,
+      "changes": [
+        {
+          "domain": "finance",
+          "field": "references",
+          "kind": "evidence_metadata_changed",
+          "material": false
+        },
+        {
+          "domain": "compute",
+          "fact_id": "compute.information_processing_investment_growth",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.16819019599244678,
+          "old_value": 0.1592742836027563,
+          "percentage_point_change": 0.9000000000000004,
+          "relative_change": 0.05660377358490568
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.private_capital_dpi",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.7161941791989341,
+          "old_value": 1.1842385657863554,
+          "percentage_point_change": null,
+          "relative_change": 0.3952281238845076
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.private_capital_mature_funds",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 18.0,
+          "old_value": 31.0,
+          "percentage_point_change": null,
+          "relative_change": 0.41935483870967744
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.private_capital_realized_share",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.37310320388656953,
+          "old_value": 0.54868289798829,
+          "percentage_point_change": 17.6,
+          "relative_change": 0.3205828779599272
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.private_capital_rvpi",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 1.2033663384766813,
+          "old_value": 0.974091081680859,
+          "percentage_point_change": null,
+          "relative_change": 0.23537353036863098
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.private_capital_tvpi",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 1.9195605176756154,
+          "old_value": 2.1583296474672142,
+          "percentage_point_change": null,
+          "relative_change": 0.11062681276319065
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.aei",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 29.56573244802137,
+          "old_value": 29.565730486075168,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.effective_firms",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 18.092625264040933,
+          "old_value": 18.094327815908734,
+          "percentage_point_change": null,
+          "relative_change": 9.409312604053757e-05
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.equal_weight_return",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.19952717331821718,
+          "old_value": 0.19952717753837437,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.pressure",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 47.92805829459759,
+          "old_value": 47.92805801525662,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.top_10_share",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.650466935783711,
+          "old_value": 0.6504283704716508,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        }
+      ],
+      "current_snapshot_id": "7869a16ec3d1cabcef271d1d",
+      "decision": "generate_material_change",
+      "exact_match": false,
+      "immaterial_change_count": 7,
+      "material": true,
+      "material_change_count": 5,
+      "percentage_point_threshold": 2.0,
+      "previous_snapshot_id": "1e0119a785d4e78984cd6c94",
+      "relative_change_threshold": 0.1,
+      "version": "1.2.0"
+    },
+    "published_at": "2026-10-18T09:06:10.027896+00:00",
+    "renewal_count": 1,
+    "source": "automation_generation_fallback"
   },
   "raw_responses": {
     "editorial_synthesis": {

@@ -1,0 +1,18 @@
+{
+  "source": "Washington State Investment Board Private Equity IRR",
+  "source_short": "WSIB",
+  "source_url": "https://www.sib.wa.gov/docs/reports/quarterly/ir033126.pdf",
+  "source_as_of": "2026-03-31",
+  "retrieved_at_utc": "2026-10-18T09:04:12.005209+00:00",
+  "year_basis": "initial investment year",
+  "selection_method": "WSIB holdings in named technology-focused manager families with an initial investment in 2012 or later; excludes secondary and co-investment positions. Fund-level returns are not attributable solely to AI.",
+  "important_limitations": [
+    "Quarterly private-fund disclosures are published with a reporting lag.",
+    "Investment year reflects the reporting LP's first investment, and may differ from fund vintage.",
+    "Each LP's cash flows describe its own holdings. The displayed cohort uses one source and observation date."
+  ],
+  "index_url": "https://www.sib.wa.gov/reports.html",
+  "source_pdf_sha256": "5579d7de74aa246c735f3ff2627e54180cbe277d9b601a50c683b87f49de7fd0",
+  "fund_count": 29,
+  "manager_count": 7
+}
