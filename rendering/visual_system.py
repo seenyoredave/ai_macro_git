@@ -104,14 +104,15 @@ def render_plotly_chart(
     """Render a Plotly surface through the shared platform interaction contract."""
     merged = copy.deepcopy(DEFAULT_PLOTLY_CONFIG)
     merged.update(config or {})
-    merged["displayModeBar"] = role != "trend" if "displayModeBar" not in (config or {}) else bool((config or {})["displayModeBar"])
+    # Restore the chart toolbar across all domains. Older call sites still
+    # provide displayModeBar=False; the shared interaction contract overrides
+    # those legacy per-chart settings until they can be cleaned up separately.
+    merged["displayModeBar"] = True
     merged["responsive"] = True
     if role == "map":
-        # One interaction contract for every analytical map. Plotly's
-        # scrollZoom config enables wheel/two-finger zoom; geographic freedom
-        # itself is controlled by the absence of layout.map.bounds.
+        # Maps also support wheel/two-finger zoom; geographic freedom itself
+        # is controlled by the absence of layout.map.bounds.
         merged["scrollZoom"] = True
-        merged["displayModeBar"] = True
 
     chart_description = str(description or _signature_description(key) or "").strip()
     if chart_description:

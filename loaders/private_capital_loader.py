@@ -1,4 +1,4 @@
-"""Automated quarterly private-fund disclosures: WSIB plus a CalPERS HTML probe."""
+"""Broad public-pension private equity disclosure ingestion and refresh."""
 
 from __future__ import annotations
 
@@ -19,12 +19,13 @@ from pypdf import PdfReader
 from analytics.private_capital import (
     build_private_capital_realization,
     validate_private_capital_snapshot,
+    validate_broad_pe_snapshot,
 )
 from config.deployment import repository_writes_enabled
 from helpers.atomic_io import atomic_write_bundle
 
 ROOT = Path(__file__).resolve().parents[1]
-PRIVATE_CAPITAL_REFRESH_VERSION = "wsib-calpers-v2"
+PRIVATE_CAPITAL_REFRESH_VERSION = "broad-pe-wsib-calpers-v3"
 INDEX_URL = "https://www.sib.wa.gov/reports.html"
 CSV_PATH = ROOT / "data/private_capital/wsib_fund_performance.csv"
 METADATA_PATH = ROOT / "data/private_capital/wsib_metadata.json"
@@ -94,11 +95,13 @@ def _amount(value: str) -> float:
     return -float(value[1:-1]) if value.startswith("(") else float(value)
 
 
-def _manager(fund: str) -> str | None:
+def _manager(fund: str) -> str:
+    """Approximate fund-family grouping; the exact reported Fund title is authoritative."""
     for pattern, name in MANAGERS:
         if pattern.search(fund):
             return name
-    return None
+    # The source has no distinct manager field. This is a grouping aid only.
+    return " ".join(fund.split()[:2])
 
 
 def parse_report(pdf_bytes: bytes, *, as_of: date) -> pd.DataFrame:
@@ -121,8 +124,6 @@ def parse_report(pdf_bytes: bytes, *, as_of: date) -> pd.DataFrame:
                 continue
             fund = candidate.group("fund")
             manager = _manager(fund)
-            if manager is None or re.search(r"secondary|co.?invest", fund, re.I):
-                continue
             started = datetime.strptime(candidate.group("started"), "%m/%d/%Y").date()
             if started > as_of or started.year < 2012:
                 continue
@@ -140,15 +141,72 @@ def parse_report(pdf_bytes: bytes, *, as_of: date) -> pd.DataFrame:
             irr = values.group("irr")
             rows.append({
                 "Manager": manager, "Fund": fund, "Vintage": started.year,
-                "Exposure Tier": "Technology-focused manager",
+                "Exposure Tier": "Disclosed PE holding",
                 "Capital Committed": _amount(values.group("committed")),
                 "Paid In Capital": paid, "Distributions": distributed,
                 "NAV": nav,
                 "Net IRR": None if irr == "N/A" else _amount(irr.replace("%", "")),
                 "Source As Of": as_of.isoformat(),
             })
-    frame = pd.DataFrame(rows)
-    validate_private_capital_snapshot(frame, expected_date=as_of)
+    frame = pd.DataFrame(rows, columns=COLUMNS)
+    validate_broad_pe_snapshot(frame, metadata={"cohort_scope": "broad_pe", "source_as_of": as_of.isoformat()})
+    return frame.sort_values(["Vintage", "Manager", "Fund"], ascending=[False, True, True]).reset_index(drop=True)
+
+
+CALSTRS_ROW = re.compile(
+    rf"^(?P<fund>.+?)\s+(?P<year>(?:19|20)\d{{2}})\s+"
+    rf"(?P<committed>{AMOUNT})\s+(?P<paid>{AMOUNT})\s+"
+    rf"(?P<distributed>{AMOUNT})\s+(?P<nav>{AMOUNT})\s+"
+    r"(?P<irr>\(?-?\d+(?:\.\d+)?\)?|N/A)$",
+    re.I,
+)
+CALSTRS_NO_CASH = re.compile(
+    rf"^.+?\s+(?:19|20)\d{{2}}\s+{AMOUNT}\s+-\s+-\s+0\.00$"
+)
+
+
+def parse_calstrs_pdf(pdf_bytes: bytes, *, as_of: date) -> pd.DataFrame:
+    """Rebuild the bundled CalSTRS broad-cohort CSV from its original PDF."""
+    if not pdf_bytes.startswith(b"%PDF"):
+        raise ValueError("CalSTRS source is not a PDF")
+    reader = PdfReader(BytesIO(pdf_bytes))
+    if not 2 <= len(reader.pages) <= 25:
+        raise ValueError("CalSTRS PDF page count changed")
+    expected = f"As of {as_of:%B} {as_of.day}, {as_of.year}"
+    if expected.lower() not in " ".join((reader.pages[0].extract_text() or "").split()).lower():
+        raise ValueError("CalSTRS report observation date mismatch")
+    rows = []
+    observed = 0
+    for page in reader.pages:
+        for raw in (page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False) or "").splitlines():
+            line = " ".join(raw.split())
+            if not re.match(r"^.+?\s+(?:19|20)\d{2}\s", line):
+                continue
+            observed += 1
+            match = CALSTRS_ROW.fullmatch(line)
+            if match is None:
+                if CALSTRS_NO_CASH.fullmatch(line):
+                    continue
+                raise ValueError(f"Unrecognized CalSTRS holding: {line}")
+            details = match.groupdict()
+            year = int(details["year"])
+            paid = _amount(details["paid"])
+            if year < 2012 or paid <= 0:
+                continue
+            irr = details["irr"]
+            rows.append({
+                "Manager": _manager(details["fund"]), "Fund": details["fund"],
+                "Vintage": year, "Exposure Tier": "Disclosed PE holding",
+                "Capital Committed": _amount(details["committed"]),
+                "Paid In Capital": paid, "Distributions": _amount(details["distributed"]),
+                "NAV": _amount(details["nav"]),
+                "Net IRR": None if irr.upper() == "N/A" else _amount(irr),
+                "Source As Of": as_of.isoformat(),
+            })
+    if observed < 150:
+        raise ValueError("CalSTRS PDF extraction omitted too many holdings")
+    frame = pd.DataFrame(rows, columns=COLUMNS)
+    validate_broad_pe_snapshot(frame, metadata={"cohort_scope": "broad_pe", "source_as_of": as_of.isoformat()})
     return frame.sort_values(["Vintage", "Manager", "Fund"], ascending=[False, True, True]).reset_index(drop=True)
 
 
@@ -200,9 +258,9 @@ def parse_calpers(html: str) -> tuple[date, pd.DataFrame]:
     rows = []
     for _, record in matching[0].iterrows():
         fund = str(record["fund"]).strip()
-        manager = _manager(fund)
-        if manager is None or re.search(r"secondary|co.?invest", fund, re.I):
+        if not fund or fund.casefold().startswith(("total", "subtotal")):
             continue
+        manager = _manager(fund)
         year = _financial_number(record["vintageyear"])
         if year < 2012:
             continue
@@ -216,14 +274,14 @@ def parse_calpers(html: str) -> tuple[date, pd.DataFrame]:
             raise ValueError(f"CalPERS distributions exceed total fund value: {fund}")
         rows.append({
             "Manager": manager, "Fund": fund, "Vintage": year,
-            "Exposure Tier": "Technology-focused manager",
+            "Exposure Tier": "Disclosed PE holding",
             "Capital Committed": _financial_number(record["capitalcommitted"]),
             "Paid In Capital": paid, "Distributions": distributed,
             "NAV": max(0.0, nav), "Net IRR": _financial_number(record["netirr"], missing_ok=True),
             "Source As Of": as_of.isoformat(),
         })
-    frame = pd.DataFrame(rows)
-    validate_private_capital_snapshot(frame, expected_date=as_of)
+    frame = pd.DataFrame(rows, columns=COLUMNS)
+    validate_broad_pe_snapshot(frame, metadata={"cohort_scope": "broad_pe", "source_as_of": as_of.isoformat()})
     return as_of, frame.sort_values(["Vintage", "Manager", "Fund"], ascending=[False, True, True]).reset_index(drop=True)
 
 
@@ -240,14 +298,14 @@ def _existing(data_path: Path, metadata_path: Path) -> tuple[pd.DataFrame, dict]
     try:
         metadata = json.loads(metadata_path.read_text())
         frame = pd.read_csv(data_path)
-        validate_private_capital_snapshot(frame, expected_date=metadata["source_as_of"])
+        validate_broad_pe_snapshot(frame, metadata=metadata)
         return frame, metadata
     except (OSError, ValueError, KeyError, TypeError):
         return pd.DataFrame(), {}
 
 
 def _save_snapshot(frame, metadata, *, data_path, metadata_path) -> dict:
-    as_of = validate_private_capital_snapshot(frame, expected_date=metadata["source_as_of"])
+    as_of = validate_broad_pe_snapshot(frame, metadata=metadata)
     prior, prior_meta = _existing(data_path, metadata_path)
     if not prior.empty:
         if as_of < pd.Timestamp(prior_meta["source_as_of"]):
@@ -269,9 +327,13 @@ def _metadata(*, source_short, source_url, as_of) -> dict:
         "source": "Washington State Investment Board Private Equity IRR" if source_short == "WSIB" else "CalPERS Private Equity Program Fund Performance Review",
         "source_short": source_short, "source_url": source_url,
         "source_as_of": as_of.isoformat(), "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
-        "year_basis": "initial investment year",
-        "selection_method": f"{source_short} holdings in named technology-focused manager families with an initial investment in 2012 or later; excludes secondary and co-investment positions. Fund-level returns are not attributable solely to AI.",
-        "important_limitations": ["Quarterly private-fund disclosures are published with a reporting lag.", "Investment year reflects the reporting LP's first investment, and may differ from fund vintage.", "Each LP's cash flows describe its own holdings. The displayed cohort uses one source and observation date."] + (["CalPERS discloses active partnerships; exited partnerships are excluded."] if source_short == "CalPERS" else []),
+        "cohort_scope": "broad_pe", "year_basis": "initial investment year",
+        "selection_method": f"All reported {source_short} private-equity fund holdings with an initial investment year of 2012 or later and positive paid-in capital; no manager- or sector-based filter.",
+        "important_limitations": [
+            "These are one pension investor's holdings, not an industry-wide fund-return estimate.",
+            "Valuations are reported fund NAV, not transaction valuation multiples.",
+            "Investment year reflects the reporting LP's first investment and may differ from fund vintage.",
+        ] + (["CalPERS lists active partnerships; exited partnerships are excluded."] if source_short == "CalPERS" else []),
     }
 
 

@@ -9,6 +9,7 @@ from analytics.capital_commitments import load_commitment_components
 from analytics.hhi_engine import sector_hhi_component_breakdown
 from analytics.market_ledger import build_market_ledger
 from analytics.private_capital import build_private_capital_realization
+from analytics.pe_market_context import load_pe_market_context
 from analytics.water_campus import campus_water_dossier, county_water_exposure_profile
 from config.benchmark_config import QQQ_WEIGHTS_EFFECTIVE_DATE
 from config.factor_config import FACTOR_DISPLAY_NAMES
@@ -501,7 +502,20 @@ def _render_market_finance_evidence(fred_data, sector_data, sector_metrics, debt
     render_edgar_data(sector_data)
     with st.expander("Debt-market observations", expanded=False):
         render_static_table(_debt_market_source_rows(debt_markets_data))
-    with st.expander("Private-capital fund observations", expanded=False):
+    with st.expander("Private-equity industry observations", expanded=False):
+        pe_market = load_pe_market_context()
+        if pe_market.empty:
+            st.caption("No retained industry observations.")
+        else:
+            columns = ["metric", "label", "geography", "period", "period_start", "period_end",
+                       "value", "unit", "precision", "count", "count_unit", "source",
+                       "source_url", "published_on", "definition"]
+            market_detail = pe_market[columns].copy()
+            for date_col in ("period_start", "period_end", "published_on"):
+                market_detail[date_col] = market_detail[date_col].dt.strftime("%Y-%m-%d")
+            render_static_table(market_detail)
+            st.caption("Industry transaction and fundraising observations are retained separately from pension-fund returns.")
+    with st.expander("Private-equity pension fund observations", expanded=False):
         private_capital = build_private_capital_realization()
         private_funds = private_capital.get("funds", pd.DataFrame())
         private_metadata = private_capital.get("metadata", {}) or {}
@@ -1109,7 +1123,7 @@ def _render_domain_technical_records(
         render_macro_data(fred_data)
         with st.expander("Debt-market observations", expanded=False):
             render_static_table(_debt_market_source_rows(debt_markets_data))
-        with st.expander("Private-capital fund observations", expanded=False):
+        with st.expander("Private-equity pension fund observations", expanded=False):
             realization = build_private_capital_realization()
             render_static_table(_private_capital_detail_table(realization.get("funds", pd.DataFrame()), year_basis=(realization.get("metadata") or {}).get("year_basis", "vintage")))
     elif selected == "compute":

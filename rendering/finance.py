@@ -7,6 +7,7 @@ import streamlit as st
 from rendering.credit_spreads import render_credit_spreads
 from analytics.financial_conditions import nfci_direction, nfci_snapshot
 from analytics.private_capital import build_private_capital_realization
+from analytics.pe_market_context import build_pe_market_context
 from analytics.trend_engine import calc_trailing_point_change
 from config.debt_markets_config import DEBT_MARKET_SERIES
 from rendering.evidence_gateway import render_evidence_gateway
@@ -20,6 +21,8 @@ from rendering.charts_finance import (
     financial_conditions_history,
     funding_history,
     private_capital_realization_map,
+    pe_global_capital_flow_chart,
+    pe_buyout_valuation_chart,
 )
 from rendering.common import _value
 from rendering.commercialization import metric_source_date, metric_value
@@ -282,8 +285,75 @@ def _private_capital_detail_table(funds: pd.DataFrame, *, year_basis: str = "vin
     result = display[[column for column in columns if column in display.columns]].sort_values(
         ["Vintage", "Manager", "Fund"], ascending=[False, True, True], kind="stable"
     )
-    return result.rename(columns={"Vintage": "Initial investment year"}) if year_basis == "initial investment year" else result
+    names = {"Manager": "Fund family (derived)"}
+    if year_basis == "initial investment year":
+        names["Vintage"] = "Initial investment year"
+    return result.rename(columns=names)
 
+
+
+def _private_capital_cohort_table(cohorts: list[dict]) -> pd.DataFrame:
+    """Compact, directly comparable fund-age rows from paid-in-weighted LP cash flows."""
+    return pd.DataFrame([
+        {
+            "Fund age": row["maturity"],
+            "Holdings": int(row["fund_count"]),
+            "Paid in": _fmt_dollars(row["paid_in"]),
+            "DPI": f"{row['dpi']:.2f}x",
+            "TVPI": f"{row['tvpi']:.2f}x",
+            "Cash realized": f"{100 * row['realized_share']:.0f}%",
+        }
+        for row in cohorts
+    ])
+
+
+def _render_pe_market_context(context):
+    flows = (context or {}).get("flows", {}) or {}
+    valuations = (context or {}).get("valuations", {}) or {}
+    previous_flows = (context or {}).get("previous_flows", {}) or {}
+    yoy = (context or {}).get("flow_yoy_pct", {}) or {}
+    if not flows or not valuations:
+        st.caption("Private-equity industry observations are unavailable.")
+        return
+
+    fund_date = pd.Timestamp(flows["deal_value"]["period_end"])
+    valuation_date = pd.Timestamp(valuations["buyout_ev_ebitda"]["period_end"])
+    flow_period = flows["deal_value"]["period"]
+    valuation_period = valuations["buyout_ev_ebitda"]["period"]
+    def flow_note(key, noun):
+        count = flows[key]["count"]
+        volume = f"{int(count):,} {noun}" if pd.notna(count) else ""
+        approx = "≈" if flows[key]["precision"] == "rounded" or previous_flows.get(key, {}).get("precision") == "rounded" else ""
+        change = f" · {approx}{yoy[key]:+.0f}% YoY" if key in yoy else ""
+        return f"{flow_period} · {volume}{change}" if volume else f"{flow_period}{change}"
+
+    items = [
+        ("Global PE deal value", "≈" + _fmt_dollars(flows["deal_value"]["value"] * 1e9) if flows["deal_value"]["precision"] == "rounded" else _fmt_dollars(flows["deal_value"]["value"] * 1e9), None,
+         flow_note("deal_value", "deals")),
+        ("Global PE exits", _fmt_dollars(flows["exit_value"]["value"] * 1e9), None,
+         flow_note("exit_value", "exits")),
+        ("Global PE fundraising", _fmt_dollars(flows["fundraising"]["value"] * 1e9), None,
+         flow_note("fundraising", "funds")),
+        ("U.S. buyout entry valuation", fmt_number(valuations["buyout_ev_ebitda"]["value"], 1, suffix="x"), None,
+         f"{valuation_period} · median EV/EBITDA"),
+    ]
+    render_finance_facts(items, columns=4, treatment="lead")
+    left, right = st.columns(2, gap="large")
+    with left:
+        comparison = " · H1 2025–26" if previous_flows else ""
+        render_panel_heading("PE dealmaking, exits and fundraising" + comparison, source_through("KPMG · Global", fund_date))
+        render_plotly_chart(
+            pe_global_capital_flow_chart(flows, previous_flows),
+            width="stretch", config={"displayModeBar": True, "responsive": True},
+            key="finance-pe-market-flows",
+        )
+    with right:
+        render_panel_heading("Buyout entry valuations by deal size", source_through("StepStone SPI / PitchBook · U.S.", valuation_date))
+        render_plotly_chart(
+            pe_buyout_valuation_chart(valuations),
+            width="stretch", config={"displayModeBar": True, "responsive": True},
+            key="finance-pe-buyout-valuations",
+        )
 
 def _render_private_capital_realization(realization):
     metrics = realization.get("all_metrics", {}) or {}
@@ -299,8 +369,8 @@ def _render_private_capital_realization(realization):
 
     with st.container(key="finance-panel-private-capital"):
         render_panel_heading(
-            "Cash returned versus remaining fund value",
-            source_through(source, realization.get("as_of")),
+            "Private equity returns and liquidity",
+            source_through(f"{source} PE holdings", realization.get("as_of")),
         )
         chart_col, readings_col = st.columns([1.85, 1], gap="large", vertical_alignment="top")
         with chart_col:
@@ -315,7 +385,7 @@ def _render_private_capital_realization(realization):
             vintage_max = pd.to_numeric(funds["Vintage"], errors="coerce").max()
             vintages = f"{int(vintage_min)}–{int(vintage_max)} {'initial investment years' if initial_year else 'vintages'}" if pd.notna(vintage_min) and pd.notna(vintage_max) else ""
             fund_data = (
-                f"{metrics['fund_count']} funds across {metrics['manager_count']} managers"
+                f"{metrics['fund_count']} fund holdings"
                 f" • {_fmt_dollars(metrics['paid_in'])} paid in"
                 + (f" • {vintages}" if vintages else "")
             )
@@ -326,10 +396,18 @@ def _render_private_capital_realization(realization):
                 ("Cash-returned share", fmt_number((metrics.get("realized_share") or 0) * 100, 0, suffix="%"), "share of current total value"),
             ]
             render_finance_facts(
-                [("Fund Data", fund_data, None)]
+                [("Pension holdings", fund_data, None)]
                 + [(label, value, None, note) for label, value, note in readings],
                 treatment="private",
             )
+        cohorts = realization.get("cohorts", [])
+        if cohorts:
+            with st.expander("Compare fund maturity cohorts", expanded=False):
+                st.dataframe(
+                    _private_capital_cohort_table(cohorts),
+                    hide_index=True, width="stretch",
+                    key="finance-private-capital-cohort-table",
+                )
 
 def _render_commercial_realization(commercialization_data):
     microsoft_arr = metric_value(commercialization_data, "Microsoft", "Annual revenue run rate")
@@ -354,11 +432,12 @@ def _render_commercial_realization(commercialization_data):
 def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, nfci_history, debt_markets_data, dashboard_data, commercialization_data=None, tab_read=None):
     del sector_metrics, sector_data
     private_realization = build_private_capital_realization()
+    pe_market_context = build_pe_market_context()
     private_source = (private_realization.get("metadata") or {}).get("source_short") or "CalSTRS"
     render_tab_header(
         "Finance",
         "Cash flow, capital spending, debt, commitments, credit conditions, and private-fund returns.",
-        f"SEC / company disclosures / {private_source} / ILPA / FRED / New York Fed / Chicago Fed",
+        f"SEC / company disclosures / KPMG / StepStone SPI / {private_source} / ILPA / FRED / New York Fed / Chicago Fed",
         terms_key="finance",
     )
     render_domain_read(tab_read, label="Read", domain="finance")
@@ -371,8 +450,12 @@ def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, n
         render_finance_section("Company AI disclosures", "Reported AI revenue, backlog, margins, and demand indicators from company disclosures.")
         _render_commercial_realization(commercialization_data)
 
+    with st.container(border=True, key="finance-section-pe-market"):
+        render_finance_section("Private Equity Market", "Global deal activity and U.S. buyout entry valuations")
+        _render_pe_market_context(pe_market_context)
+
     with st.container(border=True, key="finance-section-private"):
-        render_finance_section("Private Fund Returns", "Distribution and remaining NAV for AI-related private funds")
+        render_finance_section("Private Equity", "Cash distributions and remaining value across public-pension PE holdings")
         _render_private_capital_realization(private_realization)
 
     with st.container(border=True, key="finance-section-credit"):

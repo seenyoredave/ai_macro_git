@@ -25,7 +25,7 @@ def _ordered(body: str, tokens: list[str]) -> None:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    _check('APP_VERSION = "v3.0.6.' in app, "Finance credit upgrade must use the v3.0.6 feature line")
+    _check('APP_VERSION = "v3.0.9.0"' in app, "Finance upgrade must have v3.0.9.0 version")
 
     source = (ROOT / "rendering" / "finance.py").read_text(encoding="utf-8")
     tab = _body(source, "render_finance_tab")
@@ -36,7 +36,9 @@ def main() -> None:
             "_render_capital_capacity(regime_metrics)",
             '"Company AI disclosures"',
             "_render_commercial_realization(commercialization_data)",
-            '"Private Fund Returns"',
+            '"Private Equity Market"',
+            "_render_pe_market_context(pe_market_context)",
+            '"Private Equity"',
             "_render_private_capital_realization(private_realization)",
             '"Credit conditions"',
             'credit_view = st.radio(',
@@ -48,7 +50,8 @@ def main() -> None:
     for title in (
         '"Funding capacity"',
         '"Company AI disclosures"',
-        '"Private Fund Returns"',
+        '"Private Equity Market"',
+        '"Private Equity"',
         '"Credit conditions"',
         '"Borrower and lender stress"',
     ):
@@ -85,8 +88,8 @@ def main() -> None:
     _check('columns=3, treatment="lead"' in nfci and '"Chicago Fed / FRED"' in nfci, "NFCI and ANFCI require distinct readings with a shared source date")
     _check('treatment="lead"' in capacity, "Funding exhibit lacks headline totals")
     _check('render_finance_section("Funding capacity"' in tab and 'render_finance_section("Borrower and lender stress"' in tab, "Finance hierarchy is missing")
-    _check('render_finance_section("Private Fund Returns", "Distribution and remaining NAV for AI-related private funds")' in tab, "Private-fund subtitle changed")
-    _check('"Fund Data"' in source and 'vintage_min' in source and 'vintage_max' in source, "Fund Data must show the retained vintage range")
+    _check('render_finance_section("Private Equity", "Cash distributions and remaining value across public-pension PE holdings")' in tab, "Private-fund subtitle changed")
+    _check('"Pension holdings"' in source and 'vintage_min' in source and 'vintage_max' in source, "Fund Data must show the retained vintage range")
     _check('"Five-year-plus vintages"' not in source, "All-vintage cohort must not carry a mature-only qualifier")
     _check('treatment="strain"' in _body(source, "_render_financial_condition_summary"), "Strain readings lost their three reading treatment")
     detail = _body(source, "_render_financial_condition_detail")
@@ -99,14 +102,18 @@ def main() -> None:
            'def private_capital_realization_map(funds: pd.DataFrame, *, height=430, year_label="vintage"):' in chart_source,
            "Private-fund chart and Finance call disagree on the year label argument")
     _check('realization.get("funds"' in private_body and 'realization.get("all_metrics"' in private_body, "Private-fund chart and readings must use all retained funds")
-    _check('("Fund Data", fund_data, None)' in private_body and 'None, note' in private_body, "Private readings repeat the source footer")
-    _check('source_through(source, realization.get("as_of"))' in private_body and 'metadata.get("source_short")' in private_body, "Private source date is missing from the heading")
+    _check('("Pension holdings", fund_data, None)' in private_body and 'None, note' in private_body, "Private readings repeat the source footer")
+    _check('source_through(f"{source} PE holdings", realization.get("as_of"))' in private_body and 'metadata.get("source_short")' in private_body, "Private source date is missing from the heading")
     _check('None, context' in _body(source, "_render_financial_condition_summary"), "Strain readings repeat the source footer")
     _check('source_through("ICE BofA / FRED"' in (ROOT / "rendering" / "credit_spreads.py").read_text(encoding="utf-8"), "Spread source date is missing from heading")
     _check('render_evidence_gateway("finance")' in tab, "Finance must use the shared Evidence gateway")
     _check('"Inspect spread records"' not in source and '"Inspect lender records"' not in source, "Reference record actions remain on Finance")
     _check("finance-lender-evidence" not in source, "Lender record button remains in the chart")
-    for key in ("funding", "disclosures", "private", "credit", "stress"):
+    _check('key="finance-pe-market-flows"' in _body(source, "_render_pe_market_context"), "Industry market flows chart missing")
+    _check('key="finance-pe-buyout-valuations"' in _body(source, "_render_pe_market_context"), "Industry buyout valuations chart missing")
+    _check('pe_global_capital_flow_chart(flows, previous_flows)' in _body(source, "_render_pe_market_context"), "PE market comparison must use matching prior-period records")
+    _check('with st.expander("Compare fund maturity cohorts"' in private_body, "Private-equity age cohort comparison is missing")
+    for key in ("funding", "disclosures", "pe-market", "private", "credit", "stress"):
         _check(f'with st.container(border=True, key="finance-section-{key}"):' in tab, f"Finance {key} section lacks its border")
     spreads = (ROOT / "rendering" / "credit_spreads.py").read_text(encoding="utf-8")
     _check('columns=3, treatment="lead"' in spreads and "border=True" not in spreads, "Credit spreads lost its lead readings")
@@ -127,7 +134,7 @@ def main() -> None:
     finance_theme = theme[theme.index('/* Finance keeps one detail chart'):theme.index('.rm-evidence-gateway {', theme.index('/* Finance keeps one detail chart'))]
     _check('border-top: 3px solid #a78bfa' in finance_theme and 'border-top: 2px solid rgba(96, 165, 250' not in finance_theme, "Finance boxes must use a purple top rule")
     _check(".rm-finance-section-number" not in theme, "Finance section numbers remain")
-    _check('lang="en"' in markup, "Read hyphenation lacks a language")
+    _check('html.escape(paragraph)' in markup, "Read output lost text escaping")
 
     _check("def _render_finance_ledger(" not in source, "Finance retained a local reference ledger")
     _check("arrow_safe_dataframe" not in source, "Finance retained dead local-ledger dataframe plumbing")

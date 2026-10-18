@@ -1,4 +1,4 @@
-"""Public-LP private-capital cash-return analytics for one disclosed cohort."""
+"""Public-pension private equity cash-flow returns from complete disclosed cohorts."""
 
 from __future__ import annotations
 
@@ -51,24 +51,40 @@ def _numeric(frame: pd.DataFrame, column: str) -> pd.Series:
     return pd.to_numeric(frame.get(column), errors="coerce").replace([np.inf, -np.inf], np.nan)
 
 
-def _selected_paths() -> tuple[Path, Path]:
-    """Select one newest complete LP cohort; equal dates retain the prior priority."""
-    selected = (DATA_PATH, METADATA_PATH)
+COHORT_SCOPE = "broad_pe"
+MIN_COHORT_FUNDS = 100
+MIN_COHORT_MANAGERS = 15
+
+
+def validate_broad_pe_snapshot(frame: pd.DataFrame, *, metadata: dict) -> pd.Timestamp:
+    """Accept only sufficiently broad, explicitly classified pension PE holdings."""
+    if metadata.get("cohort_scope") != COHORT_SCOPE:
+        raise ValueError("Private-equity source is an old manager-selected cohort")
+    as_of = validate_private_capital_snapshot(frame, expected_date=metadata["source_as_of"])
+    if len(frame) < MIN_COHORT_FUNDS or frame["Manager"].nunique() < MIN_COHORT_MANAGERS:
+        raise ValueError("Private-equity source has insufficient broad-portfolio coverage")
+    return as_of
+
+
+def _selected_paths() -> tuple[Path | None, Path | None]:
+    """Prefer the newest verified broad pension-PE cohort, never a technology subset.
+
+    Same-date priority: CalSTRS retained, WSIB, then CalPERS; no cross-LP pooling.
+    """
+    selected: tuple[Path | None, Path | None] = (None, None)
     latest = pd.NaT
-    if DATA_PATH.exists():
-        try:
-            latest = pd.to_datetime(pd.read_csv(DATA_PATH, usecols=["Source As Of"])["Source As Of"], errors="coerce").max()
-        except (OSError, ValueError):
-            pass
-    for data_path, metadata_path in ((WSIB_DATA_PATH, WSIB_METADATA_PATH), (CALPERS_DATA_PATH, CALPERS_METADATA_PATH)):
+    for data_path, metadata_path in (
+        (DATA_PATH, METADATA_PATH),
+        (WSIB_DATA_PATH, WSIB_METADATA_PATH),
+        (CALPERS_DATA_PATH, CALPERS_METADATA_PATH),
+    ):
         try:
             metadata = json.loads(metadata_path.read_text())
-            if not metadata.get("source_as_of"):
-                continue
-            as_of = validate_private_capital_snapshot(pd.read_csv(data_path), expected_date=metadata["source_as_of"])
+            frame = pd.read_csv(data_path)
+            as_of = validate_broad_pe_snapshot(frame, metadata=metadata)
             if pd.isna(latest) or as_of > latest:
                 selected, latest = (data_path, metadata_path), as_of
-        except (OSError, ValueError, KeyError, TypeError):
+        except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
             continue
     return selected
 
@@ -76,7 +92,7 @@ def _selected_paths() -> tuple[Path, Path]:
 def load_private_capital_funds(*, paths=None) -> pd.DataFrame:
     """Load the retained public-LP cohort and derive comparable multiples."""
     selected_data, _ = paths or _selected_paths()
-    if not selected_data.exists():
+    if selected_data is None or not selected_data.exists():
         return pd.DataFrame()
     frame = pd.read_csv(selected_data)
     required = {
@@ -111,7 +127,7 @@ def load_private_capital_funds(*, paths=None) -> pd.DataFrame:
 
 def load_private_capital_metadata(*, paths=None) -> dict:
     selected_data, selected_metadata = paths or _selected_paths()
-    if not selected_metadata.exists():
+    if selected_metadata is None or not selected_metadata.exists():
         return {}
     try:
         metadata = json.loads(selected_metadata.read_text())
@@ -145,13 +161,32 @@ def _pooled_metrics(frame: pd.DataFrame) -> dict:
     }
 
 
+COHORT_ORDER = ("Mature (5y+)", "Developing (3-4y)", "Young (0-2y)")
+
+
+def build_private_capital_cohorts(funds: pd.DataFrame) -> list[dict]:
+    """Group the same LP positions as the scatterplot; pool dollar cash flows."""
+    if funds is None or funds.empty:
+        return []
+    groups = []
+    for label in COHORT_ORDER:
+        subset = funds.loc[funds["Maturity"].eq(label)]
+        metrics = _pooled_metrics(subset)
+        if metrics:
+            groups.append({"maturity": label, **metrics})
+    all_metrics = _pooled_metrics(funds)
+    if all_metrics:
+        groups.append({"maturity": "All holdings", **all_metrics})
+    return groups
+
+
 def build_private_capital_realization() -> dict:
-    """Return fund detail, mature-cohort headlines, and audit metadata."""
+    """Return fund detail, comparable maturity cohorts, and audit metadata."""
     paths = _selected_paths()
     funds = load_private_capital_funds(paths=paths)
     metadata = load_private_capital_metadata(paths=paths)
     if funds.empty:
-        return {"funds": funds, "mature_funds": funds, "metrics": {}, "all_metrics": {}, "metadata": metadata}
+        return {"funds": funds, "mature_funds": funds, "metrics": {}, "all_metrics": {}, "cohorts": [], "metadata": metadata}
 
     mature = funds.loc[funds["Fund Age"].ge(5)].copy()
     return {
@@ -159,6 +194,7 @@ def build_private_capital_realization() -> dict:
         "mature_funds": mature,
         "metrics": _pooled_metrics(mature),
         "all_metrics": _pooled_metrics(funds),
+        "cohorts": build_private_capital_cohorts(funds),
         "metadata": metadata,
         "as_of": funds["Source As Of"].max(),
     }

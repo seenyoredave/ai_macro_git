@@ -344,3 +344,55 @@ def private_capital_realization_map(funds: pd.DataFrame, *, height=430, year_lab
         legend=True,
         margin=dict(l=54, r=22, t=46, b=48),
     )
+
+
+def pe_global_capital_flow_chart(flows: dict, previous_flows: dict | None = None, *, height: int = 330):
+    """Compare matched H1 global PE dollar flows without merging dissimilar measures."""
+    fig = go.Figure()
+    keys = ("deal_value", "exit_value", "fundraising")
+    labels = ["Deal value", "Exit value", "Fundraising"]
+    if all(k in flows for k in keys):
+        periods = [(flows, COLORS["violet"], str(flows["deal_value"]["period"]))]
+        if previous_flows and all(k in previous_flows for k in keys):
+            periods.insert(0, (previous_flows, COLORS["slate"], str(previous_flows["deal_value"]["period"])))
+        for group, color, period in periods:
+            records = [group[k] for k in keys]
+            values = [float(row["value"]) for row in records]
+            amounts = [("≈" if row["precision"] == "rounded" else "") + (f"${value / 1_000:.1f}T" if value >= 1_000 else f"${value:,.1f}B") for row, value in zip(records, values)]
+            hover_notes = [(f"{int(row['count']):,} {row['count_unit']}" if pd.notna(row["count"]) else "Count not reported") for row in records]
+            fig.add_trace(go.Bar(
+                x=values, y=labels, orientation="h", name=period, marker_color=color,
+                text=amounts, textposition="outside", cliponaxis=False,
+                customdata=hover_notes,
+                hovertemplate=f"{period} · %{{y}}: $%{{x:,.1f}}B<br>%{{customdata}}<extra></extra>",
+            ))
+        fig.update_layout(barmode="group", bargap=0.32, bargroupgap=0.08)
+        fig.update_xaxes(range=[0, max(float(row["value"]) for group, _, _ in periods for row in group.values()) * 1.25], title="Reported value (USD billions)")
+        fig.update_yaxes(autorange="reversed", title=None)
+    else:
+        fig.add_annotation(text="Global PE activity data unavailable", x=0.5, y=0.5,
+                           xref="paper", yref="paper", showarrow=False)
+    return _base_layout(fig, height=height, legend=len(fig.data) > 1,
+                        margin=dict(l=105, r=72, t=22, b=46))
+
+def pe_buyout_valuation_chart(valuations: dict, *, height: int = 330):
+    """Size-segmented U.S. buyout entry multiples from StepStone SPI."""
+    fig = go.Figure()
+    keys = ("buyout_ev_ebitda_sub1b", "buyout_ev_ebitda", "buyout_ev_ebitda_1bplus")
+    if all(k in valuations for k in keys):
+        rows = [valuations[k] for k in keys]
+        values = [float(row["value"]) for row in rows]
+        labels = ["EV under $1B", "All buyouts", "EV $1B+"]
+        fig.add_trace(go.Bar(
+            x=values, y=labels, orientation="h",
+            marker_color=[COLORS["slate"], COLORS["blue"], COLORS["violet"]],
+            text=[f"{v:.1f}x" for v in values],
+            textposition="outside", cliponaxis=False,
+            hovertemplate="%{y}: %{x:.1f}x EV/EBITDA<extra></extra>",
+        ))
+        fig.update_xaxes(range=[0, max(values) * 1.25], title="Median entry EV / EBITDA")
+        fig.update_yaxes(autorange="reversed", title=None)
+    else:
+        fig.add_annotation(text="U.S. buyout valuation data unavailable", x=0.5, y=0.5,
+                           xref="paper", yref="paper", showarrow=False)
+    return _base_layout(fig, height=height, margin=dict(l=111, r=50, t=22, b=50))
