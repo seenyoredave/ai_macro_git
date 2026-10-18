@@ -4,6 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from rendering.evidence_gateway import render_evidence_gateway
+from rendering.observation_meta import latest_observation, source_through
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_connectivity import (
     cable_pipeline_status,
@@ -35,6 +36,15 @@ def _money_billions(value) -> str:
     return "n/a" if pd.isna(numeric) else f"${numeric / 1_000_000_000:.2f}B"
 
 
+def _network_meta(payload: dict, key: str, source: str) -> str:
+    frame = payload.get(key)
+    if isinstance(frame, dict):
+        observed = frame.get("Observation Date")
+    else:
+        observed = latest_observation(frame, "Observation Date")
+    return source_through(source, observed)
+
+
 def _inject_connectivity_theme() -> None:
     st.html(
         """
@@ -58,6 +68,9 @@ def _render_current_state(connectivity: dict) -> None:
     facility_count = _count(national.get("PeeringDB Facilities"))
     facility_floor = _count(national.get("PeeringDB Facility Coverage Floor") or coverage.get("facility_search_floor"))
     facility_value = f"{facility_count:,}" if facility_count else f"{facility_floor:,}+"
+    network_meta = _network_meta(connectivity, "national_summary", "Internet Society Pulse")
+    middle_meta = _network_meta(connectivity, "middle_mile_summary", "NTIA")
+    registry_meta = _network_meta(connectivity, "interconnection_market_summary", "Registry + PeeringDB")
     render_section(
         "Network overview",
         "U.S.-connected submarine cables, internet exchanges, and federally funded middle-mile fiber.",
@@ -65,11 +78,11 @@ def _render_current_state(connectivity: dict) -> None:
         compact=True,
     )
     render_statline([
-        ("States with network gap", f"{_count(coverage.get('mismatch_states')):,}", "data-center capacity with limited public interconnection depth"),
-        ("Campuses screened", f"{_count(coverage.get('campuses_screened')):,}", "data-center connectivity context"),
-        ("Active IXPs", f"{_count(national.get('Active IXPs')):,}", f"{_count(national.get('Combined Reported Members')):,} memberships"),
-        ("Interconnection facilities", facility_value, "PeeringDB records"),
-        ("Middle-mile fiber", f"{_count(national.get('Middle-Mile New Fiber Miles')):,}+ mi", f"{_count(national.get('Middle-Mile Award Records')):,} awards"),
+        ("States with network gap", f"{_count(coverage.get('mismatch_states')):,}", registry_meta, "Data-center capacity with limited public interconnection depth"),
+        ("Campuses screened", f"{_count(coverage.get('campuses_screened')):,}", registry_meta, "Data-center connectivity context"),
+        ("Active IXPs", f"{_count(national.get('Active IXPs')):,}", network_meta, f"{_count(national.get('Combined Reported Members')):,} memberships"),
+        ("Interconnection facilities", facility_value, _network_meta(connectivity, "interconnection_facility_summary", "PeeringDB"), "PeeringDB records"),
+        ("Middle-mile fiber", f"{_count(national.get('Middle-Mile New Fiber Miles')):,}+ mi", middle_meta, f"{_count(national.get('Middle-Mile Award Records')):,} awards"),
     ], key_prefix="connectivity-pulse")
 
 
@@ -78,81 +91,86 @@ def _render_submarine(connectivity: dict) -> None:
     landings = connectivity.get("cable_landing_markets")
     coverage = connectivity.get("coverage", {}) or {}
     national = connectivity.get("national_summary", {}) or {}
+    provenance = _network_meta(connectivity, "submarine_cable_systems", "TeleGeography")
     render_section("Submarine cable gateways", "U.S.-connected submarine cable systems and the markets where they land.")
     metrics = [
-        ("Catalog entries", f"{_count(coverage.get('cable_catalog_entries')):,}", "U.S.-connected systems"),
-        ("Planned entries", f"{_count(coverage.get('planned_cable_entries')):,}", "RFS after 2026"),
-        ("Landing markets", f"{_count(coverage.get('selected_landing_markets')):,}", "selected U.S. gateways"),
-        ("Current-year / future", f"{_count(national.get('Future / Current-Year Cable Entries')):,}", "catalog entries"),
+        ("Catalog entries", f"{_count(coverage.get('cable_catalog_entries')):,}", provenance, "U.S.-connected systems"),
+        ("Planned entries", f"{_count(coverage.get('planned_cable_entries')):,}", provenance, "RFS after 2026"),
+        ("Landing markets", f"{_count(coverage.get('selected_landing_markets')):,}", _network_meta(connectivity, "cable_landing_markets", "TeleGeography"), "Selected U.S. gateways"),
+        ("Current-year / future", f"{_count(national.get('Future / Current-Year Cable Entries')):,}", provenance, "Catalog entries"),
     ]
     render_summary_row(metrics, key_prefix="connectivity-submarine-map")
     with st.container(key="full-width-layout-connectivity-gateway-map"):
         with st.container(border=True, key="connectivity-panel-submarine-map"):
             view = st.radio("Cable view", ["Submarine cable gateways", "Cable pipeline", "Landing regions"], horizontal=True, label_visibility="collapsed", key="connectivity-view-submarine")
             if view == "Cable pipeline":
-                render_panel_heading("Cable catalog by service status", "U.S.-connected entries")
+                render_panel_heading("Cable catalog by service status", provenance)
                 figure, key = cable_pipeline_status(cables, height=520), "connectivity-cable-pipeline"
             elif view == "Landing regions":
-                render_panel_heading("Landing markets by ocean region", "Market-level register")
+                render_panel_heading("Landing markets by ocean region", _network_meta(connectivity, "cable_landing_markets", "TeleGeography"))
                 figure, key = landing_markets_by_region(landings, height=520), "connectivity-landing-regions"
             else:
-                render_panel_heading("Selected U.S. cable-landing gateway markets", "Mainland, Alaska, Hawaii, and territories")
+                render_panel_heading("Selected U.S. cable-landing gateway markets", _network_meta(connectivity, "cable_landing_markets", "TeleGeography"))
                 figure, key = landing_gateway_map(landings, height=560), "connectivity-gateway-map"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key, role="map" if view == "Submarine cable gateways" else "pipeline")
 
 def _render_interconnection(connectivity: dict) -> None:
     markets = connectivity.get("interconnection_market_summary")
     national = connectivity.get("national_summary", {}) or {}
+    provenance = _network_meta(connectivity, "interconnection_market_summary", "PeeringDB")
+    national_meta = _network_meta(connectivity, "national_summary", "Internet Society Pulse")
     render_section("Internet exchanges", "Exchange participation, physical locations, and concentration by market.")
     centers = _count(national.get("Population Centers With IXP")); center_total = _count(national.get("Population Centers Over 300k"))
     render_summary_row([
-        ("Reported memberships", f"{_count(national.get('Combined Reported Members')):,}", "exchange memberships"),
-        ("Markets in register", f"{len(markets) if isinstance(markets, pd.DataFrame) else 0:,}", "published IXP locations"),
-        ("Large population centers", f"{centers:,} / {center_total:,}", "with an IXP"),
-        ("Domestic network coverage", fmt_number(national.get("Domestic Network Coverage Percent"), 0, suffix="%"), "Pulse country measure"),
+        ("Reported memberships", f"{_count(national.get('Combined Reported Members')):,}", national_meta, "Exchange memberships"),
+        ("Markets in register", f"{len(markets) if isinstance(markets, pd.DataFrame) else 0:,}", provenance, "Published IXP locations"),
+        ("Large population centers", f"{centers:,} / {center_total:,}", national_meta, "With an IXP"),
+        ("Domestic network coverage", fmt_number(national.get("Domestic Network Coverage Percent"), 0, suffix="%"), national_meta, "Pulse country measure"),
     ], key_prefix="connectivity-interconnection-metrics")
     with st.container(key="full-width-layout-connectivity-interconnection"):
         with st.container(border=True, key="connectivity-panel-interconnection"):
             metric_label = st.radio("Interconnection metric", ["Reported memberships", "IXP physical-location references", "IXPs"], horizontal=True, label_visibility="collapsed", key="connectivity-view-interconnection")
             metric = {"Reported memberships": "Reported Memberships", "IXP physical-location references": "IXP Physical Location References", "IXPs": "IXPs"}[metric_label]
-            render_panel_heading("Leading interconnection markets", f"Ranked by {metric_label.lower()}")
+            render_panel_heading("Leading interconnection markets", provenance)
             render_plotly_chart(interconnection_market_depth(markets, metric=metric, height=520), width="stretch", config={"displayModeBar": False, "responsive": True}, key="connectivity-interconnection-markets")
 
 def _render_middle_mile(connectivity: dict) -> None:
     awards = connectivity.get("middle_mile_awards")
     summary = connectivity.get("middle_mile_summary", {}) or {}
+    provenance = _network_meta(connectivity, "middle_mile_summary", "NTIA")
     render_section("Middle-mile fiber", "Federal middle-mile awards, planned fiber miles, and the states and territories they cover.")
     render_summary_row([
-        ("Federal awards", _money_billions(summary.get("Federal Awards USD")), "NTIA program"),
-        ("Award records", f"{_count(summary.get('Award Records')):,}", f"{_count(summary.get('Award Recipients')):,} recipients"),
-        ("New fiber miles", f"{_count(summary.get('New Fiber Miles')):,}+", "planned construction"),
-        ("States & territories", f"{_count(summary.get('States and Territories Reached')):,}", "program reach"),
+        ("Federal awards", _money_billions(summary.get("Federal Awards USD")), provenance, "NTIA program"),
+        ("Award records", f"{_count(summary.get('Award Records')):,}", provenance, f"{_count(summary.get('Award Recipients')):,} recipients"),
+        ("New fiber miles", f"{_count(summary.get('New Fiber Miles')):,}+", provenance, "Planned construction"),
+        ("States & territories", f"{_count(summary.get('States and Territories Reached')):,}", provenance, "Program reach"),
     ], key_prefix="connectivity-middle-mile-metrics")
     with st.container(key="full-width-layout-connectivity-middle-mile"):
         with st.container(border=True, key="connectivity-panel-middle-mile"):
-            render_panel_heading("Middle-mile awards by state or territory", "Awarded funding")
+            render_panel_heading("Middle-mile awards by state or territory", _network_meta(connectivity, "middle_mile_awards", "NTIA"))
             render_plotly_chart(middle_mile_awards_by_state(awards, height=520), width="stretch", config={"displayModeBar": False, "responsive": True}, key="connectivity-middle-mile-awards")
 
 def _render_ai_network_interaction(connectivity: dict) -> None:
     state = connectivity.get("state_summary")
     campuses = connectivity.get("campus_connectivity_snapshot")
     coverage = connectivity.get("coverage", {}) or {}
+    provenance = _network_meta(connectivity, "interconnection_market_summary", "Registry + PeeringDB")
     render_section("Data centers and network access", "Published data-center capacity alongside local internet-exchange activity and cable-landing proximity.")
     render_summary_row([
-        ("States with network gap", f"{_count(coverage.get('mismatch_states')):,}", "capacity with limited IXP depth"),
-        ("Campuses compared", f"{_count(coverage.get('campuses_screened')):,}", "published capacity"),
-        ("Landing proximity", f"{_count(coverage.get('campuses_with_landing_proximity')):,}", "campus records"),
-        ("Facility proximity", f"{_count(coverage.get('campuses_with_live_facility_proximity')):,}", "PeeringDB matches"),
+        ("States with network gap", f"{_count(coverage.get('mismatch_states')):,}", provenance, "Capacity with limited IXP depth"),
+        ("Campuses compared", f"{_count(coverage.get('campuses_screened')):,}", provenance, "Published capacity"),
+        ("Landing proximity", f"{_count(coverage.get('campuses_with_landing_proximity')):,}", provenance, "Campus records"),
+        ("Facility proximity", f"{_count(coverage.get('campuses_with_live_facility_proximity')):,}", provenance, "PeeringDB matches"),
     ], key_prefix="connectivity-mismatch-metrics")
     with st.container(key="full-width-layout-connectivity-compute-transport"):
         with st.container(border=True, key="connectivity-panel-compute-transport"):
             view = st.radio("Comparison view", ["State comparison", "Campus proximity"], horizontal=True, label_visibility="collapsed", key="connectivity-compute-transport-view")
             if view == "Campus proximity":
-                render_panel_heading("Campus distance to landing markets", "Great-circle proximity")
+                render_panel_heading("Campus distance to landing markets", _network_meta(connectivity, "cable_landing_markets", "Registry + TeleGeography"))
                 figure, key = campus_distance_distribution(campuses, height=520), "connectivity-campus-distance"
             else:
                 lens = st.radio("Map view", ["Data-center/network gap", "Connectivity depth", "Published capacity"], horizontal=True, label_visibility="collapsed", key="connectivity-view-mismatch")
-                render_panel_heading("Data-center capacity and network access", lens)
+                render_panel_heading("Data-center capacity and network access", provenance)
                 figure, key = data_center_connectivity_state(state, height=520, lens=lens), "connectivity-state-mismatch"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key)
 
@@ -169,15 +187,16 @@ def _render_evidence_coverage(connectivity: dict) -> None:
     screened = _count(coverage.get("campuses_screened"))
     landing = _count(coverage.get("campuses_with_landing_proximity"))
     facilities = _count(coverage.get("campuses_with_live_facility_proximity"))
+    provenance = _network_meta(connectivity, "interconnection_market_summary", "Registry + PeeringDB")
     render_section(
         "Evidence coverage",
         "Public-network observations available for the current data-center connectivity screen.",
     )
     render_statline([
-        ("Campuses screened", f"{screened:,}", "connectivity comparison set"),
-        ("Landing proximity", f"{landing:,}", f"{_coverage_ratio(landing, screened)} of screened campuses"),
-        ("Facility proximity", f"{facilities:,}", f"{_coverage_ratio(facilities, screened)} of screened campuses"),
-        ("States with IXP evidence", f"{_count(coverage.get('states_with_ixp_evidence')):,}", "reported public interconnection activity"),
+        ("Campuses screened", f"{screened:,}", provenance, "Connectivity comparison set"),
+        ("Landing proximity", f"{landing:,}", provenance, f"{_coverage_ratio(landing, screened)} of screened campuses"),
+        ("Facility proximity", f"{facilities:,}", provenance, f"{_coverage_ratio(facilities, screened)} of screened campuses"),
+        ("States with IXP evidence", f"{_count(coverage.get('states_with_ixp_evidence')):,}", provenance, "Reported public interconnection activity"),
     ], key_prefix="connectivity-evidence-coverage")
 
 

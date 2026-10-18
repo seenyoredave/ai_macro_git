@@ -265,7 +265,7 @@ def private_capital_ledger_chart(metrics: dict, *, height=190):
     )
 
 
-def private_capital_realization_map(funds: pd.DataFrame, *, height=430):
+def private_capital_realization_map(funds: pd.DataFrame, *, height=430, year_label="vintage"):
     """Map cash realization against total value for the available fund cohort."""
     fig = go.Figure()
     required = {
@@ -315,7 +315,7 @@ def private_capital_realization_map(funds: pd.DataFrame, *, height=430):
                 },
                 customdata=customdata,
                 hovertemplate=(
-                    "<b>%{customdata[0]}</b><br>%{customdata[1]} · vintage %{customdata[2]}<br>"
+                    f"<b>%{{customdata[0]}}</b><br>%{{customdata[1]}} · {year_label} %{{customdata[2]}}<br>"
                     "%{customdata[6]}<br>DPI %{x:.2f}x · RVPI %{customdata[3]} · TVPI %{y:.2f}x<br>"
                     "Net IRR %{customdata[4]} · paid in %{customdata[5]}<extra></extra>"
                 ),

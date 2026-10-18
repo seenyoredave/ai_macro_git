@@ -287,6 +287,7 @@ def metric_card(
     accent="violet",
     reference=None,
     years=5,
+    show_sparkline=True,
 ) -> None:
     accent_color = ACCENTS.get(accent, ACCENTS["violet"])
     position = _rail_position(value, scale)
@@ -310,7 +311,7 @@ def metric_card(
             border-radius: 0 !important;
             background: rgba(17, 24, 39, 0.82) !important;
             padding: 0.9rem 1rem 0.35rem 1rem !important;
-            min-height: 245px;
+            min-height: {245 if show_sparkline else 156}px;
         }}
         </style>
         """,
@@ -335,17 +336,18 @@ def metric_card(
             """,
             unsafe_allow_html=True,
         )
-        st.markdown(
-            _compact_sparkline_html(
-                history,
-                color=accent_color,
-                reference=reference,
-                years=years,
-                height=74,
-                label=f"{label} recent history",
-            ),
-            unsafe_allow_html=True,
-        )
+        if show_sparkline:
+            st.markdown(
+                _compact_sparkline_html(
+                    history,
+                    color=accent_color,
+                    reference=reference,
+                    years=years,
+                    height=74,
+                    label=f"{label} recent history",
+                ),
+                unsafe_allow_html=True,
+            )
 
 def render_summary_row(
     stats: Iterable[tuple[str, str, str | None]],

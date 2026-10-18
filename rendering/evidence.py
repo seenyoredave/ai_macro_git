@@ -506,7 +506,7 @@ def _render_market_finance_evidence(fred_data, sector_data, sector_metrics, debt
         private_funds = private_capital.get("funds", pd.DataFrame())
         private_metadata = private_capital.get("metadata", {}) or {}
         render_static_table(
-            _private_capital_detail_table(private_funds)
+            _private_capital_detail_table(private_funds, year_basis=private_metadata.get("year_basis", "vintage"))
             if isinstance(private_funds, pd.DataFrame) and not private_funds.empty
             else pd.DataFrame()
         )
@@ -864,7 +864,7 @@ def _render_finance_reference_records(commercialization_data, debt_markets_data,
         frame = frame[[column for column in columns if column in frame.columns]].copy()
     elif view == "Private-fund records":
         realization = build_private_capital_realization()
-        frame = _private_capital_detail_table(realization.get("funds", pd.DataFrame()))
+        frame = _private_capital_detail_table(realization.get("funds", pd.DataFrame()), year_basis=(realization.get("metadata") or {}).get("year_basis", "vintage"))
     elif view == "Debt-market readings":
         frame = _debt_market_source_rows(debt_markets_data)
     elif view == "Credit spread changes":
@@ -1111,7 +1111,7 @@ def _render_domain_technical_records(
             render_static_table(_debt_market_source_rows(debt_markets_data))
         with st.expander("Private-capital fund observations", expanded=False):
             realization = build_private_capital_realization()
-            render_static_table(_private_capital_detail_table(realization.get("funds", pd.DataFrame())))
+            render_static_table(_private_capital_detail_table(realization.get("funds", pd.DataFrame()), year_basis=(realization.get("metadata") or {}).get("year_basis", "vintage")))
     elif selected == "compute":
         compute = ((infrastructure_data or {}).get("compute_manufacturing", {}) or {})
         render_section("Compute-manufacturing evidence", "Series definitions and announced manufacturing projects.", first=True)

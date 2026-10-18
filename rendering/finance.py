@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import pandas as pd
 import streamlit as st
 
@@ -8,7 +9,8 @@ from analytics.financial_conditions import nfci_direction, nfci_snapshot
 from analytics.private_capital import build_private_capital_realization
 from analytics.trend_engine import calc_trailing_point_change
 from config.debt_markets_config import DEBT_MARKET_SERIES
-from rendering.evidence_gateway import render_evidence_gateway, route_to_evidence
+from rendering.evidence_gateway import render_evidence_gateway
+from rendering.finance_layout import render_finance_facts, render_finance_section, render_finance_strain_heading
 from rendering.observation_meta import source_through, latest_observation
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_common import COLORS, single_history
@@ -20,17 +22,12 @@ from rendering.charts_finance import (
     private_capital_realization_map,
 )
 from rendering.common import _value
-from rendering.commercialization import metric_value
+from rendering.commercialization import metric_source_date, metric_value
 from rendering.components import (
     fmt_date,
     fmt_number,
-    inject_panel_height_rules,
-    metric_card,
     render_domain_read,
     render_panel_heading,
-    render_section,
-    render_statline,
-    render_summary_row,
     render_tab_header,
 )
 
@@ -48,91 +45,52 @@ def _funding_capacity_stats(regime_metrics):
         (
             "Internal cash flow / CapEx",
             fmt_number(current.get("internal_funding_coverage"), 2, suffix="x"),
-            f"{int(current.get('internal_funding_companies', 0) or 0)} companies · SEC filings",
+            None,
+            f"{int(current.get('internal_funding_companies', 0) or 0)} companies",
         ),
         (
             "Cash reserve coverage",
             fmt_number(current.get("cash_reserve_coverage_years"), 2, suffix="y"),
+            None,
             f"{int(current.get('cash_reserve_companies', 0) or 0)} companies · Cash / TTM CapEx",
         ),
         (
             "Debt change / CapEx",
             fmt_number(current.get("debt_financing_pulse"), 2, signed=True, suffix="x"),
-            f"{int(current.get('debt_financing_companies', 0) or 0)} matched companies · SEC filings",
+            None,
+            f"{int(current.get('debt_financing_companies', 0) or 0)} matched companies",
         ),
         (
             "Future commitments / CapEx",
             fmt_number(current.get("forward_commitment_load"), 2, suffix="x"),
-            f"{int(current.get('commitment_companies', 0) or 0)} companies · EDGAR",
+            None,
+            f"{int(current.get('commitment_companies', 0) or 0)} companies",
         ),
     ]
-
-
-def _render_current_state(regime_metrics, debt_markets_data, fred_data, nfci_history):
-    current = _funding_current(regime_metrics)
-    bond = _debt_market_item(debt_markets_data, "Corporate Bond Market Distress")
-    financial = nfci_snapshot(fred_data or {}, nfci_history)
-    render_section(
-        "Current state",
-        "Capital deployment and broad financing conditions around the AI investment cycle.",
-        first=True,
-        compact=True,
-    )
-    render_statline(
-        [
-            (
-                "TTM CapEx",
-                _fmt_dollars(current.get("capex_total")),
-                f"{int(current.get('cohort_companies', 0) or 0)} company cohort",
-            ),
-            (
-                "Forward commitments",
-                _fmt_dollars(current.get("forward_commitments_total")),
-                "filing-backed commitments",
-            ),
-            (
-                "Bond-market distress",
-                fmt_number(bond.get("value"), 2),
-                source_through("New York Fed CMDI", bond.get("date")),
-            ),
-            (
-                "Broad financial conditions",
-                fmt_number(financial.get("value"), 3, signed=True),
-                f"NFCI · {nfci_direction(financial.get('three_month_change'))}",
-            ),
-        ],
-        key_prefix="finance-current-state",
-    )
 
 
 def _render_capital_capacity(regime_metrics):
     funding_mix = _funding_mix(regime_metrics)
     current = funding_mix.get("current", {}) or {}
-    render_summary_row(
-        _funding_capacity_stats(regime_metrics),
-        key_prefix="finance-capital-capacity",
-    )
-    with st.container(border=True, key="finance-panel-funding-history"):
-        render_panel_heading(
-            "Current funding capacity",
-            "Cash flow, cash reserves, debt changes, and future commitments relative to current capital spending",
-        )
-        render_plotly_chart(
-            funding_history(funding_mix.get("history"), years=5),
-            width="stretch",
-            config={"displayModeBar": False, "responsive": True},
-            key="finance-funding-history",
-        )
-    debt_count = int(current.get("debt_financing_companies", 0) or 0)
-    render_summary_row(
-        [
-            ("TTM CapEx", _fmt_dollars(current.get("capex_total")), f"{current.get('cohort_companies', 0)} cohort companies"),
-            ("Total debt", _fmt_dollars(current.get("total_debt")), f"{debt_count} matched companies"),
-            ("Prior-year debt", _fmt_dollars(current.get("prior_year_total_debt")), f"{debt_count} matched companies"),
-            ("Forward commitments", _fmt_dollars(current.get("forward_commitments_total")), "filing-backed ledger"),
-        ],
-        key_prefix="finance-capital-totals",
-    )
+    funding_date = current.get("measurement_date")
+    render_finance_facts([
+        ("TTM CapEx", _fmt_dollars(current.get("capex_total")), None, f"{int(current.get('cohort_companies', 0) or 0)} company cohort"),
+        ("Forward commitments", _fmt_dollars(current.get("forward_commitments_total")), None, "Filing-backed commitments"),
+        ("Total debt", _fmt_dollars(current.get("total_debt")), None, f"{int(current.get('debt_financing_companies', 0) or 0)} matched companies"),
+        ("Prior-year debt", _fmt_dollars(current.get("prior_year_total_debt")), None, f"{int(current.get('debt_financing_companies', 0) or 0)} matched companies"),
+    ], columns=4, treatment="lead")
+    with st.container(key="finance-panel-funding-history"):
+        render_panel_heading("Funding capacity over time", source_through("SEC filings + EDGAR", funding_date or latest_observation(funding_mix.get("history"))))
+        chart_col, readings_col = st.columns([1.85, 1], gap="large", vertical_alignment="top")
+        with chart_col:
+            render_plotly_chart(
+                funding_history(funding_mix.get("history"), years=5),
+                width="stretch",
+                config={"displayModeBar": False, "responsive": True},
+                key="finance-funding-history",
+            )
+        with readings_col:
+            render_finance_facts(_funding_capacity_stats(regime_metrics), treatment="funding")
 
 
 def _fmt_dollars(value):
@@ -192,18 +150,13 @@ def _financial_condition_source_meta(trend, live_sources):
 
 
 def _render_financial_condition_summary(*, title, value, trend, live_sources):
-    with st.container(border=True):
-        render_panel_heading(
-            title,
-            _financial_condition_source_meta(trend, live_sources),
-        )
-        render_statline(
-            _financial_condition_stats(
-                value=value,
-                trend=trend,
-            ),
-            key_prefix=f"finance-condition-{title.lower().replace(' ', '-')}",
-        )
+    with st.container(key=f"finance-strain-summary-{title.lower().replace(' ', '-')}"):
+        render_finance_strain_heading(title, _financial_condition_source_meta(trend, live_sources))
+        readings = _financial_condition_stats(value=value, trend=trend)
+        render_finance_facts([
+            (label, reading, None, context)
+            for label, reading, context in readings
+        ], treatment="strain")
 
 
 def _render_financial_condition_detail(
@@ -213,8 +166,13 @@ def _render_financial_condition_detail(
     components,
 ):
     slug = title.lower().replace(" ", "-")
-    with st.container(border=True, key=f"finance-panel-{slug}-detail"):
-        render_panel_heading(f"{title} detail", "10-year history · component contribution")
+    with st.container(key=f"finance-panel-{slug}-detail"):
+        source = "YFinance + EDGAR" if title == "Borrower Strain" else "FRED + SEC"
+        render_panel_heading(f"{title} · 10-year history and components", _financial_condition_source_meta(trend, source))
+        st.radio(
+            "Stress detail", ["Borrower", "Lender"], horizontal=True,
+            label_visibility="collapsed", key="finance-view-stress-detail",
+        )
         history_col, components_col = st.columns([1.25, 1])
         with history_col:
             strain_history_figure = single_history(
@@ -240,58 +198,32 @@ def _render_financial_condition_detail(
                 config={"displayModeBar": True, "responsive": True},
                 key=f"finance-{slug}-components",
             )
-        if title == "Lender Strain":
-            st.button("Inspect lender records", key="finance-lender-evidence", on_click=route_to_evidence,
-                      args=("finance", "Lender weekly observations"))
 
 
 def _debt_market_item(debt_markets_data, name):
     return (((debt_markets_data or {}).get("series", {}) or {}).get(name, {}) or {})
 
 def _render_debt_markets(debt_markets_data):
-    cards = [
-        (
-            "finance-debt-market",
-            "Corporate Bond Market Distress",
-            "Primary and secondary markets",
-            "violet",
-        ),
-        (
-            "finance-debt-ig",
-            "Investment-Grade Bond Distress",
-            "Investment-grade segment",
-            "blue",
-        ),
-        (
-            "finance-debt-hy",
-            "High-Yield Bond Distress",
-            "High-yield segment",
-            "slate",
-        ),
-    ]
-    for column, (key, name, context, accent) in zip(st.columns(3), cards):
-        item = _debt_market_item(debt_markets_data, name)
-        with column:
-            metric_card(
-                key=key,
-                label=name,
-                value=item.get("value"),
-                value_text=fmt_number(item.get("value"), 2),
-                context=context,
-                history=item.get("history"),
-                scale=(0, 0.85),
-                source="New York Fed CMDI",
-                fallback_date=item.get("date"),
-                accent=accent,
-                years=10,
+    with st.container(key="finance-panel-bond-distress"):
+        render_panel_heading("Bond-market distress", source_through("New York Fed CMDI", latest_observation((debt_markets_data or {}).get("history"))))
+        cards = (
+            ("Corporate Bond Market Distress", "Primary and secondary markets"),
+            ("Investment-Grade Bond Distress", "Investment-grade segment"),
+            ("High-Yield Bond Distress", "High-yield segment"),
+        )
+        rows = []
+        for name, context in cards:
+            item = _debt_market_item(debt_markets_data, name)
+            rows.append(
+                '<div class="rm-finance-cmdi-card">'
+                f'<div class="rm-card-label">{html.escape(name)}</div>'
+                f'<div class="rm-card-value">{html.escape(fmt_number(item.get("value"), 2))}</div>'
+                f'<div class="rm-card-context">{html.escape(context)}</div>'
+                '</div>'
             )
-
-    with st.container(border=True):
-        render_panel_heading("Corporate bond market history", source_through(
-            "New York Fed CMDI", _debt_market_item(debt_markets_data, "Corporate Bond Market Distress").get("date"),
-        ))
+        st.markdown('<div class="rm-finance-cmdi">' + ''.join(rows) + '</div>', unsafe_allow_html=True)
         render_plotly_chart(
-            debt_market_history((debt_markets_data or {}).get("history"), years=10),
+            debt_market_history((debt_markets_data or {}).get("history"), height=310, years=10),
             width="stretch",
             config={"displayModeBar": True, "responsive": True},
             key="finance-debt-market-history",
@@ -316,24 +248,21 @@ def _render_nfci(fred_data, nfci_history):
     value = snapshot.get("value")
     anfci_value = snapshot.get("anfci_value")
     change = snapshot.get("three_month_change")
-    paired_value = f"{fmt_number(value, 3, signed=True)} / {fmt_number(anfci_value, 3, signed=True)}"
-    with st.container(border=True):
+    with st.container(key="finance-panel-broad-conditions"):
         render_panel_heading("Broad financial conditions", source_through("Chicago Fed / FRED", snapshot.get("as_of")))
-        render_statline(
-            [
-                ("NFCI/ANFCI", paired_value, "headline / macro-adjusted"),
-                ("3-month change", fmt_number(change, 3, signed=True), nfci_direction(change)),
-            ],
-            key_prefix="finance-nfci-confirmation",
-        )
+        render_finance_facts([
+            ("NFCI", fmt_number(value, 3, signed=True), None, "Headline"),
+            ("ANFCI", fmt_number(anfci_value, 3, signed=True), None, "Macro-adjusted"),
+            ("3-month change", fmt_number(change, 3, signed=True), None, nfci_direction(change)),
+        ], columns=3, treatment="lead")
         render_plotly_chart(
-            financial_conditions_history(snapshot.get("history"), height=275),
+            financial_conditions_history(snapshot.get("history"), height=310),
             width="stretch",
             config={"displayModeBar": True, "responsive": True},
             key="finance-nfci-history",
         )
 
-def _private_capital_detail_table(funds: pd.DataFrame) -> pd.DataFrame:
+def _private_capital_detail_table(funds: pd.DataFrame, *, year_basis: str = "vintage") -> pd.DataFrame:
     if funds is None or funds.empty:
         return pd.DataFrame()
     display = funds.copy()
@@ -350,47 +279,57 @@ def _private_capital_detail_table(funds: pd.DataFrame) -> pd.DataFrame:
         "Paid In ($M)", "Distributions ($M)", "NAV ($M)",
         "DPI", "RVPI", "TVPI", "Net IRR (%)", "Source As Of",
     ]
-    return display[[column for column in columns if column in display.columns]].sort_values(
+    result = display[[column for column in columns if column in display.columns]].sort_values(
         ["Vintage", "Manager", "Fund"], ascending=[False, True, True], kind="stable"
     )
+    return result.rename(columns={"Vintage": "Initial investment year"}) if year_basis == "initial investment year" else result
 
 
-def _render_private_capital_realization():
-    realization = build_private_capital_realization()
-    metrics = realization.get("metrics", {}) or {}
+def _render_private_capital_realization(realization):
+    metrics = realization.get("all_metrics", {}) or {}
     funds = realization.get("funds", pd.DataFrame())
+    metadata = realization.get("metadata", {}) or {}
+    initial_year = metadata.get("year_basis") == "initial investment year"
+    source = metadata.get("source_short") or "Public pension fund records"
 
     if not metrics or funds is None or funds.empty:
-        with st.container(border=True):
-            render_panel_heading("Private-market cash returns", "Public pension fund records")
-            st.caption("Private-fund cash-return data are unavailable.")
+        render_panel_heading("Private-market cash returns", "Public pension fund records")
+        st.caption("Private-fund cash-return data are unavailable.")
         return
 
-    with st.container(key="full-width-layout-finance-private-capital"):
-        render_summary_row(
-            [
-                ("DPI", fmt_number(metrics.get("dpi"), 2, suffix="x"), "cash returned / paid in"),
-                ("RVPI", fmt_number(metrics.get("rvpi"), 2, suffix="x"), "remaining NAV / paid in"),
-                ("TVPI", fmt_number(metrics.get("tvpi"), 2, suffix="x"), "distributed + residual value"),
-                ("Cash-returned share", fmt_number((metrics.get("realized_share") or 0) * 100, 0, suffix="%"), "share of current total value"),
-            ],
-            key_prefix="finance-private-capital-realization",
+    with st.container(key="finance-panel-private-capital"):
+        render_panel_heading(
+            "Cash returned versus remaining fund value",
+            source_through(source, realization.get("as_of")),
         )
-        with st.container(border=True, key="finance-panel-realization-map"):
-            render_panel_heading(
-                "Cash returned versus remaining fund value",
-                source_through("Public pension fund records", realization.get("as_of")),
-            )
+        chart_col, readings_col = st.columns([1.85, 1], gap="large", vertical_alignment="top")
+        with chart_col:
             render_plotly_chart(
-                private_capital_realization_map(funds),
+                private_capital_realization_map(funds, year_label="initial investment year" if initial_year else "vintage"),
                 width="stretch",
                 config={"displayModeBar": False, "responsive": True},
                 key="finance-private-capital-map",
             )
-        st.caption(
-            f"{metrics.get('fund_count', 0)} funds across {metrics.get('manager_count', 0)} managers · "
-            f"{_fmt_dollars(metrics.get('paid_in'))} paid in · five-year-plus vintages."
-        )
+        with readings_col:
+            vintage_min = pd.to_numeric(funds["Vintage"], errors="coerce").min()
+            vintage_max = pd.to_numeric(funds["Vintage"], errors="coerce").max()
+            vintages = f"{int(vintage_min)}–{int(vintage_max)} {'initial investment years' if initial_year else 'vintages'}" if pd.notna(vintage_min) and pd.notna(vintage_max) else ""
+            fund_data = (
+                f"{metrics['fund_count']} funds across {metrics['manager_count']} managers"
+                f" • {_fmt_dollars(metrics['paid_in'])} paid in"
+                + (f" • {vintages}" if vintages else "")
+            )
+            readings = [
+                ("DPI", fmt_number(metrics.get("dpi"), 2, suffix="x"), "cash returned / paid in"),
+                ("RVPI", fmt_number(metrics.get("rvpi"), 2, suffix="x"), "remaining NAV / paid in"),
+                ("TVPI", fmt_number(metrics.get("tvpi"), 2, suffix="x"), "distributed + residual value"),
+                ("Cash-returned share", fmt_number((metrics.get("realized_share") or 0) * 100, 0, suffix="%"), "share of current total value"),
+            ]
+            render_finance_facts(
+                [("Fund Data", fund_data, None)]
+                + [(label, value, None, note) for label, value, note in readings],
+                treatment="private",
+            )
 
 def _render_commercial_realization(commercialization_data):
     microsoft_arr = metric_value(commercialization_data, "Microsoft", "Annual revenue run rate")
@@ -401,108 +340,96 @@ def _render_commercial_realization(commercialization_data):
     if all(pd.isna(value) for value in [microsoft_arr, openai_arr, alphabet_backlog, microsoft_margin]):
         return
 
-    with st.container(border=True, key="finance-panel-company-ai-disclosures"):
-        render_panel_heading(
-            "Company AI disclosures",
-            "Reported AI revenue, backlog, margins, and demand indicators from company disclosures.",
-        )
-        render_summary_row(
-            [
-                ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), fmt_number(microsoft_growth, 0, signed=True, suffix="% YoY")),
-                ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "2025 disclosed floor"),
-                ("Google Cloud backlog", "$" + fmt_number(alphabet_backlog, 0, suffix="B"), "reported cloud backlog"),
-                ("Microsoft Cloud margin", fmt_number(microsoft_margin, 0, suffix="%"), "AI infrastructure and usage pressure"),
-            ],
-            key_prefix="finance-commercial-realization",
-        )
+    with st.container(key="finance-panel-company-ai-disclosures"):
+        render_finance_facts([
+            (label, value, source_through(*metric_source_date(commercialization_data, provider, metric)), detail)
+            for label, value, provider, metric, detail in [
+                ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), "Microsoft", "Annual revenue run rate", fmt_number(microsoft_growth, 0, signed=True, suffix="% YoY")),
+                ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "OpenAI", "Annualized revenue run rate", "2025 disclosed floor"),
+                ("Google Cloud backlog", "$" + fmt_number(alphabet_backlog, 0, suffix="B"), "Alphabet", "Backlog", "Reported cloud backlog"),
+                ("Microsoft Cloud margin", fmt_number(microsoft_margin, 0, suffix="%"), "Microsoft", "Gross margin", "AI infrastructure and usage pressure"),
+            ]
+        ], columns=4, treatment="index")
 
 def render_finance_tab(sector_metrics, sector_data, fred_data, regime_metrics, nfci_history, debt_markets_data, dashboard_data, commercialization_data=None, tab_read=None):
     del sector_metrics, sector_data
-    inject_panel_height_rules({"finance-panel-funding-history": 405})
+    private_realization = build_private_capital_realization()
+    private_source = (private_realization.get("metadata") or {}).get("source_short") or "CalSTRS"
     render_tab_header(
         "Finance",
         "Cash flow, capital spending, debt, commitments, credit conditions, and private-fund returns.",
-        "SEC / company disclosures / CalSTRS / ILPA / FRED / New York Fed / Chicago Fed",
+        f"SEC / company disclosures / {private_source} / ILPA / FRED / New York Fed / Chicago Fed",
         terms_key="finance",
     )
     render_domain_read(tab_read, label="Read", domain="finance")
 
-    _render_current_state(regime_metrics, debt_markets_data, fred_data, nfci_history)
+    with st.container(border=True, key="finance-section-funding"):
+        render_finance_section("Funding capacity", "Operating cash flow, cash reserves, debt change, and disclosed commitments relative to capital spending.")
+        _render_capital_capacity(regime_metrics)
 
-    render_section(
-        "Funding capacity",
-        "Operating cash flow, cash reserves, debt change, and disclosed commitments relative to capital spending.",
-    )
-    _render_capital_capacity(regime_metrics)
+    with st.container(border=True, key="finance-section-disclosures"):
+        render_finance_section("Company AI disclosures", "Reported AI revenue, backlog, margins, and demand indicators from company disclosures.")
+        _render_commercial_realization(commercialization_data)
 
-    render_section(
-        "Company AI disclosures",
-        "Reported AI revenue, backlog, margins, and demand indicators from company disclosures.",
-    )
-    _render_commercial_realization(commercialization_data)
+    with st.container(border=True, key="finance-section-private"):
+        render_finance_section("Private Fund Returns", "Distribution and remaining NAV for AI-related private funds")
+        _render_private_capital_realization(private_realization)
 
-    render_section(
-        "Private-fund cash returns",
-        "Distributions and remaining NAV for technology and AI-adjacent funds in the retained sample.",
-    )
-    _render_private_capital_realization()
-
-    render_section(
-        "Credit conditions",
-        "Daily corporate credit spreads, bond-market distress, and Chicago Fed financial conditions.",
-    )
-    render_credit_spreads()
-    _render_debt_markets(debt_markets_data)
-    _render_nfci(fred_data, nfci_history)
-
-    render_section(
-        "Borrower and lender stress",
-        "Borrower balance-sheet strain and lender-side credit indicators.",
-    )
-    trends = (dashboard_data or {}).get("trends", {}) or {}
-    borrower_strain = (regime_metrics or {}).get("Borrower Strain Components", {}) or {}
-    lender_strain = (regime_metrics or {}).get("Lender Strain Components", {}) or {}
-    borrower_trend = trends.get("borrower_strain_trend", {})
-    lender_trend = trends.get("lender_strain_trend", {})
-
-    left, right = st.columns(2)
-    with left:
-        _render_financial_condition_summary(
-            title="Borrower Strain",
-            value=_value(regime_metrics, "Borrower Strain"),
-            trend=borrower_trend,
-            live_sources="YFinance + EDGAR",
+    with st.container(border=True, key="finance-section-credit"):
+        render_finance_section("Credit conditions", "Daily corporate credit spreads, bond-market distress, and Chicago Fed financial conditions.")
+        credit_view = st.radio(
+            "Credit view", ["Spreads", "Bond distress", "Broad conditions"],
+            horizontal=True, label_visibility="collapsed", key="finance-credit-view",
         )
-    with right:
-        _render_financial_condition_summary(
-            title="Lender Strain",
-            value=_value(regime_metrics, "Lender Strain"),
-            trend=lender_trend,
-            live_sources="FRED - SEC",
-        )
+        if credit_view == "Bond distress":
+            _render_debt_markets(debt_markets_data)
+        elif credit_view == "Broad conditions":
+            _render_nfci(fred_data, nfci_history)
+        else:
+            render_credit_spreads()
 
-    momentum = lender_strain.get("loan_momentum", {})
-    render_statline([("Bank lending momentum", fmt_number(momentum.get("13_week_change_pct"), 2, signed=True, suffix="%"), source_through("Fed H.8 / FRED", momentum.get("as_of")))], key_prefix="finance-lending-momentum")
+    with st.container(border=True, key="finance-section-stress"):
+        render_finance_section("Borrower and lender stress", "Borrower balance-sheet strain and lender-side credit indicators.")
+        trends = (dashboard_data or {}).get("trends", {}) or {}
+        borrower_strain = (regime_metrics or {}).get("Borrower Strain Components", {}) or {}
+        lender_strain = (regime_metrics or {}).get("Lender Strain Components", {}) or {}
+        borrower_trend = trends.get("borrower_strain_trend", {})
+        lender_trend = trends.get("lender_strain_trend", {})
 
-    stress_view = st.radio(
-        "Stress detail",
-        ["Borrower", "Lender"],
-        horizontal=True,
-        label_visibility="collapsed",
-        key="finance-view-stress-detail",
-    )
-    if stress_view == "Lender":
-        _render_financial_condition_detail(
-            title="Lender Strain",
-            trend=lender_trend,
-            components=lender_strain.get("components", {}),
-        )
-    else:
-        _render_financial_condition_detail(
-            title="Borrower Strain",
-            trend=borrower_trend,
-            components=borrower_strain.get("components", {}),
-        )
+        left, right = st.columns(2)
+        with left:
+            _render_financial_condition_summary(
+                title="Borrower Strain",
+                value=_value(regime_metrics, "Borrower Strain"),
+                trend=borrower_trend,
+                live_sources="YFinance + EDGAR",
+            )
+        with right:
+            _render_financial_condition_summary(
+                title="Lender Strain",
+                value=_value(regime_metrics, "Lender Strain"),
+                trend=lender_trend,
+                live_sources="FRED + SEC",
+            )
+
+        stress_view = st.session_state.get("finance-view-stress-detail", "Borrower")
+        if stress_view == "Lender":
+            _render_financial_condition_detail(
+                title="Lender Strain",
+                trend=lender_trend,
+                components=lender_strain.get("components", {}),
+            )
+            momentum = lender_strain.get("loan_momentum", {})
+            st.caption(
+                f"Bank lending momentum {fmt_number(momentum.get('13_week_change_pct'), 2, signed=True, suffix='%')}"
+                f" · {source_through('Fed H.8 / FRED', momentum.get('as_of'))}"
+            )
+        else:
+            _render_financial_condition_detail(
+                title="Borrower Strain",
+                trend=borrower_trend,
+                components=borrower_strain.get("components", {}),
+            )
 
     render_evidence_gateway("finance")
 

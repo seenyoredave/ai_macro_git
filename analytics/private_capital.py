@@ -1,11 +1,4 @@
-"""Public-LP private-capital realization analytics.
-
-The retained cohort is deliberately narrow: technology-specialist and
-technology-heavy venture/growth fund families disclosed by CalSTRS.  The
-module derives standard ILPA-style multiples from reported paid-in capital,
-distributions, and remaining NAV.  It does not attribute fund results solely
-to AI investments.
-"""
+"""Public-LP private-capital cash-return analytics for one disclosed cohort."""
 
 from __future__ import annotations
 
@@ -18,17 +11,74 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = PROJECT_ROOT / "data" / "private_capital" / "fund_performance.csv"
 METADATA_PATH = PROJECT_ROOT / "data" / "private_capital" / "metadata.json"
+WSIB_DATA_PATH = PROJECT_ROOT / "data" / "private_capital" / "wsib_fund_performance.csv"
+WSIB_METADATA_PATH = PROJECT_ROOT / "data" / "private_capital" / "wsib_metadata.json"
+CALPERS_DATA_PATH = PROJECT_ROOT / "data" / "private_capital" / "calpers_fund_performance.csv"
+CALPERS_METADATA_PATH = PROJECT_ROOT / "data" / "private_capital" / "calpers_metadata.json"
+
+
+def validate_private_capital_snapshot(frame: pd.DataFrame, *, expected_date=None) -> pd.Timestamp:
+    """Reject incomplete automatic snapshots before saving or selecting them."""
+    required = {"Manager", "Fund", "Vintage", "Exposure Tier", "Capital Committed",
+                "Paid In Capital", "Distributions", "NAV", "Net IRR", "Source As Of"}
+    if not required.issubset(frame.columns) or len(frame) < 12:
+        raise ValueError("Private-fund snapshot is incomplete")
+    if frame["Manager"].nunique() < 4 or frame["Fund"].duplicated().any():
+        raise ValueError("Private-fund snapshot has insufficient managers or duplicate funds")
+    dates = pd.to_datetime(frame["Source As Of"], errors="coerce")
+    if dates.isna().any() or dates.nunique() != 1:
+        raise ValueError("Private-fund snapshot must have one observation date")
+    as_of = dates.iloc[0]
+    if as_of > pd.Timestamp.now(tz="UTC").tz_localize(None).normalize():
+        raise ValueError("Private-fund snapshot has a future observation date")
+    if expected_date is not None and as_of != pd.Timestamp(expected_date):
+        raise ValueError("Private-fund records and metadata dates disagree")
+    for column in ("Vintage", "Capital Committed", "Paid In Capital", "Distributions", "NAV"):
+        values = pd.to_numeric(frame[column], errors="coerce")
+        if values.isna().any() or not np.isfinite(values).all():
+            raise ValueError(f"Private-fund snapshot has invalid {column}")
+        if column == "Vintage":
+            if not (values.ge(2012) & values.le(as_of.year) & values.mod(1).eq(0)).all():
+                raise ValueError("Private-fund snapshot has invalid investment years")
+        elif values.lt(0).any() or (column == "Paid In Capital" and values.le(0).any()):
+            raise ValueError(f"Private-fund snapshot has invalid {column}")
+    if frame[["Manager", "Fund", "Exposure Tier"]].isna().any().any():
+        raise ValueError("Private-fund snapshot has missing fund identifiers")
+    return as_of
 
 
 def _numeric(frame: pd.DataFrame, column: str) -> pd.Series:
     return pd.to_numeric(frame.get(column), errors="coerce").replace([np.inf, -np.inf], np.nan)
 
 
-def load_private_capital_funds() -> pd.DataFrame:
+def _selected_paths() -> tuple[Path, Path]:
+    """Select one newest complete LP cohort; equal dates retain the prior priority."""
+    selected = (DATA_PATH, METADATA_PATH)
+    latest = pd.NaT
+    if DATA_PATH.exists():
+        try:
+            latest = pd.to_datetime(pd.read_csv(DATA_PATH, usecols=["Source As Of"])["Source As Of"], errors="coerce").max()
+        except (OSError, ValueError):
+            pass
+    for data_path, metadata_path in ((WSIB_DATA_PATH, WSIB_METADATA_PATH), (CALPERS_DATA_PATH, CALPERS_METADATA_PATH)):
+        try:
+            metadata = json.loads(metadata_path.read_text())
+            if not metadata.get("source_as_of"):
+                continue
+            as_of = validate_private_capital_snapshot(pd.read_csv(data_path), expected_date=metadata["source_as_of"])
+            if pd.isna(latest) or as_of > latest:
+                selected, latest = (data_path, metadata_path), as_of
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+    return selected
+
+
+def load_private_capital_funds(*, paths=None) -> pd.DataFrame:
     """Load the retained public-LP cohort and derive comparable multiples."""
-    if not DATA_PATH.exists():
+    selected_data, _ = paths or _selected_paths()
+    if not selected_data.exists():
         return pd.DataFrame()
-    frame = pd.read_csv(DATA_PATH)
+    frame = pd.read_csv(selected_data)
     required = {
         "Manager", "Fund", "Vintage", "Exposure Tier", "Paid In Capital",
         "Distributions", "NAV", "Net IRR", "Source As Of",
@@ -59,11 +109,14 @@ def load_private_capital_funds() -> pd.DataFrame:
     return frame.sort_values(["Vintage", "Manager", "Fund"], ascending=[False, True, True], kind="stable").reset_index(drop=True)
 
 
-def load_private_capital_metadata() -> dict:
-    if not METADATA_PATH.exists():
+def load_private_capital_metadata(*, paths=None) -> dict:
+    selected_data, selected_metadata = paths or _selected_paths()
+    if not selected_metadata.exists():
         return {}
     try:
-        return json.loads(METADATA_PATH.read_text())
+        metadata = json.loads(selected_metadata.read_text())
+        metadata.setdefault("source_short", "WSIB" if selected_data == WSIB_DATA_PATH else "CalPERS" if selected_data == CALPERS_DATA_PATH else "CalSTRS")
+        return metadata
     except (OSError, json.JSONDecodeError):
         return {}
 
@@ -94,8 +147,9 @@ def _pooled_metrics(frame: pd.DataFrame) -> dict:
 
 def build_private_capital_realization() -> dict:
     """Return fund detail, mature-cohort headlines, and audit metadata."""
-    funds = load_private_capital_funds()
-    metadata = load_private_capital_metadata()
+    paths = _selected_paths()
+    funds = load_private_capital_funds(paths=paths)
+    metadata = load_private_capital_metadata(paths=paths)
     if funds.empty:
         return {"funds": funds, "mature_funds": funds, "metrics": {}, "all_metrics": {}, "metadata": metadata}
 

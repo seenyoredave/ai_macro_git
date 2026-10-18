@@ -32,40 +32,102 @@ def main() -> None:
     _ordered(
         tab,
         [
-            "_render_current_state(regime_metrics, debt_markets_data, fred_data, nfci_history)",
             '"Funding capacity"',
             "_render_capital_capacity(regime_metrics)",
             '"Company AI disclosures"',
             "_render_commercial_realization(commercialization_data)",
-            '"Private-fund cash returns"',
-            "_render_private_capital_realization()",
+            '"Private Fund Returns"',
+            "_render_private_capital_realization(private_realization)",
             '"Credit conditions"',
-            "render_credit_spreads()",
-            "_render_debt_markets(debt_markets_data)",
-            "_render_nfci(fred_data, nfci_history)",
+            'credit_view = st.radio(',
             '"Borrower and lender stress"',
-            'render_evidence_gateway("finance")',
+            'render_evidence_gateway(',
         ],
     )
 
     for title in (
-        '"Current state"',
         '"Funding capacity"',
         '"Company AI disclosures"',
-        '"Private-fund cash returns"',
+        '"Private Fund Returns"',
         '"Credit conditions"',
         '"Borrower and lender stress"',
     ):
         _check(title in source, f"Finance module missing: {title}")
 
-    current = _body(source, "_render_current_state")
-    for token in ("capex_total", "forward_commitments_total", "Corporate Bond Market Distress", "nfci_snapshot"):
-        _check(token in current, f"Finance Current state missing {token}")
-
     capacity = _body(source, "_render_capital_capacity")
     _check("funding_history" in capacity, "Finance capital capacity lacks combined funding history")
-    _check("finance-capital-capacity" in capacity, "Finance capital-capacity summary is missing")
-    _check("finance-capital-totals" in capacity, "Finance capital totals are missing")
+    for token in ("capex_total", "forward_commitments_total", "_funding_capacity_stats"):
+        _check(token in capacity, f"Finance funding exhibit lost {token}")
+    _check('columns=4, treatment="lead"' in capacity, "Funding debt totals must share the headline row")
+    _check('treatment="funding"' in capacity and 'st.columns([1.85, 1]' in capacity, "Funding constituents must sit beside the chart")
+    funding_stats = _body(source, "_funding_capacity_stats")
+    _check('current.get("total_debt")' in capacity and 'current.get("prior_year_total_debt")' in capacity, "Debt totals are missing from headline row")
+    _ordered(funding_stats, ['"Internal cash flow / CapEx"', '"Cash reserve coverage"', '"Debt change / CapEx"', '"Future commitments / CapEx"'])
+    _check("_render_current_state" not in source, "Finance repeats readings in a second current-state strip")
+
+    credit = tab[tab.index('credit_view = st.radio('):tab.index('"Borrower and lender stress"')]
+    for call in ('render_credit_spreads()', '_render_debt_markets(debt_markets_data)', '_render_nfci(fred_data, nfci_history)'):
+        _check(call in credit, f"Finance credit view lost {call}")
+    _check('key="finance-credit-view"' in credit, "Credit view selection does not persist")
+    cmdi = _body(source, "_render_debt_markets")
+    _check('rm-finance-cmdi-card' in cmdi and 'rm-card-label' in cmdi and 'rm-card-context' in cmdi, "CMDI cards lost their readings")
+    _check('source_through("New York Fed CMDI", latest_observation' in cmdi and 'rm-card-meta' not in cmdi, "CMDI source date must appear only in the heading")
+    _check('rm-rail' not in cmdi and 'sparkline' not in cmdi and 'metric_card(' not in cmdi, "CMDI cards still render individual mini charts")
+    for section in ("_render_capital_capacity", "_render_nfci", "_render_private_capital_realization"):
+        body = _body(source, section)
+        _check("render_finance_facts" in body, f"{section} lacks its readings")
+    _ordered(cmdi, ["render_panel_heading(", "rm-finance-cmdi", "render_plotly_chart("])
+    _check('height=310' in cmdi, "CMDI chart footprint changed")
+    nfci = _body(source, "_render_nfci")
+    _ordered(nfci, ["render_panel_heading(", "render_finance_facts([", "render_plotly_chart("])
+    _check('height=310' in nfci and 'treatment="lead"' in nfci, "Financial conditions chart footprint changed")
+    _ordered(nfci, ['("NFCI",', '("ANFCI",', '("3-month change",'])
+    _check('columns=3, treatment="lead"' in nfci and '"Chicago Fed / FRED"' in nfci, "NFCI and ANFCI require distinct readings with a shared source date")
+    _check('treatment="lead"' in capacity, "Funding exhibit lacks headline totals")
+    _check('render_finance_section("Funding capacity"' in tab and 'render_finance_section("Borrower and lender stress"' in tab, "Finance hierarchy is missing")
+    _check('render_finance_section("Private Fund Returns", "Distribution and remaining NAV for AI-related private funds")' in tab, "Private-fund subtitle changed")
+    _check('"Fund Data"' in source and 'vintage_min' in source and 'vintage_max' in source, "Fund Data must show the retained vintage range")
+    _check('"Five-year-plus vintages"' not in source, "All-vintage cohort must not carry a mature-only qualifier")
+    _check('treatment="strain"' in _body(source, "_render_financial_condition_summary"), "Strain readings lost their three reading treatment")
+    detail = _body(source, "_render_financial_condition_detail")
+    _ordered(detail, ['render_panel_heading(', 'key="finance-view-stress-detail"', 'render_plotly_chart('])
+    _check('st.session_state.get("finance-view-stress-detail", "Borrower")' in tab, "Stress selection must follow the chart toggle")
+    _check('treatment="private"' in _body(source, "_render_private_capital_realization"), "Private-fund readings lack chart alignment")
+    private_body = _body(source, "_render_private_capital_realization")
+    chart_source = (ROOT / "rendering" / "charts_finance.py").read_text(encoding="utf-8")
+    _check('year_label="initial investment year" if initial_year else "vintage"' in private_body and
+           'def private_capital_realization_map(funds: pd.DataFrame, *, height=430, year_label="vintage"):' in chart_source,
+           "Private-fund chart and Finance call disagree on the year label argument")
+    _check('realization.get("funds"' in private_body and 'realization.get("all_metrics"' in private_body, "Private-fund chart and readings must use all retained funds")
+    _check('("Fund Data", fund_data, None)' in private_body and 'None, note' in private_body, "Private readings repeat the source footer")
+    _check('source_through(source, realization.get("as_of"))' in private_body and 'metadata.get("source_short")' in private_body, "Private source date is missing from the heading")
+    _check('None, context' in _body(source, "_render_financial_condition_summary"), "Strain readings repeat the source footer")
+    _check('source_through("ICE BofA / FRED"' in (ROOT / "rendering" / "credit_spreads.py").read_text(encoding="utf-8"), "Spread source date is missing from heading")
+    _check('render_evidence_gateway("finance")' in tab, "Finance must use the shared Evidence gateway")
+    _check('"Inspect spread records"' not in source and '"Inspect lender records"' not in source, "Reference record actions remain on Finance")
+    _check("finance-lender-evidence" not in source, "Lender record button remains in the chart")
+    for key in ("funding", "disclosures", "private", "credit", "stress"):
+        _check(f'with st.container(border=True, key="finance-section-{key}"):' in tab, f"Finance {key} section lacks its border")
+    spreads = (ROOT / "rendering" / "credit_spreads.py").read_text(encoding="utf-8")
+    _check('columns=3, treatment="lead"' in spreads and "border=True" not in spreads, "Credit spreads lost its lead readings")
+    _check('height=310' in spreads, "Spread chart differs from the credit-view footprint")
+    _ordered(spreads, ['render_panel_heading(', 'render_finance_facts([', 'render_plotly_chart('])
+    _check('None)' in spreads, "Spread readings repeat the source footer")
+    _check('rm-finance-attribution-links' in spreads and 'rm-finance-attribution-credit' in spreads, "Spread attribution is not on one line")
+    _check('finance-spread-evidence' not in spreads, "Spread record button remains beside the chart")
+
+    theme = (ROOT / "rendering" / "theme.css").read_text(encoding="utf-8")
+    _check('.rm-finance-facts::before' in theme and '.rm-finance-cmdi {' in theme, "Finance data rows lack a continuous purple rule")
+    _check('border-top: 3px solid #a78bfa !important;' not in theme[theme.index('div[class*="st-key-finance-section-"]'):theme.index('.rm-finance-section-copy h2')], "Finance sections still have purple top borders")
+    markup = (ROOT / "rendering" / "read_markup.py").read_text(encoding="utf-8")
+    _check("text-align: justify;" in theme and "text-align-last: left;" in theme, "Read paragraph alignment changed")
+    _check(".rm-finance-facts--lead" in theme and ".rm-finance-section" in theme, "Finance editorial hierarchy lacks layout rules")
+    _check(".rm-finance-facts--private" in theme and "min-height: 430px" in theme, "Private-fund stack height differs from chart")
+    _check('grid-template-columns: repeat(3, minmax(0, 1fr));' in theme and '.rm-finance-facts--strain' in theme, "Stress readings must be horizontal")
+    finance_theme = theme[theme.index('/* Finance keeps one detail chart'):theme.index('.rm-evidence-gateway {', theme.index('/* Finance keeps one detail chart'))]
+    _check('border-top: 3px solid #a78bfa' in finance_theme and 'border-top: 2px solid rgba(96, 165, 250' not in finance_theme, "Finance boxes must use a purple top rule")
+    _check(".rm-finance-section-number" not in theme, "Finance section numbers remain")
+    _check('lang="en"' in markup, "Read hyphenation lacks a language")
 
     _check("def _render_finance_ledger(" not in source, "Finance retained a local reference ledger")
     _check("arrow_safe_dataframe" not in source, "Finance retained dead local-ledger dataframe plumbing")

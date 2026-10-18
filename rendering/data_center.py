@@ -25,6 +25,13 @@ from rendering.components import (
 )
 from rendering.spatial import render_spatial_explorer
 from rendering.visual_system import render_plotly_chart
+from rendering.observation_meta import latest_observation, retained_retrieval_date, source_through
+
+
+def _registry_meta(campuses: pd.DataFrame) -> str:
+    date = latest_observation(campuses, "Source Updated Date") or latest_observation(campuses, "Source Date")
+    return source_through("Universal Data Center Registry", date,
+                          retained_retrieval_date("data/infrastructure/derived/universal_data_center_registry.json"))
 
 
 def _inject_data_center_page_theme() -> None:
@@ -131,6 +138,7 @@ def _render_pulse(campuses: pd.DataFrame, infrastructure_data: dict) -> None:
     operating = int(status.eq("Operational").sum())
     development = int(status.isin(ACTIVE_CAMPUS_STATUSES - {"Operational"}).sum())
     capacity = _campus_capacity(active)
+    provenance = _registry_meta(campuses)
     render_section(
         "Campus inventory",
         "The campus registry used across Data Centers, Water, Power, Grid & Storage, and Connectivity.",
@@ -138,10 +146,10 @@ def _render_pulse(campuses: pd.DataFrame, infrastructure_data: dict) -> None:
     )
     render_statline(
         [
-            ("Campuses", f"{len(campuses):,}", f"registry v{summary.get('registry_version', '9.6.2')}"),
-            ("Operating campuses", f"{operating:,}", "Campus IDs"),
-            ("Development campuses", f"{development:,}", "active development stages"),
-            ("Published capacity", fmt_number(capacity.sum(min_count=1) / 1000.0, 1, suffix=" GW"), f"{int(capacity.notna().sum()):,} campuses with MW"),
+            ("Campuses", f"{len(campuses):,}", provenance, f"Registry v{summary.get('registry_version', '9.6.2')}"),
+            ("Operating campuses", f"{operating:,}", provenance, "Campus IDs"),
+            ("Development campuses", f"{development:,}", provenance, "Active development stages"),
+            ("Published capacity", fmt_number(capacity.sum(min_count=1) / 1000.0, 1, suffix=" GW"), provenance, f"{int(capacity.notna().sum()):,} campuses with MW"),
         ],
         key_prefix="data-center-pulse",
     )
@@ -151,13 +159,14 @@ def _render_geography(campuses: pd.DataFrame, infrastructure_data: dict) -> None
     state_counts = campuses.groupby("State", as_index=False)["Campus ID"].nunique().rename(columns={"Campus ID": "Campuses"}) if not campuses.empty else pd.DataFrame()
     leading = state_counts.nlargest(1, "Campuses") if not state_counts.empty else pd.DataFrame()
     summary = dict((infrastructure_data or {}).get("data_center_registry_summary", {}) or {})
+    provenance = _registry_meta(campuses)
     render_section("Campus geography", "Campus locations with state drilldown and campus selection.")
     render_summary_row(
         [
-            ("State with most campuses", str(leading.iloc[0]["State"]) if not leading.empty else "n/a", f"{int(leading.iloc[0]['Campuses']):,} campuses" if not leading.empty else "n/a"),
-            ("States represented", f"{int(summary.get('states', 0) or 0):,}", "universal registry"),
-            ("Mapped campuses", f"{int(summary.get('mapped_campuses', 0) or 0):,}", "campus points"),
-            ("Building entities", f"{int(summary.get('building_entities', 0) or 0):,}", "buildings grouped by campus"),
+            ("State with most campuses", str(leading.iloc[0]["State"]) if not leading.empty else "n/a", provenance, f"{int(leading.iloc[0]['Campuses']):,} campuses" if not leading.empty else "n/a"),
+            ("States represented", f"{int(summary.get('states', 0) or 0):,}", provenance, "Universal registry"),
+            ("Mapped campuses", f"{int(summary.get('mapped_campuses', 0) or 0):,}", provenance, "Campus points"),
+            ("Building entities", f"{int(summary.get('building_entities', 0) or 0):,}", provenance, "Buildings grouped by campus"),
         ],
         key_prefix="data-center-geography",
     )
@@ -174,10 +183,11 @@ def _render_geography(campuses: pd.DataFrame, infrastructure_data: dict) -> None
 
 def _render_scale(campuses: pd.DataFrame) -> None:
     render_section("Campus capacity", "Published capacity by campus.")
+    provenance = _registry_meta(campuses)
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="data-center-panel-largest-campuses"):
-            render_panel_heading("Largest published campuses", "Campus records")
+            render_panel_heading("Largest published campuses", provenance)
             render_plotly_chart(
                 data_center_largest_campuses(campuses, height=460),
                 width="stretch",
@@ -186,7 +196,7 @@ def _render_scale(campuses: pd.DataFrame) -> None:
             )
     with right:
         with st.container(border=True, key="data-center-panel-capacity-distribution"):
-            render_panel_heading("Published capacity distribution", "Campus-level MW")
+            render_panel_heading("Published capacity distribution", provenance)
             render_plotly_chart(
                 data_center_capacity_distribution(campuses, height=460),
                 width="stretch",
@@ -198,14 +208,15 @@ def _render_scale(campuses: pd.DataFrame) -> None:
 def _render_development_profile(inventory: dict) -> None:
     stage = inventory.get("national_stage")
     tracker = inventory.get("open_tracker_summary", {}) or {}
+    provenance = source_through(tracker.get("source") or "FracTracker", tracker.get("observation_date"))
     states = inventory.get("state_stage")
     render_section("Development records", "Source project records by development stage.")
     render_summary_row(
         [
-            ("Proposed source records", f"{int(tracker.get('proposed', 0) or 0):,}", "FracTracker"),
-            ("Approved / construction", f"{int(tracker.get('approved_or_construction', 0) or 0):,}", "FracTracker"),
-            ("Expanding", f"{int(tracker.get('expanding', 0) or 0):,}", "FracTracker"),
-            ("Published operating capacity", fmt_number(pd.to_numeric(tracker.get("operating_published_mw"), errors="coerce") / 1000.0, 1, suffix=" GW"), "source records"),
+            ("Proposed source records", f"{int(tracker.get('proposed', 0) or 0):,}", provenance),
+            ("Approved / construction", f"{int(tracker.get('approved_or_construction', 0) or 0):,}", provenance),
+            ("Expanding", f"{int(tracker.get('expanding', 0) or 0):,}", provenance),
+            ("Published operating capacity", fmt_number(pd.to_numeric(tracker.get("operating_published_mw"), errors="coerce") / 1000.0, 1, suffix=" GW"), provenance),
         ],
         key_prefix="data-center-development-profile",
     )
@@ -218,10 +229,10 @@ def _render_development_profile(inventory: dict) -> None:
             key="data-center-view-pipeline-explorer",
         )
         if view == "Leading state pipelines":
-            render_panel_heading("States with the largest development pipelines", "Source project records")
+            render_panel_heading("States with the largest development pipelines", provenance)
             figure, key = data_center_state_pipeline(states, height=500), "data-center-leading-pipelines"
         else:
-            render_panel_heading("Source records by lifecycle stage", "FracTracker")
+            render_panel_heading("Source records by lifecycle stage", provenance)
             figure, key = data_center_stage_profile(stage, height=500), "data-center-stage-profile"
         render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=key)
 
@@ -231,21 +242,23 @@ def _render_connectivity_operator_structure(connectivity: dict | None, campuses:
     national = payload.get("national_summary", {}) or {}
     coverage = payload.get("coverage", {}) or {}
     active = _active_campuses(campuses)
+    registry_meta = _registry_meta(campuses)
+    network_meta = source_through("Internet Society Pulse / PeeringDB", latest_observation(payload.get("interconnection_market_summary"), "Observation Date"))
     operators = active.get("Operator", pd.Series("", index=active.index)).replace("", np.nan).nunique() if not active.empty else 0
     render_section("Connectivity and operators", "Network data and operator records joined by Campus ID.")
     render_summary_row(
         [
-            ("Active IXPs", f"{int(pd.to_numeric(national.get('Active IXPs'), errors='coerce') or 0):,}", "national public registry"),
-            ("Campuses screened", f"{int(coverage.get('campuses_screened', 0) or 0):,}", "coverage subset"),
-            ("Active campuses", f"{len(active):,}", "universal registry"),
-            ("Active operators", f"{int(operators):,}", "reported operator names"),
+            ("Active IXPs", f"{int(pd.to_numeric(national.get('Active IXPs'), errors='coerce') or 0):,}", network_meta),
+            ("Campuses screened", f"{int(coverage.get('campuses_screened', 0) or 0):,}", registry_meta),
+            ("Active campuses", f"{len(active):,}", registry_meta),
+            ("Active operators", f"{int(operators):,}", registry_meta),
         ],
         key_prefix="data-center-structure",
     )
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="data-center-panel-connectivity-context"):
-            render_panel_heading("Campus capacity and network access", "State-level comparison")
+            render_panel_heading("Campus capacity and network access", network_meta)
             render_plotly_chart(
                 data_center_connectivity_state(payload.get("state_summary"), height=470, lens="Mismatch screen"),
                 width="stretch",
@@ -254,7 +267,7 @@ def _render_connectivity_operator_structure(connectivity: dict | None, campuses:
             )
     with right:
         with st.container(border=True, key="data-center-panel-operator-structure"):
-            render_panel_heading("Active campuses by operator", "Universal registry")
+            render_panel_heading("Active campuses by operator", registry_meta)
             render_plotly_chart(
                 data_center_operator_pipeline(campuses, height=470),
                 width="stretch",
@@ -271,6 +284,7 @@ def _render_evidence_coverage(campuses: pd.DataFrame) -> None:
     mapped = latitude.notna() & longitude.notna()
     sources = campuses.get("Source URL", pd.Series("", index=campuses.index)).fillna("").astype(str).str.strip().ne("")
     grades = campuses.get("Evidence Grade", pd.Series("", index=campuses.index)).fillna("").astype(str).str.upper().str.strip()
+    provenance = _registry_meta(campuses)
 
     def share(count: int) -> str:
         return fmt_number((count / total * 100.0) if total else np.nan, 1, suffix="%")
@@ -281,10 +295,10 @@ def _render_evidence_coverage(campuses: pd.DataFrame) -> None:
     )
     render_summary_row(
         [
-            ("Capacity coverage", share(int(capacity.notna().sum())), f"{int(capacity.notna().sum()):,} of {total:,} campuses"),
-            ("Mapped coverage", share(int(mapped.sum())), f"{int(mapped.sum()):,} of {total:,} campuses"),
-            ("Source coverage", share(int(sources.sum())), f"{int(sources.sum()):,} campuses with source URL"),
-            ("Higher-grade evidence", f"{int(grades.isin({'A', 'B'}).sum()):,}", "A/B evidence grade"),
+            ("Capacity coverage", share(int(capacity.notna().sum())), provenance, f"{int(capacity.notna().sum()):,} of {total:,} campuses"),
+            ("Mapped coverage", share(int(mapped.sum())), provenance, f"{int(mapped.sum()):,} of {total:,} campuses"),
+            ("Source coverage", share(int(sources.sum())), provenance, f"{int(sources.sum()):,} campuses with source URL"),
+            ("Higher-grade evidence", f"{int(grades.isin({'A', 'B'}).sum()):,}", provenance, "A/B evidence grade"),
         ],
         key_prefix="data-center-evidence-coverage",
     )

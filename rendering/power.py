@@ -15,7 +15,7 @@ from analytics.energy_pulse import (
 )
 from config.energy_config import ENERGY_SERIES
 from rendering.evidence_gateway import render_evidence_gateway
-from rendering.observation_meta import latest_observation, source_through
+from rendering.observation_meta import latest_observation, retained_retrieval_date, source_through
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_data_center import ACTIVE_CAMPUS_STATUSES
 from rendering.charts_energy import (
@@ -49,6 +49,14 @@ def _power_item(power_data, name):
 def _market_frame(power_data, name):
     frame = (power_data or {}).get(name)
     return frame.copy() if isinstance(frame, pd.DataFrame) else pd.DataFrame()
+
+
+def _retained_market_date(power_data, key: str, filename: str):
+    report = (power_data or {}).get("market_load_report", {}) or {}
+    refresh_key = "generators" if key in {"generator_pipeline", "capacity_snapshot", "operating_generators"} else key
+    if refresh_key in (report.get("refreshed_datasets") or []):
+        return report.get("requested_at_utc")
+    return retained_retrieval_date(f"data/{filename}")
 
 
 def _power_source_label(name):
@@ -267,6 +275,7 @@ def _power_context(power_data, infrastructure_data) -> dict:
         "supply": supply_snapshot(generation, capacity, changes),
         "development": development_snapshot(pipeline, pd.DataFrame(), pd.DataFrame()),
         "prices": price_snapshot(retail, _power_item(power_data, "Natural Gas Price")),
+        "market_load_report": (power_data or {}).get("market_load_report", {}),
     }
     return context
 
@@ -276,6 +285,9 @@ def _render_power_pulse(context: dict) -> None:
     large = context["large_loads"]
     development = context["development"]
     prices = context["prices"]
+    retail_meta = source_through("EIA-861M", latest_observation(context["retail"]))
+    fleet_meta = source_through("EIA-860M", None, _retained_market_date(context, "generator_pipeline", "energy_generator_pipeline.csv"))
+    registry_meta = source_through("Universal Data Center Registry", latest_observation(context["campuses"], "Source Updated Date") or latest_observation(context["campuses"], "Source Date"), retained_retrieval_date("data/infrastructure/derived/universal_data_center_registry.json"))
 
     published_total = pd.to_numeric(large.get("published_total_mw"), errors="coerce")
     if pd.notna(published_total) and published_total > 0:
@@ -293,10 +305,10 @@ def _render_power_pulse(context: dict) -> None:
     )
     render_statline(
         [
-            ("Electricity demand", fmt_number(demand.get("total_growth"), 1, signed=True, suffix="%"), "rolling 12-month growth"),
-            ("Large-load pipeline", large_value, large_context),
-            ("Net capacity build", fmt_number(development.get("planned_net_gw"), 1, signed=True, suffix=" GW"), f"{development.get('current_year')}–{development.get('end_year')}"),
-            ("Retail price growth", fmt_number(prices.get("total_growth"), 1, signed=True, suffix="%"), "United States · year over year"),
+            ("Electricity demand", fmt_number(demand.get("total_growth"), 1, signed=True, suffix="%"), retail_meta, "Rolling 12-month growth"),
+            ("Large-load pipeline", large_value, registry_meta, large_context),
+            ("Net capacity build", fmt_number(development.get("planned_net_gw"), 1, signed=True, suffix=" GW"), fleet_meta, f"{development.get('current_year')}–{development.get('end_year')}"),
+            ("Retail price growth", fmt_number(prices.get("total_growth"), 1, signed=True, suffix="%"), retail_meta, "United States · year over year"),
         ],
         key_prefix="power-pulse",
     )
@@ -360,12 +372,13 @@ def _render_demand(context: dict) -> None:
     demand = context["demand"]
     large = context["large_loads"]
     through = latest_observation(retail)
+    registry_meta = source_through("Universal Data Center Registry", latest_observation(campuses, "Source Updated Date") or latest_observation(campuses, "Source Date"), retained_retrieval_date("data/infrastructure/derived/universal_data_center_registry.json"))
     render_section("Electricity demand and large loads", "U.S. electricity demand by customer class and published data-center load.")
     render_summary_row([
         ("Customer accounts", fmt_number(demand.get("customers_m"), 1, suffix="M"), source_through("EIA-861M", through)),
-        ("Active campuses", f"{int(large.get('active_campuses', 0) or 0):,}", f"{int(large.get('operating_campuses', 0) or 0):,} operating"),
-        ("Published coverage", f"{int(large.get('published_records', 0) or 0):,} / {int(large.get('active_campuses', 0) or 0):,}", fmt_number(pd.to_numeric(large.get("published_coverage"), errors="coerce") * 100.0, 1, suffix="%")),
-        ("Median disclosed load", fmt_number(large.get("published_median_mw"), 1, suffix=" MW"), "published estimates only"),
+        ("Active campuses", f"{int(large.get('active_campuses', 0) or 0):,}", registry_meta, f"{int(large.get('operating_campuses', 0) or 0):,} operating"),
+        ("Published coverage", f"{int(large.get('published_records', 0) or 0):,} / {int(large.get('active_campuses', 0) or 0):,}", registry_meta, fmt_number(pd.to_numeric(large.get("published_coverage"), errors="coerce") * 100.0, 1, suffix="%")),
+        ("Median disclosed load", fmt_number(large.get("published_median_mw"), 1, suffix=" MW"), registry_meta, "Published estimates only"),
     ], key_prefix="power-demand-detail")
     left, right = st.columns([1.55, 0.85])
     with left:
@@ -374,42 +387,44 @@ def _render_demand(context: dict) -> None:
             render_plotly_chart(electricity_demand_history(retail, height=430), width="stretch", config={"displayModeBar": False, "responsive": True}, key="power-demand-history")
     with right:
         with st.container(border=True, key="power-panel-large-load-profile"):
-            render_panel_heading("Large-load concentration", "Published active-campus estimates")
+            render_panel_heading("Large-load concentration", registry_meta)
             _render_large_load_profile(context)
     if campuses.empty:
         st.caption("No active campuses with published state and capacity data are available.")
 
 def _render_supply(context: dict) -> None:
     generation = context["generation"]; capacity = context["capacity"]; changes = context["changes"]; supply = context["supply"]
+    generation_meta = source_through("EIA-923", latest_observation(generation))
     render_section("Generation", "Generation mix, recent output changes, and capacity additions and retirements.")
     render_summary_row([
-        ("Natural gas share", fmt_number(supply.get("gas_share"), 1, suffix="%"), "rolling 12 months"),
-        ("Nuclear share", fmt_number(supply.get("nuclear_share"), 1, suffix="%"), "rolling 12 months"),
-        ("Renewable share", fmt_number(supply.get("renewable_share"), 1, suffix="%"), "hydro, wind, solar, and other"),
-        ("Operating capacity", fmt_number(supply.get("capacity_gw"), 1, suffix=" GW"), "EIA-860M"),
+        ("Natural gas share", fmt_number(supply.get("gas_share"), 1, suffix="%"), generation_meta, "Rolling 12 months"),
+        ("Nuclear share", fmt_number(supply.get("nuclear_share"), 1, suffix="%"), generation_meta, "Rolling 12 months"),
+        ("Renewable share", fmt_number(supply.get("renewable_share"), 1, suffix="%"), generation_meta, "Hydro, wind, solar, and other"),
+        ("Operating capacity", fmt_number(supply.get("capacity_gw"), 1, suffix=" GW"), source_through("EIA-860M", None, _retained_market_date(context, "capacity_snapshot", "energy_capacity_snapshot.csv")), "Operating fleet"),
     ], key_prefix="power-supply")
     with st.container(key="full-width-layout-power-generation-supply"):
         with st.container(border=True, key="power-panel-supply-selected"):
             view = st.radio("Supply view", ["Generation mix", "Generation change", "Fleet changes"], horizontal=True, label_visibility="collapsed", key="power-view-supply")
             if view == "Generation change":
-                render_panel_heading("Generation change", "Rolling 12-month change by source"); figure, chart_key = generation_change(generation, height=490), "power-generation-change"
+                render_panel_heading("Generation change", generation_meta); figure, chart_key = generation_change(generation, height=490), "power-generation-change"
             elif view == "Fleet changes":
-                render_panel_heading("Capacity additions and retirements", "Latest EIA release"); figure, chart_key = capacity_changes(changes, height=490), "power-capacity-changes"
+                render_panel_heading("Capacity additions and retirements", source_through("EIA", latest_observation(changes))); figure, chart_key = capacity_changes(changes, height=490), "power-capacity-changes"
             else:
-                render_panel_heading("Generation mix", "Annual electricity generation by source · 2020-present"); figure, chart_key = generation_mix(generation, height=490), "power-generation-mix"
+                render_panel_heading("Generation mix", generation_meta); figure, chart_key = generation_mix(generation, height=490), "power-generation-mix"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=chart_key)
 
 def _render_buildout(context: dict) -> None:
     development = context["development"]
+    provenance = source_through("EIA-860M", None, _retained_market_date(context, "generator_pipeline", "energy_generator_pipeline.csv"))
     render_section("Planned generation", "Planned generation additions and retirements. Interconnection queues and storage are covered in Grid & Storage.")
     render_summary_row([
-        ("Planned additions", fmt_number(development.get("planned_additions_gw"), 1, suffix=" GW"), f"{development.get('current_year')}–{development.get('end_year')}"),
-        ("Planned retirements", fmt_number(development.get("planned_retirements_gw"), 1, suffix=" GW"), f"{development.get('current_year')}–{development.get('end_year')}"),
-        ("Net planned build", fmt_number(development.get("planned_net_gw"), 1, signed=True, suffix=" GW"), "additions less retirements"),
+        ("Planned additions", fmt_number(development.get("planned_additions_gw"), 1, suffix=" GW"), provenance, f"{development.get('current_year')}–{development.get('end_year')}"),
+        ("Planned retirements", fmt_number(development.get("planned_retirements_gw"), 1, suffix=" GW"), provenance, f"{development.get('current_year')}–{development.get('end_year')}"),
+        ("Net planned build", fmt_number(development.get("planned_net_gw"), 1, signed=True, suffix=" GW"), provenance, "Additions less retirements"),
     ], key_prefix="power-buildout")
     with st.container(key="full-width-layout-power-generation-buildout"):
         with st.container(border=True, key="power-panel-buildout-selected"):
-            render_panel_heading("Planned capacity additions and retirements", f"{development.get('current_year')}–{development.get('end_year')}")
+            render_panel_heading("Planned capacity additions and retirements", provenance)
             render_plotly_chart(planned_capacity(development.get("pipeline"), height=450, end_year=int(development.get("end_year", 2030))), width="stretch", config={"displayModeBar": False, "responsive": True}, key="power-planned-capacity")
 
 def _lng_capacity_total(frame, stages):
@@ -441,19 +456,22 @@ def _render_fuel_infrastructure(power_data) -> None:
         storage.get("Development Status", "").isin(["Planned", "On Hold"]),
         "Working Capacity (Bcf)",
     ].sum(min_count=1)
+    pipeline_meta = source_through("EIA natural-gas pipelines", latest_observation(gas, "Last Updated Date"))
+    lng_meta = source_through("EIA LNG", None, _retained_market_date(power_data, "lng_projects", "energy_lng_projects.csv"))
+    storage_meta = source_through("EIA gas storage", None, _retained_market_date(power_data, "gas_storage_projects", "energy_natural_gas_storage_projects.csv"))
     render_statline(
         [
-            ("Pipeline projects", f"{len(active):,}", "active development stages"),
-            ("Pipeline capacity", fmt_number(active["Additional Capacity (MMcf/d)"].sum(min_count=1) / 1000.0, 1, suffix=" Bcf/d"), "active stages"),
-            ("LNG construction / commissioning", fmt_number(_lng_capacity_total(lng, ["construction", "commission"]), 1, suffix=" Bcf/d"), "liquefaction capacity"),
-            ("Storage development", fmt_number(storage_active, 1, suffix=" Bcf"), "working-gas capacity"),
+            ("Pipeline projects", f"{len(active):,}", pipeline_meta, "Active development stages"),
+            ("Pipeline capacity", fmt_number(active["Additional Capacity (MMcf/d)"].sum(min_count=1) / 1000.0, 1, suffix=" Bcf/d"), pipeline_meta, "Active stages"),
+            ("LNG construction / commissioning", fmt_number(_lng_capacity_total(lng, ["construction", "commission"]), 1, suffix=" Bcf/d"), lng_meta, "Liquefaction capacity"),
+            ("Storage development", fmt_number(storage_active, 1, suffix=" Bcf"), storage_meta, "Working-gas capacity"),
         ],
         key_prefix="power-fuel-infrastructure",
     )
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="power-panel-gas-pipeline"):
-            render_panel_heading("Natural-gas pipeline development", "Additional delivery capacity")
+            render_panel_heading("Natural-gas pipeline development", pipeline_meta)
             render_plotly_chart(
                 gas_pipeline_capacity(gas),
                 width="stretch",
@@ -462,7 +480,7 @@ def _render_fuel_infrastructure(power_data) -> None:
             )
     with right:
         with st.container(border=True, key="power-panel-lng"):
-            render_panel_heading("U.S. LNG liquefaction capacity", "Operating and development stages")
+            render_panel_heading("U.S. LNG liquefaction capacity", lng_meta)
             render_plotly_chart(
                 lng_capacity(lng),
                 width="stretch",
@@ -484,13 +502,13 @@ def _render_prices(context: dict, power_data) -> None:
         with st.container(border=True, key="power-panel-price-selected"):
             view = st.radio("Price and fuel view", ["Retail prices", "Wholesale hubs", "Fuel infrastructure"], horizontal=True, label_visibility="collapsed", key="power-view-prices")
             if view == "Fuel infrastructure":
-                render_panel_heading("Natural-gas infrastructure", "Pipeline delivery, LNG export capacity, and storage development")
+                render_panel_heading("Natural-gas infrastructure", pipeline_meta)
                 _render_fuel_infrastructure(power_data)
             else:
                 if view == "Wholesale hubs":
-                    render_panel_heading("Wholesale power prices", "Major trading hubs"); figure, chart_key = wholesale_price_history(wholesale, height=450), "power-wholesale-prices"
+                    render_panel_heading("Wholesale power prices", source_through("EIA / ICE", latest_observation(wholesale, "Trade Date"))); figure, chart_key = wholesale_price_history(wholesale, height=450), "power-wholesale-prices"
                 else:
-                    render_panel_heading("Retail electricity prices", "United States"); figure, chart_key = retail_price_history(retail, height=450), "power-retail-prices"
+                    render_panel_heading("Retail electricity prices", source_through("EIA-861M", through)); figure, chart_key = retail_price_history(retail, height=450), "power-retail-prices"
                 render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=chart_key)
 
 

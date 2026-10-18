@@ -17,11 +17,13 @@ from rendering.components import (
     metric_card,
     render_domain_read,
     render_macro_transmission,
+    render_panel_heading,
     render_section,
     render_statline,
     render_tab_header,
 )
 from rendering.spatial import render_spatial_explorer
+from rendering.observation_meta import latest_observation, source_through
 from rendering.comparison import (
     comparison_ready,
     render_macro_change_overview,
@@ -188,7 +190,9 @@ def _render_primary_macro_cards(regime_metrics, trends, adoption_data):
             )
 
 def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
-    del dashboard_data
+    trends = (dashboard_data or {}).get("trends", {}) or {}
+    def trend_date(name):
+        return latest_observation((trends.get(name, {}) or {}).get("history"))
 
     industrial_growth = _fred_value(fred_data, "Industrial Production YoY")
     industrial_gap = industrial_growth_gap(
@@ -214,15 +218,15 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
         with measures_col:
             render_statline(
                 [
-                    ("Speculation", fmt_number(gaps["Speculation Gap"], 0, signed=True), speculation_label(gaps["Speculation Gap"])),
-                    ("Economic Validation", fmt_number(gaps["Economic Validation Gap"], 0, signed=True), validation_label(gaps["Economic Validation Gap"])),
+                    ("Speculation", fmt_number(gaps["Speculation Gap"], 0, signed=True), source_through("YFinance + EDGAR", trend_date("aei_trend")), speculation_label(gaps["Speculation Gap"])),
+                    ("Economic Validation", fmt_number(gaps["Economic Validation Gap"], 0, signed=True), source_through("YFinance + EDGAR + FRED", trend_date("adi_trend")), validation_label(gaps["Economic Validation Gap"])),
                 ],
                 key_prefix="macro-current-divergence-primary",
             )
             render_statline(
                 [
-                    ("Industrial", fmt_number(gaps["AI–Industrial Growth Gap"], 0, signed=True), adoption_label(gaps["AI–Industrial Growth Gap"])),
-                    ("Power Capacity", fmt_number(gaps["Power Capacity Gap"], 0, signed=True), power_capacity_gap_label(gaps["Power Capacity Gap"])),
+                    ("Industrial", fmt_number(gaps["AI–Industrial Growth Gap"], 0, signed=True), source_through("FRED + Census", (fred_data or {}).get("Industrial Production YoY", {}).get("date") if isinstance((fred_data or {}).get("Industrial Production YoY"), dict) else None), adoption_label(gaps["AI–Industrial Growth Gap"])),
+                    ("Power Capacity", fmt_number(gaps["Power Capacity Gap"], 0, signed=True), source_through("FRED + EIA", trend_date("power_stress_trend")), power_capacity_gap_label(gaps["Power Capacity Gap"])),
                 ],
                 key_prefix="macro-current-divergence-context",
             )
@@ -231,6 +235,7 @@ def _render_gap_measures(regime_metrics, fred_data, dashboard_data):
 def _render_buildout_rotation(infrastructure_data):
     history = (infrastructure_data or {}).get("construction_history")
     with st.container(border=True, key="macro-panel-buildout-rotation"):
+        render_panel_heading("Construction growth", source_through("U.S. Census Bureau", latest_observation(history, "Observation Date")))
         render_plotly_chart(
             infrastructure_leadership_rotation(history),
             width="stretch",

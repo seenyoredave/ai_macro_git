@@ -44,6 +44,7 @@ from loaders.fred_loader import describe_fred_load, load_fred
 from loaders.infrastructure_loader import load_infrastructure_data
 from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
+from loaders.private_capital_loader import PRIVATE_CAPITAL_REFRESH_VERSION, refresh_private_capital
 from loaders.credit_conditions_loader import load_credit_conditions
 from loaders.bdc_filings_loader import refresh_bdc_filings
 from loaders.snapshot_writer import persist_refresh_snapshots
@@ -93,6 +94,7 @@ _NODE_SOURCE_MAP: dict[str, tuple[RefreshSource, ...]] = {
     # Commercialization has its own retained bundle and does not participate in
     # generic snapshot_writer authorization.
     "commercialization": (),
+    "private_capital": (),
 }
 
 
@@ -281,6 +283,7 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
             "current_context": date_token,
             "power_supply": energy_cache_token(),
             "nyfed": debt_markets_cache_token(),
+            "private_capital": PRIVATE_CAPITAL_REFRESH_VERSION,
         },
     )
     if not live:
@@ -565,6 +568,17 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
     )
     credit_conditions = load_credit_conditions(force_refresh=fred_live, allow_live=fred_live)
     fred_report["credit_conditions"] = credit_conditions["load_report"]
+    private_live = live and plan.should_refresh("private_capital")
+    private_started = time.perf_counter()
+    private_report = refresh_private_capital(force_refresh=private_live, allow_live=private_live)
+    _record_node(
+        plan,
+        "private_capital",
+        attempted_live=private_live,
+        report=private_report,
+        semantic_output={"as_of": private_report.get("source_as_of"), "source_url": private_report.get("source_url"), "snapshot_signature": private_report.get("snapshot_signature")},
+        elapsed_sec=_elapsed(private_started),
+    )
     _record_node(
         plan,
         "fred",
@@ -695,6 +709,7 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         "workforce": workforce_data.get("load_report", {}),
         "economic_outcomes": economic_impact_data.get("load_report", {}),
         "commercialization": commercialization_data.get("load_report", {}),
+        "private_capital": private_report,
         "current_context": context_refresh,
         "snapshot_write": snapshot_write_report,
     }
@@ -766,6 +781,8 @@ def refresh_warnings(bundle: RefreshBundle) -> list[str]:
     for label, report in bundle.reports.items():
         if label in {"snapshot_write", "refresh_graph"}:
             continue
+        if label == "private_capital" and isinstance(report, dict):
+            messages.extend(str(message) for message in report.get("provider_warnings", []) if message)
         if label == "market" and isinstance(report, dict):
             for source_name in ("yfinance", "edgar"):
                 source_report = dict(report.get(source_name) or {})

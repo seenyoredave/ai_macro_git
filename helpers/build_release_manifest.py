@@ -147,6 +147,9 @@ RELEASE_FILES = (
     "loaders/current_context_registry.py",
     "loaders/current_context_loader.py",
     "loaders/commercialization_loader.py",
+    "loaders/private_capital_loader.py",
+    "analytics/private_capital.py",
+    "rendering/charts_finance.py",
     "rendering/components.py",
     "rendering/comparison.py",
     "rendering/layout_contracts.py",
@@ -170,6 +173,7 @@ RELEASE_FILES = (
     "rendering/evidence.py",
     "rendering/market.py",
     "rendering/finance.py",
+    "rendering/credit_spreads.py",
     "rendering/power.py",
     "rendering/theme.css",
     "ai_macro.py",
@@ -255,6 +259,11 @@ def build_manifest() -> dict:
     refresh_graph_state = PROJECT_ROOT / "data" / "refresh_graph_state.json"
     if refresh_graph_state.exists():
         release_files.append(refresh_graph_state.relative_to(PROJECT_ROOT).as_posix())
+    # This quarterly retained bundle is created by automation after first success.
+    for relative in ("data/private_capital/wsib_fund_performance.csv", "data/private_capital/wsib_metadata.json",
+                     "data/private_capital/calpers_fund_performance.csv", "data/private_capital/calpers_metadata.json"):
+        if (PROJECT_ROOT / relative).exists():
+            release_files.append(relative)
     release_files = list(dict.fromkeys(release_files))
     for relative in release_files:
         path = PROJECT_ROOT / relative

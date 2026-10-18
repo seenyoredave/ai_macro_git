@@ -65,6 +65,7 @@ NODE_SPECS: tuple[RefreshNodeSpec, ...] = (
     RefreshNodeSpec("workforce", 42.0, description="Labor-market evidence"),
     RefreshNodeSpec("economic_outcomes", 42.0, description="Productivity and economic-outcome evidence"),
     RefreshNodeSpec("commercialization", 120.0, description="Primary company commercialization disclosures"),
+    RefreshNodeSpec("private_capital", 168.0, description="Quarterly private-fund returns: WSIB and CalPERS"),
     RefreshNodeSpec(
         "connectivity",
         120.0,

@@ -12,7 +12,7 @@ from analytics.grid_deliverability import (
     storage_duration_profile,
 )
 from rendering.evidence_gateway import render_evidence_gateway
-from rendering.observation_meta import source_through
+from rendering.observation_meta import latest_observation, retained_retrieval_date, source_through
 from rendering.visual_system import render_plotly_chart
 from rendering.charts_energy import queue_by_region, queue_by_technology
 from rendering.charts_grid_storage import (
@@ -34,6 +34,22 @@ from rendering.components import (
     render_summary_row,
     render_tab_header,
 )
+
+
+def _queue_meta(context: dict) -> str:
+    return source_through("Berkeley Lab", None, context.get("queue_retrieved"))
+
+
+def _outcome_meta(context: dict) -> str:
+    return source_through("Berkeley Lab", latest_observation(context.get("queue_outcomes"), "Observation Date"))
+
+
+def _energy_retrieval(energy_data: dict, key: str, filename: str):
+    report = (energy_data or {}).get("market_load_report", {}) or {}
+    refresh_key = "generators" if key == "operating_generators" else key
+    if refresh_key in (report.get("refreshed_datasets") or []):
+        return report.get("requested_at_utc")
+    return retained_retrieval_date(f"data/{filename}")
 
 
 def _frame(data: dict, key: str) -> pd.DataFrame:
@@ -121,6 +137,11 @@ def _context(energy_data: dict, infrastructure_data: dict) -> dict:
         "source_manifest": _frame(energy_data, "grid_storage_source_manifest"),
         "data_center_states": data_center_states,
         "data_center_summary": data_center_summary,
+        "data_center_date": (latest_observation((infrastructure_data or {}).get("data_center_registry"), "Source Updated Date")
+                             or latest_observation((infrastructure_data or {}).get("data_center_registry"), "Source Date")
+                             or retained_retrieval_date("data/infrastructure/derived/universal_data_center_registry.json")),
+        "queue_retrieved": _energy_retrieval(energy_data, "interconnection_queue", "energy_interconnection_queue.csv"),
+        "storage_retrieved": _energy_retrieval(energy_data, "operating_generators", "energy_operating_generators.csv"),
     }
 
 
@@ -128,11 +149,12 @@ def _queue_conversion_stats(context: dict):
     development = context["development"]
     outcome = context.get("queue_outcome", {})
     median_years = pd.to_numeric(outcome.get("Median Request to COD Years"), errors="coerce")
+    provenance = _queue_meta(context)
     return [
-        ("Active queue", fmt_number(development.get("headline_queue_gw"), 0, suffix=" GW"), f"{int(development.get('queue_projects', 0) or 0):,} requests"),
-        ("Draft or executed IA", fmt_number(outcome.get("Draft or Executed IA GW"), 0, suffix=" GW"), "pre-operation capacity"),
-        ("Advanced-stage share", fmt_number(development.get("advanced_share"), 1, suffix="%"), "executed IA or construction"),
-        ("Median request to COD", ">5 years" if pd.notna(median_years) and median_years > 5 else fmt_number(median_years, 1, suffix=" years"), "projects completed in 2025"),
+        ("Active queue", fmt_number(development.get("headline_queue_gw"), 0, suffix=" GW"), provenance, f"{int(development.get('queue_projects', 0) or 0):,} requests"),
+        ("Draft or executed IA", fmt_number(outcome.get("Draft or Executed IA GW"), 0, suffix=" GW"), _outcome_meta(context), "Pre-operation capacity"),
+        ("Advanced-stage share", fmt_number(development.get("advanced_share"), 1, suffix="%"), provenance, "Executed IA or construction"),
+        ("Median request to COD", ">5 years" if pd.notna(median_years) and median_years > 5 else fmt_number(median_years, 1, suffix=" years"), _outcome_meta(context), "Projects completed in 2025"),
     ]
 
 
@@ -141,11 +163,12 @@ def _regional_stats(context: dict):
     top = regions.iloc[0] if isinstance(regions, pd.DataFrame) and not regions.empty else pd.Series(dtype=object)
     oldest = regions.sort_values("Median Queue Age Years", ascending=False).iloc[0] if isinstance(regions, pd.DataFrame) and not regions.empty else pd.Series(dtype=object)
     past_target = pd.to_numeric(regions.get("Past Target GW"), errors="coerce").sum(min_count=1) if isinstance(regions, pd.DataFrame) else np.nan
+    provenance = _queue_meta(context)
     return [
-        ("Largest regional queue", str(top.get("Region") or "n/a"), fmt_number(top.get("Queue GW"), 0, suffix=" GW")),
-        ("Oldest regional median", str(oldest.get("Region") or "n/a"), fmt_number(oldest.get("Median Queue Age Years"), 1, suffix=" years")),
-        ("Past target year", fmt_number(past_target, 0, suffix=" GW"), "active requests"),
-        ("Storage components", fmt_number(context.get("storage_queue_gw"), 0, suffix=" GW"), fmt_number(context.get("storage_share"), 1, suffix="% of queue")),
+        ("Largest regional queue", str(top.get("Region") or "n/a"), provenance, fmt_number(top.get("Queue GW"), 0, suffix=" GW")),
+        ("Oldest regional median", str(oldest.get("Region") or "n/a"), provenance, fmt_number(oldest.get("Median Queue Age Years"), 1, suffix=" years")),
+        ("Past target year", fmt_number(past_target, 0, suffix=" GW"), provenance),
+        ("Storage components", fmt_number(context.get("storage_queue_gw"), 0, suffix=" GW"), provenance, fmt_number(context.get("storage_share"), 1, suffix="% of queue")),
     ]
 
 
@@ -177,6 +200,7 @@ def _render_deliverability_screen(context: dict) -> None:
     reliability = _reliability_snapshot(context)
     duration_summary = context.get("storage_duration_summary", {}) or {}
     investment = _investment_snapshot(context)
+    queue_meta = _queue_meta(context)
     render_section(
         "Interconnection snapshot",
         "Active queue capacity, project stage, reserve margins, battery duration, and grid construction spending.",
@@ -184,11 +208,11 @@ def _render_deliverability_screen(context: dict) -> None:
     )
     render_deliverability_screen(
         [
-            ("Queue scale", fmt_number(development.get("headline_queue_gw"), 0, suffix=" GW"), "active generation and storage requests"),
-            ("Project maturity", fmt_number(development.get("advanced_share"), 1, suffix="%"), "executed IA or construction"),
-            ("Reliability", f"{reliability['under_five']:,} areas", "below 5% in the extreme summer case"),
-            ("Storage duration", fmt_number(duration_summary.get("weighted_duration_hours"), 1, suffix=" hours"), "weighted operating battery duration"),
-            ("Grid construction spending", "n/a" if pd.isna(investment["value"]) else f"${investment['value'] / 1000.0:.1f}B", "electric-power construction annual rate"),
+            ("Queue scale", fmt_number(development.get("headline_queue_gw"), 0, suffix=" GW"), queue_meta),
+            ("Project maturity", fmt_number(development.get("advanced_share"), 1, suffix="%"), queue_meta),
+            ("Reliability", f"{reliability['under_five']:,} areas", source_through("NERC", None, latest_observation(context.get("reserve_margins"), "Publication Date"))),
+            ("Storage duration", fmt_number(duration_summary.get("weighted_duration_hours"), 1, suffix=" hours"), source_through("EIA-860M", None, context.get("storage_retrieved"))),
+            ("Grid construction spending", "n/a" if pd.isna(investment["value"]) else f"${investment['value'] / 1000.0:.1f}B", source_through("U.S. Census Bureau", investment["date"])),
         ],
         key_prefix="grid-storage-deliverability",
     )
@@ -197,23 +221,25 @@ def _render_deliverability_screen(context: dict) -> None:
 def _render_ai_grid_deliverability(context: dict) -> None:
     development = context["development"]
     data_centers = context.get("data_center_summary", {}) or {}
+    queue_meta = _queue_meta(context)
+    registry_meta = source_through("Universal Data Center Registry", context.get("data_center_date"))
     render_section(
         "Data-center load and grid deliverability",
         "State-level data-center capacity and regional interconnection maturity as complementary views of large-load growth and grid delivery.",
     )
     render_summary_row(
         [
-            ("Active data-center campuses", f"{int(data_centers.get('active_campuses', 0) or 0):,}", f"{int(data_centers.get('capacity_records', 0) or 0):,} with published / planned MW"),
-            ("Published / planned campus capacity", fmt_number(data_centers.get("capacity_gw"), 1, suffix=" GW"), f"{int(data_centers.get('states_with_capacity', 0) or 0):,} states with capacity"),
-            ("Active interconnection queue", fmt_number(development.get("headline_queue_gw"), 0, suffix=" GW"), f"{int(development.get('queue_projects', 0) or 0):,} requests"),
-            ("Advanced-stage share", fmt_number(development.get("advanced_share"), 1, suffix="%"), "executed IA or construction"),
+            ("Active data-center campuses", f"{int(data_centers.get('active_campuses', 0) or 0):,}", registry_meta, f"{int(data_centers.get('capacity_records', 0) or 0):,} with published / planned MW"),
+            ("Published / planned campus capacity", fmt_number(data_centers.get("capacity_gw"), 1, suffix=" GW"), registry_meta, f"{int(data_centers.get('states_with_capacity', 0) or 0):,} states with capacity"),
+            ("Active interconnection queue", fmt_number(development.get("headline_queue_gw"), 0, suffix=" GW"), queue_meta, f"{int(development.get('queue_projects', 0) or 0):,} requests"),
+            ("Advanced-stage share", fmt_number(development.get("advanced_share"), 1, suffix="%"), queue_meta, "Executed IA or construction"),
         ],
         key_prefix="grid-storage-ai-interface",
     )
     left, right = st.columns(2, gap="large")
     with left:
         with st.container(border=True, key="grid-storage-panel-data-center-load"):
-            render_panel_heading("Data-center capacity by state", "Active campuses with published or planned MW")
+            render_panel_heading("Data-center capacity by state", registry_meta)
             render_plotly_chart(
                 data_center_capacity_by_state(context.get("data_center_states"), height=460),
                 width="stretch",
@@ -222,7 +248,7 @@ def _render_ai_grid_deliverability(context: dict) -> None:
             )
     with right:
         with st.container(border=True, key="grid-storage-panel-ai-queue-age"):
-            render_panel_heading("Interconnection maturity by region", "Largest active queues")
+            render_panel_heading("Interconnection maturity by region", queue_meta)
             render_plotly_chart(
                 queue_age_by_region(context.get("queue_regions"), height=460),
                 width="stretch",
@@ -239,7 +265,7 @@ def _render_queue_conversion(context: dict) -> None:
     )
     render_statline(_queue_conversion_stats(context), key_prefix="grid-storage-queue-conversion")
     with st.container(border=True, key="full-width-layout-grid-storage-queue-conversion"):
-        render_panel_heading("Historical interconnection outcomes", str(outcome.get("Historical Submission Cohort") or "2000–2020 submissions"))
+        render_panel_heading("Historical interconnection outcomes", _outcome_meta(context))
         render_plotly_chart(
             queue_conversion_funnel(context.get("queue_outcomes")),
             width="stretch",
@@ -260,10 +286,10 @@ def _render_reliability_storage(context: dict) -> None:
     )
     render_statline(
         [
-            ("Lowest extreme margin", reliability["lowest_area"], fmt_number(reliability["lowest_margin"], 1, signed=True, suffix="%")),
-            ("Below zero", f"{reliability['below_zero']:,}", "assessment areas"),
-            ("Operating battery power", fmt_number(duration_summary.get("power_gw"), 1, suffix=" GW"), f"{int(duration_summary.get('generators', 0) or 0):,} generators"),
-            ("4+ hour power share", fmt_number(duration_summary.get("four_hour_plus_share"), 1, suffix="%"), "reported operating batteries"),
+            ("Lowest extreme margin", reliability["lowest_area"], source_through("NERC", None, latest_observation(reserves, "Publication Date")), fmt_number(reliability["lowest_margin"], 1, signed=True, suffix="%")),
+            ("Below zero", f"{reliability['below_zero']:,}", source_through("NERC", None, latest_observation(reserves, "Publication Date")), "Assessment areas"),
+            ("Operating battery power", fmt_number(duration_summary.get("power_gw"), 1, suffix=" GW"), source_through("EIA-860M", None, context.get("storage_retrieved")), f"{int(duration_summary.get('generators', 0) or 0):,} generators"),
+            ("4+ hour power share", fmt_number(duration_summary.get("four_hour_plus_share"), 1, suffix="%"), source_through("EIA-860M", None, context.get("storage_retrieved")), "Reported operating batteries"),
         ],
         key_prefix="grid-storage-resilience-state",
     )
@@ -271,7 +297,7 @@ def _render_reliability_storage(context: dict) -> None:
         left, right = st.columns(2, gap="large")
         with left:
             with st.container(border=True, key="grid-storage-panel-reliability"):
-                render_panel_heading("Summer 2026 reserve margins", "U.S. NERC assessment areas")
+                render_panel_heading("Summer 2026 reserve margins", source_through("NERC", None, latest_observation(reserves, "Publication Date")))
                 render_plotly_chart(
                     reserve_margin_stress(reserves, height=500),
                     width="stretch",
@@ -288,11 +314,11 @@ def _render_reliability_storage(context: dict) -> None:
                     key="grid-storage-storage-view",
                 )
                 if view == "Queue pipeline":
-                    render_panel_heading("Storage pipeline by region", "Active submitted storage components")
+                    render_panel_heading("Storage pipeline by region", _queue_meta(context))
                     figure = storage_pipeline_by_region(development.get("active_queue"), height=500)
                     chart_key = "grid-storage-storage-region"
                 else:
-                    render_panel_heading("Operating battery capacity by duration", "Nameplate power and energy")
+                    render_panel_heading("Operating battery capacity by duration", source_through("EIA-860M", None, context.get("storage_retrieved")))
                     figure = storage_duration_distribution(duration, height=500)
                     chart_key = "grid-storage-storage-duration"
                 render_plotly_chart(
@@ -320,11 +346,11 @@ def _render_queue_regions(context: dict) -> None:
             key="grid-storage-queue-view",
         )
         if view == "Region":
-            render_panel_heading("Active queue by region", "Submitted generation and storage components")
+            render_panel_heading("Active queue by region", _queue_meta(context))
             figure = queue_by_region(development.get("active_queue"), height=450)
             chart_key = "grid-storage-queue-region"
         else:
-            render_panel_heading("Active queue by technology", development.get("technology_note"))
+            render_panel_heading("Active queue by technology", _queue_meta(context))
             figure = queue_by_technology(development.get("technology_frame"), height=450)
             chart_key = "grid-storage-queue-technology"
         render_plotly_chart(
@@ -343,8 +369,8 @@ def _render_investment(context: dict) -> None:
     )
     render_statline(
         [
-            ("Current pace", "n/a" if pd.isna(investment["value"]) else f"${investment['value'] / 1000.0:.1f}B", "annual rate"),
-            ("Year-over-year", fmt_number(investment["yoy"] * 100.0, 1, signed=True, suffix="%"), "construction spending"),
+        ("Current pace", "n/a" if pd.isna(investment["value"]) else f"${investment['value'] / 1000.0:.1f}B", source_through("U.S. Census Bureau", investment["date"])),
+        ("Year-over-year", fmt_number(investment["yoy"] * 100.0, 1, signed=True, suffix="%"), source_through("U.S. Census Bureau", investment["date"])),
         ],
         key_prefix="grid-storage-investment",
     )

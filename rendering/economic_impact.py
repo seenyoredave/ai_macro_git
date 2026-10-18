@@ -12,7 +12,7 @@ from rendering.charts_economic_impact import (
     productivity_index,
     worker_capture_history,
 )
-from rendering.commercialization import metric_value
+from rendering.commercialization import metric_source_date, metric_value
 from rendering.components import (
     fmt_number,
     render_domain_read,
@@ -22,7 +22,12 @@ from rendering.components import (
     render_tab_header,
 )
 from rendering.layout_contracts import value_realization_bridge_html
-from rendering.observation_meta import source_through
+from rendering.observation_meta import latest_observation, source_through
+
+
+def _oldest_available_date(*dates):
+    parsed = pd.to_datetime(list(dates), errors="coerce", format="mixed")
+    return parsed.min() if parsed.notna().any() else None
 
 
 def _metric_text(payload: dict) -> str:
@@ -49,11 +54,19 @@ def _build_value_bridge(data: dict, commercialization_data) -> dict[str, object]
     median_since = pd.to_numeric(median.get("Since 2020"), errors="coerce")
     return {
         "commercial_value": commercial_display,
+        "commercial_meta": source_through("Microsoft + OpenAI", _oldest_available_date(
+            metric_source_date(commercialization_data, "Microsoft", "Annual revenue run rate")[1],
+            metric_source_date(commercialization_data, "OpenAI", "Annualized revenue run rate")[1],
+        )),
         "production_value": (
             f"Productivity {prod_since:+.1f}% since 2020"
             if pd.notna(prod_since)
             else "Productivity n/a"
         ),
+        "production_meta": source_through("BLS", productivity.get("date")),
+        "distribution_meta": source_through("BLS", _oldest_available_date(
+            real_comp.get("date"), labor_share.get("date"), median.get("Date"),
+        )),
         "distribution_rows": [
             ("Real compensation", fmt_number(real_since, 1, signed=True, suffix="%")),
             ("Labor share", fmt_number(share_since, 1, signed=True, suffix="%")),
@@ -77,6 +90,9 @@ def _render_current_state(data: dict, commercialization_data) -> None:
                 production_value=bridge["production_value"],
                 distribution_rows=bridge["distribution_rows"],
                 namespace="economic-outcomes-overview",
+                commercial_meta=bridge["commercial_meta"],
+                production_meta=bridge["production_meta"],
+                distribution_meta=bridge["distribution_meta"],
             ),
             unsafe_allow_html=True,
             width="stretch",
@@ -96,10 +112,13 @@ def _render_commercial_signal(commercialization_data) -> None:
     )
     render_summary_row(
         [
-            ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), "provider-defined AI business"),
-            ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "company-reported floor"),
-            ("Google Cloud backlog", "$" + fmt_number(alphabet_backlog, 0, suffix="B"), "AI-influenced cloud backlog"),
-            ("OpenAI paying business users", fmt_number(openai_business, 1, suffix="M"), "paid business users"),
+            (label, value, source_through(*metric_source_date(commercialization_data, provider, metric)), detail)
+            for label, value, provider, metric, detail in [
+                ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), "Microsoft", "Annual revenue run rate", "Provider-defined AI business"),
+                ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "OpenAI", "Annualized revenue run rate", "Company-reported floor"),
+                ("Google Cloud backlog", "$" + fmt_number(alphabet_backlog, 0, suffix="B"), "Alphabet", "Backlog", "AI-influenced cloud backlog"),
+                ("OpenAI paying business users", fmt_number(openai_business, 1, suffix="M"), "OpenAI", "Paying business users", "Paid business users"),
+            ]
         ],
         key_prefix="economic-impact-commercial-signal",
     )
@@ -112,7 +131,7 @@ def _render_macro_validation(data: dict) -> None:
     )
     with st.container(key="full-width-layout-economic-realized-history"):
         with st.container(border=True, key="economic-outcomes-overview-realized"):
-            render_panel_heading("Productivity, output, and labor costs", "BLS indexes · 2017 = 100")
+            render_panel_heading("Productivity, output, and labor costs", source_through("BLS", latest_observation(data.get("productivity_history"))))
             render_summary_row(_realized_growth_metrics(data), key_prefix="economic-impact-current-growth")
             render_plotly_chart(
                 productivity_index(data.get("productivity_history"), height=460),
@@ -138,23 +157,23 @@ def _render_distribution_of_gains(data: dict) -> None:
     median = capture.get("median_real_earnings", {}) or {}
     render_summary_row([
         ("Real compensation since 2020", fmt_number(real_comp.get("since_2020"), 1, signed=True, suffix="%"), source_through("BLS", real_comp.get("date"))),
-        ("Typical worker", fmt_number(median.get("Since 2020"), 1, signed=True, suffix="%"), "real median weekly earnings since 2020"),
-        ("Productivity–comp gap", fmt_number(capture.get("productivity_real_comp_gap"), 1, signed=True, suffix=" pts"), "positive = productivity ahead"),
-        ("Broad-participation spread", fmt_number(capture.get("group_growth_spread_ppts"), 1, suffix=" pts"), "weakest to strongest group"),
+        ("Typical worker", fmt_number(median.get("Since 2020"), 1, signed=True, suffix="%"), source_through("BLS", median.get("Date"))),
+        ("Productivity–comp gap", fmt_number(capture.get("productivity_real_comp_gap"), 1, signed=True, suffix=" pts"), source_through("BLS", _oldest_available_date(capture.get("productivity", {}).get("date"), real_comp.get("date")))),
+        ("Broad-participation spread", fmt_number(capture.get("group_growth_spread_ppts"), 1, suffix=" pts"), source_through("BLS", latest_observation(data.get("earnings_distribution_summary")))),
     ], key_prefix="economic-impact-distribution")
     left, right = st.columns(2)
     with left:
         with st.container(border=True, key="economic-impact-panel-worker-capture"):
-            render_panel_heading("Productivity and real compensation", "Each series rebased to its first 2020 observation")
+            render_panel_heading("Productivity and real compensation", source_through("BLS", latest_observation(data.get("value_transmission_history"))))
             render_plotly_chart(worker_capture_history(data.get("value_transmission_history"), height=500), width="stretch", config={"displayModeBar": False, "responsive": True}, key="economic-impact-worker-capture-history")
     with right:
         with st.container(border=True, key="economic-impact-panel-participation"):
             participation_view = st.radio("Participation view", ["Change since 2020", "History · Sex", "History · Race and ethnicity"], horizontal=True, label_visibility="collapsed", key="economic-impact-participation-view")
             if participation_view == "Change since 2020":
-                render_panel_heading("Real earnings change since 2020", "Four-quarter averages"); figure, chart_key = earnings_distribution_change(data.get("earnings_distribution_summary"), height=500), "economic-impact-earnings-distribution-change"
+                render_panel_heading("Real earnings change since 2020", source_through("BLS", latest_observation(data.get("earnings_distribution_summary")))); figure, chart_key = earnings_distribution_change(data.get("earnings_distribution_summary"), height=500), "economic-impact-earnings-distribution-change"
             else:
                 dimension = participation_view.split(" · ", 1)[1]
-                render_panel_heading("Real median weekly earnings", f"{dimension} · four-quarter average · first available 2020 average = 100")
+                render_panel_heading("Real median weekly earnings", source_through("BLS", latest_observation(data.get("earnings_distribution_history"))))
                 figure, chart_key = earnings_distribution_history(data.get("earnings_distribution_history"), dimension, height=500), f"economic-impact-earnings-distribution-{dimension.casefold().replace(' ', '-')}"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": False, "responsive": True}, key=chart_key)
 
@@ -178,7 +197,10 @@ def render_economic_impact_tab(economic_impact_data: dict, commercialization_dat
     )
     with st.container(key="full-width-layout-economic-investment-validation"):
         with st.container(border=True, key="economic-impact-panel-validation"):
-            render_panel_heading("Investment, output, and productivity", "Each series rebased to its first 2020 observation")
+            render_panel_heading("Investment, output, and productivity", source_through("BEA + BLS", _oldest_available_date(
+                latest_observation(economic_impact_data.get("investment_history")),
+                latest_observation(economic_impact_data.get("productivity_history")),
+            )))
             render_plotly_chart(
                 investment_vs_output(economic_impact_data.get("investment_history"), economic_impact_data.get("productivity_history"), height=470),
                 width="stretch",

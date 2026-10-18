@@ -42,6 +42,11 @@ def _render_current_state(data: dict) -> None:
     positive_real = int((pd.to_numeric(matrix.get("Real earnings YoY"), errors="coerce") > 0).sum()) if isinstance(matrix, pd.DataFrame) else 0
     information_hires = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Hires rate")
     information_layoffs = _row(data.get("labor_flow_latest", pd.DataFrame()), "Information", "Layoffs and discharges rate")
+    breadth_dates = pd.to_datetime([
+        latest_observation(data.get("employment_history")),
+        latest_observation(data.get("real_earnings_history")),
+    ], errors="coerce")
+    breadth_date = breadth_dates.min() if breadth_dates.notna().any() else None
     render_section(
         "Employment and labor flows",
         "Employment, real pay, job openings, hiring, quits, and layoffs across covered industries.",
@@ -50,8 +55,8 @@ def _render_current_state(data: dict) -> None:
     )
     render_statline(
         [
-            ("Employment breadth", f"{positive_jobs}/4", "direct production and deployment channels growing YoY"),
-            ("Real-earnings breadth", f"{positive_real}/4", "direct channels with purchasing-power gains YoY"),
+            ("Employment breadth", f"{positive_jobs}/4", source_through("BLS CES", breadth_date)),
+            ("Real-earnings breadth", f"{positive_real}/4", source_through("BLS CES + CPI", breadth_date)),
             ("Information hires", fmt_number(information_hires.get("Value"), 1, suffix="%"), source_through("BLS JOLTS", information_hires.get("Date"))),
             ("Information layoffs", fmt_number(information_layoffs.get("Value"), 1, suffix="%"), source_through("BLS JOLTS", information_layoffs.get("Date"))),
         ],
@@ -68,7 +73,7 @@ def _render_observed_outcomes(data: dict) -> None:
         with st.container(border=True, key="workforce-panel-outcomes-matrix"):
             render_panel_heading(
                 "Employment and real pay",
-                "Latest readings · color shows each measure within its 2020-present range",
+                source_through("BLS CES + JOLTS", data.get("snapshot_date")),
             )
             render_plotly_chart(
                 workforce_outcomes_matrix(data.get("transmission_matrix"), height=560),
@@ -102,11 +107,11 @@ def _render_labor_market_dynamics(data: dict) -> None:
                     key="workforce-flow-view",
                 )
                 if measure == "Job openings level":
-                    render_panel_heading("Job openings by supporting labor market", "Thousands of openings")
+                    render_panel_heading("Job openings by supporting labor market", source_through("BLS JOLTS", latest_observation(data.get("job_openings_history"))))
                     figure = level_history(data.get("job_openings_history"), value_suffix="K")
                     chart_key = "workforce-labor-flow-job-openings-level"
                 else:
-                    render_panel_heading(measure, "Percent of industry employment")
+                    render_panel_heading(measure, source_through("BLS JOLTS", latest_observation(data.get("labor_flows_history"))))
                     figure = labor_flow_history(data.get("labor_flows_history"), measure)
                     chart_key = f"workforce-labor-flow-{measure.casefold().replace(' ', '-')}"
             else:
@@ -118,11 +123,11 @@ def _render_labor_market_dynamics(data: dict) -> None:
                     key="workforce-employment-view",
                 )
                 if employment_view == "Current change":
-                    render_panel_heading("Current employment change", "Year over year")
+                    render_panel_heading("Current employment change", source_through("BLS CES", latest_observation(data.get("employment_history"))))
                     figure = current_momentum(data.get("employment_latest"), height=480)
                     chart_key = "workforce-employment-momentum"
                 else:
-                    render_panel_heading("Employment history", "January 2020 = 100")
+                    render_panel_heading("Employment history", source_through("BLS CES", latest_observation(data.get("employment_history"))))
                     figure = indexed_history(data.get("employment_history"), height=480)
                     chart_key = "workforce-employment-history"
             render_plotly_chart(
@@ -173,7 +178,7 @@ def _render_exposure_benchmark(data: dict) -> None:
         with st.container(border=True, key="workforce-panel-exposure"):
             render_panel_heading(
                 "Tasks potentially exposed to LLMs",
-                "2023 research benchmark · unweighted occupation medians",
+                "Eloundou et al. · 2023 benchmark",
             )
             render_plotly_chart(
                 occupation_exposure_by_group(data.get("occupation_exposure_by_group"), height=500),

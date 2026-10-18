@@ -32,6 +32,14 @@ def metric_value(payload: dict | None, provider: str, metric: str) -> float:
     return float(value) if pd.notna(value) and np.isfinite(value) else np.nan
 
 
+def metric_source_date(payload: dict | None, provider: str, metric: str) -> tuple[str, object]:
+    """Return provenance for the same ledger row used by metric_value."""
+    row = metric_row(payload, provider, metric)
+    label = row.get("Source Label")
+    source = str(label).strip() if isinstance(label, str) else ""
+    return source or f"{provider} disclosure", row.get("Observation Date")
+
+
 def filtered_ledger(
     payload: dict | None,
     *,

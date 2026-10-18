@@ -286,6 +286,9 @@ def value_realization_bridge_html(
     production_value: object,
     distribution_rows: Sequence[Sequence[object]],
     namespace: str,
+    commercial_meta: object = "",
+    production_meta: object = "",
+    distribution_meta: object = "",
 ) -> str:
     """Build parallel current-state readings for commercialization and macro outcomes."""
     clean_namespace = html.escape(str(namespace), quote=True)
@@ -314,16 +317,17 @@ def value_realization_bridge_html(
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--commercial">'
         '<div class="rm-value-bridge-kicker">AI commercial signal</div>'
         f'<div class="rm-value-bridge-primary">{html.escape(str(commercial_value))}</div>'
-        '<div class="rm-value-bridge-note">Annualized provider revenue disclosures</div>'
+        f'<div class="rm-value-bridge-note">{html.escape(str(commercial_meta))}</div>'
         '</section>'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--production">'
         '<div class="rm-value-bridge-kicker">Macro productivity</div>'
         f'<div class="rm-value-bridge-primary">{html.escape(str(production_value))}</div>'
-        '<div class="rm-value-bridge-note">Nonfarm-business productivity</div>'
+        f'<div class="rm-value-bridge-note">{html.escape(str(production_meta))}</div>'
         '</section>'
         '<section class="rm-value-bridge-layer rm-value-bridge-layer--distribution">'
         '<div class="rm-value-bridge-kicker">Distribution</div>'
         f'<div class="rm-value-bridge-readings">{"".join(distribution_html)}</div>'
+        f'<div class="rm-value-bridge-note">{html.escape(str(distribution_meta))}</div>'
         '</section>'
         '</div>'
         '</article>'

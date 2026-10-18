@@ -16,7 +16,7 @@ from rendering.charts_infrastructure import (
     compute_project_state_sites,
     compute_critical_supply_chain,
 )
-from rendering.commercialization import metric_value
+from rendering.commercialization import metric_source_date, metric_value
 from rendering.components import (
     inject_panel_height_rules,
     fmt_number,
@@ -26,7 +26,7 @@ from rendering.components import (
     render_summary_row,
     render_tab_header,
 )
-from rendering.observation_meta import latest_observation, source_through
+from rendering.observation_meta import latest_observation, retained_retrieval_date, source_through
 
 
 def _compute_data(infrastructure_data):
@@ -83,7 +83,7 @@ def _render_manufacturing_output(infrastructure_data):
     )
     with st.container(key="full-width-layout-compute-manufacturing-hero"):
         with st.container(border=True, key="compute-panel-output-history"):
-            render_panel_heading("Compute-manufacturing output", source_through("Federal Reserve G.17", latest_observation(history)))
+            render_panel_heading("Compute-manufacturing output", source_through("Federal Reserve G.17", latest_observation(history, "Observation Date")))
             render_plotly_chart(compute_manufacturing_output_history(history, height=500, years=10), width="stretch", config={"displayModeBar": True, "responsive": True}, key="compute-output-history")
 
 
@@ -110,52 +110,56 @@ def _render_capacity_and_demand(infrastructure_data):
         with st.container(border=True, key="compute-panel-capacity-demand-selected"):
             view = st.radio("Factory view", views, horizontal=True, label_visibility="collapsed", key="compute-view-capacity-demand")
             if view == "Manufacturing capacity":
-                render_panel_heading("Manufacturing capacity", "Federal Reserve G.17 · 2017=100")
+                render_panel_heading("Manufacturing capacity", source_through("Federal Reserve G.17", latest_observation(history, "Observation Date")))
                 figure, chart_key = compute_manufacturing_capacity_history(history, height=430, years=10), "compute-capacity-history"
             elif view == "Orders and shipments":
-                render_panel_heading("Orders and shipments", "Census M3 · monthly value")
+                render_panel_heading("Orders and shipments", source_through("Census M3", latest_observation(m3_history, "Observation Date")))
                 figure, chart_key = compute_m3_orders_shipments(m3_history, height=430, years=10), "compute-orders-shipments"
             elif view == "Backlog and inventory":
-                render_panel_heading("Backlog and inventory", "Census M3 · monthly ratios")
+                render_panel_heading("Backlog and inventory", source_through("Census M3", latest_observation(m3_history, "Observation Date")))
                 figure, chart_key = compute_m3_backlog_inventory(m3_history, height=430, years=10), "compute-backlog-inventory"
             elif view == "Information-processing investment":
-                render_panel_heading("Information-processing investment", "BEA · real private fixed investment")
+                render_panel_heading("Information-processing investment", source_through("BEA", latest_observation(info_history, "Observation Date")))
                 figure, chart_key = compute_info_processing_investment_history(info_history, height=430, years=10), "compute-info-investment"
             else:
-                render_panel_heading("Capacity utilization", "Federal Reserve G.17 · percent")
+                render_panel_heading("Capacity utilization", source_through("Federal Reserve G.17", latest_observation(history, "Observation Date")))
                 figure, chart_key = compute_capacity_utilization_history(history, height=430, years=10), "compute-utilization-history"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=chart_key)
 
 def _render_critical_supply_chain(infrastructure_data):
     compute = _compute_data(infrastructure_data)
     critical = compute.get("critical_supply_chain", {}) or {}
+    projects = compute.get("projects")
+    retrieved = latest_observation(projects, "Source Retrieval Date") or retained_retrieval_date("data/infrastructure/derived/compute_project_ledger.csv")
     render_section("AI hardware supply chain", "U.S. production and projects in logic chips, HBM, advanced packaging, and optical interconnect.")
     with st.container(key="full-width-layout-compute-critical-supply-chain"):
         with st.container(border=True, key="compute-panel-critical-supply-chain"):
-            render_panel_heading("Critical AI supply-chain layers", "Logic, HBM, packaging, and optical interconnect")
+            render_panel_heading("Critical AI supply-chain layers", source_through("NIST CHIPS + company disclosures", None, retrieved))
             render_plotly_chart(compute_critical_supply_chain(critical.get("layers"), height=470), width="stretch", config={"displayModeBar": True, "responsive": True}, key="compute-critical-supply-chain")
 
 def _render_domestic_buildout(infrastructure_data):
     compute = _compute_data(infrastructure_data)
     projects = compute.get("projects")
     summary = compute.get("project_summary", {}) or {}
+    retrieved = latest_observation(projects, "Source Retrieval Date") or retained_retrieval_date("data/infrastructure/derived/compute_project_ledger.csv")
+    provenance = source_through("NIST CHIPS + company disclosures", None, retrieved)
     if not isinstance(projects, pd.DataFrame):
         projects = pd.DataFrame()
     render_section("U.S. manufacturing projects", "Announced U.S. manufacturing projects by product, location, and expected investment.")
     render_summary_row([
-        ("Manufacturing sites", f"{int(summary.get('projects', 0) or 0):,}", "announced projects"),
-        ("States", f"{int(summary.get('states', 0) or 0):,}", f"{int(summary.get('portfolios', 0) or 0):,} portfolios"),
-        ("Expected investment", "$" + fmt_number(summary.get("expected_capex_usd_b"), 1, suffix="B"), "announced capital spending"),
-        ("Direct awards", "$" + fmt_number(summary.get("direct_funding_usd_b"), 1, suffix="B"), "federal incentives"),
+        ("Manufacturing sites", f"{int(summary.get('projects', 0) or 0):,}", provenance),
+        ("States", f"{int(summary.get('states', 0) or 0):,}", provenance),
+        ("Expected investment", "$" + fmt_number(summary.get("expected_capex_usd_b"), 1, suffix="B"), provenance),
+        ("Direct awards", "$" + fmt_number(summary.get("direct_funding_usd_b"), 1, suffix="B"), provenance),
     ], key_prefix="compute-buildout")
     with st.container(key="full-width-layout-compute-domestic-buildout"):
         with st.container(border=True, key="compute-panel-buildout-selected"):
             view = st.radio("Project view", ["Project footprint", "Project geography"], horizontal=True, label_visibility="collapsed", key="compute-view-domestic-buildout")
             if view == "Project geography":
-                render_panel_heading("Project geography", "Announced manufacturing sites")
+                render_panel_heading("Project geography", provenance)
                 figure, chart_key = compute_project_state_sites(projects, height=470), "compute-state-sites"
             else:
-                render_panel_heading("Projects by production layer", "Announced manufacturing sites")
+                render_panel_heading("Projects by production layer", provenance)
                 figure, chart_key = compute_project_layer_sites(projects, height=470), "compute-layer-sites"
             render_plotly_chart(figure, width="stretch", config={"displayModeBar": True, "responsive": True}, key=chart_key)
 
@@ -168,10 +172,13 @@ def _render_serving_economics(commercialization_data):
         return
     render_section("AI revenue and service costs", "Provider revenue and reported costs associated with serving AI demand.")
     render_summary_row([
-        ("Available compute", fmt_number(openai_compute, 1, suffix=" GW"), "OpenAI · company reported"),
-        ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "2025 disclosed floor"),
-        ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), "provider-defined AI business"),
-        ("Serving unit cost", fmt_number(alphabet_efficiency, 0, suffix="% lower"), "Alphabet · during 2025"),
+        (label, value, source_through(*metric_source_date(commercialization_data, provider, metric)), detail)
+        for label, value, provider, metric, detail in [
+            ("Available compute", fmt_number(openai_compute, 1, suffix=" GW"), "OpenAI", "Available compute", "Company reported"),
+            ("OpenAI ARR", "$" + fmt_number(openai_arr, 1, suffix="B+"), "OpenAI", "Annualized revenue run rate", "Disclosed floor"),
+            ("Microsoft AI ARR", "$" + fmt_number(microsoft_arr, 1, suffix="B"), "Microsoft", "Annual revenue run rate", "Provider-defined AI business"),
+            ("Serving unit cost", fmt_number(alphabet_efficiency, 0, suffix="% lower"), "Alphabet", "Serving unit-cost reduction", "Reported change"),
+        ]
     ], key_prefix="compute-serving-economics")
 
 def render_compute_tab(infrastructure_data, commercialization_data=None, tab_read=None):

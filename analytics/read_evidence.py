@@ -42,6 +42,8 @@ DOMAIN_REFERENCES: dict[str, tuple[dict[str, str], ...]] = {
         {"source_label": "New York Fed CMDI", "source_url": "https://www.newyorkfed.org/research/policy/cmdi"},
         {"source_label": "SEC EDGAR", "source_url": "https://www.sec.gov/edgar/search/"},
         {"source_label": "CalSTRS PE Performance", "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"},
+        {"source_label": "WSIB Private Equity IRR", "source_url": "https://www.sib.wa.gov/reports.html"},
+        {"source_label": "CalPERS PE Performance", "source_url": "https://www.calpers.ca.gov/investments/about-investment-office/investment-organization/pep-fund-performance"},
         {"source_label": "Microsoft FY2026 Q3 AI disclosure", "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"},
         {"source_label": "OpenAI business scale disclosure", "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"},
         {"source_label": "Alphabet Q2 2026 AI and Cloud disclosure", "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"},

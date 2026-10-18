@@ -29,7 +29,14 @@ from rendering.components import (
     render_statline,
     render_tab_header,
 )
-from rendering.observation_meta import latest_observation, source_through
+from rendering.observation_meta import latest_observation, retained_retrieval_date, source_through
+
+
+def _campus_meta(context: dict, source: str = "Campus water records") -> str:
+    campuses = context["campuses"]
+    date = latest_observation(campuses, "Source Updated Date") or latest_observation(campuses, "Source Date")
+    return source_through(source, date,
+                          retained_retrieval_date("data/infrastructure/derived/universal_data_center_registry.json"))
 
 STATE_NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -95,24 +102,29 @@ def _current_state_stats(context: dict):
         int(summary.get("quantified_withdrawal_records", 0) or 0)
         + int(summary.get("quantified_consumption_records", 0) or 0)
     )
+    registry_meta = _campus_meta(context, "Universal Data Center Registry")
+    drought_meta = _latest_county_snapshot(context)
     return [
-        ("Tracked campuses", f"{campuses:,}", "Universal Data Center Registry"),
+        ("Tracked campuses", f"{campuses:,}", registry_meta, "Universal Data Center Registry"),
         (
             "County drought coverage",
             f"{drought_covered:,} / {mapped:,}",
+            drought_meta,
             f"{_pct(local.get('county_drought_coverage_share'))} of mapped campuses",
         ),
         (
             "D2+ exposure",
             f"{d2:,}",
+            drought_meta,
             f"{_pct(local.get('campuses_in_counties_with_d2_share'))} of campuses with county data",
         ),
         (
             "Direct water evidence",
             f"{direct:,}",
+            registry_meta,
             f"{(direct / max(campuses, 1)) * 100.0:.1f}% of tracked campuses",
         ),
-        ("Quantified records", f"{quantified:,}", "withdrawal / consumption observations"),
+        ("Quantified records", f"{quantified:,}", registry_meta, "Withdrawal / consumption observations"),
     ]
 
 
@@ -127,7 +139,7 @@ def _render_current_state(context: dict) -> None:
     with st.container(border=True, key="water-current-observability"):
         render_panel_heading(
             "Water observability",
-            "County drought, public-water service areas, and direct campus disclosure",
+            _latest_county_snapshot(context),
         )
         render_plotly_chart(
             water_local_context_coverage(context["summary"], height=430),
@@ -145,11 +157,12 @@ def _local_exposure_stats(context: dict):
     material = int(local.get("campuses_in_counties_with_25pct_d2", 0) or 0)
     highest_location = str(local.get("highest_county_d2_location") or "n/a")
     highest_d2 = pd.to_numeric(local.get("highest_county_d2_area_pct"), errors="coerce")
+    provenance = _latest_county_snapshot(context)
     return [
-        ("Campuses with county drought data", f"{covered:,} / {mapped:,}", f"{_pct(local.get('county_drought_coverage_share'))} coverage"),
-        ("Campuses in D2+ counties", f"{d2:,}", f"{_pct(local.get('campuses_in_counties_with_d2_share'))} of campuses with county data"),
-        ("Campuses in ≥25% D2+ counties", f"{material:,}", f"{_pct(local.get('campuses_in_counties_with_25pct_d2_share'))} of campuses with county data"),
-        ("Highest current D2+ county", highest_location, "n/a" if pd.isna(highest_d2) else f"{float(highest_d2):.1f}% county area"),
+        ("Campuses with county drought data", f"{covered:,} / {mapped:,}", provenance, f"{_pct(local.get('county_drought_coverage_share'))} coverage"),
+        ("Campuses in D2+ counties", f"{d2:,}", provenance, f"{_pct(local.get('campuses_in_counties_with_d2_share'))} of campuses with county data"),
+        ("Campuses in ≥25% D2+ counties", f"{material:,}", provenance, f"{_pct(local.get('campuses_in_counties_with_25pct_d2_share'))} of campuses with county data"),
+        ("Highest current D2+ county", highest_location, provenance, "n/a" if pd.isna(highest_d2) else f"{float(highest_d2):.1f}% county area"),
     ]
 
 
@@ -171,7 +184,7 @@ def _render_local_exposure(context: dict) -> None:
                 state_count = int(state_series.eq(selected_state).sum())
                 render_panel_heading(
                     f"{STATE_NAMES.get(selected_state, selected_state)} county drought",
-                    f"{state_count:,} mapped campuses · {_latest_county_snapshot(context)}",
+                    _latest_county_snapshot(context),
                 )
             with action_col:
                 if st.button("United States", key="water-drought-back", width="stretch"):
@@ -538,20 +551,23 @@ def _evidence_coverage_stats(context: dict):
     direct = int(summary.get("direct_water_evidence_records", 0) or 0)
     withdrawals = int(summary.get("quantified_withdrawal_records", 0) or 0)
     consumption = int(summary.get("quantified_consumption_records", 0) or 0)
+    provenance = _campus_meta(context)
     return [
         (
             "EPA point queries resolved",
             f"{pws_resolved:,}",
+            provenance,
             f"{pws_resolved / denominator * 100.0:.1f}% of campuses",
         ),
-        ("EPA boundary overlaps", f"{pws_overlap:,}", "community-water service areas"),
+        ("EPA boundary overlaps", f"{pws_overlap:,}", provenance, "Community-water service areas"),
         (
             "Direct water evidence",
             f"{direct:,}",
+            provenance,
             f"{direct / denominator * 100.0:.1f}% of campuses",
         ),
-        ("Quantified withdrawals", f"{withdrawals:,}", "campus records"),
-        ("Quantified consumption", f"{consumption:,}", "campus records"),
+        ("Quantified withdrawals", f"{withdrawals:,}", provenance, "Campus records"),
+        ("Quantified consumption", f"{consumption:,}", provenance, "Campus records"),
     ]
 
 
@@ -562,7 +578,7 @@ def _render_coverage(context: dict) -> None:
     )
     render_statline(_evidence_coverage_stats(context), key_prefix="water-evidence-coverage")
     with st.container(border=True, key="full-width-layout-water-evidence-coverage"):
-        render_panel_heading("Campus water records by state", "Campus records")
+        render_panel_heading("Campus water records by state", _campus_meta(context))
         render_plotly_chart(
             water_state_evidence_profile(context["campuses"], height=450),
             width="stretch",
@@ -577,10 +593,10 @@ def _national_claim_stats(context: dict):
     summary = context["summary"]
     quantified = int(summary.get("quantified_withdrawal_records", 0) or 0) + int(summary.get("quantified_consumption_records", 0) or 0)
     return [
-        ("Crop irrigation", fmt_number(values.get("Crop irrigation"), 1, suffix=" Bgal/day"), "USGS modeled withdrawal"),
-        ("Thermoelectric power", fmt_number(values.get("Thermoelectric power"), 1, suffix=" Bgal/day"), "USGS modeled withdrawal"),
-        ("Public supply", fmt_number(values.get("Public supply"), 1, suffix=" Bgal/day"), "USGS modeled withdrawal"),
-        ("Quantified campus records", f"{quantified:,}", "campus records"),
+        ("Crop irrigation", fmt_number(values.get("Crop irrigation"), 1, suffix=" Bgal/day"), "USGS · 2020 observation"),
+        ("Thermoelectric power", fmt_number(values.get("Thermoelectric power"), 1, suffix=" Bgal/day"), "USGS · 2020 observation"),
+        ("Public supply", fmt_number(values.get("Public supply"), 1, suffix=" Bgal/day"), "USGS · 2020 observation"),
+        ("Quantified campus records", f"{quantified:,}", _campus_meta(context)),
     ]
 
 
@@ -589,10 +605,10 @@ def _thermoelectric_stats(context: dict):
     if not eia:
         return []
     return [
-        ("Reported withdrawal", fmt_number(eia.get("withdrawal_bgal_day"), 2, suffix=" Bgal/day"), "annual total ÷ 366"),
-        ("Reported consumption", fmt_number(eia.get("consumption_bgal_day"), 2, suffix=" Bgal/day"), "annual total ÷ 366"),
-        ("Withdrawal coverage", f"{int(eia.get('plants_with_withdrawal', 0) or 0):,} / {int(eia.get('plants', 0) or 0):,}", "plants"),
-        ("Consumption coverage", f"{int(eia.get('plants_with_consumption', 0) or 0):,} / {int(eia.get('plants', 0) or 0):,}", "plants"),
+        ("Reported withdrawal", fmt_number(eia.get("withdrawal_bgal_day"), 2, suffix=" Bgal/day"), "EIA · 2024 observation"),
+        ("Reported consumption", fmt_number(eia.get("consumption_bgal_day"), 2, suffix=" Bgal/day"), "EIA · 2024 observation"),
+        ("Withdrawal coverage", f"{int(eia.get('plants_with_withdrawal', 0) or 0):,} / {int(eia.get('plants', 0) or 0):,}", "EIA · 2024 observation"),
+        ("Consumption coverage", f"{int(eia.get('plants_with_consumption', 0) or 0):,} / {int(eia.get('plants', 0) or 0):,}", "EIA · 2024 observation"),
     ]
 
 
@@ -601,8 +617,8 @@ def _wastewater_stats(context: dict, infrastructure_data: dict):
     value = pd.to_numeric(series.get("value"), errors="coerce")
     growth = pd.to_numeric(series.get("yoy_growth"), errors="coerce")
     return [
-        ("Current pace", "n/a" if pd.isna(value) else f"${value / 1000.0:.1f}B", "annual rate"),
-        ("Year-over-year", fmt_number(growth * 100.0, 1, signed=True, suffix="%"), "construction spending"),
+        ("Current pace", "n/a" if pd.isna(value) else f"${value / 1000.0:.1f}B", source_through("U.S. Census Bureau", series.get("date"))),
+        ("Year-over-year", fmt_number(growth * 100.0, 1, signed=True, suffix="%"), source_through("U.S. Census Bureau", series.get("date"))),
     ]
 
 
@@ -633,7 +649,7 @@ def _render_system_context_workbench(context: dict, infrastructure_data: dict) -
                 label_visibility="collapsed",
                 key="water-thermoelectric-metric",
             )
-            render_panel_heading(f"Thermoelectric {metric.lower()} by cooling group", "EIA 2024")
+            render_panel_heading(f"Thermoelectric {metric.lower()} by cooling group", "EIA · 2024 observation")
             render_statline(thermo_stats, key_prefix="water-context-thermoelectric")
             figure = thermoelectric_water_groups(water.get("eia_groups"), metric=metric, height=430)
             chart_key = "water-thermoelectric-groups"
@@ -644,7 +660,7 @@ def _render_system_context_workbench(context: dict, infrastructure_data: dict) -
             figure = wastewater_construction_history((infrastructure_data or {}).get("construction_history"), height=430)
             chart_key = "water-wastewater-construction-history"
         else:
-            render_panel_heading("Largest national withdrawal categories", "Conterminous U.S. · 2020")
+            render_panel_heading("Largest national withdrawal categories", "USGS · 2020 observation")
             render_statline(_national_claim_stats(context), key_prefix="water-context-national")
             figure = water_top_withdrawals_2020(water.get("usgs_2020_top_withdrawals"), height=430)
             chart_key = "water-competing-uses-2020"
