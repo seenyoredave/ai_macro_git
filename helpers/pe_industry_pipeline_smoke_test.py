@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from loaders import pe_industry_pipeline as pipeline
 from loaders.pe_industry_parsers import (SourceFormatError, parse_acg_quarter,
-                                         parse_kpmg_h1, parse_sec_tables)
+                                         parse_kpmg_h1, parse_sec_tables, parse_mercer_gf_q4_2025)
 
 
 def workbook(*, wrong_row=False) -> bytes:
@@ -271,8 +271,8 @@ class PEIndustryRefreshTests(unittest.TestCase):
             pipeline.persist_source("acg", b, path)
             self.assertEqual(len(pd.read_csv(path)), 2)
             before = path.read_bytes()
-            with self.assertRaisesRegex(SourceFormatError, "older"):
-                pipeline.persist_source("acg", a, path)
+            result = pipeline.persist_source("acg", a, path)
+            self.assertEqual(result["status"], "unchanged")
             self.assertEqual(before, path.read_bytes())
 
     def test_partial_provider_failure_retains_other_source(self):
@@ -310,9 +310,10 @@ class PEIndustryRefreshTests(unittest.TestCase):
             before = path.read_bytes()
             corrected = a.copy()
             corrected.loc[0, "value"] = 7.4
-            with self.assertRaisesRegex(SourceFormatError, "changed; review"):
-                pipeline.persist_source("acg", corrected, path)
+            result = pipeline.persist_source("acg", corrected, path)
             self.assertEqual(before, path.read_bytes())
+            self.assertEqual(result["status"], "unchanged")
+            self.assertEqual(len(result["conflicting_periods"]), 1)
 
     def test_source_failure_retains_prior_file(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -340,6 +341,111 @@ class PEIndustryRefreshTests(unittest.TestCase):
             with self.assertRaisesRegex(SourceFormatError,"Invalid financial"):
                 pipeline.validate_observations(bad.to_dict("records"), "kpmg")
             self.assertEqual(path.read_bytes(),before)
+
+
+MERCER_Q4_HTML = """<html><body><nav>Resources</nav><main>
+<h1>Middle Market Transaction Update Spring 2026</h1>
+<p>March 20, 2026</p><h2>Spring 2026 M&amp;A Update</h2>
+<p>Middle market M&amp;A activity rebounded in the fourth quarter of 2025 following the
+third quarter. Surveys conducted by GF Data® captured 84 transactions in 4Q25,
+representing a 25% increase from 3Q25. Despite the improvement in announced transactions,
+valuation multiples moderated during the quarter, with the average all-industry EBITDA
+multiple declining to 6.9x from 7.5x in 3Q25.</p>
+<p>On a rolling trailing twelve-month basis, multiples dipped to 7.2x.
+During 2025, announced transaction volume totaled 297 deals.</p></main></body></html>""".encode()
+
+
+class PEIndustryExtendedTests(unittest.TestCase):
+    RANGE = "GF Data contributing PE-sponsored transactions ($10m-$500m EV)"
+
+    def test_secondary_q4_is_quarter_specific_and_provenanced(self):
+        rows = parse_mercer_gf_q4_2025(MERCER_Q4_HTML,
+                                       source_url=pipeline.MERCER_Q4_2025,
+                                       verified_range=self.RANGE)
+        self.assertEqual((rows[0]["period"], rows[0]["value"], rows[0]["sample_count"]),
+                         ("2025Q4", 6.9, 84))
+        self.assertEqual(rows[0]["source"], "GF Data via Mercer Capital")
+        self.assertEqual(len(pipeline.validate_observations(rows, "acg")), 1)
+
+    def test_secondary_q4_rejects_annual_value_and_wrong_population(self):
+        with self.assertRaisesRegex(SourceFormatError, "explicit Q4"):
+            parse_mercer_gf_q4_2025(MERCER_Q4_HTML.replace(b"6.9x", b"7.2x").replace(
+                b"in 3Q25", b"over the full year"), source_url=pipeline.MERCER_Q4_2025,
+                verified_range=self.RANGE)
+        with self.assertRaisesRegex(SourceFormatError, "scope"):
+            parse_mercer_gf_q4_2025(MERCER_Q4_HTML, source_url=pipeline.MERCER_Q4_2025,
+                                       verified_range="unverified")
+
+    def test_q4_requires_verified_primary_acg_and_secondary_mercer(self):
+        responses = {
+            pipeline.ACG_INDEX: b"<html><body>news</body></html>",
+            pipeline.ACG_SEEDS[0]: ACG_Q2,
+            pipeline.ACG_SEEDS[1]: ACG_Q1,
+            pipeline.ACG_SEEDS[2]: ACG_2025_Q4,
+            pipeline.ACG_SEEDS[3]: ACG_2025_Q3,
+            pipeline.ACG_SEEDS[4]: ACG_2025_Q2,
+            pipeline.MERCER_Q4_2025: MERCER_Q4_HTML,
+        }
+        def fake_fetch(url, source):
+            return responses[url]
+        with patch.object(pipeline, "fetch", side_effect=fake_fetch):
+            rows, notes = pipeline.source_candidate("acg")
+        parsed = {r["period"]: (r["value"], r["sample_count"]) for r in rows}
+        self.assertEqual(parsed["2025Q4"], (6.9, 84))
+        self.assertEqual(len(parsed), 5)
+
+    def test_conflict_does_not_block_newer_validated_period(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            old = pipeline.validate_observations(
+                parse_acg_quarter(ACG_Q1, source_url=pipeline.ACG_SEEDS[1]), "acg")
+            new = pipeline.validate_observations(
+                parse_acg_quarter(ACG_Q2, source_url=pipeline.ACG_SEEDS[0]), "acg")
+            revised = old.copy()
+            revised.loc[0, "value"] = 7.4
+            new = pipeline.validate_observations(pd.concat([revised, new]).to_dict("records"), "acg")
+            path = Path(tmp) / "pe_industry_acg.csv"
+            pipeline.persist_source("acg", old, path)
+            result = pipeline.persist_source("acg", new, path)
+            retained = pd.read_csv(path).set_index("period")
+            self.assertEqual((retained.loc["2026Q1", "value"], retained.loc["2026Q2", "value"]),
+                             (7.3, 7.0))
+            self.assertEqual(result["status"], "updated")
+            self.assertEqual(len(result["conflicting_periods"]), 1)
+
+    def test_automation_retains_multi_run_history_without_dashboard_publication(self):
+        from tooling.repository_policy import is_automation_publication_path, automation_stage_paths
+        self.assertTrue(is_automation_publication_path("data/private_capital/pe_industry_acg.csv"))
+        self.assertIn("data/", automation_stage_paths("publication"))
+        self.assertNotIn("data/", automation_stage_paths("ledger"))
+        first = parse_acg_quarter(ACG_Q1, source_url=pipeline.ACG_SEEDS[1])
+        second = parse_acg_quarter(ACG_Q2, source_url=pipeline.ACG_SEEDS[0])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with patch.object(pipeline, "PRODUCTION", root), patch.dict(
+                    "os.environ", {"AI_MACRO_MODE": "automation"}), patch.object(
+                    pipeline, "source_candidate", side_effect=[(first, []), (second, [])]):
+                self.assertEqual(pipeline.run(out_dir=root, selected=("acg",))[0]["status"], "updated")
+                self.assertEqual(pipeline.run(out_dir=root, selected=("acg",))[0]["status"], "updated")
+            rows = pd.read_csv(root / "pe_industry_acg.csv")
+            self.assertEqual(set(rows.period), {"2026Q1", "2026Q2"})
+
+    def test_revision_reporting_is_connected_to_automation(self):
+        body = (ROOT / "automation" / "research_refresh.py").read_text(encoding="utf-8")
+        self.assertIn('row.get("conflicting_periods")', body)
+        self.assertIn("_revisions", body)
+
+    def test_missing_discovered_releases_does_not_erase_history(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            older = pipeline.validate_observations(
+                parse_acg_quarter(ACG_Q1, source_url=pipeline.ACG_SEEDS[1]), "acg")
+            newer = pipeline.validate_observations(
+                parse_acg_quarter(ACG_Q2, source_url=pipeline.ACG_SEEDS[0]), "acg")
+            path = Path(tmp) / "pe_industry_acg.csv"
+            pipeline.persist_source("acg", pd.concat([older,newer]), path)
+            before = path.read_bytes()
+            result = pipeline.persist_source("acg", older, path)
+            self.assertEqual(result["status"], "unchanged")
+            self.assertEqual(path.read_bytes(), before)
 
 
 if __name__ == "__main__":

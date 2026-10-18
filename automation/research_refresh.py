@@ -594,6 +594,11 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         row["source"]: row.get("error", "source unavailable")
         for row in pe_industry_results if row["status"] in {"unavailable", "retained_on_failure"}
     }
+    for row in pe_industry_results:
+        if row.get("conflicting_periods"):
+            pe_industry_failures[f"{row['source']}_revisions"] = (
+                f"{len(row['conflicting_periods'])} revised source period(s) held for review"
+            )
     pe_industry_report = {
         "source_mode": ("partial_refresh" if pe_industry_failures else "live_refresh")
                        if pe_industry_live else "retained",

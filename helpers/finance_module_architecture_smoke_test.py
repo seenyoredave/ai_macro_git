@@ -25,7 +25,7 @@ def _ordered(body: str, tokens: list[str]) -> None:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    _check('APP_VERSION = "v3.0.7.41"' in app, "Finance corrective patch must have v3.0.7.41 version")
+    _check('APP_VERSION = "v3.0.7.42"' in app, "Finance corrective patch must have v3.0.7.42 version")
 
     source = (ROOT / "rendering" / "finance.py").read_text(encoding="utf-8")
     tab = _body(source, "render_finance_tab")

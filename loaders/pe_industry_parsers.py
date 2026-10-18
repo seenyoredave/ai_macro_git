@@ -338,3 +338,54 @@ def parse_acg_quarter(data: bytes, *, source_url: str) -> list[dict]:
         "value": value, "unit": "EV/EBITDA multiple", "population": ev_range,
         "sample_count": count, "precision": "mean", "source_url": source_url,
         "published_on": published, "definition": "Mean purchase EV / trailing 12-month adjusted EBITDA, contributing-deal sample"}]
+
+
+MERCER_Q4_2025 = (
+    "https://mercercapital.com/insights/newsletters/"
+    "middle-market-transaction-update-newsletter/"
+    "middle-market-transaction-update-spring-2026/"
+)
+
+
+def parse_mercer_gf_q4_2025(data: bytes, *, source_url: str, verified_range: str) -> list[dict]:
+    """Specific independently quoted GF Data Q4 reading, not its annual average.
+
+    ACG's public Q4 release supplies *annual* counts and pricing. Mercer
+    explicitly reports separate Q4 figures from GF Data. We require the ACG
+    Q4 release to verify the deal-size universe independently before use.
+    """
+    if source_url != MERCER_Q4_2025:
+        raise SourceFormatError("Unexpected Mercer report URL")
+    if verified_range != "GF Data contributing PE-sponsored transactions ($10m-$500m EV)":
+        raise SourceFormatError("ACG Q4 transaction-size scope not independently verified")
+    soup = BeautifulSoup(data.decode("utf-8", errors="replace"), "html.parser")
+    articles = [tag for tag in soup.select("h1")
+                if "Middle Market Transaction Update Spring 2026" in tag.get_text(" ", strip=True)]
+    if len(articles) != 1:
+        raise SourceFormatError("Not the expected Mercer Q4 evidence article")
+    title = " ".join(articles[0].get_text(" ", strip=True).split())
+    text = " ".join(soup.get_text(" ", strip=True).split())
+    text = text[text.index(title):]
+    if not re.search(r"Middle Market Transaction Update Spring 2026", text[:900], re.I):
+        raise SourceFormatError("Not the expected Mercer Q4 evidence article")
+    published = _release_date(text, 2026)
+    if published != "2026-03-20":
+        raise SourceFormatError("Mercer Q4 release date changed")
+    count = re.search(
+        r"(?:Surveys conducted by\s+)?GF Data.{0,25}?captured\s+(\d[\d,]*)\s+transactions\s+in\s+4Q25\b",
+        text, re.I)
+    multiple = re.search(
+        r"average all.industry EBITDA multiple\s+declining\s+(?:during the quarter\s+)?to\s+(\d+(?:\.\d+)?)x\s+from\s+(\d+(?:\.\d+)?)x\s+in\s+3Q25\b",
+        text, re.I)
+    if not count or not multiple:
+        raise SourceFormatError("Mercer did not state explicit Q4 GF Data count and multiple")
+    sample = int(count.group(1).replace(",", ""))
+    value, earlier = float(multiple.group(1)), float(multiple.group(2))
+    if not (1 <= sample <= 10000 and 2 <= value <= 30 and earlier == 7.5):
+        raise SourceFormatError("Mercer Q4 figure or reference to Q3 is invalid")
+    return [{"source": "GF Data via Mercer Capital", "metric": "entry_ev_ebitda_ttm_adjusted",
+        "period": "2025Q4", "period_end": "2025-12-31", "geography": "Not specified",
+        "value": value, "unit": "EV/EBITDA multiple", "population": verified_range,
+        "sample_count": sample, "precision": "mean / secondary report",
+        "source_url": source_url, "published_on": published,
+        "definition": "GF Data Q4 2025 all-industry mean EBITDA multiple, quoted by Mercer Capital"}]

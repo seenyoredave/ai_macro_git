@@ -21,7 +21,9 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 from loaders.pe_industry_parsers import (SourceFormatError, parse_acg_quarter,
-                                         parse_kpmg_h1, parse_sec_tables)
+                                         parse_kpmg_h1, parse_sec_tables,
+                                         parse_mercer_gf_q4_2025, MERCER_Q4_2025,
+                                         _acg_coverage, visible_text)
 from helpers.atomic_io import atomic_write_bundle
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +39,7 @@ KPMG_SEEDS = (
 ACG_SEEDS = (
     "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective",
     "https://www.acg.org/news-trends/news/gf-data-reports-show-stronger-financing-markets-fueled-ma-gains-q1",
+    "https://www.acg.org/news-trends/news/gf-data-releases-q4-2025-ma-and-leverage-reports",
     "https://www.acg.org/news-trends/news/gf-data-releases-q3-2025-ma-and-leverage-reports",
     "https://www.acg.org/news-trends/news/gf-data-releases-q2-2025-ma-and-leverage-reports",
 )
@@ -46,6 +49,7 @@ HOSTS = {
     "sec": {"www.sec.gov", "sec.gov"},
     "kpmg": {"kpmg.com"},
     "acg": {"www.acg.org", "acg.org"},
+    "mercer": {"mercercapital.com"},
 }
 SOURCES = ("sec", "kpmg", "acg")
 
@@ -135,8 +139,12 @@ def validate_observations(rows: list[dict], source: str) -> pd.DataFrame:
     numeric = pd.to_numeric(frame.value, errors="coerce")
     if numeric.isna().any() or numeric.le(0).any() or numeric.gt(1e8).any():
         raise SourceFormatError("Invalid financial observation")
-    for uri in frame.source_url:
-        if not _safe_source_url(uri, source):
+    for item in frame.itertuples(index=False):
+        if source == "acg" and item.source == "GF Data via Mercer Capital":
+            if (item.source_url != MERCER_Q4_2025 or item.period != "2025Q4" or
+                    item.period_end != "2025-12-31" or item.precision != "mean / secondary report"):
+                raise SourceFormatError("Unverified secondary GF Data attribution")
+        elif not _safe_source_url(item.source_url, source):
             raise SourceFormatError("Invalid source URL")
     if source == "sec":
         for period, group in frame.groupby("period_end"):
@@ -193,9 +201,15 @@ def source_candidate(source: str) -> tuple[list[dict], list[str]]:
         problems.append(f"{source} index: {type(exc).__name__}: {exc}")
     candidates = list(dict.fromkeys((*seeds, *discovered)))[:12]
     obs = {}
+    verified_q4_range = None
     for url in candidates:
         try:
-            parsed = parse_kpmg_h1(fetch(url, source), source_url=url) if source == "kpmg" else parse_acg_quarter(fetch(url, source), source_url=url)
+            body = fetch(url, source)
+            if source == "acg" and "gf-data-releases-q4-2025-ma-and-leverage-reports" in url:
+                # The original GF Data release establishes the transaction-size
+                # population but its headline annual figures cannot stand in for Q4.
+                verified_q4_range = _acg_coverage(visible_text(body))
+            parsed = parse_kpmg_h1(body, source_url=url) if source == "kpmg" else parse_acg_quarter(body, source_url=url)
             for row in parsed:
                 key = (row["metric"], row["period_end"])
                 if key in obs and (obs[key]["value"] != row["value"] or obs[key]["sample_count"] != row["sample_count"]):
@@ -203,29 +217,44 @@ def source_candidate(source: str) -> tuple[list[dict], list[str]]:
                 obs[key] = row
         except Exception as exc:
             problems.append(f"{url}: {type(exc).__name__}: {exc}")
+    if source == "acg" and ("entry_ev_ebitda_ttm_adjusted", "2025-12-31") not in obs:
+        # Secondary report used only when the primary Q4 announcement provides
+        # no quarterly number; provenance remains on the observation itself.
+        if verified_q4_range:
+            try:
+                for row in parse_mercer_gf_q4_2025(fetch(MERCER_Q4_2025, "mercer"),
+                                                     source_url=MERCER_Q4_2025,
+                                                     verified_range=verified_q4_range):
+                    obs[row["metric"], row["period_end"]] = row
+            except Exception as exc:
+                problems.append(f"Mercer Q4 reference: {type(exc).__name__}: {exc}")
+        else:
+            problems.append("ACG Q4 population not verified; secondary Q4 evidence withheld")
     if not obs:
         raise SourceFormatError("No complete supported reports parsed: " + "; ".join(problems[:4]))
     return list(obs.values()), problems
 
 
 def persist_source(source: str, new: pd.DataFrame, path: Path) -> dict:
+    conflicts = []
     if path.exists():
         old = validate_observations(pd.read_csv(path, keep_default_na=False).to_dict("records"), source)
-        if new.period_end.max() < old.period_end.max():
-            raise SourceFormatError("New source is older than retained data")
-        # Retain historical records when release index pagination changes.
         prior = old.set_index(["metric", "period_end"])
         incoming = new.set_index(["metric", "period_end"])
         for key in prior.index.intersection(incoming.index):
             previous, current = prior.loc[key], incoming.loc[key]
             if (previous["value"] != current["value"] or previous["sample_count"] != current["sample_count"]
                     or previous["population"] != current["population"]):
-                raise SourceFormatError(f"Published {source} observation changed; review required: {key}")
-        # Preserve the first validated source/provenance for unchanged periods.
+                # Existing published history is immutable without review. A
+                # restated earlier period must not prevent publishing a newer
+                # independently validated period from the same publisher.
+                conflicts.append({"metric": key[0], "period_end": key[1],
+                                  "retained_value": float(previous["value"]),
+                                  "incoming_value": float(current["value"])})
         both = pd.concat([old, new], ignore_index=True)
         both = both.drop_duplicates(["metric", "period_end"], keep="first")
         validated = validate_observations(both.to_dict("records"), source)
-        changed = not validated.to_csv(index=False).strip() == old.to_csv(index=False).strip()
+        changed = validated.to_csv(index=False) != old.to_csv(index=False)
     else:
         validated = new
         changed = True
@@ -233,7 +262,8 @@ def persist_source(source: str, new: pd.DataFrame, path: Path) -> dict:
         path.parent.mkdir(parents=True, exist_ok=True)
         atomic_write_bundle({path: validated.to_csv(index=False).encode("utf-8")}, transaction_key=path)
     return {"source": source, "status": "updated" if changed else "unchanged", "rows": len(validated),
-            "latest_period": str(validated.period_end.max()), "file": str(path)}
+            "latest_period": str(validated.period_end.max()), "file": str(path),
+            "conflicting_periods": conflicts}
 
 
 def run(*, out_dir: Path, selected=SOURCES) -> list[dict]:
