@@ -1,0 +1,64 @@
+name: PE institutional capacity probe
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 12 1 * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pe-institutional-capacity-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out project
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: '3.13'
+
+      - name: Validate aggregation contracts
+        run: python helpers/pe_institutional_capacity_smoke_test.py
+
+      - name: Fetch public pension allocations
+        run: python -m loaders.pe_institutional_capacity_probe
+
+      - name: Summarize extraction
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv
+          import os
+          from pathlib import Path
+          path = Path('pe_probe_output/institutional_capacity/public_pension_pe_allocation_annual.csv')
+          lines = ['## U.S. public pension PE capacity', '']
+          if path.exists():
+              with path.open(newline='', encoding='utf-8') as handle:
+                  data = list(csv.DictReader(handle))
+              lines.extend(['| Fiscal year | Matched plans | Above target | YoY same-plan change (pp) |', '|---|---:|---:|---:|'])
+              for row in data[-6:]:
+                  lines.append(f"| {row['fiscal_year']} | {row['plans_with_both']} | {row['over_target_pct']}% | {row['paired_change_pp'] or '—'} |")
+          else:
+              lines.append('No validated candidate observations; inspect the retrieval log.')
+          lines.extend(['', 'Public Plans Database; U.S. state/local public pension plans with both PE allocation fields. Candidate only.'])
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write('\n'.join(lines) + '\n')
+          PY
+
+      - name: Upload validated candidate CSVs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pe-institutional-capacity-${{ github.run_id }}
+          path: pe_probe_output/institutional_capacity/*.csv
+          if-no-files-found: warn
+          retention-days: 14
