@@ -1,12 +1,10 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261019T160324016000Z_d74c3926_c3b8000e",
+  "attempt_id": "20261019T164810634324Z_13ee2597_7a581c95",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
-    "market",
-    "finance",
-    "data_center",
-    "connectivity"
+    "connectivity",
+    "power"
   ],
   "editorial_context_event_ids": [
     "auto-2026-10-15-2014e74babb5",
@@ -18,19 +16,17 @@
     "auto-2026-10-14-57e5b17c1bd6",
     "auto-2026-10-16-f903651ff52a",
     "auto-2026-10-14-382b7de30b7c",
+    "auto-2026-10-19-5f7421258ee9",
     "auto-2026-10-15-f42f17e605b7",
     "auto-2026-10-15-1548ca166303",
     "auto-2026-10-12-ce7bc0483a21",
     "auto-2026-10-15-49bffc829240",
-    "auto-2026-10-19-3c077eba67dd",
-    "auto-2026-10-19-4518cbb06045"
+    "auto-2026-10-19-3c077eba67dd"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
-      "market",
-      "finance",
-      "data_center",
-      "connectivity"
+      "connectivity",
+      "power"
     ],
     "current_event_ids": [
       "auto-2026-10-15-2014e74babb5",
@@ -42,34 +38,28 @@
       "auto-2026-10-14-57e5b17c1bd6",
       "auto-2026-10-16-f903651ff52a",
       "auto-2026-10-14-382b7de30b7c",
+      "auto-2026-10-19-5f7421258ee9",
       "auto-2026-10-15-f42f17e605b7",
       "auto-2026-10-15-1548ca166303",
       "auto-2026-10-12-ce7bc0483a21",
       "auto-2026-10-15-49bffc829240",
-      "auto-2026-10-19-3c077eba67dd",
-      "auto-2026-10-19-4518cbb06045"
+      "auto-2026-10-19-3c077eba67dd"
     ],
     "material_domains": [
-      "market",
-      "finance",
       "connectivity"
     ],
     "new_event_domains": [
-      "market",
-      "data_center"
+      "power"
     ],
     "new_event_ids": [
-      "auto-2026-10-15-f42f17e605b7",
-      "auto-2026-10-19-3c077eba67dd",
-      "auto-2026-10-19-4518cbb06045"
+      "auto-2026-10-19-5f7421258ee9"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
-    "market",
-    "finance",
-    "connectivity"
+    "connectivity",
+    "power"
   ],
   "evidence_packets": {
     "adoption": {
@@ -487,10 +477,10 @@
         },
         {
           "context": "",
-          "display": "250",
+          "display": "1,378",
           "id": "connectivity.interconnection_facilities_or_floor",
           "label": "PeeringDB interconnection facilities or coverage floor",
-          "value": 250.0
+          "value": 1378.0
         },
         {
           "context": "",
@@ -1201,52 +1191,52 @@
       "facts": [
         {
           "context": "",
-          "display": "31.9",
+          "display": "31.7",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 31.932943799427264
+          "value": 31.7489870693908
         },
         {
           "context": "",
-          "display": "47.9",
+          "display": "47.5",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 47.87794355043888
+          "value": 47.529772192803534
         },
         {
           "context": "",
-          "display": "63.2%",
+          "display": "62.7%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6323529411764706
+          "value": 0.6274509803921569
         },
         {
           "context": "",
-          "display": "13.0%",
+          "display": "12.8%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.12964684882307648
+          "value": 0.1280113036292817
         },
         {
           "context": "",
-          "display": "23.3%",
+          "display": "22.7%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.2327066963194593
+          "value": 0.22742782061893982
         },
         {
           "context": "",
           "display": "65.1%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6510065500262352
+          "value": 0.651172208808425
         },
         {
           "context": "",
           "display": "18.2",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.172465811844432
+          "value": 18.154221705183396
         },
         {
           "context": "",
@@ -1263,7 +1253,7 @@
           "value": 3.0
         }
       ],
-      "importance": 20.100655002623526,
+      "importance": 20.117220880842495,
       "label": "Market",
       "references": [
         {
@@ -1683,19 +1673,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "d74c392645ad1092893b84fe",
-  "generated_at": "2026-10-19T16:05:17.237849+00:00",
+  "evidence_snapshot_id": "13ee259742338d8062e79c98",
+  "generated_at": "2026-10-19T16:49:51.625605+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 112.92145204194821,
-      "input_tokens": 4048,
+      "elapsed_sec": 100.983371487,
+      "input_tokens": 3756,
       "model": "gpt-5.6-sol",
-      "output_tokens": 8011,
-      "poll_attempts": 47,
+      "output_tokens": 7665,
+      "poll_attempts": 46,
       "poll_errors": [],
-      "response_id": "resp_0d5b1ca701b60328006ad63f4e95e487d0b8b4b84d0eab47d3",
+      "response_id": "resp_0b6139c06d636d39006ad649cb4df887d0bcc41baec6e62570",
       "terminal_status": "completed",
-      "total_tokens": 12059
+      "total_tokens": 11421
     }
   },
   "max_output_tokens": null,
@@ -1706,11 +1696,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "d74c392645ad1092893b84fe",
-    "expires_at": "2026-10-20T16:05:17.239304+00:00",
+    "current_evidence_snapshot_id": "13ee259742338d8062e79c98",
+    "expires_at": "2026-10-20T16:49:51.628818+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-10-19T16:05:17.239304+00:00",
+    "published_at": "2026-10-19T16:49:51.628818+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1718,24 +1708,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 47,
+        "poll_attempts": 46,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0d5b1ca701b60328006ad63f4e95e487d0b8b4b84d0eab47d3",
+        "response_id": "resp_0b6139c06d636d39006ad649cb4df887d0bcc41baec6e62570",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 31.9, while the median one-year return increased to 13.0%. Positive-return breadth also reached 63.2% of covered companies, even as average sector trading pressure eased slightly to 47.9. Barron\u2019s reported that TSMC shares fell after blowout earnings. That company-specific reaction qualifies the firmer aggregate readings: strong results are not producing uniformly positive share-price responses.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings strengthen despite TSMC\u2019s post-earnings fall\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\",\"finance.pe_5y_annualized_net_pct\",\"finance.pe_1y_net_pct\"]},\"headline\":{\"text\":\"Private-equity scale contrasts with stress in AI-linked credit\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\"]}},{\"domain\":\"connectivity\",\"body\":{\"text\":\"PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market.\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]},\"headline\":{\"text\":\"The interconnection coverage measure falls within a broad U.S. network footprint\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment signals strengthen while credit and infrastructure execution remain uneven\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},{\"text\":\"Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\"]},{\"text\":\"Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity.\",\"event_ids\":[],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"connectivity\",\"body\":{\"text\":\"PeeringDB\u2019s interconnection-facility or coverage-floor measure increased materially to 1,378. The broader recorded footprint includes 168 active U.S. internet exchange points with 2,805 combined reported members and 90 U.S. international submarine cable systems. The higher figure materially expands the measured network footprint, but these counts do not show bandwidth, redundancy, or capacity available in a specific data-center market.\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]},\"headline\":{\"text\":\"Network coverage rises materially, without a matching measure of capacity\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply. Utility Dive also reported on Google\u2019s virtual power plant in PJM. That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Commercial demand leads electricity growth while Utility Dive reports on Google\u2019s virtual power plant in PJM\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Infrastructure measures are expanding, while power delivery and economic diffusion remain uneven\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"connectivity.interconnection_facilities_or_floor\",\"power.planned_net_gw\",\"grid_storage.advanced_share\",\"adoption.current_business_use_pct\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Hardware and infrastructure activity remains substantial. Semiconductor and electronic-component output is growing 19.9%, available project records list 1,556 data-center sites in development, and PeeringDB\u2019s interconnection-facility or coverage-floor measure rose materially to 1,378. The last measure enlarges the observed network footprint, but it is not a measure of bandwidth or capacity available in a particular market.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"connectivity.interconnection_facilities_or_floor\"]},{\"text\":\"Electricity shows a clear gap between planned scale and demonstrated availability. Commercial demand is growing 3.1%, compared with 1.2% total retail demand, and retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but the active interconnection queue contains 2,061 GW, only 24.2% of which is in executed-agreement or construction stages; 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM adds another type of grid response, but does not establish how materially the project changes the regional supply-demand balance.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream use and economic effects remain mixed. Some generative-AI use is reported by 61.8% of adults ages 18\u201364, while 23.8% of businesses report current AI use and 27.7% expect to use it within six months. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but those aggregate measures do not isolate AI\u2019s contribution. Only one tracked AI-linked labor channel has positive employment growth, and the strongest\u2014power and communication construction\u2014is growing 0.8%. The evidence remains clearer for infrastructure investment than for broadly shared AI-driven gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.consumer_overall_pct\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1792425915.0,
+      "completed_at": 1792428590.0,
       "conversation": null,
-      "created_at": 1792425806.0,
+      "created_at": 1792428491.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0d5b1ca701b60328006ad63f4e95e487d0b8b4b84d0eab47d3",
+      "id": "resp_0b6139c06d636d39006ad649cb4df887d0bcc41baec6e62570",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1748,7 +1738,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f5125f887d08e1ccd8bd291e3e0",
+          "id": "rs_0b6139c06d636d39006ad649cd77cc87d0b1f01f98164dedc0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1756,7 +1746,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f5940ec87d091455a6123b1741d",
+          "id": "rs_0b6139c06d636d39006ad649d480a087d0b471a226fca4272c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1764,7 +1754,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f61ad5487d0a50bb87dd770dd95",
+          "id": "rs_0b6139c06d636d39006ad649db8f3487d0bab58ab0c3842e85",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1772,7 +1762,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f68cdc887d0b9926da7a4018a7d",
+          "id": "rs_0b6139c06d636d39006ad649e1afbc87d0800b9eea6dc29d22",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1780,7 +1770,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f708a1c87d080d40ed76902a547",
+          "id": "rs_0b6139c06d636d39006ad649e8d23087d085ece994c34f7991",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1788,7 +1778,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f779ba887d095b40ffae1bede23",
+          "id": "rs_0b6139c06d636d39006ad649eeb0a487d08e94e306be40ed79",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1796,7 +1786,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f7eee8487d0a9633a200676cf13",
+          "id": "rs_0b6139c06d636d39006ad649f535f887d08d24948cb898153d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1804,7 +1794,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f85545c87d088a50d4099790aa4",
+          "id": "rs_0b6139c06d636d39006ad649fb950087d0bea7dabda4fd33f9",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1812,7 +1802,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f8c3d5487d0ad43cde1342188a3",
+          "id": "rs_0b6139c06d636d39006ad64a0203e087d09ceabf3dfc2626ae",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1820,7 +1810,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f9412c487d09be417ef515dbc52",
+          "id": "rs_0b6139c06d636d39006ad64a086e1c87d0b738cb4513662900",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1828,7 +1818,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63f9bb6d087d0bead53345df02cb8",
+          "id": "rs_0b6139c06d636d39006ad64a0e8a2c87d0b328214697ef5956",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1836,7 +1826,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63fa2f34087d0a3985958d67a1c81",
+          "id": "rs_0b6139c06d636d39006ad64a14456887d0a7f3239f5dee7052",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1844,7 +1834,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0d5b1ca701b60328006ad63fa9b8d887d086972765aeb97f0e",
+          "id": "rs_0b6139c06d636d39006ad64a1ac8d087d090a177cd9f73ee46",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1854,11 +1844,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 31.9, while the median one-year return increased to 13.0%. Positive-return breadth also reached 63.2% of covered companies, even as average sector trading pressure eased slightly to 47.9. Barron\u2019s reported that TSMC shares fell after blowout earnings. That company-specific reaction qualifies the firmer aggregate readings: strong results are not producing uniformly positive share-price responses.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings strengthen despite TSMC\u2019s post-earnings fall\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\",\"finance.pe_5y_annualized_net_pct\",\"finance.pe_1y_net_pct\"]},\"headline\":{\"text\":\"Private-equity scale contrasts with stress in AI-linked credit\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\"]}},{\"domain\":\"connectivity\",\"body\":{\"text\":\"PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market.\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]},\"headline\":{\"text\":\"The interconnection coverage measure falls within a broad U.S. network footprint\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment signals strengthen while credit and infrastructure execution remain uneven\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},{\"text\":\"Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\"]},{\"text\":\"Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity.\",\"event_ids\":[],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"connectivity\",\"body\":{\"text\":\"PeeringDB\u2019s interconnection-facility or coverage-floor measure increased materially to 1,378. The broader recorded footprint includes 168 active U.S. internet exchange points with 2,805 combined reported members and 90 U.S. international submarine cable systems. The higher figure materially expands the measured network footprint, but these counts do not show bandwidth, redundancy, or capacity available in a specific data-center market.\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]},\"headline\":{\"text\":\"Network coverage rises materially, without a matching measure of capacity\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply. Utility Dive also reported on Google\u2019s virtual power plant in PJM. That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Commercial demand leads electricity growth while Utility Dive reports on Google\u2019s virtual power plant in PJM\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Infrastructure measures are expanding, while power delivery and economic diffusion remain uneven\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"connectivity.interconnection_facilities_or_floor\",\"power.planned_net_gw\",\"grid_storage.advanced_share\",\"adoption.current_business_use_pct\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Hardware and infrastructure activity remains substantial. Semiconductor and electronic-component output is growing 19.9%, available project records list 1,556 data-center sites in development, and PeeringDB\u2019s interconnection-facility or coverage-floor measure rose materially to 1,378. The last measure enlarges the observed network footprint, but it is not a measure of bandwidth or capacity available in a particular market.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"connectivity.interconnection_facilities_or_floor\"]},{\"text\":\"Electricity shows a clear gap between planned scale and demonstrated availability. Commercial demand is growing 3.1%, compared with 1.2% total retail demand, and retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but the active interconnection queue contains 2,061 GW, only 24.2% of which is in executed-agreement or construction stages; 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM adds another type of grid response, but does not establish how materially the project changes the regional supply-demand balance.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream use and economic effects remain mixed. Some generative-AI use is reported by 61.8% of adults ages 18\u201364, while 23.8% of businesses report current AI use and 27.7% expect to use it within six months. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but those aggregate measures do not isolate AI\u2019s contribution. Only one tracked AI-linked labor channel has positive employment growth, and the strongest\u2014power and communication construction\u2014is growing 0.8%. The evidence remains clearer for infrastructure investment than for broadly shared AI-driven gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.consumer_overall_pct\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0d5b1ca701b60328006ad63fb15da887d0bc2300b0bb781ef6",
+          "id": "msg_0b6139c06d636d39006ad64a1ffc5487d0ac95c634623420ff",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2031,16 +2021,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4048,
+        "input_tokens": 3756,
         "input_tokens_details": {
-          "cache_write_tokens": 4045,
+          "cache_write_tokens": 3753,
           "cached_tokens": 0
         },
-        "output_tokens": 8011,
+        "output_tokens": 7665,
         "output_tokens_details": {
-          "reasoning_tokens": 6732
+          "reasoning_tokens": 6668
         },
-        "total_tokens": 12059
+        "total_tokens": 11421
       },
       "user": null
     }
@@ -2165,26 +2155,22 @@
       "version": "6.1.0"
     },
     "connectivity": {
-      "analysis": "PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market.",
+      "analysis": "PeeringDB\u2019s interconnection-facility or coverage-floor measure increased materially to 1,378. The broader recorded footprint includes 168 active U.S. internet exchange points with 2,805 combined reported members and 90 U.S. international submarine cable systems. The higher figure materially expands the measured network footprint, but these counts do not show bandwidth, redundancy, or capacity available in a specific data-center market.",
       "analysis_sentences": [
-        "PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250.",
-        "Other public records list 168 active U.S.",
-        "internet exchange points with 2,805 combined reported members, as well as 90 U.S.",
+        "PeeringDB\u2019s interconnection-facility or coverage-floor measure increased materially to 1,378.",
+        "The broader recorded footprint includes 168 active U.S.",
+        "internet exchange points with 2,805 combined reported members and 90 U.S.",
         "international submarine cable systems.",
-        "Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell.",
-        "These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market."
+        "The higher figure materially expands the measured network footprint, but these counts do not show bandwidth, redundancy, or capacity available in a specific data-center market."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "connectivity.interconnection_facilities_or_floor",
-            "connectivity.active_ixps",
-            "connectivity.combined_ixp_members",
-            "connectivity.international_submarine_cable_systems"
+            "connectivity.interconnection_facilities_or_floor"
           ],
           "field": "headline",
-          "text": "The interconnection coverage measure falls within a broad U.S. network footprint"
+          "text": "Network coverage rises materially, without a matching measure of capacity"
         },
         {
           "event_ids": [],
@@ -2195,14 +2181,14 @@
             "connectivity.international_submarine_cable_systems"
           ],
           "field": "body",
-          "text": "PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market."
+          "text": "PeeringDB\u2019s interconnection-facility or coverage-floor measure increased materially to 1,378. The broader recorded footprint includes 168 active U.S. internet exchange points with 2,805 combined reported members and 90 U.S. international submarine cable systems. The higher figure materially expands the measured network footprint, but these counts do not show bandwidth, redundancy, or capacity available in a specific data-center market."
         }
       ],
       "domain": "connectivity",
-      "evidence_snapshot_id": "d74c392645ad1092893b84fe",
-      "generated_at": "2026-10-19T16:05:17.237639+00:00",
+      "evidence_snapshot_id": "13ee259742338d8062e79c98",
+      "generated_at": "2026-10-19T16:49:51.625253+00:00",
       "generator": "openai",
-      "headline": "The interconnection coverage measure falls within a broad U.S. network footprint",
+      "headline": "Network coverage rises materially, without a matching measure of capacity",
       "label": "Connectivity",
       "references": [
         {
@@ -2552,90 +2538,85 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture. Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers. Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity.",
+      "analysis": "Hardware and infrastructure activity remains substantial. Semiconductor and electronic-component output is growing 19.9%, available project records list 1,556 data-center sites in development, and PeeringDB\u2019s interconnection-facility or coverage-floor measure rose materially to 1,378. The last measure enlarges the observed network footprint, but it is not a measure of bandwidth or capacity available in a particular market. Electricity shows a clear gap between planned scale and demonstrated availability. Commercial demand is growing 3.1%, compared with 1.2% total retail demand, and retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but the active interconnection queue contains 2,061 GW, only 24.2% of which is in executed-agreement or construction stages; 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM adds another type of grid response, but does not establish how materially the project changes the regional supply-demand balance. Downstream use and economic effects remain mixed. Some generative-AI use is reported by 61.8% of adults ages 18\u201364, while 23.8% of businesses report current AI use and 27.7% expect to use it within six months. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but those aggregate measures do not isolate AI\u2019s contribution. Only one tracked AI-linked labor channel has positive employment growth, and the strongest\u2014power and communication construction\u2014is growing 0.8%. The evidence remains clearer for infrastructure investment than for broadly shared AI-driven gains.",
       "analysis_paragraphs": [
-        "Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.",
-        "Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.",
-        "Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
+        "Hardware and infrastructure activity remains substantial. Semiconductor and electronic-component output is growing 19.9%, available project records list 1,556 data-center sites in development, and PeeringDB\u2019s interconnection-facility or coverage-floor measure rose materially to 1,378. The last measure enlarges the observed network footprint, but it is not a measure of bandwidth or capacity available in a particular market.",
+        "Electricity shows a clear gap between planned scale and demonstrated availability. Commercial demand is growing 3.1%, compared with 1.2% total retail demand, and retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but the active interconnection queue contains 2,061 GW, only 24.2% of which is in executed-agreement or construction stages; 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM adds another type of grid response, but does not establish how materially the project changes the regional supply-demand balance.",
+        "Downstream use and economic effects remain mixed. Some generative-AI use is reported by 61.8% of adults ages 18\u201364, while 23.8% of businesses report current AI use and 27.7% expect to use it within six months. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but those aggregate measures do not isolate AI\u2019s contribution. Only one tracked AI-linked labor channel has positive employment growth, and the strongest\u2014power and communication construction\u2014is growing 0.8%. The evidence remains clearer for infrastructure investment than for broadly shared AI-driven gains."
       ],
       "analysis_sentences": [
-        "Technology investment and production remain strong.",
-        "Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%.",
-        "Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns.",
-        "Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.",
-        "Credit markets present a less favorable picture.",
-        "Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity.",
-        "Reuters reported that AI credit concerns drove default insurance for U.S.",
-        "technology debt to record highs, and the Financial Times reported selling in data-center bonds.",
-        "A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.",
-        "Physical delivery has a similar distinction between scale and readiness.",
-        "Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites.",
-        "The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation.",
-        "The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
+        "Hardware and infrastructure activity remains substantial.",
+        "Semiconductor and electronic-component output is growing 19.9%, available project records list 1,556 data-center sites in development, and PeeringDB\u2019s interconnection-facility or coverage-floor measure rose materially to 1,378.",
+        "The last measure enlarges the observed network footprint, but it is not a measure of bandwidth or capacity available in a particular market.",
+        "Electricity shows a clear gap between planned scale and demonstrated availability.",
+        "Commercial demand is growing 3.1%, compared with 1.2% total retail demand, and retail prices are up 4.4%.",
+        "Net planned generation additions total 225.2 GW, but the active interconnection queue contains 2,061 GW, only 24.2% of which is in executed-agreement or construction stages; 13% of the 2000\u20132020 queue cohort reached operation.",
+        "Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM adds another type of grid response, but does not establish how materially the project changes the regional supply-demand balance.",
+        "Downstream use and economic effects remain mixed.",
+        "Some generative-AI use is reported by 61.8% of adults ages 18\u201364, while 23.8% of businesses report current AI use and 27.7% expect to use it within six months.",
+        "Nonfarm-business productivity is growing 2.2% and real output 2.5%, but those aggregate measures do not isolate AI\u2019s contribution.",
+        "Only one tracked AI-linked labor channel has positive employment growth, and the strongest\u2014power and communication construction\u2014is growing 0.8%.",
+        "The evidence remains clearer for infrastructure investment than for broadly shared AI-driven gains."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-15-f129bad0f05e"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "compute.information_processing_investment_growth",
             "compute.semiconductor_output_growth",
-            "market.aei",
-            "grid_storage.advanced_share"
+            "data_center.development_sites",
+            "connectivity.interconnection_facilities_or_floor",
+            "power.planned_net_gw",
+            "grid_storage.advanced_share",
+            "adoption.current_business_use_pct",
+            "workforce.employment_breadth"
           ],
           "field": "headline",
-          "text": "Investment signals strengthen while credit and infrastructure execution remain uneven"
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-15-f42f17e605b7"
-          ],
-          "fact_ids": [
-            "compute.information_processing_investment_growth",
-            "compute.semiconductor_output_growth",
-            "market.aei",
-            "market.median_return",
-            "market.positive_breadth"
-          ],
-          "field": "paragraphs[0]",
-          "text": "Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture."
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-15-f129bad0f05e",
-            "auto-2026-10-15-1548ca166303"
-          ],
-          "fact_ids": [
-            "finance.pe_fund_net_assets_b",
-            "finance.pe_fund_net_assets_period"
-          ],
-          "field": "paragraphs[1]",
-          "text": "Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers."
+          "text": "Infrastructure measures are expanding, while power delivery and economic diffusion remain uneven"
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "data_center.operating_sites",
+            "compute.semiconductor_output_growth",
             "data_center.development_sites",
-            "data_center.development_to_operating",
-            "data_center.tracked_pipeline_sites",
+            "connectivity.interconnection_facilities_or_floor"
+          ],
+          "field": "paragraphs[0]",
+          "text": "Hardware and infrastructure activity remains substantial. Semiconductor and electronic-component output is growing 19.9%, available project records list 1,556 data-center sites in development, and PeeringDB\u2019s interconnection-facility or coverage-floor measure rose materially to 1,378. The last measure enlarges the observed network footprint, but it is not a measure of bandwidth or capacity available in a particular market."
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-19-5f7421258ee9"
+          ],
+          "fact_ids": [
+            "power.commercial_growth",
+            "power.demand_growth",
+            "power.retail_price_growth",
+            "power.planned_net_gw",
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
             "grid_storage.historical_operational_pct"
           ],
+          "field": "paragraphs[1]",
+          "text": "Electricity shows a clear gap between planned scale and demonstrated availability. Commercial demand is growing 3.1%, compared with 1.2% total retail demand, and retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but the active interconnection queue contains 2,061 GW, only 24.2% of which is in executed-agreement or construction stages; 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM adds another type of grid response, but does not establish how materially the project changes the regional supply-demand balance."
+        },
+        {
+          "event_ids": [],
+          "fact_ids": [
+            "adoption.consumer_overall_pct",
+            "adoption.current_business_use_pct",
+            "adoption.expected_business_use_pct",
+            "economic_impact.productivity_growth",
+            "economic_impact.real_output_growth",
+            "workforce.employment_breadth",
+            "workforce.strongest_channel",
+            "workforce.strongest_channel_growth"
+          ],
           "field": "paragraphs[2]",
-          "text": "Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
+          "text": "Downstream use and economic effects remain mixed. Some generative-AI use is reported by 61.8% of adults ages 18\u201364, while 23.8% of businesses report current AI use and 27.7% expect to use it within six months. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but those aggregate measures do not isolate AI\u2019s contribution. Only one tracked AI-linked labor channel has positive employment growth, and the strongest\u2014power and communication construction\u2014is growing 0.8%. The evidence remains clearer for infrastructure investment than for broadly shared AI-driven gains."
         }
       ],
       "domain": "macro",
       "evidence": [
-        {
-          "context": "",
-          "fact_id": "compute.information_processing_investment_growth",
-          "label": "Information-processing investment growth",
-          "value": "16.8%"
-        },
         {
           "context": "",
           "fact_id": "compute.semiconductor_output_growth",
@@ -2644,48 +2625,57 @@
         },
         {
           "context": "",
-          "fact_id": "market.aei",
-          "label": "AI Equity Index",
-          "value": "31.9"
+          "fact_id": "data_center.development_sites",
+          "label": "Sites in development in available project records",
+          "value": "1,556"
+        },
+        {
+          "context": "",
+          "fact_id": "connectivity.interconnection_facilities_or_floor",
+          "label": "PeeringDB interconnection facilities or coverage floor",
+          "value": "1,378"
         }
       ],
-      "evidence_snapshot_id": "d74c392645ad1092893b84fe",
-      "generated_at": "2026-10-19T16:05:17.237639+00:00",
+      "evidence_snapshot_id": "13ee259742338d8062e79c98",
+      "generated_at": "2026-10-19T16:49:51.625253+00:00",
       "generator": "openai",
-      "headline": "Investment signals strengthen while credit and infrastructure execution remain uneven",
+      "headline": "Infrastructure measures are expanding, while power delivery and economic diffusion remain uneven",
       "label": "AI Macro",
       "references": [
         {
-          "source_label": "YFinance",
-          "source_url": "https://finance.yahoo.com/"
+          "source_label": "Federal Reserve G.17",
+          "source_url": "https://www.federalreserve.gov/releases/g17/current/"
         },
         {
-          "source_label": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/edgar/search/"
+          "source_label": "BEA Fixed Assets",
+          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
         },
         {
-          "source_label": "FRED",
-          "source_url": "https://fred.stlouisfed.org/"
+          "source_label": "Census Construction Spending",
+          "source_url": "https://www.census.gov/constructionspending"
         },
         {
-          "source_label": "Chicago Fed NFCI",
-          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
+          "source_label": "Primary project disclosures",
+          "source_url": ""
         },
         {
-          "source_label": "New York Fed CMDI",
-          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
         },
         {
-          "source_label": "Microsoft FY2026 Q3 AI disclosure",
-          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
+          "source_label": "Alphabet AI serving economics",
+          "source_url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
         }
       ],
       "selected_domains": [
-        "market",
-        "finance",
         "compute",
         "data_center",
-        "grid_storage"
+        "connectivity",
+        "power",
+        "grid_storage",
+        "adoption",
+        "workforce",
+        "economic_impact"
       ],
       "version": "6.1.0"
     },
@@ -2746,28 +2736,28 @@
       "version": "6.1.0"
     },
     "power": {
-      "analysis": "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change.",
+      "analysis": "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply. Utility Dive also reported on Google\u2019s virtual power plant in PJM. That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance.",
       "analysis_sentences": [
-        "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%.",
-        "Net planned generation additions total 225.2 GW through the pipeline horizon.",
-        "Utility Dive reported that MISO proposed a fast-track study process for large loads and generation.",
-        "The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change."
+        "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%.",
+        "Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply.",
+        "Utility Dive also reported on Google\u2019s virtual power plant in PJM.",
+        "That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-05-8559d73be953"
+            "auto-2026-10-19-5f7421258ee9"
           ],
           "fact_ids": [
             "power.commercial_growth",
             "power.demand_growth"
           ],
           "field": "headline",
-          "text": "Commercial demand leads electricity growth as faster grid studies are proposed"
+          "text": "Commercial demand leads electricity growth while Utility Dive reports on Google\u2019s virtual power plant in PJM"
         },
         {
           "event_ids": [
-            "auto-2026-10-05-8559d73be953"
+            "auto-2026-10-19-5f7421258ee9"
           ],
           "fact_ids": [
             "power.commercial_growth",
@@ -2776,14 +2766,14 @@
             "power.planned_net_gw"
           ],
           "field": "body",
-          "text": "Commercial electricity demand is growing 3.1%, versus 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW through the pipeline horizon. Utility Dive reported that MISO proposed a fast-track study process for large loads and generation. The proposal concerns study timing; it does not establish when planned capacity will connect or how local supply-demand balances will change."
+          "text": "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply. Utility Dive also reported on Google\u2019s virtual power plant in PJM. That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance."
         }
       ],
       "domain": "power",
-      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
-      "generated_at": "2026-10-07T19:04:54.984793+00:00",
+      "evidence_snapshot_id": "13ee259742338d8062e79c98",
+      "generated_at": "2026-10-19T16:49:51.625253+00:00",
       "generator": "openai",
-      "headline": "Commercial demand leads electricity growth as faster grid studies are proposed",
+      "headline": "Commercial demand leads electricity growth while Utility Dive reports on Google\u2019s virtual power plant in PJM",
       "label": "Power",
       "references": [
         {
@@ -2800,7 +2790,7 @@
         },
         {
           "source_label": "Utility Dive",
-          "source_url": "https://www.utilitydive.com/news/miso-large-load-generation-study-lars-ferc/832114/"
+          "source_url": "https://www.utilitydive.com/news/what-googles-virtual-power-plant-in-pjm-says-about-the-race-for-electricit/833290/"
         }
       ],
       "version": "6.1.0"
@@ -2925,13 +2915,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 10,
+    "checked_passages": 8,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "macro.paragraphs[2]",
-        "text": "Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
+        "scope": "macro.paragraphs[1]",
+        "text": "Electricity shows a clear gap between planned scale and demonstrated availability. Commercial demand is growing 3.1%, compared with 1.2% total retail demand, and retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but the active interconnection queue contains 2,061 GW, only 24.2% of which is in executed-agreement or construction stages; 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM adds another type of grid response, but does not establish how materially the project changes the regional supply-demand balance."
       }
     ],
     "hard_errors": [],
