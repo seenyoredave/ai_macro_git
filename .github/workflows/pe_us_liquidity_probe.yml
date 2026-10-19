@@ -1,0 +1,74 @@
+name: PE U.S. liquidity candidate probe
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '29 12 5 * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pe-us-liquidity-candidate-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out project
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: '3.13'
+
+      - name: Validate U.S. source parsing contracts
+        run: python helpers/pe_us_liquidity_smoke_test.py
+
+      - name: Retrieve U.S. PE liquidity candidate observations
+        run: python -m loaders.pe_us_liquidity_probe
+
+      - name: Summarize cash-flow and exits evidence
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv
+          import os
+          from pathlib import Path
+          root = Path('pe_probe_output/us_liquidity')
+          lines = ['## U.S. private-equity liquidity candidate', '']
+          for name, label, columns in [
+              ('us_pe_lp_flows_annual.csv', 'Cambridge Associates: U.S. buyout/growth benchmark LP cash flows',
+               ('distributions_usd_bn','capital_calls_usd_bn','publisher_distribution_yoy_pct')),
+              ('us_pe_exits_h1.csv', 'KPMG: U.S. PE H1 exit transactions',
+               ('exit_value_usd_bn','exit_count','cross_report_exit_value_change_pct')),
+          ]:
+              path = root / name
+              lines.extend(['', f'### {label}'])
+              if not path.exists():
+                  lines.append('No validated candidate observations.')
+                  continue
+              with path.open(newline='',encoding='utf-8') as handle:
+                  rows = list(csv.DictReader(handle))
+              lines.extend(['| Year | ' + ' | '.join(columns) + ' |',
+                            '|---|' + '|'.join(['---:']*len(columns)) + '|'])
+              for row in rows[-4:]:
+                  lines.append('| ' + row['year'] + ' | ' + ' | '.join(row[k] for k in columns) + ' |')
+          lines.append('')
+          lines.append('Distinct sampled populations and periods. Cambridge YoY is publisher-reported; KPMG YoY is indicative across publication vintages. Exit value is not LP distributions. Candidate only.')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as output:
+              output.write('\n'.join(lines) + '\n')
+          PY
+
+      - name: Upload candidate observations
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pe-us-liquidity-${{ github.run_id }}
+          path: pe_probe_output/us_liquidity/*.csv
+          if-no-files-found: warn
+          retention-days: 14
