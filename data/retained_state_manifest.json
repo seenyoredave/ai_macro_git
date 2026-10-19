@@ -280,6 +280,13 @@
       "updated_at_utc": "2026-10-06T18:30:36+00:00",
       "updated_by": "automation_refresh"
     },
+    "data/canonical/observations/2026/10/39d503a8bc1384008c2e796d.parquet": {
+      "bytes": 10140,
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "2f3531a1c8a67114600a3711e201ccecf17c49e3f2a4fd984837cc40fa9801fc",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
+      "updated_by": "automation_refresh"
+    },
     "data/canonical/observations/2026/10/537f1377ba1b6ee1cd98f095.parquet": {
       "bytes": 9853,
       "run_id": "20261013T191216Z_69f9c034",
@@ -467,6 +474,13 @@
       "run_id": "20261006T181744Z_b7738dbc",
       "sha256": "05dd9fc5fca37a23dc3028d2164ac7eff77f7f819d6d039f41a31c2add48fe73",
       "updated_at_utc": "2026-10-06T18:30:36+00:00",
+      "updated_by": "automation_refresh"
+    },
+    "data/canonical/snapshots/2026/10/39d503a8bc1384008c2e796d.parquet": {
+      "bytes": 9538,
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "fdad8cb7ead01d47af56509f99cb6fbfd8dcb028389f73636e859e428f788225",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/canonical/snapshots/2026/10/537f1377ba1b6ee1cd98f095.parquet": {
@@ -1220,9 +1234,9 @@
     },
     "data/refresh_graph_state.json": {
       "bytes": 9281,
-      "run_id": "20261019T163722Z_dbe77ada",
-      "sha256": "a95dbd0e68aa616946c418ad792be957306dc76e0bd493fc54ac73ed45d4126a",
-      "updated_at_utc": "2026-10-19T16:48:09+00:00",
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "a5dcfc18528fda55d2e73685f7c21ce586255c45f6c5723a75e897c905046c33",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/v650_public_data_manifest.csv": {
@@ -1276,23 +1290,23 @@
     },
     "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz": {
       "bytes": 25739,
-      "run_id": "20261019T163722Z_dbe77ada",
-      "sha256": "2558d3e37ac5e2dc8b58878d7bf05ab5cf672437d601d782f468416eb77460ac",
-      "updated_at_utc": "2026-10-19T16:48:09+00:00",
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "f22f19142eca4f715843c06207bbe49b1ea226b4da981914f2f18278f28491c5",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/water/derived/epa_pws_facility_matches.csv.gz": {
       "bytes": 153150,
-      "run_id": "20261019T163722Z_dbe77ada",
-      "sha256": "1cc9084ae186d506c0056390dcfdcbed2c6cacc106a3e823bcd04d3cbf17f89d",
-      "updated_at_utc": "2026-10-19T16:48:09+00:00",
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "2d2bc7284f3e1d0708453d9769b8f4aed8ebb02ae3837866fa07e5a43320a17f",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/water/derived/usdm_county_drought_snapshot.csv.gz": {
       "bytes": 40862,
-      "run_id": "20261019T163722Z_dbe77ada",
-      "sha256": "b3bbebbabe63a9ec3374fc9cc2ef9a56f9cdecb130881372c480cb39250265ac",
-      "updated_at_utc": "2026-10-19T16:48:09+00:00",
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "0e9e2aa8ecc535922639e1c6ec7cac76a97873f4ed75ed27ab3dbb8b4f84e454",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/water/derived/usdm_state_drought_snapshot.csv": {
@@ -1304,9 +1318,9 @@
     },
     "data/water/derived/usgs_2015_county_summary.csv.gz": {
       "bytes": 67440,
-      "run_id": "20261019T163722Z_dbe77ada",
-      "sha256": "4f97f6a104f6668c5ef8fa9a6de3826cade6d387afa6e23ea3c4f59ec1a69812",
-      "updated_at_utc": "2026-10-19T16:48:09+00:00",
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "be472cc37058bb82830a1a6fe07f147d4bf8b83679d6b5c05e70887b941f9b34",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/water/derived/usgs_2015_national_category_summary.csv": {
@@ -1318,9 +1332,9 @@
     },
     "data/water/derived/usgs_2015_reconciliation.csv.gz": {
       "bytes": 60531,
-      "run_id": "20261019T163722Z_dbe77ada",
-      "sha256": "0b9b6b5e58dfa8912e6e10ae1cbdd7095895efa16fb0c3431aea75cb68f39ea0",
-      "updated_at_utc": "2026-10-19T16:48:09+00:00",
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "860ef0a8d9e6d4a71339891e6ee68d6a142ca8766e3562d8d886c791f222b0b0",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/water/derived/usgs_2015_state_category_summary.csv": {
@@ -1346,9 +1360,9 @@
     },
     "data/water/derived/water_observations.csv.gz": {
       "bytes": 1603811,
-      "run_id": "20261019T163722Z_dbe77ada",
-      "sha256": "ec53cf79a944a553eff8dd3bbf17208e1c91bb1b2c9864761e2d086b03cab94a",
-      "updated_at_utc": "2026-10-19T16:48:09+00:00",
+      "run_id": "20261019T184123Z_4bbef6be",
+      "sha256": "83692fc76a1c0e9bbe923c4d81907296194b5e1d56d1a0100c1ed156263e9208",
+      "updated_at_utc": "2026-10-19T18:42:21+00:00",
       "updated_by": "automation_refresh"
     },
     "data/water/field_dictionary.csv": {
@@ -1422,8 +1436,8 @@
       "updated_by": "v7.2.0_bootstrap"
     }
   },
-  "generated_at_utc": "2026-10-19T16:48:09+00:00",
+  "generated_at_utc": "2026-10-19T18:42:21+00:00",
   "manifest_version": "1.0",
-  "run_id": "20261019T163722Z_dbe77ada",
+  "run_id": "20261019T184123Z_4bbef6be",
   "source": "automation_refresh"
 }

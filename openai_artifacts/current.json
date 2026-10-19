@@ -1696,13 +1696,48 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "13ee259742338d8062e79c98",
-    "expires_at": "2026-10-20T16:49:51.628818+00:00",
+    "current_evidence_snapshot_id": "b15472d5a25ac92139606d32",
+    "expires_at": "2026-10-20T18:42:21.476494+00:00",
     "lease_hours": 24,
-    "materiality": {},
-    "published_at": "2026-10-19T16:49:51.628818+00:00",
-    "renewal_count": 0,
-    "source": "generation"
+    "materiality": {
+      "baseline_available": true,
+      "change_count": 2,
+      "changes": [
+        {
+          "domain": "market",
+          "fact_id": "market.aei",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 31.748987069390804,
+          "old_value": 31.7489870693908,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.pressure",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 47.52977219280353,
+          "old_value": 47.529772192803534,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        }
+      ],
+      "current_snapshot_id": "b15472d5a25ac92139606d32",
+      "decision": "reuse_immaterial_change",
+      "exact_match": false,
+      "immaterial_change_count": 2,
+      "material": false,
+      "material_change_count": 0,
+      "percentage_point_threshold": 2.0,
+      "previous_snapshot_id": "13ee259742338d8062e79c98",
+      "relative_change_threshold": 0.1,
+      "version": "1.2.0"
+    },
+    "published_at": "2026-10-19T18:42:21.476494+00:00",
+    "renewal_count": 1,
+    "source": "automation_immaterial_reapply"
   },
   "raw_responses": {
     "editorial_synthesis": {
