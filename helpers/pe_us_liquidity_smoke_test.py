@@ -81,6 +81,43 @@ class LiquiditySourceTests(unittest.TestCase):
         row = p.parse_kpmg(kpmg(2026), year=2026, url='u')
         self.assertEqual((row['exit_value_usd_bn'], row['exit_count']), (273.1, 508))
 
+    def test_unheaded_2026_us_insights_parses_exit_headline(self):
+        # Live KPMG 2026 markup has a visible U.S. insights label, but it is
+        # not exposed as an h1-h6 heading. The exit headline remains a h3.
+        raw = article([
+            ('h1', 'Q2 2026 Pulse of Private Equity'),
+            ('p', 'Overview: global exit value was $576.9 billion at H1 2026, 1,315 exits.'),
+            ('h3', 'PE exit value remains solid, despite continued slowdown in exit volume'),
+            ('p', 'US PE exit value reached $273.1 billion at H1 2026, '
+                  'but volume remained suppressed at just 508 exits.'),
+            ('h3', 'Global PE market sees $1 trillion in investment at mid-year'),
+            ('p', 'Global PE exit value reached $576.9 billion at H1 2026, with 1,315 exits.'),
+        ])
+        row = p.parse_kpmg(raw, year=2026, url='https://kpmg.com/source')
+        self.assertEqual((row['exit_value_usd_bn'], row['exit_count']), (273.1, 508))
+
+    def test_unheaded_fallback_cannot_use_global_or_overview(self):
+        raw = article([
+            ('h1', 'Q2 2026 Pulse of Private Equity'),
+            ('p', 'US PE exit value reached $273.1 billion at H1 2026, with 508 exits.'),
+            ('h3', 'Global PE market sees $1 trillion in investment at mid-year'),
+            ('p', 'US PE exit value reached $576.9 billion at H1 2026, with 1,315 exits.'),
+        ])
+        with self.assertRaises(p.SourceRejected):
+            p.parse_kpmg(raw, year=2026, url='https://kpmg.com/source')
+
+    def test_unheaded_fallback_refuses_multiple_us_exit_paragraphs(self):
+        raw = article([
+            ('h1', 'Q2 2026 Pulse of Private Equity'),
+            ('h3', 'PE exit value remains solid, despite continued slowdown in exit volume'),
+            ('p', 'US PE exit value reached $273.1 billion at H1 2026, with 508 exits.'),
+            ('p', 'US PE exit value reached $100 billion at H1 2026, with 600 exits.'),
+            ('h3', 'Global PE market sees $1 trillion'),
+            ('p', 'Global PE exits were strong.'),
+        ])
+        with self.assertRaises(p.SourceRejected):
+            p.parse_kpmg(raw, year=2026, url='https://kpmg.com/source')
+
     def test_global_pe_not_mixed_into_us(self):
         data = article([('h3','U.S. insights'),('p','US exits still slow.'),
                         ('h3','Global insights'),

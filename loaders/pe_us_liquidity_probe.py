@@ -192,8 +192,35 @@ def parse_cambridge(payload: bytes, *, year: int, url: str) -> dict:
             'population': 'Cambridge U.S. PE benchmark: buyout and growth equity funds'}
 
 
+def _kpmg_us_exit_fallback(all_blocks: list[tuple[str, str]]) -> list[str]:
+    """Handle KPMG pages whose U.S. label is plain text, not an HTML heading.
+
+    Only consider the paragraph directly beneath the U.S. PE-exit headline;
+    the overview, other regional panels and global insights are not searched.
+    Multiple qualifying paragraphs fail closed rather than choosing a number.
+    """
+    found = []
+    for i, (tag, heading) in enumerate(all_blocks):
+        if not (tag.startswith('h') and re.match(r'^PE exit value remains solid\b', heading, re.I)):
+            continue
+        for next_tag, paragraph in all_blocks[i + 1:]:
+            if next_tag.startswith('h'):
+                break
+            if next_tag == 'p' and re.match(r'^\s*U\.?S\.? PE exit value\b', paragraph, re.I):
+                found.append(paragraph)
+    if len(found) != 1:
+        raise SourceRejected('KPMG U.S. exit paragraph absent or ambiguous (unheaded insights section)')
+    return found
+
+
 def parse_kpmg(payload: bytes, *, year: int, url: str) -> dict:
-    section = _pe_section(blocks(payload), source='kpmg')
+    all_blocks = blocks(payload)
+    try:
+        section = _pe_section(all_blocks, source='kpmg')
+    except SourceRejected as exc:
+        if 'No scoped kpmg U.S. private-equity article body' not in str(exc):
+            raise
+        section = _kpmg_us_exit_fallback(all_blocks)
     matches = []
     for p in section:
         if not re.search(r'\b(?:H1|first half of)\s*' + str(year) + r'\b', p, re.I):
