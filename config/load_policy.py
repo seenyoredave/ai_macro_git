@@ -26,6 +26,7 @@ class RefreshSource(StrEnum):
     EDGAR = "edgar"
     FRED = "fred"
     NYFED = "nyfed"
+    FINANCE = "finance"
     CURRENT_CONTEXT = "current_context"
     COMPUTE = "compute"
     DATA_CENTERS = "data_centers"
@@ -108,4 +109,9 @@ def build_load_policy(
         domain_requests.add(refresh_domain)
     for domain in domain_requests:
         sources.add(RefreshSource(str(domain)))
+    if "finance" in domain_requests:
+        # Finance consumes all four shared market feeds, plus its own
+        # independent PE and commercialization sources.
+        sources.update({RefreshSource.YFINANCE, RefreshSource.EDGAR,
+                        RefreshSource.FRED, RefreshSource.NYFED})
     return LoadPolicy.refresh(sources) if sources else LoadPolicy.retained()

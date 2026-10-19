@@ -48,6 +48,9 @@ from loaders.market_loader import load_market_universe
 from loaders.nfci_loader import load_nfci_history
 from loaders.private_capital_loader import PRIVATE_CAPITAL_REFRESH_VERSION, refresh_private_capital
 from loaders.pe_industry_pipeline import PRODUCTION as PE_INDUSTRY_DIR, run as refresh_pe_industry
+from loaders.pe_us_liquidity_retained import PRODUCTION as PE_US_DIR, refresh as refresh_pe_us_liquidity
+from loaders.pe_us_returns_retained import NAME as PE_RETURNS_NAME, refresh as refresh_pe_us_returns
+from automation.pe_retrieval import record_pe_retrieval
 from loaders.credit_conditions_loader import load_credit_conditions
 from loaders.bdc_filings_loader import refresh_bdc_filings
 from loaders.snapshot_writer import persist_refresh_snapshots
@@ -99,6 +102,7 @@ _NODE_SOURCE_MAP: dict[str, tuple[RefreshSource, ...]] = {
     "commercialization": (),
     "private_capital": (),
     "pe_industry": (),
+    "pe_us_liquidity": (),
 }
 
 
@@ -618,6 +622,32 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         semantic_output=pe_industry_signature,
         elapsed_sec=_elapsed(pe_industry_started),
     )
+    record_pe_retrieval(plan, "pe_industry", [
+        row for row in pe_industry_results if row.get("source") in {"sec", "acg"}
+    ])
+    # Retained U.S. PE liquidity: Cambridge LP cash flows and KPMG exit
+    # transactions remain independent, fail-closed populations.
+    pe_us_live = live and plan.should_refresh("pe_us_liquidity")
+    pe_us_started = time.perf_counter()
+    pe_us_results = refresh_pe_us_liquidity(out_dir=PE_US_DIR) if pe_us_live else []
+    if pe_us_live:
+        pe_us_results.append(refresh_pe_us_returns(out_dir=PE_US_DIR))
+    pe_us_failures = {r["source"]: r.get("error", "source unavailable")
+                      for r in pe_us_results if r["status"] in {"unavailable", "retained_on_failure"}}
+    pe_us_report = {
+        "source_mode": ("partial_refresh" if pe_us_failures else "live_refresh") if pe_us_live else "retained",
+        "results": pe_us_results, "errors": pe_us_failures,
+    }
+    pe_us_signature = {
+        name: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+        for name in ("us_pe_lp_flows_annual.csv", "us_pe_exits_h1.csv", PE_RETURNS_NAME)
+        for path in (PE_US_DIR / name,)
+    }
+    _record_node(
+        plan, "pe_us_liquidity", attempted_live=pe_us_live, report=pe_us_report,
+        semantic_output=pe_us_signature, elapsed_sec=_elapsed(pe_us_started),
+    )
+    record_pe_retrieval(plan, "pe_us_liquidity", pe_us_results)
     _record_node(
         plan,
         "fred",
@@ -750,6 +780,7 @@ def refresh_research_state(*, as_of=None, live: bool = True, run_id: str = "") -
         "commercialization": commercialization_data.get("load_report", {}),
         "private_capital": private_report,
         "pe_industry": pe_industry_report,
+        "pe_us_liquidity": pe_us_report,
         "current_context": context_refresh,
         "snapshot_write": snapshot_write_report,
     }

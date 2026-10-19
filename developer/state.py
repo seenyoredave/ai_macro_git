@@ -12,6 +12,7 @@ from config.market_clock import utc_now
 
 DOMAIN_REFRESH_LABELS = {
     "current_context": "Current Context",
+    "finance": "Finance",
     "compute": "Compute",
     "data_centers": "Data Centers",
     "connectivity": "Connectivity",

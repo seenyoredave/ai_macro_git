@@ -86,6 +86,7 @@ from loaders.economic_impact_loader import load_economic_impact_data
 from loaders.water_loader import load_water_utilization_data
 from loaders.adoption_loader import load_adoption_data
 from loaders.commercialization_loader import load_commercialization_data
+from loaders.finance_domain_refresh import refresh_finance_pe_sources
 from loaders.fred_loader import describe_fred_load, latest_fred_archive_date, load_fred
 from loaders.market_loader import describe_edgar_archive_status, describe_yf_archive_status, load_market_universe
 from loaders.market_valuation_loader import load_market_valuation_context
@@ -109,7 +110,7 @@ from analytics.sector_builder import get_sector_data
 from analytics.spatial_context import attach_water_context
 from automation.retained_state import refresh_retained_state_manifest
 
-APP_VERSION = "v3.0.7.42"
+APP_VERSION = "v3.0.8.5"
 APP_STATE_SCHEMA_VERSION = "77.0-weekly-credit"
 
 st.set_page_config(
@@ -141,7 +142,7 @@ def build_tabs():
         on_change="rerun",
     )
 
-def build_sector_dashboard_data(load_policy: LoadPolicy):
+def build_sector_dashboard_data(load_policy: LoadPolicy, *, finance_refresh: bool = False, finance_token: int = 0):
     sector_data = {}
     sector_metrics = {}
 
@@ -149,10 +150,10 @@ def build_sector_dashboard_data(load_policy: LoadPolicy):
 
     raw_universe_data = load_market_universe(
         ticker_map,
-        force_yfinance_refresh=st.session_state.force_yfinance_refresh,
-        yfinance_refresh_token=st.session_state.yfinance_refresh_token,
-        force_edgar_refresh=st.session_state.force_edgar_refresh,
-        edgar_refresh_token=st.session_state.edgar_refresh_token,
+        force_yfinance_refresh=st.session_state.force_yfinance_refresh or finance_refresh,
+        yfinance_refresh_token=max(st.session_state.yfinance_refresh_token, finance_token),
+        force_edgar_refresh=st.session_state.force_edgar_refresh or finance_refresh,
+        edgar_refresh_token=max(st.session_state.edgar_refresh_token, finance_token),
         allow_yfinance_live=load_policy.allows_live(RefreshSource.YFINANCE),
         allow_edgar_live=load_policy.allows_live(RefreshSource.EDGAR),
     )
@@ -216,38 +217,41 @@ if st.session_state.force_rebuild:
         refresh_domains=refresh_domains,
     )
     st.session_state.current_load_policy = load_policy.describe()
+    finance_refresh = refreshing("finance") and load_policy.allows_live(RefreshSource.FINANCE)
+    finance_token = domain_token("finance") if finance_refresh else 0
+    pe_refresh_report = {"source_mode": "retained"}
     # Consume the request before any network or file work. A downstream failure
     # must not silently replay the same manual refresh on the next rerun.
     st.session_state.domain_refresh_request = None
 
     sector_data, sector_metrics, raw_universe_data, benchmark_metrics = (
-        build_sector_dashboard_data(load_policy)
+        build_sector_dashboard_data(load_policy, finance_refresh=finance_refresh, finance_token=finance_token)
     )
 
     fred_started = time.perf_counter()
     fred_data = load_fred(
-        force_refresh=st.session_state.force_fred_refresh,
-        refresh_token=st.session_state.fred_refresh_token,
+        force_refresh=st.session_state.force_fred_refresh or finance_refresh,
+        refresh_token=max(st.session_state.fred_refresh_token, finance_token),
         allow_live=load_policy.allows_live(RefreshSource.FRED),
     )
     fred_report = describe_fred_load(
         fred_data,
         elapsed_sec=time.perf_counter() - fred_started,
-        force_refresh=st.session_state.force_fred_refresh,
+        force_refresh=st.session_state.force_fred_refresh or finance_refresh,
     )
     nfci_history = load_nfci_history(
-        force_refresh=st.session_state.force_fred_refresh,
-        refresh_token=st.session_state.fred_refresh_token,
+        force_refresh=st.session_state.force_fred_refresh or finance_refresh,
+        refresh_token=max(st.session_state.fred_refresh_token, finance_token),
         allow_live=load_policy.allows_live(RefreshSource.FRED),
     )
 
     credit_conditions = load_credit_conditions(
-        force_refresh=st.session_state.force_fred_refresh,
+        force_refresh=st.session_state.force_fred_refresh or finance_refresh,
         allow_live=load_policy.allows_live(RefreshSource.FRED),
     )
     fred_report["credit_conditions"] = credit_conditions["load_report"]
     bdc_report = refresh_bdc_filings(
-        force_refresh=st.session_state.force_edgar_refresh,
+        force_refresh=st.session_state.force_edgar_refresh or finance_refresh,
         allow_live=load_policy.allows_live(RefreshSource.EDGAR),
     )
     fred_report["bdc_filings"] = bdc_report
@@ -263,7 +267,7 @@ if st.session_state.force_rebuild:
         force_refresh=refreshing("power"),
         refresh_token=domain_token("power"),
         force_fred_refresh=st.session_state.force_fred_refresh,
-        fred_refresh_token=st.session_state.fred_refresh_token,
+        fred_refresh_token=max(st.session_state.fred_refresh_token, finance_token),
         force_market_refresh=refreshing("power") or refreshing("grid_storage"),
         market_refresh_token=combined_domain_token("power", "grid_storage"),
         market_refresh_scope=energy_market_scope,
@@ -275,8 +279,8 @@ if st.session_state.force_rebuild:
         ),
     )
     debt_markets_data = load_debt_markets_data(
-        force_refresh=st.session_state.force_nyfed_refresh,
-        refresh_token=st.session_state.nyfed_refresh_token,
+        force_refresh=st.session_state.force_nyfed_refresh or finance_refresh,
+        refresh_token=max(st.session_state.nyfed_refresh_token, finance_token),
         allow_live=load_policy.allows_live(RefreshSource.NYFED),
     )
     infrastructure_data = load_infrastructure_data(
@@ -337,10 +341,10 @@ if st.session_state.force_rebuild:
         allow_live=load_policy.allows_live(RefreshSource.ECONOMIC_OUTCOMES),
     )
     commercialization_domains = {"compute", "adoption", "economic_outcomes"}
-    commercialization_refresh = bool(refresh_domains & commercialization_domains)
+    commercialization_refresh = bool(refresh_domains & commercialization_domains) or finance_refresh
     commercialization_data = load_commercialization_data(
         force_refresh=commercialization_refresh,
-        refresh_token=combined_domain_token(*commercialization_domains),
+        refresh_token=max(combined_domain_token(*commercialization_domains), finance_token),
         allow_live=any(
             load_policy.allows_live(source)
             for source in (
@@ -348,8 +352,10 @@ if st.session_state.force_rebuild:
                 RefreshSource.ADOPTION,
                 RefreshSource.ECONOMIC_OUTCOMES,
             )
-        ),
+        ) or finance_refresh,
     )
+    if finance_refresh:
+        pe_refresh_report = refresh_finance_pe_sources()
     if developer_mode():
         if load_policy.allows_live(RefreshSource.CURRENT_CONTEXT):
             context_refresh = refresh_current_context_once_daily(
@@ -382,6 +388,15 @@ if st.session_state.force_rebuild:
     if refresh_domains:
         domain_reports = {
             "current_context": context_refresh,
+            "finance": {
+                "source_mode": pe_refresh_report.get("source_mode", "retained"),
+                "pe": pe_refresh_report,
+                "yfinance": (raw_universe_data.get("_load_report") or {}).get("yfinance", {}),
+                "edgar": (raw_universe_data.get("_load_report") or {}).get("edgar", {}),
+                "fred": fred_report,
+                "nyfed": debt_markets_data.get("load_report", {}),
+                "commercialization": commercialization_data.get("load_report", {}),
+            },
             "compute": {
                 "compute": (infrastructure_data.get("compute_manufacturing", {}) or {}).get("load_report", {}),
                 "commercialization": commercialization_data.get("load_report", {}),
@@ -495,7 +510,7 @@ if st.session_state.force_rebuild:
         raw_universe_data=raw_universe_data,
         energy_data=energy_data,
         debt_markets_data=debt_markets_data,
-        edgar_refresh_token=st.session_state.edgar_refresh_token,
+        edgar_refresh_token=max(st.session_state.edgar_refresh_token, finance_token),
     )
     if load_policy.is_explicit_refresh:
         try:

@@ -6,7 +6,7 @@ builds the bounded packets supplied to OpenAI.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 import json
 import math
@@ -14,6 +14,7 @@ from typing import Any, Iterable
 
 
 from analytics.dashboard_context import DashboardContext
+from analytics.pe_us_conditions import build_pe_us_conditions
 from analytics.domain_state import DomainState
 
 EVIDENCE_ARCHITECTURE_VERSION = "1.3.0"
@@ -41,9 +42,6 @@ DOMAIN_REFERENCES: dict[str, tuple[dict[str, str], ...]] = {
         {"source_label": "Chicago Fed NFCI", "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"},
         {"source_label": "New York Fed CMDI", "source_url": "https://www.newyorkfed.org/research/policy/cmdi"},
         {"source_label": "SEC EDGAR", "source_url": "https://www.sec.gov/edgar/search/"},
-        {"source_label": "CalSTRS PE Performance", "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"},
-        {"source_label": "WSIB Private Equity IRR", "source_url": "https://www.sib.wa.gov/reports.html"},
-        {"source_label": "CalPERS PE Performance", "source_url": "https://www.calpers.ca.gov/investments/about-investment-office/investment-organization/pep-fund-performance"},
         {"source_label": "Microsoft FY2026 Q3 AI disclosure", "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"},
         {"source_label": "OpenAI business scale disclosure", "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"},
         {"source_label": "Alphabet Q2 2026 AI and Cloud disclosure", "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"},
@@ -117,7 +115,7 @@ DOMAIN_BOUNDARIES: dict[str, tuple[str, ...]] = {
     ),
     "finance": (
         "Company funding metrics describe the covered issuers.",
-        "Private-fund NAV represents remaining value; DPI represents realized cash distributions.",
+        "LP benchmarks, U.S. exit transactions and middle-market entry pricing cover distinct populations and reporting periods.",
         "Provider revenue measures paid demand at the reporting provider.",
     ),
     "compute": (
@@ -369,7 +367,7 @@ def build_market_evidence(context: DashboardContext) -> EvidencePacket:
 def build_finance_evidence(context: DashboardContext) -> EvidencePacket:
     state = _state(context, "finance")
     m = state.metrics
-    return _packet("finance", state, [
+    packet = _packet("finance", state, [
         _fact("finance", "borrower_strain", "Borrower strain", m.get("borrower_strain")),
         _fact("finance", "lender_strain", "Lender strain", m.get("lender_strain")),
         _fact("finance", "internal_funding_coverage", "Operating cash flow coverage of current CapEx", m.get("internal_funding_coverage"), unit="x", digits=2),
@@ -379,17 +377,45 @@ def build_finance_evidence(context: DashboardContext) -> EvidencePacket:
         _fact("finance", "nfci", "Chicago Fed NFCI", m.get("nfci"), digits=2),
         _fact("finance", "nfci_change", "Three-month change in NFCI", m.get("nfci_change"), digits=2),
         _fact("finance", "bond_distress", "Corporate bond market distress", m.get("bond_distress"), digits=2),
-        _fact("finance", "private_capital_dpi", "Mature PE fund DPI", m.get("private_capital_dpi"), unit="x", digits=2),
-        _fact("finance", "private_capital_rvpi", "Mature PE fund RVPI", m.get("private_capital_rvpi"), unit="x", digits=2),
-        _fact("finance", "private_capital_tvpi", "Mature PE fund TVPI", m.get("private_capital_tvpi"), unit="x", digits=2),
-        _fact("finance", "private_capital_realized_share", "Share of private-fund value already realized", m.get("private_capital_realized_share"), unit="%", scale=100),
-        _fact("finance", "private_capital_mature_funds", "Public-LP mature fund records", m.get("private_capital_mature_funds")),
+        _fact("finance", "pe_fund_net_assets_b", "SEC Form PF total net assets of reported private equity funds (not liquid cash)", m.get("pe_fund_net_assets_b"), unit="$B", digits=0),
+        _fact("finance", "pe_fund_net_assets_period", "SEC Form PF private equity reported net asset period", m.get("pe_fund_net_assets_period")),
+        _fact("finance", "pe_5y_annualized_net_pct", "Cambridge U.S. PE five-year pooled net annualized IRR after fees", m.get("pe_5y_annualized_net_pct"), unit="%"),
+        _fact("finance", "pe_1y_net_pct", "Cambridge U.S. PE latest full-year net return", m.get("pe_1y_net_pct"), unit="%"),
+        _fact("finance", "pe_sp500_5y_mpme_pct", "Cambridge cash-flow-matched S&P 500 five-year mPME annualized return", m.get("pe_sp500_5y_mpme_pct"), unit="%"),
+        _fact("finance", "pe_russell2000_5y_mpme_pct", "Cambridge cash-flow-matched Russell 2000 five-year mPME annualized return", m.get("pe_russell2000_5y_mpme_pct"), unit="%"),
+        _fact("finance", "pe_returns_period", "Cambridge PE benchmark return observation date", m.get("pe_returns_period")),
+        _fact("finance", "pe_lp_distribution_to_call_ratio", "Cambridge U.S. PE benchmark distributions divided by calls", m.get("pe_lp_distribution_to_call_ratio"), unit="x", digits=2),
+        _fact("finance", "pe_lp_distributions_b", "Cambridge U.S. PE benchmark annual LP distributions", m.get("pe_lp_distributions_b"), unit="$B", digits=0),
+        _fact("finance", "pe_lp_capital_calls_b", "Cambridge U.S. PE benchmark annual LP calls", m.get("pe_lp_capital_calls_b"), unit="$B", digits=0),
+        _fact("finance", "pe_lp_period", "Cambridge PE benchmark observation date", m.get("pe_lp_period")),
+        _fact("finance", "pe_us_exit_value_b", "KPMG U.S. PE H1 exit transaction value", m.get("pe_us_exit_value_b"), unit="$B"),
+        _fact("finance", "pe_us_exit_count", "KPMG U.S. PE H1 exit transaction count", m.get("pe_us_exit_count"), digits=0),
+        _fact("finance", "pe_us_exit_value_change_pct", "U.S. H1 PE exit-value change versus prior H1 (separate publication vintages)", m.get("pe_us_exit_value_change_pct"), unit="%"),
+        _fact("finance", "pe_us_exit_count_change_pct", "U.S. H1 PE exit-count change versus prior H1 (separate publication vintages)", m.get("pe_us_exit_count_change_pct"), unit="%"),
+        _fact("finance", "pe_us_exit_period", "KPMG PE exit observation date", m.get("pe_us_exit_period")),
+        _fact("finance", "pe_us_buyout_entry_multiple", "GF Data middle-market entry EV to EBITDA, sampled PE-sponsored transactions", m.get("pe_us_buyout_entry_multiple"), unit="x"),
+        _fact("finance", "pe_us_entry_quarter_change", "GF Data middle-market entry multiple QoQ change in comparable sample", m.get("pe_us_entry_quarter_change"), unit="x"),
+        _fact("finance", "pe_us_buyout_entry_period", "GF Data pricing observation date", m.get("pe_us_buyout_entry_period")),
         _fact("finance", "microsoft_ai_arr_b", "Microsoft reported AI annual revenue run rate", m.get("microsoft_ai_arr_b"), unit="$B"),
         _fact("finance", "microsoft_ai_arr_growth_pct", "Microsoft AI annual revenue run-rate growth", m.get("microsoft_ai_arr_growth_pct"), unit="%"),
         _fact("finance", "openai_arr_b", "OpenAI reported annualized revenue run rate", m.get("openai_arr_b"), unit="$B"),
         _fact("finance", "alphabet_cloud_backlog_b", "Alphabet reported Cloud backlog", m.get("alphabet_cloud_backlog_b"), unit="$B"),
     ])
-
+    # Use the observation's validated publisher URL, including when a later
+    # annual publication supersedes the bootstrapped sample. No provider IO.
+    pe = build_pe_us_conditions()
+    references = list(packet.references)
+    for key, label in (
+        ("lp", "Cambridge Associates U.S. PE Benchmark"),
+        ("returns", "Cambridge Associates U.S. PE Net Returns"),
+        ("scale", "SEC Form PF U.S. PE Fund Net Assets"),
+        ("exits", "KPMG U.S. PE Exit Activity"),
+        ("valuation", "GF Data / ACG Middle-Market M&A"),
+    ):
+        url = (pe.get(key) or {}).get("source_url")
+        if url:
+            references.append({"source_label": label, "source_url": url})
+    return replace(packet, references=tuple(references))
 
 def build_compute_evidence(context: DashboardContext) -> EvidencePacket:
     state = _state(context, "compute")

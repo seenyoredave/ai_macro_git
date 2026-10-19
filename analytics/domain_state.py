@@ -26,7 +26,7 @@ from analytics.grid_deliverability import (
     storage_duration_profile,
 )
 from analytics.market_ledger import build_market_ledger
-from analytics.private_capital import build_private_capital_realization
+from analytics.pe_us_conditions import build_pe_us_conditions
 from analytics.water_competition import current_top_withdrawal_profile
 from analytics.water_local import local_water_constraint_summary
 
@@ -141,8 +141,8 @@ def build_finance_state(context: DashboardContext) -> DomainState:
     regime = context.regime_metrics or {}
     funding = (regime.get("Deployment Funding Mix", {}) or {}).get("current", {}) or {}
     nfci = nfci_snapshot(context.fred_data or {}, context.nfci_history)
-    private_capital = build_private_capital_realization()
-    private_metrics = private_capital.get("metrics", {}) or {}
+    pe = build_pe_us_conditions()
+    lp, exits, valuation, returns, scale = (pe.get("lp") or {}), (pe.get("exits") or {}), (pe.get("valuation") or {}), (pe.get("returns") or {}), (pe.get("scale") or {})
 
     borrower = _num(regime.get("Borrower Strain"))
     lender = _num(regime.get("Lender Strain"))
@@ -155,11 +155,6 @@ def build_finance_state(context: DashboardContext) -> DomainState:
     bond_distress = _num(
         ((((context.debt_markets_data or {}).get("series", {}) or {}).get("Corporate Bond Market Distress", {}) or {}).get("value"))
     )
-    dpi = _num(private_metrics.get("dpi"))
-    rvpi = _num(private_metrics.get("rvpi"))
-    tvpi = _num(private_metrics.get("tvpi"))
-    realized_share = _num(private_metrics.get("realized_share"))
-    fund_count = int(private_metrics.get("fund_count", 0) or 0)
 
     commercial = context.commercialization_data
     microsoft_arr = _commercial_metric(commercial, "Microsoft", "Annual revenue run rate")
@@ -167,13 +162,11 @@ def build_finance_state(context: DashboardContext) -> DomainState:
     openai_arr = _commercial_metric(commercial, "OpenAI", "Annualized revenue run rate")
     alphabet_backlog = _commercial_metric(commercial, "Alphabet", "Backlog")
 
-    realization_imbalance = abs(0.5 - realized_share) * 70 if pd.notna(realized_share) else 0
     importance = max(
         abs(borrower) if pd.notna(borrower) else 0,
         abs(lender) if pd.notna(lender) else 0,
         max(0, (1 - internal) * 45) if pd.notna(internal) else 0,
         min(75, max(0, commitments - 1) * 25) if pd.notna(commitments) else 0,
-        realization_imbalance,
     )
     return DomainState(
         metrics={
@@ -186,11 +179,25 @@ def build_finance_state(context: DashboardContext) -> DomainState:
             "nfci": nfci_value,
             "nfci_change": nfci_change,
             "bond_distress": bond_distress,
-            "private_capital_dpi": dpi,
-            "private_capital_rvpi": rvpi,
-            "private_capital_tvpi": tvpi,
-            "private_capital_realized_share": realized_share,
-            "private_capital_mature_funds": fund_count,
+            "pe_fund_net_assets_b": _num(scale.get("value_usd_bn")),
+            "pe_fund_net_assets_period": scale.get("period_end", ""),
+            "pe_5y_annualized_net_pct": _num(returns.get("pe_5y_annualized_net_pct")),
+            "pe_1y_net_pct": _num(returns.get("pe_1y_net_pct")),
+            "pe_sp500_5y_mpme_pct": _num(returns.get("sp500_5y_mpme_pct")),
+            "pe_russell2000_5y_mpme_pct": _num(returns.get("russell2000_5y_mpme_pct")),
+            "pe_returns_period": returns.get("period_end", ""),
+            "pe_lp_distribution_to_call_ratio": _num(lp.get("distributions_to_calls")),
+            "pe_lp_distributions_b": _num(lp.get("distributions_usd_bn")),
+            "pe_lp_capital_calls_b": _num(lp.get("capital_calls_usd_bn")),
+            "pe_lp_period": lp.get("period_end", ""),
+            "pe_us_exit_value_b": _num(exits.get("exit_value_usd_bn")),
+            "pe_us_exit_count": _num(exits.get("exit_count")),
+            "pe_us_exit_value_change_pct": _num(exits.get("exit_value_change_pct")),
+            "pe_us_exit_count_change_pct": _num(exits.get("exit_count_change_pct")),
+            "pe_us_exit_period": exits.get("period_end", ""),
+            "pe_us_buyout_entry_multiple": _num(valuation.get("value")),
+            "pe_us_entry_quarter_change": _num(valuation.get("quarter_change")),
+            "pe_us_buyout_entry_period": valuation.get("period_end", ""),
             "microsoft_ai_arr_b": microsoft_arr,
             "microsoft_ai_arr_growth_pct": microsoft_growth,
             "openai_arr_b": openai_arr,

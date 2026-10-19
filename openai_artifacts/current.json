@@ -1,67 +1,67 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261017T184133303952Z_1e0119a7_df40e0ce",
+  "attempt_id": "20261019T160324016000Z_d74c3926_c3b8000e",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
-    "compute",
-    "workforce"
+    "data_center",
+    "connectivity"
   ],
   "editorial_context_event_ids": [
     "auto-2026-10-15-2014e74babb5",
     "auto-2026-10-15-bde49f15ce34",
     "auto-2026-10-16-d73bfbb1ecdf",
     "auto-2026-10-15-0a42b0b901a6",
-    "auto-2026-10-12-d1e8d0a7c96d",
     "auto-2026-10-15-f129bad0f05e",
+    "auto-2026-10-12-d1e8d0a7c96d",
     "auto-2026-10-14-57e5b17c1bd6",
     "auto-2026-10-16-f903651ff52a",
-    "auto-2026-10-12-ce7bc0483a21",
     "auto-2026-10-14-382b7de30b7c",
+    "auto-2026-10-15-f42f17e605b7",
     "auto-2026-10-15-1548ca166303",
-    "auto-2026-10-09-e1198b607fc9",
+    "auto-2026-10-12-ce7bc0483a21",
     "auto-2026-10-15-49bffc829240",
-    "auto-2026-10-12-0c4c98040b3a",
-    "auto-2026-10-12-abf9ea70529b"
+    "auto-2026-10-19-3c077eba67dd",
+    "auto-2026-10-19-4518cbb06045"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
-      "compute",
-      "workforce"
+      "data_center",
+      "connectivity"
     ],
     "current_event_ids": [
       "auto-2026-10-15-2014e74babb5",
       "auto-2026-10-15-bde49f15ce34",
       "auto-2026-10-16-d73bfbb1ecdf",
       "auto-2026-10-15-0a42b0b901a6",
-      "auto-2026-10-12-d1e8d0a7c96d",
       "auto-2026-10-15-f129bad0f05e",
+      "auto-2026-10-12-d1e8d0a7c96d",
       "auto-2026-10-14-57e5b17c1bd6",
       "auto-2026-10-16-f903651ff52a",
-      "auto-2026-10-12-ce7bc0483a21",
       "auto-2026-10-14-382b7de30b7c",
+      "auto-2026-10-15-f42f17e605b7",
       "auto-2026-10-15-1548ca166303",
-      "auto-2026-10-09-e1198b607fc9",
+      "auto-2026-10-12-ce7bc0483a21",
       "auto-2026-10-15-49bffc829240",
-      "auto-2026-10-12-0c4c98040b3a",
-      "auto-2026-10-12-abf9ea70529b"
+      "auto-2026-10-19-3c077eba67dd",
+      "auto-2026-10-19-4518cbb06045"
     ],
     "material_domains": [
       "market",
       "finance",
-      "compute",
-      "workforce"
+      "connectivity"
     ],
     "new_event_domains": [
       "market",
-      "finance"
+      "data_center"
     ],
     "new_event_ids": [
-      "auto-2026-10-15-2014e74babb5",
-      "auto-2026-10-16-d73bfbb1ecdf"
+      "auto-2026-10-15-f42f17e605b7",
+      "auto-2026-10-19-3c077eba67dd",
+      "auto-2026-10-19-4518cbb06045"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -69,8 +69,7 @@
   "editorial_update_domains": [
     "market",
     "finance",
-    "compute",
-    "workforce"
+    "connectivity"
   ],
   "evidence_packets": {
     "adoption": {
@@ -352,10 +351,10 @@
         },
         {
           "context": "",
-          "display": "15.9%",
+          "display": "16.8%",
           "id": "compute.information_processing_investment_growth",
           "label": "Information-processing investment growth",
-          "value": 0.1592742836027563
+          "value": 0.16819019599244678
         },
         {
           "context": "",
@@ -488,10 +487,10 @@
         },
         {
           "context": "",
-          "display": "1,378",
+          "display": "250",
           "id": "connectivity.interconnection_facilities_or_floor",
           "label": "PeeringDB interconnection facilities or coverage floor",
-          "value": 1378.0
+          "value": 250.0
         },
         {
           "context": "",
@@ -788,7 +787,7 @@
     "finance": {
       "boundaries": [
         "Company funding metrics describe the covered issuers.",
-        "Private-fund NAV represents remaining value; DPI represents realized cash distributions.",
+        "LP benchmarks, U.S. exit transactions and middle-market entry pricing cover distinct populations and reporting periods.",
         "Provider revenue measures paid demand at the reporting provider."
       ],
       "domain": "finance",
@@ -858,38 +857,136 @@
         },
         {
           "context": "",
-          "display": "1.18x",
-          "id": "finance.private_capital_dpi",
-          "label": "Mature technology-fund DPI",
-          "value": 1.1842385657863554
+          "display": "$8523B",
+          "id": "finance.pe_fund_net_assets_b",
+          "label": "SEC Form PF total net assets of reported private equity funds (not liquid cash)",
+          "value": 8523.0
         },
         {
           "context": "",
-          "display": "0.97x",
-          "id": "finance.private_capital_rvpi",
-          "label": "Mature technology-fund RVPI",
-          "value": 0.974091081680859
+          "display": "2025-12-31",
+          "id": "finance.pe_fund_net_assets_period",
+          "label": "SEC Form PF private equity reported net asset period",
+          "value": "2025-12-31"
         },
         {
           "context": "",
-          "display": "2.16x",
-          "id": "finance.private_capital_tvpi",
-          "label": "Mature technology-fund TVPI",
-          "value": 2.1583296474672142
+          "display": "11.7%",
+          "id": "finance.pe_5y_annualized_net_pct",
+          "label": "Cambridge U.S. PE five-year pooled net annualized IRR after fees",
+          "value": 11.7
         },
         {
           "context": "",
-          "display": "54.9%",
-          "id": "finance.private_capital_realized_share",
-          "label": "Share of private-fund value already realized",
-          "value": 0.54868289798829
+          "display": "8.7%",
+          "id": "finance.pe_1y_net_pct",
+          "label": "Cambridge U.S. PE latest full-year net return",
+          "value": 8.7
         },
         {
           "context": "",
-          "display": "31",
-          "id": "finance.private_capital_mature_funds",
-          "label": "Public-LP mature fund records",
-          "value": 31.0
+          "display": "14.9%",
+          "id": "finance.pe_sp500_5y_mpme_pct",
+          "label": "Cambridge cash-flow-matched S&P 500 five-year mPME annualized return",
+          "value": 14.9
+        },
+        {
+          "context": "",
+          "display": "6.8%",
+          "id": "finance.pe_russell2000_5y_mpme_pct",
+          "label": "Cambridge cash-flow-matched Russell 2000 five-year mPME annualized return",
+          "value": 6.8
+        },
+        {
+          "context": "",
+          "display": "2025-12-31",
+          "id": "finance.pe_returns_period",
+          "label": "Cambridge PE benchmark return observation date",
+          "value": "2025-12-31"
+        },
+        {
+          "context": "",
+          "display": "1.28x",
+          "id": "finance.pe_lp_distribution_to_call_ratio",
+          "label": "Cambridge U.S. PE benchmark distributions divided by calls",
+          "value": 1.2759
+        },
+        {
+          "context": "",
+          "display": "$185B",
+          "id": "finance.pe_lp_distributions_b",
+          "label": "Cambridge U.S. PE benchmark annual LP distributions",
+          "value": 185.0
+        },
+        {
+          "context": "",
+          "display": "$145B",
+          "id": "finance.pe_lp_capital_calls_b",
+          "label": "Cambridge U.S. PE benchmark annual LP calls",
+          "value": 145.0
+        },
+        {
+          "context": "",
+          "display": "2025-12-31",
+          "id": "finance.pe_lp_period",
+          "label": "Cambridge PE benchmark observation date",
+          "value": "2025-12-31"
+        },
+        {
+          "context": "",
+          "display": "$273.1B",
+          "id": "finance.pe_us_exit_value_b",
+          "label": "KPMG U.S. PE H1 exit transaction value",
+          "value": 273.1
+        },
+        {
+          "context": "",
+          "display": "508",
+          "id": "finance.pe_us_exit_count",
+          "label": "KPMG U.S. PE H1 exit transaction count",
+          "value": 508.0
+        },
+        {
+          "context": "",
+          "display": "-14.4%",
+          "id": "finance.pe_us_exit_value_change_pct",
+          "label": "U.S. H1 PE exit-value change versus prior H1 (separate publication vintages)",
+          "value": -14.38
+        },
+        {
+          "context": "",
+          "display": "6.7%",
+          "id": "finance.pe_us_exit_count_change_pct",
+          "label": "U.S. H1 PE exit-count change versus prior H1 (separate publication vintages)",
+          "value": 6.72
+        },
+        {
+          "context": "",
+          "display": "2026-06-30",
+          "id": "finance.pe_us_exit_period",
+          "label": "KPMG PE exit observation date",
+          "value": "2026-06-30"
+        },
+        {
+          "context": "",
+          "display": "7.0x",
+          "id": "finance.pe_us_buyout_entry_multiple",
+          "label": "GF Data middle-market entry EV to EBITDA, sampled PE-sponsored transactions",
+          "value": 7.0
+        },
+        {
+          "context": "",
+          "display": "-0.3x",
+          "id": "finance.pe_us_entry_quarter_change",
+          "label": "GF Data middle-market entry multiple QoQ change in comparable sample",
+          "value": -0.3
+        },
+        {
+          "context": "",
+          "display": "2026-06-30",
+          "id": "finance.pe_us_buyout_entry_period",
+          "label": "GF Data pricing observation date",
+          "value": "2026-06-30"
         },
         {
           "context": "",
@@ -940,10 +1037,6 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "CalSTRS PE Performance",
-          "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"
-        },
-        {
           "source_label": "Microsoft FY2026 Q3 AI disclosure",
           "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
         },
@@ -954,6 +1047,26 @@
         {
           "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        },
+        {
+          "source_label": "Cambridge Associates U.S. PE Benchmark",
+          "source_url": "https://www.cambridgeassociates.com/insight/us-pe-vc-benchmark-commentary-calendar-year-2025/"
+        },
+        {
+          "source_label": "Cambridge Associates U.S. PE Net Returns",
+          "source_url": "https://www.cambridgeassociates.com/wp-content/uploads/2026/07/2026-07-US-PE-VC-Benchmark-Commentary-CY2025-Data-PUBLIC.pdf"
+        },
+        {
+          "source_label": "SEC Form PF U.S. PE Fund Net Assets",
+          "source_url": "https://www.sec.gov/files/investment/private-funds-statistics-2025-q4-supporting-data.xlsx"
+        },
+        {
+          "source_label": "KPMG U.S. PE Exit Activity",
+          "source_url": "https://kpmg.com/us/en/articles/2026/q2-26-pulse-private-equity-us-global-investment-trends.html"
+        },
+        {
+          "source_label": "GF Data / ACG Middle-Market M&A",
+          "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
         }
       ],
       "version": "1.3.0"
@@ -1088,59 +1201,59 @@
       "facts": [
         {
           "context": "",
-          "display": "29.6",
+          "display": "31.9",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 29.565730486075168
+          "value": 31.932943799427264
         },
         {
           "context": "",
           "display": "47.9",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 47.92805801525662
+          "value": 47.87794355043888
         },
         {
           "context": "",
-          "display": "61.8%",
+          "display": "63.2%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6176470588235294
+          "value": 0.6323529411764706
         },
         {
           "context": "",
-          "display": "11.4%",
+          "display": "13.0%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.11403870901783786
+          "value": 0.12964684882307648
         },
         {
           "context": "",
-          "display": "20.0%",
+          "display": "23.3%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.19952717753837437
+          "value": 0.2327066963194593
         },
         {
           "context": "",
-          "display": "65.0%",
+          "display": "65.1%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6504283704716508
+          "value": 0.6510065500262352
         },
         {
           "context": "",
-          "display": "18.1",
+          "display": "18.2",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.094327815908734
+          "value": 18.172465811844432
         },
         {
           "context": "",
-          "display": "0",
+          "display": "1",
           "id": "market.strong_sector_count",
           "label": "Sectors above the strong-equity threshold",
-          "value": 0.0
+          "value": 1.0
         },
         {
           "context": "",
@@ -1150,7 +1263,7 @@
           "value": 3.0
         }
       ],
-      "importance": 20.434269513924832,
+      "importance": 20.100655002623526,
       "label": "Market",
       "references": [
         {
@@ -1570,19 +1683,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
-  "generated_at": "2026-10-17T18:45:46.170398+00:00",
+  "evidence_snapshot_id": "d74c392645ad1092893b84fe",
+  "generated_at": "2026-10-19T16:05:17.237849+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 252.85916713400013,
-      "input_tokens": 4031,
+      "elapsed_sec": 112.92145204194821,
+      "input_tokens": 4048,
       "model": "gpt-5.6-sol",
-      "output_tokens": 8938,
-      "poll_attempts": 117,
+      "output_tokens": 8011,
+      "poll_attempts": 47,
       "poll_errors": [],
-      "response_id": "resp_0ff1dc6ec9b5e660006ad3c15e160887d0a4c87efce9c65041",
+      "response_id": "resp_0d5b1ca701b60328006ad63f4e95e487d0b8b4b84d0eab47d3",
       "terminal_status": "completed",
-      "total_tokens": 12969
+      "total_tokens": 12059
     }
   },
   "max_output_tokens": null,
@@ -1593,167 +1706,36 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "7869a16ec3d1cabcef271d1d",
-    "expires_at": "2026-10-19T09:06:10.027896+00:00",
+    "current_evidence_snapshot_id": "d74c392645ad1092893b84fe",
+    "expires_at": "2026-10-20T16:05:17.239304+00:00",
     "lease_hours": 24,
-    "materiality": {
-      "baseline_available": true,
-      "change_count": 12,
-      "changes": [
-        {
-          "domain": "finance",
-          "field": "references",
-          "kind": "evidence_metadata_changed",
-          "material": false
-        },
-        {
-          "domain": "compute",
-          "fact_id": "compute.information_processing_investment_growth",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.16819019599244678,
-          "old_value": 0.1592742836027563,
-          "percentage_point_change": 0.9000000000000004,
-          "relative_change": 0.05660377358490568
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.private_capital_dpi",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 0.7161941791989341,
-          "old_value": 1.1842385657863554,
-          "percentage_point_change": null,
-          "relative_change": 0.3952281238845076
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.private_capital_mature_funds",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 18.0,
-          "old_value": 31.0,
-          "percentage_point_change": null,
-          "relative_change": 0.41935483870967744
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.private_capital_realized_share",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 0.37310320388656953,
-          "old_value": 0.54868289798829,
-          "percentage_point_change": 17.6,
-          "relative_change": 0.3205828779599272
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.private_capital_rvpi",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 1.2033663384766813,
-          "old_value": 0.974091081680859,
-          "percentage_point_change": null,
-          "relative_change": 0.23537353036863098
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.private_capital_tvpi",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 1.9195605176756154,
-          "old_value": 2.1583296474672142,
-          "percentage_point_change": null,
-          "relative_change": 0.11062681276319065
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.aei",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 29.56573244802137,
-          "old_value": 29.565730486075168,
-          "percentage_point_change": 0.0,
-          "relative_change": 0.0
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.effective_firms",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 18.092625264040933,
-          "old_value": 18.094327815908734,
-          "percentage_point_change": null,
-          "relative_change": 9.409312604053757e-05
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.equal_weight_return",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.19952717331821718,
-          "old_value": 0.19952717753837437,
-          "percentage_point_change": 0.0,
-          "relative_change": 0.0
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.pressure",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 47.92805829459759,
-          "old_value": 47.92805801525662,
-          "percentage_point_change": 0.0,
-          "relative_change": 0.0
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.top_10_share",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.650466935783711,
-          "old_value": 0.6504283704716508,
-          "percentage_point_change": 0.0,
-          "relative_change": 0.0
-        }
-      ],
-      "current_snapshot_id": "7869a16ec3d1cabcef271d1d",
-      "decision": "generate_material_change",
-      "exact_match": false,
-      "immaterial_change_count": 7,
-      "material": true,
-      "material_change_count": 5,
-      "percentage_point_threshold": 2.0,
-      "previous_snapshot_id": "1e0119a785d4e78984cd6c94",
-      "relative_change_threshold": 0.1,
-      "version": "1.2.0"
-    },
-    "published_at": "2026-10-18T09:06:10.027896+00:00",
-    "renewal_count": 1,
-    "source": "automation_generation_fallback"
+    "materiality": {},
+    "published_at": "2026-10-19T16:05:17.239304+00:00",
+    "renewal_count": 0,
+    "source": "generation"
   },
   "raw_responses": {
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 117,
+        "poll_attempts": 47,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0ff1dc6ec9b5e660006ad3c15e160887d0a4c87efce9c65041",
+        "response_id": "resp_0d5b1ca701b60328006ad63f4e95e487d0b8b4b84d0eab47d3",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings remain mixed alongside firmer chip-demand confidence\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Lender strain rises as data-center bonds come under pressure\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Semiconductor and electronic-component output growth accelerated materially to 19.9%, while capacity utilization rose to 76.5%. Computer and peripheral-equipment output growth slowed materially to 6.5%, and utilization edged down to 81.3%. Both segments are still expanding, but the latest acceleration is concentrated in semiconductors.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},\"headline\":{\"text\":\"Semiconductor production accelerates as computer-equipment growth cools\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"AI-linked employment growth is confined to one tracked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Semiconductor output accelerates while lender strain rises materially\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"finance.lender_strain\"]},\"paragraphs\":[{\"text\":\"Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},{\"text\":\"The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"compute.semiconductor_output_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 31.9, while the median one-year return increased to 13.0%. Positive-return breadth also reached 63.2% of covered companies, even as average sector trading pressure eased slightly to 47.9. Barron\u2019s reported that TSMC shares fell after blowout earnings. That company-specific reaction qualifies the firmer aggregate readings: strong results are not producing uniformly positive share-price responses.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings strengthen despite TSMC\u2019s post-earnings fall\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\",\"finance.pe_5y_annualized_net_pct\",\"finance.pe_1y_net_pct\"]},\"headline\":{\"text\":\"Private-equity scale contrasts with stress in AI-linked credit\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\"]}},{\"domain\":\"connectivity\",\"body\":{\"text\":\"PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market.\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]},\"headline\":{\"text\":\"The interconnection coverage measure falls within a broad U.S. network footprint\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment signals strengthen while credit and infrastructure execution remain uneven\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},{\"text\":\"Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\"]},{\"text\":\"Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity.\",\"event_ids\":[],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1792262743.0,
+      "completed_at": 1792425915.0,
       "conversation": null,
-      "created_at": 1792262494.0,
+      "created_at": 1792425806.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0ff1dc6ec9b5e660006ad3c15e160887d0a4c87efce9c65041",
+      "id": "resp_0d5b1ca701b60328006ad63f4e95e487d0b8b4b84d0eab47d3",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1766,7 +1748,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c161f75487d088cf66376cef10fa",
+          "id": "rs_0d5b1ca701b60328006ad63f5125f887d08e1ccd8bd291e3e0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1774,7 +1756,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c173a01887d09e6a729cbb8458aa",
+          "id": "rs_0d5b1ca701b60328006ad63f5940ec87d091455a6123b1741d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1782,7 +1764,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c18520a087d096922ef2ea5865c8",
+          "id": "rs_0d5b1ca701b60328006ad63f61ad5487d0a50bb87dd770dd95",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1790,7 +1772,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c1969a5887d0962491713bcb0326",
+          "id": "rs_0d5b1ca701b60328006ad63f68cdc887d0b9926da7a4018a7d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1798,7 +1780,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c1aa162c87d0838353050c9079e8",
+          "id": "rs_0d5b1ca701b60328006ad63f708a1c87d080d40ed76902a547",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1806,7 +1788,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c1bb8f1c87d0ae7a9b767077f5a9",
+          "id": "rs_0d5b1ca701b60328006ad63f779ba887d095b40ffae1bede23",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1814,7 +1796,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c1cc921487d08054259fe30f1e99",
+          "id": "rs_0d5b1ca701b60328006ad63f7eee8487d0a9633a200676cf13",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1822,7 +1804,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c1dda29487d0beee512d2055e67e",
+          "id": "rs_0d5b1ca701b60328006ad63f85545c87d088a50d4099790aa4",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1830,7 +1812,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c1eb8f3c87d0855d51080cef0ff1",
+          "id": "rs_0d5b1ca701b60328006ad63f8c3d5487d0ad43cde1342188a3",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1838,7 +1820,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c1f9c6c887d097e3eb4fb579dede",
+          "id": "rs_0d5b1ca701b60328006ad63f9412c487d09be417ef515dbc52",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1846,7 +1828,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c2075d0087d0a6a2c2e5d4d1569b",
+          "id": "rs_0d5b1ca701b60328006ad63f9bb6d087d0bead53345df02cb8",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1854,7 +1836,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c21a2f2c87d0ac201fcc2fc13c73",
+          "id": "rs_0d5b1ca701b60328006ad63fa2f34087d0a3985958d67a1c81",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1862,23 +1844,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c224947487d09c84ee1bd2f27e98",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c22e52cc87d090b2fdeee806429a",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0ff1dc6ec9b5e660006ad3c23884e887d0b835e8214a9ef863",
+          "id": "rs_0d5b1ca701b60328006ad63fa9b8d887d086972765aeb97f0e",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1888,11 +1854,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings remain mixed alongside firmer chip-demand confidence\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Lender strain rises as data-center bonds come under pressure\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Semiconductor and electronic-component output growth accelerated materially to 19.9%, while capacity utilization rose to 76.5%. Computer and peripheral-equipment output growth slowed materially to 6.5%, and utilization edged down to 81.3%. Both segments are still expanding, but the latest acceleration is concentrated in semiconductors.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},\"headline\":{\"text\":\"Semiconductor production accelerates as computer-equipment growth cools\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"AI-linked employment growth is confined to one tracked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Semiconductor output accelerates while lender strain rises materially\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"finance.lender_strain\"]},\"paragraphs\":[{\"text\":\"Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.semiconductor_utilization\",\"compute.computer_output_growth\",\"compute.computer_utilization\"]},{\"text\":\"The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.\",\"event_ids\":[\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven.\",\"event_ids\":[\"auto-2026-10-15-2014e74babb5\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.weakest_channel_growth\",\"compute.semiconductor_output_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 31.9, while the median one-year return increased to 13.0%. Positive-return breadth also reached 63.2% of covered companies, even as average sector trading pressure eased slightly to 47.9. Barron\u2019s reported that TSMC shares fell after blowout earnings. That company-specific reaction qualifies the firmer aggregate readings: strong results are not producing uniformly positive share-price responses.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity readings strengthen despite TSMC\u2019s post-earnings fall\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\",\"finance.pe_5y_annualized_net_pct\",\"finance.pe_1y_net_pct\"]},\"headline\":{\"text\":\"Private-equity scale contrasts with stress in AI-linked credit\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\"]}},{\"domain\":\"connectivity\",\"body\":{\"text\":\"PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market.\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]},\"headline\":{\"text\":\"The interconnection coverage measure falls within a broad U.S. network footprint\",\"event_ids\":[],\"fact_ids\":[\"connectivity.interconnection_facilities_or_floor\",\"connectivity.active_ixps\",\"connectivity.combined_ixp_members\",\"connectivity.international_submarine_cable_systems\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment signals strengthen while credit and infrastructure execution remain uneven\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.\",\"event_ids\":[\"auto-2026-10-15-f42f17e605b7\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},{\"text\":\"Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.\",\"event_ids\":[\"auto-2026-10-15-f129bad0f05e\",\"auto-2026-10-15-1548ca166303\"],\"fact_ids\":[\"finance.pe_fund_net_assets_b\",\"finance.pe_fund_net_assets_period\"]},{\"text\":\"Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity.\",\"event_ids\":[],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0ff1dc6ec9b5e660006ad3c2439b1c87d0be2680b902c82daf",
+          "id": "msg_0d5b1ca701b60328006ad63fb15da887d0bc2300b0bb781ef6",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2065,16 +2031,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4031,
+        "input_tokens": 4048,
         "input_tokens_details": {
-          "cache_write_tokens": 4028,
+          "cache_write_tokens": 4045,
           "cached_tokens": 0
         },
-        "output_tokens": 8938,
+        "output_tokens": 8011,
         "output_tokens_details": {
-          "reasoning_tokens": 7718
+          "reasoning_tokens": 6732
         },
-        "total_tokens": 12969
+        "total_tokens": 12059
       },
       "user": null
     }
@@ -2199,44 +2165,44 @@
       "version": "6.1.0"
     },
     "connectivity": {
-      "analysis": "Public records list 168 active U.S. internet exchange points with 2,805 combined reported members. They also list 90 U.S. international submarine cable systems and 115 U.S.-connected cable catalog entries. Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment. Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market.",
+      "analysis": "PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market.",
       "analysis_sentences": [
-        "Public records list 168 active U.S.",
-        "internet exchange points with 2,805 combined reported members.",
-        "They also list 90 U.S.",
-        "international submarine cable systems and 115 U.S.-connected cable catalog entries.",
-        "Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment.",
-        "Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market."
+        "PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250.",
+        "Other public records list 168 active U.S.",
+        "internet exchange points with 2,805 combined reported members, as well as 90 U.S.",
+        "international submarine cable systems.",
+        "Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell.",
+        "These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "connectivity.interconnection_facilities_or_floor",
             "connectivity.active_ixps",
+            "connectivity.combined_ixp_members",
             "connectivity.international_submarine_cable_systems"
           ],
           "field": "headline",
-          "text": "Exchange points and subsea cables give the U.S. a broad interconnection footprint"
+          "text": "The interconnection coverage measure falls within a broad U.S. network footprint"
         },
         {
-          "event_ids": [
-            "auto-2026-09-30-b8e0d2fc03f4"
-          ],
+          "event_ids": [],
           "fact_ids": [
+            "connectivity.interconnection_facilities_or_floor",
             "connectivity.active_ixps",
             "connectivity.combined_ixp_members",
-            "connectivity.international_submarine_cable_systems",
-            "connectivity.us_connected_cable_catalog_entries"
+            "connectivity.international_submarine_cable_systems"
           ],
           "field": "body",
-          "text": "Public records list 168 active U.S. internet exchange points with 2,805 combined reported members. They also list 90 U.S. international submarine cable systems and 115 U.S.-connected cable catalog entries. Morningstar reported that Ekinops is supporting Bluebird Fiber's Midwest network investments, a regional example of continued network investment. Neither the national counts nor that project report establishes available bandwidth or redundancy in a specific data-center market."
+          "text": "PeeringDB\u2019s measure of interconnection facilities or coverage fell materially to a floor of 250. Other public records list 168 active U.S. internet exchange points with 2,805 combined reported members, as well as 90 U.S. international submarine cable systems. Because the declining figure is a coverage floor, it should not be treated by itself as proof that physical network capacity fell. These counts establish the footprint\u2019s scale, but not the bandwidth or redundancy available in any particular data-center market."
         }
       ],
       "domain": "connectivity",
-      "evidence_snapshot_id": "cd4018c4cbce3975bdb7df3a",
-      "generated_at": "2026-10-07T19:04:54.984793+00:00",
+      "evidence_snapshot_id": "d74c392645ad1092893b84fe",
+      "generated_at": "2026-10-19T16:05:17.237639+00:00",
       "generator": "openai",
-      "headline": "Exchange points and subsea cables give the U.S. a broad interconnection footprint",
+      "headline": "The interconnection coverage measure falls within a broad U.S. network footprint",
       "label": "Connectivity",
       "references": [
         {
@@ -2258,10 +2224,6 @@
         {
           "source_label": "NTIA Middle Mile Program",
           "source_url": "https://broadbandusa.ntia.gov/news/latest-news/constructing-digital-landscape-highlights-ntias-middle-mile-program"
-        },
-        {
-          "source_label": "Morningstar",
-          "source_url": "https://www.morningstar.com/news/pr-newswire/20260930ln60486/ekinops-powers-bluebird-fibers-midwest-network-investments-for-growing-infrastructure-demand"
         }
       ],
       "version": "6.1.0"
@@ -2415,43 +2377,48 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally.",
+      "analysis": "SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers.",
       "analysis_sentences": [
-        "Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0.",
-        "Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang.",
-        "Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending.",
-        "Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally."
+        "SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025.",
+        "The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure.",
+        "Cambridge data put the five-year pooled net annualized U.S.",
+        "private-equity return after fees at 11.7%, compared with 8.7% in the latest full year.",
+        "Meanwhile, Reuters reported record-high default-insurance levels for U.S.",
+        "technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds.",
+        "The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-16-d73bfbb1ecdf"
+            "auto-2026-10-15-f129bad0f05e",
+            "auto-2026-10-15-1548ca166303"
           ],
           "fact_ids": [
-            "finance.lender_strain"
+            "finance.pe_fund_net_assets_b"
           ],
           "field": "headline",
-          "text": "Lender strain rises as data-center bonds come under pressure"
+          "text": "Private-equity scale contrasts with stress in AI-linked credit"
         },
         {
           "event_ids": [
-            "auto-2026-10-16-d73bfbb1ecdf"
+            "auto-2026-10-15-f129bad0f05e",
+            "auto-2026-10-15-1548ca166303"
           ],
           "fact_ids": [
-            "finance.lender_strain",
-            "finance.borrower_strain",
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years"
+            "finance.pe_fund_net_assets_b",
+            "finance.pe_fund_net_assets_period",
+            "finance.pe_5y_annualized_net_pct",
+            "finance.pe_1y_net_pct"
           ],
           "field": "body",
-          "text": "Lender strain rose materially to 15.7, although borrower strain remains higher at 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Credit pressure is visible in both lender and borrower readings, even though the cash measures still indicate capacity to finance investment internally."
+          "text": "SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
-      "generated_at": "2026-10-17T18:45:46.170029+00:00",
+      "evidence_snapshot_id": "d74c392645ad1092893b84fe",
+      "generated_at": "2026-10-19T16:05:17.237639+00:00",
       "generator": "openai",
-      "headline": "Lender strain rises as data-center bonds come under pressure",
+      "headline": "Private-equity scale contrasts with stress in AI-linked credit",
       "label": "Finance",
       "references": [
         {
@@ -2471,10 +2438,6 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "CalSTRS PE Performance",
-          "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"
-        },
-        {
           "source_label": "Microsoft FY2026 Q3 AI disclosure",
           "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
         },
@@ -2487,8 +2450,32 @@
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
         },
         {
-          "source_label": "Morningstar",
-          "source_url": "https://www.morningstar.com/bonds/coreweave-data-center-bonds-slide-capex-debt-overhang-concerns"
+          "source_label": "Cambridge Associates U.S. PE Benchmark",
+          "source_url": "https://www.cambridgeassociates.com/insight/us-pe-vc-benchmark-commentary-calendar-year-2025/"
+        },
+        {
+          "source_label": "Cambridge Associates U.S. PE Net Returns",
+          "source_url": "https://www.cambridgeassociates.com/wp-content/uploads/2026/07/2026-07-US-PE-VC-Benchmark-Commentary-CY2025-Data-PUBLIC.pdf"
+        },
+        {
+          "source_label": "SEC Form PF U.S. PE Fund Net Assets",
+          "source_url": "https://www.sec.gov/files/investment/private-funds-statistics-2025-q4-supporting-data.xlsx"
+        },
+        {
+          "source_label": "KPMG U.S. PE Exit Activity",
+          "source_url": "https://kpmg.com/us/en/articles/2026/q2-26-pulse-private-equity-us-global-investment-trends.html"
+        },
+        {
+          "source_label": "GF Data / ACG Middle-Market M&A",
+          "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
+        },
+        {
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOa21Bbk9kN3JUMWZXLWNLVWFlRkQ1dDFSYnRQQzBRNDVudTYtaDhjcjcyenBQM0prdHlYY2ZxY25fZzdYQk9FYkh1N043NW83amxZbHVvZUxYUXk5YnVtR3NtaXdPMFFNa3Z4UUpYdWlXQzhmbjV2bF96TktQQ3VNOFFhLWMtcUE2NllOMzNsN3I?oc=5"
+        },
+        {
+          "source_label": "Financial Times",
+          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNeHNjZE1aMG8wWVBHLW9UeG15T3RSZzdSOFR4WGN5SEtyWTI2Y1g1MWtSUFZkYUFKc2QtS01JN2lHSW82bjdqVWNjV0w1WVNMU1B2U1BLZlB6QkpLc1ZSTUE4Ry1EMzVRa3RUT1J3azFYRjZnNVpTY0c5WERPV2thSlp4MkE?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2565,80 +2552,90 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating. The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity. Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven.",
+      "analysis": "Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture. Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers. Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity.",
       "analysis_paragraphs": [
-        "Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating.",
-        "The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.",
-        "Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
+        "Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.",
+        "Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.",
+        "Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
       ],
       "analysis_sentences": [
-        "Compute-manufacturing momentum has shifted toward semiconductors.",
-        "Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%.",
-        "Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%.",
-        "Both manufacturing groups are expanding, but only the semiconductor side is accelerating.",
-        "The financing picture moved in a less favorable direction.",
-        "Lender strain increased materially to 15.7, alongside borrower strain of 26.0.",
-        "Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang.",
-        "Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending.",
-        "Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity.",
-        "Public markets and labor remain less uniform.",
-        "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%.",
-        "Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%.",
-        "Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
+        "Technology investment and production remain strong.",
+        "Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%.",
+        "Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns.",
+        "Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture.",
+        "Credit markets present a less favorable picture.",
+        "Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity.",
+        "Reuters reported that AI credit concerns drove default insurance for U.S.",
+        "technology debt to record highs, and the Financial Times reported selling in data-center bonds.",
+        "A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers.",
+        "Physical delivery has a similar distinction between scale and readiness.",
+        "Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites.",
+        "The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation.",
+        "The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-15-f129bad0f05e"
+          ],
           "fact_ids": [
+            "compute.information_processing_investment_growth",
             "compute.semiconductor_output_growth",
-            "finance.lender_strain"
+            "market.aei",
+            "grid_storage.advanced_share"
           ],
           "field": "headline",
-          "text": "Semiconductor output accelerates while lender strain rises materially"
+          "text": "Investment signals strengthen while credit and infrastructure execution remain uneven"
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-15-f42f17e605b7"
+          ],
+          "fact_ids": [
+            "compute.information_processing_investment_growth",
+            "compute.semiconductor_output_growth",
+            "market.aei",
+            "market.median_return",
+            "market.positive_breadth"
+          ],
+          "field": "paragraphs[0]",
+          "text": "Technology investment and production remain strong. Information-processing investment is growing 16.8%, while semiconductor and electronic-component output is growing 19.9%. Public-market readings have also improved: the AI Equity Index rose materially to 31.9, the median one-year return reached 13.0%, and 63.2% of covered companies have positive one-year returns. Barron\u2019s report that TSMC shares fell after blowout earnings is a company-specific exception to that firmer aggregate picture."
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-15-f129bad0f05e",
+            "auto-2026-10-15-1548ca166303"
+          ],
+          "fact_ids": [
+            "finance.pe_fund_net_assets_b",
+            "finance.pe_fund_net_assets_period"
+          ],
+          "field": "paragraphs[1]",
+          "text": "Credit markets present a less favorable picture. Reported private-equity funds held $8.523 trillion in Form PF net assets at the end of 2025, but this is not liquid cash or a measure of AI financing capacity. Reuters reported that AI credit concerns drove default insurance for U.S. technology debt to record highs, and the Financial Times reported selling in data-center bonds. A large private-capital base can therefore coexist with debt markets that penalize individual AI-infrastructure borrowers."
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "compute.semiconductor_output_growth",
-            "compute.semiconductor_utilization",
-            "compute.computer_output_growth",
-            "compute.computer_utilization"
-          ],
-          "field": "paragraphs[0]",
-          "text": "Compute-manufacturing momentum has shifted toward semiconductors. Semiconductor and electronic-component output growth accelerated materially to 19.9%, and capacity utilization rose materially to 76.5%. Computer and peripheral-equipment output still grew 6.5%, but its growth rate slowed materially and utilization edged down to 81.3%. Both manufacturing groups are expanding, but only the semiconductor side is accelerating."
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-16-d73bfbb1ecdf"
-          ],
-          "fact_ids": [
-            "finance.lender_strain",
-            "finance.borrower_strain",
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years"
-          ],
-          "field": "paragraphs[1]",
-          "text": "The financing picture moved in a less favorable direction. Lender strain increased materially to 15.7, alongside borrower strain of 26.0. Morningstar reported that CoreWeave and data-center bonds fell amid concerns about capital spending and debt overhang. Operating cash flow nevertheless covers current capital expenditure 1.42 times, and cash reserves equal 0.96 years of current spending. Strain now appears in both lender and borrower measures, but the cash readings still show internal funding capacity."
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-15-2014e74babb5"
-          ],
-          "fact_ids": [
-            "market.aei",
-            "market.positive_breadth",
-            "market.median_return",
-            "workforce.employment_breadth",
-            "workforce.strongest_channel",
-            "workforce.weakest_channel_growth",
-            "compute.semiconductor_output_growth"
+            "data_center.operating_sites",
+            "data_center.development_sites",
+            "data_center.development_to_operating",
+            "data_center.tracked_pipeline_sites",
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "paragraphs[2]",
-          "text": "Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
+          "text": "Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
         }
       ],
       "domain": "macro",
       "evidence": [
+        {
+          "context": "",
+          "fact_id": "compute.information_processing_investment_growth",
+          "label": "Information-processing investment growth",
+          "value": "16.8%"
+        },
         {
           "context": "",
           "fact_id": "compute.semiconductor_output_growth",
@@ -2647,21 +2644,15 @@
         },
         {
           "context": "",
-          "fact_id": "finance.lender_strain",
-          "label": "Lender strain",
-          "value": "15.7"
-        },
-        {
-          "context": "",
-          "fact_id": "compute.semiconductor_utilization",
-          "label": "Semiconductor capacity utilization",
-          "value": "76.5%"
+          "fact_id": "market.aei",
+          "label": "AI Equity Index",
+          "value": "31.9"
         }
       ],
-      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
-      "generated_at": "2026-10-17T18:45:46.170029+00:00",
+      "evidence_snapshot_id": "d74c392645ad1092893b84fe",
+      "generated_at": "2026-10-19T16:05:17.237639+00:00",
       "generator": "openai",
-      "headline": "Semiconductor output accelerates while lender strain rises materially",
+      "headline": "Investment signals strengthen while credit and infrastructure execution remain uneven",
       "label": "AI Macro",
       "references": [
         {
@@ -2685,59 +2676,58 @@
           "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
         },
         {
-          "source_label": "CalSTRS PE Performance",
-          "source_url": "https://www.calstrs.com/private-equity-portfolio-performance-table"
+          "source_label": "Microsoft FY2026 Q3 AI disclosure",
+          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
         }
       ],
       "selected_domains": [
         "market",
         "finance",
         "compute",
-        "workforce"
+        "data_center",
+        "grid_storage"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened.",
+      "analysis": "The AI Equity Index rose materially to 31.9, while the median one-year return increased to 13.0%. Positive-return breadth also reached 63.2% of covered companies, even as average sector trading pressure eased slightly to 47.9. Barron\u2019s reported that TSMC shares fell after blowout earnings. That company-specific reaction qualifies the firmer aggregate readings: strong results are not producing uniformly positive share-price responses.",
       "analysis_sentences": [
-        "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%.",
-        "The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9.",
-        "Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come.",
-        "That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened."
+        "The AI Equity Index rose materially to 31.9, while the median one-year return increased to 13.0%.",
+        "Positive-return breadth also reached 63.2% of covered companies, even as average sector trading pressure eased slightly to 47.9.",
+        "Barron\u2019s reported that TSMC shares fell after blowout earnings.",
+        "That company-specific reaction qualifies the firmer aggregate readings: strong results are not producing uniformly positive share-price responses."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-15-2014e74babb5"
+            "auto-2026-10-15-f42f17e605b7"
           ],
           "fact_ids": [
             "market.aei",
-            "market.pressure",
-            "market.positive_breadth",
             "market.median_return"
           ],
           "field": "headline",
-          "text": "AI equity readings remain mixed alongside firmer chip-demand confidence"
+          "text": "AI equity readings strengthen despite TSMC\u2019s post-earnings fall"
         },
         {
           "event_ids": [
-            "auto-2026-10-15-2014e74babb5"
+            "auto-2026-10-15-f42f17e605b7"
           ],
           "fact_ids": [
             "market.aei",
-            "market.positive_breadth",
             "market.median_return",
+            "market.positive_breadth",
             "market.pressure"
           ],
           "field": "body",
-          "text": "The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%. The median one-year return, however, rose slightly to 11.4%, while average sector trading pressure increased to 47.9. Morningstar reported that TSMC had higher confidence in AI demand, with guidance still to come. That demand signal coexists with a market in which a majority of covered companies still have positive one-year returns, but breadth has softened."
+          "text": "The AI Equity Index rose materially to 31.9, while the median one-year return increased to 13.0%. Positive-return breadth also reached 63.2% of covered companies, even as average sector trading pressure eased slightly to 47.9. Barron\u2019s reported that TSMC shares fell after blowout earnings. That company-specific reaction qualifies the firmer aggregate readings: strong results are not producing uniformly positive share-price responses."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
-      "generated_at": "2026-10-17T18:45:46.170029+00:00",
+      "evidence_snapshot_id": "d74c392645ad1092893b84fe",
+      "generated_at": "2026-10-19T16:05:17.237639+00:00",
       "generator": "openai",
-      "headline": "AI equity readings remain mixed alongside firmer chip-demand confidence",
+      "headline": "AI equity readings strengthen despite TSMC\u2019s post-earnings fall",
       "label": "Market",
       "references": [
         {
@@ -2749,8 +2739,8 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "Morningstar",
-          "source_url": "https://www.morningstar.com/company-reports/1502862-tsmc-earnings-higher-confidence-in-artificial-intelligence-demand-but-guidance-to-follow?listing=0P000005AR"
+          "source_label": "Barron's",
+          "source_url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1EUGJ2TDlZNkloalZjLUVIOXRicFRqWWk3bmVWQlh1MkE5WF80Q3VScEFxQzNUS0NmRC10ZHpWNlBsaVdtWFZkTHhiZTBqZlJNRVgwbFlIRDJsODN2anpUZzRkN3hvenM3Y00taXQxTENBR1lFZEE?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2935,13 +2925,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 12,
+    "checked_passages": 10,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
         "scope": "macro.paragraphs[2]",
-        "text": "Public markets and labor remain less uniform. The AI Equity Index edged down to 29.6, and the share of covered companies with positive one-year returns slipped to 61.8%, although the median return rose slightly to 11.4%. Only one tracked AI-linked labor channel has positive employment growth; power and communication construction is strongest, while the weakest channel is contracting 4.7%. Morningstar\u2019s report of higher TSMC confidence in AI demand is consistent with the stronger semiconductor data, while the wider equity and employment readings remain uneven."
+        "text": "Physical delivery has a similar distinction between scale and readiness. Available project records list 1,556 data-center sites in development against 3,068 operating sites, equivalent to 0.51 development site per operating site; a separate tracker follows 894 active-pipeline sites. The active power interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. The site and queue datasets cover different project universes, but both caution against treating pipeline size as delivered capacity."
       }
     ],
     "hard_errors": [],

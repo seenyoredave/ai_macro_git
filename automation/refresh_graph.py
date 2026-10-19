@@ -67,6 +67,7 @@ NODE_SPECS: tuple[RefreshNodeSpec, ...] = (
     RefreshNodeSpec("commercialization", 120.0, description="Primary company commercialization disclosures"),
     RefreshNodeSpec("private_capital", 168.0, description="Quarterly private-fund returns: WSIB and CalPERS"),
     RefreshNodeSpec("pe_industry", 168.0, description="Private equity regulatory scale, deal activity and transaction pricing"),
+    RefreshNodeSpec("pe_us_liquidity", 168.0, description="U.S. PE fund cash recycling and exit activity"),
     RefreshNodeSpec(
         "connectivity",
         120.0,

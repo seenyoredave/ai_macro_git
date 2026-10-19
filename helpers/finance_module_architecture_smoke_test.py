@@ -25,7 +25,7 @@ def _ordered(body: str, tokens: list[str]) -> None:
 
 def main() -> None:
     app = (ROOT / "ai_macro.py").read_text(encoding="utf-8")
-    _check('APP_VERSION = "v3.0.7.42"' in app, "Finance corrective patch must have v3.0.7.42 version")
+    _check('APP_VERSION = "v3.0.8.5"' in app, "PE retrieval-date correction must use v3.0.8.4")
 
     source = (ROOT / "rendering" / "finance.py").read_text(encoding="utf-8")
     tab = _body(source, "render_finance_tab")
@@ -36,10 +36,8 @@ def main() -> None:
             "_render_capital_capacity(regime_metrics)",
             '"Company AI disclosures"',
             "_render_commercial_realization(commercialization_data)",
-            '"Private Equity Market"',
-            "_render_pe_market_context(pe_market_context)",
-            '"Private Equity"',
-            "_render_private_capital_realization(private_realization)",
+            '"Private equity"',
+            "_render_pe_conditions(pe_conditions)",
             '"Credit conditions"',
             'credit_view = st.radio(',
             '"Borrower and lender stress"',
@@ -50,8 +48,7 @@ def main() -> None:
     for title in (
         '"Funding capacity"',
         '"Company AI disclosures"',
-        '"Private Equity Market"',
-        '"Private Equity"',
+        '"Private equity"',
         '"Credit conditions"',
         '"Borrower and lender stress"',
     ):
@@ -76,7 +73,7 @@ def main() -> None:
     _check('rm-finance-cmdi-card' in cmdi and 'rm-card-label' in cmdi and 'rm-card-context' in cmdi, "CMDI cards lost their readings")
     _check('source_through("New York Fed CMDI", latest_observation' in cmdi and 'rm-card-meta' not in cmdi, "CMDI source date must appear only in the heading")
     _check('rm-rail' not in cmdi and 'sparkline' not in cmdi and 'metric_card(' not in cmdi, "CMDI cards still render individual mini charts")
-    for section in ("_render_capital_capacity", "_render_nfci", "_render_private_capital_realization"):
+    for section in ("_render_capital_capacity", "_render_nfci"):
         body = _body(source, section)
         _check("render_finance_facts" in body, f"{section} lacks its readings")
     _ordered(cmdi, ["render_panel_heading(", "rm-finance-cmdi", "render_plotly_chart("])
@@ -88,32 +85,65 @@ def main() -> None:
     _check('columns=3, treatment="lead"' in nfci and '"Chicago Fed / FRED"' in nfci, "NFCI and ANFCI require distinct readings with a shared source date")
     _check('treatment="lead"' in capacity, "Funding exhibit lacks headline totals")
     _check('render_finance_section("Funding capacity"' in tab and 'render_finance_section("Borrower and lender stress"' in tab, "Finance hierarchy is missing")
-    _check('render_finance_section("Private Equity", "Cash distributions and remaining value across public-pension PE holdings")' in tab, "Private-fund subtitle changed")
-    _check('"Pension holdings"' in source and 'vintage_min' in source and 'vintage_max' in source, "Fund Data must show the retained vintage range")
-    _check('"Five-year-plus vintages"' not in source, "All-vintage cohort must not carry a mature-only qualifier")
+    _check('"Private equity", "Cash in • cash out • ROI"' in tab
+           and 'sources=pe_sources' in tab and 'retrieved = last_pe_retrieval_date()' in tab,
+           "Compact PE section must use the recorded retrieval date")
+    _check('10.19.2026' not in tab and 'pe_sources += f" • through {retrieved}"' in tab,
+           "PE source attribution must not contain a static date")
+
+    # Exercise the actual shared helper call, not just the Finance caller's text.
+    # This catches packaging omissions where Finance passes sources= but an
+    # older finance_layout.py is still installed.
+    import sys
+    from unittest.mock import patch
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from helpers.streamlit_runtime_stub import install_streamlit_stub
+
+    install_streamlit_stub()
+    from rendering import finance_layout
+
+    with patch.object(finance_layout.st, "markdown", create=True) as output:
+        finance_layout.render_finance_section(
+            "Private equity", "Cash in • cash out • ROI",
+            sources="GF Data/ACG • KPMG • Cambridge Associates",
+        )
+    _check(output.call_count == 1, "Sourced Finance header must render exactly once")
+    sourced_html = output.call_args.args[0]
+    _check('rm-finance-section--sourced' in sourced_html
+           and 'rm-finance-section-sources' in sourced_html
+           and 'GF Data/ACG • KPMG • Cambridge Associates' in sourced_html,
+           "Sourced Finance header must place provider attribution at upper-right")
+    with patch.object(finance_layout.st, "markdown", create=True) as output:
+        finance_layout.render_finance_section("Funding capacity", "Operating funding")
+    _check('rm-finance-section--sourced' not in output.call_args.args[0],
+           "Other Finance sections must retain their existing header")
+    _check('finance-section-pe-conditions' in tab and 'finance-panel-pe-conditions' in source,
+           "The PE replacement must use standard bordered sections and finance panels")
+    pe = _body(source, "_render_pe_conditions")
+    _check('build_pe_conditions_markup(context)' in pe and 'st.markdown(markup, unsafe_allow_html=True)' in pe,
+           "PE section lost its compact conditions presentation")
+    _check('finance-panel-pe-conditions' in pe and 'st.container(' in pe,
+           "PE presentation must stay inside its existing Finance panel")
+    pe_layout = (ROOT / "rendering" / "pe_conditions_layout.py").read_text(encoding="utf-8")
+    for token in ('rm-pe-journey', 'Valuations', 'Selling companies', 'Cash to investors', 'Investor returns'):
+        _check(token in pe_layout, f"PE reading lost {token}")
+    _check('OpenAI(' not in pe_layout and 'urlopen' not in pe_layout,
+           "PE presentation must not refresh sources or call editorial AI")
+    for forbidden in ('finance-section-pe-market', 'finance-section-private',
+                      '_render_private_capital_realization(', '_render_pe_market_context('):
+        _check(forbidden not in tab and forbidden not in source,
+               f"Old PE section was retained: {forbidden}")
     _check('treatment="strain"' in _body(source, "_render_financial_condition_summary"), "Strain readings lost their three reading treatment")
     detail = _body(source, "_render_financial_condition_detail")
     _ordered(detail, ['render_panel_heading(', 'key="finance-view-stress-detail"', 'render_plotly_chart('])
     _check('st.session_state.get("finance-view-stress-detail", "Borrower")' in tab, "Stress selection must follow the chart toggle")
-    _check('treatment="private"' in _body(source, "_render_private_capital_realization"), "Private-fund readings lack chart alignment")
-    private_body = _body(source, "_render_private_capital_realization")
-    chart_source = (ROOT / "rendering" / "charts_finance.py").read_text(encoding="utf-8")
-    _check('year_label="initial investment year" if initial_year else "vintage"' in private_body and
-           'def private_capital_realization_map(funds: pd.DataFrame, *, height=430, year_label="vintage"):' in chart_source,
-           "Private-fund chart and Finance call disagree on the year label argument")
-    _check('realization.get("funds"' in private_body and 'realization.get("all_metrics"' in private_body, "Private-fund chart and readings must use all retained funds")
-    _check('("Pension holdings", fund_data, None)' in private_body and 'None, note' in private_body, "Private readings repeat the source footer")
-    _check('source_through(f"{source} PE holdings", realization.get("as_of"))' in private_body and 'metadata.get("source_short")' in private_body, "Private source date is missing from the heading")
     _check('None, context' in _body(source, "_render_financial_condition_summary"), "Strain readings repeat the source footer")
     _check('source_through("ICE BofA / FRED"' in (ROOT / "rendering" / "credit_spreads.py").read_text(encoding="utf-8"), "Spread source date is missing from heading")
     _check('render_evidence_gateway("finance")' in tab, "Finance must use the shared Evidence gateway")
     _check('"Inspect spread records"' not in source and '"Inspect lender records"' not in source, "Reference record actions remain on Finance")
     _check("finance-lender-evidence" not in source, "Lender record button remains in the chart")
-    _check('key="finance-pe-market-flows"' in _body(source, "_render_pe_market_context"), "Industry market flows chart missing")
-    _check('key="finance-pe-buyout-valuations"' in _body(source, "_render_pe_market_context"), "Industry buyout valuations chart missing")
-    _check('pe_global_capital_flow_chart(flows, previous_flows)' in _body(source, "_render_pe_market_context"), "PE market comparison must use matching prior-period records")
-    _check('with st.expander("Compare fund maturity cohorts"' in private_body, "Private-equity age cohort comparison is missing")
-    for key in ("funding", "disclosures", "pe-market", "private", "credit", "stress"):
+    for key in ("funding", "disclosures", "pe-conditions", "credit", "stress"):
         _check(f'with st.container(border=True, key="finance-section-{key}"):' in tab, f"Finance {key} section lacks its border")
     spreads = (ROOT / "rendering" / "credit_spreads.py").read_text(encoding="utf-8")
     _check('columns=3, treatment="lead"' in spreads and "border=True" not in spreads, "Credit spreads lost its lead readings")
@@ -134,6 +164,10 @@ def main() -> None:
     finance_theme = theme[theme.index('/* Finance keeps one detail chart'):theme.index('.rm-evidence-gateway {', theme.index('/* Finance keeps one detail chart'))]
     _check('border-top: 3px solid #a78bfa' in finance_theme and 'border-top: 2px solid rgba(96, 165, 250' not in finance_theme, "Finance boxes must use a purple top rule")
     _check(".rm-finance-section-number" not in theme, "Finance section numbers remain")
+    _check('.rm-pe-journey {' in theme and 'grid-template-columns: repeat(2, minmax(0, 1fr));' in theme,
+           "PE layout lost its two-by-two equal-width cards")
+    _check('@media (max-width: 850px)' in theme and '.rm-pe-journey {grid-template-columns: 1fr;}' in theme,
+           "PE cards must stack without overflow on narrow screens")
     _check('html.escape(paragraph)' in markup, "Read output lost text escaping")
 
     _check("def _render_finance_ledger(" not in source, "Finance retained a local reference ledger")

@@ -10,12 +10,19 @@ import streamlit as st
 from rendering.layout_contracts import normalize_summary_item
 
 
-def render_finance_section(title: str, subtitle: str) -> None:
+def render_finance_section(title: str, subtitle: str, *, sources: str | None = None) -> None:
+    # Other Finance sections retain their existing one-column header treatment.
+    layout = " rm-finance-section--sourced" if sources else ""
+    sources_html = (
+        f'<div class="rm-finance-section-sources">{html.escape(sources)}</div>'
+        if sources else ""
+    )
     st.markdown(
-        '<div class="rm-finance-section">'
+        f'<div class="rm-finance-section{layout}">'
         '<div class="rm-finance-section-copy">'
         f'<h2>{html.escape(title)}</h2><p>{html.escape(subtitle)}</p>'
-        '</div></div>',
+        '</div>'
+        f'{sources_html}</div>',
         unsafe_allow_html=True,
     )
 

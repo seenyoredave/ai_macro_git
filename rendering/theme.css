@@ -2741,3 +2741,155 @@ div[class*="st-key-evidence-inspector"] .stExpander {
     }
 }
 
+
+/* Private equity: Finance-purple top rules and one consistent card treatment. */
+.rm-pe-capital-flow {
+    color: #f1f5f9;
+    font-variant-numeric: tabular-nums;
+    min-width: 0;
+}
+.rm-finance-section--sourced {
+    align-items: flex-end;
+    display: flex;
+    gap: 0.5rem 1.25rem;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+.rm-finance-section--sourced .rm-finance-section-copy {min-width: 0;}
+.rm-finance-section-sources {
+    color: #a2aec0;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    padding-top: 0.24rem;
+    text-align: right;
+    max-width: 58%;
+    overflow-wrap: break-word;
+}
+.rm-pe-scale,
+.rm-pe-stage {
+    box-sizing: border-box;
+    min-width: 0;
+    background: rgba(15, 23, 42, 0.48);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-top: 3px solid #a78bfa;
+    padding: 0.95rem 1rem 0.75rem;
+}
+.rm-pe-scale {margin-bottom: 0.75rem;}
+.rm-pe-scale-top {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.3rem 0.8rem;
+    margin-bottom: 0.33rem;
+}
+.rm-pe-scale-label {
+    color: #bcc9d9;
+    font-size: 0.78rem;
+    font-weight: 690;
+    line-height: 1.4;
+}
+.rm-pe-scale-amount {
+    color: #f4f7fb;
+    display: block;
+    font-size: 2rem;
+    letter-spacing: -0.035em;
+    font-weight: 760;
+    line-height: 1.2;
+}
+.rm-pe-journey {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    min-width: 0;
+}
+.rm-pe-stage {
+    display: flex;
+    flex-direction: column;
+}
+.rm-pe-stage-top {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.35rem 0.7rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.19);
+}
+.rm-pe-stage-heading {
+    margin: 0;
+    color: #f1f5f9;
+    font-size: 0.99rem;
+    font-weight: 740;
+    line-height: 1.3;
+}
+.rm-pe-stage-period {
+    color: #a8b7c9;
+    font-size: 0.74rem;
+    white-space: nowrap;
+}
+.rm-pe-stage-measures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 0.85rem;
+    padding-top: 0.8rem;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.rm-pe-measure {min-width: 0;}
+.rm-pe-measure + .rm-pe-measure {
+    border-left: 1px solid rgba(148, 163, 184, 0.17);
+    padding-left: 0.85rem;
+}
+.rm-pe-measure-label {
+    color: #b5c3d6;
+    font-size: 0.78rem;
+    font-weight: 570;
+    line-height: 1.33;
+    min-height: 2.05em;
+}
+.rm-pe-measure-value {
+    color: #f4f7fb;
+    font-size: clamp(1.45rem, 2.35vw, 2.02rem);
+    font-weight: 760;
+    line-height: 1.25;
+    letter-spacing: -0.035em;
+    margin: 0.12rem 0 0;
+    overflow-wrap: anywhere;
+}
+.rm-pe-measure-detail {
+    color: #a9b8cc;
+    font-size: 0.73rem;
+    line-height: 1.42;
+    margin-top: 0.18rem;
+}
+.rm-pe-shift {font-weight: 650; color: #d5e2f5;}
+.rm-pe-unavailable {color: #a2aec0; font-size: 0.80rem; line-height: 1.4;}
+@media (max-width: 850px) {
+    .rm-pe-journey {grid-template-columns: 1fr;}
+    .rm-pe-measure-value {font-size: 1.8rem;}
+}
+@media (max-width: 720px) {
+    .rm-finance-section--sourced {flex-direction: column;}
+    .rm-finance-section-sources {max-width: 100%; align-self: flex-end; text-align: right; padding-top: 0;}
+}
+@media (max-width: 430px) {
+    .rm-pe-stage {padding: 0.85rem 0.8rem 0.7rem;}
+    .rm-pe-measure-value {font-size: 1.65rem;}
+    .rm-pe-stage-measures {column-gap: 0.62rem;}
+    .rm-pe-measure + .rm-pe-measure {padding-left: 0.62rem;}
+}
+
+/* Finance strain attribution on the right, level with its section title. */
+.rm-finance-strain-heading {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.7rem;
+    justify-content: space-between;
+}
+.rm-finance-strain-source {
+    margin-left: auto;
+    margin-top: 0;
+    text-align: right;
+}
