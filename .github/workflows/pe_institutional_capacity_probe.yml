@@ -44,12 +44,20 @@ jobs:
           if path.exists():
               with path.open(newline='', encoding='utf-8') as handle:
                   data = list(csv.DictReader(handle))
-              lines.extend(['| Fiscal year | Matched plans | Above target | YoY same-plan change (pp) |', '|---|---:|---:|---:|'])
+              lines.extend(['| Fiscal year | PE-targeted plans | Above target | Portfolio-proxy units | Proxy above target | Same-plan shift (pp) | Coverage |', '|---|---:|---:|---:|---:|---:|---|'])
               for row in data[-6:]:
-                  lines.append(f"| {row['fiscal_year']} | {row['plans_with_both']} | {row['over_target_pct']}% | {row['paired_change_pp'] or '—'} |")
+                  eligible = row['signal_eligible'] == '1'
+                  shift = row['paired_change_pp'] if eligible else '—'
+                  status = row['coverage_status']
+                  if status == 'incomplete':
+                      status += f" ({row['reporting_coverage_ratio']}x prior sample)"
+                  lines.append(f"| {row['fiscal_year']} | {row['pe_targeted_plans']} | {row['over_target_pct']}% | {row['portfolio_proxy_units']} | {row['portfolio_proxy_over_target_pct']}% | {shift} | {status} |")
+              usable = [r for r in data if r['signal_eligible'] == '1']
+              if usable:
+                  lines.append(f"\nLatest signal-eligible year: **{usable[-1]['fiscal_year']}**. Newer incomplete years are excluded from directional readings.\n")
           else:
               lines.append('No validated candidate observations; inspect the retrieval log.')
-          lines.extend(['', 'Public Plans Database; U.S. state/local public pension plans with both PE allocation fields. Candidate only.'])
+          lines.extend(['', 'Public Plans Database; U.S. public pensions. Above-target rates include only plans with valid positive PE targets. Portfolio-proxy figures group matching three-year allocation histories within sponsor prefixes; common pool ownership is not verified. Candidate only.'])
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
               out.write('\n'.join(lines) + '\n')
           PY
