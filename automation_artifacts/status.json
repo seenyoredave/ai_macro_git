@@ -2,50 +2,60 @@
   "auto_publish": true,
   "automation_enabled": true,
   "canonical_schema_version": "1.0.0",
-  "canonical_snapshot_id": "39d503a8bc1384008c2e796d",
+  "canonical_snapshot_id": "c5c0d356dd01448fc35d82bb",
   "changed_paths": [
+    "archive/benchmark_history.csv",
+    "archive/edgar_history.csv",
+    "archive/fred_history.csv",
+    "archive/macro_history.csv",
+    "archive/sector_history.csv",
+    "archive/yf_history.csv",
+    "automation_artifacts/call_journal.jsonl",
     "automation_artifacts/status.json",
+    "data/borrower_strain_fundamentals_history.csv",
+    "data/commercialization/commercialization_ledger.csv",
+    "data/connectivity/ixp_snapshot.csv",
+    "data/connectivity/middle_mile_summary.csv",
+    "data/connectivity/national_summary.csv",
+    "data/current_context_candidate_audit.csv",
+    "data/current_context_refresh_manifest.json",
+    "data/finance/credit_conditions_history.csv",
     "data/refresh_graph_state.json",
     "data/release_manifest.json",
     "data/retained_state_manifest.json",
-    "data/water/derived/eia_2024_thermoelectric_plant_summary.csv.gz",
-    "data/water/derived/epa_pws_facility_matches.csv.gz",
-    "data/water/derived/usdm_county_drought_snapshot.csv.gz",
-    "data/water/derived/usgs_2015_county_summary.csv.gz",
-    "data/water/derived/usgs_2015_reconciliation.csv.gz",
-    "data/water/derived/water_observations.csv.gz",
+    "data/weekly_context_events.csv",
     "openai_artifacts/current.json",
-    "data/canonical/observations/2026/10/39d503a8bc1384008c2e796d.parquet",
-    "data/canonical/snapshots/2026/10/39d503a8bc1384008c2e796d.parquet"
+    "data/canonical/observations/2026/10/c5c0d356dd01448fc35d82bb.parquet",
+    "data/canonical/snapshots/2026/10/c5c0d356dd01448fc35d82bb.parquet",
+    "openai_artifacts/attempts/20261020T165534200748Z_26bef1dc_0afd7613.json"
   ],
-  "current_context_snapshot_id": "e527230b2a5cf086",
+  "current_context_snapshot_id": "eb2a72309d040c33",
   "errors": [],
-  "evidence_snapshot_id": "b15472d5a25ac92139606d32",
-  "finished_at_utc": "2026-10-19T18:42:22.299825+00:00",
+  "evidence_snapshot_id": "26bef1dcb7fe726929e547ef",
+  "finished_at_utc": "2026-10-20T16:56:55.870322+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
-    "request_attempts_this_run": 0,
+    "request_attempts_this_run": 1,
     "run_ceiling": 1,
-    "submitted_requests_this_run": 0,
-    "this_run": 0,
+    "submitted_requests_this_run": 1,
+    "this_run": 1,
     "today_after_run": 1,
-    "today_before_run": 1
+    "today_before_run": 0
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 56.117,
+      "elapsed_sec": 348.851,
       "refresh_graph": {
         "changed_nodes": [
-          "data_centers",
           "connectivity",
-          "power_supply",
-          "adoption",
+          "water",
           "workforce",
+          "commercialization",
           "yfinance",
           "edgar",
           "fred",
-          "nyfed"
+          "current_context"
         ],
         "failed_nodes": [],
         "force_full": false,
@@ -53,8 +63,8 @@
         "nodes": {
           "adoption": {
             "attempted_live": false,
-            "changed": true,
-            "elapsed_sec": 0.029,
+            "changed": false,
+            "elapsed_sec": 0.031,
             "error": "",
             "first_signature": false,
             "output_signature": "87f0dd0a7fe914f3c3740f1f",
@@ -63,20 +73,20 @@
             "status": "retained"
           },
           "commercialization": {
-            "attempted_live": false,
-            "changed": false,
-            "elapsed_sec": 0.005,
-            "error": "",
+            "attempted_live": true,
+            "changed": true,
+            "elapsed_sec": 1.272,
+            "error": "Parsed 2 of 3 required metrics; missing: Paying business users",
             "first_signature": false,
-            "output_signature": "47de5db2113a2a4aaa4508ed",
-            "reason": "retry_backoff_after_partial",
-            "refresh": false,
-            "status": "retained"
+            "output_signature": "b0c91eb34aeede9caa99406e",
+            "reason": "retry_after_partial",
+            "refresh": true,
+            "status": "partial"
           },
           "compute": {
             "attempted_live": false,
             "changed": false,
-            "elapsed_sec": 0.208,
+            "elapsed_sec": 0.21,
             "error": "",
             "first_signature": false,
             "output_signature": "521ffa7707fa14d7023b2b94",
@@ -87,18 +97,18 @@
           "connectivity": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 12.929,
+            "elapsed_sec": 13.038,
             "error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
             "first_signature": false,
-            "output_signature": "e7db908345a41f996df78f34",
-            "reason": "dependency_changed:data_centers",
+            "output_signature": "b9784543cc60bef00dfe9c62",
+            "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "construction": {
             "attempted_live": false,
             "changed": false,
-            "elapsed_sec": 0.208,
+            "elapsed_sec": 0.21,
             "error": "",
             "first_signature": false,
             "output_signature": "890f0d705a03453139c3277d",
@@ -107,20 +117,20 @@
             "status": "retained"
           },
           "current_context": {
-            "attempted_live": false,
-            "changed": false,
-            "elapsed_sec": 0.026,
-            "error": "",
+            "attempted_live": true,
+            "changed": true,
+            "elapsed_sec": 52.871,
+            "error": "HTTPError: HTTP Error 403: Forbidden",
             "first_signature": false,
-            "output_signature": "4b9282058dfabb3573c483de",
-            "reason": "retry_backoff_after_partial",
-            "refresh": false,
-            "status": "retained"
+            "output_signature": "817ee91aebb18404e583fa9b",
+            "reason": "retry_after_partial",
+            "refresh": true,
+            "status": "partial"
           },
           "data_centers": {
             "attempted_live": false,
-            "changed": true,
-            "elapsed_sec": 0.208,
+            "changed": false,
+            "elapsed_sec": 0.21,
             "error": "",
             "first_signature": false,
             "output_signature": "e6335da7434c919b0db40d39",
@@ -129,42 +139,42 @@
             "status": "retained"
           },
           "economic_outcomes": {
-            "attempted_live": false,
+            "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 0.023,
-            "error": "",
+            "elapsed_sec": 16.859,
+            "error": "FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
             "first_signature": false,
             "output_signature": "4c18978f1cda086ebf146c45",
-            "reason": "retry_backoff_after_partial",
-            "refresh": false,
-            "status": "retained"
+            "reason": "retry_after_partial",
+            "refresh": true,
+            "status": "partial"
           },
           "edgar": {
-            "attempted_live": false,
+            "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 0.133,
-            "error": "",
+            "elapsed_sec": 115.564,
+            "error": "ValueError: No unambiguous consolidated cost fact for 2026-06-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30",
             "first_signature": false,
-            "output_signature": "11e1d18ada4ed4e7dd242393",
-            "reason": "retry_backoff_after_partial",
-            "refresh": false,
-            "status": "retained"
+            "output_signature": "04379a2240e4669e97b477ac",
+            "reason": "retry_after_partial",
+            "refresh": true,
+            "status": "partial"
           },
           "fred": {
-            "attempted_live": false,
+            "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 0.019,
+            "elapsed_sec": 10.503,
             "error": "",
             "first_signature": false,
-            "output_signature": "be68a7901de7cda90e7a83a2",
-            "reason": "retained_not_due",
-            "refresh": false,
-            "status": "retained"
+            "output_signature": "93c966c0b2040bc78fab4f0d",
+            "reason": "release_trigger_changed",
+            "refresh": true,
+            "status": "success"
           },
           "grid_storage": {
             "attempted_live": false,
             "changed": false,
-            "elapsed_sec": 0.15,
+            "elapsed_sec": 0.158,
             "error": "",
             "first_signature": false,
             "output_signature": "ed632d5f9066983c12e97833",
@@ -174,8 +184,8 @@
           },
           "nyfed": {
             "attempted_live": false,
-            "changed": true,
-            "elapsed_sec": 0.005,
+            "changed": false,
+            "elapsed_sec": 0.006,
             "error": "",
             "first_signature": false,
             "output_signature": "684b43eb324d9445d23cb347",
@@ -195,20 +205,20 @@
             "status": "retained"
           },
           "pe_us_liquidity": {
-            "attempted_live": false,
+            "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 0.0,
-            "error": "",
+            "elapsed_sec": 1.448,
+            "error": "ReturnSourceRejected: Wrong Figure 1 end date",
             "first_signature": false,
             "output_signature": "78897351354c93f7d15d78c0",
-            "reason": "retry_backoff_after_partial",
-            "refresh": false,
-            "status": "retained"
+            "reason": "retry_after_partial",
+            "refresh": true,
+            "status": "partial"
           },
           "power_supply": {
             "attempted_live": false,
-            "changed": true,
-            "elapsed_sec": 0.15,
+            "changed": false,
+            "elapsed_sec": 0.158,
             "error": "",
             "first_signature": false,
             "output_signature": "f04e38d503795fb189a22109",
@@ -228,45 +238,58 @@
             "status": "retained"
           },
           "water": {
-            "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 29.668,
-            "error": "",
-            "first_signature": false,
-            "output_signature": "596402fb286102660d2ea651",
-            "reason": "dependency_changed:data_centers",
-            "refresh": true,
-            "status": "success"
-          },
-          "workforce": {
             "attempted_live": false,
             "changed": true,
-            "elapsed_sec": 0.052,
+            "elapsed_sec": 0.031,
             "error": "",
             "first_signature": false,
-            "output_signature": "8a31b28eb7c5e228d18e9b0f",
-            "reason": "retry_backoff_after_partial",
-            "refresh": false,
-            "status": "retained"
-          },
-          "yfinance": {
-            "attempted_live": false,
-            "changed": true,
-            "elapsed_sec": 0.111,
-            "error": "",
-            "first_signature": false,
-            "output_signature": "ade1c981f402e397aeec92fd",
+            "output_signature": "5a62f47ef5b9c17aba279b91",
             "reason": "retained_not_due",
             "refresh": false,
             "status": "retained"
+          },
+          "workforce": {
+            "attempted_live": true,
+            "changed": true,
+            "elapsed_sec": 17.816,
+            "error": "FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
+            "first_signature": false,
+            "output_signature": "31ea0b496cff524cb6f1cb8c",
+            "reason": "retry_after_partial",
+            "refresh": true,
+            "status": "partial"
+          },
+          "yfinance": {
+            "attempted_live": true,
+            "changed": true,
+            "elapsed_sec": 208.17,
+            "error": "",
+            "first_signature": false,
+            "output_signature": "b53592f83cb530bd9de10dd3",
+            "reason": "release_trigger_changed",
+            "refresh": true,
+            "status": "success"
           }
         },
         "partial_nodes": [
-          "connectivity"
+          "connectivity",
+          "workforce",
+          "economic_outcomes",
+          "commercialization",
+          "edgar",
+          "pe_us_liquidity",
+          "current_context"
         ],
         "refreshed_nodes": [
           "connectivity",
-          "water"
+          "workforce",
+          "economic_outcomes",
+          "commercialization",
+          "yfinance",
+          "edgar",
+          "pe_us_liquidity",
+          "fred",
+          "current_context"
         ],
         "retained_nodes": [
           "construction",
@@ -274,36 +297,33 @@
           "data_centers",
           "power_supply",
           "grid_storage",
+          "water",
           "adoption",
-          "workforce",
-          "economic_outcomes",
-          "commercialization",
-          "yfinance",
-          "edgar",
           "private_capital",
           "pe_industry",
-          "pe_us_liquidity",
-          "fred",
-          "nyfed",
-          "current_context"
+          "nyfed"
         ],
         "state_status": "written"
       },
       "status": "passed",
       "subphases": {
-        "assemble + persist": 0.725,
-        "current context": 0.028,
-        "domain sources": 52.367,
-        "market sources": 2.997
+        "assemble + persist": 5.409,
+        "current context": 52.873,
+        "domain sources": 52.817,
+        "market sources": 237.751
       }
     },
     "evidence": {
       "artifact_current": false,
-      "artifact_editorially_current": true,
+      "artifact_editorially_current": false,
       "artifact_status": "validated",
       "editorial_refresh": {
-        "candidate_domains": [],
+        "candidate_domains": [
+          "market",
+          "data_center"
+        ],
         "current_event_ids": [
+          "auto-2026-10-20-095ab92b9aa4",
           "auto-2026-10-15-2014e74babb5",
           "auto-2026-10-15-bde49f15ce34",
           "auto-2026-10-16-d73bfbb1ecdf",
@@ -317,47 +337,102 @@
           "auto-2026-10-15-f42f17e605b7",
           "auto-2026-10-15-1548ca166303",
           "auto-2026-10-12-ce7bc0483a21",
-          "auto-2026-10-15-49bffc829240",
-          "auto-2026-10-19-3c077eba67dd"
+          "auto-2026-10-15-49bffc829240"
         ],
-        "material_domains": [],
-        "new_event_domains": [],
-        "new_event_ids": [],
-        "reason": "no_material_editorial_change",
-        "refresh_needed": false
+        "material_domains": [
+          "market"
+        ],
+        "new_event_domains": [
+          "data_center"
+        ],
+        "new_event_ids": [
+          "auto-2026-10-20-095ab92b9aa4"
+        ],
+        "reason": "material_findings+new_developments",
+        "refresh_needed": true
       },
-      "elapsed_sec": 0.074,
+      "elapsed_sec": 0.089,
       "materiality": {
         "baseline_available": true,
-        "change_count": 2,
+        "change_count": 7,
         "changes": [
           {
             "domain": "market",
             "fact_id": "market.aei",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 31.748987069390804,
+            "new_value": 30.532286151727803,
             "old_value": 31.7489870693908,
-            "percentage_point_change": 0.0,
-            "relative_change": 0.0
+            "percentage_point_change": 1.1999999999999993,
+            "relative_change": 0.03785488958990534
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.effective_firms",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 18.194020614941113,
+            "old_value": 18.154221705183396,
+            "percentage_point_change": null,
+            "relative_change": 0.0021922674738710495
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.equal_weight_return",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 0.20426375045907885,
+            "old_value": 0.22742782061893982,
+            "percentage_point_change": 2.3000000000000007,
+            "relative_change": 0.10132158590308374
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.median_return",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.11763516317754152,
+            "old_value": 0.1280113036292817,
+            "percentage_point_change": 1.0,
+            "relative_change": 0.078125
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.positive_breadth",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 0.6029411764705882,
+            "old_value": 0.6274509803921569,
+            "percentage_point_change": 2.4000000000000057,
+            "relative_change": 0.03827751196172258
           },
           {
             "domain": "market",
             "fact_id": "market.pressure",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 47.52977219280353,
+            "new_value": 47.99413230759952,
             "old_value": 47.529772192803534,
+            "percentage_point_change": 0.5,
+            "relative_change": 0.010526315789473684
+          },
+          {
+            "domain": "market",
+            "fact_id": "market.top_10_share",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 0.6510492478101271,
+            "old_value": 0.651172208808425,
             "percentage_point_change": 0.0,
             "relative_change": 0.0
           }
         ],
-        "current_snapshot_id": "b15472d5a25ac92139606d32",
-        "decision": "reuse_immaterial_change",
+        "current_snapshot_id": "26bef1dcb7fe726929e547ef",
+        "decision": "generate_material_change",
         "exact_match": false,
-        "immaterial_change_count": 2,
-        "material": false,
-        "material_change_count": 0,
+        "immaterial_change_count": 5,
+        "material": true,
+        "material_change_count": 2,
         "percentage_point_threshold": 2.0,
         "previous_snapshot_id": "13ee259742338d8062e79c98",
         "relative_change_threshold": 0.1,
@@ -366,33 +441,72 @@
       "status": "passed"
     },
     "openai": {
-      "reason": "evidence_change_below_materiality_threshold",
-      "status": "skipped"
+      "api_status": "completed",
+      "attempt_id": "20261020T165534200748Z_26bef1dc_0afd7613",
+      "elapsed_sec": 82.173,
+      "stage": "",
+      "status": "published_with_warnings",
+      "validation": {
+        "checked_passages": 8,
+        "diagnostics": [
+          {
+            "message": "Conspicuous same-initial word run detected: completed computing capacity Court",
+            "reason": "alliterative_run",
+            "scope": "data_center.body",
+            "text": "Available records list 1,556 sites in development against 3,068 operating sites, a ratio of 0.51, and separately track 894 active pipeline sites. The development and pipeline counts measure project volume, not completed computing capacity. Court News Ohio reported that Lordstown does not have to complete site-plan review for a proposed data center submitted days before the village imposed its moratorium. The case is local, but it shows that filing before a moratorium may not insulate a project from approval risk."
+          }
+        ],
+        "hard_errors": [],
+        "hard_failures": [],
+        "passed": true,
+        "publication_policy": "minimal_grounding_and_sanity_gate",
+        "validator_version": "5.1.0"
+      },
+      "validation_status": "passed"
     },
     "publication": {
       "editorial_refresh_status": "current",
       "read_status": "new_or_current_read_ready",
       "status": "ready",
       "transaction_boundary": "git_commit"
-    },
-    "publication_lease": {
-      "expires_at": "2026-10-20T18:42:21.476494+00:00",
-      "published_at": "2026-10-19T18:42:21.476494+00:00",
-      "reason": "publishable_evidence_change_immaterial_no_paid_call",
-      "status": "renewed"
     }
   },
   "publish_ready": true,
   "result": "publish_ready",
-  "run_id": "20261019T184123Z_4bbef6be",
+  "run_id": "20261020T164943Z_2604ebaf",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-10-19T18:41:23.995215+00:00",
+  "started_at_utc": "2026-10-20T16:49:43.093212+00:00",
   "trigger": "schedule",
   "warnings": [
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
-    "refresh node connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems"
+    "workforce: FRED API HTTP 400 for CES2023713001",
+    "workforce: FRED API HTTP 400 for CES2023713003",
+    "workforce: FRED API HTTP 400 for CES3133440003",
+    "workforce: FRED API HTTP 400 for CES5051800003",
+    "workforce: FRED API HTTP 400 for CES6054150003",
+    "workforce: RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL",
+    "workforce: RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
+    "economic_outcomes: FRED API HTTP 400 for PRS30006093",
+    "economic_outcomes: FRED API HTTP 400 for PRS30006103",
+    "economic_outcomes: FRED API HTTP 400 for PRS30006113",
+    "economic_outcomes: FRED API HTTP 400 for PRS85006043",
+    "economic_outcomes: FRED API HTTP 400 for PRS85006093",
+    "economic_outcomes: FRED API HTTP 400 for PRS85006103",
+    "economic_outcomes: FRED API HTTP 400 for PRS85006113",
+    "economic_outcomes: FRED API HTTP 400 for PRS85006153",
+    "commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
+    "pe_us_liquidity: ReturnSourceRejected: Wrong Figure 1 end date",
+    "refresh node connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
+    "refresh node workforce: FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
+    "refresh node economic_outcomes: FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
+    "refresh node commercialization: Parsed 2 of 3 required metrics; missing: Paying business users",
+    "refresh node edgar: ValueError: No unambiguous consolidated cost fact for 2026-06-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30",
+    "refresh node pe_us_liquidity: ReturnSourceRejected: Wrong Figure 1 end date",
+    "refresh node current_context: HTTPError: HTTP Error 403: Forbidden",
+    "snapshot finance:debt:ORCL: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebt: prior period 2022-05-31 is not within 62 days of 2021-05-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-08-31",
+    "snapshot finance:debt:SMCI: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebtCurrent;LongTermDebtNoncurrent: prior period 2014-12-31 is not within 62 days of 2013-12-31; LongTermDebt: prior period 2023-06-30 is not within 62 days of 2022-06-30; LongTermDebtAndCapitalLeaseObligations: prior period 2013-03-31 is not within 62 days of 2012-03-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-06-30"
   ]
 }
