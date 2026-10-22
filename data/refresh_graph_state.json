@@ -1,43 +1,43 @@
 {
   "graph_version": "1.0.0",
-  "last_canonical_snapshot_id": "f72510e410e64e310d29be73",
-  "last_observation_date": "2026-10-21",
-  "last_run_id": "20261021T170518Z_f9995a51",
+  "last_canonical_snapshot_id": "6fd7f4306c3ae438e3e0840e",
+  "last_observation_date": "2026-10-22",
+  "last_run_id": "20261022T170350Z_58e9d736",
   "nodes": {
     "adoption": {
-      "consecutive_failures": 1,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_error": "RuntimeError: FRED API JSONDecodeError for RPSGENAIUSAGESHAREALL; FRED API JSONDecodeError for RPSGENAIUSAGESHAREEDLWALL; FRED API JSONDecodeError for RPSGENAIUSAGESHARELWALL; FRED API JSONDecodeError for RPSGENAIUSAGESHARENONWORK; FRED API JSONDecodeError for RPSGENAIUSAGESHAREWORK",
-      "last_output_signature": "3785f54bd71fa41bdb2d71e3",
-      "last_status": "partial",
-      "last_success_at_utc": "2026-10-19T16:37:23.954778+00:00",
+      "consecutive_failures": 0,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_error": "",
+      "last_output_signature": "7f9b34d70aa1582e56885c83",
+      "last_status": "success",
+      "last_success_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_success_trigger": ""
     },
     "commercialization": {
-      "consecutive_failures": 28,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "consecutive_failures": 29,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_error": "Parsed 2 of 3 required metrics; missing: Paying business users",
-      "last_output_signature": "c91cf010489339cad14b5cc5",
+      "last_output_signature": "e91a2e85b958673c9472e8e5",
       "last_status": "partial"
     },
     "compute": {
-      "consecutive_failures": 1,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "consecutive_failures": 0,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_error": "RuntimeError: FRED API JSONDecodeError for IPG3341S; FRED API JSONDecodeError for IPG3342S; FRED API JSONDecodeError for IPG3344S; FRED API JSONDecodeError for CAPG3341S; FRED API JSONDecodeError for CAPG3342S; FRED API JSONDecodeError for CAPG3344S; FRED API JSONDecodeError for CAPUTLG3341S; FRED API JSONDecodeError for CAPUTLG3342S; FRED API JSONDecodeError for CAPUTLG3344S; RuntimeError: FRED API JSONDecodeError for A34SVS; FRED API JSONDecodeError for A34SNO; FRED API JSONDecodeError for A34SIS; FRED API JSONDecodeError for A34SUS",
+      "last_error": "",
       "last_output_signature": "c193d2947a7e64f53d476f2a",
-      "last_status": "failed",
-      "last_success_at_utc": "2026-10-19T16:37:23.954778+00:00",
+      "last_status": "success",
+      "last_success_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_success_trigger": ""
     },
     "connectivity": {
-      "consecutive_failures": 29,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "consecutive_failures": 30,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
-      "last_output_signature": "45f0f677bba0ea60226268e6",
+      "last_output_signature": "ee7b525a2343eb1b0ab19508",
       "last_status": "partial"
     },
     "construction": {
@@ -51,34 +51,34 @@
       "last_success_trigger": ""
     },
     "current_context": {
-      "consecutive_failures": 28,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "consecutive_failures": 29,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_error": "HTTPError: HTTP Error 403: Forbidden",
-      "last_output_signature": "e177081f9cdcbc6c1e0f8ee9",
+      "last_output_signature": "1777e7593a32c80336a1e09a",
       "last_status": "partial"
     },
     "data_centers": {
       "consecutive_failures": 0,
       "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_error": "",
-      "last_output_signature": "08532bdbacb15897a0f64cb1",
+      "last_output_signature": "e6335da7434c919b0db40d39",
       "last_status": "success",
       "last_success_at_utc": "2026-10-21T17:05:20.543877+00:00",
       "last_success_trigger": ""
     },
     "economic_outcomes": {
-      "consecutive_failures": 28,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-17T18:31:33.218083+00:00",
-      "last_error": "RuntimeError: FRED API JSONDecodeError for PRS30006041; FRED API JSONDecodeError for PRS30006091; FRED API JSONDecodeError for PRS30006093; FRED API JSONDecodeError for PRS30006101; FRED API JSONDecodeError for PRS30006103; FRED API JSONDecodeError for PRS30006111; FRED API JSONDecodeError for PRS30006113; FRED API JSONDecodeError for PRS85006041; FRED API JSONDecodeError for PRS85006043; FRED API JSONDecodeError for PRS85006091; FRED API JSONDecodeError for PRS85006093; FRED API JSONDecodeError for PRS85006101; FRED API JSONDecodeError for PRS85006103; FRED API JSONDecodeError for PRS85006111; FRED API JSONDecodeError for PRS85006113; RuntimeError: FRED API JSONDecodeError for A679RX1Q020SBEA; RuntimeError: FRED API JSONDecodeError for CPIAUCSL; RuntimeError: FRED API JSONDecodeError for PRS85006093; FRED API JSONDecodeError for PRS85006153; FRED API JSONDecodeError for PRS85006173; RuntimeError: FRED API JSONDecodeError for LES1252881600Q; FRED API JSONDecodeError for LES1252881900Q; FRED API JSONDecodeError for LES1252882800Q; FRED API JSONDecodeError for LEU0252883700Q; FRED API JSONDecodeError for LEU0252884600Q; FRED API JSONDecodeError for LEU0252885500Q; FRED API JSONDecodeError for LEU0254871100Q",
-      "last_output_signature": "4c18978f1cda086ebf146c45",
-      "last_status": "failed"
+      "consecutive_failures": 29,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_error": "FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
+      "last_output_signature": "c7a577fc9b47b8cb4b53322e",
+      "last_status": "partial"
     },
     "edgar": {
-      "consecutive_failures": 5,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "consecutive_failures": 6,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_changed_at_utc": "2026-10-20T16:49:44.476306+00:00",
       "last_error": "ValueError: No unambiguous consolidated cost fact for 2026-06-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30",
       "last_output_signature": "04379a2240e4669e97b477ac",
@@ -87,14 +87,14 @@
       "last_success_trigger": "2026-10-16"
     },
     "fred": {
-      "consecutive_failures": 1,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_error": "FRED API JSONDecodeError for BAMLC0A0CM; FRED API JSONDecodeError for BAMLH0A0HYM2; FRED API JSONDecodeError for NFCICREDIT; FRED API JSONDecodeError for H8B3094NCBA; FRED API JSONDecodeError for DPSACBW027SBOG; FRED API JSONDecodeError for CASACBW027SBOG; FRED API JSONDecodeError for TLAACBW027SBOG; FRED API JSONDecodeError for TOTLL",
-      "last_output_signature": "f9605944cf7397cf0cab9a9f",
-      "last_status": "partial",
-      "last_success_at_utc": "2026-10-20T16:49:44.476306+00:00",
-      "last_success_trigger": "2026-10-20"
+      "consecutive_failures": 0,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_error": "",
+      "last_output_signature": "f0608d846b1653b15027b3d9",
+      "last_status": "success",
+      "last_success_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_success_trigger": "2026-10-22"
     },
     "grid_storage": {
       "consecutive_failures": 0,
@@ -128,12 +128,12 @@
       "last_success_trigger": ""
     },
     "pe_us_liquidity": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_changed_at_utc": "2026-10-19T16:37:23.954778+00:00",
       "last_error": "ReturnSourceRejected: Wrong Figure 1 end date",
       "last_output_signature": "78897351354c93f7d15d78c0",
-      "last_retrieval_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "last_retrieval_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_status": "partial"
     },
     "power_supply": {
@@ -158,32 +158,32 @@
     },
     "water": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_error": "",
-      "last_output_signature": "c1b920ae94db8a211668537b",
+      "last_output_signature": "16125fc17fa5b7a3d55826fb",
       "last_status": "success",
-      "last_success_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "last_success_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_success_trigger": ""
     },
     "workforce": {
-      "consecutive_failures": 28,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "consecutive_failures": 29,
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_changed_at_utc": "2026-10-20T16:49:44.476306+00:00",
-      "last_error": "RuntimeError: FRED API JSONDecodeError for CES0500000003; FRED API JSONDecodeError for CES2023713001; FRED API JSONDecodeError for CES2023713003; FRED API JSONDecodeError for CES3133440001; FRED API JSONDecodeError for CES3133440003; FRED API JSONDecodeError for CES5051800001; FRED API JSONDecodeError for CES5051800003; FRED API JSONDecodeError for CES6054150001; FRED API JSONDecodeError for CES6054150003; RuntimeError: FRED API JSONDecodeError for JTS230000000000000JOL; FRED API JSONDecodeError for JTS300000000000000JOL; FRED API JSONDecodeError for JTS510000000000000JOL; FRED API JSONDecodeError for JTS540099000000000JOL; RuntimeError: FRED API JSONDecodeError for JTS230000000000000HIR; FRED API JSONDecodeError for JTS230000000000000JOR; FRED API JSONDecodeError for JTS230000000000000LDR; FRED API JSONDecodeError for JTS230000000000000QUR; FRED API JSONDecodeError for JTS300000000000000HIR; FRED API JSONDecodeError for JTS300000000000000JOR; FRED API JSONDecodeError for JTS300000000000000LDR; FRED API JSONDecodeError for JTS300000000000000QUR; FRED API JSONDecodeError for JTS510000000000000HIR; FRED API JSONDecodeError for JTS510000000000000JOR; FRED API JSONDecodeError for JTS510000000000000LDR; FRED API JSONDecodeError for JTS510000000000000QUR; FRED API JSONDecodeError for JTS540099000000000HIR; FRED API JSONDecodeError for JTS540099000000000JOR; FRED API JSONDecodeError for JTS540099000000000LDR; FRED API JSONDecodeError for JTS540099000000000QUR; RuntimeError: FRED API JSONDecodeError for CPIAUCSL",
+      "last_error": "FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
       "last_output_signature": "31ea0b496cff524cb6f1cb8c",
-      "last_status": "failed"
+      "last_status": "partial"
     },
     "yfinance": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_changed_at_utc": "2026-10-21T17:05:20.543877+00:00",
+      "last_attempt_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_error": "",
-      "last_output_signature": "aa697856149dc920760fd64c",
+      "last_output_signature": "6fa6bd5c814900a0448d4783",
       "last_status": "success",
-      "last_success_at_utc": "2026-10-21T17:05:20.543877+00:00",
-      "last_success_trigger": "2026-10-21"
+      "last_success_at_utc": "2026-10-22T17:03:51.610570+00:00",
+      "last_success_trigger": "2026-10-22"
     }
   },
-  "updated_at_utc": "2026-10-21T17:05:20.543877+00:00"
+  "updated_at_utc": "2026-10-22T17:03:51.610570+00:00"
 }

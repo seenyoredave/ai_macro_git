@@ -1,10 +1,17 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261020T165534200748Z_26bef1dc_0afd7613",
+  "attempt_id": "20261022T171029712037Z_a3703066_cfae494f",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
-    "data_center"
+    "finance",
+    "data_center",
+    "power",
+    "grid_storage",
+    "water",
+    "adoption",
+    "workforce",
+    "economic_impact"
   ],
   "editorial_context_event_ids": [
     "auto-2026-10-20-095ab92b9aa4",
@@ -12,21 +19,28 @@
     "auto-2026-10-15-bde49f15ce34",
     "auto-2026-10-16-d73bfbb1ecdf",
     "auto-2026-10-15-0a42b0b901a6",
-    "auto-2026-10-15-f129bad0f05e",
-    "auto-2026-10-12-d1e8d0a7c96d",
-    "auto-2026-10-14-57e5b17c1bd6",
     "auto-2026-10-16-f903651ff52a",
-    "auto-2026-10-14-382b7de30b7c",
     "auto-2026-10-19-5f7421258ee9",
-    "auto-2026-10-15-f42f17e605b7",
-    "auto-2026-10-15-1548ca166303",
-    "auto-2026-10-12-ce7bc0483a21",
-    "auto-2026-10-15-49bffc829240"
+    "auto-2026-10-19-02e84ddf1742",
+    "auto-2026-10-21-7c1fb7166fd9",
+    "auto-2026-10-19-3c077eba67dd",
+    "auto-2026-10-19-4518cbb06045",
+    "auto-2026-10-21-13a313eeebdb",
+    "auto-2026-10-21-36e2dc5e62aa",
+    "auto-2026-10-21-e2db26ca2538",
+    "auto-2026-10-18-eec0046156b6"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
-      "data_center"
+      "finance",
+      "data_center",
+      "power",
+      "grid_storage",
+      "water",
+      "adoption",
+      "workforce",
+      "economic_impact"
     ],
     "current_event_ids": [
       "auto-2026-10-20-095ab92b9aa4",
@@ -34,32 +48,53 @@
       "auto-2026-10-15-bde49f15ce34",
       "auto-2026-10-16-d73bfbb1ecdf",
       "auto-2026-10-15-0a42b0b901a6",
-      "auto-2026-10-15-f129bad0f05e",
-      "auto-2026-10-12-d1e8d0a7c96d",
-      "auto-2026-10-14-57e5b17c1bd6",
       "auto-2026-10-16-f903651ff52a",
-      "auto-2026-10-14-382b7de30b7c",
       "auto-2026-10-19-5f7421258ee9",
-      "auto-2026-10-15-f42f17e605b7",
-      "auto-2026-10-15-1548ca166303",
-      "auto-2026-10-12-ce7bc0483a21",
-      "auto-2026-10-15-49bffc829240"
+      "auto-2026-10-19-02e84ddf1742",
+      "auto-2026-10-21-7c1fb7166fd9",
+      "auto-2026-10-19-3c077eba67dd",
+      "auto-2026-10-19-4518cbb06045",
+      "auto-2026-10-21-13a313eeebdb",
+      "auto-2026-10-21-36e2dc5e62aa",
+      "auto-2026-10-21-e2db26ca2538",
+      "auto-2026-10-18-eec0046156b6"
     ],
     "material_domains": [
-      "market"
+      "market",
+      "finance",
+      "water",
+      "adoption",
+      "economic_impact"
     ],
     "new_event_domains": [
-      "data_center"
+      "data_center",
+      "power",
+      "grid_storage",
+      "water",
+      "workforce"
     ],
     "new_event_ids": [
-      "auto-2026-10-20-095ab92b9aa4"
+      "auto-2026-10-19-02e84ddf1742",
+      "auto-2026-10-21-7c1fb7166fd9",
+      "auto-2026-10-19-3c077eba67dd",
+      "auto-2026-10-19-4518cbb06045",
+      "auto-2026-10-21-13a313eeebdb",
+      "auto-2026-10-21-36e2dc5e62aa",
+      "auto-2026-10-21-e2db26ca2538",
+      "auto-2026-10-18-eec0046156b6"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
     "market",
-    "data_center"
+    "finance",
+    "data_center",
+    "power",
+    "water",
+    "adoption",
+    "workforce",
+    "economic_impact"
   ],
   "evidence_packets": {
     "adoption": {
@@ -73,66 +108,66 @@
       "facts": [
         {
           "context": "",
-          "display": "23.8%",
+          "display": "24.6%",
           "id": "adoption.current_business_use_pct",
           "label": "Businesses reporting current AI use",
-          "value": 23.8
+          "value": 24.6
         },
         {
           "context": "",
-          "display": "27.7%",
+          "display": "28.6%",
           "id": "adoption.expected_business_use_pct",
           "label": "Businesses expecting AI use within six months",
-          "value": 27.7
+          "value": 28.6
         },
         {
           "context": "",
-          "display": "3.9 percentage points",
+          "display": "4.0 percentage points",
           "id": "adoption.expected_adoption_gap_ppts",
           "label": "Expected-minus-current business AI-use gap",
-          "value": 3.8999999999999986
+          "value": 4.0
         },
         {
           "context": "",
-          "display": "61.8%",
+          "display": "60.8%",
           "id": "adoption.consumer_overall_pct",
           "label": "Adults age 18\u201364 reporting some generative-AI use",
-          "value": 61.7802431014
+          "value": 60.8064849529
         },
         {
           "context": "",
-          "display": "54.8%",
+          "display": "49.5%",
           "id": "adoption.consumer_personal_pct",
           "label": "Adults reporting personal generative-AI use",
-          "value": 54.8077960521
+          "value": 49.4921731977
         },
         {
           "context": "",
-          "display": "45.2%",
+          "display": "40.5%",
           "id": "adoption.consumer_work_pct",
           "label": "Adults reporting generative-AI use for work",
-          "value": 45.1993181231
+          "value": 40.5455002479
         },
         {
           "context": "",
-          "display": "54.2%",
+          "display": "53.8%",
           "id": "adoption.consumer_active_pct",
           "label": "Adults reporting generative-AI use in the prior week",
-          "value": 54.2087424858
+          "value": 53.843422367
         },
         {
           "context": "",
-          "display": "15.4%",
+          "display": "14.4%",
           "id": "adoption.consumer_daily_pct",
           "label": "Adults reporting daily generative-AI use",
-          "value": 15.4386318268
+          "value": 14.3805907637
         },
         {
           "context": "",
-          "display": "13.8 percentage points",
+          "display": "12.8 percentage points",
           "id": "adoption.consumer_change_ppts",
           "label": "Change in overall consumer use across the retained series",
-          "value": 13.804690254100002
+          "value": 12.830932105599999
         },
         {
           "context": "",
@@ -150,10 +185,10 @@
         },
         {
           "context": "",
-          "display": "50.2%",
+          "display": "46.4%",
           "id": "adoption.leading_sector_use_pct",
           "label": "Highest BTOS sector current AI-use reading",
-          "value": 50.2
+          "value": 46.4
         },
         {
           "context": "",
@@ -282,7 +317,7 @@
           "value": 8.0
         }
       ],
-      "importance": 69.0234512705,
+      "importance": 64.154660528,
       "label": "Adoption",
       "references": [
         {
@@ -699,17 +734,17 @@
         },
         {
           "context": "",
-          "display": "0.8%",
+          "display": "0.1%",
           "id": "economic_impact.median_real_earnings_growth",
           "label": "Median real weekly earnings growth",
-          "value": 0.8032128514056325
+          "value": 0.06671114076051143
         },
         {
           "context": "",
-          "display": "3.3 percentage points",
+          "display": "3.0 percentage points",
           "id": "economic_impact.group_growth_spread_ppts",
           "label": "Cross-group real-earnings growth spread",
-          "value": 3.300566845370434
+          "value": 3.044594149124702
         },
         {
           "context": "",
@@ -791,10 +826,10 @@
         },
         {
           "context": "",
-          "display": "15.7",
+          "display": "16.0",
           "id": "finance.lender_strain",
           "label": "Lender strain",
-          "value": 15.700777197103504
+          "value": 16.00044983805899
         },
         {
           "context": "",
@@ -829,14 +864,14 @@
           "display": "-0.50",
           "id": "finance.nfci",
           "label": "Chicago Fed NFCI",
-          "value": -0.499
+          "value": -0.496
         },
         {
           "context": "",
-          "display": "0.02",
+          "display": "0.03",
           "id": "finance.nfci_change",
           "label": "Three-month change in NFCI",
-          "value": 0.017000000000000015
+          "value": 0.030000000000000027
         },
         {
           "context": "",
@@ -1191,59 +1226,59 @@
       "facts": [
         {
           "context": "",
-          "display": "30.5",
+          "display": "31.8",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 30.532286151727803
+          "value": 31.82936812738161
         },
         {
           "context": "",
-          "display": "48.0",
+          "display": "47.9",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 47.99413230759952
+          "value": 47.9107843037574
         },
         {
           "context": "",
-          "display": "60.3%",
+          "display": "61.3%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6029411764705882
+          "value": 0.6127450980392157
         },
         {
           "context": "",
-          "display": "11.8%",
+          "display": "13.6%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.11763516317754152
+          "value": 0.13631108848640616
         },
         {
           "context": "",
-          "display": "20.4%",
+          "display": "20.0%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.20426375045907885
+          "value": 0.20018453409154752
         },
         {
           "context": "",
-          "display": "65.1%",
+          "display": "65.0%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6510492478101271
+          "value": 0.6498262871918313
         },
         {
           "context": "",
-          "display": "18.2",
+          "display": "18.1",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.194020614941113
+          "value": 18.097100148360177
         },
         {
           "context": "",
-          "display": "1",
+          "display": "0",
           "id": "market.strong_sector_count",
           "label": "Sectors above the strong-equity threshold",
-          "value": 1.0
+          "value": 0.0
         },
         {
           "context": "",
@@ -1253,7 +1288,7 @@
           "value": 3.0
         }
       ],
-      "importance": 20.104924781012713,
+      "importance": 19.98262871918314,
       "label": "Market",
       "references": [
         {
@@ -1362,31 +1397,31 @@
         },
         {
           "context": "",
-          "display": "345",
+          "display": "333",
           "id": "water.campuses_in_counties_with_d2_area",
           "label": "Campuses in counties with some D2-or-worse drought area",
-          "value": 345.0
+          "value": 333.0
         },
         {
           "context": "",
-          "display": "24.1%",
+          "display": "23.2%",
           "id": "water.campuses_in_counties_with_d2_share_pct",
           "label": "Share of campuses with county drought data in counties with some D2-or-worse drought area",
-          "value": 0.2405857740585774
+          "value": 0.23221757322175732
         },
         {
           "context": "",
-          "display": "280",
+          "display": "229",
           "id": "water.campuses_in_counties_with_25pct_d2_area",
           "label": "Campuses in counties with at least 25% D2-or-worse drought area",
-          "value": 280.0
+          "value": 229.0
         },
         {
           "context": "",
-          "display": "19.5%",
+          "display": "16.0%",
           "id": "water.campuses_in_counties_with_25pct_d2_share_pct",
           "label": "Share of campuses with county drought data in counties with at least 25% D2-or-worse drought area",
-          "value": 0.19525801952580196
+          "value": 0.1596931659693166
         },
         {
           "context": "",
@@ -1495,17 +1530,17 @@
         },
         {
           "context": "",
-          "display": "98.3 GW",
+          "display": "96.8 GW",
           "id": "water.published_capacity_in_counties_with_d2_gw",
           "label": "Published data-center campus capacity in counties with D2-or-worse drought",
-          "value": 98.33214
+          "value": 96.81039000000001
         },
         {
           "context": "",
-          "display": "76.0 GW",
+          "display": "74.0 GW",
           "id": "water.published_capacity_in_counties_with_25pct_d2_gw",
           "label": "Published data-center campus capacity in counties with at least 25% D2-or-worse drought",
-          "value": 76.01637
+          "value": 74.02875
         },
         {
           "context": "",
@@ -1543,7 +1578,7 @@
           "value": 2.559680884931507
         }
       ],
-      "importance": 55.21339759117782,
+      "importance": 53.84310470414853,
       "label": "Water",
       "references": [
         {
@@ -1673,21 +1708,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "26bef1dcb7fe726929e547ef",
-  "generated_at": "2026-10-20T16:56:55.785463+00:00",
+  "evidence_snapshot_id": "a3703066f26d12771878ba75",
+  "generated_at": "2026-10-22T17:13:02.568293+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 81.58097489000005,
-      "input_tokens": 3795,
+      "elapsed_sec": 152.841788441,
+      "input_tokens": 4832,
       "model": "gpt-5.6-sol",
-      "output_tokens": 6753,
-      "poll_attempts": 31,
-      "poll_errors": [
-        "InternalServerError: upstream connect error or disconnect/reset before headers. reset reason: connection timeout"
-      ],
-      "response_id": "resp_0daa1e8ded14643b006ad79d073bf887d1a1604b6ce8327a1c",
+      "output_tokens": 12506,
+      "poll_attempts": 71,
+      "poll_errors": [],
+      "response_id": "resp_0778b3417e6fd6fd006ada4386988487d2bde9710f48b5238c",
       "terminal_status": "completed",
-      "total_tokens": 10548
+      "total_tokens": 17338
     }
   },
   "max_output_tokens": null,
@@ -1698,123 +1731,36 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "c75ce02535fe6c92b9b224d8",
-    "expires_at": "2026-10-22T17:15:12.490395+00:00",
+    "current_evidence_snapshot_id": "a3703066f26d12771878ba75",
+    "expires_at": "2026-10-23T17:13:02.571334+00:00",
     "lease_hours": 24,
-    "materiality": {
-      "baseline_available": true,
-      "change_count": 7,
-      "changes": [
-        {
-          "domain": "market",
-          "fact_id": "market.aei",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 33.20208401467229,
-          "old_value": 30.532286151727803,
-          "percentage_point_change": 2.700000000000003,
-          "relative_change": 0.08852459016393452
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.effective_firms",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 18.26431316723334,
-          "old_value": 18.194020614941113,
-          "percentage_point_change": null,
-          "relative_change": 0.0038634974522619514
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.equal_weight_return",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 0.2249268735412251,
-          "old_value": 0.20426375045907885,
-          "percentage_point_change": 2.1000000000000014,
-          "relative_change": 0.10294117647058831
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.median_return",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 0.13466040255588918,
-          "old_value": 0.11763516317754152,
-          "percentage_point_change": 1.6999999999999993,
-          "relative_change": 0.1440677966101694
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.positive_breadth",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.6127450980392157,
-          "old_value": 0.6029411764705882,
-          "percentage_point_change": 1.0,
-          "relative_change": 0.01658374792703151
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.pressure",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 49.41365923473085,
-          "old_value": 47.99413230759952,
-          "percentage_point_change": 1.3999999999999986,
-          "relative_change": 0.029166666666666636
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.top_10_share",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.64994775310656,
-          "old_value": 0.6510492478101271,
-          "percentage_point_change": 0.09999999999999432,
-          "relative_change": 0.0015360983102917715
-        }
-      ],
-      "current_snapshot_id": "c75ce02535fe6c92b9b224d8",
-      "decision": "generate_material_change",
-      "exact_match": false,
-      "immaterial_change_count": 4,
-      "material": true,
-      "material_change_count": 3,
-      "percentage_point_threshold": 2.0,
-      "previous_snapshot_id": "26bef1dcb7fe726929e547ef",
-      "relative_change_threshold": 0.1,
-      "version": "1.2.0"
-    },
-    "published_at": "2026-10-21T17:15:12.490395+00:00",
-    "renewal_count": 1,
-    "source": "automation_generation_fallback"
+    "materiality": {},
+    "published_at": "2026-10-22T17:13:02.571334+00:00",
+    "renewal_count": 0,
+    "source": "generation"
   },
   "raw_responses": {
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 31,
-        "poll_errors": [
-          "InternalServerError: upstream connect error or disconnect/reset before headers. reset reason: connection timeout"
-        ],
+        "poll_attempts": 71,
+        "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0daa1e8ded14643b006ad79d073bf887d1a1604b6ce8327a1c",
+        "response_id": "resp_0778b3417e6fd6fd006ada4386988487d2bde9710f48b5238c",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index eased to 30.5 and the median one-year return slipped to 11.8%. More importantly, the share of covered companies with positive one-year returns fell materially to 60.3%, while average sector trading pressure edged up to 48.0. This is not a broad reversal\u2014most covered companies are still positive over one year\u2014but returns are becoming less widely shared as trading pressure firms.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity breadth retreats even as most covered companies remain positive\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development against 3,068 operating sites, a ratio of 0.51, and separately track 894 active pipeline sites. The development and pipeline counts measure project volume, not completed computing capacity. Court News Ohio reported that Lordstown does not have to complete site-plan review for a proposed data center submitted days before the village imposed its moratorium. The case is local, but it shows that filing before a moratorium may not insulate a project from approval risk.\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A Lordstown review outcome highlights approval risk within a large site pipeline\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The AI buildout remains large as market breadth narrows and execution remains uncertain\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"market.positive_breadth\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Upstream activity remains strong, but capital-market support is less uniform. Semiconductor and electronic-component output is growing 19.9%, and available records show 1,556 data-center sites in development, about half the number operating. At the same time, the AI Equity Index eased to 30.5, the median one-year return slipped to 11.8%, and positive-return breadth fell materially to 60.3% of covered companies. Reports that CoreWeave credit-default swaps reached distress levels and that data-center bonds weakened on debt and capital-spending concerns show that financing anxiety extends beyond equities, even though the operating and project data do not indicate a general halt in investment.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},{\"text\":\"Power data show why planned scale should not be read as delivery. Net planned generation additions total 225.2 GW, while 2,061 GW sits in active interconnection queues. Only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Local approvals create separate uncertainty. The reported Lordstown outcome, involving a proposal submitted days before a moratorium, illustrates how a data-center project can be proposed without securing a completed site-plan review.\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream measures remain less conclusive. Businesses reporting current AI use account for 23.8%, while 27.7% expect to use it within six months, compared with 61.8% of adults ages 18\u201364 reporting some generative-AI use. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but real hourly compensation is growing 0.6%, and only one tracked AI-linked labor channel shows positive employment growth. None of these aggregate measures isolates AI\u2019s effect. Together they leave the evidence for infrastructure investment and adoption clearer than the evidence for broadly distributed economic gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.consumer_overall_pct\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"workforce.employment_breadth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"AI equity breadth improves as the median return rises\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"The NFCI edges higher as reports flag CoreWeave credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.nfci_change\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure falls materially at the higher county threshold\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use rises, but near-term intentions continue to run ahead\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Employment growth remains confined to one tracked AI-linked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% as real output rose 2.5%, but median real weekly earnings growth slowed materially to 0.1%. The cross-group real-earnings growth spread narrowed slightly to 3.0 percentage points. Output and productivity growth have not been matched by comparably strong median earnings growth in these readings, although the aggregate measures do not identify AI\u2019s contribution.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]},\"headline\":{\"text\":\"Productivity and output grow while median real earnings barely rise\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"workforce.employment_breadth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\"]},\"paragraphs\":[{\"text\":\"Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.nfci\",\"finance.nfci_change\"]},{\"text\":\"The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1792515414.0,
+      "completed_at": 1792689180.0,
       "conversation": null,
-      "created_at": 1792515335.0,
+      "created_at": 1792689030.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0daa1e8ded14643b006ad79d073bf887d1a1604b6ce8327a1c",
+      "id": "resp_0778b3417e6fd6fd006ada4386988487d2bde9710f48b5238c",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1827,7 +1773,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d09aad487d196a026ebfc1f9522",
+          "id": "rs_0778b3417e6fd6fd006ada43897ac887d29b5a5df51ffff94f",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1835,7 +1781,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d10dff487d1a76571368027eb0f",
+          "id": "rs_0778b3417e6fd6fd006ada438fa03887d29d04cedef85aafb8",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1843,7 +1789,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d17b60c87d1bccc2380d15f15e8",
+          "id": "rs_0778b3417e6fd6fd006ada4396b5b087d2850d6e2780e82e88",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1851,7 +1797,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d1e265487d1afb7791be58c6d5d",
+          "id": "rs_0778b3417e6fd6fd006ada439cf62087d2aa0c4b9f241347da",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1859,7 +1805,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d24c9d087d199553915f1ee2192",
+          "id": "rs_0778b3417e6fd6fd006ada43a3e3bc87d2bab5a6c3dc4f112e",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1867,7 +1813,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d2a33a087d198671fdb4c4c7bac",
+          "id": "rs_0778b3417e6fd6fd006ada43ab346087d2a12a56961ebe094d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1875,7 +1821,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d300dec87d194b8248b379d4df9",
+          "id": "rs_0778b3417e6fd6fd006ada43b232d487d2b9323a9859403880",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1883,7 +1829,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d36540887d194824fcac0ee7ac3",
+          "id": "rs_0778b3417e6fd6fd006ada43b8a55087d28cdc200be11bcff0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1891,7 +1837,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d3ccfd887d1a507d275f39ebd9e",
+          "id": "rs_0778b3417e6fd6fd006ada43bf47f487d2858cc851a7676c38",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1899,7 +1845,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d426dd887d1a105240440f33d99",
+          "id": "rs_0778b3417e6fd6fd006ada43c5360087d2b3911cd2e719f86a",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1907,7 +1853,79 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0daa1e8ded14643b006ad79d48cfb887d199b6d369b90a16b6",
+          "id": "rs_0778b3417e6fd6fd006ada43cbb53887d2a5bb2f245690d725",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43d2409c87d2a702fb776ebd26fb",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43d862f087d292dc66043656a210",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43df376c87d2a991d03650a253d4",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43e7745887d29e85430fded23216",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43ecf1d087d291f7e82589a84106",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43f3808087d2a3e7e0552e1dc151",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43f9d63887d296dbfbef0d856594",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada43ffc82087d2bf2ac0179211c61a",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0778b3417e6fd6fd006ada44073d6c87d29f7dd1db829f7495",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1917,11 +1935,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index eased to 30.5 and the median one-year return slipped to 11.8%. More importantly, the share of covered companies with positive one-year returns fell materially to 60.3%, while average sector trading pressure edged up to 48.0. This is not a broad reversal\u2014most covered companies are still positive over one year\u2014but returns are becoming less widely shared as trading pressure firms.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity breadth retreats even as most covered companies remain positive\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development against 3,068 operating sites, a ratio of 0.51, and separately track 894 active pipeline sites. The development and pipeline counts measure project volume, not completed computing capacity. Court News Ohio reported that Lordstown does not have to complete site-plan review for a proposed data center submitted days before the village imposed its moratorium. The case is local, but it shows that filing before a moratorium may not insulate a project from approval risk.\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A Lordstown review outcome highlights approval risk within a large site pipeline\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The AI buildout remains large as market breadth narrows and execution remains uncertain\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"market.positive_breadth\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Upstream activity remains strong, but capital-market support is less uniform. Semiconductor and electronic-component output is growing 19.9%, and available records show 1,556 data-center sites in development, about half the number operating. At the same time, the AI Equity Index eased to 30.5, the median one-year return slipped to 11.8%, and positive-return breadth fell materially to 60.3% of covered companies. Reports that CoreWeave credit-default swaps reached distress levels and that data-center bonds weakened on debt and capital-spending concerns show that financing anxiety extends beyond equities, even though the operating and project data do not indicate a general halt in investment.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},{\"text\":\"Power data show why planned scale should not be read as delivery. Net planned generation additions total 225.2 GW, while 2,061 GW sits in active interconnection queues. Only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Local approvals create separate uncertainty. The reported Lordstown outcome, involving a proposal submitted days before a moratorium, illustrates how a data-center project can be proposed without securing a completed site-plan review.\",\"event_ids\":[\"auto-2026-10-20-095ab92b9aa4\"],\"fact_ids\":[\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream measures remain less conclusive. Businesses reporting current AI use account for 23.8%, while 27.7% expect to use it within six months, compared with 61.8% of adults ages 18\u201364 reporting some generative-AI use. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but real hourly compensation is growing 0.6%, and only one tracked AI-linked labor channel shows positive employment growth. None of these aggregate measures isolates AI\u2019s effect. Together they leave the evidence for infrastructure investment and adoption clearer than the evidence for broadly distributed economic gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.consumer_overall_pct\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"workforce.employment_breadth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"AI equity breadth improves as the median return rises\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"The NFCI edges higher as reports flag CoreWeave credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.nfci_change\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure falls materially at the higher county threshold\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use rises, but near-term intentions continue to run ahead\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Employment growth remains confined to one tracked AI-linked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% as real output rose 2.5%, but median real weekly earnings growth slowed materially to 0.1%. The cross-group real-earnings growth spread narrowed slightly to 3.0 percentage points. Output and productivity growth have not been matched by comparably strong median earnings growth in these readings, although the aggregate measures do not identify AI\u2019s contribution.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]},\"headline\":{\"text\":\"Productivity and output grow while median real earnings barely rise\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"workforce.employment_breadth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\"]},\"paragraphs\":[{\"text\":\"Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.nfci\",\"finance.nfci_change\"]},{\"text\":\"The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0daa1e8ded14643b006ad79d4f407087d1b0cf56cb22554e0d",
+          "id": "msg_0778b3417e6fd6fd006ada440aff4887d28848850a7383d989",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2094,55 +2112,57 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 3795,
+        "input_tokens": 4832,
         "input_tokens_details": {
-          "cache_write_tokens": 3792,
+          "cache_write_tokens": 4829,
           "cached_tokens": 0
         },
-        "output_tokens": 6753,
+        "output_tokens": 12506,
         "output_tokens_details": {
-          "reasoning_tokens": 5696
+          "reasoning_tokens": 10122
         },
-        "total_tokens": 10548
+        "total_tokens": 17338
       },
       "user": null
     }
   },
   "reads": {
     "adoption": {
-      "analysis": "Businesses expecting AI use within six months edged up to 27.7%, but the gap between expected and current use widened slightly to 3.9 percentage points. The highest sector current-use reading rose to 50.2%, and every BTOS sector now has a current-use reading. Full sector coverage makes the comparison more complete, but it does not change the central result: stated near-term adoption remains ahead of reported use.",
+      "analysis": "Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series.",
       "analysis_sentences": [
-        "Businesses expecting AI use within six months edged up to 27.7%, but the gap between expected and current use widened slightly to 3.9 percentage points.",
-        "The highest sector current-use reading rose to 50.2%, and every BTOS sector now has a current-use reading.",
-        "Full sector coverage makes the comparison more complete, but it does not change the central result: stated near-term adoption remains ahead of reported use."
+        "Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months.",
+        "The expected-minus-current gap widened slightly to 4.0 percentage points.",
+        "Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease.",
+        "The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "adoption.current_business_use_pct",
             "adoption.expected_business_use_pct",
             "adoption.expected_adoption_gap_ppts"
           ],
           "field": "headline",
-          "text": "Near-term AI intentions rise, but the adoption gap widens slightly"
+          "text": "Business AI use rises, but near-term intentions continue to run ahead"
         },
         {
           "event_ids": [],
           "fact_ids": [
+            "adoption.current_business_use_pct",
             "adoption.expected_business_use_pct",
             "adoption.expected_adoption_gap_ppts",
-            "adoption.sector_coverage",
-            "adoption.leading_sector_use_pct"
+            "adoption.consumer_overall_pct"
           ],
           "field": "body",
-          "text": "Businesses expecting AI use within six months edged up to 27.7%, but the gap between expected and current use widened slightly to 3.9 percentage points. The highest sector current-use reading rose to 50.2%, and every BTOS sector now has a current-use reading. Full sector coverage makes the comparison more complete, but it does not change the central result: stated near-term adoption remains ahead of reported use."
+          "text": "Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series."
         }
       ],
       "domain": "adoption",
-      "evidence_snapshot_id": "92f2b739b543645142f20835",
-      "generated_at": "2026-10-15T17:05:23.685934+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "Near-term AI intentions rise, but the adoption gap widens slightly",
+      "headline": "Business AI use rises, but near-term intentions continue to run ahead",
       "label": "Adoption",
       "references": [
         {
@@ -2288,28 +2308,26 @@
       "version": "6.1.0"
     },
     "data_center": {
-      "analysis": "Available records list 1,556 sites in development against 3,068 operating sites, a ratio of 0.51, and separately track 894 active pipeline sites. The development and pipeline counts measure project volume, not completed computing capacity. Court News Ohio reported that Lordstown does not have to complete site-plan review for a proposed data center submitted days before the village imposed its moratorium. The case is local, but it shows that filing before a moratorium may not insulate a project from approval risk.",
+      "analysis": "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity.",
       "analysis_sentences": [
-        "Available records list 1,556 sites in development against 3,068 operating sites, a ratio of 0.51, and separately track 894 active pipeline sites.",
-        "The development and pipeline counts measure project volume, not completed computing capacity.",
-        "Court News Ohio reported that Lordstown does not have to complete site-plan review for a proposed data center submitted days before the village imposed its moratorium.",
-        "The case is local, but it shows that filing before a moratorium may not insulate a project from approval risk."
+        "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites.",
+        "Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia.",
+        "A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-20-095ab92b9aa4"
+            "auto-2026-10-21-7c1fb7166fd9"
           ],
           "fact_ids": [
-            "data_center.development_sites",
-            "data_center.tracked_pipeline_sites"
+            "data_center.development_sites"
           ],
           "field": "headline",
-          "text": "A Lordstown review outcome highlights approval risk within a large site pipeline"
+          "text": "Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline"
         },
         {
           "event_ids": [
-            "auto-2026-10-20-095ab92b9aa4"
+            "auto-2026-10-21-7c1fb7166fd9"
           ],
           "fact_ids": [
             "data_center.operating_sites",
@@ -2318,14 +2336,14 @@
             "data_center.tracked_pipeline_sites"
           ],
           "field": "body",
-          "text": "Available records list 1,556 sites in development against 3,068 operating sites, a ratio of 0.51, and separately track 894 active pipeline sites. The development and pipeline counts measure project volume, not completed computing capacity. Court News Ohio reported that Lordstown does not have to complete site-plan review for a proposed data center submitted days before the village imposed its moratorium. The case is local, but it shows that filing before a moratorium may not insulate a project from approval risk."
+          "text": "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity."
         }
       ],
       "domain": "data_center",
-      "evidence_snapshot_id": "26bef1dcb7fe726929e547ef",
-      "generated_at": "2026-10-20T16:56:55.785280+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "A Lordstown review outcome highlights approval risk within a large site pipeline",
+      "headline": "Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline",
       "label": "Data Centers",
       "references": [
         {
@@ -2349,49 +2367,47 @@
           "source_url": ""
         },
         {
-          "source_label": "Court News Ohio (.gov)",
-          "source_url": "https://www.courtnewsohio.gov/cases/2026/SCO/1020/251497.asp"
+          "source_label": "Data Center Dynamics",
+          "source_url": "https://www.datacenterdynamics.com/en/news/amazon-withdraws-application-for-data-center-campus-at-gwu-site-in-ashburn-virginia/"
         }
       ],
       "version": "6.1.0"
     },
     "economic_impact": {
-      "analysis": "Nonfarm-business productivity grew 2.2% as real output rose 2.5%. Real hourly compensation increased 0.6%, while unit labor costs grew 1.4%, indicating positive aggregate performance without a comparable increase in real compensation. A report that investors are pricing in a 32.6% AI productivity boost for software engineers describes an expectation for a specific workforce segment, not an economy-wide result. The current aggregate data do not identify AI's contribution.",
+      "analysis": "Nonfarm-business productivity grew 2.2% as real output rose 2.5%, but median real weekly earnings growth slowed materially to 0.1%. The cross-group real-earnings growth spread narrowed slightly to 3.0 percentage points. Output and productivity growth have not been matched by comparably strong median earnings growth in these readings, although the aggregate measures do not identify AI\u2019s contribution.",
       "analysis_sentences": [
-        "Nonfarm-business productivity grew 2.2% as real output rose 2.5%.",
-        "Real hourly compensation increased 0.6%, while unit labor costs grew 1.4%, indicating positive aggregate performance without a comparable increase in real compensation.",
-        "A report that investors are pricing in a 32.6% AI productivity boost for software engineers describes an expectation for a specific workforce segment, not an economy-wide result.",
-        "The current aggregate data do not identify AI's contribution."
+        "Nonfarm-business productivity grew 2.2% as real output rose 2.5%, but median real weekly earnings growth slowed materially to 0.1%.",
+        "The cross-group real-earnings growth spread narrowed slightly to 3.0 percentage points.",
+        "Output and productivity growth have not been matched by comparably strong median earnings growth in these readings, although the aggregate measures do not identify AI\u2019s contribution."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "economic_impact.median_real_earnings_growth",
             "economic_impact.productivity_growth",
-            "economic_impact.real_compensation_growth"
+            "economic_impact.real_output_growth"
           ],
           "field": "headline",
-          "text": "Productivity is rising, but compensation gains remain modest"
+          "text": "Productivity and output grow while median real earnings barely rise"
         },
         {
-          "event_ids": [
-            "auto-2026-09-29-08e7b2432d19"
-          ],
+          "event_ids": [],
           "fact_ids": [
+            "economic_impact.median_real_earnings_growth",
+            "economic_impact.group_growth_spread_ppts",
             "economic_impact.productivity_growth",
-            "economic_impact.real_output_growth",
-            "economic_impact.real_compensation_growth",
-            "economic_impact.unit_labor_cost_growth"
+            "economic_impact.real_output_growth"
           ],
           "field": "body",
-          "text": "Nonfarm-business productivity grew 2.2% as real output rose 2.5%. Real hourly compensation increased 0.6%, while unit labor costs grew 1.4%, indicating positive aggregate performance without a comparable increase in real compensation. A report that investors are pricing in a 32.6% AI productivity boost for software engineers describes an expectation for a specific workforce segment, not an economy-wide result. The current aggregate data do not identify AI's contribution."
+          "text": "Nonfarm-business productivity grew 2.2% as real output rose 2.5%, but median real weekly earnings growth slowed materially to 0.1%. The cross-group real-earnings growth spread narrowed slightly to 3.0 percentage points. Output and productivity growth have not been matched by comparably strong median earnings growth in these readings, although the aggregate measures do not identify AI\u2019s contribution."
         }
       ],
       "domain": "economic_impact",
-      "evidence_snapshot_id": "e5d67c6eefd0e495930187af",
-      "generated_at": "2026-09-29T18:13:49.080331+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "Productivity is rising, but compensation gains remain modest",
+      "headline": "Productivity and output grow while median real earnings barely rise",
       "label": "Economic Outcomes",
       "references": [
         {
@@ -2421,57 +2437,50 @@
         {
           "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
-        },
-        {
-          "source_label": "The Register",
-          "source_url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOMjloX3d1UGp1Rl9NVHF4VUZKSFgzZGczcHFaYzRhdldndUgxb3lUMVRtM3B4ektCallCY0U1YjhwOE1hNk9semw5ZGZDTVlPYXZJbktJSl9rUnpZSUNXNHRpanBseGRrelN5cThwc2FuQ3g4MWJ1UnhvejBYbXVBZUdGRE5EMlVsQnY3SHJOdXJJR0RhbDNpblBTQnhVWmV3YVI4RXZkQXphWWxERGJab200VllJQUZnUEl3Q0NvNFMtMjQ0REpjczBGN3g?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers.",
+      "analysis": "The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system.",
       "analysis_sentences": [
-        "SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025.",
-        "The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure.",
-        "Cambridge data put the five-year pooled net annualized U.S.",
-        "private-equity return after fees at 11.7%, compared with 8.7% in the latest full year.",
-        "Meanwhile, Reuters reported record-high default-insurance levels for U.S.",
-        "technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds.",
-        "The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers."
+        "The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months.",
+        "Lender strain edged up to 16.0, while borrower strain is 26.0.",
+        "CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns.",
+        "Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-15-f129bad0f05e",
-            "auto-2026-10-15-1548ca166303"
+            "auto-2026-10-15-bde49f15ce34",
+            "auto-2026-10-16-d73bfbb1ecdf"
           ],
           "fact_ids": [
-            "finance.pe_fund_net_assets_b"
+            "finance.nfci_change"
           ],
           "field": "headline",
-          "text": "Private-equity scale contrasts with stress in AI-linked credit"
+          "text": "The NFCI edges higher as reports flag CoreWeave credit stress"
         },
         {
           "event_ids": [
-            "auto-2026-10-15-f129bad0f05e",
-            "auto-2026-10-15-1548ca166303"
+            "auto-2026-10-15-bde49f15ce34",
+            "auto-2026-10-16-d73bfbb1ecdf"
           ],
           "fact_ids": [
-            "finance.pe_fund_net_assets_b",
-            "finance.pe_fund_net_assets_period",
-            "finance.pe_5y_annualized_net_pct",
-            "finance.pe_1y_net_pct"
+            "finance.lender_strain",
+            "finance.nfci",
+            "finance.nfci_change",
+            "finance.borrower_strain"
           ],
           "field": "body",
-          "text": "SEC Form PF data put reported private-equity fund net assets at $8.523 trillion as of December 31, 2025. The figure measures net assets rather than liquid cash and does not show how much capital is available for AI infrastructure. Cambridge data put the five-year pooled net annualized U.S. private-equity return after fees at 11.7%, compared with 8.7% in the latest full year. Meanwhile, Reuters reported record-high default-insurance levels for U.S. technology debt amid AI credit concerns, and the Financial Times reported selling in data-center bonds. The scale of private equity therefore should not be confused with easy financing for individual AI-infrastructure borrowers."
+          "text": "The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "d74c392645ad1092893b84fe",
-      "generated_at": "2026-10-19T16:05:17.237639+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "Private-equity scale contrasts with stress in AI-linked credit",
+      "headline": "The NFCI edges higher as reports flag CoreWeave credit stress",
       "label": "Finance",
       "references": [
         {
@@ -2523,12 +2532,12 @@
           "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
         },
         {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOa21Bbk9kN3JUMWZXLWNLVWFlRkQ1dDFSYnRQQzBRNDVudTYtaDhjcjcyenBQM0prdHlYY2ZxY25fZzdYQk9FYkh1N043NW83amxZbHVvZUxYUXk5YnVtR3NtaXdPMFFNa3Z4UUpYdWlXQzhmbjV2bF96TktQQ3VNOFFhLWMtcUE2NllOMzNsN3I?oc=5"
+          "source_label": "CNBC",
+          "source_url": "https://www.cnbc.com/2026/10/15/coreweave-credit-default-swaps-hit-distress-levels-as-investors-sour-on-ai-debt.html"
         },
         {
-          "source_label": "Financial Times",
-          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNeHNjZE1aMG8wWVBHLW9UeG15T3RSZzdSOFR4WGN5SEtyWTI2Y1g1MWtSUFZkYUFKc2QtS01JN2lHSW82bjdqVWNjV0w1WVNMU1B2U1BLZlB6QkpLc1ZSTUE4Ry1EMzVRa3RUT1J3azFYRjZnNVpTY0c5WERPV2thSlp4MkE?oc=5"
+          "source_label": "Morningstar",
+          "source_url": "https://www.morningstar.com/bonds/coreweave-data-center-bonds-slide-capex-debt-overhang-concerns"
         }
       ],
       "version": "6.1.0"
@@ -2605,42 +2614,46 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Upstream activity remains strong, but capital-market support is less uniform. Semiconductor and electronic-component output is growing 19.9%, and available records show 1,556 data-center sites in development, about half the number operating. At the same time, the AI Equity Index eased to 30.5, the median one-year return slipped to 11.8%, and positive-return breadth fell materially to 60.3% of covered companies. Reports that CoreWeave credit-default swaps reached distress levels and that data-center bonds weakened on debt and capital-spending concerns show that financing anxiety extends beyond equities, even though the operating and project data do not indicate a general halt in investment. Power data show why planned scale should not be read as delivery. Net planned generation additions total 225.2 GW, while 2,061 GW sits in active interconnection queues. Only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Local approvals create separate uncertainty. The reported Lordstown outcome, involving a proposal submitted days before a moratorium, illustrates how a data-center project can be proposed without securing a completed site-plan review. Downstream measures remain less conclusive. Businesses reporting current AI use account for 23.8%, while 27.7% expect to use it within six months, compared with 61.8% of adults ages 18\u201364 reporting some generative-AI use. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but real hourly compensation is growing 0.6%, and only one tracked AI-linked labor channel shows positive employment growth. None of these aggregate measures isolates AI\u2019s effect. Together they leave the evidence for infrastructure investment and adoption clearer than the evidence for broadly distributed economic gains.",
+      "analysis": "Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction. The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity. Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation. Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains.",
       "analysis_paragraphs": [
-        "Upstream activity remains strong, but capital-market support is less uniform. Semiconductor and electronic-component output is growing 19.9%, and available records show 1,556 data-center sites in development, about half the number operating. At the same time, the AI Equity Index eased to 30.5, the median one-year return slipped to 11.8%, and positive-return breadth fell materially to 60.3% of covered companies. Reports that CoreWeave credit-default swaps reached distress levels and that data-center bonds weakened on debt and capital-spending concerns show that financing anxiety extends beyond equities, even though the operating and project data do not indicate a general halt in investment.",
-        "Power data show why planned scale should not be read as delivery. Net planned generation additions total 225.2 GW, while 2,061 GW sits in active interconnection queues. Only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Local approvals create separate uncertainty. The reported Lordstown outcome, involving a proposal submitted days before a moratorium, illustrates how a data-center project can be proposed without securing a completed site-plan review.",
-        "Downstream measures remain less conclusive. Businesses reporting current AI use account for 23.8%, while 27.7% expect to use it within six months, compared with 61.8% of adults ages 18\u201364 reporting some generative-AI use. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but real hourly compensation is growing 0.6%, and only one tracked AI-linked labor channel shows positive employment growth. None of these aggregate measures isolates AI\u2019s effect. Together they leave the evidence for infrastructure investment and adoption clearer than the evidence for broadly distributed economic gains."
+        "Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.",
+        "The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.",
+        "Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.",
+        "Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains."
       ],
       "analysis_sentences": [
-        "Upstream activity remains strong, but capital-market support is less uniform.",
-        "Semiconductor and electronic-component output is growing 19.9%, and available records show 1,556 data-center sites in development, about half the number operating.",
-        "At the same time, the AI Equity Index eased to 30.5, the median one-year return slipped to 11.8%, and positive-return breadth fell materially to 60.3% of covered companies.",
-        "Reports that CoreWeave credit-default swaps reached distress levels and that data-center bonds weakened on debt and capital-spending concerns show that financing anxiety extends beyond equities, even though the operating and project data do not indicate a general halt in investment.",
-        "Power data show why planned scale should not be read as delivery.",
-        "Net planned generation additions total 225.2 GW, while 2,061 GW sits in active interconnection queues.",
-        "Only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation.",
-        "Local approvals create separate uncertainty.",
-        "The reported Lordstown outcome, involving a proposal submitted days before a moratorium, illustrates how a data-center project can be proposed without securing a completed site-plan review.",
-        "Downstream measures remain less conclusive.",
-        "Businesses reporting current AI use account for 23.8%, while 27.7% expect to use it within six months, compared with 61.8% of adults ages 18\u201364 reporting some generative-AI use.",
-        "Nonfarm-business productivity is growing 2.2% and real output 2.5%, but real hourly compensation is growing 0.6%, and only one tracked AI-linked labor channel shows positive employment growth.",
-        "None of these aggregate measures isolates AI\u2019s effect.",
-        "Together they leave the evidence for infrastructure investment and adoption clearer than the evidence for broadly distributed economic gains."
+        "Public-equity measures improved.",
+        "The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns.",
+        "Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns.",
+        "The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.",
+        "The physical project pipeline remains large.",
+        "Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites.",
+        "Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia.",
+        "The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.",
+        "Power remains central to converting that pipeline into operating capacity.",
+        "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW.",
+        "Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation.",
+        "Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.",
+        "Downstream evidence is improving slowly.",
+        "Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months.",
+        "Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%.",
+        "Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%.",
+        "These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-20-095ab92b9aa4"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "compute.semiconductor_output_growth",
-            "data_center.development_sites",
             "market.positive_breadth",
+            "market.median_return",
             "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
+            "grid_storage.historical_operational_pct",
+            "workforce.employment_breadth",
+            "economic_impact.median_real_earnings_growth",
+            "economic_impact.group_growth_spread_ppts"
           ],
           "field": "headline",
-          "text": "The AI buildout remains large as market breadth narrows and execution remains uncertain"
+          "text": "Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven"
         },
         {
           "event_ids": [
@@ -2648,70 +2661,84 @@
             "auto-2026-10-16-d73bfbb1ecdf"
           ],
           "fact_ids": [
-            "compute.semiconductor_output_growth",
-            "data_center.operating_sites",
-            "data_center.development_sites",
-            "data_center.development_to_operating",
             "market.aei",
+            "market.positive_breadth",
             "market.median_return",
-            "market.positive_breadth"
+            "finance.nfci",
+            "finance.nfci_change"
           ],
           "field": "paragraphs[0]",
-          "text": "Upstream activity remains strong, but capital-market support is less uniform. Semiconductor and electronic-component output is growing 19.9%, and available records show 1,556 data-center sites in development, about half the number operating. At the same time, the AI Equity Index eased to 30.5, the median one-year return slipped to 11.8%, and positive-return breadth fell materially to 60.3% of covered companies. Reports that CoreWeave credit-default swaps reached distress levels and that data-center bonds weakened on debt and capital-spending concerns show that financing anxiety extends beyond equities, even though the operating and project data do not indicate a general halt in investment."
+          "text": "Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction."
         },
         {
           "event_ids": [
-            "auto-2026-10-20-095ab92b9aa4"
+            "auto-2026-10-21-7c1fb7166fd9"
           ],
           "fact_ids": [
+            "data_center.operating_sites",
+            "data_center.development_sites",
+            "data_center.development_to_operating",
+            "data_center.tracked_pipeline_sites"
+          ],
+          "field": "paragraphs[1]",
+          "text": "The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity."
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-19-02e84ddf1742"
+          ],
+          "fact_ids": [
+            "power.demand_growth",
+            "power.commercial_growth",
             "power.planned_net_gw",
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
             "grid_storage.historical_operational_pct"
           ],
-          "field": "paragraphs[1]",
-          "text": "Power data show why planned scale should not be read as delivery. Net planned generation additions total 225.2 GW, while 2,061 GW sits in active interconnection queues. Only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Local approvals create separate uncertainty. The reported Lordstown outcome, involving a proposal submitted days before a moratorium, illustrates how a data-center project can be proposed without securing a completed site-plan review."
+          "field": "paragraphs[2]",
+          "text": "Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation."
         },
         {
           "event_ids": [],
           "fact_ids": [
             "adoption.current_business_use_pct",
             "adoption.expected_business_use_pct",
-            "adoption.consumer_overall_pct",
+            "workforce.employment_breadth",
+            "workforce.strongest_channel",
+            "workforce.strongest_channel_growth",
+            "economic_impact.median_real_earnings_growth",
             "economic_impact.productivity_growth",
-            "economic_impact.real_output_growth",
-            "economic_impact.real_compensation_growth",
-            "workforce.employment_breadth"
+            "economic_impact.real_output_growth"
           ],
-          "field": "paragraphs[2]",
-          "text": "Downstream measures remain less conclusive. Businesses reporting current AI use account for 23.8%, while 27.7% expect to use it within six months, compared with 61.8% of adults ages 18\u201364 reporting some generative-AI use. Nonfarm-business productivity is growing 2.2% and real output 2.5%, but real hourly compensation is growing 0.6%, and only one tracked AI-linked labor channel shows positive employment growth. None of these aggregate measures isolates AI\u2019s effect. Together they leave the evidence for infrastructure investment and adoption clearer than the evidence for broadly distributed economic gains."
+          "field": "paragraphs[3]",
+          "text": "Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "compute.semiconductor_output_growth",
-          "label": "Semiconductor and electronic component output growth",
-          "value": "19.9%"
-        },
-        {
-          "context": "",
-          "fact_id": "data_center.development_sites",
-          "label": "Sites in development in available project records",
-          "value": "1,556"
-        },
-        {
-          "context": "",
           "fact_id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": "60.3%"
+          "value": "61.3%"
+        },
+        {
+          "context": "",
+          "fact_id": "market.median_return",
+          "label": "Median one-year return",
+          "value": "13.6%"
+        },
+        {
+          "context": "",
+          "fact_id": "grid_storage.advanced_share",
+          "label": "Queue share in executed-agreement or construction stages",
+          "value": "24.2%"
         }
       ],
-      "evidence_snapshot_id": "26bef1dcb7fe726929e547ef",
-      "generated_at": "2026-10-20T16:56:55.785280+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "The AI buildout remains large as market breadth narrows and execution remains uncertain",
+      "headline": "Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven",
       "label": "AI Macro",
       "references": [
         {
@@ -2723,25 +2750,25 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "Federal Reserve G.17",
-          "source_url": "https://www.federalreserve.gov/releases/g17/current/"
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
         },
         {
-          "source_label": "BEA Fixed Assets",
-          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
+          "source_label": "Chicago Fed NFCI",
+          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
         },
         {
-          "source_label": "Census Construction Spending",
-          "source_url": "https://www.census.gov/constructionspending"
+          "source_label": "New York Fed CMDI",
+          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
         },
         {
-          "source_label": "Primary project disclosures",
-          "source_url": ""
+          "source_label": "Microsoft FY2026 Q3 AI disclosure",
+          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
         }
       ],
       "selected_domains": [
         "market",
-        "compute",
+        "finance",
         "data_center",
         "power",
         "grid_storage",
@@ -2752,39 +2779,39 @@
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index eased to 30.5 and the median one-year return slipped to 11.8%. More importantly, the share of covered companies with positive one-year returns fell materially to 60.3%, while average sector trading pressure edged up to 48.0. This is not a broad reversal\u2014most covered companies are still positive over one year\u2014but returns are becoming less widely shared as trading pressure firms.",
+      "analysis": "The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental.",
       "analysis_sentences": [
-        "The AI Equity Index eased to 30.5 and the median one-year return slipped to 11.8%.",
-        "More importantly, the share of covered companies with positive one-year returns fell materially to 60.3%, while average sector trading pressure edged up to 48.0.",
-        "This is not a broad reversal\u2014most covered companies are still positive over one year\u2014but returns are becoming less widely shared as trading pressure firms."
+        "The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%.",
+        "The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9.",
+        "Most covered companies are now positive over one year, although the improvement in breadth remains incremental."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "market.aei",
-            "market.positive_breadth"
+            "market.positive_breadth",
+            "market.median_return"
           ],
           "field": "headline",
-          "text": "AI equity breadth retreats even as most covered companies remain positive"
+          "text": "AI equity breadth improves as the median return rises"
         },
         {
           "event_ids": [],
           "fact_ids": [
             "market.aei",
-            "market.median_return",
+            "market.pressure",
             "market.positive_breadth",
-            "market.pressure"
+            "market.median_return"
           ],
           "field": "body",
-          "text": "The AI Equity Index eased to 30.5 and the median one-year return slipped to 11.8%. More importantly, the share of covered companies with positive one-year returns fell materially to 60.3%, while average sector trading pressure edged up to 48.0. This is not a broad reversal\u2014most covered companies are still positive over one year\u2014but returns are becoming less widely shared as trading pressure firms."
+          "text": "The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "26bef1dcb7fe726929e547ef",
-      "generated_at": "2026-10-20T16:56:55.785280+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "AI equity breadth retreats even as most covered companies remain positive",
+      "headline": "AI equity breadth improves as the median return rises",
       "label": "Market",
       "references": [
         {
@@ -2799,44 +2826,44 @@
       "version": "6.1.0"
     },
     "power": {
-      "analysis": "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply. Utility Dive also reported on Google\u2019s virtual power plant in PJM. That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance.",
+      "analysis": "Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation.",
       "analysis_sentences": [
-        "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%.",
-        "Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply.",
-        "Utility Dive also reported on Google\u2019s virtual power plant in PJM.",
-        "That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance."
+        "Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%.",
+        "Net planned generation additions total 225.2 GW.",
+        "Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy.",
+        "The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-19-5f7421258ee9"
+            "auto-2026-10-19-02e84ddf1742"
           ],
           "fact_ids": [
-            "power.commercial_growth",
-            "power.demand_growth"
+            "power.demand_growth",
+            "power.commercial_growth"
           ],
           "field": "headline",
-          "text": "Commercial demand leads electricity growth while Utility Dive reports on Google\u2019s virtual power plant in PJM"
+          "text": "Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact"
         },
         {
           "event_ids": [
-            "auto-2026-10-19-5f7421258ee9"
+            "auto-2026-10-19-02e84ddf1742"
           ],
           "fact_ids": [
-            "power.commercial_growth",
             "power.demand_growth",
-            "power.retail_price_growth",
-            "power.planned_net_gw"
+            "power.commercial_growth",
+            "power.planned_net_gw",
+            "power.retail_price_growth"
           ],
           "field": "body",
-          "text": "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW, but this is pipeline capacity rather than delivered supply. Utility Dive also reported on Google\u2019s virtual power plant in PJM. That introduces a different type of grid project into the power picture, although the report does not establish its scale or effect on PJM\u2019s supply-demand balance."
+          "text": "Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation."
         }
       ],
       "domain": "power",
-      "evidence_snapshot_id": "13ee259742338d8062e79c98",
-      "generated_at": "2026-10-19T16:49:51.625253+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "Commercial demand leads electricity growth while Utility Dive reports on Google\u2019s virtual power plant in PJM",
+      "headline": "Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact",
       "label": "Power",
       "references": [
         {
@@ -2853,29 +2880,28 @@
         },
         {
           "source_label": "Utility Dive",
-          "source_url": "https://www.utilitydive.com/news/what-googles-virtual-power-plant-in-pjm-says-about-the-race-for-electricit/833290/"
+          "source_url": "https://www.utilitydive.com/news/aep-signs-advanced-960-mw-nuclear-amazon-x-energy/833341/"
         }
       ],
       "version": "6.1.0"
     },
     "water": {
-      "analysis": "Of campuses with county drought data, 280, or 19.5%, are in counties where at least 25% of the area is under D2-or-worse drought; both the count and share decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 345 campuses, or 24.1%, and decreased slightly. These measures track county geography, not campus water consumption or the exact location of drought within a county.",
+      "analysis": "Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site.",
       "analysis_sentences": [
-        "Of campuses with county drought data, 280, or 19.5%, are in counties where at least 25% of the area is under D2-or-worse drought; both the count and share decreased materially.",
-        "The broader screen\u2014any D2-or-worse area in the county\u2014covers 345 campuses, or 24.1%, and decreased slightly.",
-        "These measures track county geography, not campus water consumption or the exact location of drought within a county."
+        "Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought.",
+        "Both measures decreased materially.",
+        "The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline.",
+        "These are measures of county geography, not campus water consumption or conditions at the precise site."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "water.campuses_in_counties_with_d2_area",
-            "water.campuses_in_counties_with_d2_share_pct",
             "water.campuses_in_counties_with_25pct_d2_area",
             "water.campuses_in_counties_with_25pct_d2_share_pct"
           ],
           "field": "headline",
-          "text": "County-level drought exposure recedes among tracked campuses"
+          "text": "Drought exposure falls materially at the higher county threshold"
         },
         {
           "event_ids": [],
@@ -2886,14 +2912,14 @@
             "water.campuses_in_counties_with_25pct_d2_share_pct"
           ],
           "field": "body",
-          "text": "Of campuses with county drought data, 280, or 19.5%, are in counties where at least 25% of the area is under D2-or-worse drought; both the count and share decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 345 campuses, or 24.1%, and decreased slightly. These measures track county geography, not campus water consumption or the exact location of drought within a county."
+          "text": "Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site."
         }
       ],
       "domain": "water",
-      "evidence_snapshot_id": "92f2b739b543645142f20835",
-      "generated_at": "2026-10-15T17:05:23.685934+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "County-level drought exposure recedes among tracked campuses",
+      "headline": "Drought exposure falls materially at the higher county threshold",
       "label": "Water",
       "references": [
         {
@@ -2920,39 +2946,40 @@
       "version": "6.1.0"
     },
     "workforce": {
-      "analysis": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel.",
+      "analysis": "Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth.",
       "analysis_sentences": [
-        "Only one tracked AI-linked labor channel has positive employment growth.",
-        "Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration.",
-        "Positive real-earnings growth is present in two channels.",
-        "Employment gains are therefore confined to a single tracked channel."
+        "Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%.",
+        "Two channels have positive real-earnings growth.",
+        "The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "workforce.employment_breadth"
+            "workforce.employment_breadth",
+            "workforce.strongest_channel",
+            "workforce.strongest_channel_growth"
           ],
           "field": "headline",
-          "text": "AI-linked employment growth is confined to one tracked channel"
+          "text": "Employment growth remains confined to one tracked AI-linked channel"
         },
         {
           "event_ids": [],
           "fact_ids": [
             "workforce.employment_breadth",
+            "workforce.real_earnings_breadth",
             "workforce.strongest_channel",
-            "workforce.weakest_channel_growth",
-            "workforce.real_earnings_breadth"
+            "workforce.strongest_channel_growth"
           ],
           "field": "body",
-          "text": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction is the strongest, while the weakest tracked channel is contracting 4.7% after a material deterioration. Positive real-earnings growth is present in two channels. Employment gains are therefore confined to a single tracked channel."
+          "text": "Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth."
         }
       ],
       "domain": "workforce",
-      "evidence_snapshot_id": "1e0119a785d4e78984cd6c94",
-      "generated_at": "2026-10-17T18:45:46.170029+00:00",
+      "evidence_snapshot_id": "a3703066f26d12771878ba75",
+      "generated_at": "2026-10-22T17:13:02.567865+00:00",
       "generator": "openai",
-      "headline": "AI-linked employment growth is confined to one tracked channel",
+      "headline": "Employment growth remains confined to one tracked AI-linked channel",
       "label": "Workforce",
       "references": [
         {
@@ -2978,13 +3005,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 8,
+    "checked_passages": 21,
     "diagnostics": [
       {
-        "message": "Conspicuous same-initial word run detected: completed computing capacity Court",
-        "reason": "alliterative_run",
-        "scope": "data_center.body",
-        "text": "Available records list 1,556 sites in development against 3,068 operating sites, a ratio of 0.51, and separately track 894 active pipeline sites. The development and pipeline counts measure project volume, not completed computing capacity. Court News Ohio reported that Lordstown does not have to complete site-plan review for a proposed data center submitted days before the village imposed its moratorium. The case is local, but it shows that filing before a moratorium may not insulate a project from approval risk."
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[2]",
+        "text": "Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation."
       }
     ],
     "hard_errors": [],
