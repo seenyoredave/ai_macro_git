@@ -1,87 +1,71 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261022T171029712037Z_a3703066_cfae494f",
+  "attempt_id": "20261023T170632506559Z_8bc56f8a_ce9643d6",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
+    "compute",
     "data_center",
-    "power",
-    "grid_storage",
-    "water",
-    "adoption",
-    "workforce",
-    "economic_impact"
+    "grid_storage"
   ],
   "editorial_context_event_ids": [
     "auto-2026-10-20-095ab92b9aa4",
+    "auto-2026-10-20-301d05e1e0a9",
     "auto-2026-10-15-2014e74babb5",
     "auto-2026-10-15-bde49f15ce34",
-    "auto-2026-10-16-d73bfbb1ecdf",
     "auto-2026-10-15-0a42b0b901a6",
-    "auto-2026-10-16-f903651ff52a",
     "auto-2026-10-19-5f7421258ee9",
+    "auto-2026-10-21-dd64e69056ef",
     "auto-2026-10-19-02e84ddf1742",
+    "auto-2026-10-23-588f9aa6c841",
+    "auto-2026-10-21-1e7f326f2a4a",
     "auto-2026-10-21-7c1fb7166fd9",
     "auto-2026-10-19-3c077eba67dd",
-    "auto-2026-10-19-4518cbb06045",
+    "auto-2026-10-23-a8fb7d7fcbdc",
     "auto-2026-10-21-13a313eeebdb",
-    "auto-2026-10-21-36e2dc5e62aa",
-    "auto-2026-10-21-e2db26ca2538",
-    "auto-2026-10-18-eec0046156b6"
+    "auto-2026-10-21-36e2dc5e62aa"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
+      "compute",
       "data_center",
-      "power",
-      "grid_storage",
-      "water",
-      "adoption",
-      "workforce",
-      "economic_impact"
+      "grid_storage"
     ],
     "current_event_ids": [
       "auto-2026-10-20-095ab92b9aa4",
+      "auto-2026-10-20-301d05e1e0a9",
       "auto-2026-10-15-2014e74babb5",
       "auto-2026-10-15-bde49f15ce34",
-      "auto-2026-10-16-d73bfbb1ecdf",
       "auto-2026-10-15-0a42b0b901a6",
-      "auto-2026-10-16-f903651ff52a",
       "auto-2026-10-19-5f7421258ee9",
+      "auto-2026-10-21-dd64e69056ef",
       "auto-2026-10-19-02e84ddf1742",
+      "auto-2026-10-23-588f9aa6c841",
+      "auto-2026-10-21-1e7f326f2a4a",
       "auto-2026-10-21-7c1fb7166fd9",
       "auto-2026-10-19-3c077eba67dd",
-      "auto-2026-10-19-4518cbb06045",
+      "auto-2026-10-23-a8fb7d7fcbdc",
       "auto-2026-10-21-13a313eeebdb",
-      "auto-2026-10-21-36e2dc5e62aa",
-      "auto-2026-10-21-e2db26ca2538",
-      "auto-2026-10-18-eec0046156b6"
+      "auto-2026-10-21-36e2dc5e62aa"
     ],
     "material_domains": [
-      "market",
-      "finance",
-      "water",
-      "adoption",
-      "economic_impact"
+      "market"
     ],
     "new_event_domains": [
+      "finance",
+      "compute",
       "data_center",
-      "power",
-      "grid_storage",
-      "water",
-      "workforce"
+      "grid_storage"
     ],
     "new_event_ids": [
-      "auto-2026-10-19-02e84ddf1742",
-      "auto-2026-10-21-7c1fb7166fd9",
-      "auto-2026-10-19-3c077eba67dd",
-      "auto-2026-10-19-4518cbb06045",
-      "auto-2026-10-21-13a313eeebdb",
-      "auto-2026-10-21-36e2dc5e62aa",
-      "auto-2026-10-21-e2db26ca2538",
-      "auto-2026-10-18-eec0046156b6"
+      "auto-2026-10-20-301d05e1e0a9",
+      "auto-2026-10-21-dd64e69056ef",
+      "auto-2026-10-23-588f9aa6c841",
+      "auto-2026-10-21-1e7f326f2a4a",
+      "auto-2026-10-23-a8fb7d7fcbdc"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -90,11 +74,7 @@
     "market",
     "finance",
     "data_center",
-    "power",
-    "water",
-    "adoption",
-    "workforce",
-    "economic_impact"
+    "grid_storage"
   ],
   "evidence_packets": {
     "adoption": {
@@ -822,7 +802,7 @@
           "display": "26.0",
           "id": "finance.borrower_strain",
           "label": "Borrower strain",
-          "value": 25.957310081308705
+          "value": 26.01992883214274
         },
         {
           "context": "",
@@ -833,31 +813,31 @@
         },
         {
           "context": "",
-          "display": "1.42x",
+          "display": "1.39x",
           "id": "finance.internal_funding_coverage",
           "label": "Operating cash flow coverage of current CapEx",
-          "value": 1.4235570068984105
+          "value": 1.3930459959156807
         },
         {
           "context": "",
-          "display": "0.96 years",
+          "display": "0.92 years",
           "id": "finance.cash_reserve_coverage_years",
           "label": "Cash reserves relative to current CapEx",
-          "value": 0.9581958933673187
+          "value": 0.9152686799001748
         },
         {
           "context": "",
-          "display": "4.86x",
+          "display": "4.74x",
           "id": "finance.forward_commitment_load",
           "label": "Forward commitments relative to current CapEx",
-          "value": 4.857232432573818
+          "value": 4.737641092342464
         },
         {
           "context": "",
           "display": "0.4",
           "id": "finance.debt_financing_pulse",
           "label": "Definition-matched debt financing pulse",
-          "value": 0.44078894203573366
+          "value": 0.40487303936488317
         },
         {
           "context": "",
@@ -1178,14 +1158,14 @@
           "display": "2.8 hours",
           "id": "grid_storage.operating_storage_weighted_duration_hours",
           "label": "Weighted average duration of operating storage",
-          "value": 2.7613644585521695
+          "value": 2.7501450006304373
         },
         {
           "context": "",
-          "display": "46.1%",
+          "display": "45.5%",
           "id": "grid_storage.operating_storage_four_hour_plus_share_pct",
           "label": "Operating storage capacity with at least four hours duration",
-          "value": 46.12774499236587
+          "value": 45.546589332997094
         },
         {
           "context": "",
@@ -1226,52 +1206,52 @@
       "facts": [
         {
           "context": "",
-          "display": "31.8",
+          "display": "32.1",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 31.82936812738161
+          "value": 32.073707046961154
         },
         {
           "context": "",
           "display": "47.9",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 47.9107843037574
+          "value": 47.90469460302956
         },
         {
           "context": "",
-          "display": "61.3%",
+          "display": "60.8%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6127450980392157
+          "value": 0.6078431372549019
         },
         {
           "context": "",
-          "display": "13.6%",
+          "display": "10.3%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.13631108848640616
+          "value": 0.10347302630428523
         },
         {
           "context": "",
-          "display": "20.0%",
+          "display": "18.6%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.20018453409154752
+          "value": 0.18614729115684778
         },
         {
           "context": "",
-          "display": "65.0%",
+          "display": "64.8%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6498262871918313
+          "value": 0.6481147003023903
         },
         {
           "context": "",
-          "display": "18.1",
+          "display": "18.2",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.097100148360177
+          "value": 18.211298166967385
         },
         {
           "context": "",
@@ -1288,7 +1268,7 @@
           "value": 3.0
         }
       ],
-      "importance": 19.98262871918314,
+      "importance": 19.811470030239022,
       "label": "Market",
       "references": [
         {
@@ -1325,10 +1305,10 @@
         },
         {
           "context": "",
-          "display": "225.2 GW",
+          "display": "227.6 GW",
           "id": "power.planned_net_gw",
           "label": "Net planned generation additions through the pipeline horizon",
-          "value": 225.23700000000002
+          "value": 227.64059999999998
         },
         {
           "context": "",
@@ -1708,19 +1688,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "a3703066f26d12771878ba75",
-  "generated_at": "2026-10-22T17:13:02.568293+00:00",
+  "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
+  "generated_at": "2026-10-23T17:08:04.931487+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 152.841788441,
-      "input_tokens": 4832,
+      "elapsed_sec": 92.417944702,
+      "input_tokens": 4311,
       "model": "gpt-5.6-sol",
-      "output_tokens": 12506,
-      "poll_attempts": 71,
+      "output_tokens": 7556,
+      "poll_attempts": 41,
       "poll_errors": [],
-      "response_id": "resp_0778b3417e6fd6fd006ada4386988487d2bde9710f48b5238c",
+      "response_id": "resp_07caee2f30e08029006adb94195a9487d19973eefcdef057a5",
       "terminal_status": "completed",
-      "total_tokens": 17338
+      "total_tokens": 11867
     }
   },
   "max_output_tokens": null,
@@ -1731,11 +1711,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "a3703066f26d12771878ba75",
-    "expires_at": "2026-10-23T17:13:02.571334+00:00",
+    "current_evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
+    "expires_at": "2026-10-24T17:08:04.934470+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-10-22T17:13:02.571334+00:00",
+    "published_at": "2026-10-23T17:08:04.934470+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1743,24 +1723,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 71,
+        "poll_attempts": 41,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0778b3417e6fd6fd006ada4386988487d2bde9710f48b5238c",
+        "response_id": "resp_07caee2f30e08029006adb94195a9487d19973eefcdef057a5",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"AI equity breadth improves as the median return rises\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"The NFCI edges higher as reports flag CoreWeave credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.nfci_change\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure falls materially at the higher county threshold\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use rises, but near-term intentions continue to run ahead\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Employment growth remains confined to one tracked AI-linked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% as real output rose 2.5%, but median real weekly earnings growth slowed materially to 0.1%. The cross-group real-earnings growth spread narrowed slightly to 3.0 percentage points. Output and productivity growth have not been matched by comparably strong median earnings growth in these readings, although the aggregate measures do not identify AI\u2019s contribution.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]},\"headline\":{\"text\":\"Productivity and output grow while median real earnings barely rise\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"workforce.employment_breadth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\"]},\"paragraphs\":[{\"text\":\"Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.nfci\",\"finance.nfci_change\"]},{\"text\":\"The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"The equity index rises as the typical company\u2019s return weakens\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.39 times, though the ratio edged down. Cash reserves equal 0.92 years of current CapEx, also slightly lower, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx after a slight decline. The Financial Times reported a surge in default-insurance trading amid AI debt worries. The report reflects investor concern in credit markets rather than evidence of defaults across the sector.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Cash-flow coverage narrows as borrower strain edges higher\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A Texas permit-system shutdown adds uncertainty to a large data-center pipeline\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\"]},\"headline\":{\"text\":\"Most of the vast interconnection queue has not reached advanced stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Strong chip output contrasts with softer equity returns and limited grid maturity\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"market.median_return\",\"market.positive_breadth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},{\"text\":\"Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"compute.semiconductor_output_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1792689180.0,
+      "completed_at": 1792775283.0,
       "conversation": null,
-      "created_at": 1792689030.0,
+      "created_at": 1792775193.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0778b3417e6fd6fd006ada4386988487d2bde9710f48b5238c",
+      "id": "resp_07caee2f30e08029006adb94195a9487d19973eefcdef057a5",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1773,7 +1753,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43897ac887d29b5a5df51ffff94f",
+          "id": "rs_07caee2f30e08029006adb941babf887d18b5af5c6f9604dde",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1781,7 +1761,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada438fa03887d29d04cedef85aafb8",
+          "id": "rs_07caee2f30e08029006adb9421985487d1895ece3a9963eeab",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1789,7 +1769,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada4396b5b087d2850d6e2780e82e88",
+          "id": "rs_07caee2f30e08029006adb9428957487d1b9756de20c128220",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1797,7 +1777,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada439cf62087d2aa0c4b9f241347da",
+          "id": "rs_07caee2f30e08029006adb942f046487d1b1261f5b3ae2905c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1805,7 +1785,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43a3e3bc87d2bab5a6c3dc4f112e",
+          "id": "rs_07caee2f30e08029006adb9435c5d087d1b1d6ee89f3e5e94a",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1813,7 +1793,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43ab346087d2a12a56961ebe094d",
+          "id": "rs_07caee2f30e08029006adb943cc5d487d1b13c95b2a44340fb",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1821,7 +1801,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43b232d487d2b9323a9859403880",
+          "id": "rs_07caee2f30e08029006adb94432b5c87d1b5b8823e03fb5ade",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1829,7 +1809,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43b8a55087d28cdc200be11bcff0",
+          "id": "rs_07caee2f30e08029006adb9449b4c487d1a599bc1e820ca759",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1837,7 +1817,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43bf47f487d2858cc851a7676c38",
+          "id": "rs_07caee2f30e08029006adb94507a1887d183900a95528695a6",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1845,7 +1825,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43c5360087d2b3911cd2e719f86a",
+          "id": "rs_07caee2f30e08029006adb9457075087d1bcf931a563d158e9",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1853,7 +1833,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43cbb53887d2a5bb2f245690d725",
+          "id": "rs_07caee2f30e08029006adb945d0de887d1a7a226e7125b4219",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1861,71 +1841,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43d2409c87d2a702fb776ebd26fb",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43d862f087d292dc66043656a210",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43df376c87d2a991d03650a253d4",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43e7745887d29e85430fded23216",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43ecf1d087d291f7e82589a84106",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43f3808087d2a3e7e0552e1dc151",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43f9d63887d296dbfbef0d856594",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada43ffc82087d2bf2ac0179211c61a",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_0778b3417e6fd6fd006ada44073d6c87d29f7dd1db829f7495",
+          "id": "rs_07caee2f30e08029006adb94632e8087d1ac3178a0e3ba09bb",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1935,11 +1851,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"AI equity breadth improves as the median return rises\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"The NFCI edges higher as reports flag CoreWeave credit stress\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"finance.nfci_change\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure falls materially at the higher county threshold\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use rises, but near-term intentions continue to run ahead\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"Employment growth remains confined to one tracked AI-linked channel\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% as real output rose 2.5%, but median real weekly earnings growth slowed materially to 0.1%. The cross-group real-earnings growth spread narrowed slightly to 3.0 percentage points. Output and productivity growth have not been matched by comparably strong median earnings growth in these readings, although the aggregate measures do not identify AI\u2019s contribution.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]},\"headline\":{\"text\":\"Productivity and output grow while median real earnings barely rise\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\",\"workforce.employment_breadth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.group_growth_spread_ppts\"]},\"paragraphs\":[{\"text\":\"Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.\",\"event_ids\":[\"auto-2026-10-15-bde49f15ce34\",\"auto-2026-10-16-d73bfbb1ecdf\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.nfci\",\"finance.nfci_change\"]},{\"text\":\"The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.\",\"event_ids\":[\"auto-2026-10-19-02e84ddf1742\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.median_real_earnings_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"The equity index rises as the typical company\u2019s return weakens\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.39 times, though the ratio edged down. Cash reserves equal 0.92 years of current CapEx, also slightly lower, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx after a slight decline. The Financial Times reported a surge in default-insurance trading amid AI debt worries. The report reflects investor concern in credit markets rather than evidence of defaults across the sector.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Cash-flow coverage narrows as borrower strain edges higher\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A Texas permit-system shutdown adds uncertainty to a large data-center pipeline\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\"]},\"headline\":{\"text\":\"Most of the vast interconnection queue has not reached advanced stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Strong chip output contrasts with softer equity returns and limited grid maturity\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"market.median_return\",\"market.positive_breadth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},{\"text\":\"Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"compute.semiconductor_output_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0778b3417e6fd6fd006ada440aff4887d28848850a7383d989",
+          "id": "msg_07caee2f30e08029006adb9469330887d190e7c790c30b0228",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2112,16 +2028,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4832,
+        "input_tokens": 4311,
         "input_tokens_details": {
-          "cache_write_tokens": 4829,
+          "cache_write_tokens": 4308,
           "cached_tokens": 0
         },
-        "output_tokens": 12506,
+        "output_tokens": 7556,
         "output_tokens_details": {
-          "reasoning_tokens": 10122
+          "reasoning_tokens": 6138
         },
-        "total_tokens": 17338
+        "total_tokens": 11867
       },
       "user": null
     }
@@ -2308,42 +2224,43 @@
       "version": "6.1.0"
     },
     "data_center": {
-      "analysis": "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity.",
+      "analysis": "Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking.",
       "analysis_sentences": [
-        "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites.",
-        "Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia.",
-        "A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity."
+        "Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites.",
+        "The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute.",
+        "The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-21-7c1fb7166fd9"
+            "auto-2026-10-21-dd64e69056ef"
           ],
           "fact_ids": [
-            "data_center.development_sites"
+            "data_center.development_sites",
+            "data_center.tracked_pipeline_sites"
           ],
           "field": "headline",
-          "text": "Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline"
+          "text": "A Texas permit-system shutdown adds uncertainty to a large data-center pipeline"
         },
         {
           "event_ids": [
-            "auto-2026-10-21-7c1fb7166fd9"
+            "auto-2026-10-21-dd64e69056ef"
           ],
           "fact_ids": [
-            "data_center.operating_sites",
             "data_center.development_sites",
+            "data_center.operating_sites",
             "data_center.development_to_operating",
             "data_center.tracked_pipeline_sites"
           ],
           "field": "body",
-          "text": "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics reported that Amazon withdrew its application for a data-center campus at the GWU site in Ashburn, Virginia. A single withdrawal does not establish a broad contraction, but it illustrates why project counts should not be treated as completed capacity."
+          "text": "Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking."
         }
       ],
       "domain": "data_center",
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
+      "generated_at": "2026-10-23T17:08:04.931156+00:00",
       "generator": "openai",
-      "headline": "Amazon\u2019s Ashburn withdrawal illustrates project attrition alongside a large pipeline",
+      "headline": "A Texas permit-system shutdown adds uncertainty to a large data-center pipeline",
       "label": "Data Centers",
       "references": [
         {
@@ -2367,8 +2284,8 @@
           "source_url": ""
         },
         {
-          "source_label": "Data Center Dynamics",
-          "source_url": "https://www.datacenterdynamics.com/en/news/amazon-withdraws-application-for-data-center-campus-at-gwu-site-in-ashburn-virginia/"
+          "source_label": "The Texas Tribune",
+          "source_url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1OTmNhTjFVOG9IcC1CMEhhN282YXNYTm92YVY0bkxXRUR1Rk0wVU9ucVRlZDI0eklkb1pmRzFFRkF0cUV1WVdUanR3NGU0djJLQ1U5LTZuR1RiTUFyQ3g4TEF1Y2tFWC1PU2Ffcmd5em16VU9KcWhhNG13OA?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2442,45 +2359,43 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system.",
+      "analysis": "Operating cash flow covers current capital spending 1.39 times, though the ratio edged down. Cash reserves equal 0.92 years of current CapEx, also slightly lower, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx after a slight decline. The Financial Times reported a surge in default-insurance trading amid AI debt worries. The report reflects investor concern in credit markets rather than evidence of defaults across the sector.",
       "analysis_sentences": [
-        "The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months.",
-        "Lender strain edged up to 16.0, while borrower strain is 26.0.",
-        "CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns.",
-        "Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system."
+        "Operating cash flow covers current capital spending 1.39 times, though the ratio edged down.",
+        "Cash reserves equal 0.92 years of current CapEx, also slightly lower, while borrower strain rose to 26.0.",
+        "Forward commitments stand at 4.74 times current CapEx after a slight decline.",
+        "The Financial Times reported a surge in default-insurance trading amid AI debt worries.",
+        "The report reflects investor concern in credit markets rather than evidence of defaults across the sector."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-15-bde49f15ce34",
-            "auto-2026-10-16-d73bfbb1ecdf"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "finance.nfci_change"
+            "finance.internal_funding_coverage",
+            "finance.borrower_strain"
           ],
           "field": "headline",
-          "text": "The NFCI edges higher as reports flag CoreWeave credit stress"
+          "text": "Cash-flow coverage narrows as borrower strain edges higher"
         },
         {
           "event_ids": [
-            "auto-2026-10-15-bde49f15ce34",
-            "auto-2026-10-16-d73bfbb1ecdf"
+            "auto-2026-10-20-301d05e1e0a9"
           ],
           "fact_ids": [
-            "finance.lender_strain",
-            "finance.nfci",
-            "finance.nfci_change",
-            "finance.borrower_strain"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.borrower_strain",
+            "finance.forward_commitment_load"
           ],
           "field": "body",
-          "text": "The Chicago Fed NFCI stands at -0.50 after rising 0.03 over three months. Lender strain edged up to 16.0, while borrower strain is 26.0. CNBC reported that CoreWeave credit-default swaps reached distress levels, and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. Those reports identify pressure in particular AI-linked credits, but they do not show that the same stress applies across borrowers or the financial system."
+          "text": "Operating cash flow covers current capital spending 1.39 times, though the ratio edged down. Cash reserves equal 0.92 years of current CapEx, also slightly lower, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx after a slight decline. The Financial Times reported a surge in default-insurance trading amid AI debt worries. The report reflects investor concern in credit markets rather than evidence of defaults across the sector."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
+      "generated_at": "2026-10-23T17:08:04.931156+00:00",
       "generator": "openai",
-      "headline": "The NFCI edges higher as reports flag CoreWeave credit stress",
+      "headline": "Cash-flow coverage narrows as borrower strain edges higher",
       "label": "Finance",
       "references": [
         {
@@ -2532,58 +2447,49 @@
           "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
         },
         {
-          "source_label": "CNBC",
-          "source_url": "https://www.cnbc.com/2026/10/15/coreweave-credit-default-swaps-hit-distress-levels-as-investors-sour-on-ai-debt.html"
-        },
-        {
-          "source_label": "Morningstar",
-          "source_url": "https://www.morningstar.com/bonds/coreweave-data-center-bonds-slide-capex-debt-overhang-concerns"
+          "source_label": "Financial Times",
+          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPcnJ5Z2tYWDBsbGxSQVVDSDNiN3ZBTldqMWZieW00MC03RU9LMldmc01NYnJwZ3FIUUVvOEp6aHVGdll5SmpxMkpweV8zNWpJemJHWU5OQlQwb2hEYjY2cFBZQUlxcmlVTTBUOUQyeTRoNTdLQkIwRm83dnR4OGtRUWxPLXo?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "grid_storage": {
-      "analysis": "The active interconnection queue remains 2,061 GW, but only 24.2% is at executed-agreement or construction stages. Storage accounts for 552.7 GW, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive reported that FERC rejected most of PJM\u2019s large-load interconnection plan, days after PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Individual projects can advance even while rules for larger-load connections remain unsettled; the decisions do not alter the low historical conversion rate.",
+      "analysis": "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages.",
       "analysis_sentences": [
-        "The active interconnection queue remains 2,061 GW, but only 24.2% is at executed-agreement or construction stages.",
-        "Storage accounts for 552.7 GW, and only 13% of the 2000\u20132020 queue cohort reached operation.",
-        "Utility Dive reported that FERC rejected most of PJM\u2019s large-load interconnection plan, days after PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power.",
-        "Individual projects can advance even while rules for larger-load connections remain unsettled; the decisions do not alter the low historical conversion rate."
+        "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages.",
+        "Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower.",
+        "RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework.",
+        "The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-12-d94f55135e99",
-            "auto-2026-10-09-15a67b7cd7fe"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "grid_storage.queue_gw",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
+            "grid_storage.advanced_share"
           ],
           "field": "headline",
-          "text": "Selective PJM decisions leave the broader queue constraint intact"
+          "text": "Most of the vast interconnection queue has not reached advanced stages"
         },
         {
           "event_ids": [
-            "auto-2026-10-12-d94f55135e99",
-            "auto-2026-10-09-15a67b7cd7fe"
+            "auto-2026-10-23-588f9aa6c841"
           ],
           "fact_ids": [
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
-            "grid_storage.storage_queue_gw",
-            "grid_storage.historical_operational_pct"
+            "grid_storage.operating_storage_weighted_duration_hours",
+            "grid_storage.operating_storage_four_hour_plus_share_pct"
           ],
           "field": "body",
-          "text": "The active interconnection queue remains 2,061 GW, but only 24.2% is at executed-agreement or construction stages. Storage accounts for 552.7 GW, and only 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive reported that FERC rejected most of PJM\u2019s large-load interconnection plan, days after PJM approved fast-track interconnection for 2.1 GW from Engie and LS Power. Individual projects can advance even while rules for larger-load connections remain unsettled; the decisions do not alter the low historical conversion rate."
+          "text": "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages."
         }
       ],
       "domain": "grid_storage",
-      "evidence_snapshot_id": "92f2b739b543645142f20835",
-      "generated_at": "2026-10-15T17:05:23.685934+00:00",
+      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
+      "generated_at": "2026-10-23T17:08:04.931156+00:00",
       "generator": "openai",
-      "headline": "Selective PJM decisions leave the broader queue constraint intact",
+      "headline": "Most of the vast interconnection queue has not reached advanced stages",
       "label": "Grid & Storage",
       "references": [
         {
@@ -2603,142 +2509,120 @@
           "source_url": "https://www.census.gov/constructionspending"
         },
         {
-          "source_label": "Utility Dive",
-          "source_url": "https://www.utilitydive.com/news/ferc-pjm-large-load-interconnection-iras-byonc/832716/"
-        },
-        {
-          "source_label": "Utility Dive",
-          "source_url": "https://www.utilitydive.com/news/engie-ls-power-pjm-expedited-interconnection-eit/832613/"
+          "source_label": "RTO Insider",
+          "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQakg1dE9QRjRybGNDM2R5bHpRVlRuZjBJT1l1YmZ5VC1sWmJNbHNxczNUdm01bXJYM3VTdDB5ckNlRndxZVA3QkhHbFlqelBGZlpVQ3ZwVGwtXzBsZTk2emw0QTVhREpzWE1mb0c0R3YxN1RGN1VUV0hqaWJIeGVPZUwyWm5yTGdYekFQM2kzaUNYdw?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction. The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity. Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation. Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains.",
+      "analysis": "Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break. Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown. The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage.",
       "analysis_paragraphs": [
-        "Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.",
-        "The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.",
-        "Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.",
-        "Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains."
+        "Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.",
+        "Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.",
+        "The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage."
       ],
       "analysis_sentences": [
-        "Public-equity measures improved.",
-        "The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns.",
-        "Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns.",
-        "The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction.",
-        "The physical project pipeline remains large.",
-        "Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites.",
-        "Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia.",
-        "The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity.",
-        "Power remains central to converting that pipeline into operating capacity.",
-        "Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW.",
-        "Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation.",
-        "Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation.",
-        "Downstream evidence is improving slowly.",
-        "Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months.",
-        "Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%.",
-        "Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%.",
-        "These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains."
+        "Equity performance has become less even.",
+        "The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%.",
+        "Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0.",
+        "Forward commitments stand at 4.74 times current CapEx.",
+        "The Financial Times also reported a surge in default-insurance trading amid AI debt worries.",
+        "These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.",
+        "Physical expansion remains substantial.",
+        "Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment.",
+        "Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites.",
+        "These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity.",
+        "The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.",
+        "The grid remains the clearest gap between scale and readiness.",
+        "The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction.",
+        "Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower.",
+        "RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled.",
+        "The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "market.positive_breadth",
+            "compute.semiconductor_output_growth",
             "market.median_return",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct",
-            "workforce.employment_breadth",
-            "economic_impact.median_real_earnings_growth",
-            "economic_impact.group_growth_spread_ppts"
+            "market.positive_breadth",
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share"
           ],
           "field": "headline",
-          "text": "Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven"
+          "text": "Strong chip output contrasts with softer equity returns and limited grid maturity"
         },
         {
           "event_ids": [
-            "auto-2026-10-15-bde49f15ce34",
-            "auto-2026-10-16-d73bfbb1ecdf"
+            "auto-2026-10-20-301d05e1e0a9"
           ],
           "fact_ids": [
             "market.aei",
-            "market.positive_breadth",
             "market.median_return",
-            "finance.nfci",
-            "finance.nfci_change"
+            "market.positive_breadth",
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.borrower_strain",
+            "finance.forward_commitment_load"
           ],
           "field": "paragraphs[0]",
-          "text": "Public-equity measures improved. The AI Equity Index edged up to 31.8, the median one-year return rose materially to 13.6%, and 61.3% of covered companies now have positive one-year returns. Credit signals are less uniform: the Chicago Fed NFCI is -0.50 after a 0.03 rise over three months, while CNBC reported distress-level pricing in CoreWeave credit-default swaps and Morningstar reported declines in CoreWeave and data-center bonds over debt and capital-spending concerns. The contrast is between broader equity gains and pressure in specific AI-infrastructure credits, rather than a single market-wide direction."
+          "text": "Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break."
         },
         {
           "event_ids": [
-            "auto-2026-10-21-7c1fb7166fd9"
+            "auto-2026-10-21-dd64e69056ef"
           ],
           "fact_ids": [
-            "data_center.operating_sites",
+            "compute.semiconductor_output_growth",
+            "compute.computer_output_growth",
             "data_center.development_sites",
-            "data_center.development_to_operating",
+            "data_center.operating_sites",
             "data_center.tracked_pipeline_sites"
           ],
           "field": "paragraphs[1]",
-          "text": "The physical project pipeline remains large. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites, and separately track 894 active pipeline sites. Data Center Dynamics also reported that Amazon withdrew its application for a campus in Ashburn, Virginia. The withdrawal is one instance rather than evidence of a broad slowdown, but it reinforces the distinction between a listed project and completed capacity."
+          "text": "Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown."
         },
         {
           "event_ids": [
-            "auto-2026-10-19-02e84ddf1742"
+            "auto-2026-10-23-588f9aa6c841"
           ],
           "fact_ids": [
-            "power.demand_growth",
-            "power.commercial_growth",
-            "power.planned_net_gw",
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
+            "grid_storage.operating_storage_weighted_duration_hours",
+            "grid_storage.operating_storage_four_hour_plus_share_pct",
+            "compute.semiconductor_output_growth"
           ],
           "field": "paragraphs[2]",
-          "text": "Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation."
-        },
-        {
-          "event_ids": [],
-          "fact_ids": [
-            "adoption.current_business_use_pct",
-            "adoption.expected_business_use_pct",
-            "workforce.employment_breadth",
-            "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "economic_impact.median_real_earnings_growth",
-            "economic_impact.productivity_growth",
-            "economic_impact.real_output_growth"
-          ],
-          "field": "paragraphs[3]",
-          "text": "Downstream evidence is improving slowly. Current business AI use edged up to 24.6%, while 28.6% of businesses expect use within six months. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction leading at 0.8%. Nonfarm-business productivity and real output are growing 2.2% and 2.5%, respectively, but median real weekly earnings growth is only 0.1%. These aggregate measures do not isolate AI\u2019s contribution, and the evidence for organizational deployment remains clearer than the evidence for broadly distributed labor gains."
+          "text": "The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "market.positive_breadth",
-          "label": "Covered companies with positive one-year returns",
-          "value": "61.3%"
+          "fact_id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth",
+          "value": "19.9%"
         },
         {
           "context": "",
           "fact_id": "market.median_return",
           "label": "Median one-year return",
-          "value": "13.6%"
+          "value": "10.3%"
         },
         {
           "context": "",
-          "fact_id": "grid_storage.advanced_share",
-          "label": "Queue share in executed-agreement or construction stages",
-          "value": "24.2%"
+          "fact_id": "market.positive_breadth",
+          "label": "Covered companies with positive one-year returns",
+          "value": "60.8%"
         }
       ],
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
+      "generated_at": "2026-10-23T17:08:04.931156+00:00",
       "generator": "openai",
-      "headline": "Equity breadth improves, but infrastructure delivery and broad economic gains remain uneven",
+      "headline": "Strong chip output contrasts with softer equity returns and limited grid maturity",
       "label": "AI Macro",
       "references": [
         {
@@ -2769,49 +2653,46 @@
       "selected_domains": [
         "market",
         "finance",
+        "compute",
         "data_center",
-        "power",
-        "grid_storage",
-        "adoption",
-        "workforce",
-        "economic_impact"
+        "grid_storage"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental.",
+      "analysis": "The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased.",
       "analysis_sentences": [
-        "The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%.",
-        "The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9.",
-        "Most covered companies are now positive over one year, although the improvement in breadth remains incremental."
+        "The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%.",
+        "Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9.",
+        "A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "market.positive_breadth",
+            "market.aei",
             "market.median_return"
           ],
           "field": "headline",
-          "text": "AI equity breadth improves as the median return rises"
+          "text": "The equity index rises as the typical company\u2019s return weakens"
         },
         {
           "event_ids": [],
           "fact_ids": [
             "market.aei",
-            "market.pressure",
+            "market.median_return",
             "market.positive_breadth",
-            "market.median_return"
+            "market.pressure"
           ],
           "field": "body",
-          "text": "The AI Equity Index edged up to 31.8, while the median one-year return rose materially to 13.6%. The share of covered companies with positive one-year returns also increased slightly to 61.3%, and average sector trading pressure eased to 47.9. Most covered companies are now positive over one year, although the improvement in breadth remains incremental."
+          "text": "The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
+      "generated_at": "2026-10-23T17:08:04.931156+00:00",
       "generator": "openai",
-      "headline": "AI equity breadth improves as the median return rises",
+      "headline": "The equity index rises as the typical company\u2019s return weakens",
       "label": "Market",
       "references": [
         {
@@ -3005,13 +2886,13 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 21,
+    "checked_passages": 12,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "macro.paragraphs[2]",
-        "text": "Power remains central to converting that pipeline into operating capacity. Commercial electricity demand is growing 3.1%, ahead of 1.2% growth in total retail demand, and net planned generation additions total 225.2 GW. Separately, 2,061 GW remains in active interconnection queues, only 24.2% of it at executed-agreement or construction stages; just 13% of the 2000\u20132020 queue cohort reached operation. Utility Dive\u2019s report of a 960-MW Indiana nuclear pact among AEP, Amazon, and X-energy shows continued efforts to secure supply, but a pact and a project pipeline are not operating generation."
+        "scope": "grid_storage.body",
+        "text": "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages."
       }
     ],
     "hard_errors": [],
