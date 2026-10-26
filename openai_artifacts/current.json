@@ -1,80 +1,81 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261023T170632506559Z_8bc56f8a_ce9643d6",
+  "attempt_id": "20261026T184640021781Z_984b75ac_6ed8f65b",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
-    "finance",
     "compute",
-    "data_center",
-    "grid_storage"
+    "power",
+    "water",
+    "workforce"
   ],
   "editorial_context_event_ids": [
     "auto-2026-10-20-095ab92b9aa4",
     "auto-2026-10-20-301d05e1e0a9",
-    "auto-2026-10-15-2014e74babb5",
-    "auto-2026-10-15-bde49f15ce34",
-    "auto-2026-10-15-0a42b0b901a6",
-    "auto-2026-10-19-5f7421258ee9",
+    "auto-2026-10-26-2c9ef65aa803",
+    "auto-2026-10-26-e318c135f9bc",
+    "auto-2026-10-26-5b20fd35c419",
+    "auto-2026-10-23-164eb95d0b49",
     "auto-2026-10-21-dd64e69056ef",
-    "auto-2026-10-19-02e84ddf1742",
     "auto-2026-10-23-588f9aa6c841",
+    "auto-2026-10-22-7091043b50d5",
     "auto-2026-10-21-1e7f326f2a4a",
     "auto-2026-10-21-7c1fb7166fd9",
-    "auto-2026-10-19-3c077eba67dd",
     "auto-2026-10-23-a8fb7d7fcbdc",
     "auto-2026-10-21-13a313eeebdb",
-    "auto-2026-10-21-36e2dc5e62aa"
+    "auto-2026-10-21-36e2dc5e62aa",
+    "auto-2026-10-21-e2db26ca2538"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
-      "finance",
       "compute",
-      "data_center",
-      "grid_storage"
+      "power",
+      "water",
+      "workforce"
     ],
     "current_event_ids": [
       "auto-2026-10-20-095ab92b9aa4",
       "auto-2026-10-20-301d05e1e0a9",
-      "auto-2026-10-15-2014e74babb5",
-      "auto-2026-10-15-bde49f15ce34",
-      "auto-2026-10-15-0a42b0b901a6",
-      "auto-2026-10-19-5f7421258ee9",
+      "auto-2026-10-26-2c9ef65aa803",
+      "auto-2026-10-26-e318c135f9bc",
+      "auto-2026-10-26-5b20fd35c419",
+      "auto-2026-10-23-164eb95d0b49",
       "auto-2026-10-21-dd64e69056ef",
-      "auto-2026-10-19-02e84ddf1742",
       "auto-2026-10-23-588f9aa6c841",
+      "auto-2026-10-22-7091043b50d5",
       "auto-2026-10-21-1e7f326f2a4a",
       "auto-2026-10-21-7c1fb7166fd9",
-      "auto-2026-10-19-3c077eba67dd",
       "auto-2026-10-23-a8fb7d7fcbdc",
       "auto-2026-10-21-13a313eeebdb",
-      "auto-2026-10-21-36e2dc5e62aa"
+      "auto-2026-10-21-36e2dc5e62aa",
+      "auto-2026-10-21-e2db26ca2538"
     ],
     "material_domains": [
-      "market"
+      "market",
+      "power"
     ],
     "new_event_domains": [
-      "finance",
+      "market",
       "compute",
-      "data_center",
-      "grid_storage"
+      "water",
+      "workforce"
     ],
     "new_event_ids": [
-      "auto-2026-10-20-301d05e1e0a9",
-      "auto-2026-10-21-dd64e69056ef",
-      "auto-2026-10-23-588f9aa6c841",
-      "auto-2026-10-21-1e7f326f2a4a",
-      "auto-2026-10-23-a8fb7d7fcbdc"
+      "auto-2026-10-26-2c9ef65aa803",
+      "auto-2026-10-26-e318c135f9bc",
+      "auto-2026-10-26-5b20fd35c419",
+      "auto-2026-10-23-164eb95d0b49",
+      "auto-2026-10-22-7091043b50d5",
+      "auto-2026-10-21-e2db26ca2538"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
     "market",
-    "finance",
-    "data_center",
-    "grid_storage"
+    "power",
+    "workforce"
   ],
   "evidence_packets": {
     "adoption": {
@@ -799,17 +800,17 @@
       "facts": [
         {
           "context": "",
-          "display": "26.0",
+          "display": "26.1",
           "id": "finance.borrower_strain",
           "label": "Borrower strain",
-          "value": 26.01992883214274
+          "value": 26.13859333301332
         },
         {
           "context": "",
-          "display": "16.0",
+          "display": "17.0",
           "id": "finance.lender_strain",
           "label": "Lender strain",
-          "value": 16.00044983805899
+          "value": 16.961988299597458
         },
         {
           "context": "",
@@ -1206,69 +1207,69 @@
       "facts": [
         {
           "context": "",
-          "display": "32.1",
+          "display": "35.6",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 32.073707046961154
+          "value": 35.64924121253252
         },
         {
           "context": "",
-          "display": "47.9",
+          "display": "48.3",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 47.90469460302956
+          "value": 48.32341871442866
         },
         {
           "context": "",
-          "display": "60.8%",
+          "display": "60.3%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6078431372549019
+          "value": 0.6029411764705882
         },
         {
           "context": "",
-          "display": "10.3%",
+          "display": "11.4%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.10347302630428523
+          "value": 0.1144160331789078
         },
         {
           "context": "",
-          "display": "18.6%",
+          "display": "19.4%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.18614729115684778
+          "value": 0.19382946129778983
         },
         {
           "context": "",
-          "display": "64.8%",
+          "display": "64.6%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6481147003023903
+          "value": 0.646375494109166
         },
         {
           "context": "",
-          "display": "18.2",
+          "display": "18.4",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.211298166967385
+          "value": 18.37570160576074
         },
         {
           "context": "",
-          "display": "0",
+          "display": "4",
           "id": "market.strong_sector_count",
           "label": "Sectors above the strong-equity threshold",
-          "value": 0.0
+          "value": 4.0
         },
         {
           "context": "",
-          "display": "3",
+          "display": "4",
           "id": "market.crowded_sector_count",
           "label": "Sectors above the high-pressure threshold",
-          "value": 3.0
+          "value": 4.0
         }
       ],
-      "importance": 19.811470030239022,
+      "importance": 19.63754941091659,
       "label": "Market",
       "references": [
         {
@@ -1291,17 +1292,17 @@
       "facts": [
         {
           "context": "",
-          "display": "1.2%",
+          "display": "1.8%",
           "id": "power.demand_growth",
           "label": "Total retail electricity demand growth",
-          "value": 1.2462913628498606
+          "value": 1.8043245290301213
         },
         {
           "context": "",
-          "display": "3.1%",
+          "display": "3.5%",
           "id": "power.commercial_growth",
           "label": "Commercial electricity demand growth",
-          "value": 3.108894807574436
+          "value": 3.5039806975766252
         },
         {
           "context": "",
@@ -1312,10 +1313,10 @@
         },
         {
           "context": "",
-          "display": "4.4%",
+          "display": "5.1%",
           "id": "power.retail_price_growth",
           "label": "Retail electricity price growth",
-          "value": 4.431018842080903
+          "value": 5.1307843346308335
         },
         {
           "context": "",
@@ -1688,19 +1689,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
-  "generated_at": "2026-10-23T17:08:04.931487+00:00",
+  "evidence_snapshot_id": "984b75ac9c3213f4ac345940",
+  "generated_at": "2026-10-26T18:47:58.500301+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 92.417944702,
-      "input_tokens": 4311,
+      "elapsed_sec": 78.47223416300005,
+      "input_tokens": 4156,
       "model": "gpt-5.6-sol",
-      "output_tokens": 7556,
-      "poll_attempts": 41,
+      "output_tokens": 6104,
+      "poll_attempts": 35,
       "poll_errors": [],
-      "response_id": "resp_07caee2f30e08029006adb94195a9487d19973eefcdef057a5",
+      "response_id": "resp_0ba89941f7d80dca006adfa010cc7887d1a086a654c1f5555d",
       "terminal_status": "completed",
-      "total_tokens": 11867
+      "total_tokens": 10260
     }
   },
   "max_output_tokens": null,
@@ -1711,11 +1712,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
-    "expires_at": "2026-10-24T17:08:04.934470+00:00",
+    "current_evidence_snapshot_id": "984b75ac9c3213f4ac345940",
+    "expires_at": "2026-10-27T18:47:58.502811+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-10-23T17:08:04.934470+00:00",
+    "published_at": "2026-10-26T18:47:58.502811+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1723,24 +1724,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 41,
+        "poll_attempts": 35,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_07caee2f30e08029006adb94195a9487d19973eefcdef057a5",
+        "response_id": "resp_0ba89941f7d80dca006adfa010cc7887d1a086a654c1f5555d",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"The equity index rises as the typical company\u2019s return weakens\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.39 times, though the ratio edged down. Cash reserves equal 0.92 years of current CapEx, also slightly lower, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx after a slight decline. The Financial Times reported a surge in default-insurance trading amid AI debt worries. The report reflects investor concern in credit markets rather than evidence of defaults across the sector.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Cash-flow coverage narrows as borrower strain edges higher\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A Texas permit-system shutdown adds uncertainty to a large data-center pipeline\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\"]},\"headline\":{\"text\":\"Most of the vast interconnection queue has not reached advanced stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Strong chip output contrasts with softer equity returns and limited grid maturity\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"market.median_return\",\"market.positive_breadth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},{\"text\":\"Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"compute.semiconductor_output_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 35.6, and the median one-year return increased to 11.4%. Yet the share of covered companies with positive one-year returns slipped to 60.3%, indicating that stronger typical performance has not broadened participation. Average sector trading pressure edged up to 48.3. Reuters reported that Anthropic\u2019s IPO filing helped lift AI stocks, while separate coverage emphasized both rapid growth and mounting costs. The episode points to strong investor appetite, but it does not explain the full one-year return pattern.\",\"event_ids\":[\"auto-2026-10-26-2c9ef65aa803\",\"auto-2026-10-26-e318c135f9bc\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity gains strengthen even as positive-return breadth edges lower\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, ahead of total retail demand at 1.8%; both accelerated materially. Retail electricity prices are up 5.1%, also a material acceleration. Net planned generation additions now total 227.6 GW, but this is a pipeline measure rather than operating supply. The combination points to a more demanding power environment without showing that AI is the sole or primary cause of demand or price growth.\",\"event_ids\":[],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Power demand and prices accelerate, while new generation remains planned rather than delivered\",\"event_ids\":[],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth. Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort. The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI.\",\"event_ids\":[\"auto-2026-10-22-7091043b50d5\",\"auto-2026-10-23-164eb95d0b49\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"AI-linked job growth remains narrow as companies report AI-related cuts\",\"event_ids\":[\"auto-2026-10-22-7091043b50d5\",\"auto-2026-10-23-164eb95d0b49\"],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Market gains and chip output remain strong as power demand accelerates and job growth stays narrow\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"compute.semiconductor_output_growth\",\"power.demand_growth\",\"power.commercial_growth\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Market performance has strengthened while hardware production continues to expand. The AI Equity Index increased materially to 35.6 and the median one-year return rose to 11.4%, although positive-return breadth eased to 60.3%. Semiconductor and electronic-component output is growing 19.9%, far faster than computer and peripheral-equipment output at 6.5%. Reuters reported that Anthropic\u2019s IPO filing lifted AI stocks while drawing attention to the company\u2019s rapid growth and escalating costs. The combined picture is one of sustained appetite for AI exposure, but not a uniform improvement across companies or a resolution of the sector\u2019s economics.\",\"event_ids\":[\"auto-2026-10-26-2c9ef65aa803\",\"auto-2026-10-26-e318c135f9bc\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]},{\"text\":\"The buildout is also meeting a more demanding power environment. Commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%; each accelerated materially. Supply pipelines appear large on separate measures: net planned generation additions total 227.6 GW, while active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue has reached an executed agreement or construction, and historically 13% of the 2000\u20132020 cohort reached operation. These figures do not attribute rising demand or prices to AI, but they show why planned capacity should not be treated as power already available to new computing loads.\",\"event_ids\":[],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"The labor signals remain considerably narrower. Only one tracked AI-linked channel is adding jobs; power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. Reuters also reported job cuts as companies shift investment toward AI, including a planned 5,000-role reduction at Barclays. Economy-wide productivity and real output are growing 2.2% and 2.5%, respectively, but real hourly compensation growth is 0.6%. Those aggregate outcomes cannot isolate AI\u2019s contribution, and they have not coincided with broad employment growth across the tracked channels.\",\"event_ids\":[\"auto-2026-10-22-7091043b50d5\",\"auto-2026-10-23-164eb95d0b49\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1792775283.0,
+      "completed_at": 1793040476.0,
       "conversation": null,
-      "created_at": 1792775193.0,
+      "created_at": 1793040400.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_07caee2f30e08029006adb94195a9487d19973eefcdef057a5",
+      "id": "resp_0ba89941f7d80dca006adfa010cc7887d1a086a654c1f5555d",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1753,7 +1754,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb941babf887d18b5af5c6f9604dde",
+          "id": "rs_0ba89941f7d80dca006adfa0133c3c87d184a4213f5cc277b6",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1761,7 +1762,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb9421985487d1895ece3a9963eeab",
+          "id": "rs_0ba89941f7d80dca006adfa01a01e487d1973a90c62280a8a5",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1769,7 +1770,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb9428957487d1b9756de20c128220",
+          "id": "rs_0ba89941f7d80dca006adfa021ced087d18ae939340573a2e0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1777,7 +1778,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb942f046487d1b1261f5b3ae2905c",
+          "id": "rs_0ba89941f7d80dca006adfa02871d487d1b2c8b672bd437459",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1785,7 +1786,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb9435c5d087d1b1d6ee89f3e5e94a",
+          "id": "rs_0ba89941f7d80dca006adfa02fc93887d1959b95a544a00c39",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1793,7 +1794,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb943cc5d487d1b13c95b2a44340fb",
+          "id": "rs_0ba89941f7d80dca006adfa0369e4487d1817631278381f9bc",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1801,7 +1802,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb94432b5c87d1b5b8823e03fb5ade",
+          "id": "rs_0ba89941f7d80dca006adfa03d9bfc87d191a733a29eb89c5d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1809,7 +1810,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb9449b4c487d1a599bc1e820ca759",
+          "id": "rs_0ba89941f7d80dca006adfa044140087d1b42b4b0320e91ab9",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1817,7 +1818,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb94507a1887d183900a95528695a6",
+          "id": "rs_0ba89941f7d80dca006adfa04a512487d1af6d4f63f28bbfb3",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1825,23 +1826,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb9457075087d1bcf931a563d158e9",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb945d0de887d1a7a226e7125b4219",
-          "status": null,
-          "summary": [],
-          "type": "reasoning"
-        },
-        {
-          "content": [],
-          "encrypted_content": null,
-          "id": "rs_07caee2f30e08029006adb94632e8087d1ac3178a0e3ba09bb",
+          "id": "rs_0ba89941f7d80dca006adfa05131b087d1b6c520052e9fb65d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1851,11 +1836,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"The equity index rises as the typical company\u2019s return weakens\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending 1.39 times, though the ratio edged down. Cash reserves equal 0.92 years of current CapEx, also slightly lower, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx after a slight decline. The Financial Times reported a surge in default-insurance trading amid AI debt worries. The report reflects investor concern in credit markets rather than evidence of defaults across the sector.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Cash-flow coverage narrows as borrower strain edges higher\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A Texas permit-system shutdown adds uncertainty to a large data-center pipeline\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\"]},\"headline\":{\"text\":\"Most of the vast interconnection queue has not reached advanced stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Strong chip output contrasts with softer equity returns and limited grid maturity\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"market.median_return\",\"market.positive_breadth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.\",\"event_ids\":[\"auto-2026-10-20-301d05e1e0a9\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.forward_commitment_load\"]},{\"text\":\"Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.\",\"event_ids\":[\"auto-2026-10-21-dd64e69056ef\"],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.tracked_pipeline_sites\"]},{\"text\":\"The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage.\",\"event_ids\":[\"auto-2026-10-23-588f9aa6c841\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"compute.semiconductor_output_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 35.6, and the median one-year return increased to 11.4%. Yet the share of covered companies with positive one-year returns slipped to 60.3%, indicating that stronger typical performance has not broadened participation. Average sector trading pressure edged up to 48.3. Reuters reported that Anthropic\u2019s IPO filing helped lift AI stocks, while separate coverage emphasized both rapid growth and mounting costs. The episode points to strong investor appetite, but it does not explain the full one-year return pattern.\",\"event_ids\":[\"auto-2026-10-26-2c9ef65aa803\",\"auto-2026-10-26-e318c135f9bc\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity gains strengthen even as positive-return breadth edges lower\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, ahead of total retail demand at 1.8%; both accelerated materially. Retail electricity prices are up 5.1%, also a material acceleration. Net planned generation additions now total 227.6 GW, but this is a pipeline measure rather than operating supply. The combination points to a more demanding power environment without showing that AI is the sole or primary cause of demand or price growth.\",\"event_ids\":[],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"Power demand and prices accelerate, while new generation remains planned rather than delivered\",\"event_ids\":[],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth. Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort. The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI.\",\"event_ids\":[\"auto-2026-10-22-7091043b50d5\",\"auto-2026-10-23-164eb95d0b49\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\"]},\"headline\":{\"text\":\"AI-linked job growth remains narrow as companies report AI-related cuts\",\"event_ids\":[\"auto-2026-10-22-7091043b50d5\",\"auto-2026-10-23-164eb95d0b49\"],\"fact_ids\":[\"workforce.employment_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Market gains and chip output remain strong as power demand accelerates and job growth stays narrow\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"compute.semiconductor_output_growth\",\"power.demand_growth\",\"power.commercial_growth\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"Market performance has strengthened while hardware production continues to expand. The AI Equity Index increased materially to 35.6 and the median one-year return rose to 11.4%, although positive-return breadth eased to 60.3%. Semiconductor and electronic-component output is growing 19.9%, far faster than computer and peripheral-equipment output at 6.5%. Reuters reported that Anthropic\u2019s IPO filing lifted AI stocks while drawing attention to the company\u2019s rapid growth and escalating costs. The combined picture is one of sustained appetite for AI exposure, but not a uniform improvement across companies or a resolution of the sector\u2019s economics.\",\"event_ids\":[\"auto-2026-10-26-2c9ef65aa803\",\"auto-2026-10-26-e318c135f9bc\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]},{\"text\":\"The buildout is also meeting a more demanding power environment. Commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%; each accelerated materially. Supply pipelines appear large on separate measures: net planned generation additions total 227.6 GW, while active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue has reached an executed agreement or construction, and historically 13% of the 2000\u20132020 cohort reached operation. These figures do not attribute rising demand or prices to AI, but they show why planned capacity should not be treated as power already available to new computing loads.\",\"event_ids\":[],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"The labor signals remain considerably narrower. Only one tracked AI-linked channel is adding jobs; power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. Reuters also reported job cuts as companies shift investment toward AI, including a planned 5,000-role reduction at Barclays. Economy-wide productivity and real output are growing 2.2% and 2.5%, respectively, but real hourly compensation growth is 0.6%. Those aggregate outcomes cannot isolate AI\u2019s contribution, and they have not coincided with broad employment growth across the tracked channels.\",\"event_ids\":[\"auto-2026-10-22-7091043b50d5\",\"auto-2026-10-23-164eb95d0b49\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.real_earnings_breadth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_07caee2f30e08029006adb9469330887d190e7c790c30b0228",
+          "id": "msg_0ba89941f7d80dca006adfa05298dc87d1aa3c58b8c90d84a2",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2028,16 +2013,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4311,
+        "input_tokens": 4156,
         "input_tokens_details": {
-          "cache_write_tokens": 4308,
+          "cache_write_tokens": 4153,
           "cached_tokens": 0
         },
-        "output_tokens": 7556,
+        "output_tokens": 6104,
         "output_tokens_details": {
-          "reasoning_tokens": 6138
+          "reasoning_tokens": 4761
         },
-        "total_tokens": 11867
+        "total_tokens": 10260
       },
       "user": null
     }
@@ -2516,113 +2501,115 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break. Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown. The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage.",
+      "analysis": "Market performance has strengthened while hardware production continues to expand. The AI Equity Index increased materially to 35.6 and the median one-year return rose to 11.4%, although positive-return breadth eased to 60.3%. Semiconductor and electronic-component output is growing 19.9%, far faster than computer and peripheral-equipment output at 6.5%. Reuters reported that Anthropic\u2019s IPO filing lifted AI stocks while drawing attention to the company\u2019s rapid growth and escalating costs. The combined picture is one of sustained appetite for AI exposure, but not a uniform improvement across companies or a resolution of the sector\u2019s economics. The buildout is also meeting a more demanding power environment. Commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%; each accelerated materially. Supply pipelines appear large on separate measures: net planned generation additions total 227.6 GW, while active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue has reached an executed agreement or construction, and historically 13% of the 2000\u20132020 cohort reached operation. These figures do not attribute rising demand or prices to AI, but they show why planned capacity should not be treated as power already available to new computing loads. The labor signals remain considerably narrower. Only one tracked AI-linked channel is adding jobs; power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. Reuters also reported job cuts as companies shift investment toward AI, including a planned 5,000-role reduction at Barclays. Economy-wide productivity and real output are growing 2.2% and 2.5%, respectively, but real hourly compensation growth is 0.6%. Those aggregate outcomes cannot isolate AI\u2019s contribution, and they have not coincided with broad employment growth across the tracked channels.",
       "analysis_paragraphs": [
-        "Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.",
-        "Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.",
-        "The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage."
+        "Market performance has strengthened while hardware production continues to expand. The AI Equity Index increased materially to 35.6 and the median one-year return rose to 11.4%, although positive-return breadth eased to 60.3%. Semiconductor and electronic-component output is growing 19.9%, far faster than computer and peripheral-equipment output at 6.5%. Reuters reported that Anthropic\u2019s IPO filing lifted AI stocks while drawing attention to the company\u2019s rapid growth and escalating costs. The combined picture is one of sustained appetite for AI exposure, but not a uniform improvement across companies or a resolution of the sector\u2019s economics.",
+        "The buildout is also meeting a more demanding power environment. Commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%; each accelerated materially. Supply pipelines appear large on separate measures: net planned generation additions total 227.6 GW, while active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue has reached an executed agreement or construction, and historically 13% of the 2000\u20132020 cohort reached operation. These figures do not attribute rising demand or prices to AI, but they show why planned capacity should not be treated as power already available to new computing loads.",
+        "The labor signals remain considerably narrower. Only one tracked AI-linked channel is adding jobs; power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. Reuters also reported job cuts as companies shift investment toward AI, including a planned 5,000-role reduction at Barclays. Economy-wide productivity and real output are growing 2.2% and 2.5%, respectively, but real hourly compensation growth is 0.6%. Those aggregate outcomes cannot isolate AI\u2019s contribution, and they have not coincided with broad employment growth across the tracked channels."
       ],
       "analysis_sentences": [
-        "Equity performance has become less even.",
-        "The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%.",
-        "Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0.",
-        "Forward commitments stand at 4.74 times current CapEx.",
-        "The Financial Times also reported a surge in default-insurance trading amid AI debt worries.",
-        "These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break.",
-        "Physical expansion remains substantial.",
-        "Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment.",
-        "Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites.",
-        "These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity.",
-        "The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown.",
-        "The grid remains the clearest gap between scale and readiness.",
-        "The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction.",
-        "Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower.",
-        "RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled.",
-        "The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage."
+        "Market performance has strengthened while hardware production continues to expand.",
+        "The AI Equity Index increased materially to 35.6 and the median one-year return rose to 11.4%, although positive-return breadth eased to 60.3%.",
+        "Semiconductor and electronic-component output is growing 19.9%, far faster than computer and peripheral-equipment output at 6.5%.",
+        "Reuters reported that Anthropic\u2019s IPO filing lifted AI stocks while drawing attention to the company\u2019s rapid growth and escalating costs.",
+        "The combined picture is one of sustained appetite for AI exposure, but not a uniform improvement across companies or a resolution of the sector\u2019s economics.",
+        "The buildout is also meeting a more demanding power environment.",
+        "Commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%; each accelerated materially.",
+        "Supply pipelines appear large on separate measures: net planned generation additions total 227.6 GW, while active interconnection queues contain 2,061 GW.",
+        "Yet only 24.2% of the queue has reached an executed agreement or construction, and historically 13% of the 2000\u20132020 cohort reached operation.",
+        "These figures do not attribute rising demand or prices to AI, but they show why planned capacity should not be treated as power already available to new computing loads.",
+        "The labor signals remain considerably narrower.",
+        "Only one tracked AI-linked channel is adding jobs; power and communication construction leads at 0.8%, while two channels have positive real-earnings growth.",
+        "Reuters also reported job cuts as companies shift investment toward AI, including a planned 5,000-role reduction at Barclays.",
+        "Economy-wide productivity and real output are growing 2.2% and 2.5%, respectively, but real hourly compensation growth is 0.6%.",
+        "Those aggregate outcomes cannot isolate AI\u2019s contribution, and they have not coincided with broad employment growth across the tracked channels."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "compute.semiconductor_output_growth",
+            "market.aei",
             "market.median_return",
-            "market.positive_breadth",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share"
+            "compute.semiconductor_output_growth",
+            "power.demand_growth",
+            "power.commercial_growth",
+            "workforce.employment_breadth"
           ],
           "field": "headline",
-          "text": "Strong chip output contrasts with softer equity returns and limited grid maturity"
+          "text": "Market gains and chip output remain strong as power demand accelerates and job growth stays narrow"
         },
         {
           "event_ids": [
-            "auto-2026-10-20-301d05e1e0a9"
+            "auto-2026-10-26-2c9ef65aa803",
+            "auto-2026-10-26-e318c135f9bc"
           ],
           "fact_ids": [
             "market.aei",
             "market.median_return",
             "market.positive_breadth",
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
-            "finance.borrower_strain",
-            "finance.forward_commitment_load"
+            "compute.semiconductor_output_growth",
+            "compute.computer_output_growth"
           ],
           "field": "paragraphs[0]",
-          "text": "Equity performance has become less even. The AI Equity Index rose slightly to 32.1, yet the median one-year return fell materially to 10.3% and positive-return breadth slipped to 60.8%. Operating cash flow still covers current CapEx 1.39 times, but that ratio and cash-reserve coverage of 0.92 years both edged down, while borrower strain rose to 26.0. Forward commitments stand at 4.74 times current CapEx. The Financial Times also reported a surge in default-insurance trading amid AI debt worries. These are signs of narrower cushions and greater credit concern, but they do not by themselves establish a broad funding break."
+          "text": "Market performance has strengthened while hardware production continues to expand. The AI Equity Index increased materially to 35.6 and the median one-year return rose to 11.4%, although positive-return breadth eased to 60.3%. Semiconductor and electronic-component output is growing 19.9%, far faster than computer and peripheral-equipment output at 6.5%. Reuters reported that Anthropic\u2019s IPO filing lifted AI stocks while drawing attention to the company\u2019s rapid growth and escalating costs. The combined picture is one of sustained appetite for AI exposure, but not a uniform improvement across companies or a resolution of the sector\u2019s economics."
         },
         {
-          "event_ids": [
-            "auto-2026-10-21-dd64e69056ef"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "compute.semiconductor_output_growth",
-            "compute.computer_output_growth",
-            "data_center.development_sites",
-            "data_center.operating_sites",
-            "data_center.tracked_pipeline_sites"
-          ],
-          "field": "paragraphs[1]",
-          "text": "Physical expansion remains substantial. Semiconductor and electronic-component output is growing 19.9%, compared with 6.5% for computer and peripheral equipment. Data-center records list 1,556 development sites against 3,068 operating sites and separately track 894 active pipeline sites. These indicators combine realized manufacturing growth with a large inventory of planned facilities rather than providing a direct measure of delivered computing capacity. The Texas Tribune\u2019s report that TCEQ shut down its permit-filing system amid a data-center dispute adds uncertainty around permitting, but one shutdown does not establish a broader slowdown."
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-23-588f9aa6c841"
-          ],
-          "fact_ids": [
+            "power.commercial_growth",
+            "power.demand_growth",
+            "power.retail_price_growth",
+            "power.planned_net_gw",
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
-            "grid_storage.operating_storage_weighted_duration_hours",
-            "grid_storage.operating_storage_four_hour_plus_share_pct",
-            "compute.semiconductor_output_growth"
+            "grid_storage.historical_operational_pct"
+          ],
+          "field": "paragraphs[1]",
+          "text": "The buildout is also meeting a more demanding power environment. Commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%; each accelerated materially. Supply pipelines appear large on separate measures: net planned generation additions total 227.6 GW, while active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue has reached an executed agreement or construction, and historically 13% of the 2000\u20132020 cohort reached operation. These figures do not attribute rising demand or prices to AI, but they show why planned capacity should not be treated as power already available to new computing loads."
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-22-7091043b50d5",
+            "auto-2026-10-23-164eb95d0b49"
+          ],
+          "fact_ids": [
+            "workforce.employment_breadth",
+            "workforce.strongest_channel",
+            "workforce.strongest_channel_growth",
+            "workforce.real_earnings_breadth",
+            "economic_impact.productivity_growth",
+            "economic_impact.real_output_growth",
+            "economic_impact.real_compensation_growth"
           ],
           "field": "paragraphs[2]",
-          "text": "The grid remains the clearest gap between scale and readiness. The active interconnection queue totals 2,061 GW, but only 24.2% has reached an executed agreement or construction. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours, with both measures edging lower. RTO Insider\u2019s report of lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework indicates that connection rules remain unsettled. The buildout therefore has substantial industrial momentum, but much of the power infrastructure required to support new large loads remains at an early stage."
+          "text": "The labor signals remain considerably narrower. Only one tracked AI-linked channel is adding jobs; power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. Reuters also reported job cuts as companies shift investment toward AI, including a planned 5,000-role reduction at Barclays. Economy-wide productivity and real output are growing 2.2% and 2.5%, respectively, but real hourly compensation growth is 0.6%. Those aggregate outcomes cannot isolate AI\u2019s contribution, and they have not coincided with broad employment growth across the tracked channels."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "compute.semiconductor_output_growth",
-          "label": "Semiconductor and electronic component output growth",
-          "value": "19.9%"
+          "fact_id": "market.aei",
+          "label": "AI Equity Index",
+          "value": "35.6"
         },
         {
           "context": "",
           "fact_id": "market.median_return",
           "label": "Median one-year return",
-          "value": "10.3%"
+          "value": "11.4%"
         },
         {
           "context": "",
-          "fact_id": "market.positive_breadth",
-          "label": "Covered companies with positive one-year returns",
-          "value": "60.8%"
+          "fact_id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth",
+          "value": "19.9%"
         }
       ],
-      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
-      "generated_at": "2026-10-23T17:08:04.931156+00:00",
+      "evidence_snapshot_id": "984b75ac9c3213f4ac345940",
+      "generated_at": "2026-10-26T18:47:58.499986+00:00",
       "generator": "openai",
-      "headline": "Strong chip output contrasts with softer equity returns and limited grid maturity",
+      "headline": "Market gains and chip output remain strong as power demand accelerates and job growth stays narrow",
       "label": "AI Macro",
       "references": [
         {
@@ -2634,50 +2621,57 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "FRED",
-          "source_url": "https://fred.stlouisfed.org/"
+          "source_label": "Federal Reserve G.17",
+          "source_url": "https://www.federalreserve.gov/releases/g17/current/"
         },
         {
-          "source_label": "Chicago Fed NFCI",
-          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
+          "source_label": "BEA Fixed Assets",
+          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
         },
         {
-          "source_label": "New York Fed CMDI",
-          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
+          "source_label": "Census Construction Spending",
+          "source_url": "https://www.census.gov/constructionspending"
         },
         {
-          "source_label": "Microsoft FY2026 Q3 AI disclosure",
-          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
+          "source_label": "Primary project disclosures",
+          "source_url": ""
         }
       ],
       "selected_domains": [
         "market",
-        "finance",
         "compute",
-        "data_center",
-        "grid_storage"
+        "power",
+        "grid_storage",
+        "workforce",
+        "economic_impact"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased.",
+      "analysis": "The AI Equity Index rose materially to 35.6, and the median one-year return increased to 11.4%. Yet the share of covered companies with positive one-year returns slipped to 60.3%, indicating that stronger typical performance has not broadened participation. Average sector trading pressure edged up to 48.3. Reuters reported that Anthropic\u2019s IPO filing helped lift AI stocks, while separate coverage emphasized both rapid growth and mounting costs. The episode points to strong investor appetite, but it does not explain the full one-year return pattern.",
       "analysis_sentences": [
-        "The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%.",
-        "Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9.",
-        "A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased."
+        "The AI Equity Index rose materially to 35.6, and the median one-year return increased to 11.4%.",
+        "Yet the share of covered companies with positive one-year returns slipped to 60.3%, indicating that stronger typical performance has not broadened participation.",
+        "Average sector trading pressure edged up to 48.3.",
+        "Reuters reported that Anthropic\u2019s IPO filing helped lift AI stocks, while separate coverage emphasized both rapid growth and mounting costs.",
+        "The episode points to strong investor appetite, but it does not explain the full one-year return pattern."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "market.aei",
-            "market.median_return"
+            "market.median_return",
+            "market.positive_breadth"
           ],
           "field": "headline",
-          "text": "The equity index rises as the typical company\u2019s return weakens"
+          "text": "AI equity gains strengthen even as positive-return breadth edges lower"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-26-2c9ef65aa803",
+            "auto-2026-10-26-e318c135f9bc"
+          ],
           "fact_ids": [
             "market.aei",
             "market.median_return",
@@ -2685,14 +2679,14 @@
             "market.pressure"
           ],
           "field": "body",
-          "text": "The AI Equity Index edged up to 32.1, but the median one-year return fell materially to 10.3%. Positive-return breadth also slipped to 60.8% of covered companies, while average sector trading pressure eased slightly to 47.9. A majority of covered companies remain up over the year, but the lower median shows that the typical gain has weakened even as the aggregate index increased."
+          "text": "The AI Equity Index rose materially to 35.6, and the median one-year return increased to 11.4%. Yet the share of covered companies with positive one-year returns slipped to 60.3%, indicating that stronger typical performance has not broadened participation. Average sector trading pressure edged up to 48.3. Reuters reported that Anthropic\u2019s IPO filing helped lift AI stocks, while separate coverage emphasized both rapid growth and mounting costs. The episode points to strong investor appetite, but it does not explain the full one-year return pattern."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
-      "generated_at": "2026-10-23T17:08:04.931156+00:00",
+      "evidence_snapshot_id": "984b75ac9c3213f4ac345940",
+      "generated_at": "2026-10-26T18:47:58.499986+00:00",
       "generator": "openai",
-      "headline": "The equity index rises as the typical company\u2019s return weakens",
+      "headline": "AI equity gains strengthen even as positive-return breadth edges lower",
       "label": "Market",
       "references": [
         {
@@ -2702,49 +2696,55 @@
         {
           "source_label": "SEC EDGAR",
           "source_url": "https://www.sec.gov/edgar/search/"
+        },
+        {
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPVVlfUU5UYnVIOHVRRHJCaWJNQ0NtM0V5aXdZUE5QSEhGVTAxWmdXcU1KeGVEaEtYTXlEal9YNjMwblR6bGZQcm5HODd6N2xnNUppZzdXMDVTSWwtZEc3a3p3Q0M4VzRtaHo3QTd1VDJpaGNPQmw0WjFNaEMyQ2JyOVpGcmZEbktIdk45OHp4blZxdzc5UllRT2V1cnllVTVVTjVYZm1IZ0VjWDlwTnc?oc=5"
+        },
+        {
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPX1UzRjJ6M0VaSXoydWlIZ2pzc2tGcUZtMjlzR1JhUE9UR0llUERrRWRJNUdTRWNNQU9IUUEycmZUVk40cEtCSjZ5TzRqZVRWT1JvMEtmQmlENklzd19LLWlDREZZakJ0MWdTOTZleEdBN1FVRFJGMGxHWnpkY2owdVFSQ0FWWHNFcWlPTUtpb1ZDRkZrY0tUMkZrdHRJMnFJZEZveXVQaG41OHFibWFyMWpfNG9jTlR0aTM1enNKT18?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "power": {
-      "analysis": "Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation.",
+      "analysis": "Commercial electricity demand is growing 3.5%, ahead of total retail demand at 1.8%; both accelerated materially. Retail electricity prices are up 5.1%, also a material acceleration. Net planned generation additions now total 227.6 GW, but this is a pipeline measure rather than operating supply. The combination points to a more demanding power environment without showing that AI is the sole or primary cause of demand or price growth.",
       "analysis_sentences": [
-        "Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%.",
-        "Net planned generation additions total 225.2 GW.",
-        "Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy.",
-        "The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation."
+        "Commercial electricity demand is growing 3.5%, ahead of total retail demand at 1.8%; both accelerated materially.",
+        "Retail electricity prices are up 5.1%, also a material acceleration.",
+        "Net planned generation additions now total 227.6 GW, but this is a pipeline measure rather than operating supply.",
+        "The combination points to a more demanding power environment without showing that AI is the sole or primary cause of demand or price growth."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-19-02e84ddf1742"
-          ],
-          "fact_ids": [
-            "power.demand_growth",
-            "power.commercial_growth"
-          ],
-          "field": "headline",
-          "text": "Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact"
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-19-02e84ddf1742"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "power.demand_growth",
             "power.commercial_growth",
-            "power.planned_net_gw",
-            "power.retail_price_growth"
+            "power.retail_price_growth",
+            "power.planned_net_gw"
+          ],
+          "field": "headline",
+          "text": "Power demand and prices accelerate, while new generation remains planned rather than delivered"
+        },
+        {
+          "event_ids": [],
+          "fact_ids": [
+            "power.commercial_growth",
+            "power.demand_growth",
+            "power.retail_price_growth",
+            "power.planned_net_gw"
           ],
           "field": "body",
-          "text": "Commercial electricity demand is growing 3.1%, compared with 1.2% for total retail demand, while retail prices are up 4.4%. Net planned generation additions total 225.2 GW. Utility Dive reported that AEP signed a 960-MW Indiana nuclear pact with Amazon and X-energy. The pact is a procurement development, not evidence that 960 MW is already operating, and the planned-additions figure likewise should not be read as delivered generation."
+          "text": "Commercial electricity demand is growing 3.5%, ahead of total retail demand at 1.8%; both accelerated materially. Retail electricity prices are up 5.1%, also a material acceleration. Net planned generation additions now total 227.6 GW, but this is a pipeline measure rather than operating supply. The combination points to a more demanding power environment without showing that AI is the sole or primary cause of demand or price growth."
         }
       ],
       "domain": "power",
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "984b75ac9c3213f4ac345940",
+      "generated_at": "2026-10-26T18:47:58.499986+00:00",
       "generator": "openai",
-      "headline": "Commercial power demand outpaces the total as AEP signs a 960-MW nuclear pact",
+      "headline": "Power demand and prices accelerate, while new generation remains planned rather than delivered",
       "label": "Power",
       "references": [
         {
@@ -2758,10 +2758,6 @@
         {
           "source_label": "Data-center campus records",
           "source_url": ""
-        },
-        {
-          "source_label": "Utility Dive",
-          "source_url": "https://www.utilitydive.com/news/aep-signs-advanced-960-mw-nuclear-amazon-x-energy/833341/"
         }
       ],
       "version": "6.1.0"
@@ -2827,40 +2823,45 @@
       "version": "6.1.0"
     },
     "workforce": {
-      "analysis": "Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth.",
+      "analysis": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth. Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort. The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI.",
       "analysis_sentences": [
-        "Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%.",
-        "Two channels have positive real-earnings growth.",
-        "The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth."
+        "Only one tracked AI-linked labor channel has positive employment growth.",
+        "Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth.",
+        "Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort.",
+        "The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-22-7091043b50d5",
+            "auto-2026-10-23-164eb95d0b49"
+          ],
           "fact_ids": [
-            "workforce.employment_breadth",
-            "workforce.strongest_channel",
-            "workforce.strongest_channel_growth"
+            "workforce.employment_breadth"
           ],
           "field": "headline",
-          "text": "Employment growth remains confined to one tracked AI-linked channel"
+          "text": "AI-linked job growth remains narrow as companies report AI-related cuts"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-22-7091043b50d5",
+            "auto-2026-10-23-164eb95d0b49"
+          ],
           "fact_ids": [
             "workforce.employment_breadth",
-            "workforce.real_earnings_breadth",
             "workforce.strongest_channel",
-            "workforce.strongest_channel_growth"
+            "workforce.strongest_channel_growth",
+            "workforce.real_earnings_breadth"
           ],
           "field": "body",
-          "text": "Only one tracked AI-linked labor channel has positive employment growth, and power and communication construction is the strongest channel at 0.8%. Two channels have positive real-earnings growth. The labor response therefore remains narrow across the tracked channels, with employment breadth weaker than earnings breadth."
+          "text": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth. Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort. The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI."
         }
       ],
       "domain": "workforce",
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "984b75ac9c3213f4ac345940",
+      "generated_at": "2026-10-26T18:47:58.499986+00:00",
       "generator": "openai",
-      "headline": "Employment growth remains confined to one tracked AI-linked channel",
+      "headline": "AI-linked job growth remains narrow as companies report AI-related cuts",
       "label": "Workforce",
       "references": [
         {
@@ -2874,6 +2875,14 @@
         {
           "source_label": "BLS JOLTS",
           "source_url": "https://www.bls.gov/jlt/"
+        },
+        {
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOTzk5bDFrWVpNb3dlZ1ZMR2ZhU1NYTkJYRzh2c3JXWHcwQVBVNDhtLUo3QU1XNGFXU3kzZWFvdjdEMnd3TDc4eTI2T2NXemhfcEg5U0dISVRBRE9RUW0yMngyQy1tOXFfZ1kyZUhCa2JoOVBWcm55QWVXekVnWC1HUmw3WmI1Mm9MUE1yNEUyeXZhOXpXMnlWSzZIX3AxMHpYdjBEcXZZQmhwR2lKc2c?oc=5"
+        },
+        {
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQOGZRdGl6WGVvRzVoeHJYZ051V25FN1lYV0Vna0dHaEctcHROaFFvSEVlWVd1RHptaTJfc2dkV1dOU1FPeUxfTFhFcDMybGthazVhcXo2WXB0N1liR1Y5OWk0cEYyb2ZFMXM2VGljUFV6SWM4Wm1ITUhGY0t4WHFjanJ2b0Q5RG9OUmNzYkJtLXRzNDFXVlRfWGpuQUhwQjRiYS03cFVOZ3dhUTZmN0JJ?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2886,13 +2895,25 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 12,
+    "checked_passages": 10,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "grid_storage.body",
-        "text": "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages."
+        "scope": "power.body",
+        "text": "Commercial electricity demand is growing 3.5%, ahead of total retail demand at 1.8%; both accelerated materially. Retail electricity prices are up 5.1%, also a material acceleration. Net planned generation additions now total 227.6 GW, but this is a pipeline measure rather than operating supply. The combination points to a more demanding power environment without showing that AI is the sole or primary cause of demand or price growth."
+      },
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[1]",
+        "text": "The buildout is also meeting a more demanding power environment. Commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%; each accelerated materially. Supply pipelines appear large on separate measures: net planned generation additions total 227.6 GW, while active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue has reached an executed agreement or construction, and historically 13% of the 2000\u20132020 cohort reached operation. These figures do not attribute rising demand or prices to AI, but they show why planned capacity should not be treated as power already available to new computing loads."
+      },
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[2]",
+        "text": "The labor signals remain considerably narrower. Only one tracked AI-linked channel is adding jobs; power and communication construction leads at 0.8%, while two channels have positive real-earnings growth. Reuters also reported job cuts as companies shift investment toward AI, including a planned 5,000-role reduction at Barclays. Economy-wide productivity and real output are growing 2.2% and 2.5%, respectively, but real hourly compensation growth is 0.6%. Those aggregate outcomes cannot isolate AI\u2019s contribution, and they have not coincided with broad employment growth across the tracked channels."
       }
     ],
     "hard_errors": [],
