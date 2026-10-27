@@ -1712,13 +1712,118 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "984b75ac9c3213f4ac345940",
-    "expires_at": "2026-10-27T18:47:58.502811+00:00",
+    "current_evidence_snapshot_id": "ec758e3eaa5dda6488463227",
+    "expires_at": "2026-10-28T18:01:51.255400+00:00",
     "lease_hours": 24,
-    "materiality": {},
-    "published_at": "2026-10-26T18:47:58.502811+00:00",
-    "renewal_count": 0,
-    "source": "generation"
+    "materiality": {
+      "baseline_available": true,
+      "change_count": 9,
+      "changes": [
+        {
+          "domain": "market",
+          "fact_id": "market.aei",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 37.053908950688154,
+          "old_value": 35.64924121253252,
+          "percentage_point_change": 1.5,
+          "relative_change": 0.042134831460674156
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.crowded_sector_count",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 2.0,
+          "old_value": 4.0,
+          "percentage_point_change": null,
+          "relative_change": 0.5
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.effective_firms",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 18.43684700000863,
+          "old_value": 18.37570160576074,
+          "percentage_point_change": null,
+          "relative_change": 0.003327513450083564
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.equal_weight_return",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.19862876405774643,
+          "old_value": 0.19382946129778983,
+          "percentage_point_change": 0.5,
+          "relative_change": 0.025773195876288662
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.median_return",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.12605358270415534,
+          "old_value": 0.1144160331789078,
+          "percentage_point_change": 1.1999999999999993,
+          "relative_change": 0.10526315789473678
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.positive_breadth",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.6078431372549019,
+          "old_value": 0.6029411764705882,
+          "percentage_point_change": 0.5,
+          "relative_change": 0.008291873963515755
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.pressure",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 50.15909448093371,
+          "old_value": 48.32341871442866,
+          "percentage_point_change": 1.9000000000000057,
+          "relative_change": 0.039337474120082934
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.strong_sector_count",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 3.0,
+          "old_value": 4.0,
+          "percentage_point_change": null,
+          "relative_change": 0.25
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.top_10_share",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.6462651449367798,
+          "old_value": 0.646375494109166,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        }
+      ],
+      "current_snapshot_id": "ec758e3eaa5dda6488463227",
+      "decision": "generate_material_change",
+      "exact_match": false,
+      "immaterial_change_count": 6,
+      "material": true,
+      "material_change_count": 3,
+      "percentage_point_threshold": 2.0,
+      "previous_snapshot_id": "984b75ac9c3213f4ac345940",
+      "relative_change_threshold": 0.1,
+      "version": "1.2.0"
+    },
+    "published_at": "2026-10-27T18:01:51.255400+00:00",
+    "renewal_count": 1,
+    "source": "automation_generation_fallback"
   },
   "raw_responses": {
     "editorial_synthesis": {

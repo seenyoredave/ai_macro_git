@@ -1,25 +1,25 @@
 {
   "graph_version": "1.0.0",
-  "last_canonical_snapshot_id": "59d478501c7ff9c6da69a0e2",
-  "last_observation_date": "2026-10-26",
-  "last_run_id": "20261026T183829Z_8266d70e",
+  "last_canonical_snapshot_id": "27a9fc977182596e162635a1",
+  "last_observation_date": "2026-10-27",
+  "last_run_id": "20261027T175426Z_780a1fcb",
   "nodes": {
     "adoption": {
       "consecutive_failures": 0,
       "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "",
-      "last_output_signature": "0cacfe1aed58d190b76aadf5",
+      "last_output_signature": "ae05b22be613dbe1e76f5f2d",
       "last_status": "success",
       "last_success_at_utc": "2026-10-26T18:38:31.250581+00:00",
       "last_success_trigger": ""
     },
     "commercialization": {
-      "consecutive_failures": 31,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "consecutive_failures": 32,
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "Parsed 2 of 3 required metrics; missing: Paying business users",
-      "last_output_signature": "4cb40b8243d43efa2dc3aafe",
+      "last_output_signature": "871935f8674053a48cf38061",
       "last_status": "partial"
     },
     "compute": {
@@ -33,11 +33,11 @@
       "last_success_trigger": ""
     },
     "connectivity": {
-      "consecutive_failures": 32,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "consecutive_failures": 33,
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
-      "last_output_signature": "281f08fe806ff2f6fd0e4bf7",
+      "last_output_signature": "9b49a1f2562d53a9e8ae3462",
       "last_status": "partial"
     },
     "construction": {
@@ -51,36 +51,36 @@
       "last_success_trigger": ""
     },
     "current_context": {
-      "consecutive_failures": 31,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "consecutive_failures": 32,
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "HTTPError: HTTP Error 403: Forbidden",
-      "last_output_signature": "19982d04c32188ca6da88ac1",
+      "last_output_signature": "29657a5c05d96d17172db0f7",
       "last_status": "partial"
     },
     "data_centers": {
       "consecutive_failures": 0,
       "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-23T16:57:50.621987+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "",
-      "last_output_signature": "08532bdbacb15897a0f64cb1",
+      "last_output_signature": "e6335da7434c919b0db40d39",
       "last_status": "success",
       "last_success_at_utc": "2026-10-26T18:38:31.250581+00:00",
       "last_success_trigger": ""
     },
     "economic_outcomes": {
-      "consecutive_failures": 31,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "consecutive_failures": 32,
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_changed_at_utc": "2026-10-22T17:03:51.610570+00:00",
       "last_error": "FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
       "last_output_signature": "c7a577fc9b47b8cb4b53322e",
       "last_status": "partial"
     },
     "edgar": {
-      "consecutive_failures": 8,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "consecutive_failures": 9,
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_changed_at_utc": "2026-10-20T16:49:44.476306+00:00",
-      "last_error": "ValueError: No unambiguous consolidated cost fact for 2026-06-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30",
+      "last_error": "ValueError: No unambiguous consolidated cost fact for 2026-09-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30; ValueError: No unambiguous consolidated cost fact for 2026-06-30",
       "last_output_signature": "04379a2240e4669e97b477ac",
       "last_status": "partial",
       "last_success_at_utc": "2026-10-16T16:32:02.127401+00:00",
@@ -88,13 +88,13 @@
     },
     "fred": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "",
-      "last_output_signature": "1adefb1dd1972dc3b3bd9fa4",
+      "last_output_signature": "08bf41636e313ab6190d11c4",
       "last_status": "success",
-      "last_success_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_success_trigger": "2026-10-26"
+      "last_success_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_success_trigger": "2026-10-27"
     },
     "grid_storage": {
       "consecutive_failures": 0,
@@ -128,20 +128,20 @@
       "last_success_trigger": ""
     },
     "pe_us_liquidity": {
-      "consecutive_failures": 6,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "consecutive_failures": 7,
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_changed_at_utc": "2026-10-19T16:37:23.954778+00:00",
       "last_error": "ReturnSourceRejected: Wrong Figure 1 end date",
       "last_output_signature": "78897351354c93f7d15d78c0",
-      "last_retrieval_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "last_retrieval_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_status": "partial"
     },
     "power_supply": {
       "consecutive_failures": 0,
       "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "",
-      "last_output_signature": "fa7d270a3dae9c1338e56788",
+      "last_output_signature": "f9b60d4f3f858473607c1234",
       "last_status": "success",
       "last_success_at_utc": "2026-10-26T18:38:31.250581+00:00",
       "last_success_trigger": "2026-10-23"
@@ -158,17 +158,17 @@
     },
     "water": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "",
-      "last_output_signature": "f9cfdbb1de68fddeea9c51f0",
+      "last_output_signature": "b1371043a86e94ac32a626e0",
       "last_status": "success",
-      "last_success_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "last_success_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_success_trigger": ""
     },
     "workforce": {
-      "consecutive_failures": 31,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "consecutive_failures": 32,
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_changed_at_utc": "2026-10-20T16:49:44.476306+00:00",
       "last_error": "FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
       "last_output_signature": "31ea0b496cff524cb6f1cb8c",
@@ -176,14 +176,14 @@
     },
     "yfinance": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_changed_at_utc": "2026-10-26T18:38:31.250581+00:00",
+      "last_attempt_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_changed_at_utc": "2026-10-27T17:54:28.357792+00:00",
       "last_error": "",
-      "last_output_signature": "a7e20e7a1b3f275a885c16f1",
+      "last_output_signature": "ed86cc1f8eaeb64d44e09b1c",
       "last_status": "success",
-      "last_success_at_utc": "2026-10-26T18:38:31.250581+00:00",
-      "last_success_trigger": "2026-10-26"
+      "last_success_at_utc": "2026-10-27T17:54:28.357792+00:00",
+      "last_success_trigger": "2026-10-27"
     }
   },
-  "updated_at_utc": "2026-10-26T18:38:31.250581+00:00"
+  "updated_at_utc": "2026-10-27T17:54:28.357792+00:00"
 }
