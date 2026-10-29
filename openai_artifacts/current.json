@@ -1,72 +1,74 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261028T182646915233Z_440d998f_d252f598",
+  "attempt_id": "20261029T183110443242Z_0ffd9214_7b3541ac",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
-    "power",
+    "compute",
+    "data_center",
+    "water",
     "economic_impact"
   ],
   "editorial_context_event_ids": [
+    "auto-2026-10-27-aa0f5bbf6c32",
     "auto-2026-10-20-095ab92b9aa4",
     "auto-2026-10-28-ef8f56286620",
-    "auto-2026-10-19-301d05e1e0a9",
+    "auto-2026-10-28-982f62d78def",
     "auto-2026-10-26-2c9ef65aa803",
     "auto-2026-10-26-e318c135f9bc",
     "auto-2026-10-26-c93973968143",
     "auto-2026-10-28-fe91866c9218",
     "auto-2026-10-26-5b20fd35c419",
     "auto-2026-10-28-1dd2990661cc",
-    "auto-2026-10-26-8ec0525e5d77",
-    "auto-2026-10-19-5f7421258ee9",
+    "auto-2026-10-28-52c1e951ce5f",
     "auto-2026-10-23-164eb95d0b49",
     "auto-2026-10-23-588f9aa6c841",
-    "auto-2026-10-22-7091043b50d5",
-    "auto-2026-10-23-a8fb7d7fcbdc"
+    "auto-2026-10-21-1e7f326f2a4a",
+    "auto-2026-10-21-7c1fb7166fd9"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
-      "power",
+      "compute",
+      "data_center",
+      "water",
       "economic_impact"
     ],
     "current_event_ids": [
+      "auto-2026-10-27-aa0f5bbf6c32",
       "auto-2026-10-20-095ab92b9aa4",
       "auto-2026-10-28-ef8f56286620",
-      "auto-2026-10-19-301d05e1e0a9",
+      "auto-2026-10-28-982f62d78def",
       "auto-2026-10-26-2c9ef65aa803",
       "auto-2026-10-26-e318c135f9bc",
       "auto-2026-10-26-c93973968143",
       "auto-2026-10-28-fe91866c9218",
       "auto-2026-10-26-5b20fd35c419",
       "auto-2026-10-28-1dd2990661cc",
-      "auto-2026-10-26-8ec0525e5d77",
-      "auto-2026-10-19-5f7421258ee9",
+      "auto-2026-10-28-52c1e951ce5f",
       "auto-2026-10-23-164eb95d0b49",
       "auto-2026-10-23-588f9aa6c841",
-      "auto-2026-10-22-7091043b50d5",
-      "auto-2026-10-23-a8fb7d7fcbdc"
+      "auto-2026-10-21-1e7f326f2a4a",
+      "auto-2026-10-21-7c1fb7166fd9"
     ],
     "material_domains": [
       "market",
-      "finance"
-    ],
-    "new_event_domains": [
-      "market",
-      "finance",
-      "power",
+      "water",
       "economic_impact"
     ],
+    "new_event_domains": [
+      "finance",
+      "compute",
+      "data_center"
+    ],
     "new_event_ids": [
-      "auto-2026-10-28-ef8f56286620",
-      "auto-2026-10-19-301d05e1e0a9",
-      "auto-2026-10-26-c93973968143",
-      "auto-2026-10-28-fe91866c9218",
-      "auto-2026-10-28-1dd2990661cc",
-      "auto-2026-10-26-8ec0525e5d77",
-      "auto-2026-10-19-5f7421258ee9"
+      "auto-2026-10-27-aa0f5bbf6c32",
+      "auto-2026-10-28-982f62d78def",
+      "auto-2026-10-28-52c1e951ce5f",
+      "auto-2026-10-21-1e7f326f2a4a",
+      "auto-2026-10-21-7c1fb7166fd9"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -74,7 +76,8 @@
   "editorial_update_domains": [
     "market",
     "finance",
-    "power",
+    "data_center",
+    "water",
     "economic_impact"
   ],
   "evidence_packets": {
@@ -680,10 +683,10 @@
         },
         {
           "context": "",
-          "display": "16.8%",
+          "display": "20.6%",
           "id": "economic_impact.information_investment_growth",
           "label": "Information-processing investment growth",
-          "value": 16.819019599244676
+          "value": 20.567957496910093
         },
         {
           "context": "",
@@ -1207,59 +1210,59 @@
       "facts": [
         {
           "context": "",
-          "display": "38.2",
+          "display": "40.8",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 38.24146159619649
+          "value": 40.79501230090769
         },
         {
           "context": "",
-          "display": "47.9",
+          "display": "47.7",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 47.946468903439396
+          "value": 47.72009067128601
         },
         {
           "context": "",
-          "display": "60.3%",
+          "display": "61.8%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6029411764705882
+          "value": 0.6176470588235294
         },
         {
           "context": "",
-          "display": "13.8%",
+          "display": "13.4%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.13770069629769965
+          "value": 0.1337875219510355
         },
         {
           "context": "",
-          "display": "21.3%",
+          "display": "20.2%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.21260086904041445
+          "value": 0.20235684737085088
         },
         {
           "context": "",
-          "display": "64.5%",
+          "display": "64.1%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6449681730281588
+          "value": 0.6414708283360854
         },
         {
           "context": "",
-          "display": "18.5",
+          "display": "18.7",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.547338249444874
+          "value": 18.69732008432257
         },
         {
           "context": "",
-          "display": "3",
+          "display": "4",
           "id": "market.strong_sector_count",
           "label": "Sectors above the strong-equity threshold",
-          "value": 3.0
+          "value": 4.0
         },
         {
           "context": "",
@@ -1269,7 +1272,7 @@
           "value": 2.0
         }
       ],
-      "importance": 19.496817302815884,
+      "importance": 19.147082833608536,
       "label": "Market",
       "references": [
         {
@@ -1378,31 +1381,31 @@
         },
         {
           "context": "",
-          "display": "333",
+          "display": "292",
           "id": "water.campuses_in_counties_with_d2_area",
           "label": "Campuses in counties with some D2-or-worse drought area",
-          "value": 333.0
+          "value": 292.0
         },
         {
           "context": "",
-          "display": "23.2%",
+          "display": "20.4%",
           "id": "water.campuses_in_counties_with_d2_share_pct",
           "label": "Share of campuses with county drought data in counties with some D2-or-worse drought area",
-          "value": 0.23221757322175732
+          "value": 0.20362622036262204
         },
         {
           "context": "",
-          "display": "229",
+          "display": "232",
           "id": "water.campuses_in_counties_with_25pct_d2_area",
           "label": "Campuses in counties with at least 25% D2-or-worse drought area",
-          "value": 229.0
+          "value": 232.0
         },
         {
           "context": "",
-          "display": "16.0%",
+          "display": "16.2%",
           "id": "water.campuses_in_counties_with_25pct_d2_share_pct",
           "label": "Share of campuses with county drought data in counties with at least 25% D2-or-worse drought area",
-          "value": 0.1596931659693166
+          "value": 0.16178521617852162
         },
         {
           "context": "",
@@ -1511,17 +1514,17 @@
         },
         {
           "context": "",
-          "display": "96.8 GW",
+          "display": "93.4 GW",
           "id": "water.published_capacity_in_counties_with_d2_gw",
           "label": "Published data-center campus capacity in counties with D2-or-worse drought",
-          "value": 96.81039000000001
+          "value": 93.35736
         },
         {
           "context": "",
-          "display": "74.0 GW",
+          "display": "74.1 GW",
           "id": "water.published_capacity_in_counties_with_25pct_d2_gw",
           "label": "Published data-center campus capacity in counties with at least 25% D2-or-worse drought",
-          "value": 74.02875
+          "value": 74.14475
         },
         {
           "context": "",
@@ -1559,7 +1562,7 @@
           "value": 2.559680884931507
         }
       ],
-      "importance": 53.84310470414853,
+      "importance": 53.48745616858368,
       "label": "Water",
       "references": [
         {
@@ -1689,19 +1692,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "440d998f5e884030907d21b4",
-  "generated_at": "2026-10-28T18:29:15.420453+00:00",
+  "evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+  "generated_at": "2026-10-29T18:33:18.121295+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 148.49796449999997,
-      "input_tokens": 4108,
+      "elapsed_sec": 127.67079891700001,
+      "input_tokens": 4536,
       "model": "gpt-5.6-sol",
-      "output_tokens": 11642,
-      "poll_attempts": 68,
+      "output_tokens": 13923,
+      "poll_attempts": 58,
       "poll_errors": [],
-      "response_id": "resp_00dfc0cbab0987c5006ae23e6797ac87d0a62c89f2fa0796cb",
+      "response_id": "resp_0375075f8c7e2572006ae390ef2c1487d0a6cf77d540f4038d",
       "terminal_status": "completed",
-      "total_tokens": 15750
+      "total_tokens": 18459
     }
   },
   "max_output_tokens": null,
@@ -1712,11 +1715,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "440d998f5e884030907d21b4",
-    "expires_at": "2026-10-29T18:29:15.423217+00:00",
+    "current_evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+    "expires_at": "2026-10-30T18:33:18.124044+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-10-28T18:29:15.423217+00:00",
+    "published_at": "2026-10-29T18:33:18.124044+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1724,24 +1727,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 68,
+        "poll_attempts": 58,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_00dfc0cbab0987c5006ae23e6797ac87d0a62c89f2fa0796cb",
+        "response_id": "resp_0375075f8c7e2572006ae390ef2c1487d0a6cf77d540f4038d",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 38.2, while the median one-year return climbed to 13.8% and the equal-weight return edged up to 21.3%. Average sector trading pressure slipped slightly to 47.9, so the stronger trailing performance has not coincided with more intense trading pressure. Investor\u2019s Business Daily reported that an Nvidia partner rallied after strong earnings and guidance; Reuters separately described Anthropic\u2019s rapid sales growth and steep losses as a test for its IPO. The contrast illustrates why strong demand for AI exposure can coexist with sharply different underlying economics.\",\"event_ids\":[\"auto-2026-10-28-ef8f56286620\",\"auto-2026-10-26-c93973968143\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity gains strengthen beyond the headline index\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.49 after rising 0.04 over three months. Lender strain increased slightly to 17.4, and corporate bond-market distress edged up to 0.25. These measures point in the same direction at the margin, but not with the same intensity. The Financial Times reported a surge in default-insurance trading tied to AI debt concerns, while Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private-credit firms. The reports show that very large AI-related financing and greater trading in credit protection can occur at the same time; they do not establish broad credit deterioration by themselves.\",\"event_ids\":[\"auto-2026-10-19-301d05e1e0a9\",\"auto-2026-10-26-8ec0525e5d77\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.lender_strain\",\"finance.bond_distress\"]},\"headline\":{\"text\":\"Credit indicators edge toward greater strain even as private credit funds a large GPU deal\",\"event_ids\":[\"auto-2026-10-26-8ec0525e5d77\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.bond_distress\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.6 GW, but they remain pipeline capacity rather than operating supply. Utility Dive reported on Google\u2019s virtual power plant in PJM in the context of intensifying competition for electricity. The project adds a nontraditional response to the power challenge, although the reported development does not show its scale or whether it can materially ease supply pressure. The figures also do not establish AI as the cause of broader demand or price growth.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Google\u2019s PJM virtual power plant adds another response as electricity demand and prices rise\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% alongside a 2.5% increase in real output, while real hourly compensation rose 0.6%. Unit labor costs increased 1.4%. The pattern shows broad productivity gains without a comparable rise in real hourly compensation, but it does not identify the source of those gains. Axios reported skepticism that AI is yet adding much to productivity. That report is consistent with the attribution problem in the aggregate data, not proof that AI has had no effect.\",\"event_ids\":[\"auto-2026-10-28-1dd2990661cc\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity growth outpaces real compensation, but AI\u2019s contribution remains unclear\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI equity gains strengthen as debt exposure and power-delivery risk come into clearer view\",\"event_ids\":[\"auto-2026-10-19-301d05e1e0a9\",\"auto-2026-10-26-8ec0525e5d77\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"finance.lender_strain\",\"finance.nfci_change\",\"power.commercial_growth\",\"power.retail_price_growth\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"AI equity performance has strengthened across more than one measure. The AI Equity Index rose materially to 38.2, the median one-year return reached 13.8%, and the equal-weight return edged up to 21.3%. Investor\u2019s Business Daily reported that an Nvidia partner surged after strong earnings and guidance, while Reuters highlighted Anthropic\u2019s combination of rapid sales growth and steep losses ahead of an IPO. Investors are still rewarding AI exposure, but those examples underscore that supplier earnings and model-company economics remain very different propositions.\",\"event_ids\":[\"auto-2026-10-28-ef8f56286620\",\"auto-2026-10-26-c93973968143\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]},{\"text\":\"The financing system can support very large commitments, though its direction has become somewhat less favorable. The Chicago Fed NFCI rose 0.04 over three months to -0.49, while lender strain and corporate bond distress both edged higher. Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private credit, and the Financial Times reported a surge in default-insurance trading amid AI debt concerns. Large financing capacity and increased credit hedging are visible at the same time; neither report demonstrates system-wide distress.\",\"event_ids\":[\"auto-2026-10-26-8ec0525e5d77\",\"auto-2026-10-19-301d05e1e0a9\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.lender_strain\",\"finance.bond_distress\"]},{\"text\":\"Power remains the clearest physical execution issue. Commercial electricity demand is growing 3.5%, faster than total retail demand at 1.8%, and retail prices are up 5.1%. Supply pipelines look large on separate measures: net planned generation additions total 227.6 GW, and active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM shows one company pursuing another route while new generation works through the pipeline. The central distinction remains between announced capacity and power that can actually serve load.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"The macroeconomic return remains harder to identify than the investment itself. Nonfarm-business productivity grew 2.2% and real output 2.5%, but real hourly compensation rose 0.6% and unit labor costs 1.4%. Business adoption is still partial: 24.6% report current AI use and 28.6% expect to use it within six months, compared with 60.8% of adults ages 18\u201364 reporting some generative-AI use. These figures show broad consumer use and narrower business deployment, but they cannot isolate AI\u2019s contribution to productivity or compensation.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.consumer_overall_pct\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index increased materially to 40.8, and the share of covered companies with positive one-year returns edged up to 61.8%. The median one-year return eased to 13.4%, however, while average sector trading pressure declined slightly to 47.7. The headline index and return breadth have strengthened without a corresponding improvement in the typical covered company\u2019s result.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"market.pressure\"]},\"headline\":{\"text\":\"The AI equity index rises while the median return slips\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow equals 1.39 times current CapEx, so current CapEx is covered in aggregate by internal cash generation. Cash reserves equal 0.92 years of CapEx, and borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. Aggregate cash-flow coverage does not remove rollover risk for borrowers and projects that depend on external capital.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal cash flow covers CapEx while Moody\u2019s flags refinancing risk\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records show 1,556 sites in development, equal to 0.51 times the 3,068 operating sites; a separate active-pipeline measure covers 894 sites. Data Center Dynamics reported that Amazon withdrew an application for a campus in Ashburn, Virginia. The case shows that individual plans can be withdrawn, but one application does not establish that the broader pipeline is contracting.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.operating_sites\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A large pipeline coexists with a reported application withdrawal\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 292, or 20.4%, are in counties with some D2-or-worse drought area, a material decrease. The more concentrated screen moved the other way: 232 campuses, or 16.2%, are in counties where at least 25% of the area is at D2 or worse, a slight increase. Drought exposure is therefore less widespread among tracked campuses, but the subset in counties with substantial affected area has not eased. These measures describe county geography, not water consumption or conditions at a campus itself.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Broad drought exposure recedes while concentrated county exposure edges up\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Information-processing investment growth increased materially to 20.6%. Nonfarm-business productivity grew 2.2% as real output rose 2.5%, while real hourly compensation increased 0.6%. Investment is expanding much faster than the broad outcome measures, but that contrast does not measure AI\u2019s return: the aggregate series cannot isolate AI\u2019s contribution to output, productivity, or pay.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates while broad outcomes move more slowly\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment remains strong, but financing risks and economy-wide effects are less settled\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\"]},\"paragraphs\":[{\"text\":\"Investment remains the clearest current signal. Information-processing investment growth accelerated materially to 20.6%, semiconductor and electronic-component output grew 19.9%, and available records list 1,556 data-center sites in development\u2014about half the operating count. The AI Equity Index also rose materially to 40.8, although the median covered-company return eased to 13.4%. These measures cover different parts of the technology and infrastructure cycle, but they show a large buildout with continued market support rather than uniform gains.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"market.aei\",\"market.median_return\"]},{\"text\":\"Financing capacity is less uniform. Operating cash flow covers current CapEx by 1.39 times, but cash reserves equal 0.92 years of CapEx. Borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate internal-funding position does not describe every project or remove rollover risk where outside capital is required.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"The economy-wide payoff remains harder to assign. Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6%. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months. These data show positive broad gains and incomplete business diffusion, but they cannot establish how much AI contributed. The buildout is easier to measure than its effect on productivity and pay.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1793212153.0,
+      "completed_at": 1793298797.0,
       "conversation": null,
-      "created_at": 1793212007.0,
+      "created_at": 1793298671.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_00dfc0cbab0987c5006ae23e6797ac87d0a62c89f2fa0796cb",
+      "id": "resp_0375075f8c7e2572006ae390ef2c1487d0a6cf77d540f4038d",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1754,7 +1757,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e69908c87d0b91be38c209e8ef1",
+          "id": "rs_0375075f8c7e2572006ae390f0dc7087d0a2b3aea4d510b7e1",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1762,7 +1765,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e71111887d0b064ca3763372c1a",
+          "id": "rs_0375075f8c7e2572006ae390f6fdc087d09f46babececb4ded",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1770,7 +1773,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e780e1887d094a8e4f46e7a968e",
+          "id": "rs_0375075f8c7e2572006ae390fc27c487d084df59afb33e6285",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1778,7 +1781,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e7f285487d09f21920587722b52",
+          "id": "rs_0375075f8c7e2572006ae3910171ec87d0b01d39750e1b6bf1",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1786,7 +1789,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e85a7f487d0a3402043ba6b10f4",
+          "id": "rs_0375075f8c7e2572006ae39106976087d0962dd17c3828afca",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1794,7 +1797,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e8d452c87d09f8dd415762b64a4",
+          "id": "rs_0375075f8c7e2572006ae3910b436087d0a5443ff5c59dd6d4",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1802,7 +1805,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e94e06887d08dbf2e193e4fed03",
+          "id": "rs_0375075f8c7e2572006ae391106d1087d084b79c26771958f7",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1810,7 +1813,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23e9c2b0087d092b2ac3d0a0ddaf5",
+          "id": "rs_0375075f8c7e2572006ae39115323487d08760bbd0a16b3368",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1818,7 +1821,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ea3dd4487d080108f51f94a6055",
+          "id": "rs_0375075f8c7e2572006ae3911a1a5887d0b29a20f246de074e",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1826,7 +1829,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23eaaa03887d0b6434456e4e6eba8",
+          "id": "rs_0375075f8c7e2572006ae3911fcb8887d08b498df2278176e6",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1834,7 +1837,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23eb19c6c87d09d20b3bb3f83fd87",
+          "id": "rs_0375075f8c7e2572006ae39124b5e887d0af141124f996347a",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1842,7 +1845,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23eb7d1e887d0bfff54ba0601bf79",
+          "id": "rs_0375075f8c7e2572006ae391295d2c87d097d980efdbd3b714",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1850,7 +1853,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ebf684c87d09daf02800b1fe938",
+          "id": "rs_0375075f8c7e2572006ae3912e00a087d09da2dc77a184f8f6",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1858,7 +1861,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ec6839c87d09dd6667421fe0fd1",
+          "id": "rs_0375075f8c7e2572006ae391325eec87d08d9ac04fa7c9392c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1866,7 +1869,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ecd658c87d0b9665f7da7352aed",
+          "id": "rs_0375075f8c7e2572006ae39136da8887d09d720385e199d251",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1874,7 +1877,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ed393cc87d080a90cfa788f8cf7",
+          "id": "rs_0375075f8c7e2572006ae3913ba85087d08fe19d056137fe00",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1882,7 +1885,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ed9b10887d0a66c26fd148f5b7b",
+          "id": "rs_0375075f8c7e2572006ae3914016d887d089e22b1cd0bc409e",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1890,7 +1893,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ee0414087d0917556b0063cb3b8",
+          "id": "rs_0375075f8c7e2572006ae3914494e487d09f77ceff89663b90",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1898,7 +1901,47 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_00dfc0cbab0987c5006ae23ee6d72887d08e30a32ac75300fd",
+          "id": "rs_0375075f8c7e2572006ae391499e4887d0a71c3d81fbd2f4c9",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0375075f8c7e2572006ae3914ebec087d08ca8ae6f0c5c4ca0",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0375075f8c7e2572006ae391536e0487d0a2c75ce62d60ee5c",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0375075f8c7e2572006ae39158892c87d0a89d483ee8992193",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0375075f8c7e2572006ae3915c5a7887d0b0a08ba0c40bb8e3",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0375075f8c7e2572006ae39160979087d0bdcbec2c1eeb6300",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1908,11 +1951,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose materially to 38.2, while the median one-year return climbed to 13.8% and the equal-weight return edged up to 21.3%. Average sector trading pressure slipped slightly to 47.9, so the stronger trailing performance has not coincided with more intense trading pressure. Investor\u2019s Business Daily reported that an Nvidia partner rallied after strong earnings and guidance; Reuters separately described Anthropic\u2019s rapid sales growth and steep losses as a test for its IPO. The contrast illustrates why strong demand for AI exposure can coexist with sharply different underlying economics.\",\"event_ids\":[\"auto-2026-10-28-ef8f56286620\",\"auto-2026-10-26-c93973968143\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\",\"market.pressure\"]},\"headline\":{\"text\":\"AI equity gains strengthen beyond the headline index\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI stands at -0.49 after rising 0.04 over three months. Lender strain increased slightly to 17.4, and corporate bond-market distress edged up to 0.25. These measures point in the same direction at the margin, but not with the same intensity. The Financial Times reported a surge in default-insurance trading tied to AI debt concerns, while Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private-credit firms. The reports show that very large AI-related financing and greater trading in credit protection can occur at the same time; they do not establish broad credit deterioration by themselves.\",\"event_ids\":[\"auto-2026-10-19-301d05e1e0a9\",\"auto-2026-10-26-8ec0525e5d77\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.lender_strain\",\"finance.bond_distress\"]},\"headline\":{\"text\":\"Credit indicators edge toward greater strain even as private credit funds a large GPU deal\",\"event_ids\":[\"auto-2026-10-26-8ec0525e5d77\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.bond_distress\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.6 GW, but they remain pipeline capacity rather than operating supply. Utility Dive reported on Google\u2019s virtual power plant in PJM in the context of intensifying competition for electricity. The project adds a nontraditional response to the power challenge, although the reported development does not show its scale or whether it can materially ease supply pressure. The figures also do not establish AI as the cause of broader demand or price growth.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.planned_net_gw\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Google\u2019s PJM virtual power plant adds another response as electricity demand and prices rise\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.2% alongside a 2.5% increase in real output, while real hourly compensation rose 0.6%. Unit labor costs increased 1.4%. The pattern shows broad productivity gains without a comparable rise in real hourly compensation, but it does not identify the source of those gains. Axios reported skepticism that AI is yet adding much to productivity. That report is consistent with the attribution problem in the aggregate data, not proof that AI has had no effect.\",\"event_ids\":[\"auto-2026-10-28-1dd2990661cc\"],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity growth outpaces real compensation, but AI\u2019s contribution remains unclear\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"AI equity gains strengthen as debt exposure and power-delivery risk come into clearer view\",\"event_ids\":[\"auto-2026-10-19-301d05e1e0a9\",\"auto-2026-10-26-8ec0525e5d77\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"finance.lender_strain\",\"finance.nfci_change\",\"power.commercial_growth\",\"power.retail_price_growth\",\"grid_storage.advanced_share\"]},\"paragraphs\":[{\"text\":\"AI equity performance has strengthened across more than one measure. The AI Equity Index rose materially to 38.2, the median one-year return reached 13.8%, and the equal-weight return edged up to 21.3%. Investor\u2019s Business Daily reported that an Nvidia partner surged after strong earnings and guidance, while Reuters highlighted Anthropic\u2019s combination of rapid sales growth and steep losses ahead of an IPO. Investors are still rewarding AI exposure, but those examples underscore that supplier earnings and model-company economics remain very different propositions.\",\"event_ids\":[\"auto-2026-10-28-ef8f56286620\",\"auto-2026-10-26-c93973968143\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]},{\"text\":\"The financing system can support very large commitments, though its direction has become somewhat less favorable. The Chicago Fed NFCI rose 0.04 over three months to -0.49, while lender strain and corporate bond distress both edged higher. Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private credit, and the Financial Times reported a surge in default-insurance trading amid AI debt concerns. Large financing capacity and increased credit hedging are visible at the same time; neither report demonstrates system-wide distress.\",\"event_ids\":[\"auto-2026-10-26-8ec0525e5d77\",\"auto-2026-10-19-301d05e1e0a9\"],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.lender_strain\",\"finance.bond_distress\"]},{\"text\":\"Power remains the clearest physical execution issue. Commercial electricity demand is growing 3.5%, faster than total retail demand at 1.8%, and retail prices are up 5.1%. Supply pipelines look large on separate measures: net planned generation additions total 227.6 GW, and active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM shows one company pursuing another route while new generation works through the pipeline. The central distinction remains between announced capacity and power that can actually serve load.\",\"event_ids\":[\"auto-2026-10-19-5f7421258ee9\"],\"fact_ids\":[\"power.commercial_growth\",\"power.demand_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"The macroeconomic return remains harder to identify than the investment itself. Nonfarm-business productivity grew 2.2% and real output 2.5%, but real hourly compensation rose 0.6% and unit labor costs 1.4%. Business adoption is still partial: 24.6% report current AI use and 28.6% expect to use it within six months, compared with 60.8% of adults ages 18\u201364 reporting some generative-AI use. These figures show broad consumer use and narrower business deployment, but they cannot isolate AI\u2019s contribution to productivity or compensation.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.consumer_overall_pct\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index increased materially to 40.8, and the share of covered companies with positive one-year returns edged up to 61.8%. The median one-year return eased to 13.4%, however, while average sector trading pressure declined slightly to 47.7. The headline index and return breadth have strengthened without a corresponding improvement in the typical covered company\u2019s result.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"market.pressure\"]},\"headline\":{\"text\":\"The AI equity index rises while the median return slips\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow equals 1.39 times current CapEx, so current CapEx is covered in aggregate by internal cash generation. Cash reserves equal 0.92 years of CapEx, and borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. Aggregate cash-flow coverage does not remove rollover risk for borrowers and projects that depend on external capital.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal cash flow covers CapEx while Moody\u2019s flags refinancing risk\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records show 1,556 sites in development, equal to 0.51 times the 3,068 operating sites; a separate active-pipeline measure covers 894 sites. Data Center Dynamics reported that Amazon withdrew an application for a campus in Ashburn, Virginia. The case shows that individual plans can be withdrawn, but one application does not establish that the broader pipeline is contracting.\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.operating_sites\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"A large pipeline coexists with a reported application withdrawal\",\"event_ids\":[\"auto-2026-10-21-7c1fb7166fd9\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 292, or 20.4%, are in counties with some D2-or-worse drought area, a material decrease. The more concentrated screen moved the other way: 232 campuses, or 16.2%, are in counties where at least 25% of the area is at D2 or worse, a slight increase. Drought exposure is therefore less widespread among tracked campuses, but the subset in counties with substantial affected area has not eased. These measures describe county geography, not water consumption or conditions at a campus itself.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Broad drought exposure recedes while concentrated county exposure edges up\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Information-processing investment growth increased materially to 20.6%. Nonfarm-business productivity grew 2.2% as real output rose 2.5%, while real hourly compensation increased 0.6%. Investment is expanding much faster than the broad outcome measures, but that contrast does not measure AI\u2019s return: the aggregate series cannot isolate AI\u2019s contribution to output, productivity, or pay.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates while broad outcomes move more slowly\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment remains strong, but financing risks and economy-wide effects are less settled\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\"]},\"paragraphs\":[{\"text\":\"Investment remains the clearest current signal. Information-processing investment growth accelerated materially to 20.6%, semiconductor and electronic-component output grew 19.9%, and available records list 1,556 data-center sites in development\u2014about half the operating count. The AI Equity Index also rose materially to 40.8, although the median covered-company return eased to 13.4%. These measures cover different parts of the technology and infrastructure cycle, but they show a large buildout with continued market support rather than uniform gains.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"market.aei\",\"market.median_return\"]},{\"text\":\"Financing capacity is less uniform. Operating cash flow covers current CapEx by 1.39 times, but cash reserves equal 0.92 years of CapEx. Borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate internal-funding position does not describe every project or remove rollover risk where outside capital is required.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"The economy-wide payoff remains harder to assign. Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6%. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months. These data show positive broad gains and incomplete business diffusion, but they cannot establish how much AI contributed. The buildout is easier to measure than its effect on productivity and pay.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_00dfc0cbab0987c5006ae23eed0ba487d09a9ead2a1ff5444b",
+          "id": "msg_0375075f8c7e2572006ae39164d36487d0802b09e7ca0b441b",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2085,16 +2128,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4108,
+        "input_tokens": 4536,
         "input_tokens_details": {
-          "cache_write_tokens": 4105,
+          "cache_write_tokens": 4533,
           "cached_tokens": 0
         },
-        "output_tokens": 11642,
+        "output_tokens": 13923,
         "output_tokens_details": {
-          "reasoning_tokens": 9840
+          "reasoning_tokens": 12382
         },
-        "total_tokens": 15750
+        "total_tokens": 18459
       },
       "user": null
     }
@@ -2281,43 +2324,43 @@
       "version": "6.1.0"
     },
     "data_center": {
-      "analysis": "Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking.",
+      "analysis": "Available records show 1,556 sites in development, equal to 0.51 times the 3,068 operating sites; a separate active-pipeline measure covers 894 sites. Data Center Dynamics reported that Amazon withdrew an application for a campus in Ashburn, Virginia. The case shows that individual plans can be withdrawn, but one application does not establish that the broader pipeline is contracting.",
       "analysis_sentences": [
-        "Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites.",
-        "The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute.",
-        "The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking."
+        "Available records show 1,556 sites in development, equal to 0.51 times the 3,068 operating sites; a separate active-pipeline measure covers 894 sites.",
+        "Data Center Dynamics reported that Amazon withdrew an application for a campus in Ashburn, Virginia.",
+        "The case shows that individual plans can be withdrawn, but one application does not establish that the broader pipeline is contracting."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-21-dd64e69056ef"
+            "auto-2026-10-21-7c1fb7166fd9"
           ],
           "fact_ids": [
             "data_center.development_sites",
-            "data_center.tracked_pipeline_sites"
+            "data_center.development_to_operating"
           ],
           "field": "headline",
-          "text": "A Texas permit-system shutdown adds uncertainty to a large data-center pipeline"
+          "text": "A large pipeline coexists with a reported application withdrawal"
         },
         {
           "event_ids": [
-            "auto-2026-10-21-dd64e69056ef"
+            "auto-2026-10-21-7c1fb7166fd9"
           ],
           "fact_ids": [
             "data_center.development_sites",
-            "data_center.operating_sites",
             "data_center.development_to_operating",
+            "data_center.operating_sites",
             "data_center.tracked_pipeline_sites"
           ],
           "field": "body",
-          "text": "Available records list 1,556 data-center sites in development, about half of the 3,068 operating sites, and separately identify 894 active pipeline sites. The Texas Tribune reported that TCEQ shut down its permit-filing system amid a data-center dispute. The shutdown is a fresh administrative interruption, but it does not establish that the broader pipeline is shrinking."
+          "text": "Available records show 1,556 sites in development, equal to 0.51 times the 3,068 operating sites; a separate active-pipeline measure covers 894 sites. Data Center Dynamics reported that Amazon withdrew an application for a campus in Ashburn, Virginia. The case shows that individual plans can be withdrawn, but one application does not establish that the broader pipeline is contracting."
         }
       ],
       "domain": "data_center",
-      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
-      "generated_at": "2026-10-23T17:08:04.931156+00:00",
+      "evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+      "generated_at": "2026-10-29T18:33:18.120976+00:00",
       "generator": "openai",
-      "headline": "A Texas permit-system shutdown adds uncertainty to a large data-center pipeline",
+      "headline": "A large pipeline coexists with a reported application withdrawal",
       "label": "Data Centers",
       "references": [
         {
@@ -2341,50 +2384,48 @@
           "source_url": ""
         },
         {
-          "source_label": "The Texas Tribune",
-          "source_url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1OTmNhTjFVOG9IcC1CMEhhN282YXNYTm92YVY0bkxXRUR1Rk0wVU9ucVRlZDI0eklkb1pmRzFFRkF0cUV1WVdUanR3NGU0djJLQ1U5LTZuR1RiTUFyQ3g4TEF1Y2tFWC1PU2Ffcmd5em16VU9KcWhhNG13OA?oc=5"
+          "source_label": "Data Center Dynamics",
+          "source_url": "https://www.datacenterdynamics.com/en/news/amazon-withdraws-application-for-data-center-campus-at-gwu-site-in-ashburn-virginia/"
         }
       ],
       "version": "6.1.0"
     },
     "economic_impact": {
-      "analysis": "Nonfarm-business productivity grew 2.2% alongside a 2.5% increase in real output, while real hourly compensation rose 0.6%. Unit labor costs increased 1.4%. The pattern shows broad productivity gains without a comparable rise in real hourly compensation, but it does not identify the source of those gains. Axios reported skepticism that AI is yet adding much to productivity. That report is consistent with the attribution problem in the aggregate data, not proof that AI has had no effect.",
+      "analysis": "Information-processing investment growth increased materially to 20.6%. Nonfarm-business productivity grew 2.2% as real output rose 2.5%, while real hourly compensation increased 0.6%. Investment is expanding much faster than the broad outcome measures, but that contrast does not measure AI\u2019s return: the aggregate series cannot isolate AI\u2019s contribution to output, productivity, or pay.",
       "analysis_sentences": [
-        "Nonfarm-business productivity grew 2.2% alongside a 2.5% increase in real output, while real hourly compensation rose 0.6%.",
-        "Unit labor costs increased 1.4%.",
-        "The pattern shows broad productivity gains without a comparable rise in real hourly compensation, but it does not identify the source of those gains.",
-        "Axios reported skepticism that AI is yet adding much to productivity.",
-        "That report is consistent with the attribution problem in the aggregate data, not proof that AI has had no effect."
+        "Information-processing investment growth increased materially to 20.6%.",
+        "Nonfarm-business productivity grew 2.2% as real output rose 2.5%, while real hourly compensation increased 0.6%.",
+        "Investment is expanding much faster than the broad outcome measures, but that contrast does not measure AI\u2019s return: the aggregate series cannot isolate AI\u2019s contribution to output, productivity, or pay."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "economic_impact.information_investment_growth",
             "economic_impact.productivity_growth",
+            "economic_impact.real_output_growth",
             "economic_impact.real_compensation_growth"
           ],
           "field": "headline",
-          "text": "Productivity growth outpaces real compensation, but AI\u2019s contribution remains unclear"
+          "text": "Information-processing investment accelerates while broad outcomes move more slowly"
         },
         {
-          "event_ids": [
-            "auto-2026-10-28-1dd2990661cc"
-          ],
+          "event_ids": [],
           "fact_ids": [
+            "economic_impact.information_investment_growth",
             "economic_impact.productivity_growth",
             "economic_impact.real_output_growth",
-            "economic_impact.real_compensation_growth",
-            "economic_impact.unit_labor_cost_growth"
+            "economic_impact.real_compensation_growth"
           ],
           "field": "body",
-          "text": "Nonfarm-business productivity grew 2.2% alongside a 2.5% increase in real output, while real hourly compensation rose 0.6%. Unit labor costs increased 1.4%. The pattern shows broad productivity gains without a comparable rise in real hourly compensation, but it does not identify the source of those gains. Axios reported skepticism that AI is yet adding much to productivity. That report is consistent with the attribution problem in the aggregate data, not proof that AI has had no effect."
+          "text": "Information-processing investment growth increased materially to 20.6%. Nonfarm-business productivity grew 2.2% as real output rose 2.5%, while real hourly compensation increased 0.6%. Investment is expanding much faster than the broad outcome measures, but that contrast does not measure AI\u2019s return: the aggregate series cannot isolate AI\u2019s contribution to output, productivity, or pay."
         }
       ],
       "domain": "economic_impact",
-      "evidence_snapshot_id": "440d998f5e884030907d21b4",
-      "generated_at": "2026-10-28T18:29:15.420113+00:00",
+      "evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+      "generated_at": "2026-10-29T18:33:18.120976+00:00",
       "generator": "openai",
-      "headline": "Productivity growth outpaces real compensation, but AI\u2019s contribution remains unclear",
+      "headline": "Information-processing investment accelerates while broad outcomes move more slowly",
       "label": "Economic Outcomes",
       "references": [
         {
@@ -2414,55 +2455,48 @@
         {
           "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
-        },
-        {
-          "source_label": "Axios",
-          "source_url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFB6X3FQTjNSanlYSnJpZ0xtY2hWYThyb0xRcVY0STdPRW10X3NIaXMyUTRjNnd4cFNyVVllMjliOEJsb0JTQ1QxNXk0RWhVanFKVnlMeF9IU2hVZGZlTXBabVRUWEJ0RGE2V0E?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "The Chicago Fed NFCI stands at -0.49 after rising 0.04 over three months. Lender strain increased slightly to 17.4, and corporate bond-market distress edged up to 0.25. These measures point in the same direction at the margin, but not with the same intensity. The Financial Times reported a surge in default-insurance trading tied to AI debt concerns, while Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private-credit firms. The reports show that very large AI-related financing and greater trading in credit protection can occur at the same time; they do not establish broad credit deterioration by themselves.",
+      "analysis": "Operating cash flow equals 1.39 times current CapEx, so current CapEx is covered in aggregate by internal cash generation. Cash reserves equal 0.92 years of CapEx, and borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. Aggregate cash-flow coverage does not remove rollover risk for borrowers and projects that depend on external capital.",
       "analysis_sentences": [
-        "The Chicago Fed NFCI stands at -0.49 after rising 0.04 over three months.",
-        "Lender strain increased slightly to 17.4, and corporate bond-market distress edged up to 0.25.",
-        "These measures point in the same direction at the margin, but not with the same intensity.",
-        "The Financial Times reported a surge in default-insurance trading tied to AI debt concerns, while Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private-credit firms.",
-        "The reports show that very large AI-related financing and greater trading in credit protection can occur at the same time; they do not establish broad credit deterioration by themselves."
+        "Operating cash flow equals 1.39 times current CapEx, so current CapEx is covered in aggregate by internal cash generation.",
+        "Cash reserves equal 0.92 years of CapEx, and borrower strain at 26.1 exceeds lender strain at 17.4.",
+        "Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise.",
+        "Aggregate cash-flow coverage does not remove rollover risk for borrowers and projects that depend on external capital."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-26-8ec0525e5d77"
+            "auto-2026-10-27-aa0f5bbf6c32"
           ],
           "fact_ids": [
-            "finance.lender_strain",
-            "finance.bond_distress"
+            "finance.internal_funding_coverage"
           ],
           "field": "headline",
-          "text": "Credit indicators edge toward greater strain even as private credit funds a large GPU deal"
+          "text": "Internal cash flow covers CapEx while Moody\u2019s flags refinancing risk"
         },
         {
           "event_ids": [
-            "auto-2026-10-19-301d05e1e0a9",
-            "auto-2026-10-26-8ec0525e5d77"
+            "auto-2026-10-27-aa0f5bbf6c32"
           ],
           "fact_ids": [
-            "finance.nfci",
-            "finance.nfci_change",
-            "finance.lender_strain",
-            "finance.bond_distress"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.borrower_strain",
+            "finance.lender_strain"
           ],
           "field": "body",
-          "text": "The Chicago Fed NFCI stands at -0.49 after rising 0.04 over three months. Lender strain increased slightly to 17.4, and corporate bond-market distress edged up to 0.25. These measures point in the same direction at the margin, but not with the same intensity. The Financial Times reported a surge in default-insurance trading tied to AI debt concerns, while Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private-credit firms. The reports show that very large AI-related financing and greater trading in credit protection can occur at the same time; they do not establish broad credit deterioration by themselves."
+          "text": "Operating cash flow equals 1.39 times current CapEx, so current CapEx is covered in aggregate by internal cash generation. Cash reserves equal 0.92 years of CapEx, and borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. Aggregate cash-flow coverage does not remove rollover risk for borrowers and projects that depend on external capital."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "440d998f5e884030907d21b4",
-      "generated_at": "2026-10-28T18:29:15.420113+00:00",
+      "evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+      "generated_at": "2026-10-29T18:33:18.120976+00:00",
       "generator": "openai",
-      "headline": "Credit indicators edge toward greater strain even as private credit funds a large GPU deal",
+      "headline": "Internal cash flow covers CapEx while Moody\u2019s flags refinancing risk",
       "label": "Finance",
       "references": [
         {
@@ -2514,12 +2548,8 @@
           "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
         },
         {
-          "source_label": "Morningstar",
-          "source_url": "https://www.morningstar.com/stocks/spacex-strikes-40b-gpu-leasing-deal-with-private-credit-players"
-        },
-        {
-          "source_label": "Financial Times",
-          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPcnJ5Z2tYWDBsbGxSQVVDSDNiN3ZBTldqMWZieW00MC03RU9LMldmc01NYnJwZ3FIUUVvOEp6aHVGdll5SmpxMkpweV8zNWpJemJHWU5OQlQwb2hEYjY2cFBZQUlxcmlVTTBUOUQyeTRoNTdLQkIwRm83dnR4OGtRUWxPLXo?oc=5"
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPMlFHLTNZbVhfQjRZSmFmT1N5S2s2UTNsUkIzRnF0eFNXbG1GTTlURnZsU2ZDUGJMNVhGX2tPVzBrdkpSR1Y2VHBxZlFfMUdHcnJoTWNjNVlLMFBkNzRja1RaVVRaWFBSaUU5ak1LN3lxUDBqRE45UVRBVm9USHk0SzZ3WG1pc0tXRDgwVU1JenB2cmFDN2pyb3d1U0tZQmlqNjA2UzltdmZFaHFLNWZxV0pITWlVV1U5enM5SGtNWjJfdEhQQVljbG9lcnFLZw?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2587,134 +2617,105 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "AI equity performance has strengthened across more than one measure. The AI Equity Index rose materially to 38.2, the median one-year return reached 13.8%, and the equal-weight return edged up to 21.3%. Investor\u2019s Business Daily reported that an Nvidia partner surged after strong earnings and guidance, while Reuters highlighted Anthropic\u2019s combination of rapid sales growth and steep losses ahead of an IPO. Investors are still rewarding AI exposure, but those examples underscore that supplier earnings and model-company economics remain very different propositions. The financing system can support very large commitments, though its direction has become somewhat less favorable. The Chicago Fed NFCI rose 0.04 over three months to -0.49, while lender strain and corporate bond distress both edged higher. Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private credit, and the Financial Times reported a surge in default-insurance trading amid AI debt concerns. Large financing capacity and increased credit hedging are visible at the same time; neither report demonstrates system-wide distress. Power remains the clearest physical execution issue. Commercial electricity demand is growing 3.5%, faster than total retail demand at 1.8%, and retail prices are up 5.1%. Supply pipelines look large on separate measures: net planned generation additions total 227.6 GW, and active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM shows one company pursuing another route while new generation works through the pipeline. The central distinction remains between announced capacity and power that can actually serve load. The macroeconomic return remains harder to identify than the investment itself. Nonfarm-business productivity grew 2.2% and real output 2.5%, but real hourly compensation rose 0.6% and unit labor costs 1.4%. Business adoption is still partial: 24.6% report current AI use and 28.6% expect to use it within six months, compared with 60.8% of adults ages 18\u201364 reporting some generative-AI use. These figures show broad consumer use and narrower business deployment, but they cannot isolate AI\u2019s contribution to productivity or compensation.",
+      "analysis": "Investment remains the clearest current signal. Information-processing investment growth accelerated materially to 20.6%, semiconductor and electronic-component output grew 19.9%, and available records list 1,556 data-center sites in development\u2014about half the operating count. The AI Equity Index also rose materially to 40.8, although the median covered-company return eased to 13.4%. These measures cover different parts of the technology and infrastructure cycle, but they show a large buildout with continued market support rather than uniform gains. Financing capacity is less uniform. Operating cash flow covers current CapEx by 1.39 times, but cash reserves equal 0.92 years of CapEx. Borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate internal-funding position does not describe every project or remove rollover risk where outside capital is required. The economy-wide payoff remains harder to assign. Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6%. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months. These data show positive broad gains and incomplete business diffusion, but they cannot establish how much AI contributed. The buildout is easier to measure than its effect on productivity and pay.",
       "analysis_paragraphs": [
-        "AI equity performance has strengthened across more than one measure. The AI Equity Index rose materially to 38.2, the median one-year return reached 13.8%, and the equal-weight return edged up to 21.3%. Investor\u2019s Business Daily reported that an Nvidia partner surged after strong earnings and guidance, while Reuters highlighted Anthropic\u2019s combination of rapid sales growth and steep losses ahead of an IPO. Investors are still rewarding AI exposure, but those examples underscore that supplier earnings and model-company economics remain very different propositions.",
-        "The financing system can support very large commitments, though its direction has become somewhat less favorable. The Chicago Fed NFCI rose 0.04 over three months to -0.49, while lender strain and corporate bond distress both edged higher. Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private credit, and the Financial Times reported a surge in default-insurance trading amid AI debt concerns. Large financing capacity and increased credit hedging are visible at the same time; neither report demonstrates system-wide distress.",
-        "Power remains the clearest physical execution issue. Commercial electricity demand is growing 3.5%, faster than total retail demand at 1.8%, and retail prices are up 5.1%. Supply pipelines look large on separate measures: net planned generation additions total 227.6 GW, and active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM shows one company pursuing another route while new generation works through the pipeline. The central distinction remains between announced capacity and power that can actually serve load.",
-        "The macroeconomic return remains harder to identify than the investment itself. Nonfarm-business productivity grew 2.2% and real output 2.5%, but real hourly compensation rose 0.6% and unit labor costs 1.4%. Business adoption is still partial: 24.6% report current AI use and 28.6% expect to use it within six months, compared with 60.8% of adults ages 18\u201364 reporting some generative-AI use. These figures show broad consumer use and narrower business deployment, but they cannot isolate AI\u2019s contribution to productivity or compensation."
+        "Investment remains the clearest current signal. Information-processing investment growth accelerated materially to 20.6%, semiconductor and electronic-component output grew 19.9%, and available records list 1,556 data-center sites in development\u2014about half the operating count. The AI Equity Index also rose materially to 40.8, although the median covered-company return eased to 13.4%. These measures cover different parts of the technology and infrastructure cycle, but they show a large buildout with continued market support rather than uniform gains.",
+        "Financing capacity is less uniform. Operating cash flow covers current CapEx by 1.39 times, but cash reserves equal 0.92 years of CapEx. Borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate internal-funding position does not describe every project or remove rollover risk where outside capital is required.",
+        "The economy-wide payoff remains harder to assign. Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6%. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months. These data show positive broad gains and incomplete business diffusion, but they cannot establish how much AI contributed. The buildout is easier to measure than its effect on productivity and pay."
       ],
       "analysis_sentences": [
-        "AI equity performance has strengthened across more than one measure.",
-        "The AI Equity Index rose materially to 38.2, the median one-year return reached 13.8%, and the equal-weight return edged up to 21.3%.",
-        "Investor\u2019s Business Daily reported that an Nvidia partner surged after strong earnings and guidance, while Reuters highlighted Anthropic\u2019s combination of rapid sales growth and steep losses ahead of an IPO.",
-        "Investors are still rewarding AI exposure, but those examples underscore that supplier earnings and model-company economics remain very different propositions.",
-        "The financing system can support very large commitments, though its direction has become somewhat less favorable.",
-        "The Chicago Fed NFCI rose 0.04 over three months to -0.49, while lender strain and corporate bond distress both edged higher.",
-        "Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private credit, and the Financial Times reported a surge in default-insurance trading amid AI debt concerns.",
-        "Large financing capacity and increased credit hedging are visible at the same time; neither report demonstrates system-wide distress.",
-        "Power remains the clearest physical execution issue.",
-        "Commercial electricity demand is growing 3.5%, faster than total retail demand at 1.8%, and retail prices are up 5.1%.",
-        "Supply pipelines look large on separate measures: net planned generation additions total 227.6 GW, and active interconnection queues contain 2,061 GW.",
-        "Yet only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation.",
-        "Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM shows one company pursuing another route while new generation works through the pipeline.",
-        "The central distinction remains between announced capacity and power that can actually serve load.",
-        "The macroeconomic return remains harder to identify than the investment itself.",
-        "Nonfarm-business productivity grew 2.2% and real output 2.5%, but real hourly compensation rose 0.6% and unit labor costs 1.4%.",
-        "Business adoption is still partial: 24.6% report current AI use and 28.6% expect to use it within six months, compared with 60.8% of adults ages 18\u201364 reporting some generative-AI use.",
-        "These figures show broad consumer use and narrower business deployment, but they cannot isolate AI\u2019s contribution to productivity or compensation."
+        "Investment remains the clearest current signal.",
+        "Information-processing investment growth accelerated materially to 20.6%, semiconductor and electronic-component output grew 19.9%, and available records list 1,556 data-center sites in development\u2014about half the operating count.",
+        "The AI Equity Index also rose materially to 40.8, although the median covered-company return eased to 13.4%.",
+        "These measures cover different parts of the technology and infrastructure cycle, but they show a large buildout with continued market support rather than uniform gains.",
+        "Financing capacity is less uniform.",
+        "Operating cash flow covers current CapEx by 1.39 times, but cash reserves equal 0.92 years of CapEx.",
+        "Borrower strain at 26.1 exceeds lender strain at 17.4.",
+        "Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise.",
+        "The aggregate internal-funding position does not describe every project or remove rollover risk where outside capital is required.",
+        "The economy-wide payoff remains harder to assign.",
+        "Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6%.",
+        "Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months.",
+        "These data show positive broad gains and incomplete business diffusion, but they cannot establish how much AI contributed.",
+        "The buildout is easier to measure than its effect on productivity and pay."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-10-19-301d05e1e0a9",
-            "auto-2026-10-26-8ec0525e5d77"
+            "auto-2026-10-27-aa0f5bbf6c32"
           ],
           "fact_ids": [
-            "market.aei",
-            "market.median_return",
-            "finance.lender_strain",
-            "finance.nfci_change",
-            "power.commercial_growth",
-            "power.retail_price_growth",
-            "grid_storage.advanced_share"
+            "economic_impact.information_investment_growth",
+            "economic_impact.productivity_growth"
           ],
           "field": "headline",
-          "text": "AI equity gains strengthen as debt exposure and power-delivery risk come into clearer view"
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-28-ef8f56286620",
-            "auto-2026-10-26-c93973968143"
-          ],
-          "fact_ids": [
-            "market.aei",
-            "market.median_return",
-            "market.equal_weight_return"
-          ],
-          "field": "paragraphs[0]",
-          "text": "AI equity performance has strengthened across more than one measure. The AI Equity Index rose materially to 38.2, the median one-year return reached 13.8%, and the equal-weight return edged up to 21.3%. Investor\u2019s Business Daily reported that an Nvidia partner surged after strong earnings and guidance, while Reuters highlighted Anthropic\u2019s combination of rapid sales growth and steep losses ahead of an IPO. Investors are still rewarding AI exposure, but those examples underscore that supplier earnings and model-company economics remain very different propositions."
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-26-8ec0525e5d77",
-            "auto-2026-10-19-301d05e1e0a9"
-          ],
-          "fact_ids": [
-            "finance.nfci",
-            "finance.nfci_change",
-            "finance.lender_strain",
-            "finance.bond_distress"
-          ],
-          "field": "paragraphs[1]",
-          "text": "The financing system can support very large commitments, though its direction has become somewhat less favorable. The Chicago Fed NFCI rose 0.04 over three months to -0.49, while lender strain and corporate bond distress both edged higher. Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private credit, and the Financial Times reported a surge in default-insurance trading amid AI debt concerns. Large financing capacity and increased credit hedging are visible at the same time; neither report demonstrates system-wide distress."
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-19-5f7421258ee9"
-          ],
-          "fact_ids": [
-            "power.commercial_growth",
-            "power.demand_growth",
-            "power.retail_price_growth",
-            "power.planned_net_gw",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
-          ],
-          "field": "paragraphs[2]",
-          "text": "Power remains the clearest physical execution issue. Commercial electricity demand is growing 3.5%, faster than total retail demand at 1.8%, and retail prices are up 5.1%. Supply pipelines look large on separate measures: net planned generation additions total 227.6 GW, and active interconnection queues contain 2,061 GW. Yet only 24.2% of the queue is in executed-agreement or construction stages, and 13% of the 2000\u20132020 cohort reached operation. Utility Dive\u2019s report on Google\u2019s virtual power plant in PJM shows one company pursuing another route while new generation works through the pipeline. The central distinction remains between announced capacity and power that can actually serve load."
+          "text": "Investment remains strong, but financing risks and economy-wide effects are less settled"
         },
         {
           "event_ids": [],
           "fact_ids": [
+            "economic_impact.information_investment_growth",
+            "compute.semiconductor_output_growth",
+            "data_center.development_sites",
+            "data_center.development_to_operating",
+            "market.aei",
+            "market.median_return"
+          ],
+          "field": "paragraphs[0]",
+          "text": "Investment remains the clearest current signal. Information-processing investment growth accelerated materially to 20.6%, semiconductor and electronic-component output grew 19.9%, and available records list 1,556 data-center sites in development\u2014about half the operating count. The AI Equity Index also rose materially to 40.8, although the median covered-company return eased to 13.4%. These measures cover different parts of the technology and infrastructure cycle, but they show a large buildout with continued market support rather than uniform gains."
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-27-aa0f5bbf6c32"
+          ],
+          "fact_ids": [
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.borrower_strain",
+            "finance.lender_strain"
+          ],
+          "field": "paragraphs[1]",
+          "text": "Financing capacity is less uniform. Operating cash flow covers current CapEx by 1.39 times, but cash reserves equal 0.92 years of CapEx. Borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate internal-funding position does not describe every project or remove rollover risk where outside capital is required."
+        },
+        {
+          "event_ids": [],
+          "fact_ids": [
+            "economic_impact.information_investment_growth",
             "economic_impact.productivity_growth",
             "economic_impact.real_output_growth",
             "economic_impact.real_compensation_growth",
-            "economic_impact.unit_labor_cost_growth",
             "adoption.current_business_use_pct",
-            "adoption.expected_business_use_pct",
-            "adoption.consumer_overall_pct"
+            "adoption.expected_business_use_pct"
           ],
-          "field": "paragraphs[3]",
-          "text": "The macroeconomic return remains harder to identify than the investment itself. Nonfarm-business productivity grew 2.2% and real output 2.5%, but real hourly compensation rose 0.6% and unit labor costs 1.4%. Business adoption is still partial: 24.6% report current AI use and 28.6% expect to use it within six months, compared with 60.8% of adults ages 18\u201364 reporting some generative-AI use. These figures show broad consumer use and narrower business deployment, but they cannot isolate AI\u2019s contribution to productivity or compensation."
+          "field": "paragraphs[2]",
+          "text": "The economy-wide payoff remains harder to assign. Nonfarm-business productivity grew 2.2% and real output 2.5%, while real hourly compensation rose 0.6%. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months. These data show positive broad gains and incomplete business diffusion, but they cannot establish how much AI contributed. The buildout is easier to measure than its effect on productivity and pay."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "market.aei",
-          "label": "AI Equity Index",
-          "value": "38.2"
+          "fact_id": "economic_impact.information_investment_growth",
+          "label": "Information-processing investment growth",
+          "value": "20.6%"
         },
         {
           "context": "",
-          "fact_id": "market.median_return",
-          "label": "Median one-year return",
-          "value": "13.8%"
+          "fact_id": "economic_impact.productivity_growth",
+          "label": "Nonfarm-business productivity growth",
+          "value": "2.2%"
         },
         {
           "context": "",
-          "fact_id": "finance.lender_strain",
-          "label": "Lender strain",
-          "value": "17.4"
+          "fact_id": "compute.semiconductor_output_growth",
+          "label": "Semiconductor and electronic component output growth",
+          "value": "19.9%"
         }
       ],
-      "evidence_snapshot_id": "440d998f5e884030907d21b4",
-      "generated_at": "2026-10-28T18:29:15.420113+00:00",
+      "evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+      "generated_at": "2026-10-29T18:33:18.120976+00:00",
       "generator": "openai",
-      "headline": "AI equity gains strengthen as debt exposure and power-delivery risk come into clearer view",
+      "headline": "Investment remains strong, but financing risks and economy-wide effects are less settled",
       "label": "AI Macro",
       "references": [
         {
@@ -2745,52 +2746,47 @@
       "selected_domains": [
         "market",
         "finance",
-        "power",
-        "grid_storage",
+        "compute",
+        "data_center",
         "adoption",
         "economic_impact"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index rose materially to 38.2, while the median one-year return climbed to 13.8% and the equal-weight return edged up to 21.3%. Average sector trading pressure slipped slightly to 47.9, so the stronger trailing performance has not coincided with more intense trading pressure. Investor\u2019s Business Daily reported that an Nvidia partner rallied after strong earnings and guidance; Reuters separately described Anthropic\u2019s rapid sales growth and steep losses as a test for its IPO. The contrast illustrates why strong demand for AI exposure can coexist with sharply different underlying economics.",
+      "analysis": "The AI Equity Index increased materially to 40.8, and the share of covered companies with positive one-year returns edged up to 61.8%. The median one-year return eased to 13.4%, however, while average sector trading pressure declined slightly to 47.7. The headline index and return breadth have strengthened without a corresponding improvement in the typical covered company\u2019s result.",
       "analysis_sentences": [
-        "The AI Equity Index rose materially to 38.2, while the median one-year return climbed to 13.8% and the equal-weight return edged up to 21.3%.",
-        "Average sector trading pressure slipped slightly to 47.9, so the stronger trailing performance has not coincided with more intense trading pressure.",
-        "Investor\u2019s Business Daily reported that an Nvidia partner rallied after strong earnings and guidance; Reuters separately described Anthropic\u2019s rapid sales growth and steep losses as a test for its IPO.",
-        "The contrast illustrates why strong demand for AI exposure can coexist with sharply different underlying economics."
+        "The AI Equity Index increased materially to 40.8, and the share of covered companies with positive one-year returns edged up to 61.8%.",
+        "The median one-year return eased to 13.4%, however, while average sector trading pressure declined slightly to 47.7.",
+        "The headline index and return breadth have strengthened without a corresponding improvement in the typical covered company\u2019s result."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "market.aei",
-            "market.median_return",
-            "market.equal_weight_return"
+            "market.median_return"
           ],
           "field": "headline",
-          "text": "AI equity gains strengthen beyond the headline index"
+          "text": "The AI equity index rises while the median return slips"
         },
         {
-          "event_ids": [
-            "auto-2026-10-28-ef8f56286620",
-            "auto-2026-10-26-c93973968143"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "market.aei",
+            "market.positive_breadth",
             "market.median_return",
-            "market.equal_weight_return",
             "market.pressure"
           ],
           "field": "body",
-          "text": "The AI Equity Index rose materially to 38.2, while the median one-year return climbed to 13.8% and the equal-weight return edged up to 21.3%. Average sector trading pressure slipped slightly to 47.9, so the stronger trailing performance has not coincided with more intense trading pressure. Investor\u2019s Business Daily reported that an Nvidia partner rallied after strong earnings and guidance; Reuters separately described Anthropic\u2019s rapid sales growth and steep losses as a test for its IPO. The contrast illustrates why strong demand for AI exposure can coexist with sharply different underlying economics."
+          "text": "The AI Equity Index increased materially to 40.8, and the share of covered companies with positive one-year returns edged up to 61.8%. The median one-year return eased to 13.4%, however, while average sector trading pressure declined slightly to 47.7. The headline index and return breadth have strengthened without a corresponding improvement in the typical covered company\u2019s result."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "440d998f5e884030907d21b4",
-      "generated_at": "2026-10-28T18:29:15.420113+00:00",
+      "evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+      "generated_at": "2026-10-29T18:33:18.120976+00:00",
       "generator": "openai",
-      "headline": "AI equity gains strengthen beyond the headline index",
+      "headline": "The AI equity index rises while the median return slips",
       "label": "Market",
       "references": [
         {
@@ -2800,14 +2796,6 @@
         {
           "source_label": "SEC EDGAR",
           "source_url": "https://www.sec.gov/edgar/search/"
-        },
-        {
-          "source_label": "Investor's Business Daily",
-          "source_url": "https://www.investors.com/news/nvidia-partner-vertiv-earnings-ai-stocks-data-center/"
-        },
-        {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQLVVZWVV6TXQtR3ZqaWZKZERKZ3J3VVpIZlNtUjVfRjdTS0tuVTlRQ0F0UzRhcW9Hd2hxR1BtNzF4UVBVYXBpTkc0Rmozb3pRekc2RVNnOVBYd19KUGZ5VE1UN29haXQ2M0w0Qk1QTm5INk5KRlhxLUR6Q3REWHR3OG9EYkpFMGJUUm5HMGFiX3pBLXhZMHV5Qkgwdlc0RTczMnhOc3Q4NFpORFE5SlRfRkVDOWdmZw?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2875,22 +2863,24 @@
       "version": "6.1.0"
     },
     "water": {
-      "analysis": "Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site.",
+      "analysis": "Among campuses with county drought data, 292, or 20.4%, are in counties with some D2-or-worse drought area, a material decrease. The more concentrated screen moved the other way: 232 campuses, or 16.2%, are in counties where at least 25% of the area is at D2 or worse, a slight increase. Drought exposure is therefore less widespread among tracked campuses, but the subset in counties with substantial affected area has not eased. These measures describe county geography, not water consumption or conditions at a campus itself.",
       "analysis_sentences": [
-        "Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought.",
-        "Both measures decreased materially.",
-        "The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline.",
-        "These are measures of county geography, not campus water consumption or conditions at the precise site."
+        "Among campuses with county drought data, 292, or 20.4%, are in counties with some D2-or-worse drought area, a material decrease.",
+        "The more concentrated screen moved the other way: 232 campuses, or 16.2%, are in counties where at least 25% of the area is at D2 or worse, a slight increase.",
+        "Drought exposure is therefore less widespread among tracked campuses, but the subset in counties with substantial affected area has not eased.",
+        "These measures describe county geography, not water consumption or conditions at a campus itself."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "water.campuses_in_counties_with_d2_area",
+            "water.campuses_in_counties_with_d2_share_pct",
             "water.campuses_in_counties_with_25pct_d2_area",
             "water.campuses_in_counties_with_25pct_d2_share_pct"
           ],
           "field": "headline",
-          "text": "Drought exposure falls materially at the higher county threshold"
+          "text": "Broad drought exposure recedes while concentrated county exposure edges up"
         },
         {
           "event_ids": [],
@@ -2901,14 +2891,14 @@
             "water.campuses_in_counties_with_25pct_d2_share_pct"
           ],
           "field": "body",
-          "text": "Among campuses with county drought data, 229, or 16.0%, are in counties where at least 25% of the area is under D2-or-worse drought. Both measures decreased materially. The broader screen\u2014any D2-or-worse area in the county\u2014covers 333 campuses, or 23.2%, after a slight decline. These are measures of county geography, not campus water consumption or conditions at the precise site."
+          "text": "Among campuses with county drought data, 292, or 20.4%, are in counties with some D2-or-worse drought area, a material decrease. The more concentrated screen moved the other way: 232 campuses, or 16.2%, are in counties where at least 25% of the area is at D2 or worse, a slight increase. Drought exposure is therefore less widespread among tracked campuses, but the subset in counties with substantial affected area has not eased. These measures describe county geography, not water consumption or conditions at a campus itself."
         }
       ],
       "domain": "water",
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "0ffd92148b6229dd8549f087",
+      "generated_at": "2026-10-29T18:33:18.120976+00:00",
       "generator": "openai",
-      "headline": "Drought exposure falls materially at the higher county threshold",
+      "headline": "Broad drought exposure recedes while concentrated county exposure edges up",
       "label": "Water",
       "references": [
         {
@@ -3007,25 +2997,19 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 13,
+    "checked_passages": 14,
     "diagnostics": [
       {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "market.body",
-        "text": "The AI Equity Index rose materially to 38.2, while the median one-year return climbed to 13.8% and the equal-weight return edged up to 21.3%. Average sector trading pressure slipped slightly to 47.9, so the stronger trailing performance has not coincided with more intense trading pressure. Investor\u2019s Business Daily reported that an Nvidia partner rallied after strong earnings and guidance; Reuters separately described Anthropic\u2019s rapid sales growth and steep losses as a test for its IPO. The contrast illustrates why strong demand for AI exposure can coexist with sharply different underlying economics."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
+        "message": "Conspicuous same-initial word run detected: current CapEx current CapEx",
+        "reason": "alliterative_run",
         "scope": "finance.body",
-        "text": "The Chicago Fed NFCI stands at -0.49 after rising 0.04 over three months. Lender strain increased slightly to 17.4, and corporate bond-market distress edged up to 0.25. These measures point in the same direction at the margin, but not with the same intensity. The Financial Times reported a surge in default-insurance trading tied to AI debt concerns, while Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private-credit firms. The reports show that very large AI-related financing and greater trading in credit protection can occur at the same time; they do not establish broad credit deterioration by themselves."
+        "text": "Operating cash flow equals 1.39 times current CapEx, so current CapEx is covered in aggregate by internal cash generation. Cash reserves equal 0.92 years of CapEx, and borrower strain at 26.1 exceeds lender strain at 17.4. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. Aggregate cash-flow coverage does not remove rollover risk for borrowers and projects that depend on external capital."
       },
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "macro.paragraphs[1]",
-        "text": "The financing system can support very large commitments, though its direction has become somewhat less favorable. The Chicago Fed NFCI rose 0.04 over three months to -0.49, while lender strain and corporate bond distress both edged higher. Morningstar reported a $40 billion GPU leasing deal involving SpaceX and private credit, and the Financial Times reported a surge in default-insurance trading amid AI debt concerns. Large financing capacity and increased credit hedging are visible at the same time; neither report demonstrates system-wide distress."
+        "scope": "data_center.body",
+        "text": "Available records show 1,556 sites in development, equal to 0.51 times the 3,068 operating sites; a separate active-pipeline measure covers 894 sites. Data Center Dynamics reported that Amazon withdrew an application for a campus in Ashburn, Virginia. The case shows that individual plans can be withdrawn, but one application does not establish that the broader pipeline is contracting."
       }
     ],
     "hard_errors": [],
