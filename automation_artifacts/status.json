@@ -2,10 +2,11 @@
   "auto_publish": true,
   "automation_enabled": true,
   "canonical_schema_version": "1.0.0",
-  "canonical_snapshot_id": "da99b76c56601110bbc2ec03",
+  "canonical_snapshot_id": "7c9c0f97a5d84e8938891e64",
   "changed_paths": [
     "archive/benchmark_history.csv",
     "archive/edgar_history.csv",
+    "archive/energy_history.csv",
     "archive/fred_history.csv",
     "archive/macro_history.csv",
     "archive/sector_history.csv",
@@ -13,6 +14,7 @@
     "automation_artifacts/call_journal.jsonl",
     "automation_artifacts/status.json",
     "data/adoption_consumer_history.csv",
+    "data/bank_credit_tightening_history.csv",
     "data/borrower_strain_fundamentals_history.csv",
     "data/commercialization/commercialization_ledger.csv",
     "data/connectivity/ixp_snapshot.csv",
@@ -20,9 +22,13 @@
     "data/connectivity/national_summary.csv",
     "data/current_context_candidate_audit.csv",
     "data/current_context_refresh_manifest.json",
+    "data/data_center_construction_history.csv",
     "data/debt_financing_observations.csv",
+    "data/energy_series_history.csv",
+    "data/energy_wholesale_prices.csv",
     "data/finance/credit_conditions_history.csv",
     "data/infrastructure/source_manifest.csv",
+    "data/infrastructure_construction_history.csv",
     "data/refresh_graph_state.json",
     "data/release_manifest.json",
     "data/retained_state_manifest.json",
@@ -36,14 +42,14 @@
     "data/water/source_manifest.csv",
     "data/weekly_context_events.csv",
     "openai_artifacts/current.json",
-    "data/canonical/observations/2026/10/da99b76c56601110bbc2ec03.parquet",
-    "data/canonical/snapshots/2026/10/da99b76c56601110bbc2ec03.parquet",
-    "openai_artifacts/attempts/20261030T180704288528Z_323aa528_e8e71a10.json"
+    "data/canonical/observations/2026/11/7c9c0f97a5d84e8938891e64.parquet",
+    "data/canonical/snapshots/2026/11/7c9c0f97a5d84e8938891e64.parquet",
+    "openai_artifacts/attempts/20261102T222618982721Z_3c41402b_4ea1755b.json"
   ],
-  "current_context_snapshot_id": "562080b0176f853e",
+  "current_context_snapshot_id": "6e50f03610254f9a",
   "errors": [],
-  "evidence_snapshot_id": "323aa528f43e0e84d2e373be",
-  "finished_at_utc": "2026-10-30T18:08:06.878905+00:00",
+  "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+  "finished_at_utc": "2026-11-02T22:27:21.699589+00:00",
   "openai_enabled": true,
   "paid_calls": {
     "daily_ceiling": 2,
@@ -56,12 +62,13 @@
   },
   "phases": {
     "deterministic_refresh": {
-      "elapsed_sec": 546.146,
+      "elapsed_sec": 581.461,
       "refresh_graph": {
         "changed_nodes": [
+          "construction",
           "compute",
-          "data_centers",
           "connectivity",
+          "power_supply",
           "water",
           "adoption",
           "commercialization",
@@ -76,10 +83,10 @@
           "adoption": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 16.006,
+            "elapsed_sec": 5.736,
             "error": "",
             "first_signature": false,
-            "output_signature": "0cf340e830ca2e3690de2cd8",
+            "output_signature": "18d4d492aec513b74f2aabdb",
             "reason": "cadence_elapsed",
             "refresh": true,
             "status": "success"
@@ -87,10 +94,10 @@
           "commercialization": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 1.21,
+            "elapsed_sec": 0.768,
             "error": "HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/accelerating-the-next-phase-ai/; HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/",
             "first_signature": false,
-            "output_signature": "190e23e7102207af05e086ea",
+            "output_signature": "613210642de28fb0ff0c28aa",
             "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
@@ -98,10 +105,10 @@
           "compute": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 26.105,
+            "elapsed_sec": 13.626,
             "error": "",
             "first_signature": false,
-            "output_signature": "7b36e1207908f790355d4fdd",
+            "output_signature": "913ff29a98066f66c0267042",
             "reason": "cadence_elapsed",
             "refresh": true,
             "status": "success"
@@ -109,21 +116,21 @@
           "connectivity": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 14.716,
+            "elapsed_sec": 9.798,
             "error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
             "first_signature": false,
-            "output_signature": "09df2fa0c4c5bd74da1bd5a3",
+            "output_signature": "9c6e410bfc20e8aded68d2e9",
             "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "construction": {
             "attempted_live": true,
-            "changed": false,
-            "elapsed_sec": 26.105,
+            "changed": true,
+            "elapsed_sec": 13.626,
             "error": "",
             "first_signature": false,
-            "output_signature": "890f0d705a03453139c3277d",
+            "output_signature": "55836132a6744829f84c68d4",
             "reason": "cadence_elapsed",
             "refresh": true,
             "status": "success"
@@ -131,18 +138,18 @@
           "current_context": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 69.569,
+            "elapsed_sec": 29.231,
             "error": "HTTPError: HTTP Error 403: Forbidden",
             "first_signature": false,
-            "output_signature": "c563c6d107c527760716ee13",
+            "output_signature": "62d2dc80fd7aae39af3bad4f",
             "reason": "retry_after_partial",
             "refresh": true,
             "status": "partial"
           },
           "data_centers": {
             "attempted_live": true,
-            "changed": true,
-            "elapsed_sec": 26.105,
+            "changed": false,
+            "elapsed_sec": 13.626,
             "error": "",
             "first_signature": false,
             "output_signature": "08532bdbacb15897a0f64cb1",
@@ -153,7 +160,7 @@
           "economic_outcomes": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 22.528,
+            "elapsed_sec": 16.141,
             "error": "FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
             "first_signature": false,
             "output_signature": "7f83786927cfe0fc59f5426b",
@@ -164,7 +171,7 @@
           "edgar": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 121.181,
+            "elapsed_sec": 90.074,
             "error": "ValueError: No unambiguous consolidated cost fact for 2026-09-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30; ValueError: No unambiguous consolidated cost fact for 2026-06-30",
             "first_signature": false,
             "output_signature": "04379a2240e4669e97b477ac",
@@ -175,10 +182,10 @@
           "fred": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 7.691,
+            "elapsed_sec": 8.091,
             "error": "",
             "first_signature": false,
-            "output_signature": "aa4cb0f6280193374d5ea8e4",
+            "output_signature": "018d8fa29c75f4adbc585ea7",
             "reason": "release_trigger_changed",
             "refresh": true,
             "status": "success"
@@ -186,18 +193,18 @@
           "grid_storage": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 16.287,
-            "error": "",
+            "elapsed_sec": 75.979,
+            "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://www.eia.gov/electricity/data/eia860m/; generators: HTTPError: 503 Server Error: Service Unavailable for url: https://www.eia.gov/electricity/data/eia860m/",
             "first_signature": false,
             "output_signature": "ed632d5f9066983c12e97833",
             "reason": "cadence_elapsed",
             "refresh": true,
-            "status": "success"
+            "status": "partial"
           },
           "nyfed": {
             "attempted_live": false,
             "changed": false,
-            "elapsed_sec": 0.011,
+            "elapsed_sec": 0.005,
             "error": "",
             "first_signature": false,
             "output_signature": "b6a15473a4650a840e8b23b8",
@@ -206,20 +213,20 @@
             "status": "retained"
           },
           "pe_industry": {
-            "attempted_live": false,
+            "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 0.0,
+            "elapsed_sec": 6.748,
             "error": "",
             "first_signature": false,
             "output_signature": "877e98e2d8eb692340c067cc",
-            "reason": "retained_not_due",
-            "refresh": false,
-            "status": "retained"
+            "reason": "cadence_elapsed",
+            "refresh": true,
+            "status": "success"
           },
           "pe_us_liquidity": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 1.441,
+            "elapsed_sec": 1.141,
             "error": "ReturnSourceRejected: Wrong Figure 1 end date",
             "first_signature": false,
             "output_signature": "78897351354c93f7d15d78c0",
@@ -228,42 +235,42 @@
             "status": "partial"
           },
           "power_supply": {
-            "attempted_live": false,
-            "changed": false,
-            "elapsed_sec": 16.287,
-            "error": "",
+            "attempted_live": true,
+            "changed": true,
+            "elapsed_sec": 75.979,
+            "error": "generators: HTTPError: 503 Server Error: Service Unavailable for url: https://www.eia.gov/electricity/data/eia860m/",
             "first_signature": false,
-            "output_signature": "f9b60d4f3f858473607c1234",
-            "reason": "retained_not_due",
-            "refresh": false,
-            "status": "retained"
+            "output_signature": "5be0421a51bb9eda4089bb6d",
+            "reason": "release_trigger_changed",
+            "refresh": true,
+            "status": "partial"
           },
           "private_capital": {
-            "attempted_live": false,
+            "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 0.026,
+            "elapsed_sec": 1.339,
             "error": "",
             "first_signature": false,
             "output_signature": "02c0b42b1f6bd93035125e49",
-            "reason": "retained_not_due",
-            "refresh": false,
-            "status": "retained"
+            "reason": "cadence_elapsed",
+            "refresh": true,
+            "status": "success"
           },
           "water": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 16.677,
+            "elapsed_sec": 29.245,
             "error": "",
             "first_signature": false,
-            "output_signature": "045da3492e6b4260ed443d0f",
-            "reason": "dependency_changed:data_centers",
+            "output_signature": "f4c9b4f413d42b8469da92da",
+            "reason": "cadence_elapsed",
             "refresh": true,
             "status": "success"
           },
           "workforce": {
             "attempted_live": true,
             "changed": false,
-            "elapsed_sec": 30.104,
+            "elapsed_sec": 18.79,
             "error": "FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
             "first_signature": false,
             "output_signature": "31ea0b496cff524cb6f1cb8c",
@@ -274,10 +281,10 @@
           "yfinance": {
             "attempted_live": true,
             "changed": true,
-            "elapsed_sec": 227.312,
+            "elapsed_sec": 232.835,
             "error": "",
             "first_signature": false,
-            "output_signature": "039c688c40e91e66584e0871",
+            "output_signature": "a6395e981895a31bbd03df6f",
             "reason": "release_trigger_changed",
             "refresh": true,
             "status": "success"
@@ -285,6 +292,8 @@
         },
         "partial_nodes": [
           "connectivity",
+          "power_supply",
+          "grid_storage",
           "workforce",
           "economic_outcomes",
           "commercialization",
@@ -297,6 +306,7 @@
           "compute",
           "data_centers",
           "connectivity",
+          "power_supply",
           "grid_storage",
           "water",
           "adoption",
@@ -305,24 +315,23 @@
           "commercialization",
           "yfinance",
           "edgar",
+          "private_capital",
+          "pe_industry",
           "pe_us_liquidity",
           "fred",
           "current_context"
         ],
         "retained_nodes": [
-          "power_supply",
-          "private_capital",
-          "pe_industry",
           "nyfed"
         ],
         "state_status": "written"
       },
       "status": "passed",
       "subphases": {
-        "assemble + persist": 6.897,
-        "current context": 69.572,
-        "domain sources": 211.187,
-        "market sources": 258.489
+        "assemble + persist": 4.267,
+        "current context": 29.232,
+        "domain sources": 281.392,
+        "market sources": 266.568
       }
     },
     "evidence": {
@@ -333,85 +342,87 @@
         "candidate_domains": [
           "market",
           "finance",
-          "compute",
           "data_center",
+          "grid_storage",
+          "adoption",
           "workforce"
         ],
         "current_event_ids": [
           "auto-2026-10-27-aa0f5bbf6c32",
+          "auto-2026-11-02-a5c43ab3be2e",
+          "auto-2026-10-29-d1d838d31775",
           "auto-2026-10-28-ef8f56286620",
           "auto-2026-10-28-982f62d78def",
-          "auto-2026-10-26-2c9ef65aa803",
-          "auto-2026-10-26-e318c135f9bc",
-          "auto-2026-10-26-c93973968143",
+          "auto-2026-11-02-0e0f82da070b",
           "auto-2026-10-28-fe91866c9218",
-          "auto-2026-10-26-5b20fd35c419",
+          "auto-2026-10-29-03c671210423",
           "auto-2026-10-28-1dd2990661cc",
-          "auto-2026-10-28-52c1e951ce5f",
-          "auto-2026-10-24-164eb95d0b49",
-          "auto-2026-10-21-1e7f326f2a4a",
-          "auto-2026-10-23-588f9aa6c841",
-          "auto-2026-10-23-d5b5ddb645c7",
-          "auto-2026-10-21-7c1fb7166fd9"
+          "auto-2026-11-02-fd2adf5f5f81",
+          "auto-2026-10-29-34887d4036a1",
+          "auto-2026-11-02-2c6157b60d21",
+          "auto-2026-11-02-3dd6104a1f07",
+          "auto-2026-11-02-5290698a2ef7",
+          "auto-2026-10-30-3c294d7b3f9f"
         ],
         "material_domains": [
           "market",
           "finance",
-          "compute"
+          "grid_storage"
         ],
         "new_event_domains": [
+          "market",
+          "finance",
           "data_center",
+          "adoption",
           "workforce"
         ],
         "new_event_ids": [
-          "auto-2026-10-24-164eb95d0b49",
-          "auto-2026-10-23-d5b5ddb645c7"
+          "auto-2026-11-02-a5c43ab3be2e",
+          "auto-2026-10-29-d1d838d31775",
+          "auto-2026-11-02-0e0f82da070b",
+          "auto-2026-10-29-03c671210423",
+          "auto-2026-11-02-fd2adf5f5f81",
+          "auto-2026-10-29-34887d4036a1",
+          "auto-2026-11-02-2c6157b60d21",
+          "auto-2026-11-02-3dd6104a1f07",
+          "auto-2026-11-02-5290698a2ef7",
+          "auto-2026-10-30-3c294d7b3f9f"
         ],
         "reason": "material_findings+new_developments",
         "refresh_needed": true
       },
-      "elapsed_sec": 0.106,
+      "elapsed_sec": 0.065,
       "materiality": {
         "baseline_available": true,
         "change_count": 14,
         "changes": [
           {
-            "domain": "compute",
-            "fact_id": "compute.information_processing_investment_growth",
+            "domain": "connectivity",
+            "fact_id": "connectivity.interconnection_facilities_or_floor",
             "kind": "numeric_change",
-            "material": true,
-            "new_value": 0.20567957496910094,
-            "old_value": 0.16819019599244678,
-            "percentage_point_change": 3.8000000000000007,
-            "relative_change": 0.22619047619047622
+            "material": false,
+            "new_value": 1379.0,
+            "old_value": 1378.0,
+            "percentage_point_change": null,
+            "relative_change": 0.000725689404934688
           },
           {
             "domain": "finance",
             "fact_id": "finance.borrower_strain",
             "kind": "numeric_change",
-            "material": false,
-            "new_value": 26.032958264989972,
-            "old_value": 26.13859333301332,
-            "percentage_point_change": 0.10000000000000142,
-            "relative_change": 0.0038314176245211272
-          },
-          {
-            "domain": "finance",
-            "fact_id": "finance.cash_reserve_coverage_years",
-            "kind": "numeric_change",
-            "material": false,
-            "new_value": 0.84686843737479,
-            "old_value": 0.9152686799001748,
-            "percentage_point_change": null,
-            "relative_change": 0.07473241904535068
+            "material": true,
+            "new_value": 29.957191234045666,
+            "old_value": 26.032958264989972,
+            "percentage_point_change": 4.0,
+            "relative_change": 0.15384615384615385
           },
           {
             "domain": "finance",
             "fact_id": "finance.debt_financing_pulse",
             "kind": "numeric_change",
             "material": true,
-            "new_value": 0.2950940310711366,
-            "old_value": 0.40487303936488317,
+            "new_value": 0.3927633910407014,
+            "old_value": 0.2950940310711366,
             "percentage_point_change": 0.10000000000000003,
             "relative_change": 0.10000000000000003
           },
@@ -420,110 +431,120 @@
             "fact_id": "finance.forward_commitment_load",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 4.398185527604518,
-            "old_value": 4.737641092342464,
+            "new_value": 4.134528502551061,
+            "old_value": 4.398185527604518,
             "percentage_point_change": null,
-            "relative_change": 0.07165075574986346
+            "relative_change": 0.05994677200374009
           },
           {
             "domain": "finance",
             "fact_id": "finance.internal_funding_coverage",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 1.3035463690909574,
-            "old_value": 1.3930459959156807,
+            "new_value": 1.2352087990328044,
+            "old_value": 1.3035463690909574,
             "percentage_point_change": null,
-            "relative_change": 0.06424743123136656
+            "relative_change": 0.05242434920501444
+          },
+          {
+            "domain": "finance",
+            "fact_id": "finance.lender_strain",
+            "kind": "numeric_change",
+            "material": false,
+            "new_value": 18.900177432315854,
+            "old_value": 17.361715893854313,
+            "percentage_point_change": 1.5,
+            "relative_change": 0.08620689655172414
+          },
+          {
+            "domain": "grid_storage",
+            "fact_id": "grid_storage.electric_power_construction_growth",
+            "kind": "numeric_change",
+            "material": true,
+            "new_value": 0.14008709354405524,
+            "old_value": 0.10801224201522408,
+            "percentage_point_change": 3.1999999999999993,
+            "relative_change": 0.2962962962962962
           },
           {
             "domain": "market",
             "fact_id": "market.aei",
             "kind": "numeric_change",
-            "material": true,
-            "new_value": 35.82023010800079,
-            "old_value": 40.79501230090769,
-            "percentage_point_change": 5.0,
-            "relative_change": 0.12254901960784315
+            "material": false,
+            "new_value": 34.69820631409947,
+            "old_value": 35.82023010800079,
+            "percentage_point_change": 1.0999999999999943,
+            "relative_change": 0.030726256983240066
           },
           {
             "domain": "market",
             "fact_id": "market.effective_firms",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 18.357310835610445,
-            "old_value": 18.69732008432257,
+            "new_value": 18.305168926023555,
+            "old_value": 18.357310835610445,
             "percentage_point_change": null,
-            "relative_change": 0.018184918864239678
+            "relative_change": 0.002840389317031256
           },
           {
             "domain": "market",
             "fact_id": "market.equal_weight_return",
             "kind": "numeric_change",
             "material": true,
-            "new_value": 0.146996662221249,
-            "old_value": 0.20235684737085088,
-            "percentage_point_change": 5.5,
-            "relative_change": 0.2722772277227723
+            "new_value": 0.11079060422932885,
+            "old_value": 0.146996662221249,
+            "percentage_point_change": 3.5999999999999996,
+            "relative_change": 0.24489795918367346
           },
           {
             "domain": "market",
             "fact_id": "market.median_return",
             "kind": "numeric_change",
             "material": true,
-            "new_value": 0.10226100750255329,
-            "old_value": 0.1337875219510355,
-            "percentage_point_change": 3.200000000000001,
-            "relative_change": 0.2388059701492538
+            "new_value": 0.07757615285067032,
+            "old_value": 0.10226100750255329,
+            "percentage_point_change": 2.3999999999999995,
+            "relative_change": 0.2352941176470588
           },
           {
             "domain": "market",
             "fact_id": "market.positive_breadth",
             "kind": "numeric_change",
-            "material": true,
-            "new_value": 0.5931372549019608,
-            "old_value": 0.6176470588235294,
-            "percentage_point_change": 2.5,
-            "relative_change": 0.04045307443365696
+            "material": false,
+            "new_value": 0.5833333333333334,
+            "old_value": 0.5931372549019608,
+            "percentage_point_change": 1.0,
+            "relative_change": 0.016863406408094434
           },
           {
             "domain": "market",
             "fact_id": "market.pressure",
             "kind": "numeric_change",
-            "material": true,
-            "new_value": 44.057214830031036,
-            "old_value": 47.72009067128601,
-            "percentage_point_change": 3.6000000000000014,
-            "relative_change": 0.07547169811320757
-          },
-          {
-            "domain": "market",
-            "fact_id": "market.strong_sector_count",
-            "kind": "numeric_change",
-            "material": true,
-            "new_value": 2.0,
-            "old_value": 4.0,
-            "percentage_point_change": null,
-            "relative_change": 0.5
+            "material": false,
+            "new_value": 43.42452359436027,
+            "old_value": 44.057214830031036,
+            "percentage_point_change": 0.7000000000000028,
+            "relative_change": 0.015873015873015938
           },
           {
             "domain": "market",
             "fact_id": "market.top_10_share",
             "kind": "numeric_change",
             "material": false,
-            "new_value": 0.6470515218306069,
-            "old_value": 0.6414708283360854,
-            "percentage_point_change": 0.6000000000000085,
-            "relative_change": 0.009360374414976733
+            "new_value": 0.6494368175254098,
+            "old_value": 0.6470515218306069,
+            "percentage_point_change": 0.20000000000000284,
+            "relative_change": 0.0030911901081916975
           }
         ],
-        "current_snapshot_id": "323aa528f43e0e84d2e373be",
+        "current_snapshot_id": "3c41402b7245b81e57719d59",
         "decision": "generate_material_change",
         "exact_match": false,
-        "immaterial_change_count": 6,
+        "immaterial_change_count": 9,
         "material": true,
-        "material_change_count": 8,
+        "material_change_count": 5,
         "percentage_point_threshold": 2.0,
-        "previous_snapshot_id": "0ffd92148b6229dd8549f087",
+        "previous_snapshot_id": "323aa528f43e0e84d2e373be",
         "relative_change_threshold": 0.1,
         "version": "1.2.0"
       },
@@ -531,13 +552,26 @@
     },
     "openai": {
       "api_status": "completed",
-      "attempt_id": "20261030T180704288528Z_323aa528_e8e71a10",
-      "elapsed_sec": 62.842,
+      "attempt_id": "20261102T222618982721Z_3c41402b_4ea1755b",
+      "elapsed_sec": 62.463,
       "stage": "",
-      "status": "validated",
+      "status": "published_with_warnings",
       "validation": {
-        "checked_passages": 13,
-        "diagnostics": [],
+        "checked_passages": 14,
+        "diagnostics": [
+          {
+            "message": "Conspicuous same-initial word run detected: continued cover current CapEx",
+            "reason": "alliterative_run",
+            "scope": "macro.paragraphs[1]",
+            "text": "Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave."
+          },
+          {
+            "message": "Semicolon present; review for clause stacking.",
+            "reason": "semicolon",
+            "scope": "macro.paragraphs[1]",
+            "text": "Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave."
+          }
+        ],
         "hard_errors": [],
         "hard_failures": [],
         "passed": true,
@@ -555,12 +589,12 @@
   },
   "publish_ready": true,
   "result": "publish_ready",
-  "run_id": "20261030T175755Z_823d5097",
+  "run_id": "20261102T221636Z_8584ed3c",
   "schedule": {
     "time": "08:07",
     "timezone": "America/New_York"
   },
-  "started_at_utc": "2026-10-30T17:57:55.529682+00:00",
+  "started_at_utc": "2026-11-02T22:16:36.107430+00:00",
   "trigger": "schedule",
   "warnings": [
     "connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
@@ -581,15 +615,17 @@
     "economic_outcomes: FRED API HTTP 400 for PRS85006153",
     "commercialization: HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/accelerating-the-next-phase-ai/",
     "commercialization: HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/",
+    "CalPERS: ValueError: CalPERS PE table observation date was not found",
     "pe_us_liquidity: ReturnSourceRejected: Wrong Figure 1 end date",
     "refresh node connectivity: ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
+    "refresh node power_supply: generators: HTTPError: 503 Server Error: Service Unavailable for url: https://www.eia.gov/electricity/data/eia860m/",
+    "refresh node grid_storage: HTTPError: 503 Server Error: Service Unavailable for url: https://www.eia.gov/electricity/data/eia860m/; generators: HTTPError: 503 Server Error: Service Unavailable for url: https://www.eia.gov/electricity/data/eia860m/",
     "refresh node workforce: FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
     "refresh node economic_outcomes: FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
     "refresh node commercialization: HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/accelerating-the-next-phase-ai/; HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/",
     "refresh node edgar: ValueError: No unambiguous consolidated cost fact for 2026-09-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30; ValueError: No unambiguous consolidated cost fact for 2026-06-30",
     "refresh node pe_us_liquidity: ReturnSourceRejected: Wrong Figure 1 end date",
     "refresh node current_context: HTTPError: HTTP Error 403: Forbidden",
-    "snapshot finance:debt:AMZN: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebtCurrent;LongTermDebtNoncurrent;ShortTermBorrowings: prior period 2025-06-30 is not within 62 days of 2025-09-30; LongTermDebtCurrent;LongTermDebtNoncurrent: prior period 2025-06-30 is not within 62 days of 2025-09-30; LongTermDebt: prior period 2025-06-30 is not within 62 days of 2025-09-30; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-09-30",
     "snapshot finance:debt:META: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebt: prior period 2024-12-31 is not within 62 days of 2025-06-30; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-09-30",
     "snapshot finance:debt:ORCL: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebt: prior period 2022-05-31 is not within 62 days of 2021-05-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-08-31",
     "snapshot finance:debt:SMCI: Current/prior debt facts unavailable under a common standard XBRL definition or a filing-reviewed retained pair: LongTermDebtCurrent;LongTermDebtNoncurrent: prior period 2014-12-31 is not within 62 days of 2013-12-31; LongTermDebt: prior period 2023-06-30 is not within 62 days of 2022-06-30; LongTermDebtAndCapitalLeaseObligations: prior period 2013-03-31 is not within 62 days of 2012-03-31; reviewed fallback: no reviewed debt period is within 62 days of CapEx period 2026-06-30"

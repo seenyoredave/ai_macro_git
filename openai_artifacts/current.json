@@ -1,68 +1,81 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261030T180704288528Z_323aa528_e8e71a10",
+  "attempt_id": "20261102T222618982721Z_3c41402b_4ea1755b",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
-    "compute",
     "data_center",
+    "grid_storage",
+    "adoption",
     "workforce"
   ],
   "editorial_context_event_ids": [
     "auto-2026-10-27-aa0f5bbf6c32",
+    "auto-2026-11-02-a5c43ab3be2e",
+    "auto-2026-10-29-d1d838d31775",
     "auto-2026-10-28-ef8f56286620",
     "auto-2026-10-28-982f62d78def",
-    "auto-2026-10-26-2c9ef65aa803",
-    "auto-2026-10-26-e318c135f9bc",
-    "auto-2026-10-26-c93973968143",
+    "auto-2026-11-02-0e0f82da070b",
     "auto-2026-10-28-fe91866c9218",
-    "auto-2026-10-26-5b20fd35c419",
+    "auto-2026-10-29-03c671210423",
     "auto-2026-10-28-1dd2990661cc",
-    "auto-2026-10-28-52c1e951ce5f",
-    "auto-2026-10-24-164eb95d0b49",
-    "auto-2026-10-21-1e7f326f2a4a",
-    "auto-2026-10-23-588f9aa6c841",
-    "auto-2026-10-23-d5b5ddb645c7",
-    "auto-2026-10-21-7c1fb7166fd9"
+    "auto-2026-11-02-fd2adf5f5f81",
+    "auto-2026-10-29-34887d4036a1",
+    "auto-2026-11-02-2c6157b60d21",
+    "auto-2026-11-02-3dd6104a1f07",
+    "auto-2026-11-02-5290698a2ef7",
+    "auto-2026-10-30-3c294d7b3f9f"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
-      "compute",
       "data_center",
+      "grid_storage",
+      "adoption",
       "workforce"
     ],
     "current_event_ids": [
       "auto-2026-10-27-aa0f5bbf6c32",
+      "auto-2026-11-02-a5c43ab3be2e",
+      "auto-2026-10-29-d1d838d31775",
       "auto-2026-10-28-ef8f56286620",
       "auto-2026-10-28-982f62d78def",
-      "auto-2026-10-26-2c9ef65aa803",
-      "auto-2026-10-26-e318c135f9bc",
-      "auto-2026-10-26-c93973968143",
+      "auto-2026-11-02-0e0f82da070b",
       "auto-2026-10-28-fe91866c9218",
-      "auto-2026-10-26-5b20fd35c419",
+      "auto-2026-10-29-03c671210423",
       "auto-2026-10-28-1dd2990661cc",
-      "auto-2026-10-28-52c1e951ce5f",
-      "auto-2026-10-24-164eb95d0b49",
-      "auto-2026-10-21-1e7f326f2a4a",
-      "auto-2026-10-23-588f9aa6c841",
-      "auto-2026-10-23-d5b5ddb645c7",
-      "auto-2026-10-21-7c1fb7166fd9"
+      "auto-2026-11-02-fd2adf5f5f81",
+      "auto-2026-10-29-34887d4036a1",
+      "auto-2026-11-02-2c6157b60d21",
+      "auto-2026-11-02-3dd6104a1f07",
+      "auto-2026-11-02-5290698a2ef7",
+      "auto-2026-10-30-3c294d7b3f9f"
     ],
     "material_domains": [
       "market",
       "finance",
-      "compute"
+      "grid_storage"
     ],
     "new_event_domains": [
+      "market",
+      "finance",
       "data_center",
+      "adoption",
       "workforce"
     ],
     "new_event_ids": [
-      "auto-2026-10-24-164eb95d0b49",
-      "auto-2026-10-23-d5b5ddb645c7"
+      "auto-2026-11-02-a5c43ab3be2e",
+      "auto-2026-10-29-d1d838d31775",
+      "auto-2026-11-02-0e0f82da070b",
+      "auto-2026-10-29-03c671210423",
+      "auto-2026-11-02-fd2adf5f5f81",
+      "auto-2026-10-29-34887d4036a1",
+      "auto-2026-11-02-2c6157b60d21",
+      "auto-2026-11-02-3dd6104a1f07",
+      "auto-2026-11-02-5290698a2ef7",
+      "auto-2026-10-30-3c294d7b3f9f"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -70,8 +83,9 @@
   "editorial_update_domains": [
     "market",
     "finance",
-    "compute",
-    "data_center"
+    "data_center",
+    "grid_storage",
+    "workforce"
   ],
   "evidence_packets": {
     "adoption": {
@@ -489,10 +503,10 @@
         },
         {
           "context": "",
-          "display": "1,378",
+          "display": "1,379",
           "id": "connectivity.interconnection_facilities_or_floor",
           "label": "PeeringDB interconnection facilities or coverage floor",
-          "value": 1378.0
+          "value": 1379.0
         },
         {
           "context": "",
@@ -796,24 +810,24 @@
       "facts": [
         {
           "context": "",
-          "display": "26.0",
+          "display": "30.0",
           "id": "finance.borrower_strain",
           "label": "Borrower strain",
-          "value": 26.032958264989972
+          "value": 29.957191234045666
         },
         {
           "context": "",
-          "display": "17.4",
+          "display": "18.9",
           "id": "finance.lender_strain",
           "label": "Lender strain",
-          "value": 17.361715893854313
+          "value": 18.900177432315854
         },
         {
           "context": "",
-          "display": "1.30x",
+          "display": "1.24x",
           "id": "finance.internal_funding_coverage",
           "label": "Operating cash flow coverage of current CapEx",
-          "value": 1.3035463690909574
+          "value": 1.2352087990328044
         },
         {
           "context": "",
@@ -824,17 +838,17 @@
         },
         {
           "context": "",
-          "display": "4.40x",
+          "display": "4.13x",
           "id": "finance.forward_commitment_load",
           "label": "Forward commitments relative to current CapEx",
-          "value": 4.398185527604518
+          "value": 4.134528502551061
         },
         {
           "context": "",
-          "display": "0.3",
+          "display": "0.4",
           "id": "finance.debt_financing_pulse",
           "label": "Definition-matched debt financing pulse",
-          "value": 0.2950940310711366
+          "value": 0.3927633910407014
         },
         {
           "context": "",
@@ -1166,10 +1180,10 @@
         },
         {
           "context": "",
-          "display": "10.8%",
+          "display": "14.0%",
           "id": "grid_storage.electric_power_construction_growth",
           "label": "Electric-power construction growth",
-          "value": 0.10801224201522408
+          "value": 0.14008709354405524
         }
       ],
       "importance": 70.0,
@@ -1203,52 +1217,52 @@
       "facts": [
         {
           "context": "",
-          "display": "35.8",
+          "display": "34.7",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 35.82023010800079
+          "value": 34.69820631409947
         },
         {
           "context": "",
-          "display": "44.1",
+          "display": "43.4",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 44.057214830031036
+          "value": 43.42452359436027
         },
         {
           "context": "",
-          "display": "59.3%",
+          "display": "58.3%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.5931372549019608
+          "value": 0.5833333333333334
         },
         {
           "context": "",
-          "display": "10.2%",
+          "display": "7.8%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.10226100750255329
+          "value": 0.07757615285067032
         },
         {
           "context": "",
-          "display": "14.7%",
+          "display": "11.1%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.146996662221249
+          "value": 0.11079060422932885
         },
         {
           "context": "",
-          "display": "64.7%",
+          "display": "64.9%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6470515218306069
+          "value": 0.6494368175254098
         },
         {
           "context": "",
-          "display": "18.4",
+          "display": "18.3",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.357310835610445
+          "value": 18.305168926023555
         },
         {
           "context": "",
@@ -1265,7 +1279,7 @@
           "value": 2.0
         }
       ],
-      "importance": 19.70515218306069,
+      "importance": 19.943681752540982,
       "label": "Market",
       "references": [
         {
@@ -1685,19 +1699,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "323aa528f43e0e84d2e373be",
-  "generated_at": "2026-10-30T18:08:06.265106+00:00",
+  "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+  "generated_at": "2026-11-02T22:27:20.900742+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 61.97009005699999,
-      "input_tokens": 4074,
+      "elapsed_sec": 61.913917458000014,
+      "input_tokens": 4333,
       "model": "gpt-5.6-sol",
-      "output_tokens": 6475,
+      "output_tokens": 6382,
       "poll_attempts": 28,
       "poll_errors": [],
-      "response_id": "resp_02352d9cdbfa2b2f006ae4dcc8ec8487d0871ea05b06042c19",
+      "response_id": "resp_0027625a420d9ff3006ae90e0c423887d18beaf15ebf5e372a",
       "terminal_status": "completed",
-      "total_tokens": 10549
+      "total_tokens": 10715
     }
   },
   "max_output_tokens": null,
@@ -1708,11 +1722,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "323aa528f43e0e84d2e373be",
-    "expires_at": "2026-10-31T18:08:06.268122+00:00",
+    "current_evidence_snapshot_id": "3c41402b7245b81e57719d59",
+    "expires_at": "2026-11-03T22:27:20.902574+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-10-30T18:08:06.268122+00:00",
+    "published_at": "2026-11-02T22:27:20.902574+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1723,21 +1737,21 @@
         "poll_attempts": 28,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_02352d9cdbfa2b2f006ae4dcc8ec8487d0871ea05b06042c19",
+        "response_id": "resp_0027625a420d9ff3006ae90e0c423887d18beaf15ebf5e372a",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index fell materially to 35.8. The share of covered companies with positive one-year returns also declined materially to 59.3%, while the median return fell to 10.2%. A majority of companies remain positive over one year, but weaker breadth and a lower median show that the cooling extends beyond the headline index.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Market support weakens across the index and covered companies\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow coverage of current CapEx slipped slightly to 1.30 times, and cash reserves declined to 0.85 years of current CapEx. Forward commitments remain much larger at 4.40 times current CapEx, even after a slight decline. Current spending is covered in aggregate, but the commitment load makes the distinction between current cash generation and longer-term financing important. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Current CapEx remains internally covered, but forward commitments are much larger\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.forward_commitment_load\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Information-processing investment growth accelerated materially to 20.6%. Semiconductor and electronic-component output grew 19.9%, well above the 6.5% increase in computer and peripheral equipment. The investment cycle remains rapid, but manufacturing momentum is considerably stronger in semiconductors than in computer equipment.\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates alongside strong semiconductor output growth\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites. Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. That is a concrete instance of a project entering service, although one campus phase does not establish how quickly the broader development inventory will convert.\",\"event_ids\":[\"auto-2026-10-23-d5b5ddb645c7\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.operating_sites\"]},\"headline\":{\"text\":\"Data-center development remains extensive as an Ohio campus phase goes live\",\"event_ids\":[\"auto-2026-10-23-d5b5ddb645c7\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The buildout accelerates while market support cools and financing margins narrow\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"market.aei\",\"market.positive_breadth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"paragraphs\":[{\"text\":\"The technology investment cycle is still accelerating. Information-processing investment growth reached 20.6%, while semiconductor and electronic-component output rose 19.9%, well above the 6.5% increase in computer and peripheral equipment. Available records also list 1,556 data-center sites in development, about half the operating count, and Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. The buildout remains substantial, although manufacturing growth is stronger in semiconductors and one campus opening does not establish the conversion rate for the full development inventory.\",\"event_ids\":[\"auto-2026-10-23-d5b5ddb645c7\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Capital-market support has softened even as investment and production measures remain strong. The AI Equity Index fell materially to 35.8, positive one-year return breadth declined to 59.3%, and the median return fell to 10.2%. Most covered companies remain positive over one year, but the weaker readings now appear in both the aggregate index and the typical company.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},{\"text\":\"Financial capacity remains meaningful, but the margin has narrowed. Operating cash flow still covers current CapEx at 1.30 times, while cash reserves equal 0.85 years of current CapEx and forward commitments equal 4.40 times current CapEx. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate figures show current internal funding capacity, but they do not establish that every project can meet its future commitments without external capital.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.forward_commitment_load\"]},{\"text\":\"The broader economic transmission remains less clear. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction strongest at 0.8%, even as nonfarm-business productivity and real output grow by 2.2% and 2.5%. These economy-wide gains cannot be attributed to AI from these measures alone. For now, the buildout is easier to see than either broad labor demand or AI\u2019s contribution to productivity.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged down to 34.7, and 58.3% of covered companies have positive one-year returns. The median one-year return fell more sharply to 7.8%. A majority of companies remains positive, but the typical gain has narrowed. The Financial Times reported that U.S. technology stocks fell after earnings renewed concerns about AI spending, showing greater investor scrutiny without establishing a reversal in the investment cycle.\",\"event_ids\":[\"auto-2026-10-29-03c671210423\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Market gains narrow as spending concerns return after earnings\",\"event_ids\":[\"auto-2026-10-29-03c671210423\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Borrower strain rose materially to 30.0, while lender strain edged up to 18.9. Operating cash flow still covers current CapEx at 1.24 times, but the margin has narrowed, and forward commitments remain substantial at 4.13 times current CapEx. CNBC reported that Moody\u2019s sees private credit holding firm despite the AI debt wave. Credit therefore remains available in aggregate, but the rising strain measures and large commitment load leave future financing important.\",\"event_ids\":[\"auto-2026-11-02-a5c43ab3be2e\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Borrower strain rises while current CapEx remains internally covered\",\"event_ids\":[],\"fact_ids\":[\"finance.borrower_strain\",\"finance.internal_funding_coverage\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites. A separate active-pipeline series tracks 894 sites. Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction. The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline.\",\"event_ids\":[\"auto-2026-11-02-5290698a2ef7\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Data-center development remains extensive, with 894 sites in the active pipeline\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Electric-power construction growth accelerated materially to 14.0%. At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages. Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\"]},\"headline\":{\"text\":\"Power construction accelerates, but most queued capacity remains at earlier stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel shows positive employment growth: power and communication construction, at 0.8%. Two channels have positive real-earnings growth, so earnings growth is somewhat broader than headcount growth. CNBC separately reported that some companies are rehiring workers after deciding they moved too quickly with AI-driven layoffs. That report complicates a simple displacement narrative, but the measured employment gains remain narrow and concentrated in physical infrastructure.\",\"event_ids\":[\"auto-2026-10-30-3c294d7b3f9f\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"AI-linked employment growth remains confined to physical infrastructure\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Physical investment strengthens as market returns narrow and financing strain rises\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"market.median_return\",\"finance.borrower_strain\"]},\"paragraphs\":[{\"text\":\"The physical layer remains the clearest source of momentum. Electric-power construction growth accelerated materially to 14.0%, semiconductor and electronic-component output grew 19.9%, and available records show 1,556 data-center sites in development against 3,068 operating sites. The electricity pipeline is large but immature: only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, although storage alone accounts for 552.7 GW. Active construction and a large inventory of proposed capacity therefore coexist with substantial execution still ahead.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\"]},{\"text\":\"Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave.\",\"event_ids\":[\"auto-2026-10-29-03c671210423\",\"auto-2026-11-02-a5c43ab3be2e\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.forward_commitment_load\"]},{\"text\":\"Downstream transmission remains less broad. Businesses reporting current AI use account for 24.6%, compared with 28.6% expecting to use it within six months. Only one tracked AI-linked labor channel has positive employment growth, and it is power and communication construction, at 0.8%. Business deployment continues to trail near-term intentions, while the clearest labor gain remains tied to building the physical infrastructure.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1793383683.0,
+      "completed_at": 1793658440.0,
       "conversation": null,
-      "created_at": 1793383624.0,
+      "created_at": 1793658380.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_02352d9cdbfa2b2f006ae4dcc8ec8487d0871ea05b06042c19",
+      "id": "resp_0027625a420d9ff3006ae90e0c423887d18beaf15ebf5e372a",
       "incomplete_details": null,
       "instructions": "You are writing the current research update for AI Macro.\n\nUse only the findings and recent developments in the supplied briefing. Decide what matters, connect related evidence when the relationship is supported, and explain it in clear, natural English for an intelligent general reader. Prioritize significance over coverage. It is fine for the evidence to be mixed. Do not force unrelated facts into one story.\n\nThe style reference shows the desired level of restraint, specificity, and sentence construction. Match those qualities without copying its wording. Write like a careful human analyst. Use concrete subjects and verbs. Avoid rhetorical gimmicks and artificial-sounding transitions. Do not mention the prompt, the briefing, evidence IDs, validation, methodology, or the writing process.\n\nOn a normal update, candidate_domains identifies sections that may deserve replacement. Update only the domain Reads for which you can write something materially more useful than the prior publication; you may return no domain Reads when none deserves replacement. On a bootstrap publication, write every candidate domain because no prior Read exists. Always write one new Macro Read that explains the most important current story across the platform in two to four coherent paragraphs.\n\nDo not inventory every supplied metric or news item. Use a number only when it helps the reader understand magnitude. Use recent developments when they materially sharpen the interpretation of the measured findings. Treat news reports as reported developments, not as proof of a broader causal claim.\n\nAttach only the fact_ids and event_ids that actually support each passage. Those IDs are citations for the application and must never appear in the prose. Do not invent numbers, facts, events, causes, or forecasts.\n\nReturn only the structured response.",
       "max_output_tokens": null,
@@ -1750,7 +1764,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dccac66087d0a9e8dc540e7b3ca4",
+          "id": "rs_0027625a420d9ff3006ae90e0edb0087d185912267dad3b223",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1758,7 +1772,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dccf7f9487d090af51d9eb3ed34b",
+          "id": "rs_0027625a420d9ff3006ae90e13a8dc87d1be60b9f96f7554bc",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1766,7 +1780,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dcd49c7c87d0b9475d6acd833677",
+          "id": "rs_0027625a420d9ff3006ae90e190fd487d1824f3d7a94095044",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1774,7 +1788,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dcd9eb6487d0ba46c1b3d3c95e0f",
+          "id": "rs_0027625a420d9ff3006ae90e1e464887d19b7257296b303f53",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1782,7 +1796,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dcdede5887d08e34f3b3acd273cd",
+          "id": "rs_0027625a420d9ff3006ae90e233c8c87d1b0896b785a9fb7a2",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1790,7 +1804,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dce4252487d0bed8d4d6d928bc56",
+          "id": "rs_0027625a420d9ff3006ae90e28814c87d1b9f3831c081e57ea",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1798,7 +1812,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dce92b5887d0b0ccae108c6a4c49",
+          "id": "rs_0027625a420d9ff3006ae90e2d9a8487d18d59b0b9ef5e64b0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1806,7 +1820,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dcee453087d0bff91f6158c25da7",
+          "id": "rs_0027625a420d9ff3006ae90e33744087d1b3697a573a84e0ab",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1814,7 +1828,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dcf3678c87d0ac9dfe1b03a2a01b",
+          "id": "rs_0027625a420d9ff3006ae90e38031087d18fc962662ab8becd",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1822,7 +1836,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_02352d9cdbfa2b2f006ae4dcf7c9c087d0b89e534b6f4eb6bf",
+          "id": "rs_0027625a420d9ff3006ae90e3d075487d1a714a89a7cf7c927",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1832,11 +1846,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index fell materially to 35.8. The share of covered companies with positive one-year returns also declined materially to 59.3%, while the median return fell to 10.2%. A majority of companies remain positive over one year, but weaker breadth and a lower median show that the cooling extends beyond the headline index.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Market support weakens across the index and covered companies\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow coverage of current CapEx slipped slightly to 1.30 times, and cash reserves declined to 0.85 years of current CapEx. Forward commitments remain much larger at 4.40 times current CapEx, even after a slight decline. Current spending is covered in aggregate, but the commitment load makes the distinction between current cash generation and longer-term financing important. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Current CapEx remains internally covered, but forward commitments are much larger\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.forward_commitment_load\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Information-processing investment growth accelerated materially to 20.6%. Semiconductor and electronic-component output grew 19.9%, well above the 6.5% increase in computer and peripheral equipment. The investment cycle remains rapid, but manufacturing momentum is considerably stronger in semiconductors than in computer equipment.\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates alongside strong semiconductor output growth\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites. Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. That is a concrete instance of a project entering service, although one campus phase does not establish how quickly the broader development inventory will convert.\",\"event_ids\":[\"auto-2026-10-23-d5b5ddb645c7\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.operating_sites\"]},\"headline\":{\"text\":\"Data-center development remains extensive as an Ohio campus phase goes live\",\"event_ids\":[\"auto-2026-10-23-d5b5ddb645c7\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.development_to_operating\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The buildout accelerates while market support cools and financing margins narrow\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"market.aei\",\"market.positive_breadth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"paragraphs\":[{\"text\":\"The technology investment cycle is still accelerating. Information-processing investment growth reached 20.6%, while semiconductor and electronic-component output rose 19.9%, well above the 6.5% increase in computer and peripheral equipment. Available records also list 1,556 data-center sites in development, about half the operating count, and Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. The buildout remains substantial, although manufacturing growth is stronger in semiconductors and one campus opening does not establish the conversion rate for the full development inventory.\",\"event_ids\":[\"auto-2026-10-23-d5b5ddb645c7\"],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Capital-market support has softened even as investment and production measures remain strong. The AI Equity Index fell materially to 35.8, positive one-year return breadth declined to 59.3%, and the median return fell to 10.2%. Most covered companies remain positive over one year, but the weaker readings now appear in both the aggregate index and the typical company.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},{\"text\":\"Financial capacity remains meaningful, but the margin has narrowed. Operating cash flow still covers current CapEx at 1.30 times, while cash reserves equal 0.85 years of current CapEx and forward commitments equal 4.40 times current CapEx. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate figures show current internal funding capacity, but they do not establish that every project can meet its future commitments without external capital.\",\"event_ids\":[\"auto-2026-10-27-aa0f5bbf6c32\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.forward_commitment_load\"]},{\"text\":\"The broader economic transmission remains less clear. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction strongest at 0.8%, even as nonfarm-business productivity and real output grow by 2.2% and 2.5%. These economy-wide gains cannot be attributed to AI from these measures alone. For now, the buildout is easier to see than either broad labor demand or AI\u2019s contribution to productivity.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged down to 34.7, and 58.3% of covered companies have positive one-year returns. The median one-year return fell more sharply to 7.8%. A majority of companies remains positive, but the typical gain has narrowed. The Financial Times reported that U.S. technology stocks fell after earnings renewed concerns about AI spending, showing greater investor scrutiny without establishing a reversal in the investment cycle.\",\"event_ids\":[\"auto-2026-10-29-03c671210423\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Market gains narrow as spending concerns return after earnings\",\"event_ids\":[\"auto-2026-10-29-03c671210423\"],\"fact_ids\":[\"market.aei\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Borrower strain rose materially to 30.0, while lender strain edged up to 18.9. Operating cash flow still covers current CapEx at 1.24 times, but the margin has narrowed, and forward commitments remain substantial at 4.13 times current CapEx. CNBC reported that Moody\u2019s sees private credit holding firm despite the AI debt wave. Credit therefore remains available in aggregate, but the rising strain measures and large commitment load leave future financing important.\",\"event_ids\":[\"auto-2026-11-02-a5c43ab3be2e\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.forward_commitment_load\"]},\"headline\":{\"text\":\"Borrower strain rises while current CapEx remains internally covered\",\"event_ids\":[],\"fact_ids\":[\"finance.borrower_strain\",\"finance.internal_funding_coverage\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites. A separate active-pipeline series tracks 894 sites. Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction. The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline.\",\"event_ids\":[\"auto-2026-11-02-5290698a2ef7\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Data-center development remains extensive, with 894 sites in the active pipeline\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"data_center.tracked_pipeline_sites\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Electric-power construction growth accelerated materially to 14.0%. At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages. Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\"]},\"headline\":{\"text\":\"Power construction accelerates, but most queued capacity remains at earlier stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only one tracked AI-linked labor channel shows positive employment growth: power and communication construction, at 0.8%. Two channels have positive real-earnings growth, so earnings growth is somewhat broader than headcount growth. CNBC separately reported that some companies are rehiring workers after deciding they moved too quickly with AI-driven layoffs. That report complicates a simple displacement narrative, but the measured employment gains remain narrow and concentrated in physical infrastructure.\",\"event_ids\":[\"auto-2026-10-30-3c294d7b3f9f\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"AI-linked employment growth remains confined to physical infrastructure\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Physical investment strengthens as market returns narrow and financing strain rises\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"market.median_return\",\"finance.borrower_strain\"]},\"paragraphs\":[{\"text\":\"The physical layer remains the clearest source of momentum. Electric-power construction growth accelerated materially to 14.0%, semiconductor and electronic-component output grew 19.9%, and available records show 1,556 data-center sites in development against 3,068 operating sites. The electricity pipeline is large but immature: only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, although storage alone accounts for 552.7 GW. Active construction and a large inventory of proposed capacity therefore coexist with substantial execution still ahead.\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.electric_power_construction_growth\",\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\"]},{\"text\":\"Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave.\",\"event_ids\":[\"auto-2026-10-29-03c671210423\",\"auto-2026-11-02-a5c43ab3be2e\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.forward_commitment_load\"]},{\"text\":\"Downstream transmission remains less broad. Businesses reporting current AI use account for 24.6%, compared with 28.6% expecting to use it within six months. Only one tracked AI-linked labor channel has positive employment growth, and it is power and communication construction, at 0.8%. Business deployment continues to trail near-term intentions, while the clearest labor gain remains tied to building the physical infrastructure.\",\"event_ids\":[],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_02352d9cdbfa2b2f006ae4dcfc885087d0bd1d32b97857da10",
+          "id": "msg_0027625a420d9ff3006ae90e3f028c87d1b068ad3761a0f60c",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2009,16 +2023,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4074,
+        "input_tokens": 4333,
         "input_tokens_details": {
-          "cache_write_tokens": 4071,
+          "cache_write_tokens": 4330,
           "cached_tokens": 0
         },
-        "output_tokens": 6475,
+        "output_tokens": 6382,
         "output_tokens_details": {
-          "reasoning_tokens": 5178
+          "reasoning_tokens": 4865
         },
-        "total_tokens": 10549
+        "total_tokens": 10715
       },
       "user": null
     }
@@ -2204,42 +2218,42 @@
       "version": "6.1.0"
     },
     "data_center": {
-      "analysis": "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites. Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. That is a concrete instance of a project entering service, although one campus phase does not establish how quickly the broader development inventory will convert.",
+      "analysis": "Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites. A separate active-pipeline series tracks 894 sites. Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction. The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline.",
       "analysis_sentences": [
-        "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites.",
-        "Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live.",
-        "That is a concrete instance of a project entering service, although one campus phase does not establish how quickly the broader development inventory will convert."
+        "Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites.",
+        "A separate active-pipeline series tracks 894 sites.",
+        "Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction.",
+        "The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-23-d5b5ddb645c7"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "data_center.development_sites",
-            "data_center.development_to_operating"
+            "data_center.tracked_pipeline_sites"
           ],
           "field": "headline",
-          "text": "Data-center development remains extensive as an Ohio campus phase goes live"
+          "text": "Data-center development remains extensive, with 894 sites in the active pipeline"
         },
         {
           "event_ids": [
-            "auto-2026-10-23-d5b5ddb645c7"
+            "auto-2026-11-02-5290698a2ef7"
           ],
           "fact_ids": [
+            "data_center.operating_sites",
             "data_center.development_sites",
             "data_center.development_to_operating",
-            "data_center.operating_sites"
+            "data_center.tracked_pipeline_sites"
           ],
           "field": "body",
-          "text": "Available records list 1,556 sites in development, equal to 0.51 times the 3,068 operating sites. Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. That is a concrete instance of a project entering service, although one campus phase does not establish how quickly the broader development inventory will convert."
+          "text": "Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites. A separate active-pipeline series tracks 894 sites. Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction. The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline."
         }
       ],
       "domain": "data_center",
-      "evidence_snapshot_id": "323aa528f43e0e84d2e373be",
-      "generated_at": "2026-10-30T18:08:06.264769+00:00",
+      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+      "generated_at": "2026-11-02T22:27:20.900540+00:00",
       "generator": "openai",
-      "headline": "Data-center development remains extensive as an Ohio campus phase goes live",
+      "headline": "Data-center development remains extensive, with 894 sites in the active pipeline",
       "label": "Data Centers",
       "references": [
         {
@@ -2264,7 +2278,7 @@
         },
         {
           "source_label": "Data Center Dynamics",
-          "source_url": "https://www.datacenterdynamics.com/en/news/meta-details-ohio-prometheus-data-center-campus-with-first-phase-live/"
+          "source_url": "https://www.datacenterdynamics.com/en/news/serverdomes-breaks-ground-on-domed-data-center-campus-outside-el-paso-texas/"
         }
       ],
       "version": "6.1.0"
@@ -2339,41 +2353,42 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "Operating cash flow coverage of current CapEx slipped slightly to 1.30 times, and cash reserves declined to 0.85 years of current CapEx. Forward commitments remain much larger at 4.40 times current CapEx, even after a slight decline. Current spending is covered in aggregate, but the commitment load makes the distinction between current cash generation and longer-term financing important. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise.",
+      "analysis": "Borrower strain rose materially to 30.0, while lender strain edged up to 18.9. Operating cash flow still covers current CapEx at 1.24 times, but the margin has narrowed, and forward commitments remain substantial at 4.13 times current CapEx. CNBC reported that Moody\u2019s sees private credit holding firm despite the AI debt wave. Credit therefore remains available in aggregate, but the rising strain measures and large commitment load leave future financing important.",
       "analysis_sentences": [
-        "Operating cash flow coverage of current CapEx slipped slightly to 1.30 times, and cash reserves declined to 0.85 years of current CapEx.",
-        "Forward commitments remain much larger at 4.40 times current CapEx, even after a slight decline.",
-        "Current spending is covered in aggregate, but the commitment load makes the distinction between current cash generation and longer-term financing important.",
-        "Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise."
+        "Borrower strain rose materially to 30.0, while lender strain edged up to 18.9.",
+        "Operating cash flow still covers current CapEx at 1.24 times, but the margin has narrowed, and forward commitments remain substantial at 4.13 times current CapEx.",
+        "CNBC reported that Moody\u2019s sees private credit holding firm despite the AI debt wave.",
+        "Credit therefore remains available in aggregate, but the rising strain measures and large commitment load leave future financing important."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "finance.internal_funding_coverage",
-            "finance.forward_commitment_load"
+            "finance.borrower_strain",
+            "finance.internal_funding_coverage"
           ],
           "field": "headline",
-          "text": "Current CapEx remains internally covered, but forward commitments are much larger"
+          "text": "Borrower strain rises while current CapEx remains internally covered"
         },
         {
           "event_ids": [
-            "auto-2026-10-27-aa0f5bbf6c32"
+            "auto-2026-11-02-a5c43ab3be2e"
           ],
           "fact_ids": [
+            "finance.borrower_strain",
+            "finance.lender_strain",
             "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
             "finance.forward_commitment_load"
           ],
           "field": "body",
-          "text": "Operating cash flow coverage of current CapEx slipped slightly to 1.30 times, and cash reserves declined to 0.85 years of current CapEx. Forward commitments remain much larger at 4.40 times current CapEx, even after a slight decline. Current spending is covered in aggregate, but the commitment load makes the distinction between current cash generation and longer-term financing important. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise."
+          "text": "Borrower strain rose materially to 30.0, while lender strain edged up to 18.9. Operating cash flow still covers current CapEx at 1.24 times, but the margin has narrowed, and forward commitments remain substantial at 4.13 times current CapEx. CNBC reported that Moody\u2019s sees private credit holding firm despite the AI debt wave. Credit therefore remains available in aggregate, but the rising strain measures and large commitment load leave future financing important."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "323aa528f43e0e84d2e373be",
-      "generated_at": "2026-10-30T18:08:06.264769+00:00",
+      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+      "generated_at": "2026-11-02T22:27:20.900540+00:00",
       "generator": "openai",
-      "headline": "Current CapEx remains internally covered, but forward commitments are much larger",
+      "headline": "Borrower strain rises while current CapEx remains internally covered",
       "label": "Finance",
       "references": [
         {
@@ -2425,49 +2440,47 @@
           "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
         },
         {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPMlFHLTNZbVhfQjRZSmFmT1N5S2s2UTNsUkIzRnF0eFNXbG1GTTlURnZsU2ZDUGJMNVhGX2tPVzBrdkpSR1Y2VHBxZlFfMUdHcnJoTWNjNVlLMFBkNzRja1RaVVRaWFBSaUU5ak1LN3lxUDBqRE45UVRBVm9USHk0SzZ3WG1pc0tXRDgwVU1JenB2cmFDN2pyb3d1U0tZQmlqNjA2UzltdmZFaHFLNWZxV0pITWlVV1U5enM5SGtNWjJfdEhQQVljbG9lcnFLZw?oc=5"
+          "source_label": "CNBC",
+          "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPMFFFTzg1X0J0QUJNanVxemF1X1BoVGNIUzJUWGhLZTFZOXRzazZiWk5WSlkxdTk3OW44VFZ3QmRCWnI5NHZwNHpnTEY4ckVxbUEyWGF6aXZSa2ZWZzBVT0xwWC1KQXhRcVlKTzV0Rzd4eVduOHhvQ3pQNXpWMnU4U3VKM3FlV1NKdFVoT05IV3U5dldZblZOX0JfMUh5UkZ2YTNBR2MtZXo3U19vdWc?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "grid_storage": {
-      "analysis": "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages.",
+      "analysis": "Electric-power construction growth accelerated materially to 14.0%. At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages. Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development.",
       "analysis_sentences": [
-        "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages.",
-        "Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower.",
-        "RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework.",
-        "The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages."
+        "Electric-power construction growth accelerated materially to 14.0%.",
+        "At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages.",
+        "Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "grid_storage.electric_power_construction_growth",
             "grid_storage.queue_gw",
             "grid_storage.advanced_share"
           ],
           "field": "headline",
-          "text": "Most of the vast interconnection queue has not reached advanced stages"
+          "text": "Power construction accelerates, but most queued capacity remains at earlier stages"
         },
         {
-          "event_ids": [
-            "auto-2026-10-23-588f9aa6c841"
-          ],
+          "event_ids": [],
           "fact_ids": [
+            "grid_storage.electric_power_construction_growth",
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
-            "grid_storage.operating_storage_weighted_duration_hours",
-            "grid_storage.operating_storage_four_hour_plus_share_pct"
+            "grid_storage.storage_queue_gw"
           ],
           "field": "body",
-          "text": "The active interconnection queue totals 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Operating storage has a weighted average duration of 2.8 hours, and 45.5% of capacity can run for at least four hours; both measures edged lower. RTO Insider reported lukewarm stakeholder support for NYISO\u2019s large-load interconnection framework. The report does not determine queue outcomes, but it shows that debate over the rules for connecting major new loads is continuing while most queued capacity remains at earlier stages."
+          "text": "Electric-power construction growth accelerated materially to 14.0%. At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages. Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development."
         }
       ],
       "domain": "grid_storage",
-      "evidence_snapshot_id": "8bc56f8a3054c2e3815cdf7b",
-      "generated_at": "2026-10-23T17:08:04.931156+00:00",
+      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+      "generated_at": "2026-11-02T22:27:20.900540+00:00",
       "generator": "openai",
-      "headline": "Most of the vast interconnection queue has not reached advanced stages",
+      "headline": "Power construction accelerates, but most queued capacity remains at earlier stages",
       "label": "Grid & Storage",
       "references": [
         {
@@ -2485,126 +2498,111 @@
         {
           "source_label": "Census Construction Spending",
           "source_url": "https://www.census.gov/constructionspending"
-        },
-        {
-          "source_label": "RTO Insider",
-          "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQakg1dE9QRjRybGNDM2R5bHpRVlRuZjBJT1l1YmZ5VC1sWmJNbHNxczNUdm01bXJYM3VTdDB5ckNlRndxZVA3QkhHbFlqelBGZlpVQ3ZwVGwtXzBsZTk2emw0QTVhREpzWE1mb0c0R3YxN1RGN1VUV0hqaWJIeGVPZUwyWm5yTGdYekFQM2kzaUNYdw?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "The technology investment cycle is still accelerating. Information-processing investment growth reached 20.6%, while semiconductor and electronic-component output rose 19.9%, well above the 6.5% increase in computer and peripheral equipment. Available records also list 1,556 data-center sites in development, about half the operating count, and Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. The buildout remains substantial, although manufacturing growth is stronger in semiconductors and one campus opening does not establish the conversion rate for the full development inventory. Capital-market support has softened even as investment and production measures remain strong. The AI Equity Index fell materially to 35.8, positive one-year return breadth declined to 59.3%, and the median return fell to 10.2%. Most covered companies remain positive over one year, but the weaker readings now appear in both the aggregate index and the typical company. Financial capacity remains meaningful, but the margin has narrowed. Operating cash flow still covers current CapEx at 1.30 times, while cash reserves equal 0.85 years of current CapEx and forward commitments equal 4.40 times current CapEx. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate figures show current internal funding capacity, but they do not establish that every project can meet its future commitments without external capital. The broader economic transmission remains less clear. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction strongest at 0.8%, even as nonfarm-business productivity and real output grow by 2.2% and 2.5%. These economy-wide gains cannot be attributed to AI from these measures alone. For now, the buildout is easier to see than either broad labor demand or AI\u2019s contribution to productivity.",
+      "analysis": "The physical layer remains the clearest source of momentum. Electric-power construction growth accelerated materially to 14.0%, semiconductor and electronic-component output grew 19.9%, and available records show 1,556 data-center sites in development against 3,068 operating sites. The electricity pipeline is large but immature: only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, although storage alone accounts for 552.7 GW. Active construction and a large inventory of proposed capacity therefore coexist with substantial execution still ahead. Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave. Downstream transmission remains less broad. Businesses reporting current AI use account for 24.6%, compared with 28.6% expecting to use it within six months. Only one tracked AI-linked labor channel has positive employment growth, and it is power and communication construction, at 0.8%. Business deployment continues to trail near-term intentions, while the clearest labor gain remains tied to building the physical infrastructure.",
       "analysis_paragraphs": [
-        "The technology investment cycle is still accelerating. Information-processing investment growth reached 20.6%, while semiconductor and electronic-component output rose 19.9%, well above the 6.5% increase in computer and peripheral equipment. Available records also list 1,556 data-center sites in development, about half the operating count, and Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. The buildout remains substantial, although manufacturing growth is stronger in semiconductors and one campus opening does not establish the conversion rate for the full development inventory.",
-        "Capital-market support has softened even as investment and production measures remain strong. The AI Equity Index fell materially to 35.8, positive one-year return breadth declined to 59.3%, and the median return fell to 10.2%. Most covered companies remain positive over one year, but the weaker readings now appear in both the aggregate index and the typical company.",
-        "Financial capacity remains meaningful, but the margin has narrowed. Operating cash flow still covers current CapEx at 1.30 times, while cash reserves equal 0.85 years of current CapEx and forward commitments equal 4.40 times current CapEx. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate figures show current internal funding capacity, but they do not establish that every project can meet its future commitments without external capital.",
-        "The broader economic transmission remains less clear. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction strongest at 0.8%, even as nonfarm-business productivity and real output grow by 2.2% and 2.5%. These economy-wide gains cannot be attributed to AI from these measures alone. For now, the buildout is easier to see than either broad labor demand or AI\u2019s contribution to productivity."
+        "The physical layer remains the clearest source of momentum. Electric-power construction growth accelerated materially to 14.0%, semiconductor and electronic-component output grew 19.9%, and available records show 1,556 data-center sites in development against 3,068 operating sites. The electricity pipeline is large but immature: only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, although storage alone accounts for 552.7 GW. Active construction and a large inventory of proposed capacity therefore coexist with substantial execution still ahead.",
+        "Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave.",
+        "Downstream transmission remains less broad. Businesses reporting current AI use account for 24.6%, compared with 28.6% expecting to use it within six months. Only one tracked AI-linked labor channel has positive employment growth, and it is power and communication construction, at 0.8%. Business deployment continues to trail near-term intentions, while the clearest labor gain remains tied to building the physical infrastructure."
       ],
       "analysis_sentences": [
-        "The technology investment cycle is still accelerating.",
-        "Information-processing investment growth reached 20.6%, while semiconductor and electronic-component output rose 19.9%, well above the 6.5% increase in computer and peripheral equipment.",
-        "Available records also list 1,556 data-center sites in development, about half the operating count, and Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live.",
-        "The buildout remains substantial, although manufacturing growth is stronger in semiconductors and one campus opening does not establish the conversion rate for the full development inventory.",
-        "Capital-market support has softened even as investment and production measures remain strong.",
-        "The AI Equity Index fell materially to 35.8, positive one-year return breadth declined to 59.3%, and the median return fell to 10.2%.",
-        "Most covered companies remain positive over one year, but the weaker readings now appear in both the aggregate index and the typical company.",
-        "Financial capacity remains meaningful, but the margin has narrowed.",
-        "Operating cash flow still covers current CapEx at 1.30 times, while cash reserves equal 0.85 years of current CapEx and forward commitments equal 4.40 times current CapEx.",
-        "Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise.",
-        "The aggregate figures show current internal funding capacity, but they do not establish that every project can meet its future commitments without external capital.",
-        "The broader economic transmission remains less clear.",
-        "Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction strongest at 0.8%, even as nonfarm-business productivity and real output grow by 2.2% and 2.5%.",
-        "These economy-wide gains cannot be attributed to AI from these measures alone.",
-        "For now, the buildout is easier to see than either broad labor demand or AI\u2019s contribution to productivity."
+        "The physical layer remains the clearest source of momentum.",
+        "Electric-power construction growth accelerated materially to 14.0%, semiconductor and electronic-component output grew 19.9%, and available records show 1,556 data-center sites in development against 3,068 operating sites.",
+        "The electricity pipeline is large but immature: only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, although storage alone accounts for 552.7 GW.",
+        "Active construction and a large inventory of proposed capacity therefore coexist with substantial execution still ahead.",
+        "Financial support has softened rather than disappeared.",
+        "The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year.",
+        "Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx.",
+        "Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave.",
+        "Downstream transmission remains less broad.",
+        "Businesses reporting current AI use account for 24.6%, compared with 28.6% expecting to use it within six months.",
+        "Only one tracked AI-linked labor channel has positive employment growth, and it is power and communication construction, at 0.8%.",
+        "Business deployment continues to trail near-term intentions, while the clearest labor gain remains tied to building the physical infrastructure."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "compute.information_processing_investment_growth",
-            "market.aei",
-            "market.positive_breadth",
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years"
+            "grid_storage.electric_power_construction_growth",
+            "market.median_return",
+            "finance.borrower_strain"
           ],
           "field": "headline",
-          "text": "The buildout accelerates while market support cools and financing margins narrow"
+          "text": "Physical investment strengthens as market returns narrow and financing strain rises"
         },
         {
-          "event_ids": [
-            "auto-2026-10-23-d5b5ddb645c7"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "compute.information_processing_investment_growth",
+            "grid_storage.electric_power_construction_growth",
             "compute.semiconductor_output_growth",
-            "compute.computer_output_growth",
             "data_center.development_sites",
-            "data_center.development_to_operating"
+            "data_center.operating_sites",
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.storage_queue_gw"
           ],
           "field": "paragraphs[0]",
-          "text": "The technology investment cycle is still accelerating. Information-processing investment growth reached 20.6%, while semiconductor and electronic-component output rose 19.9%, well above the 6.5% increase in computer and peripheral equipment. Available records also list 1,556 data-center sites in development, about half the operating count, and Data Center Dynamics reported that the first phase of Meta\u2019s Prometheus campus in Ohio is live. The buildout remains substantial, although manufacturing growth is stronger in semiconductors and one campus opening does not establish the conversion rate for the full development inventory."
-        },
-        {
-          "event_ids": [],
-          "fact_ids": [
-            "market.aei",
-            "market.positive_breadth",
-            "market.median_return"
-          ],
-          "field": "paragraphs[1]",
-          "text": "Capital-market support has softened even as investment and production measures remain strong. The AI Equity Index fell materially to 35.8, positive one-year return breadth declined to 59.3%, and the median return fell to 10.2%. Most covered companies remain positive over one year, but the weaker readings now appear in both the aggregate index and the typical company."
+          "text": "The physical layer remains the clearest source of momentum. Electric-power construction growth accelerated materially to 14.0%, semiconductor and electronic-component output grew 19.9%, and available records show 1,556 data-center sites in development against 3,068 operating sites. The electricity pipeline is large but immature: only 24.2% of the 2,061 GW active interconnection queue has reached executed-agreement or construction stages, although storage alone accounts for 552.7 GW. Active construction and a large inventory of proposed capacity therefore coexist with substantial execution still ahead."
         },
         {
           "event_ids": [
-            "auto-2026-10-27-aa0f5bbf6c32"
+            "auto-2026-10-29-03c671210423",
+            "auto-2026-11-02-a5c43ab3be2e"
           ],
           "fact_ids": [
+            "market.aei",
+            "market.median_return",
+            "market.positive_breadth",
+            "finance.borrower_strain",
             "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
             "finance.forward_commitment_load"
           ],
-          "field": "paragraphs[2]",
-          "text": "Financial capacity remains meaningful, but the margin has narrowed. Operating cash flow still covers current CapEx at 1.30 times, while cash reserves equal 0.85 years of current CapEx and forward commitments equal 4.40 times current CapEx. Reuters reported that Moody\u2019s sees AI financing driving private-credit growth as refinancing risks rise. The aggregate figures show current internal funding capacity, but they do not establish that every project can meet its future commitments without external capital."
+          "field": "paragraphs[1]",
+          "text": "Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave."
         },
         {
           "event_ids": [],
           "fact_ids": [
+            "adoption.current_business_use_pct",
+            "adoption.expected_business_use_pct",
+            "adoption.expected_adoption_gap_ppts",
             "workforce.employment_breadth",
             "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "economic_impact.productivity_growth",
-            "economic_impact.real_output_growth"
+            "workforce.strongest_channel_growth"
           ],
-          "field": "paragraphs[3]",
-          "text": "The broader economic transmission remains less clear. Only one tracked AI-linked labor channel has positive employment growth, with power and communication construction strongest at 0.8%, even as nonfarm-business productivity and real output grow by 2.2% and 2.5%. These economy-wide gains cannot be attributed to AI from these measures alone. For now, the buildout is easier to see than either broad labor demand or AI\u2019s contribution to productivity."
+          "field": "paragraphs[2]",
+          "text": "Downstream transmission remains less broad. Businesses reporting current AI use account for 24.6%, compared with 28.6% expecting to use it within six months. Only one tracked AI-linked labor channel has positive employment growth, and it is power and communication construction, at 0.8%. Business deployment continues to trail near-term intentions, while the clearest labor gain remains tied to building the physical infrastructure."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "compute.information_processing_investment_growth",
-          "label": "Information-processing investment growth",
-          "value": "20.6%"
+          "fact_id": "grid_storage.electric_power_construction_growth",
+          "label": "Electric-power construction growth",
+          "value": "14.0%"
         },
         {
           "context": "",
-          "fact_id": "market.aei",
-          "label": "AI Equity Index",
-          "value": "35.8"
+          "fact_id": "market.median_return",
+          "label": "Median one-year return",
+          "value": "7.8%"
         },
         {
           "context": "",
-          "fact_id": "market.positive_breadth",
-          "label": "Covered companies with positive one-year returns",
-          "value": "59.3%"
+          "fact_id": "finance.borrower_strain",
+          "label": "Borrower strain",
+          "value": "30.0"
         }
       ],
-      "evidence_snapshot_id": "323aa528f43e0e84d2e373be",
-      "generated_at": "2026-10-30T18:08:06.264769+00:00",
+      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+      "generated_at": "2026-11-02T22:27:20.900540+00:00",
       "generator": "openai",
-      "headline": "The buildout accelerates while market support cools and financing margins narrow",
+      "headline": "Physical investment strengthens as market returns narrow and financing strain rises",
       "label": "AI Macro",
       "references": [
         {
@@ -2637,45 +2635,51 @@
         "finance",
         "compute",
         "data_center",
-        "workforce",
-        "economic_impact"
+        "grid_storage",
+        "adoption",
+        "workforce"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index fell materially to 35.8. The share of covered companies with positive one-year returns also declined materially to 59.3%, while the median return fell to 10.2%. A majority of companies remain positive over one year, but weaker breadth and a lower median show that the cooling extends beyond the headline index.",
+      "analysis": "The AI Equity Index edged down to 34.7, and 58.3% of covered companies have positive one-year returns. The median one-year return fell more sharply to 7.8%. A majority of companies remains positive, but the typical gain has narrowed. The Financial Times reported that U.S. technology stocks fell after earnings renewed concerns about AI spending, showing greater investor scrutiny without establishing a reversal in the investment cycle.",
       "analysis_sentences": [
-        "The AI Equity Index fell materially to 35.8.",
-        "The share of covered companies with positive one-year returns also declined materially to 59.3%, while the median return fell to 10.2%.",
-        "A majority of companies remain positive over one year, but weaker breadth and a lower median show that the cooling extends beyond the headline index."
+        "The AI Equity Index edged down to 34.7, and 58.3% of covered companies have positive one-year returns.",
+        "The median one-year return fell more sharply to 7.8%.",
+        "A majority of companies remains positive, but the typical gain has narrowed.",
+        "The Financial Times reported that U.S.",
+        "technology stocks fell after earnings renewed concerns about AI spending, showing greater investor scrutiny without establishing a reversal in the investment cycle."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-29-03c671210423"
+          ],
           "fact_ids": [
             "market.aei",
-            "market.positive_breadth",
             "market.median_return"
           ],
           "field": "headline",
-          "text": "Market support weakens across the index and covered companies"
+          "text": "Market gains narrow as spending concerns return after earnings"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-10-29-03c671210423"
+          ],
           "fact_ids": [
             "market.aei",
             "market.positive_breadth",
             "market.median_return"
           ],
           "field": "body",
-          "text": "The AI Equity Index fell materially to 35.8. The share of covered companies with positive one-year returns also declined materially to 59.3%, while the median return fell to 10.2%. A majority of companies remain positive over one year, but weaker breadth and a lower median show that the cooling extends beyond the headline index."
+          "text": "The AI Equity Index edged down to 34.7, and 58.3% of covered companies have positive one-year returns. The median one-year return fell more sharply to 7.8%. A majority of companies remains positive, but the typical gain has narrowed. The Financial Times reported that U.S. technology stocks fell after earnings renewed concerns about AI spending, showing greater investor scrutiny without establishing a reversal in the investment cycle."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "323aa528f43e0e84d2e373be",
-      "generated_at": "2026-10-30T18:08:06.264769+00:00",
+      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+      "generated_at": "2026-11-02T22:27:20.900540+00:00",
       "generator": "openai",
-      "headline": "Market support weakens across the index and covered companies",
+      "headline": "Market gains narrow as spending concerns return after earnings",
       "label": "Market",
       "references": [
         {
@@ -2685,6 +2689,10 @@
         {
           "source_label": "SEC EDGAR",
           "source_url": "https://www.sec.gov/edgar/search/"
+        },
+        {
+          "source_label": "Financial Times",
+          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNbExUUERrc3pMSURHSFEyYTkzaHdoc19pQTV1dDN1cEpRcmxzSXZWQTJ5aVNHZXg3bjRLLVk3Y0xkVEVyTUpYT2hPRnJsQVJJUEh1YnZKeUdIY1BzdWN2a1pMbGJvU3VSMk5ocHdULTNFc1NFLU5qUFdBcVowSTNnVUgyNUI?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2814,45 +2822,43 @@
       "version": "6.1.0"
     },
     "workforce": {
-      "analysis": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth. Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort. The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI.",
+      "analysis": "Only one tracked AI-linked labor channel shows positive employment growth: power and communication construction, at 0.8%. Two channels have positive real-earnings growth, so earnings growth is somewhat broader than headcount growth. CNBC separately reported that some companies are rehiring workers after deciding they moved too quickly with AI-driven layoffs. That report complicates a simple displacement narrative, but the measured employment gains remain narrow and concentrated in physical infrastructure.",
       "analysis_sentences": [
-        "Only one tracked AI-linked labor channel has positive employment growth.",
-        "Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth.",
-        "Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort.",
-        "The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI."
+        "Only one tracked AI-linked labor channel shows positive employment growth: power and communication construction, at 0.8%.",
+        "Two channels have positive real-earnings growth, so earnings growth is somewhat broader than headcount growth.",
+        "CNBC separately reported that some companies are rehiring workers after deciding they moved too quickly with AI-driven layoffs.",
+        "That report complicates a simple displacement narrative, but the measured employment gains remain narrow and concentrated in physical infrastructure."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-10-22-7091043b50d5",
-            "auto-2026-10-23-164eb95d0b49"
-          ],
-          "fact_ids": [
-            "workforce.employment_breadth"
-          ],
-          "field": "headline",
-          "text": "AI-linked job growth remains narrow as companies report AI-related cuts"
-        },
-        {
-          "event_ids": [
-            "auto-2026-10-22-7091043b50d5",
-            "auto-2026-10-23-164eb95d0b49"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "workforce.employment_breadth",
             "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "workforce.real_earnings_breadth"
+            "workforce.strongest_channel_growth"
+          ],
+          "field": "headline",
+          "text": "AI-linked employment growth remains confined to physical infrastructure"
+        },
+        {
+          "event_ids": [
+            "auto-2026-10-30-3c294d7b3f9f"
+          ],
+          "fact_ids": [
+            "workforce.employment_breadth",
+            "workforce.real_earnings_breadth",
+            "workforce.strongest_channel",
+            "workforce.strongest_channel_growth"
           ],
           "field": "body",
-          "text": "Only one tracked AI-linked labor channel has positive employment growth. Power and communication construction remains the strongest, at 0.8%, while two channels have positive real-earnings growth. Reuters separately reported company job cuts as investment shifts toward AI, including Barclays\u2019 plan to eliminate 5,000 roles in an AI-powered cost-cutting effort. The reports make the distributional tension more concrete, but they do not establish the net economy-wide employment effect of AI."
+          "text": "Only one tracked AI-linked labor channel shows positive employment growth: power and communication construction, at 0.8%. Two channels have positive real-earnings growth, so earnings growth is somewhat broader than headcount growth. CNBC separately reported that some companies are rehiring workers after deciding they moved too quickly with AI-driven layoffs. That report complicates a simple displacement narrative, but the measured employment gains remain narrow and concentrated in physical infrastructure."
         }
       ],
       "domain": "workforce",
-      "evidence_snapshot_id": "984b75ac9c3213f4ac345940",
-      "generated_at": "2026-10-26T18:47:58.499986+00:00",
+      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
+      "generated_at": "2026-11-02T22:27:20.900540+00:00",
       "generator": "openai",
-      "headline": "AI-linked job growth remains narrow as companies report AI-related cuts",
+      "headline": "AI-linked employment growth remains confined to physical infrastructure",
       "label": "Workforce",
       "references": [
         {
@@ -2868,12 +2874,8 @@
           "source_url": "https://www.bls.gov/jlt/"
         },
         {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOTzk5bDFrWVpNb3dlZ1ZMR2ZhU1NYTkJYRzh2c3JXWHcwQVBVNDhtLUo3QU1XNGFXU3kzZWFvdjdEMnd3TDc4eTI2T2NXemhfcEg5U0dISVRBRE9RUW0yMngyQy1tOXFfZ1kyZUhCa2JoOVBWcm55QWVXekVnWC1HUmw3WmI1Mm9MUE1yNEUyeXZhOXpXMnlWSzZIX3AxMHpYdjBEcXZZQmhwR2lKc2c?oc=5"
-        },
-        {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQOGZRdGl6WGVvRzVoeHJYZ051V25FN1lYV0Vna0dHaEctcHROaFFvSEVlWVd1RHptaTJfc2dkV1dOU1FPeUxfTFhFcDMybGthazVhcXo2WXB0N1liR1Y5OWk0cEYyb2ZFMXM2VGljUFV6SWM4Wm1ITUhGY0t4WHFjanJ2b0Q5RG9OUmNzYkJtLXRzNDFXVlRfWGpuQUhwQjRiYS03cFVOZ3dhUTZmN0JJ?oc=5"
+          "source_label": "CNBC",
+          "source_url": "https://www.cnbc.com/make-it/2026/10/30/ai-rebounding-employees.html"
         }
       ],
       "version": "6.1.0"
@@ -2884,10 +2886,23 @@
   "stage_prompt_versions": {
     "editorial_synthesis": "editorial-synthesis-reset-1.1"
   },
-  "status": "validated",
+  "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 13,
-    "diagnostics": [],
+    "checked_passages": 14,
+    "diagnostics": [
+      {
+        "message": "Conspicuous same-initial word run detected: continued cover current CapEx",
+        "reason": "alliterative_run",
+        "scope": "macro.paragraphs[1]",
+        "text": "Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave."
+      },
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[1]",
+        "text": "Financial support has softened rather than disappeared. The AI Equity Index slipped to 34.7, while the median one-year return fell materially to 7.8%; 58.3% of covered companies remain positive over one year. Borrower strain rose materially to 30.0, even as operating cash flow continued to cover current CapEx at 1.24 times and forward commitments stood at 4.13 times current CapEx. Recent reports capture the tension: the Financial Times said technology shares fell as earnings fueled concern about AI spending, while CNBC reported Moody\u2019s view that private credit remains firm despite the AI debt wave."
+      }
+    ],
     "hard_errors": [],
     "hard_failures": [],
     "passed": true,
