@@ -1,8 +1,10 @@
 Ticker,Period End,Filing Date,Debt,Definition,Source URL,Evidence Note
 AMD,2025-03-29,2025-05-07,3217000000.0,"Total debt, net",https://www.sec.gov/Archives/edgar/data/2488/000000248825000047/amd-20250329.htm,Total debt net in the issuer debt table
 AMD,2025-06-28,2025-08-06,3218000000.0,"Total debt, net",https://www.sec.gov/Archives/edgar/data/2488/000000248825000108/amd-20250628.htm,Reviewed filing total; long-term debt carrying amount was 3.218 billion with no separately reported current portion.
+AMD,2025-09-27,2025-11-05,3220000000.0,"Total debt, net",https://data.sec.gov/api/xbrl/companyfacts/CIK0000002488.json,SEC Companyfacts refresh; matched XBRL definition: LongTermDebtCurrent;LongTermDebtNoncurrent
 AMD,2026-03-28,2026-05-06,3224000000.0,"Total debt, net",https://www.sec.gov/Archives/edgar/data/2488/000000248826000076/amd-20260328.htm,Total debt net in the issuer debt table
 AMD,2026-06-27,2026-08-05,3226000000.0,"Total debt, net",https://www.sec.gov/Archives/edgar/data/2488/000000248826000123/amd-20260627.htm,Reviewed filing total; 875 million current portion plus 2.351 billion long-term debt.
+AMD,2026-09-26,2026-11-04,7079000000.0,"Total debt, net",https://data.sec.gov/api/xbrl/companyfacts/CIK0000002488.json,SEC Companyfacts refresh; matched XBRL definition: LongTermDebtCurrent;LongTermDebtNoncurrent
 AMZN,2025-03-31,2025-05-02,58388000000.0,"Long-term debt, current plus non-current, net",https://www.sec.gov/Archives/edgar/data/1018724/000101872425000036/amzn-20250331.htm,Face value less unamortized discount and issuance costs
 AMZN,2025-06-30,2025-08-01,55896000000.0,"Long-term debt, current plus non-current, net",https://data.sec.gov/api/xbrl/companyfacts/CIK0001018724.json,SEC Companyfacts refresh; matched XBRL definition: LongTermDebtCurrent;LongTermDebtNoncurrent;ShortTermBorrowings
 AMZN,2025-09-30,2025-10-31,54959000000.0,"Long-term debt, current plus non-current, net",https://data.sec.gov/api/xbrl/companyfacts/CIK0001018724.json,SEC Companyfacts refresh; matched XBRL definition: LongTermDebtCurrent;LongTermDebtNoncurrent;ShortTermBorrowings
