@@ -1,38 +1,38 @@
 {
   "registry_version": "9.6.2",
-  "source_fingerprint": "ab22cfd26d9667d70e50545b",
+  "source_fingerprint": "f7f554e3744d27b3ce25abfb",
   "source_sha256": {
-    "data/data_center_locations.csv": "70136a854ce16a0051cea65a7ad33a42f8bacf32321a1b15c180a663c33efc6f",
+    "data/data_center_locations.csv": "430299023c0a448ad97ace58d9d4f81c13fa29a7bcd61a20a5da327e8aa2533d",
     "data/infrastructure/curated/data_center_identity_decisions.csv": "2c9ddbfe57941fdec698e34a92fc0636f8e776bfe51b0f113a922fe98c8aecdd",
     "data/infrastructure/curated/data_center_primary_evidence.csv": "4654bc730c211ddc353599eb827df22cf29eaeedb79f7af766c72cb12036669d",
     "data/infrastructure/raw/fractracker/data_center_facilities_latest.csv": "c8b9eeeb652eb525b9314920e7c94190597ca637c922af672c82034a5b22e9c5",
     "data/infrastructure/raw/gigawattmap/datacenters.csv": "ad5e843b96a7667bd3851072daf8c870e1cf068a2b6cf5609792a20ad2d2a28a"
   },
   "summary": {
-    "active_campuses": 1155,
-    "building_entities": 730,
-    "campuses": 1482,
+    "active_campuses": 1156,
+    "building_entities": 871,
+    "campuses": 1542,
     "facility_entities": 0,
-    "high_confidence_campuses": 1222,
+    "high_confidence_campuses": 1265,
     "low_confidence_campuses": 0,
-    "mapped_campuses": 1482,
-    "medium_confidence_campuses": 260,
-    "operational_campuses": 509,
+    "mapped_campuses": 1542,
+    "medium_confidence_campuses": 277,
+    "operational_campuses": 510,
     "registry_version": "9.6.2",
-    "source_observations": 3939,
+    "source_observations": 4401,
     "states": 45,
-    "unresolved_observations": 1474
+    "unresolved_observations": 1743
   },
   "table_sha256": {
-    "data/infrastructure/derived/universal_data_center_entities.csv": "481d5522a65667b8149c2795fd02f13114a32c7f6c0261aefcd57a73b8623b2a",
-    "data/infrastructure/derived/universal_data_center_membership.csv": "cbc3eb81ac3c63a6500a3c1391557eae5d316518c70e0dc86719945b09ae1c1e",
-    "data/infrastructure/derived/universal_data_center_observations.csv": "e80936a64bc12b90be9f70ea34b3dfbec21acf9e89372a4d27f440bde9099116",
-    "data/infrastructure/derived/universal_data_center_unresolved.csv": "401c0459bc2090ed121708418bc0dc1671a6302ae33d4c7ddaef318e7da4c660"
+    "data/infrastructure/derived/universal_data_center_entities.csv": "5afea17c8c254575b99a3c760fd5d886a4701873f0dfe537dbc03973db072b33",
+    "data/infrastructure/derived/universal_data_center_membership.csv": "49244fd0da6c507f24271eb3ba478d41aa5be9be07d94593c49ab474e095e5ad",
+    "data/infrastructure/derived/universal_data_center_observations.csv": "f23208f09678e64d19859a2754554acbee45a8c8c465f42750ce1ffeecdb2397",
+    "data/infrastructure/derived/universal_data_center_unresolved.csv": "87ef1371fe3ef7446dc51612ea8acf303d77702a906d4b417fdfd77db418fc44"
   },
   "tables": {
-    "data/infrastructure/derived/universal_data_center_entities.csv": 2212,
-    "data/infrastructure/derived/universal_data_center_membership.csv": 2465,
-    "data/infrastructure/derived/universal_data_center_observations.csv": 3939,
-    "data/infrastructure/derived/universal_data_center_unresolved.csv": 1474
+    "data/infrastructure/derived/universal_data_center_entities.csv": 2413,
+    "data/infrastructure/derived/universal_data_center_membership.csv": 2658,
+    "data/infrastructure/derived/universal_data_center_observations.csv": 4401,
+    "data/infrastructure/derived/universal_data_center_unresolved.csv": 1743
   }
 }
