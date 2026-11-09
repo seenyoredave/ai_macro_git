@@ -1702,13 +1702,148 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "2a5aee3762aa503baa00b306",
-    "expires_at": "2026-11-07T20:05:20.945379+00:00",
+    "current_evidence_snapshot_id": "015565f75337f43fd9d4a967",
+    "expires_at": "2026-11-10T23:08:58.328362+00:00",
     "lease_hours": 24,
-    "materiality": {},
-    "published_at": "2026-11-06T20:05:20.945379+00:00",
-    "renewal_count": 0,
-    "source": "generation"
+    "materiality": {
+      "baseline_available": true,
+      "change_count": 12,
+      "changes": [
+        {
+          "domain": "finance",
+          "fact_id": "finance.borrower_strain",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 30.244059851795157,
+          "old_value": 30.236289469330018,
+          "percentage_point_change": 0.0,
+          "relative_change": 0.0
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.cash_reserve_coverage_years",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.8454337811296596,
+          "old_value": 0.8467404516095913,
+          "percentage_point_change": null,
+          "relative_change": 0.0015431771063350414
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.forward_commitment_load",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 4.120346491620215,
+          "old_value": 4.131822740428861,
+          "percentage_point_change": null,
+          "relative_change": 0.0027775269002596552
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.internal_funding_coverage",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 1.2307539474762172,
+          "old_value": 1.2329450925236123,
+          "percentage_point_change": null,
+          "relative_change": 0.0017771635255144785
+        },
+        {
+          "domain": "finance",
+          "fact_id": "finance.lender_strain",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 19.330769097436114,
+          "old_value": 20.099999866666884,
+          "percentage_point_change": 0.8000000000000007,
+          "relative_change": 0.039800995024875656
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.aei",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 36.21526389161328,
+          "old_value": 32.913256611314324,
+          "percentage_point_change": 3.3000000000000043,
+          "relative_change": 0.1003039513677813
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.effective_firms",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 18.23199327565254,
+          "old_value": 17.69771016241865,
+          "percentage_point_change": null,
+          "relative_change": 0.030189392205577228
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.equal_weight_return",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.13902800610400676,
+          "old_value": 0.09099171579803712,
+          "percentage_point_change": 4.800000000000001,
+          "relative_change": 0.5274725274725276
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.median_return",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.10471804467483714,
+          "old_value": 0.06458689537465401,
+          "percentage_point_change": 4.0,
+          "relative_change": 0.6153846153846154
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.positive_breadth",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 0.6323529411764706,
+          "old_value": 0.5833333333333334,
+          "percentage_point_change": 4.900000000000006,
+          "relative_change": 0.08404802744425396
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.pressure",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 44.481998909736014,
+          "old_value": 41.85906167944059,
+          "percentage_point_change": 2.6000000000000014,
+          "relative_change": 0.06205250596658715
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.top_10_share",
+          "kind": "numeric_change",
+          "material": false,
+          "new_value": 0.6507124248596261,
+          "old_value": 0.6561846033050249,
+          "percentage_point_change": 0.5,
+          "relative_change": 0.007621951219512196
+        }
+      ],
+      "current_snapshot_id": "015565f75337f43fd9d4a967",
+      "decision": "generate_material_change",
+      "exact_match": false,
+      "immaterial_change_count": 7,
+      "material": true,
+      "material_change_count": 5,
+      "percentage_point_threshold": 2.0,
+      "previous_snapshot_id": "2a5aee3762aa503baa00b306",
+      "relative_change_threshold": 0.1,
+      "version": "1.2.0"
+    },
+    "published_at": "2026-11-09T23:08:58.328362+00:00",
+    "renewal_count": 1,
+    "source": "automation_generation_fallback"
   },
   "raw_responses": {
     "editorial_synthesis": {
