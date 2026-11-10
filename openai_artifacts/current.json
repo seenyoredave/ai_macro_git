@@ -1702,12 +1702,12 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "015565f75337f43fd9d4a967",
-    "expires_at": "2026-11-10T23:08:58.328362+00:00",
+    "current_evidence_snapshot_id": "6f49c026ff2573b3f549130a",
+    "expires_at": "2026-11-11T20:34:05.189519+00:00",
     "lease_hours": 24,
     "materiality": {
       "baseline_available": true,
-      "change_count": 12,
+      "change_count": 13,
       "changes": [
         {
           "domain": "finance",
@@ -1764,85 +1764,95 @@
           "fact_id": "market.aei",
           "kind": "numeric_change",
           "material": true,
-          "new_value": 36.21526389161328,
+          "new_value": 37.257788882407134,
           "old_value": 32.913256611314324,
-          "percentage_point_change": 3.3000000000000043,
-          "relative_change": 0.1003039513677813
+          "percentage_point_change": 4.399999999999999,
+          "relative_change": 0.13373860182370817
         },
         {
           "domain": "market",
           "fact_id": "market.effective_firms",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 18.23199327565254,
+          "new_value": 18.43984234084942,
           "old_value": 17.69771016241865,
           "percentage_point_change": null,
-          "relative_change": 0.030189392205577228
+          "relative_change": 0.04193379661097046
         },
         {
           "domain": "market",
           "fact_id": "market.equal_weight_return",
           "kind": "numeric_change",
           "material": true,
-          "new_value": 0.13902800610400676,
+          "new_value": 0.11978881553488072,
           "old_value": 0.09099171579803712,
-          "percentage_point_change": 4.800000000000001,
-          "relative_change": 0.5274725274725276
+          "percentage_point_change": 2.9000000000000004,
+          "relative_change": 0.3186813186813187
         },
         {
           "domain": "market",
           "fact_id": "market.median_return",
           "kind": "numeric_change",
           "material": true,
-          "new_value": 0.10471804467483714,
+          "new_value": 0.09435450001410728,
           "old_value": 0.06458689537465401,
-          "percentage_point_change": 4.0,
-          "relative_change": 0.6153846153846154
+          "percentage_point_change": 2.9000000000000004,
+          "relative_change": 0.44615384615384623
         },
         {
           "domain": "market",
           "fact_id": "market.positive_breadth",
           "kind": "numeric_change",
           "material": true,
-          "new_value": 0.6323529411764706,
+          "new_value": 0.6029411764705882,
           "old_value": 0.5833333333333334,
-          "percentage_point_change": 4.900000000000006,
-          "relative_change": 0.08404802744425396
+          "percentage_point_change": 2.0,
+          "relative_change": 0.03430531732418525
         },
         {
           "domain": "market",
           "fact_id": "market.pressure",
           "kind": "numeric_change",
           "material": true,
-          "new_value": 44.481998909736014,
+          "new_value": 44.080659144224065,
           "old_value": 41.85906167944059,
-          "percentage_point_change": 2.6000000000000014,
-          "relative_change": 0.06205250596658715
+          "percentage_point_change": 2.200000000000003,
+          "relative_change": 0.05250596658711224
+        },
+        {
+          "domain": "market",
+          "fact_id": "market.strong_sector_count",
+          "kind": "numeric_change",
+          "material": true,
+          "new_value": 3.0,
+          "old_value": 2.0,
+          "percentage_point_change": null,
+          "relative_change": 0.5
         },
         {
           "domain": "market",
           "fact_id": "market.top_10_share",
           "kind": "numeric_change",
           "material": false,
-          "new_value": 0.6507124248596261,
+          "new_value": 0.6507219114325056,
           "old_value": 0.6561846033050249,
           "percentage_point_change": 0.5,
           "relative_change": 0.007621951219512196
         }
       ],
-      "current_snapshot_id": "015565f75337f43fd9d4a967",
+      "current_snapshot_id": "6f49c026ff2573b3f549130a",
       "decision": "generate_material_change",
       "exact_match": false,
       "immaterial_change_count": 7,
       "material": true,
-      "material_change_count": 5,
+      "material_change_count": 6,
       "percentage_point_threshold": 2.0,
       "previous_snapshot_id": "2a5aee3762aa503baa00b306",
       "relative_change_threshold": 0.1,
       "version": "1.2.0"
     },
-    "published_at": "2026-11-09T23:08:58.328362+00:00",
-    "renewal_count": 1,
+    "published_at": "2026-11-10T20:34:05.189519+00:00",
+    "renewal_count": 2,
     "source": "automation_generation_fallback"
   },
   "raw_responses": {
