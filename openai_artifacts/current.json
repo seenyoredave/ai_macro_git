@@ -1,63 +1,79 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261106T200356830696Z_2a5aee37_ddeec45e",
+  "attempt_id": "20261111T201622402470Z_a15fce91_f502adf1",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
-    "workforce"
+    "data_center",
+    "connectivity",
+    "power",
+    "economic_impact"
   ],
   "editorial_context_event_ids": [
-    "auto-2026-11-02-a5c43ab3be2e",
-    "auto-2026-10-28-46bdcbc25c4c",
-    "auto-2026-10-29-d1d838d31775",
-    "auto-2026-10-28-ef8f56286620",
+    "auto-2026-11-10-64b46ef99529",
     "auto-2026-11-03-4f7821bf351c",
-    "auto-2026-11-02-2242e7e6ee65",
-    "auto-2026-11-02-0e0f82da070b",
+    "auto-2026-11-06-20ddc98c2285",
+    "auto-2026-11-10-d265fbd006df",
     "auto-2026-11-06-9ad5d2828d7a",
+    "auto-2026-11-02-0e0f82da070b",
+    "auto-2026-11-09-5615fc16e421",
+    "auto-2026-11-06-a21980ae60da",
+    "auto-2026-11-08-a5ef645f6a17",
     "auto-2026-11-03-6bb213b699d9",
+    "auto-2026-11-10-e52899447b67",
+    "auto-2026-11-09-0b5aa316d249",
     "auto-2026-11-04-dc438f389316",
-    "auto-2026-11-03-2a952c040350",
-    "auto-2026-11-02-fd2adf5f5f81",
     "auto-2026-11-06-8576b3409b1a",
-    "auto-2026-11-02-d0607e13b53b",
-    "auto-2026-11-03-31e54f9347b4"
+    "auto-2026-11-10-9828b5a00b5c"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
-      "workforce"
+      "data_center",
+      "connectivity",
+      "power",
+      "economic_impact"
     ],
     "current_event_ids": [
-      "auto-2026-11-02-a5c43ab3be2e",
-      "auto-2026-10-28-46bdcbc25c4c",
-      "auto-2026-10-29-d1d838d31775",
-      "auto-2026-10-28-ef8f56286620",
+      "auto-2026-11-10-64b46ef99529",
       "auto-2026-11-03-4f7821bf351c",
-      "auto-2026-11-02-2242e7e6ee65",
-      "auto-2026-11-02-0e0f82da070b",
+      "auto-2026-11-06-20ddc98c2285",
+      "auto-2026-11-10-d265fbd006df",
       "auto-2026-11-06-9ad5d2828d7a",
+      "auto-2026-11-02-0e0f82da070b",
+      "auto-2026-11-09-5615fc16e421",
+      "auto-2026-11-06-a21980ae60da",
+      "auto-2026-11-08-a5ef645f6a17",
       "auto-2026-11-03-6bb213b699d9",
+      "auto-2026-11-10-e52899447b67",
+      "auto-2026-11-09-0b5aa316d249",
       "auto-2026-11-04-dc438f389316",
-      "auto-2026-11-03-2a952c040350",
-      "auto-2026-11-02-fd2adf5f5f81",
       "auto-2026-11-06-8576b3409b1a",
-      "auto-2026-11-02-d0607e13b53b",
-      "auto-2026-11-03-31e54f9347b4"
+      "auto-2026-11-10-9828b5a00b5c"
     ],
     "material_domains": [
-      "market",
-      "workforce"
+      "market"
     ],
     "new_event_domains": [
       "market",
-      "finance"
+      "finance",
+      "data_center",
+      "connectivity",
+      "power",
+      "economic_impact"
     ],
     "new_event_ids": [
-      "auto-2026-11-06-9ad5d2828d7a",
-      "auto-2026-11-06-8576b3409b1a"
+      "auto-2026-11-10-64b46ef99529",
+      "auto-2026-11-06-20ddc98c2285",
+      "auto-2026-11-10-d265fbd006df",
+      "auto-2026-11-09-5615fc16e421",
+      "auto-2026-11-06-a21980ae60da",
+      "auto-2026-11-08-a5ef645f6a17",
+      "auto-2026-11-10-e52899447b67",
+      "auto-2026-11-09-0b5aa316d249",
+      "auto-2026-11-10-9828b5a00b5c"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -65,7 +81,8 @@
   "editorial_update_domains": [
     "market",
     "finance",
-    "workforce"
+    "data_center",
+    "power"
   ],
   "evidence_packets": {
     "adoption": {
@@ -793,35 +810,35 @@
           "display": "30.2",
           "id": "finance.borrower_strain",
           "label": "Borrower strain",
-          "value": 30.236289469330018
+          "value": 30.244059851795157
         },
         {
           "context": "",
-          "display": "20.1",
+          "display": "19.3",
           "id": "finance.lender_strain",
           "label": "Lender strain",
-          "value": 20.099999866666884
+          "value": 19.330769097436114
         },
         {
           "context": "",
           "display": "1.23x",
           "id": "finance.internal_funding_coverage",
           "label": "Operating cash flow coverage of current CapEx",
-          "value": 1.2329450925236123
+          "value": 1.2307539474762172
         },
         {
           "context": "",
           "display": "0.85 years",
           "id": "finance.cash_reserve_coverage_years",
           "label": "Cash reserves relative to current CapEx",
-          "value": 0.8467404516095913
+          "value": 0.8454337811296596
         },
         {
           "context": "",
-          "display": "4.13x",
+          "display": "4.12x",
           "id": "finance.forward_commitment_load",
           "label": "Forward commitments relative to current CapEx",
-          "value": 4.131822740428861
+          "value": 4.120346491620215
         },
         {
           "context": "",
@@ -1197,69 +1214,69 @@
       "facts": [
         {
           "context": "",
-          "display": "32.9",
+          "display": "37.9",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 32.913256611314324
+          "value": 37.93881874330512
         },
         {
           "context": "",
-          "display": "41.9",
+          "display": "44.5",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 41.85906167944059
+          "value": 44.539339458034796
         },
         {
           "context": "",
-          "display": "58.3%",
+          "display": "64.2%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.5833333333333334
+          "value": 0.6421568627450981
         },
         {
           "context": "",
-          "display": "6.5%",
+          "display": "11.0%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.06458689537465401
+          "value": 0.10968651459255208
         },
         {
           "context": "",
-          "display": "9.1%",
+          "display": "16.8%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.09099171579803712
+          "value": 0.1676515540129882
         },
         {
           "context": "",
-          "display": "65.6%",
+          "display": "64.6%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6561846033050249
+          "value": 0.646368168494275
         },
         {
           "context": "",
-          "display": "17.7",
+          "display": "18.7",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 17.69771016241865
+          "value": 18.727321762293723
         },
         {
           "context": "",
-          "display": "2",
+          "display": "3",
           "id": "market.strong_sector_count",
           "label": "Sectors above the strong-equity threshold",
-          "value": 2.0
+          "value": 3.0
         },
         {
           "context": "",
-          "display": "1",
+          "display": "0",
           "id": "market.crowded_sector_count",
           "label": "Sectors above the high-pressure threshold",
-          "value": 1.0
+          "value": 0.0
         }
       ],
-      "importance": 20.618460330502486,
+      "importance": 19.636816849427504,
       "label": "Market",
       "references": [
         {
@@ -1679,19 +1696,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "2a5aee3762aa503baa00b306",
-  "generated_at": "2026-11-06T20:05:20.942117+00:00",
+  "evidence_snapshot_id": "a15fce914d64ce295a276840",
+  "generated_at": "2026-11-11T20:17:49.206888+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 84.104853703,
-      "input_tokens": 3946,
+      "elapsed_sec": 86.79905917299993,
+      "input_tokens": 4223,
       "model": "gpt-5.6-sol",
-      "output_tokens": 7327,
-      "poll_attempts": 38,
+      "output_tokens": 8780,
+      "poll_attempts": 39,
       "poll_errors": [],
-      "response_id": "resp_05d1042d2dd78815006aee32ada2b887d1ab2f9f3ff2ad86e7",
+      "response_id": "resp_0f8e61ce0fb855c7006af4cd17244087d1a5de639a8216e602",
       "terminal_status": "completed",
-      "total_tokens": 11273
+      "total_tokens": 13003
     }
   },
   "max_output_tokens": null,
@@ -1702,181 +1719,36 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "6f49c026ff2573b3f549130a",
-    "expires_at": "2026-11-11T20:34:05.189519+00:00",
+    "current_evidence_snapshot_id": "a15fce914d64ce295a276840",
+    "expires_at": "2026-11-12T20:17:49.209208+00:00",
     "lease_hours": 24,
-    "materiality": {
-      "baseline_available": true,
-      "change_count": 13,
-      "changes": [
-        {
-          "domain": "finance",
-          "fact_id": "finance.borrower_strain",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 30.244059851795157,
-          "old_value": 30.236289469330018,
-          "percentage_point_change": 0.0,
-          "relative_change": 0.0
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.cash_reserve_coverage_years",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.8454337811296596,
-          "old_value": 0.8467404516095913,
-          "percentage_point_change": null,
-          "relative_change": 0.0015431771063350414
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.forward_commitment_load",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 4.120346491620215,
-          "old_value": 4.131822740428861,
-          "percentage_point_change": null,
-          "relative_change": 0.0027775269002596552
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.internal_funding_coverage",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 1.2307539474762172,
-          "old_value": 1.2329450925236123,
-          "percentage_point_change": null,
-          "relative_change": 0.0017771635255144785
-        },
-        {
-          "domain": "finance",
-          "fact_id": "finance.lender_strain",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 19.330769097436114,
-          "old_value": 20.099999866666884,
-          "percentage_point_change": 0.8000000000000007,
-          "relative_change": 0.039800995024875656
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.aei",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 37.257788882407134,
-          "old_value": 32.913256611314324,
-          "percentage_point_change": 4.399999999999999,
-          "relative_change": 0.13373860182370817
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.effective_firms",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 18.43984234084942,
-          "old_value": 17.69771016241865,
-          "percentage_point_change": null,
-          "relative_change": 0.04193379661097046
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.equal_weight_return",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 0.11978881553488072,
-          "old_value": 0.09099171579803712,
-          "percentage_point_change": 2.9000000000000004,
-          "relative_change": 0.3186813186813187
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.median_return",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 0.09435450001410728,
-          "old_value": 0.06458689537465401,
-          "percentage_point_change": 2.9000000000000004,
-          "relative_change": 0.44615384615384623
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.positive_breadth",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 0.6029411764705882,
-          "old_value": 0.5833333333333334,
-          "percentage_point_change": 2.0,
-          "relative_change": 0.03430531732418525
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.pressure",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 44.080659144224065,
-          "old_value": 41.85906167944059,
-          "percentage_point_change": 2.200000000000003,
-          "relative_change": 0.05250596658711224
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.strong_sector_count",
-          "kind": "numeric_change",
-          "material": true,
-          "new_value": 3.0,
-          "old_value": 2.0,
-          "percentage_point_change": null,
-          "relative_change": 0.5
-        },
-        {
-          "domain": "market",
-          "fact_id": "market.top_10_share",
-          "kind": "numeric_change",
-          "material": false,
-          "new_value": 0.6507219114325056,
-          "old_value": 0.6561846033050249,
-          "percentage_point_change": 0.5,
-          "relative_change": 0.007621951219512196
-        }
-      ],
-      "current_snapshot_id": "6f49c026ff2573b3f549130a",
-      "decision": "generate_material_change",
-      "exact_match": false,
-      "immaterial_change_count": 7,
-      "material": true,
-      "material_change_count": 6,
-      "percentage_point_threshold": 2.0,
-      "previous_snapshot_id": "2a5aee3762aa503baa00b306",
-      "relative_change_threshold": 0.1,
-      "version": "1.2.0"
-    },
-    "published_at": "2026-11-10T20:34:05.189519+00:00",
-    "renewal_count": 2,
-    "source": "automation_generation_fallback"
+    "materiality": {},
+    "published_at": "2026-11-11T20:17:49.209208+00:00",
+    "renewal_count": 0,
+    "source": "generation"
   },
   "raw_responses": {
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 38,
+        "poll_attempts": 39,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_05d1042d2dd78815006aee32ada2b887d1ab2f9f3ff2ad86e7",
+        "response_id": "resp_0f8e61ce0fb855c7006af4cd17244087d1a5de639a8216e602",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked market measures have turned higher, but the improvement is uneven in scale. The median one-year return rose materially to 6.5%, while the share of covered companies with positive one-year returns increased slightly to 58.3%. The AI Equity Index also edged up, to 32.9. Morningstar separately reported that hyperscaler AI investment will outpace near-term earnings. That report does not explain the measured improvement, but it shows that stronger market performance can coexist with concern that heavy investment is running ahead of near-term earnings.\",\"event_ids\":[\"auto-2026-11-06-8576b3409b1a\"],\"fact_ids\":[\"market.median_return\",\"market.positive_breadth\",\"market.aei\"]},\"headline\":{\"text\":\"AI-linked equities turn modestly higher, led by the median return\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending by 1.23 times, so the aggregate measure still shows internal funding capacity for current spending. At the same time, borrower strain increased slightly to 30.2 and the debt-financing pulse edged up to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report adds a specific example of data-center debt being offered to the market, but it does not establish a broad credit disruption.\",\"event_ids\":[\"auto-2026-11-06-9ad5d2828d7a\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\",\"finance.debt_financing_pulse\"]},\"headline\":{\"text\":\"Current capital spending remains internally covered as borrower strain rises\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Positive employment growth now appears in two tracked AI-linked labor channels, a material increase in breadth. Semiconductor manufacturing has become the strongest channel, with employment growth of 2.0%. The weakest channel, however, contracted 5.4%, and that decline also worsened materially. The figures therefore show a clearer pocket of job growth in chip manufacturing, not broad-based momentum across the tracked channels.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.weakest_channel_growth\"]},\"headline\":{\"text\":\"Employment gains broaden, but remain concentrated\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.weakest_channel_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The AI buildout remains extensive as credit strain firms and job gains stay narrow\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"power.large_load_capacity_mw\",\"finance.borrower_strain\",\"workforce.employment_breadth\",\"workforce.weakest_channel_growth\"]},\"paragraphs\":[{\"text\":\"The AI buildout remains substantial, and current spending is still internally covered. Available project records list 1,556 data-center sites in development, against 3,068 operating sites, while published capacity associated with large-load campus records totals 200,987 MW. Operating cash flow covers current capital spending by 1.23 times. Morningstar also reported that hyperscaler AI investment will outpace near-term earnings, sharpening the distinction between funding current spending and the timing of its earnings contribution.\",\"event_ids\":[\"auto-2026-11-06-8576b3409b1a\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"power.large_load_capacity_mw\",\"finance.internal_funding_coverage\"]},{\"text\":\"Most market measures improved modestly, with a larger move in the median return. The AI Equity Index rose slightly to 32.9 and the share of covered companies with positive one-year returns reached 58.3%, while the median return increased materially to 6.5%. Credit indicators moved less favorably: borrower strain edged up to 30.2 and the debt-financing pulse to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report does not establish a systemwide problem, but it grounds financing concern in a specific loan-sale effort.\",\"event_ids\":[\"auto-2026-11-06-9ad5d2828d7a\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.borrower_strain\",\"finance.debt_financing_pulse\"]},{\"text\":\"Labor signals also show selective rather than broad expansion. Two tracked AI-linked channels now have positive employment growth, with semiconductor manufacturing strongest at 2.0%, while the weakest channel contracted 5.4%. Semiconductor and electronic-component output growth is 19.9%. That pairing identifies semiconductors as a clear pocket of expansion, not evidence of broad labor-market gains.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.weakest_channel_growth\",\"compute.semiconductor_output_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked equity performance strengthened across the index, median return and breadth. The AI Equity Index rose materially to 37.9, the median one-year return reached 11.0%, and 64.2% of covered companies now have positive one-year returns. CNBC also reported a revenue beat and higher guidance from CoreWeave, easing concerns about an AI slowdown. That company result fits the firmer market backdrop, though it cannot explain the broader move.\",\"event_ids\":[\"auto-2026-11-10-64b46ef99529\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},\"headline\":{\"text\":\"AI-linked equities strengthen across the index, breadth and median return\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow still covers current capital spending by 1.23 times, but that coverage decreased slightly. Cash reserves also declined slightly and now equal 0.85 years of current capital spending. Borrower strain edged up to 30.2 even as lender strain eased to 19.3, so the aggregate indicators do not show uniform deterioration. Recent credit-market reports are less reassuring: CNBC said CoreWeave\u2019s bond yield topped 16%, while Bloomberg reported that SoftBank led Asian bond losses as the AI selloff spread to credit. These are specific signs of market stress rather than evidence of a generalized funding freeze.\",\"event_ids\":[\"auto-2026-11-06-a21980ae60da\",\"auto-2026-11-06-20ddc98c2285\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal cash flow still covers capital spending as traded credit shows strain\",\"event_ids\":[\"auto-2026-11-06-a21980ae60da\",\"auto-2026-11-06-20ddc98c2285\"],\"fact_ids\":[\"finance.internal_funding_coverage\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 operating sites; 894 sites are in the tracked active pipeline. Recent reports show individual large projects moving forward: Fluidstack began construction on a 99-acre campus in Virginia, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. These projects show activity reaching the construction and contracting stages, but they do not measure the conversion rate of the national pipeline.\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Campus projects move into contracting and construction while 1,556 sites remain in development\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\"],\"fact_ids\":[\"data_center.development_sites\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Reuters reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. The proposal is a notable example of generation being planned alongside data-center capacity, but it remains a reported plan and cannot explain the national demand figures. Across the broader pipeline horizon, net planned generation additions total 227.6 GW.\",\"event_ids\":[\"auto-2026-11-09-0b5aa316d249\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"A reported $24 billion SpaceX plan combines a data center with gas generation\",\"event_ids\":[\"auto-2026-11-09-0b5aa316d249\"],\"fact_ids\":[]}}],\"macro_read\":{\"headline\":{\"text\":\"AI-linked equities strengthen as construction advances, but credit signals remain uneven\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"paragraphs\":[{\"text\":\"AI-linked equities have strengthened materially, but the financing picture is less uniform. The AI Equity Index reached 37.9, the median one-year return rose to 11.0%, and 64.2% of covered companies now show positive one-year returns. At the same time, borrower strain increased to 30.2 even though operating cash flow still covers current capital spending by 1.23 times. CoreWeave captures the contrast: CNBC reported that it beat on revenue and raised guidance, while a separate report put its bond yield above 16%. Stronger operating news and broad equity gains coexist with a very high bond yield for at least one AI-linked borrower.\",\"event_ids\":[\"auto-2026-11-10-64b46ef99529\",\"auto-2026-11-06-a21980ae60da\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\"]},{\"text\":\"The physical expansion is still moving from plans into contracts and construction. Available records contain 1,556 data-center sites in development, about half the 3,068 operating sites. Fluidstack reportedly started work on a 99-acre Virginia campus, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. Reuters also reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. Separately, commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand. The projects show that large developments remain active, but they do not establish how quickly the national pipeline will become operational or how much AI accounts for current power-demand growth.\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\",\"auto-2026-11-09-0b5aa316d249\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"power.commercial_growth\",\"power.demand_growth\"]},{\"text\":\"The economic payoff remains harder to identify than the investment cycle. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs 2.4%. These economy-wide measures are consistent with continued productivity growth, but they do not isolate AI\u2019s contribution and cannot by themselves establish a return from the scale of investment now under way.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1793995520.0,
+      "completed_at": 1794428266.0,
       "conversation": null,
-      "created_at": 1793995437.0,
+      "created_at": 1794428183.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_05d1042d2dd78815006aee32ada2b887d1ab2f9f3ff2ad86e7",
+      "id": "resp_0f8e61ce0fb855c7006af4cd17244087d1a5de639a8216e602",
       "image": {
         "context_compression": "disabled"
       },
@@ -1892,7 +1764,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32afc40887d180e90bfffacf9fb6",
+          "id": "rs_0f8e61ce0fb855c7006af4cd197a5487d1a923521b0f58a762",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1900,7 +1772,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32b6417487d1942183ee291da8a2",
+          "id": "rs_0f8e61ce0fb855c7006af4cd1f43d887d19d4860cb894744e0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1908,7 +1780,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32bd469c87d1ba3da8c0be0f87f0",
+          "id": "rs_0f8e61ce0fb855c7006af4cd24d67087d18179ce79dac55959",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1916,7 +1788,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32c420e087d18377776e3b25652d",
+          "id": "rs_0f8e61ce0fb855c7006af4cd2a28a487d18781fe1540c7a7e5",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1924,7 +1796,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32cab88087d19ee46b66e025c470",
+          "id": "rs_0f8e61ce0fb855c7006af4cd2fa01887d18f2fa3ae637bf66a",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1932,7 +1804,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32d0f58887d1916d2d4330aaec91",
+          "id": "rs_0f8e61ce0fb855c7006af4cd34e7ec87d1818cc99d93973cf3",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1940,7 +1812,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32d7025c87d1be1b1c3ff33f6572",
+          "id": "rs_0f8e61ce0fb855c7006af4cd3a479887d1a2d50f8d0c72213c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1948,7 +1820,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32dc68d887d1b39a6e30c1594ef5",
+          "id": "rs_0f8e61ce0fb855c7006af4cd4005e487d1976d25f0d6336b0e",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1956,7 +1828,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32e146f887d19bee6f54eba42b14",
+          "id": "rs_0f8e61ce0fb855c7006af4cd454a2887d19d2a5c7d2c74ee9c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1964,7 +1836,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32e7e5a087d19f76956bcc5f9ddf",
+          "id": "rs_0f8e61ce0fb855c7006af4cd4a4b6c87d1ad4a95f05bdc3295",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1972,7 +1844,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32ed74c487d1b64cc449dc70e170",
+          "id": "rs_0f8e61ce0fb855c7006af4cd4f222887d1b86ee55604b07fc0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1980,7 +1852,23 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_05d1042d2dd78815006aee32f3702887d1964dace90345620b",
+          "id": "rs_0f8e61ce0fb855c7006af4cd53c9dc87d1864c1621170d8249",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f8e61ce0fb855c7006af4cd5992c887d19ee035c3b3b92eed",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f8e61ce0fb855c7006af4cd5e470487d1a4d47d74116b49a2",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1990,11 +1878,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked market measures have turned higher, but the improvement is uneven in scale. The median one-year return rose materially to 6.5%, while the share of covered companies with positive one-year returns increased slightly to 58.3%. The AI Equity Index also edged up, to 32.9. Morningstar separately reported that hyperscaler AI investment will outpace near-term earnings. That report does not explain the measured improvement, but it shows that stronger market performance can coexist with concern that heavy investment is running ahead of near-term earnings.\",\"event_ids\":[\"auto-2026-11-06-8576b3409b1a\"],\"fact_ids\":[\"market.median_return\",\"market.positive_breadth\",\"market.aei\"]},\"headline\":{\"text\":\"AI-linked equities turn modestly higher, led by the median return\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow covers current capital spending by 1.23 times, so the aggregate measure still shows internal funding capacity for current spending. At the same time, borrower strain increased slightly to 30.2 and the debt-financing pulse edged up to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report adds a specific example of data-center debt being offered to the market, but it does not establish a broad credit disruption.\",\"event_ids\":[\"auto-2026-11-06-9ad5d2828d7a\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\",\"finance.debt_financing_pulse\"]},\"headline\":{\"text\":\"Current capital spending remains internally covered as borrower strain rises\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.borrower_strain\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Positive employment growth now appears in two tracked AI-linked labor channels, a material increase in breadth. Semiconductor manufacturing has become the strongest channel, with employment growth of 2.0%. The weakest channel, however, contracted 5.4%, and that decline also worsened materially. The figures therefore show a clearer pocket of job growth in chip manufacturing, not broad-based momentum across the tracked channels.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.weakest_channel_growth\"]},\"headline\":{\"text\":\"Employment gains broaden, but remain concentrated\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.weakest_channel_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The AI buildout remains extensive as credit strain firms and job gains stay narrow\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"power.large_load_capacity_mw\",\"finance.borrower_strain\",\"workforce.employment_breadth\",\"workforce.weakest_channel_growth\"]},\"paragraphs\":[{\"text\":\"The AI buildout remains substantial, and current spending is still internally covered. Available project records list 1,556 data-center sites in development, against 3,068 operating sites, while published capacity associated with large-load campus records totals 200,987 MW. Operating cash flow covers current capital spending by 1.23 times. Morningstar also reported that hyperscaler AI investment will outpace near-term earnings, sharpening the distinction between funding current spending and the timing of its earnings contribution.\",\"event_ids\":[\"auto-2026-11-06-8576b3409b1a\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"power.large_load_capacity_mw\",\"finance.internal_funding_coverage\"]},{\"text\":\"Most market measures improved modestly, with a larger move in the median return. The AI Equity Index rose slightly to 32.9 and the share of covered companies with positive one-year returns reached 58.3%, while the median return increased materially to 6.5%. Credit indicators moved less favorably: borrower strain edged up to 30.2 and the debt-financing pulse to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report does not establish a systemwide problem, but it grounds financing concern in a specific loan-sale effort.\",\"event_ids\":[\"auto-2026-11-06-9ad5d2828d7a\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.borrower_strain\",\"finance.debt_financing_pulse\"]},{\"text\":\"Labor signals also show selective rather than broad expansion. Two tracked AI-linked channels now have positive employment growth, with semiconductor manufacturing strongest at 2.0%, while the weakest channel contracted 5.4%. Semiconductor and electronic-component output growth is 19.9%. That pairing identifies semiconductors as a clear pocket of expansion, not evidence of broad labor-market gains.\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\",\"workforce.weakest_channel_growth\",\"compute.semiconductor_output_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked equity performance strengthened across the index, median return and breadth. The AI Equity Index rose materially to 37.9, the median one-year return reached 11.0%, and 64.2% of covered companies now have positive one-year returns. CNBC also reported a revenue beat and higher guidance from CoreWeave, easing concerns about an AI slowdown. That company result fits the firmer market backdrop, though it cannot explain the broader move.\",\"event_ids\":[\"auto-2026-11-10-64b46ef99529\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\"]},\"headline\":{\"text\":\"AI-linked equities strengthen across the index, breadth and median return\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow still covers current capital spending by 1.23 times, but that coverage decreased slightly. Cash reserves also declined slightly and now equal 0.85 years of current capital spending. Borrower strain edged up to 30.2 even as lender strain eased to 19.3, so the aggregate indicators do not show uniform deterioration. Recent credit-market reports are less reassuring: CNBC said CoreWeave\u2019s bond yield topped 16%, while Bloomberg reported that SoftBank led Asian bond losses as the AI selloff spread to credit. These are specific signs of market stress rather than evidence of a generalized funding freeze.\",\"event_ids\":[\"auto-2026-11-06-a21980ae60da\",\"auto-2026-11-06-20ddc98c2285\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Internal cash flow still covers capital spending as traded credit shows strain\",\"event_ids\":[\"auto-2026-11-06-a21980ae60da\",\"auto-2026-11-06-20ddc98c2285\"],\"fact_ids\":[\"finance.internal_funding_coverage\"]}},{\"domain\":\"data_center\",\"body\":{\"text\":\"Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 operating sites; 894 sites are in the tracked active pipeline. Recent reports show individual large projects moving forward: Fluidstack began construction on a 99-acre campus in Virginia, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. These projects show activity reaching the construction and contracting stages, but they do not measure the conversion rate of the national pipeline.\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\"]},\"headline\":{\"text\":\"Campus projects move into contracting and construction while 1,556 sites remain in development\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\"],\"fact_ids\":[\"data_center.development_sites\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Reuters reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. The proposal is a notable example of generation being planned alongside data-center capacity, but it remains a reported plan and cannot explain the national demand figures. Across the broader pipeline horizon, net planned generation additions total 227.6 GW.\",\"event_ids\":[\"auto-2026-11-09-0b5aa316d249\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"power.planned_net_gw\"]},\"headline\":{\"text\":\"A reported $24 billion SpaceX plan combines a data center with gas generation\",\"event_ids\":[\"auto-2026-11-09-0b5aa316d249\"],\"fact_ids\":[]}}],\"macro_read\":{\"headline\":{\"text\":\"AI-linked equities strengthen as construction advances, but credit signals remain uneven\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"paragraphs\":[{\"text\":\"AI-linked equities have strengthened materially, but the financing picture is less uniform. The AI Equity Index reached 37.9, the median one-year return rose to 11.0%, and 64.2% of covered companies now show positive one-year returns. At the same time, borrower strain increased to 30.2 even though operating cash flow still covers current capital spending by 1.23 times. CoreWeave captures the contrast: CNBC reported that it beat on revenue and raised guidance, while a separate report put its bond yield above 16%. Stronger operating news and broad equity gains coexist with a very high bond yield for at least one AI-linked borrower.\",\"event_ids\":[\"auto-2026-11-10-64b46ef99529\",\"auto-2026-11-06-a21980ae60da\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.positive_breadth\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\"]},{\"text\":\"The physical expansion is still moving from plans into contracts and construction. Available records contain 1,556 data-center sites in development, about half the 3,068 operating sites. Fluidstack reportedly started work on a 99-acre Virginia campus, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. Reuters also reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. Separately, commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand. The projects show that large developments remain active, but they do not establish how quickly the national pipeline will become operational or how much AI accounts for current power-demand growth.\",\"event_ids\":[\"auto-2026-11-10-d265fbd006df\",\"auto-2026-11-09-5615fc16e421\",\"auto-2026-11-09-0b5aa316d249\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"power.commercial_growth\",\"power.demand_growth\"]},{\"text\":\"The economic payoff remains harder to identify than the investment cycle. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs 2.4%. These economy-wide measures are consistent with continued productivity growth, but they do not isolate AI\u2019s contribution and cannot by themselves establish a return from the scale of investment now under way.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_05d1042d2dd78815006aee32f9812c87d1b30537b14e450be4",
+          "id": "msg_0f8e61ce0fb855c7006af4cd6243c887d1b133c05dfbafbb14",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2167,16 +2055,16 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 3946,
+        "input_tokens": 4223,
         "input_tokens_details": {
-          "cache_write_tokens": 3943,
+          "cache_write_tokens": 4220,
           "cached_tokens": 0
         },
-        "output_tokens": 7327,
+        "output_tokens": 8780,
         "output_tokens_details": {
-          "reasoning_tokens": 6214
+          "reasoning_tokens": 7215
         },
-        "total_tokens": 11273
+        "total_tokens": 13003
       },
       "user": null
     }
@@ -2362,26 +2250,28 @@
       "version": "6.1.0"
     },
     "data_center": {
-      "analysis": "Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites. A separate active-pipeline series tracks 894 sites. Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction. The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline.",
+      "analysis": "Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 operating sites; 894 sites are in the tracked active pipeline. Recent reports show individual large projects moving forward: Fluidstack began construction on a 99-acre campus in Virginia, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. These projects show activity reaching the construction and contracting stages, but they do not measure the conversion rate of the national pipeline.",
       "analysis_sentences": [
-        "Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites.",
-        "A separate active-pipeline series tracks 894 sites.",
-        "Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction.",
-        "The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline."
+        "Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 operating sites; 894 sites are in the tracked active pipeline.",
+        "Recent reports show individual large projects moving forward: Fluidstack began construction on a 99-acre campus in Virginia, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus.",
+        "These projects show activity reaching the construction and contracting stages, but they do not measure the conversion rate of the national pipeline."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-10-d265fbd006df",
+            "auto-2026-11-09-5615fc16e421"
+          ],
           "fact_ids": [
-            "data_center.development_sites",
-            "data_center.tracked_pipeline_sites"
+            "data_center.development_sites"
           ],
           "field": "headline",
-          "text": "Data-center development remains extensive, with 894 sites in the active pipeline"
+          "text": "Campus projects move into contracting and construction while 1,556 sites remain in development"
         },
         {
           "event_ids": [
-            "auto-2026-11-02-5290698a2ef7"
+            "auto-2026-11-10-d265fbd006df",
+            "auto-2026-11-09-5615fc16e421"
           ],
           "fact_ids": [
             "data_center.operating_sites",
@@ -2390,14 +2280,14 @@
             "data_center.tracked_pipeline_sites"
           ],
           "field": "body",
-          "text": "Available records list 1,556 sites in development, equal to about half of the 3,068 operating sites. A separate active-pipeline series tracks 894 sites. Data Center Dynamics reported that ServerDomes broke ground on a campus outside El Paso, providing a current example of development moving into construction. The aggregate inventory remains large, although one groundbreaking does not establish the conversion pace for the broader pipeline."
+          "text": "Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 operating sites; 894 sites are in the tracked active pipeline. Recent reports show individual large projects moving forward: Fluidstack began construction on a 99-acre campus in Virginia, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. These projects show activity reaching the construction and contracting stages, but they do not measure the conversion rate of the national pipeline."
         }
       ],
       "domain": "data_center",
-      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
-      "generated_at": "2026-11-02T22:27:20.900540+00:00",
+      "evidence_snapshot_id": "a15fce914d64ce295a276840",
+      "generated_at": "2026-11-11T20:17:49.206609+00:00",
       "generator": "openai",
-      "headline": "Data-center development remains extensive, with 894 sites in the active pipeline",
+      "headline": "Campus projects move into contracting and construction while 1,556 sites remain in development",
       "label": "Data Centers",
       "references": [
         {
@@ -2422,7 +2312,11 @@
         },
         {
           "source_label": "Data Center Dynamics",
-          "source_url": "https://www.datacenterdynamics.com/en/news/serverdomes-breaks-ground-on-domed-data-center-campus-outside-el-paso-texas/"
+          "source_url": "https://www.datacenterdynamics.com/en/news/fluidstack-begins-construction-of-99-acre-data-center-campus-in-wythe-county-virginia/"
+        },
+        {
+          "source_label": "Construction Dive",
+          "source_url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQbTNiTXQzS3VRRmktNlhieGZXNk1pbnc5M3FlWjJVR3pRQV95SGhRTVVxR3J6V0VITHo3cTc0bEFkX1h2MVlVZnI5NHZ3RnBMUWtuOEFRdFdjaFdYQ2pYSEo5RmJkQW9QM21ScFk1TUxWV3F3Z1VKWlh4S0RWRFRrZzNEakR2a1VoblRjVlZKcHA1T3R4Yi1wMmFR?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2496,41 +2390,46 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "Operating cash flow covers current capital spending by 1.23 times, so the aggregate measure still shows internal funding capacity for current spending. At the same time, borrower strain increased slightly to 30.2 and the debt-financing pulse edged up to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report adds a specific example of data-center debt being offered to the market, but it does not establish a broad credit disruption.",
+      "analysis": "Operating cash flow still covers current capital spending by 1.23 times, but that coverage decreased slightly. Cash reserves also declined slightly and now equal 0.85 years of current capital spending. Borrower strain edged up to 30.2 even as lender strain eased to 19.3, so the aggregate indicators do not show uniform deterioration. Recent credit-market reports are less reassuring: CNBC said CoreWeave\u2019s bond yield topped 16%, while Bloomberg reported that SoftBank led Asian bond losses as the AI selloff spread to credit. These are specific signs of market stress rather than evidence of a generalized funding freeze.",
       "analysis_sentences": [
-        "Operating cash flow covers current capital spending by 1.23 times, so the aggregate measure still shows internal funding capacity for current spending.",
-        "At the same time, borrower strain increased slightly to 30.2 and the debt-financing pulse edged up to 0.5.",
-        "CNBC reported that ING was seeking buyers for $500 million of data-center loans.",
-        "The report adds a specific example of data-center debt being offered to the market, but it does not establish a broad credit disruption."
+        "Operating cash flow still covers current capital spending by 1.23 times, but that coverage decreased slightly.",
+        "Cash reserves also declined slightly and now equal 0.85 years of current capital spending.",
+        "Borrower strain edged up to 30.2 even as lender strain eased to 19.3, so the aggregate indicators do not show uniform deterioration.",
+        "Recent credit-market reports are less reassuring: CNBC said CoreWeave\u2019s bond yield topped 16%, while Bloomberg reported that SoftBank led Asian bond losses as the AI selloff spread to credit.",
+        "These are specific signs of market stress rather than evidence of a generalized funding freeze."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-06-a21980ae60da",
+            "auto-2026-11-06-20ddc98c2285"
+          ],
           "fact_ids": [
-            "finance.internal_funding_coverage",
-            "finance.borrower_strain"
+            "finance.internal_funding_coverage"
           ],
           "field": "headline",
-          "text": "Current capital spending remains internally covered as borrower strain rises"
+          "text": "Internal cash flow still covers capital spending as traded credit shows strain"
         },
         {
           "event_ids": [
-            "auto-2026-11-06-9ad5d2828d7a"
+            "auto-2026-11-06-a21980ae60da",
+            "auto-2026-11-06-20ddc98c2285"
           ],
           "fact_ids": [
             "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
             "finance.borrower_strain",
-            "finance.debt_financing_pulse"
+            "finance.lender_strain"
           ],
           "field": "body",
-          "text": "Operating cash flow covers current capital spending by 1.23 times, so the aggregate measure still shows internal funding capacity for current spending. At the same time, borrower strain increased slightly to 30.2 and the debt-financing pulse edged up to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report adds a specific example of data-center debt being offered to the market, but it does not establish a broad credit disruption."
+          "text": "Operating cash flow still covers current capital spending by 1.23 times, but that coverage decreased slightly. Cash reserves also declined slightly and now equal 0.85 years of current capital spending. Borrower strain edged up to 30.2 even as lender strain eased to 19.3, so the aggregate indicators do not show uniform deterioration. Recent credit-market reports are less reassuring: CNBC said CoreWeave\u2019s bond yield topped 16%, while Bloomberg reported that SoftBank led Asian bond losses as the AI selloff spread to credit. These are specific signs of market stress rather than evidence of a generalized funding freeze."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "2a5aee3762aa503baa00b306",
-      "generated_at": "2026-11-06T20:05:20.941778+00:00",
+      "evidence_snapshot_id": "a15fce914d64ce295a276840",
+      "generated_at": "2026-11-11T20:17:49.206609+00:00",
       "generator": "openai",
-      "headline": "Current capital spending remains internally covered as borrower strain rises",
+      "headline": "Internal cash flow still covers capital spending as traded credit shows strain",
       "label": "Finance",
       "references": [
         {
@@ -2583,7 +2482,11 @@
         },
         {
           "source_label": "CNBC",
-          "source_url": "https://www.cnbc.com/2026/11/06/ing-ai-data-center-loans-debt.html"
+          "source_url": "https://www.cnbc.com/2026/11/06/coreweave-bond-yield-tops-16percent-as-ai-credit-stress-rises.html"
+        },
+        {
+          "source_label": "Bloomberg",
+          "source_url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPTTQ5dWtsa2E0cUQ2Q05fMF83YjBmUF92anluQ0pQUmRMYldZTGhSVjJnaF9wU01tbHc0cHhhX0h1SE1aS0MwS24ybHRDTmJiTmhQSEFKLVVITUtaRHBMQnFyaEs4RER2al9rUktHVGpqN2tEem5ZRlRESGlOTWVYUldaMDhDdXJXdy1EeXVNY2FsOG0zaWtwNTc3cTBUWmJqaVNmTUp0X2U?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2645,93 +2548,99 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "The AI buildout remains substantial, and current spending is still internally covered. Available project records list 1,556 data-center sites in development, against 3,068 operating sites, while published capacity associated with large-load campus records totals 200,987 MW. Operating cash flow covers current capital spending by 1.23 times. Morningstar also reported that hyperscaler AI investment will outpace near-term earnings, sharpening the distinction between funding current spending and the timing of its earnings contribution. Most market measures improved modestly, with a larger move in the median return. The AI Equity Index rose slightly to 32.9 and the share of covered companies with positive one-year returns reached 58.3%, while the median return increased materially to 6.5%. Credit indicators moved less favorably: borrower strain edged up to 30.2 and the debt-financing pulse to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report does not establish a systemwide problem, but it grounds financing concern in a specific loan-sale effort. Labor signals also show selective rather than broad expansion. Two tracked AI-linked channels now have positive employment growth, with semiconductor manufacturing strongest at 2.0%, while the weakest channel contracted 5.4%. Semiconductor and electronic-component output growth is 19.9%. That pairing identifies semiconductors as a clear pocket of expansion, not evidence of broad labor-market gains.",
+      "analysis": "AI-linked equities have strengthened materially, but the financing picture is less uniform. The AI Equity Index reached 37.9, the median one-year return rose to 11.0%, and 64.2% of covered companies now show positive one-year returns. At the same time, borrower strain increased to 30.2 even though operating cash flow still covers current capital spending by 1.23 times. CoreWeave captures the contrast: CNBC reported that it beat on revenue and raised guidance, while a separate report put its bond yield above 16%. Stronger operating news and broad equity gains coexist with a very high bond yield for at least one AI-linked borrower. The physical expansion is still moving from plans into contracts and construction. Available records contain 1,556 data-center sites in development, about half the 3,068 operating sites. Fluidstack reportedly started work on a 99-acre Virginia campus, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. Reuters also reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. Separately, commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand. The projects show that large developments remain active, but they do not establish how quickly the national pipeline will become operational or how much AI accounts for current power-demand growth. The economic payoff remains harder to identify than the investment cycle. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs 2.4%. These economy-wide measures are consistent with continued productivity growth, but they do not isolate AI\u2019s contribution and cannot by themselves establish a return from the scale of investment now under way.",
       "analysis_paragraphs": [
-        "The AI buildout remains substantial, and current spending is still internally covered. Available project records list 1,556 data-center sites in development, against 3,068 operating sites, while published capacity associated with large-load campus records totals 200,987 MW. Operating cash flow covers current capital spending by 1.23 times. Morningstar also reported that hyperscaler AI investment will outpace near-term earnings, sharpening the distinction between funding current spending and the timing of its earnings contribution.",
-        "Most market measures improved modestly, with a larger move in the median return. The AI Equity Index rose slightly to 32.9 and the share of covered companies with positive one-year returns reached 58.3%, while the median return increased materially to 6.5%. Credit indicators moved less favorably: borrower strain edged up to 30.2 and the debt-financing pulse to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report does not establish a systemwide problem, but it grounds financing concern in a specific loan-sale effort.",
-        "Labor signals also show selective rather than broad expansion. Two tracked AI-linked channels now have positive employment growth, with semiconductor manufacturing strongest at 2.0%, while the weakest channel contracted 5.4%. Semiconductor and electronic-component output growth is 19.9%. That pairing identifies semiconductors as a clear pocket of expansion, not evidence of broad labor-market gains."
+        "AI-linked equities have strengthened materially, but the financing picture is less uniform. The AI Equity Index reached 37.9, the median one-year return rose to 11.0%, and 64.2% of covered companies now show positive one-year returns. At the same time, borrower strain increased to 30.2 even though operating cash flow still covers current capital spending by 1.23 times. CoreWeave captures the contrast: CNBC reported that it beat on revenue and raised guidance, while a separate report put its bond yield above 16%. Stronger operating news and broad equity gains coexist with a very high bond yield for at least one AI-linked borrower.",
+        "The physical expansion is still moving from plans into contracts and construction. Available records contain 1,556 data-center sites in development, about half the 3,068 operating sites. Fluidstack reportedly started work on a 99-acre Virginia campus, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. Reuters also reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. Separately, commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand. The projects show that large developments remain active, but they do not establish how quickly the national pipeline will become operational or how much AI accounts for current power-demand growth.",
+        "The economic payoff remains harder to identify than the investment cycle. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs 2.4%. These economy-wide measures are consistent with continued productivity growth, but they do not isolate AI\u2019s contribution and cannot by themselves establish a return from the scale of investment now under way."
       ],
       "analysis_sentences": [
-        "The AI buildout remains substantial, and current spending is still internally covered.",
-        "Available project records list 1,556 data-center sites in development, against 3,068 operating sites, while published capacity associated with large-load campus records totals 200,987 MW.",
-        "Operating cash flow covers current capital spending by 1.23 times.",
-        "Morningstar also reported that hyperscaler AI investment will outpace near-term earnings, sharpening the distinction between funding current spending and the timing of its earnings contribution.",
-        "Most market measures improved modestly, with a larger move in the median return.",
-        "The AI Equity Index rose slightly to 32.9 and the share of covered companies with positive one-year returns reached 58.3%, while the median return increased materially to 6.5%.",
-        "Credit indicators moved less favorably: borrower strain edged up to 30.2 and the debt-financing pulse to 0.5.",
-        "CNBC reported that ING was seeking buyers for $500 million of data-center loans.",
-        "The report does not establish a systemwide problem, but it grounds financing concern in a specific loan-sale effort.",
-        "Labor signals also show selective rather than broad expansion.",
-        "Two tracked AI-linked channels now have positive employment growth, with semiconductor manufacturing strongest at 2.0%, while the weakest channel contracted 5.4%.",
-        "Semiconductor and electronic-component output growth is 19.9%.",
-        "That pairing identifies semiconductors as a clear pocket of expansion, not evidence of broad labor-market gains."
+        "AI-linked equities have strengthened materially, but the financing picture is less uniform.",
+        "The AI Equity Index reached 37.9, the median one-year return rose to 11.0%, and 64.2% of covered companies now show positive one-year returns.",
+        "At the same time, borrower strain increased to 30.2 even though operating cash flow still covers current capital spending by 1.23 times.",
+        "CoreWeave captures the contrast: CNBC reported that it beat on revenue and raised guidance, while a separate report put its bond yield above 16%.",
+        "Stronger operating news and broad equity gains coexist with a very high bond yield for at least one AI-linked borrower.",
+        "The physical expansion is still moving from plans into contracts and construction.",
+        "Available records contain 1,556 data-center sites in development, about half the 3,068 operating sites.",
+        "Fluidstack reportedly started work on a 99-acre Virginia campus, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus.",
+        "Reuters also reported that SpaceX plans a $24 billion gas-power and data-center project in Texas.",
+        "Separately, commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand.",
+        "The projects show that large developments remain active, but they do not establish how quickly the national pipeline will become operational or how much AI accounts for current power-demand growth.",
+        "The economic payoff remains harder to identify than the investment cycle.",
+        "Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs 2.4%.",
+        "These economy-wide measures are consistent with continued productivity growth, but they do not isolate AI\u2019s contribution and cannot by themselves establish a return from the scale of investment now under way."
       ],
       "claim_support": [
         {
-          "event_ids": [],
-          "fact_ids": [
-            "data_center.development_sites",
-            "power.large_load_capacity_mw",
-            "finance.borrower_strain",
-            "workforce.employment_breadth",
-            "workforce.weakest_channel_growth"
-          ],
-          "field": "headline",
-          "text": "The AI buildout remains extensive as credit strain firms and job gains stay narrow"
-        },
-        {
           "event_ids": [
-            "auto-2026-11-06-8576b3409b1a"
-          ],
-          "fact_ids": [
-            "data_center.development_sites",
-            "data_center.operating_sites",
-            "power.large_load_capacity_mw",
-            "finance.internal_funding_coverage"
-          ],
-          "field": "paragraphs[0]",
-          "text": "The AI buildout remains substantial, and current spending is still internally covered. Available project records list 1,556 data-center sites in development, against 3,068 operating sites, while published capacity associated with large-load campus records totals 200,987 MW. Operating cash flow covers current capital spending by 1.23 times. Morningstar also reported that hyperscaler AI investment will outpace near-term earnings, sharpening the distinction between funding current spending and the timing of its earnings contribution."
-        },
-        {
-          "event_ids": [
-            "auto-2026-11-06-9ad5d2828d7a"
+            "auto-2026-11-10-d265fbd006df",
+            "auto-2026-11-09-5615fc16e421"
           ],
           "fact_ids": [
             "market.aei",
             "market.positive_breadth",
-            "market.median_return",
             "finance.borrower_strain",
-            "finance.debt_financing_pulse"
+            "finance.lender_strain"
+          ],
+          "field": "headline",
+          "text": "AI-linked equities strengthen as construction advances, but credit signals remain uneven"
+        },
+        {
+          "event_ids": [
+            "auto-2026-11-10-64b46ef99529",
+            "auto-2026-11-06-a21980ae60da"
+          ],
+          "fact_ids": [
+            "market.aei",
+            "market.median_return",
+            "market.positive_breadth",
+            "finance.borrower_strain",
+            "finance.internal_funding_coverage"
+          ],
+          "field": "paragraphs[0]",
+          "text": "AI-linked equities have strengthened materially, but the financing picture is less uniform. The AI Equity Index reached 37.9, the median one-year return rose to 11.0%, and 64.2% of covered companies now show positive one-year returns. At the same time, borrower strain increased to 30.2 even though operating cash flow still covers current capital spending by 1.23 times. CoreWeave captures the contrast: CNBC reported that it beat on revenue and raised guidance, while a separate report put its bond yield above 16%. Stronger operating news and broad equity gains coexist with a very high bond yield for at least one AI-linked borrower."
+        },
+        {
+          "event_ids": [
+            "auto-2026-11-10-d265fbd006df",
+            "auto-2026-11-09-5615fc16e421",
+            "auto-2026-11-09-0b5aa316d249"
+          ],
+          "fact_ids": [
+            "data_center.development_sites",
+            "data_center.operating_sites",
+            "data_center.development_to_operating",
+            "power.commercial_growth",
+            "power.demand_growth"
           ],
           "field": "paragraphs[1]",
-          "text": "Most market measures improved modestly, with a larger move in the median return. The AI Equity Index rose slightly to 32.9 and the share of covered companies with positive one-year returns reached 58.3%, while the median return increased materially to 6.5%. Credit indicators moved less favorably: borrower strain edged up to 30.2 and the debt-financing pulse to 0.5. CNBC reported that ING was seeking buyers for $500 million of data-center loans. The report does not establish a systemwide problem, but it grounds financing concern in a specific loan-sale effort."
+          "text": "The physical expansion is still moving from plans into contracts and construction. Available records contain 1,556 data-center sites in development, about half the 3,068 operating sites. Fluidstack reportedly started work on a 99-acre Virginia campus, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. Reuters also reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. Separately, commercial electricity demand is growing 3.5%, compared with 1.8% for total retail demand. The projects show that large developments remain active, but they do not establish how quickly the national pipeline will become operational or how much AI accounts for current power-demand growth."
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "workforce.employment_breadth",
-            "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "workforce.weakest_channel_growth",
-            "compute.semiconductor_output_growth"
+            "economic_impact.productivity_growth",
+            "economic_impact.real_output_growth",
+            "economic_impact.real_compensation_growth",
+            "economic_impact.unit_labor_cost_growth"
           ],
           "field": "paragraphs[2]",
-          "text": "Labor signals also show selective rather than broad expansion. Two tracked AI-linked channels now have positive employment growth, with semiconductor manufacturing strongest at 2.0%, while the weakest channel contracted 5.4%. Semiconductor and electronic-component output growth is 19.9%. That pairing identifies semiconductors as a clear pocket of expansion, not evidence of broad labor-market gains."
+          "text": "The economic payoff remains harder to identify than the investment cycle. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs 2.4%. These economy-wide measures are consistent with continued productivity growth, but they do not isolate AI\u2019s contribution and cannot by themselves establish a return from the scale of investment now under way."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "data_center.development_sites",
-          "label": "Sites in development in available project records",
-          "value": "1,556"
+          "fact_id": "market.aei",
+          "label": "AI Equity Index",
+          "value": "37.9"
         },
         {
           "context": "",
-          "fact_id": "power.large_load_capacity_mw",
-          "label": "Published capacity associated with large-load campus records",
-          "value": "200,987 MW"
+          "fact_id": "market.positive_breadth",
+          "label": "Covered companies with positive one-year returns",
+          "value": "64.2%"
         },
         {
           "context": "",
@@ -2740,10 +2649,10 @@
           "value": "30.2"
         }
       ],
-      "evidence_snapshot_id": "2a5aee3762aa503baa00b306",
-      "generated_at": "2026-11-06T20:05:20.941778+00:00",
+      "evidence_snapshot_id": "a15fce914d64ce295a276840",
+      "generated_at": "2026-11-11T20:17:49.206609+00:00",
       "generator": "openai",
-      "headline": "The AI buildout remains extensive as credit strain firms and job gains stay narrow",
+      "headline": "AI-linked equities strengthen as construction advances, but credit signals remain uneven",
       "label": "AI Macro",
       "references": [
         {
@@ -2774,21 +2683,19 @@
       "selected_domains": [
         "market",
         "finance",
-        "compute",
         "data_center",
         "power",
-        "workforce"
+        "economic_impact"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "AI-linked market measures have turned higher, but the improvement is uneven in scale. The median one-year return rose materially to 6.5%, while the share of covered companies with positive one-year returns increased slightly to 58.3%. The AI Equity Index also edged up, to 32.9. Morningstar separately reported that hyperscaler AI investment will outpace near-term earnings. That report does not explain the measured improvement, but it shows that stronger market performance can coexist with concern that heavy investment is running ahead of near-term earnings.",
+      "analysis": "AI-linked equity performance strengthened across the index, median return and breadth. The AI Equity Index rose materially to 37.9, the median one-year return reached 11.0%, and 64.2% of covered companies now have positive one-year returns. CNBC also reported a revenue beat and higher guidance from CoreWeave, easing concerns about an AI slowdown. That company result fits the firmer market backdrop, though it cannot explain the broader move.",
       "analysis_sentences": [
-        "AI-linked market measures have turned higher, but the improvement is uneven in scale.",
-        "The median one-year return rose materially to 6.5%, while the share of covered companies with positive one-year returns increased slightly to 58.3%.",
-        "The AI Equity Index also edged up, to 32.9.",
-        "Morningstar separately reported that hyperscaler AI investment will outpace near-term earnings.",
-        "That report does not explain the measured improvement, but it shows that stronger market performance can coexist with concern that heavy investment is running ahead of near-term earnings."
+        "AI-linked equity performance strengthened across the index, median return and breadth.",
+        "The AI Equity Index rose materially to 37.9, the median one-year return reached 11.0%, and 64.2% of covered companies now have positive one-year returns.",
+        "CNBC also reported a revenue beat and higher guidance from CoreWeave, easing concerns about an AI slowdown.",
+        "That company result fits the firmer market backdrop, though it cannot explain the broader move."
       ],
       "claim_support": [
         {
@@ -2799,26 +2706,26 @@
             "market.median_return"
           ],
           "field": "headline",
-          "text": "AI-linked equities turn modestly higher, led by the median return"
+          "text": "AI-linked equities strengthen across the index, breadth and median return"
         },
         {
           "event_ids": [
-            "auto-2026-11-06-8576b3409b1a"
+            "auto-2026-11-10-64b46ef99529"
           ],
           "fact_ids": [
+            "market.aei",
             "market.median_return",
-            "market.positive_breadth",
-            "market.aei"
+            "market.positive_breadth"
           ],
           "field": "body",
-          "text": "AI-linked market measures have turned higher, but the improvement is uneven in scale. The median one-year return rose materially to 6.5%, while the share of covered companies with positive one-year returns increased slightly to 58.3%. The AI Equity Index also edged up, to 32.9. Morningstar separately reported that hyperscaler AI investment will outpace near-term earnings. That report does not explain the measured improvement, but it shows that stronger market performance can coexist with concern that heavy investment is running ahead of near-term earnings."
+          "text": "AI-linked equity performance strengthened across the index, median return and breadth. The AI Equity Index rose materially to 37.9, the median one-year return reached 11.0%, and 64.2% of covered companies now have positive one-year returns. CNBC also reported a revenue beat and higher guidance from CoreWeave, easing concerns about an AI slowdown. That company result fits the firmer market backdrop, though it cannot explain the broader move."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "2a5aee3762aa503baa00b306",
-      "generated_at": "2026-11-06T20:05:20.941778+00:00",
+      "evidence_snapshot_id": "a15fce914d64ce295a276840",
+      "generated_at": "2026-11-11T20:17:49.206609+00:00",
       "generator": "openai",
-      "headline": "AI-linked equities turn modestly higher, led by the median return",
+      "headline": "AI-linked equities strengthen across the index, breadth and median return",
       "label": "Market",
       "references": [
         {
@@ -2830,52 +2737,48 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "Morningstar",
-          "source_url": "https://www.morningstar.com/markets/hyperscalers-ai-investment-will-outpace-near-term-earnings"
+          "source_label": "CNBC",
+          "source_url": "https://www.cnbc.com/2026/11/10/coreweave-crwv-q3-earnings-report-2026.html"
         }
       ],
       "version": "6.1.0"
     },
     "power": {
-      "analysis": "Commercial electricity demand is growing 3.5%, versus 1.8% for total retail demand, while retail electricity prices are up 5.1%. Utility Dive reported that PSEG Power plans a 200 MW nuclear uprate as it considers data-center deals. The reported uprate gives a defined project and scale, although it remains planned. Across the broader pipeline horizon, net planned generation additions total 227.6 GW. The PSEG report ties one proposed project to potential data-center business; the aggregate demand and price figures do not isolate AI\u2019s role.",
+      "analysis": "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Reuters reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. The proposal is a notable example of generation being planned alongside data-center capacity, but it remains a reported plan and cannot explain the national demand figures. Across the broader pipeline horizon, net planned generation additions total 227.6 GW.",
       "analysis_sentences": [
-        "Commercial electricity demand is growing 3.5%, versus 1.8% for total retail demand, while retail electricity prices are up 5.1%.",
-        "Utility Dive reported that PSEG Power plans a 200 MW nuclear uprate as it considers data-center deals.",
-        "The reported uprate gives a defined project and scale, although it remains planned.",
-        "Across the broader pipeline horizon, net planned generation additions total 227.6 GW.",
-        "The PSEG report ties one proposed project to potential data-center business; the aggregate demand and price figures do not isolate AI\u2019s role."
+        "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%.",
+        "Reuters reported that SpaceX plans a $24 billion gas-power and data-center project in Texas.",
+        "The proposal is a notable example of generation being planned alongside data-center capacity, but it remains a reported plan and cannot explain the national demand figures.",
+        "Across the broader pipeline horizon, net planned generation additions total 227.6 GW."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-11-03-31e54f9347b4"
+            "auto-2026-11-09-0b5aa316d249"
           ],
-          "fact_ids": [
-            "power.commercial_growth",
-            "power.demand_growth"
-          ],
+          "fact_ids": [],
           "field": "headline",
-          "text": "PSEG plans a nuclear uprate as commercial power demand outpaces the total"
+          "text": "A reported $24 billion SpaceX plan combines a data center with gas generation"
         },
         {
           "event_ids": [
-            "auto-2026-11-03-31e54f9347b4"
+            "auto-2026-11-09-0b5aa316d249"
           ],
           "fact_ids": [
-            "power.commercial_growth",
             "power.demand_growth",
+            "power.commercial_growth",
             "power.retail_price_growth",
             "power.planned_net_gw"
           ],
           "field": "body",
-          "text": "Commercial electricity demand is growing 3.5%, versus 1.8% for total retail demand, while retail electricity prices are up 5.1%. Utility Dive reported that PSEG Power plans a 200 MW nuclear uprate as it considers data-center deals. The reported uprate gives a defined project and scale, although it remains planned. Across the broader pipeline horizon, net planned generation additions total 227.6 GW. The PSEG report ties one proposed project to potential data-center business; the aggregate demand and price figures do not isolate AI\u2019s role."
+          "text": "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Reuters reported that SpaceX plans a $24 billion gas-power and data-center project in Texas. The proposal is a notable example of generation being planned alongside data-center capacity, but it remains a reported plan and cannot explain the national demand figures. Across the broader pipeline horizon, net planned generation additions total 227.6 GW."
         }
       ],
       "domain": "power",
-      "evidence_snapshot_id": "8483ab24c7624df140783d84",
-      "generated_at": "2026-11-04T20:33:06.403324+00:00",
+      "evidence_snapshot_id": "a15fce914d64ce295a276840",
+      "generated_at": "2026-11-11T20:17:49.206609+00:00",
       "generator": "openai",
-      "headline": "PSEG plans a nuclear uprate as commercial power demand outpaces the total",
+      "headline": "A reported $24 billion SpaceX plan combines a data center with gas generation",
       "label": "Power",
       "references": [
         {
@@ -2891,8 +2794,8 @@
           "source_url": ""
         },
         {
-          "source_label": "Utility Dive",
-          "source_url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNZ1QyMVpxWnpwOG1acmlQN1dsNi1mV3RQZ2owdnVaMERPdHhpbUFHRzZyWGZZcUNkUF9OZVdIcWxsV2hjREJNMGVqNUJsMEYtbnVubUp4X214YTZzLWVNbm5PUFViSFdkMFh1LVdXYUdsX1RQMG5MeU5velVseXRrR18zLXFCMEwtVmlpTS0zcElURXlTQmpzVg?oc=5"
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNZGhRNnpDTGdodFotZVZacFc5cC1NdnhETU5xb19iMFIxUUgySlJiOEYyX1RsdnFwY1h5VkM5RWpoVVVseFVJMFFFQ3ByaGxUOXZxY3R2M2RNSFJGaXhqU3VzSmhndWpmdklTd2RIekc1Nlg2b1FRVGdsdnN0YzVEQVVrZmpqT1JUVG9GamZ1U29EZjdaV0xFZEJTemZxdUZleGlLb055UEo0Slhod1VBU09kNWw0ajZmQnJmQUp3?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -3018,10 +2921,23 @@
   "stage_prompt_versions": {
     "editorial_synthesis": "editorial-synthesis-reset-1.1"
   },
-  "status": "validated",
+  "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 10,
-    "diagnostics": [],
+    "checked_passages": 12,
+    "diagnostics": [
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "data_center.body",
+        "text": "Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 operating sites; 894 sites are in the tracked active pipeline. Recent reports show individual large projects moving forward: Fluidstack began construction on a 99-acre campus in Virginia, and Fluor won the engineering, procurement and construction contract for a $4 billion Kentucky campus. These projects show activity reaching the construction and contracting stages, but they do not measure the conversion rate of the national pipeline."
+      },
+      {
+        "message": "Conspicuous same-initial word run detected: CoreWeave captures contrast CNBC",
+        "reason": "alliterative_run",
+        "scope": "macro.paragraphs[0]",
+        "text": "AI-linked equities have strengthened materially, but the financing picture is less uniform. The AI Equity Index reached 37.9, the median one-year return rose to 11.0%, and 64.2% of covered companies now show positive one-year returns. At the same time, borrower strain increased to 30.2 even though operating cash flow still covers current capital spending by 1.23 times. CoreWeave captures the contrast: CNBC reported that it beat on revenue and raised guidance, while a separate report put its bond yield above 16%. Stronger operating news and broad equity gains coexist with a very high bond yield for at least one AI-linked borrower."
+      }
+    ],
     "hard_errors": [],
     "hard_failures": [],
     "passed": true,

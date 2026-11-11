@@ -1,84 +1,84 @@
 {
   "graph_version": "1.0.0",
-  "last_canonical_snapshot_id": "18b53e5e1535341b22ac2bf8",
-  "last_observation_date": "2026-11-10",
-  "last_run_id": "20261110T202549Z_bd513917",
+  "last_canonical_snapshot_id": "2d38225b78e11736b18fab64",
+  "last_observation_date": "2026-11-11",
+  "last_run_id": "20261111T200817Z_4130ea21",
   "nodes": {
     "adoption": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "ValueError: BTOS national workbook missing question 24 Yes response",
-      "last_output_signature": "a937edf66e6ae05da1cefe10",
+      "last_output_signature": "b555514547043ed8775f7f7c",
       "last_status": "partial",
       "last_success_at_utc": "2026-11-04T20:23:16.177074+00:00",
       "last_success_trigger": ""
     },
     "commercialization": {
-      "consecutive_failures": 42,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 43,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/accelerating-the-next-phase-ai/; HTTPError: 403 Client Error: Forbidden for url: https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/",
-      "last_output_signature": "ce47f8ee5bd9aa7374dcae71",
+      "last_output_signature": "1cfe6c03a73dbb4c03f2ff9b",
       "last_status": "partial"
     },
     "compute": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-09T22:57:43.354550+00:00",
-      "last_changed_at_utc": "2026-11-09T22:57:43.354550+00:00",
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "",
-      "last_output_signature": "30829f1e98b7491eecea8ea5",
+      "last_output_signature": "50306ed4b128cac28937ac89",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-09T22:57:43.354550+00:00",
+      "last_success_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_success_trigger": ""
     },
     "connectivity": {
-      "consecutive_failures": 43,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 44,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
-      "last_output_signature": "93f18858b8e88ea50511c7c8",
+      "last_output_signature": "4c3e9046f39116ada72148d8",
       "last_status": "partial"
     },
     "construction": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-09T22:57:43.354550+00:00",
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_changed_at_utc": "2026-11-02T22:16:36.712982+00:00",
       "last_error": "",
       "last_output_signature": "55836132a6744829f84c68d4",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-09T22:57:43.354550+00:00",
+      "last_success_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_success_trigger": ""
     },
     "current_context": {
-      "consecutive_failures": 42,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 43,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "HTTPError: HTTP Error 403: Forbidden",
-      "last_output_signature": "29a8665644ef354d7d24a778",
+      "last_output_signature": "0a4f6f40377489694b3438f3",
       "last_status": "partial"
     },
     "data_centers": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-09T22:57:43.354550+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "",
-      "last_output_signature": "eceb00f38fa97ec593018a58",
+      "last_output_signature": "6ca96c1865a16f94b5fcb596",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-09T22:57:43.354550+00:00",
+      "last_success_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_success_trigger": ""
     },
     "economic_outcomes": {
-      "consecutive_failures": 42,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 43,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
       "last_error": "FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
       "last_output_signature": "e690d2e05d28f455d6a50ea7",
       "last_status": "partial"
     },
     "edgar": {
-      "consecutive_failures": 19,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 20,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_changed_at_utc": "2026-11-09T22:57:43.354550+00:00",
       "last_error": "ValueError: No unambiguous consolidated cost fact for 2026-09-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-09-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-06-30",
       "last_output_signature": "af392f794b7b44c4f3d0e6fc",
@@ -88,22 +88,22 @@
     },
     "fred": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "",
-      "last_output_signature": "a35cb7f4ecce83845f2af8ad",
+      "last_output_signature": "427f2df3b04a40aa85461705",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_success_trigger": "2026-11-10"
+      "last_success_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_success_trigger": "2026-11-11"
     },
     "grid_storage": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-09T22:57:43.354550+00:00",
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "",
       "last_output_signature": "ed632d5f9066983c12e97833",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-09T22:57:43.354550+00:00",
+      "last_success_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_success_trigger": ""
     },
     "nyfed": {
@@ -117,23 +117,23 @@
       "last_success_trigger": "2026-10-28"
     },
     "pe_industry": {
-      "consecutive_failures": 2,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 3,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_changed_at_utc": "2026-10-19T16:37:23.954778+00:00",
       "last_error": "9 revised source period(s) held for review",
       "last_output_signature": "877e98e2d8eb692340c067cc",
-      "last_retrieval_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "last_retrieval_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_status": "partial",
       "last_success_at_utc": "2026-11-02T22:16:36.712982+00:00",
       "last_success_trigger": ""
     },
     "pe_us_liquidity": {
-      "consecutive_failures": 17,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 18,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_changed_at_utc": "2026-10-19T16:37:23.954778+00:00",
       "last_error": "ReturnSourceRejected: Wrong Figure 1 end date",
       "last_output_signature": "78897351354c93f7d15d78c0",
-      "last_retrieval_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "last_retrieval_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_status": "partial"
     },
     "power_supply": {
@@ -158,17 +158,17 @@
     },
     "water": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "",
-      "last_output_signature": "1f240669bbd815305a5b7644",
+      "last_output_signature": "53cb7c0f2c99832852b794c4",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "last_success_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_success_trigger": ""
     },
     "workforce": {
-      "consecutive_failures": 42,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "consecutive_failures": 43,
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
       "last_error": "FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
       "last_output_signature": "fc30d0e9b1a8046ecfd1bcb5",
@@ -176,14 +176,14 @@
     },
     "yfinance": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
+      "last_attempt_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_changed_at_utc": "2026-11-11T20:08:18.678777+00:00",
       "last_error": "",
-      "last_output_signature": "bea09458392977f1c6d9d403",
+      "last_output_signature": "ea5f64a52692b1d3cd4b0101",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-10T20:25:51.334424+00:00",
-      "last_success_trigger": "2026-11-10"
+      "last_success_at_utc": "2026-11-11T20:08:18.678777+00:00",
+      "last_success_trigger": "2026-11-11"
     }
   },
-  "updated_at_utc": "2026-11-10T20:25:51.334424+00:00"
+  "updated_at_utc": "2026-11-11T20:08:18.678777+00:00"
 }
