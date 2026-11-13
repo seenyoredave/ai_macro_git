@@ -1,65 +1,68 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261112T205138619612Z_b8492835_c50f78b1",
+  "attempt_id": "20261113T203336343067Z_822ca9cc_a9984310",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
-    "compute",
-    "water"
+    "adoption",
+    "workforce"
   ],
   "editorial_context_event_ids": [
     "auto-2026-11-10-64b46ef99529",
-    "auto-2026-11-03-4f7821bf351c",
-    "auto-2026-11-06-20ddc98c2285",
+    "auto-2026-11-12-35965c4f5c53",
     "auto-2026-11-10-d265fbd006df",
-    "auto-2026-11-06-9ad5d2828d7a",
     "auto-2026-11-09-5615fc16e421",
+    "auto-2026-11-06-9ad5d2828d7a",
     "auto-2026-11-12-c2027d308e72",
     "auto-2026-11-08-a5ef645f6a17",
-    "auto-2026-11-03-6bb213b699d9",
     "auto-2026-11-10-e52899447b67",
     "auto-2026-11-09-0b5aa316d249",
     "auto-2026-11-04-dc438f389316",
-    "auto-2026-11-06-8576b3409b1a",
+    "auto-2026-11-12-a4c050f0499f",
+    "auto-2026-11-12-93eb1d7fa83b",
     "auto-2026-11-10-9828b5a00b5c",
-    "auto-2026-11-12-8933105dd681"
+    "auto-2026-11-12-8933105dd681",
+    "auto-2026-11-10-59ccb46836ce"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
-      "compute",
-      "water"
+      "adoption",
+      "workforce"
     ],
     "current_event_ids": [
       "auto-2026-11-10-64b46ef99529",
-      "auto-2026-11-03-4f7821bf351c",
-      "auto-2026-11-06-20ddc98c2285",
+      "auto-2026-11-12-35965c4f5c53",
       "auto-2026-11-10-d265fbd006df",
-      "auto-2026-11-06-9ad5d2828d7a",
       "auto-2026-11-09-5615fc16e421",
+      "auto-2026-11-06-9ad5d2828d7a",
       "auto-2026-11-12-c2027d308e72",
       "auto-2026-11-08-a5ef645f6a17",
-      "auto-2026-11-03-6bb213b699d9",
       "auto-2026-11-10-e52899447b67",
       "auto-2026-11-09-0b5aa316d249",
       "auto-2026-11-04-dc438f389316",
-      "auto-2026-11-06-8576b3409b1a",
+      "auto-2026-11-12-a4c050f0499f",
+      "auto-2026-11-12-93eb1d7fa83b",
       "auto-2026-11-10-9828b5a00b5c",
-      "auto-2026-11-12-8933105dd681"
+      "auto-2026-11-12-8933105dd681",
+      "auto-2026-11-10-59ccb46836ce"
     ],
     "material_domains": [
-      "market",
-      "water"
+      "market"
     ],
     "new_event_domains": [
+      "market",
       "finance",
-      "compute"
+      "adoption",
+      "workforce"
     ],
     "new_event_ids": [
-      "auto-2026-11-12-c2027d308e72",
-      "auto-2026-11-12-8933105dd681"
+      "auto-2026-11-12-35965c4f5c53",
+      "auto-2026-11-12-a4c050f0499f",
+      "auto-2026-11-12-93eb1d7fa83b",
+      "auto-2026-11-10-59ccb46836ce"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -67,8 +70,8 @@
   "editorial_update_domains": [
     "market",
     "finance",
-    "compute",
-    "water"
+    "adoption",
+    "workforce"
   ],
   "evidence_packets": {
     "adoption": {
@@ -1200,59 +1203,59 @@
       "facts": [
         {
           "context": "",
-          "display": "37.6",
+          "display": "37.7",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 37.61633914927092
+          "value": 37.684015884330954
         },
         {
           "context": "",
-          "display": "44.2",
+          "display": "44.4",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 44.24194682187686
+          "value": 44.36009602210575
         },
         {
           "context": "",
-          "display": "64.7%",
+          "display": "66.2%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6470588235294118
+          "value": 0.6617647058823529
         },
         {
           "context": "",
-          "display": "9.6%",
+          "display": "11.7%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.09593604019960345
+          "value": 0.11656728067520639
         },
         {
           "context": "",
-          "display": "15.4%",
+          "display": "17.3%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.15360265543907062
+          "value": 0.17272625578768927
         },
         {
           "context": "",
-          "display": "64.8%",
+          "display": "64.9%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6481935410135224
+          "value": 0.6493864674207155
         },
         {
           "context": "",
-          "display": "18.7",
+          "display": "18.6",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.747671870167654
+          "value": 18.555005464270856
         },
         {
           "context": "",
-          "display": "3",
+          "display": "2",
           "id": "market.strong_sector_count",
           "label": "Sectors above the strong-equity threshold",
-          "value": 3.0
+          "value": 2.0
         },
         {
           "context": "",
@@ -1262,7 +1265,7 @@
           "value": 0.0
         }
       ],
-      "importance": 19.819354101352246,
+      "importance": 19.938646742071555,
       "label": "Market",
       "references": [
         {
@@ -1682,19 +1685,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "b84928354b06316199857c3b",
-  "generated_at": "2026-11-12T20:52:23.121729+00:00",
+  "evidence_snapshot_id": "822ca9ccbe181e8eb399dffd",
+  "generated_at": "2026-11-13T20:42:26.983338+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 44.494453626999984,
-      "input_tokens": 4099,
+      "elapsed_sec": 530.636048903,
+      "input_tokens": 3908,
       "model": "gpt-5.6-sol",
-      "output_tokens": 4891,
-      "poll_attempts": 20,
+      "output_tokens": 8672,
+      "poll_attempts": 244,
       "poll_errors": [],
-      "response_id": "resp_008d438c590ef7d4006af626dba11487d2bf34a1b126fd7b85",
+      "response_id": "resp_0f46e70790e8fd4f006af7742129ac87d1b2314197abf7a11b",
       "terminal_status": "completed",
-      "total_tokens": 8990
+      "total_tokens": 12580
     }
   },
   "max_output_tokens": null,
@@ -1705,11 +1708,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "b84928354b06316199857c3b",
-    "expires_at": "2026-11-13T20:52:23.127417+00:00",
+    "current_evidence_snapshot_id": "822ca9ccbe181e8eb399dffd",
+    "expires_at": "2026-11-14T20:42:26.985222+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-11-12T20:52:23.127417+00:00",
+    "published_at": "2026-11-13T20:42:26.985222+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1717,24 +1720,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 20,
+        "poll_attempts": 244,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_008d438c590ef7d4006af626dba11487d2bf34a1b126fd7b85",
+        "response_id": "resp_0f46e70790e8fd4f006af7742129ac87d1b2314197abf7a11b",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked equities have softened beneath a still-broad surface of positive performance. The share of covered companies with positive one-year returns edged up to 64.7%, but the median return fell materially to 9.6%. The AI Equity Index and average sector trading pressure also eased, to 37.6 and 44.2. Gains remain widely distributed, but their typical magnitude and overall market pressure have weakened.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Equity breadth edges higher even as typical returns lose momentum\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed National Financial Conditions Index stands at -0.46, even after rising 0.08 over three months, a combination consistent with conditions that remain loose but have tightened modestly. Lender strain eased to 19.0 while borrower strain stands at 30.2, leaving more pressure on borrowers than funding providers. CNBC also reported that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet. The report adds a specific financing warning to aggregate indicators that otherwise show modest tightening rather than a broad loss of credit availability.\",\"event_ids\":[\"auto-2026-11-12-c2027d308e72\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"Financial conditions remain loose, but borrower strain exceeds lender strain\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci\",\"finance.lender_strain\",\"finance.borrower_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Semiconductor and electronic-component output grew 19.9%, roughly three times the 6.5% rate for computer and peripheral equipment. Yet semiconductor capacity utilization was 76.5%, below the 81.3% rate for computer equipment. The industry aggregates therefore show much stronger semiconductor production growth without higher overall utilization. Reuters separately reported that Chinese AI firms were rushing to secure Nvidia chip capacity amid concern about U.S. curbs, showing why access to specific advanced chips may differ from broad manufacturing conditions.\",\"event_ids\":[\"auto-2026-11-12-8933105dd681\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Semiconductor output growth far outpaces computer equipment despite lower utilization\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"The broad county-level drought screen improved materially: 261 campuses, or 17.5% of those with county data, are in counties containing some D2-or-worse drought area. The more concentrated screen moved in the opposite direction. The count in counties where at least one-quarter of the area is D2 or worse rose slightly to 193 campuses, or 13.0%. Fewer campuses are now touched by any qualifying county drought area, but more sit in counties with a substantial affected area. These measures describe county conditions, not campus water use or site-specific availability.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure narrows overall but becomes more concentrated for some campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Semiconductor momentum remains strong as equity returns soften and financing signals diverge\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"market.median_return\",\"finance.nfci\",\"finance.lender_strain\",\"finance.borrower_strain\"]},\"paragraphs\":[{\"text\":\"Semiconductor production remains the strongest current signal in the buildout. Output of semiconductors and electronic components grew 19.9%, compared with 6.5% for computers and peripherals, while capacity utilization was lower in semiconductors at 76.5% versus 81.3%. Faster output growth has therefore not translated into higher utilization than in computer equipment. That does not rule out bottlenecks in particular advanced chips: Reuters reported that Chinese AI firms were rushing to secure Nvidia capacity because of concern about U.S. restrictions.\",\"event_ids\":[\"auto-2026-11-12-8933105dd681\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},{\"text\":\"Markets and credit are sending a more guarded, but not uniformly negative, signal. The share of covered companies with positive one-year returns rose slightly to 64.7%, yet the median return fell materially to 9.6% and the AI Equity Index eased to 37.6. Financial conditions remain relatively loose on the Chicago Fed measure at -0.46, although the index has risen 0.08 over three months. Lender strain declined to 19.0 while borrower strain stands at 30.2. A CNBC report that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet reinforces concern around deal financing, but the aggregate measures point to moderation rather than a broad credit contraction.\",\"event_ids\":[\"auto-2026-11-12-c2027d308e72\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked equities now send a more consistently positive signal. The share of covered companies with positive one-year returns rose to 66.2%, while the median return increased materially to 11.7%. The AI Equity Index and average sector trading pressure also edged higher, to 37.7 and 44.4. Breadth and typical performance are now moving in the same direction, although the modest changes in the broader indicators point to improvement rather than a wholesale repricing.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\"]},\"headline\":{\"text\":\"Equity performance improves in both breadth and typical returns\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow equals 1.23 times current capital expenditure, while cash reserves equal 0.85 years of spending at the current CapEx rate. The first measure indicates coverage from ongoing cash generation; the second shows a shallower reserve cushion. Borrower strain is 30.2, compared with 19.0 for lenders, leaving financing pressure more concentrated on users of capital than on providers.\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Cash generation covers current CapEx, while reserves equal less than one year of spending\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a 4.0-percentage-point gap between deployment and intent. Reported use is much higher among adults: 60.8% of those ages 18\u201364 use some generative AI, although that consumer measure is not directly comparable with organization-level use of AI more generally. A newly reported enterprise study found adoption outpacing AI assurance, identifying assurance as a separate implementation issue rather than simply another measure of adoption.\",\"event_ids\":[\"auto-2026-11-12-35965c4f5c53\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use remains below near-term intentions as assurance emerges as a separate concern\",\"event_ids\":[\"auto-2026-11-12-35965c4f5c53\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only two tracked AI-linked labor channels show positive employment growth, and only two show positive real-earnings growth. Semiconductor manufacturing is the strongest employment channel, with a 2.0% gain, indicating a clear pocket of expansion rather than broad acceleration. Reuters separately reported that Nubank improved its 2026 efficiency-ratio outlook as AI led to slower hiring. It is an example of one firm linking AI to hiring restraint, not evidence of a general employment effect.\",\"event_ids\":[\"auto-2026-11-12-93eb1d7fa83b\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"AI-linked labor gains remain concentrated in a few channels\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The physical buildout remains large as equity returns improve, but adoption and labor gains stay limited\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_to_operating\",\"market.median_return\",\"adoption.current_business_use_pct\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"The supply-side expansion remains substantial, but pipeline totals need qualification. Semiconductor and electronic-component output grew 19.9%, and available project records show 1,556 data-center sites in development, equal to roughly half the 3,068 operating sites. The power pipeline is less certain: 2,061 GW sits in the active interconnection queue, but only 24.2% has reached executed-agreement or construction stages. Historically, just 13% of the 2000\u20132020 queue cohort reached operation, so the queue represents potential capacity rather than capacity that can be assumed to arrive.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Capital-market support has strengthened. The share of covered companies with positive one-year returns increased to 66.2%, and the median return rose materially to 11.7%; the AI Equity Index and sector trading pressure also edged higher. Funding measures are more mixed. Operating cash flow covers current CapEx at 1.23 times, but cash reserves equal 0.85 years of spending at that rate, while borrower strain of 30.2 remains above lender strain of 19.0. The figures show current cash generation above CapEx, less than a year of CapEx held in reserves, and more pressure on borrowers than lenders.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"Business deployment remains narrower than individual exposure, although the measures cover different forms of use. Current AI use is reported by 24.6% of businesses and 28.6% expect to use it within six months, while 60.8% of adults ages 18\u201364 report some generative-AI use. A new enterprise study also reported adoption outpacing AI assurance, pointing to implementation quality as a separate issue from adoption rates. Labor gains are similarly concentrated: only two tracked channels have positive employment growth and two have positive real-earnings growth, with semiconductor manufacturing strongest on employment at 2.0%. Large supply investment and improved market performance therefore coexist with partial business deployment and narrow labor gains.\",\"event_ids\":[\"auto-2026-11-12-35965c4f5c53\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.consumer_overall_pct\",\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1794516742.0,
+      "completed_at": 1794602545.0,
       "conversation": null,
-      "created_at": 1794516699.0,
+      "created_at": 1794602017.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_008d438c590ef7d4006af626dba11487d2bf34a1b126fd7b85",
+      "id": "resp_0f46e70790e8fd4f006af7742129ac87d1b2314197abf7a11b",
       "image": {
         "context_compression": "disabled"
       },
@@ -1751,7 +1754,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_008d438c590ef7d4006af626dd8d4887d2b7809052e6ed1cff",
+          "id": "rs_0f46e70790e8fd4f006af77424675c87d1996f25c158a970df",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1759,7 +1762,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_008d438c590ef7d4006af626e284e087d29744e1e64b86ce69",
+          "id": "rs_0f46e70790e8fd4f006af7743810d887d192d2940e49a60e7c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1767,7 +1770,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_008d438c590ef7d4006af626e79e9087d285c353cdc4e2f6f0",
+          "id": "rs_0f46e70790e8fd4f006af7744cb92c87d1a0b19a883eff46d8",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1775,7 +1778,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_008d438c590ef7d4006af626ecb58487d2aaa425f4c983386f",
+          "id": "rs_0f46e70790e8fd4f006af77461516c87d18e9eb5eac4ad8dd2",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1783,7 +1786,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_008d438c590ef7d4006af626f1b6e087d2af0b89fb38719b78",
+          "id": "rs_0f46e70790e8fd4f006af774771fe487d1852b9855a1b6077b",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1791,7 +1794,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_008d438c590ef7d4006af626f67c2487d2967b4de70b5df8d4",
+          "id": "rs_0f46e70790e8fd4f006af77491b54c87d1b02088dc39ff8b18",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1799,7 +1802,63 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_008d438c590ef7d4006af626faf6e887d29fc8f3c9a8dfccc1",
+          "id": "rs_0f46e70790e8fd4f006af774ad545087d1819fadade14a6fda",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f46e70790e8fd4f006af774c8737887d1a474b178ba10ee50",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f46e70790e8fd4f006af774e24d5887d18560a5c942337c3a",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f46e70790e8fd4f006af774fc89ac87d18f8250c236c57658",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f46e70790e8fd4f006af7751a1c2487d1bcfcb2982f47f28d",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f46e70790e8fd4f006af7753e594087d1898de6f7dbc9b55d",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f46e70790e8fd4f006af775650f4487d1afb89c295daa5c59",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0f46e70790e8fd4f006af77590e4d087d189ed332a071157e0",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1809,11 +1868,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked equities have softened beneath a still-broad surface of positive performance. The share of covered companies with positive one-year returns edged up to 64.7%, but the median return fell materially to 9.6%. The AI Equity Index and average sector trading pressure also eased, to 37.6 and 44.2. Gains remain widely distributed, but their typical magnitude and overall market pressure have weakened.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Equity breadth edges higher even as typical returns lose momentum\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed National Financial Conditions Index stands at -0.46, even after rising 0.08 over three months, a combination consistent with conditions that remain loose but have tightened modestly. Lender strain eased to 19.0 while borrower strain stands at 30.2, leaving more pressure on borrowers than funding providers. CNBC also reported that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet. The report adds a specific financing warning to aggregate indicators that otherwise show modest tightening rather than a broad loss of credit availability.\",\"event_ids\":[\"auto-2026-11-12-c2027d308e72\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]},\"headline\":{\"text\":\"Financial conditions remain loose, but borrower strain exceeds lender strain\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci\",\"finance.lender_strain\",\"finance.borrower_strain\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Semiconductor and electronic-component output grew 19.9%, roughly three times the 6.5% rate for computer and peripheral equipment. Yet semiconductor capacity utilization was 76.5%, below the 81.3% rate for computer equipment. The industry aggregates therefore show much stronger semiconductor production growth without higher overall utilization. Reuters separately reported that Chinese AI firms were rushing to secure Nvidia chip capacity amid concern about U.S. curbs, showing why access to specific advanced chips may differ from broad manufacturing conditions.\",\"event_ids\":[\"auto-2026-11-12-8933105dd681\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"Semiconductor output growth far outpaces computer equipment despite lower utilization\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"The broad county-level drought screen improved materially: 261 campuses, or 17.5% of those with county data, are in counties containing some D2-or-worse drought area. The more concentrated screen moved in the opposite direction. The count in counties where at least one-quarter of the area is D2 or worse rose slightly to 193 campuses, or 13.0%. Fewer campuses are now touched by any qualifying county drought area, but more sit in counties with a substantial affected area. These measures describe county conditions, not campus water use or site-specific availability.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"Drought exposure narrows overall but becomes more concentrated for some campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Semiconductor momentum remains strong as equity returns soften and financing signals diverge\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"market.median_return\",\"finance.nfci\",\"finance.lender_strain\",\"finance.borrower_strain\"]},\"paragraphs\":[{\"text\":\"Semiconductor production remains the strongest current signal in the buildout. Output of semiconductors and electronic components grew 19.9%, compared with 6.5% for computers and peripherals, while capacity utilization was lower in semiconductors at 76.5% versus 81.3%. Faster output growth has therefore not translated into higher utilization than in computer equipment. That does not rule out bottlenecks in particular advanced chips: Reuters reported that Chinese AI firms were rushing to secure Nvidia capacity because of concern about U.S. restrictions.\",\"event_ids\":[\"auto-2026-11-12-8933105dd681\"],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},{\"text\":\"Markets and credit are sending a more guarded, but not uniformly negative, signal. The share of covered companies with positive one-year returns rose slightly to 64.7%, yet the median return fell materially to 9.6% and the AI Equity Index eased to 37.6. Financial conditions remain relatively loose on the Chicago Fed measure at -0.46, although the index has risen 0.08 over three months. Lender strain declined to 19.0 while borrower strain stands at 30.2. A CNBC report that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet reinforces concern around deal financing, but the aggregate measures point to moderation rather than a broad credit contraction.\",\"event_ids\":[\"auto-2026-11-12-c2027d308e72\"],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\",\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.borrower_strain\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"AI-linked equities now send a more consistently positive signal. The share of covered companies with positive one-year returns rose to 66.2%, while the median return increased materially to 11.7%. The AI Equity Index and average sector trading pressure also edged higher, to 37.7 and 44.4. Breadth and typical performance are now moving in the same direction, although the modest changes in the broader indicators point to improvement rather than a wholesale repricing.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\"]},\"headline\":{\"text\":\"Equity performance improves in both breadth and typical returns\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow equals 1.23 times current capital expenditure, while cash reserves equal 0.85 years of spending at the current CapEx rate. The first measure indicates coverage from ongoing cash generation; the second shows a shallower reserve cushion. Borrower strain is 30.2, compared with 19.0 for lenders, leaving financing pressure more concentrated on users of capital than on providers.\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},\"headline\":{\"text\":\"Cash generation covers current CapEx, while reserves equal less than one year of spending\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a 4.0-percentage-point gap between deployment and intent. Reported use is much higher among adults: 60.8% of those ages 18\u201364 use some generative AI, although that consumer measure is not directly comparable with organization-level use of AI more generally. A newly reported enterprise study found adoption outpacing AI assurance, identifying assurance as a separate implementation issue rather than simply another measure of adoption.\",\"event_ids\":[\"auto-2026-11-12-35965c4f5c53\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use remains below near-term intentions as assurance emerges as a separate concern\",\"event_ids\":[\"auto-2026-11-12-35965c4f5c53\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}},{\"domain\":\"workforce\",\"body\":{\"text\":\"Only two tracked AI-linked labor channels show positive employment growth, and only two show positive real-earnings growth. Semiconductor manufacturing is the strongest employment channel, with a 2.0% gain, indicating a clear pocket of expansion rather than broad acceleration. Reuters separately reported that Nubank improved its 2026 efficiency-ratio outlook as AI led to slower hiring. It is an example of one firm linking AI to hiring restraint, not evidence of a general employment effect.\",\"event_ids\":[\"auto-2026-11-12-93eb1d7fa83b\"],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]},\"headline\":{\"text\":\"AI-linked labor gains remain concentrated in a few channels\",\"event_ids\":[],\"fact_ids\":[\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The physical buildout remains large as equity returns improve, but adoption and labor gains stay limited\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_to_operating\",\"market.median_return\",\"adoption.current_business_use_pct\",\"workforce.employment_breadth\"]},\"paragraphs\":[{\"text\":\"The supply-side expansion remains substantial, but pipeline totals need qualification. Semiconductor and electronic-component output grew 19.9%, and available project records show 1,556 data-center sites in development, equal to roughly half the 3,068 operating sites. The power pipeline is less certain: 2,061 GW sits in the active interconnection queue, but only 24.2% has reached executed-agreement or construction stages. Historically, just 13% of the 2000\u20132020 queue cohort reached operation, so the queue represents potential capacity rather than capacity that can be assumed to arrive.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Capital-market support has strengthened. The share of covered companies with positive one-year returns increased to 66.2%, and the median return rose materially to 11.7%; the AI Equity Index and sector trading pressure also edged higher. Funding measures are more mixed. Operating cash flow covers current CapEx at 1.23 times, but cash reserves equal 0.85 years of spending at that rate, while borrower strain of 30.2 remains above lender strain of 19.0. The figures show current cash generation above CapEx, less than a year of CapEx held in reserves, and more pressure on borrowers than lenders.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"Business deployment remains narrower than individual exposure, although the measures cover different forms of use. Current AI use is reported by 24.6% of businesses and 28.6% expect to use it within six months, while 60.8% of adults ages 18\u201364 report some generative-AI use. A new enterprise study also reported adoption outpacing AI assurance, pointing to implementation quality as a separate issue from adoption rates. Labor gains are similarly concentrated: only two tracked channels have positive employment growth and two have positive real-earnings growth, with semiconductor manufacturing strongest on employment at 2.0%. Large supply investment and improved market performance therefore coexist with partial business deployment and narrow labor gains.\",\"event_ids\":[\"auto-2026-11-12-35965c4f5c53\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.consumer_overall_pct\",\"workforce.employment_breadth\",\"workforce.real_earnings_breadth\",\"workforce.strongest_channel\",\"workforce.strongest_channel_growth\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_008d438c590ef7d4006af626ffc67087d28ad416bdd31b226f",
+          "id": "msg_0f46e70790e8fd4f006af775b8a14887d187a1c470be3e6c3a",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -1986,42 +2045,48 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4099,
+        "input_tokens": 3908,
         "input_tokens_details": {
-          "cache_write_tokens": 4096,
+          "cache_write_tokens": 3905,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 3905
+          },
           "cached_tokens": 0
         },
-        "output_tokens": 4891,
+        "output_tokens": 8672,
         "output_tokens_details": {
-          "reasoning_tokens": 3624
+          "reasoning_tokens": 7210
         },
-        "total_tokens": 8990
+        "total_tokens": 12580
       },
       "user": null
     }
   },
   "reads": {
     "adoption": {
-      "analysis": "Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series.",
+      "analysis": "Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a 4.0-percentage-point gap between deployment and intent. Reported use is much higher among adults: 60.8% of those ages 18\u201364 use some generative AI, although that consumer measure is not directly comparable with organization-level use of AI more generally. A newly reported enterprise study found adoption outpacing AI assurance, identifying assurance as a separate implementation issue rather than simply another measure of adoption.",
       "analysis_sentences": [
-        "Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months.",
-        "The expected-minus-current gap widened slightly to 4.0 percentage points.",
-        "Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease.",
-        "The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series."
+        "Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a 4.0-percentage-point gap between deployment and intent.",
+        "Reported use is much higher among adults: 60.8% of those ages 18\u201364 use some generative AI, although that consumer measure is not directly comparable with organization-level use of AI more generally.",
+        "A newly reported enterprise study found adoption outpacing AI assurance, identifying assurance as a separate implementation issue rather than simply another measure of adoption."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-12-35965c4f5c53"
+          ],
           "fact_ids": [
             "adoption.current_business_use_pct",
-            "adoption.expected_business_use_pct",
-            "adoption.expected_adoption_gap_ppts"
+            "adoption.expected_business_use_pct"
           ],
           "field": "headline",
-          "text": "Business AI use rises, but near-term intentions continue to run ahead"
+          "text": "Business AI use remains below near-term intentions as assurance emerges as a separate concern"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-12-35965c4f5c53"
+          ],
           "fact_ids": [
             "adoption.current_business_use_pct",
             "adoption.expected_business_use_pct",
@@ -2029,14 +2094,14 @@
             "adoption.consumer_overall_pct"
           ],
           "field": "body",
-          "text": "Businesses reporting current AI use edged up to 24.6%, while 28.6% expect to use it within six months. The expected-minus-current gap widened slightly to 4.0 percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, a slight decrease. The consumer measure covers individuals and generative AI, whereas the business readings cover organizations and AI more broadly, so the levels should not be treated as one adoption series."
+          "text": "Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a 4.0-percentage-point gap between deployment and intent. Reported use is much higher among adults: 60.8% of those ages 18\u201364 use some generative AI, although that consumer measure is not directly comparable with organization-level use of AI more generally. A newly reported enterprise study found adoption outpacing AI assurance, identifying assurance as a separate implementation issue rather than simply another measure of adoption."
         }
       ],
       "domain": "adoption",
-      "evidence_snapshot_id": "a3703066f26d12771878ba75",
-      "generated_at": "2026-10-22T17:13:02.567865+00:00",
+      "evidence_snapshot_id": "822ca9ccbe181e8eb399dffd",
+      "generated_at": "2026-11-13T20:42:26.983141+00:00",
       "generator": "openai",
-      "headline": "Business AI use rises, but near-term intentions continue to run ahead",
+      "headline": "Business AI use remains below near-term intentions as assurance emerges as a separate concern",
       "label": "Adoption",
       "references": [
         {
@@ -2054,6 +2119,10 @@
         {
           "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
+        },
+        {
+          "source_label": "Morningstar",
+          "source_url": "https://www.morningstar.com/news/business-wire/20261110157402/new-qualizeal-x-hfs-research-study-finds-enterprise-ai-adoption-is-outpacing-ai-assurance"
         }
       ],
       "version": "6.1.0"
@@ -2332,43 +2401,39 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "The Chicago Fed National Financial Conditions Index stands at -0.46, even after rising 0.08 over three months, a combination consistent with conditions that remain loose but have tightened modestly. Lender strain eased to 19.0 while borrower strain stands at 30.2, leaving more pressure on borrowers than funding providers. CNBC also reported that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet. The report adds a specific financing warning to aggregate indicators that otherwise show modest tightening rather than a broad loss of credit availability.",
+      "analysis": "Operating cash flow equals 1.23 times current capital expenditure, while cash reserves equal 0.85 years of spending at the current CapEx rate. The first measure indicates coverage from ongoing cash generation; the second shows a shallower reserve cushion. Borrower strain is 30.2, compared with 19.0 for lenders, leaving financing pressure more concentrated on users of capital than on providers.",
       "analysis_sentences": [
-        "The Chicago Fed National Financial Conditions Index stands at -0.46, even after rising 0.08 over three months, a combination consistent with conditions that remain loose but have tightened modestly.",
-        "Lender strain eased to 19.0 while borrower strain stands at 30.2, leaving more pressure on borrowers than funding providers.",
-        "CNBC also reported that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet.",
-        "The report adds a specific financing warning to aggregate indicators that otherwise show modest tightening rather than a broad loss of credit availability."
+        "Operating cash flow equals 1.23 times current capital expenditure, while cash reserves equal 0.85 years of spending at the current CapEx rate.",
+        "The first measure indicates coverage from ongoing cash generation; the second shows a shallower reserve cushion.",
+        "Borrower strain is 30.2, compared with 19.0 for lenders, leaving financing pressure more concentrated on users of capital than on providers."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "finance.nfci",
-            "finance.lender_strain",
-            "finance.borrower_strain"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years"
           ],
           "field": "headline",
-          "text": "Financial conditions remain loose, but borrower strain exceeds lender strain"
+          "text": "Cash generation covers current CapEx, while reserves equal less than one year of spending"
         },
         {
-          "event_ids": [
-            "auto-2026-11-12-c2027d308e72"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "finance.lender_strain",
-            "finance.nfci",
-            "finance.nfci_change",
-            "finance.borrower_strain"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.borrower_strain",
+            "finance.lender_strain"
           ],
           "field": "body",
-          "text": "The Chicago Fed National Financial Conditions Index stands at -0.46, even after rising 0.08 over three months, a combination consistent with conditions that remain loose but have tightened modestly. Lender strain eased to 19.0 while borrower strain stands at 30.2, leaving more pressure on borrowers than funding providers. CNBC also reported that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet. The report adds a specific financing warning to aggregate indicators that otherwise show modest tightening rather than a broad loss of credit availability."
+          "text": "Operating cash flow equals 1.23 times current capital expenditure, while cash reserves equal 0.85 years of spending at the current CapEx rate. The first measure indicates coverage from ongoing cash generation; the second shows a shallower reserve cushion. Borrower strain is 30.2, compared with 19.0 for lenders, leaving financing pressure more concentrated on users of capital than on providers."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "b84928354b06316199857c3b",
-      "generated_at": "2026-11-12T20:52:23.121417+00:00",
+      "evidence_snapshot_id": "822ca9ccbe181e8eb399dffd",
+      "generated_at": "2026-11-13T20:42:26.983141+00:00",
       "generator": "openai",
-      "headline": "Financial conditions remain loose, but borrower strain exceeds lender strain",
+      "headline": "Cash generation covers current CapEx, while reserves equal less than one year of spending",
       "label": "Finance",
       "references": [
         {
@@ -2418,10 +2483,6 @@
         {
           "source_label": "GF Data / ACG Middle-Market M&A",
           "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
-        },
-        {
-          "source_label": "CNBC",
-          "source_url": "https://www.cnbc.com/2026/11/12/nvidia-ceo-exit-ai-financing.html"
         }
       ],
       "version": "6.1.0"
@@ -2483,64 +2544,85 @@
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Semiconductor production remains the strongest current signal in the buildout. Output of semiconductors and electronic components grew 19.9%, compared with 6.5% for computers and peripherals, while capacity utilization was lower in semiconductors at 76.5% versus 81.3%. Faster output growth has therefore not translated into higher utilization than in computer equipment. That does not rule out bottlenecks in particular advanced chips: Reuters reported that Chinese AI firms were rushing to secure Nvidia capacity because of concern about U.S. restrictions. Markets and credit are sending a more guarded, but not uniformly negative, signal. The share of covered companies with positive one-year returns rose slightly to 64.7%, yet the median return fell materially to 9.6% and the AI Equity Index eased to 37.6. Financial conditions remain relatively loose on the Chicago Fed measure at -0.46, although the index has risen 0.08 over three months. Lender strain declined to 19.0 while borrower strain stands at 30.2. A CNBC report that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet reinforces concern around deal financing, but the aggregate measures point to moderation rather than a broad credit contraction.",
+      "analysis": "The supply-side expansion remains substantial, but pipeline totals need qualification. Semiconductor and electronic-component output grew 19.9%, and available project records show 1,556 data-center sites in development, equal to roughly half the 3,068 operating sites. The power pipeline is less certain: 2,061 GW sits in the active interconnection queue, but only 24.2% has reached executed-agreement or construction stages. Historically, just 13% of the 2000\u20132020 queue cohort reached operation, so the queue represents potential capacity rather than capacity that can be assumed to arrive. Capital-market support has strengthened. The share of covered companies with positive one-year returns increased to 66.2%, and the median return rose materially to 11.7%; the AI Equity Index and sector trading pressure also edged higher. Funding measures are more mixed. Operating cash flow covers current CapEx at 1.23 times, but cash reserves equal 0.85 years of spending at that rate, while borrower strain of 30.2 remains above lender strain of 19.0. The figures show current cash generation above CapEx, less than a year of CapEx held in reserves, and more pressure on borrowers than lenders. Business deployment remains narrower than individual exposure, although the measures cover different forms of use. Current AI use is reported by 24.6% of businesses and 28.6% expect to use it within six months, while 60.8% of adults ages 18\u201364 report some generative-AI use. A new enterprise study also reported adoption outpacing AI assurance, pointing to implementation quality as a separate issue from adoption rates. Labor gains are similarly concentrated: only two tracked channels have positive employment growth and two have positive real-earnings growth, with semiconductor manufacturing strongest on employment at 2.0%. Large supply investment and improved market performance therefore coexist with partial business deployment and narrow labor gains.",
       "analysis_paragraphs": [
-        "Semiconductor production remains the strongest current signal in the buildout. Output of semiconductors and electronic components grew 19.9%, compared with 6.5% for computers and peripherals, while capacity utilization was lower in semiconductors at 76.5% versus 81.3%. Faster output growth has therefore not translated into higher utilization than in computer equipment. That does not rule out bottlenecks in particular advanced chips: Reuters reported that Chinese AI firms were rushing to secure Nvidia capacity because of concern about U.S. restrictions.",
-        "Markets and credit are sending a more guarded, but not uniformly negative, signal. The share of covered companies with positive one-year returns rose slightly to 64.7%, yet the median return fell materially to 9.6% and the AI Equity Index eased to 37.6. Financial conditions remain relatively loose on the Chicago Fed measure at -0.46, although the index has risen 0.08 over three months. Lender strain declined to 19.0 while borrower strain stands at 30.2. A CNBC report that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet reinforces concern around deal financing, but the aggregate measures point to moderation rather than a broad credit contraction."
+        "The supply-side expansion remains substantial, but pipeline totals need qualification. Semiconductor and electronic-component output grew 19.9%, and available project records show 1,556 data-center sites in development, equal to roughly half the 3,068 operating sites. The power pipeline is less certain: 2,061 GW sits in the active interconnection queue, but only 24.2% has reached executed-agreement or construction stages. Historically, just 13% of the 2000\u20132020 queue cohort reached operation, so the queue represents potential capacity rather than capacity that can be assumed to arrive.",
+        "Capital-market support has strengthened. The share of covered companies with positive one-year returns increased to 66.2%, and the median return rose materially to 11.7%; the AI Equity Index and sector trading pressure also edged higher. Funding measures are more mixed. Operating cash flow covers current CapEx at 1.23 times, but cash reserves equal 0.85 years of spending at that rate, while borrower strain of 30.2 remains above lender strain of 19.0. The figures show current cash generation above CapEx, less than a year of CapEx held in reserves, and more pressure on borrowers than lenders.",
+        "Business deployment remains narrower than individual exposure, although the measures cover different forms of use. Current AI use is reported by 24.6% of businesses and 28.6% expect to use it within six months, while 60.8% of adults ages 18\u201364 report some generative-AI use. A new enterprise study also reported adoption outpacing AI assurance, pointing to implementation quality as a separate issue from adoption rates. Labor gains are similarly concentrated: only two tracked channels have positive employment growth and two have positive real-earnings growth, with semiconductor manufacturing strongest on employment at 2.0%. Large supply investment and improved market performance therefore coexist with partial business deployment and narrow labor gains."
       ],
       "analysis_sentences": [
-        "Semiconductor production remains the strongest current signal in the buildout.",
-        "Output of semiconductors and electronic components grew 19.9%, compared with 6.5% for computers and peripherals, while capacity utilization was lower in semiconductors at 76.5% versus 81.3%.",
-        "Faster output growth has therefore not translated into higher utilization than in computer equipment.",
-        "That does not rule out bottlenecks in particular advanced chips: Reuters reported that Chinese AI firms were rushing to secure Nvidia capacity because of concern about U.S.",
-        "restrictions.",
-        "Markets and credit are sending a more guarded, but not uniformly negative, signal.",
-        "The share of covered companies with positive one-year returns rose slightly to 64.7%, yet the median return fell materially to 9.6% and the AI Equity Index eased to 37.6.",
-        "Financial conditions remain relatively loose on the Chicago Fed measure at -0.46, although the index has risen 0.08 over three months.",
-        "Lender strain declined to 19.0 while borrower strain stands at 30.2.",
-        "A CNBC report that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet reinforces concern around deal financing, but the aggregate measures point to moderation rather than a broad credit contraction."
+        "The supply-side expansion remains substantial, but pipeline totals need qualification.",
+        "Semiconductor and electronic-component output grew 19.9%, and available project records show 1,556 data-center sites in development, equal to roughly half the 3,068 operating sites.",
+        "The power pipeline is less certain: 2,061 GW sits in the active interconnection queue, but only 24.2% has reached executed-agreement or construction stages.",
+        "Historically, just 13% of the 2000\u20132020 queue cohort reached operation, so the queue represents potential capacity rather than capacity that can be assumed to arrive.",
+        "Capital-market support has strengthened.",
+        "The share of covered companies with positive one-year returns increased to 66.2%, and the median return rose materially to 11.7%; the AI Equity Index and sector trading pressure also edged higher.",
+        "Funding measures are more mixed.",
+        "Operating cash flow covers current CapEx at 1.23 times, but cash reserves equal 0.85 years of spending at that rate, while borrower strain of 30.2 remains above lender strain of 19.0.",
+        "The figures show current cash generation above CapEx, less than a year of CapEx held in reserves, and more pressure on borrowers than lenders.",
+        "Business deployment remains narrower than individual exposure, although the measures cover different forms of use.",
+        "Current AI use is reported by 24.6% of businesses and 28.6% expect to use it within six months, while 60.8% of adults ages 18\u201364 report some generative-AI use.",
+        "A new enterprise study also reported adoption outpacing AI assurance, pointing to implementation quality as a separate issue from adoption rates.",
+        "Labor gains are similarly concentrated: only two tracked channels have positive employment growth and two have positive real-earnings growth, with semiconductor manufacturing strongest on employment at 2.0%.",
+        "Large supply investment and improved market performance therefore coexist with partial business deployment and narrow labor gains."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "compute.semiconductor_output_growth",
+            "data_center.development_to_operating",
             "market.median_return",
-            "finance.nfci",
-            "finance.lender_strain",
-            "finance.borrower_strain"
+            "adoption.current_business_use_pct",
+            "workforce.employment_breadth"
           ],
           "field": "headline",
-          "text": "Semiconductor momentum remains strong as equity returns soften and financing signals diverge"
+          "text": "The physical buildout remains large as equity returns improve, but adoption and labor gains stay limited"
         },
         {
-          "event_ids": [
-            "auto-2026-11-12-8933105dd681"
-          ],
+          "event_ids": [],
           "fact_ids": [
-            "compute.computer_output_growth",
             "compute.semiconductor_output_growth",
-            "compute.computer_utilization",
-            "compute.semiconductor_utilization"
+            "data_center.development_sites",
+            "data_center.operating_sites",
+            "data_center.development_to_operating",
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "paragraphs[0]",
-          "text": "Semiconductor production remains the strongest current signal in the buildout. Output of semiconductors and electronic components grew 19.9%, compared with 6.5% for computers and peripherals, while capacity utilization was lower in semiconductors at 76.5% versus 81.3%. Faster output growth has therefore not translated into higher utilization than in computer equipment. That does not rule out bottlenecks in particular advanced chips: Reuters reported that Chinese AI firms were rushing to secure Nvidia capacity because of concern about U.S. restrictions."
+          "text": "The supply-side expansion remains substantial, but pipeline totals need qualification. Semiconductor and electronic-component output grew 19.9%, and available project records show 1,556 data-center sites in development, equal to roughly half the 3,068 operating sites. The power pipeline is less certain: 2,061 GW sits in the active interconnection queue, but only 24.2% has reached executed-agreement or construction stages. Historically, just 13% of the 2000\u20132020 queue cohort reached operation, so the queue represents potential capacity rather than capacity that can be assumed to arrive."
+        },
+        {
+          "event_ids": [],
+          "fact_ids": [
+            "market.positive_breadth",
+            "market.median_return",
+            "market.aei",
+            "market.pressure",
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "finance.borrower_strain",
+            "finance.lender_strain"
+          ],
+          "field": "paragraphs[1]",
+          "text": "Capital-market support has strengthened. The share of covered companies with positive one-year returns increased to 66.2%, and the median return rose materially to 11.7%; the AI Equity Index and sector trading pressure also edged higher. Funding measures are more mixed. Operating cash flow covers current CapEx at 1.23 times, but cash reserves equal 0.85 years of spending at that rate, while borrower strain of 30.2 remains above lender strain of 19.0. The figures show current cash generation above CapEx, less than a year of CapEx held in reserves, and more pressure on borrowers than lenders."
         },
         {
           "event_ids": [
-            "auto-2026-11-12-c2027d308e72"
+            "auto-2026-11-12-35965c4f5c53"
           ],
           "fact_ids": [
-            "market.aei",
-            "market.positive_breadth",
-            "market.median_return",
-            "finance.lender_strain",
-            "finance.nfci",
-            "finance.nfci_change",
-            "finance.borrower_strain"
+            "adoption.current_business_use_pct",
+            "adoption.expected_business_use_pct",
+            "adoption.consumer_overall_pct",
+            "workforce.employment_breadth",
+            "workforce.real_earnings_breadth",
+            "workforce.strongest_channel",
+            "workforce.strongest_channel_growth"
           ],
-          "field": "paragraphs[1]",
-          "text": "Markets and credit are sending a more guarded, but not uniformly negative, signal. The share of covered companies with positive one-year returns rose slightly to 64.7%, yet the median return fell materially to 9.6% and the AI Equity Index eased to 37.6. Financial conditions remain relatively loose on the Chicago Fed measure at -0.46, although the index has risen 0.08 over three months. Lender strain declined to 19.0 while borrower strain stands at 30.2. A CNBC report that Nvidia\u2019s exit cast a shadow over a $500 billion Wall Street AI financing bet reinforces concern around deal financing, but the aggregate measures point to moderation rather than a broad credit contraction."
+          "field": "paragraphs[2]",
+          "text": "Business deployment remains narrower than individual exposure, although the measures cover different forms of use. Current AI use is reported by 24.6% of businesses and 28.6% expect to use it within six months, while 60.8% of adults ages 18\u201364 report some generative-AI use. A new enterprise study also reported adoption outpacing AI assurance, pointing to implementation quality as a separate issue from adoption rates. Labor gains are similarly concentrated: only two tracked channels have positive employment growth and two have positive real-earnings growth, with semiconductor manufacturing strongest on employment at 2.0%. Large supply investment and improved market performance therefore coexist with partial business deployment and narrow labor gains."
         }
       ],
       "domain": "macro",
@@ -2553,21 +2635,21 @@
         },
         {
           "context": "",
-          "fact_id": "market.median_return",
-          "label": "Median one-year return",
-          "value": "9.6%"
+          "fact_id": "data_center.development_to_operating",
+          "label": "Development sites relative to operating sites",
+          "value": "0.51x"
         },
         {
           "context": "",
-          "fact_id": "finance.nfci",
-          "label": "Chicago Fed NFCI",
-          "value": "-0.46"
+          "fact_id": "market.median_return",
+          "label": "Median one-year return",
+          "value": "11.7%"
         }
       ],
-      "evidence_snapshot_id": "b84928354b06316199857c3b",
-      "generated_at": "2026-11-12T20:52:23.121417+00:00",
+      "evidence_snapshot_id": "822ca9ccbe181e8eb399dffd",
+      "generated_at": "2026-11-13T20:42:26.983141+00:00",
       "generator": "openai",
-      "headline": "Semiconductor momentum remains strong as equity returns soften and financing signals diverge",
+      "headline": "The physical buildout remains large as equity returns improve, but adoption and labor gains stay limited",
       "label": "AI Macro",
       "references": [
         {
@@ -2598,17 +2680,21 @@
       "selected_domains": [
         "market",
         "finance",
-        "compute"
+        "compute",
+        "data_center",
+        "grid_storage",
+        "adoption",
+        "workforce"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "AI-linked equities have softened beneath a still-broad surface of positive performance. The share of covered companies with positive one-year returns edged up to 64.7%, but the median return fell materially to 9.6%. The AI Equity Index and average sector trading pressure also eased, to 37.6 and 44.2. Gains remain widely distributed, but their typical magnitude and overall market pressure have weakened.",
+      "analysis": "AI-linked equities now send a more consistently positive signal. The share of covered companies with positive one-year returns rose to 66.2%, while the median return increased materially to 11.7%. The AI Equity Index and average sector trading pressure also edged higher, to 37.7 and 44.4. Breadth and typical performance are now moving in the same direction, although the modest changes in the broader indicators point to improvement rather than a wholesale repricing.",
       "analysis_sentences": [
-        "AI-linked equities have softened beneath a still-broad surface of positive performance.",
-        "The share of covered companies with positive one-year returns edged up to 64.7%, but the median return fell materially to 9.6%.",
-        "The AI Equity Index and average sector trading pressure also eased, to 37.6 and 44.2.",
-        "Gains remain widely distributed, but their typical magnitude and overall market pressure have weakened."
+        "AI-linked equities now send a more consistently positive signal.",
+        "The share of covered companies with positive one-year returns rose to 66.2%, while the median return increased materially to 11.7%.",
+        "The AI Equity Index and average sector trading pressure also edged higher, to 37.7 and 44.4.",
+        "Breadth and typical performance are now moving in the same direction, although the modest changes in the broader indicators point to improvement rather than a wholesale repricing."
       ],
       "claim_support": [
         {
@@ -2618,25 +2704,25 @@
             "market.median_return"
           ],
           "field": "headline",
-          "text": "Equity breadth edges higher even as typical returns lose momentum"
+          "text": "Equity performance improves in both breadth and typical returns"
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "market.aei",
-            "market.pressure",
             "market.positive_breadth",
-            "market.median_return"
+            "market.median_return",
+            "market.aei",
+            "market.pressure"
           ],
           "field": "body",
-          "text": "AI-linked equities have softened beneath a still-broad surface of positive performance. The share of covered companies with positive one-year returns edged up to 64.7%, but the median return fell materially to 9.6%. The AI Equity Index and average sector trading pressure also eased, to 37.6 and 44.2. Gains remain widely distributed, but their typical magnitude and overall market pressure have weakened."
+          "text": "AI-linked equities now send a more consistently positive signal. The share of covered companies with positive one-year returns rose to 66.2%, while the median return increased materially to 11.7%. The AI Equity Index and average sector trading pressure also edged higher, to 37.7 and 44.4. Breadth and typical performance are now moving in the same direction, although the modest changes in the broader indicators point to improvement rather than a wholesale repricing."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "b84928354b06316199857c3b",
-      "generated_at": "2026-11-12T20:52:23.121417+00:00",
+      "evidence_snapshot_id": "822ca9ccbe181e8eb399dffd",
+      "generated_at": "2026-11-13T20:42:26.983141+00:00",
       "generator": "openai",
-      "headline": "Equity breadth edges higher even as typical returns lose momentum",
+      "headline": "Equity performance improves in both breadth and typical returns",
       "label": "Market",
       "references": [
         {
@@ -2769,42 +2855,42 @@
       "version": "6.1.0"
     },
     "workforce": {
-      "analysis": "Positive employment growth now appears in two tracked AI-linked labor channels, a material increase in breadth. Semiconductor manufacturing has become the strongest channel, with employment growth of 2.0%. The weakest channel, however, contracted 5.4%, and that decline also worsened materially. The figures therefore show a clearer pocket of job growth in chip manufacturing, not broad-based momentum across the tracked channels.",
+      "analysis": "Only two tracked AI-linked labor channels show positive employment growth, and only two show positive real-earnings growth. Semiconductor manufacturing is the strongest employment channel, with a 2.0% gain, indicating a clear pocket of expansion rather than broad acceleration. Reuters separately reported that Nubank improved its 2026 efficiency-ratio outlook as AI led to slower hiring. It is an example of one firm linking AI to hiring restraint, not evidence of a general employment effect.",
       "analysis_sentences": [
-        "Positive employment growth now appears in two tracked AI-linked labor channels, a material increase in breadth.",
-        "Semiconductor manufacturing has become the strongest channel, with employment growth of 2.0%.",
-        "The weakest channel, however, contracted 5.4%, and that decline also worsened materially.",
-        "The figures therefore show a clearer pocket of job growth in chip manufacturing, not broad-based momentum across the tracked channels."
+        "Only two tracked AI-linked labor channels show positive employment growth, and only two show positive real-earnings growth.",
+        "Semiconductor manufacturing is the strongest employment channel, with a 2.0% gain, indicating a clear pocket of expansion rather than broad acceleration.",
+        "Reuters separately reported that Nubank improved its 2026 efficiency-ratio outlook as AI led to slower hiring.",
+        "It is an example of one firm linking AI to hiring restraint, not evidence of a general employment effect."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "workforce.employment_breadth",
-            "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "workforce.weakest_channel_growth"
+            "workforce.real_earnings_breadth"
           ],
           "field": "headline",
-          "text": "Employment gains broaden, but remain concentrated"
+          "text": "AI-linked labor gains remain concentrated in a few channels"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-12-93eb1d7fa83b"
+          ],
           "fact_ids": [
             "workforce.employment_breadth",
+            "workforce.real_earnings_breadth",
             "workforce.strongest_channel",
-            "workforce.strongest_channel_growth",
-            "workforce.weakest_channel_growth"
+            "workforce.strongest_channel_growth"
           ],
           "field": "body",
-          "text": "Positive employment growth now appears in two tracked AI-linked labor channels, a material increase in breadth. Semiconductor manufacturing has become the strongest channel, with employment growth of 2.0%. The weakest channel, however, contracted 5.4%, and that decline also worsened materially. The figures therefore show a clearer pocket of job growth in chip manufacturing, not broad-based momentum across the tracked channels."
+          "text": "Only two tracked AI-linked labor channels show positive employment growth, and only two show positive real-earnings growth. Semiconductor manufacturing is the strongest employment channel, with a 2.0% gain, indicating a clear pocket of expansion rather than broad acceleration. Reuters separately reported that Nubank improved its 2026 efficiency-ratio outlook as AI led to slower hiring. It is an example of one firm linking AI to hiring restraint, not evidence of a general employment effect."
         }
       ],
       "domain": "workforce",
-      "evidence_snapshot_id": "2a5aee3762aa503baa00b306",
-      "generated_at": "2026-11-06T20:05:20.941778+00:00",
+      "evidence_snapshot_id": "822ca9ccbe181e8eb399dffd",
+      "generated_at": "2026-11-13T20:42:26.983141+00:00",
       "generator": "openai",
-      "headline": "Employment gains broaden, but remain concentrated",
+      "headline": "AI-linked labor gains remain concentrated in a few channels",
       "label": "Workforce",
       "references": [
         {
@@ -2818,6 +2904,10 @@
         {
           "source_label": "BLS JOLTS",
           "source_url": "https://www.bls.gov/jlt/"
+        },
+        {
+          "source_label": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQVkJIaTFOaGNNSlBRbl80T2ZUZnVqeHE5OVdXV2ZuNFlENjVSaVN6OVhzLWhmOFJBeG9TMXRJTXo4TndBTFdJWURZSTJLc3NpZnU1Tm9pYVltRU1VSWJ5MUlBUkE4V3BEdmRVNmZjSEFjTThUeGZDVTlDM3dhYm5NMExGY0JEMVMzRGt4eDB2a3FSTExaN014R1loYml6QVdVa0JfZ01OVko5LVRrU1ZBcFZGTzY0TmZtVDFMcC1n?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2828,10 +2918,23 @@
   "stage_prompt_versions": {
     "editorial_synthesis": "editorial-synthesis-reset-1.1"
   },
-  "status": "validated",
+  "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 11,
-    "diagnostics": [],
+    "checked_passages": 12,
+    "diagnostics": [
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "finance.body",
+        "text": "Operating cash flow equals 1.23 times current capital expenditure, while cash reserves equal 0.85 years of spending at the current CapEx rate. The first measure indicates coverage from ongoing cash generation; the second shows a shallower reserve cushion. Borrower strain is 30.2, compared with 19.0 for lenders, leaving financing pressure more concentrated on users of capital than on providers."
+      },
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[1]",
+        "text": "Capital-market support has strengthened. The share of covered companies with positive one-year returns increased to 66.2%, and the median return rose materially to 11.7%; the AI Equity Index and sector trading pressure also edged higher. Funding measures are more mixed. Operating cash flow covers current CapEx at 1.23 times, but cash reserves equal 0.85 years of spending at that rate, while borrower strain of 30.2 remains above lender strain of 19.0. The figures show current cash generation above CapEx, less than a year of CapEx held in reserves, and more pressure on borrowers than lenders."
+      }
+    ],
     "hard_errors": [],
     "hard_failures": [],
     "passed": true,
