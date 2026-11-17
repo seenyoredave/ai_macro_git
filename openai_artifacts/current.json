@@ -1,76 +1,81 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261116T225959046912Z_99762e22_6f9db79c",
+  "attempt_id": "20261117T214733711113Z_c79383b8_853a9312",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
-    "finance",
     "data_center",
-    "adoption"
+    "power",
+    "grid_storage",
+    "economic_impact"
   ],
   "editorial_context_event_ids": [
-    "auto-2026-11-10-64b46ef99529",
+    "auto-2026-11-10-947550367ae3",
     "auto-2026-11-12-35965c4f5c53",
-    "auto-2026-11-10-d265fbd006df",
+    "auto-2026-11-16-2c49471b7ebe",
     "auto-2026-11-12-c2027d308e72",
-    "auto-2026-11-10-e52899447b67",
+    "auto-2026-11-17-2a115c66d5e6",
+    "auto-2026-11-08-a5ef645f6a17",
     "auto-2026-11-16-6281f100bb86",
     "auto-2026-11-12-a4c050f0499f",
     "auto-2026-11-12-93eb1d7fa83b",
-    "auto-2026-11-10-9828b5a00b5c",
     "auto-2026-11-12-8933105dd681",
-    "auto-2026-11-10-59ccb46836ce",
+    "auto-2026-11-09-0b5aa316d249",
     "auto-2026-11-16-8166c65ff5e1",
+    "auto-2026-11-17-cbb3088957d4",
     "auto-2026-11-12-ad9eaa131f55",
-    "auto-2026-11-12-131cd39f7999",
-    "auto-2026-11-12-78d86233ac37"
+    "auto-2026-11-10-59ccb46836ce"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
-      "finance",
       "data_center",
-      "adoption"
+      "power",
+      "grid_storage",
+      "economic_impact"
     ],
     "current_event_ids": [
-      "auto-2026-11-10-64b46ef99529",
+      "auto-2026-11-10-947550367ae3",
       "auto-2026-11-12-35965c4f5c53",
-      "auto-2026-11-10-d265fbd006df",
+      "auto-2026-11-16-2c49471b7ebe",
       "auto-2026-11-12-c2027d308e72",
-      "auto-2026-11-10-e52899447b67",
+      "auto-2026-11-17-2a115c66d5e6",
+      "auto-2026-11-08-a5ef645f6a17",
       "auto-2026-11-16-6281f100bb86",
       "auto-2026-11-12-a4c050f0499f",
       "auto-2026-11-12-93eb1d7fa83b",
-      "auto-2026-11-10-9828b5a00b5c",
       "auto-2026-11-12-8933105dd681",
-      "auto-2026-11-10-59ccb46836ce",
+      "auto-2026-11-09-0b5aa316d249",
       "auto-2026-11-16-8166c65ff5e1",
+      "auto-2026-11-17-cbb3088957d4",
       "auto-2026-11-12-ad9eaa131f55",
-      "auto-2026-11-12-131cd39f7999",
-      "auto-2026-11-12-78d86233ac37"
+      "auto-2026-11-10-59ccb46836ce"
     ],
     "material_domains": [
       "market"
     ],
     "new_event_domains": [
       "market",
-      "finance",
       "data_center",
-      "adoption"
+      "power",
+      "grid_storage",
+      "economic_impact"
     ],
     "new_event_ids": [
-      "auto-2026-11-16-6281f100bb86",
-      "auto-2026-11-16-8166c65ff5e1",
-      "auto-2026-11-12-ad9eaa131f55",
-      "auto-2026-11-12-131cd39f7999",
-      "auto-2026-11-12-78d86233ac37"
+      "auto-2026-11-10-947550367ae3",
+      "auto-2026-11-16-2c49471b7ebe",
+      "auto-2026-11-17-2a115c66d5e6",
+      "auto-2026-11-08-a5ef645f6a17",
+      "auto-2026-11-09-0b5aa316d249",
+      "auto-2026-11-17-cbb3088957d4"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
     "market",
-    "finance"
+    "grid_storage",
+    "economic_impact"
   ],
   "evidence_packets": {
     "adoption": {
@@ -488,10 +493,10 @@
         },
         {
           "context": "",
-          "display": "1,381",
+          "display": "1,382",
           "id": "connectivity.interconnection_facilities_or_floor",
           "label": "PeeringDB interconnection facilities or coverage floor",
-          "value": 1381.0
+          "value": 1382.0
         },
         {
           "context": "",
@@ -1202,52 +1207,52 @@
       "facts": [
         {
           "context": "",
-          "display": "36.6",
+          "display": "35.8",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 36.62538808780311
+          "value": 35.83562858649464
         },
         {
           "context": "",
-          "display": "43.2",
+          "display": "40.9",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 43.20640892744119
+          "value": 40.91809891316087
         },
         {
           "context": "",
-          "display": "60.8%",
+          "display": "63.2%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6078431372549019
+          "value": 0.6323529411764706
         },
         {
           "context": "",
-          "display": "10.0%",
+          "display": "10.8%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.10021640152475542
+          "value": 0.10788875305633905
         },
         {
           "context": "",
-          "display": "13.9%",
+          "display": "14.6%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.1387741292397589
+          "value": 0.14600207937792675
         },
         {
           "context": "",
-          "display": "64.9%",
+          "display": "65.1%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6492842141410584
+          "value": 0.6509450493501622
         },
         {
           "context": "",
           "display": "18.4",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 18.441746593556317
+          "value": 18.373200849512536
         },
         {
           "context": "",
@@ -1264,7 +1269,7 @@
           "value": 0.0
         }
       ],
-      "importance": 19.92842141410584,
+      "importance": 20.094504935016218,
       "label": "Market",
       "references": [
         {
@@ -1684,19 +1689,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "99762e220847cce80c8f0f86",
-  "generated_at": "2026-11-16T23:00:56.355386+00:00",
+  "evidence_snapshot_id": "c79383b8e7764cb2422b6a5a",
+  "generated_at": "2026-11-17T21:48:29.487292+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 57.30261259500003,
-      "input_tokens": 4088,
+      "elapsed_sec": 55.77216884699999,
+      "input_tokens": 4107,
       "model": "gpt-5.6-sol",
-      "output_tokens": 4914,
+      "output_tokens": 5960,
       "poll_attempts": 25,
       "poll_errors": [],
-      "response_id": "resp_056ca8a2035152fa006afb8aefe1dc87d083fbdc18e5c4dd41",
+      "response_id": "resp_0999c3a8b22e90ae006afccb7697b887d1ae9d9da56055758b",
       "terminal_status": "completed",
-      "total_tokens": 9002
+      "total_tokens": 10067
     }
   },
   "max_output_tokens": null,
@@ -1707,11 +1712,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "99762e220847cce80c8f0f86",
-    "expires_at": "2026-11-17T23:00:56.358288+00:00",
+    "current_evidence_snapshot_id": "c79383b8e7764cb2422b6a5a",
+    "expires_at": "2026-11-18T21:48:29.489154+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-11-16T23:00:56.358288+00:00",
+    "published_at": "2026-11-17T21:48:29.489154+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1722,21 +1727,21 @@
         "poll_attempts": 25,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_056ca8a2035152fa006afb8aefe1dc87d083fbdc18e5c4dd41",
+        "response_id": "resp_0999c3a8b22e90ae006afccb7697b887d1ae9d9da56055758b",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The equity signal has softened across the covered universe. Companies with positive one-year returns fell materially to 60.8%, and the median return declined materially to 10.0%. The AI Equity Index slipped to 36.6 and average sector trading pressure to 43.2. Most covered companies remain positive over one year, but the simultaneous decline in breadth and typical performance indicates that the previous improvement has partly unwound.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\"]},\"headline\":{\"text\":\"Equity breadth and typical returns retreat\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Lender strain rose slightly to 19.6, while borrower strain remains higher at 30.2. Operating cash flow still equals 1.23 times current CapEx, but cash reserves cover only 0.85 years of spending at that rate. Reuters separately reported that Nvidia\u2019s AI-financing activity may persist with less risk appetite. Current spending remains covered by cash generation, but the reserve cushion is limited and some dealmaking may become more selective.\",\"event_ids\":[\"auto-2026-11-16-6281f100bb86\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Lender strain edges higher, but borrowers still face more pressure\",\"event_ids\":[],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The AI buildout remains large as market support cools and business use stays partial\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"data_center.development_sites\",\"data_center.operating_sites\",\"adoption.current_business_use_pct\"]},\"paragraphs\":[{\"text\":\"Market support for AI-linked activity has weakened. The share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 10.0%. The AI Equity Index and average sector trading pressure also edged lower. Most covered companies remain positive over one year, but the retreat across all four measures marks a reversal of the previous broadening in performance.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\"]},{\"text\":\"The physical expansion remains substantial. Available records show 1,556 data-center sites in development, roughly half the 3,068 operating sites, with 894 sites in the tracked active pipeline. The finance measures do not yet show a current cash-flow shortfall: operating cash flow equals 1.23 times CapEx. Reserves, however, cover only 0.85 years of spending, and borrower strain of 30.2 remains above lender strain of 19.6. Reuters also reported that Nvidia\u2019s AI-financing activity may continue with less risk appetite, adding a concrete sign that some financing could become more selective.\",\"event_ids\":[\"auto-2026-11-16-6281f100bb86\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"Business deployment remains partial. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a gap of four percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, though that measure is not directly comparable with organization-level adoption. A recent survey also reported that businesses are moving to build AI-agent workforces while traditional management practices lag. Large physical commitments are therefore meeting cooler market signals before business use and supporting organizational practices have become broad.\",\"event_ids\":[\"auto-2026-11-12-78d86233ac37\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The market signal improved in breadth but weakened in intensity. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return edged up to 10.8%. At the same time, the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave reported revenue above expectations and raised guidance, easing reported concerns about an AI slowdown. The broader readings nevertheless point to wider participation rather than uniformly stronger market conditions.\",\"event_ids\":[\"auto-2026-11-10-947550367ae3\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Equity breadth improves as trading pressure falls\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.pressure\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages. Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda. Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity.\",\"event_ids\":[\"auto-2026-11-17-2a115c66d5e6\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"Most of the 2,061 GW interconnection queue remains at earlier stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.1% and real output 2.3%, but real hourly compensation increased only 0.6%. Unit labor costs rose 2.4%. The result is positive growth in output per hour without a comparable gain in workers\u2019 real hourly pay. These aggregate measures do not isolate AI\u2019s contribution, but they provide little evidence that current productivity growth is already translating into broad compensation gains.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity growth continues to outpace real hourly compensation\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Equity breadth improves while the power pipeline remains difficult to convert\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Equity performance has broadened even as the aggregate market signal has softened. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return reached 10.8%. Yet the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave\u2019s revenue beat and higher guidance eased reported slowdown concerns, but the wider data show improved breadth rather than a uniformly stronger AI trade.\",\"event_ids\":[\"auto-2026-11-10-947550367ae3\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},{\"text\":\"Physical expansion remains large, but converting plans into usable capacity is uncertain. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites. Commercial electricity demand is growing 3.5%, faster than the 1.8% increase in total retail demand. Against that demand, the active interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, but the queue remains a measure of proposals and progress rather than delivered supply.\",\"event_ids\":[\"auto-2026-11-17-2a115c66d5e6\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"power.demand_growth\",\"power.commercial_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Aggregate economic results remain positive but do not identify an AI payoff. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs increased 2.4%. Current AI use is reported by 24.6% of businesses, so deployment remains partial. These measures cannot isolate AI\u2019s contribution, and compensation growth remains well below the measured gains in productivity and output.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\",\"adoption.current_business_use_pct\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1794870054.0,
+      "completed_at": 1794952107.0,
       "conversation": null,
-      "created_at": 1794869999.0,
+      "created_at": 1794952054.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_056ca8a2035152fa006afb8aefe1dc87d083fbdc18e5c4dd41",
+      "id": "resp_0999c3a8b22e90ae006afccb7697b887d1ae9d9da56055758b",
       "image": {
         "context_compression": "disabled"
       },
@@ -1753,7 +1758,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8af1afc087d0aeaa8eb79a9fb0cf",
+          "id": "rs_0999c3a8b22e90ae006afccb786d7887d1ac0f8660e1f9f8cf",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1761,7 +1766,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8af7a00487d09764c36450a473b7",
+          "id": "rs_0999c3a8b22e90ae006afccb7d569c87d1935e507d3a652821",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1769,7 +1774,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8b01828887d0ba7a9eb5fb058f4f",
+          "id": "rs_0999c3a8b22e90ae006afccb828f0487d192de2c51a83b7133",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1777,7 +1782,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8b0343bc87d0b92f9b00c9754e3f",
+          "id": "rs_0999c3a8b22e90ae006afccb87451c87d18e5d06ceb1c50a68",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1785,7 +1790,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8b088b4887d0bc3469a670d13690",
+          "id": "rs_0999c3a8b22e90ae006afccb8be9c487d196101869dd5c2797",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1793,7 +1798,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8b0e3a3c87d0b5c006bd171e3cc1",
+          "id": "rs_0999c3a8b22e90ae006afccb90e37887d1a72f3f3f67a09b8c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1801,7 +1806,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8b17ba8487d0b2b47bd4bcb24871",
+          "id": "rs_0999c3a8b22e90ae006afccb9563cc87d1b6855474cd1116ac",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1809,7 +1814,23 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_056ca8a2035152fa006afb8b1cd73487d0b1f926d6c4ab777f",
+          "id": "rs_0999c3a8b22e90ae006afccb994fc487d1a1121d94b9b7fe4f",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0999c3a8b22e90ae006afccb9e502c87d19edf20f47703eac6",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0999c3a8b22e90ae006afccba2e8fc87d18016cad7109d2f6f",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1819,11 +1840,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The equity signal has softened across the covered universe. Companies with positive one-year returns fell materially to 60.8%, and the median return declined materially to 10.0%. The AI Equity Index slipped to 36.6 and average sector trading pressure to 43.2. Most covered companies remain positive over one year, but the simultaneous decline in breadth and typical performance indicates that the previous improvement has partly unwound.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\"]},\"headline\":{\"text\":\"Equity breadth and typical returns retreat\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Lender strain rose slightly to 19.6, while borrower strain remains higher at 30.2. Operating cash flow still equals 1.23 times current CapEx, but cash reserves cover only 0.85 years of spending at that rate. Reuters separately reported that Nvidia\u2019s AI-financing activity may persist with less risk appetite. Current spending remains covered by cash generation, but the reserve cushion is limited and some dealmaking may become more selective.\",\"event_ids\":[\"auto-2026-11-16-6281f100bb86\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Lender strain edges higher, but borrowers still face more pressure\",\"event_ids\":[],\"fact_ids\":[\"finance.lender_strain\",\"finance.borrower_strain\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The AI buildout remains large as market support cools and business use stays partial\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"data_center.development_sites\",\"data_center.operating_sites\",\"adoption.current_business_use_pct\"]},\"paragraphs\":[{\"text\":\"Market support for AI-linked activity has weakened. The share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 10.0%. The AI Equity Index and average sector trading pressure also edged lower. Most covered companies remain positive over one year, but the retreat across all four measures marks a reversal of the previous broadening in performance.\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.median_return\",\"market.aei\",\"market.pressure\"]},{\"text\":\"The physical expansion remains substantial. Available records show 1,556 data-center sites in development, roughly half the 3,068 operating sites, with 894 sites in the tracked active pipeline. The finance measures do not yet show a current cash-flow shortfall: operating cash flow equals 1.23 times CapEx. Reserves, however, cover only 0.85 years of spending, and borrower strain of 30.2 remains above lender strain of 19.6. Reuters also reported that Nvidia\u2019s AI-financing activity may continue with less risk appetite, adding a concrete sign that some financing could become more selective.\",\"event_ids\":[\"auto-2026-11-16-6281f100bb86\"],\"fact_ids\":[\"data_center.development_sites\",\"data_center.operating_sites\",\"data_center.development_to_operating\",\"data_center.tracked_pipeline_sites\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"finance.borrower_strain\",\"finance.lender_strain\"]},{\"text\":\"Business deployment remains partial. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a gap of four percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, though that measure is not directly comparable with organization-level adoption. A recent survey also reported that businesses are moving to build AI-agent workforces while traditional management practices lag. Large physical commitments are therefore meeting cooler market signals before business use and supporting organizational practices have become broad.\",\"event_ids\":[\"auto-2026-11-12-78d86233ac37\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The market signal improved in breadth but weakened in intensity. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return edged up to 10.8%. At the same time, the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave reported revenue above expectations and raised guidance, easing reported concerns about an AI slowdown. The broader readings nevertheless point to wider participation rather than uniformly stronger market conditions.\",\"event_ids\":[\"auto-2026-11-10-947550367ae3\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"Equity breadth improves as trading pressure falls\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"market.pressure\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages. Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda. Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity.\",\"event_ids\":[\"auto-2026-11-17-2a115c66d5e6\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"Most of the 2,061 GW interconnection queue remains at earlier stages\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Nonfarm-business productivity grew 2.1% and real output 2.3%, but real hourly compensation increased only 0.6%. Unit labor costs rose 2.4%. The result is positive growth in output per hour without a comparable gain in workers\u2019 real hourly pay. These aggregate measures do not isolate AI\u2019s contribution, but they provide little evidence that current productivity growth is already translating into broad compensation gains.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\"]},\"headline\":{\"text\":\"Productivity growth continues to outpace real hourly compensation\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Equity breadth improves while the power pipeline remains difficult to convert\",\"event_ids\":[],\"fact_ids\":[\"market.positive_breadth\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Equity performance has broadened even as the aggregate market signal has softened. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return reached 10.8%. Yet the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave\u2019s revenue beat and higher guidance eased reported slowdown concerns, but the wider data show improved breadth rather than a uniformly stronger AI trade.\",\"event_ids\":[\"auto-2026-11-10-947550367ae3\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},{\"text\":\"Physical expansion remains large, but converting plans into usable capacity is uncertain. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites. Commercial electricity demand is growing 3.5%, faster than the 1.8% increase in total retail demand. Against that demand, the active interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, but the queue remains a measure of proposals and progress rather than delivered supply.\",\"event_ids\":[\"auto-2026-11-17-2a115c66d5e6\"],\"fact_ids\":[\"data_center.operating_sites\",\"data_center.development_sites\",\"power.demand_growth\",\"power.commercial_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Aggregate economic results remain positive but do not identify an AI payoff. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs increased 2.4%. Current AI use is reported by 24.6% of businesses, so deployment remains partial. These measures cannot isolate AI\u2019s contribution, and compensation growth remains well below the measured gains in productivity and output.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"economic_impact.unit_labor_cost_growth\",\"adoption.current_business_use_pct\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_056ca8a2035152fa006afb8b1e280887d080ebada2de90fda6",
+          "id": "msg_0999c3a8b22e90ae006afccba4a2dc87d1a0c2309364ed3d44",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -1996,20 +2017,20 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4088,
+        "input_tokens": 4107,
         "input_tokens_details": {
-          "cache_write_tokens": 4085,
+          "cache_write_tokens": 4104,
           "cache_write_tokens_details": {
             "ttl_12h_tokens": 0,
-            "ttl_30m_tokens": 4085
+            "ttl_30m_tokens": 4104
           },
           "cached_tokens": 0
         },
-        "output_tokens": 4914,
+        "output_tokens": 5960,
         "output_tokens_details": {
-          "reasoning_tokens": 3998
+          "reasoning_tokens": 4821
         },
-        "total_tokens": 9002
+        "total_tokens": 10067
       },
       "user": null
     }
@@ -2284,40 +2305,40 @@
       "version": "6.1.0"
     },
     "economic_impact": {
-      "analysis": "Aggregate outcomes shifted to a less favorable mix. Nonfarm-business productivity growth eased slightly to 2.1% and real output growth to 2.3%, while unit labor cost growth rose materially to 2.4%. The labor-share index remains 8.3% below 2020, despite a slight improvement in the latest reading. These economy-wide measures do not isolate AI\u2019s contribution, but they show a moderation in measured productivity growth alongside stronger labor-cost growth.",
+      "analysis": "Nonfarm-business productivity grew 2.1% and real output 2.3%, but real hourly compensation increased only 0.6%. Unit labor costs rose 2.4%. The result is positive growth in output per hour without a comparable gain in workers\u2019 real hourly pay. These aggregate measures do not isolate AI\u2019s contribution, but they provide little evidence that current productivity growth is already translating into broad compensation gains.",
       "analysis_sentences": [
-        "Aggregate outcomes shifted to a less favorable mix.",
-        "Nonfarm-business productivity growth eased slightly to 2.1% and real output growth to 2.3%, while unit labor cost growth rose materially to 2.4%.",
-        "The labor-share index remains 8.3% below 2020, despite a slight improvement in the latest reading.",
-        "These economy-wide measures do not isolate AI\u2019s contribution, but they show a moderation in measured productivity growth alongside stronger labor-cost growth."
+        "Nonfarm-business productivity grew 2.1% and real output 2.3%, but real hourly compensation increased only 0.6%.",
+        "Unit labor costs rose 2.4%.",
+        "The result is positive growth in output per hour without a comparable gain in workers\u2019 real hourly pay.",
+        "These aggregate measures do not isolate AI\u2019s contribution, but they provide little evidence that current productivity growth is already translating into broad compensation gains."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "economic_impact.productivity_growth",
-            "economic_impact.unit_labor_cost_growth"
+            "economic_impact.real_compensation_growth"
           ],
           "field": "headline",
-          "text": "Productivity eases as unit labor cost growth rises"
+          "text": "Productivity growth continues to outpace real hourly compensation"
         },
         {
           "event_ids": [],
           "fact_ids": [
             "economic_impact.productivity_growth",
             "economic_impact.real_output_growth",
-            "economic_impact.unit_labor_cost_growth",
-            "economic_impact.labor_share_since_2020"
+            "economic_impact.real_compensation_growth",
+            "economic_impact.unit_labor_cost_growth"
           ],
           "field": "body",
-          "text": "Aggregate outcomes shifted to a less favorable mix. Nonfarm-business productivity growth eased slightly to 2.1% and real output growth to 2.3%, while unit labor cost growth rose materially to 2.4%. The labor-share index remains 8.3% below 2020, despite a slight improvement in the latest reading. These economy-wide measures do not isolate AI\u2019s contribution, but they show a moderation in measured productivity growth alongside stronger labor-cost growth."
+          "text": "Nonfarm-business productivity grew 2.1% and real output 2.3%, but real hourly compensation increased only 0.6%. Unit labor costs rose 2.4%. The result is positive growth in output per hour without a comparable gain in workers\u2019 real hourly pay. These aggregate measures do not isolate AI\u2019s contribution, but they provide little evidence that current productivity growth is already translating into broad compensation gains."
         }
       ],
       "domain": "economic_impact",
-      "evidence_snapshot_id": "25c2f05b6acbce406b42b56d",
-      "generated_at": "2026-11-05T20:42:03.960473+00:00",
+      "evidence_snapshot_id": "c79383b8e7764cb2422b6a5a",
+      "generated_at": "2026-11-17T21:48:29.487099+00:00",
       "generator": "openai",
-      "headline": "Productivity eases as unit labor cost growth rises",
+      "headline": "Productivity growth continues to outpace real hourly compensation",
       "label": "Economic Outcomes",
       "references": [
         {
@@ -2446,40 +2467,43 @@
       "version": "6.1.0"
     },
     "grid_storage": {
-      "analysis": "Electric-power construction growth accelerated materially to 14.0%. At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages. Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development.",
+      "analysis": "The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages. Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda. Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity.",
       "analysis_sentences": [
-        "Electric-power construction growth accelerated materially to 14.0%.",
-        "At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages.",
-        "Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development."
+        "The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages.",
+        "Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation.",
+        "Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda.",
+        "Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "grid_storage.electric_power_construction_growth",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share"
-          ],
-          "field": "headline",
-          "text": "Power construction accelerates, but most queued capacity remains at earlier stages"
-        },
-        {
-          "event_ids": [],
-          "fact_ids": [
-            "grid_storage.electric_power_construction_growth",
             "grid_storage.queue_gw",
             "grid_storage.advanced_share",
-            "grid_storage.storage_queue_gw"
+            "grid_storage.historical_operational_pct"
+          ],
+          "field": "headline",
+          "text": "Most of the 2,061 GW interconnection queue remains at earlier stages"
+        },
+        {
+          "event_ids": [
+            "auto-2026-11-17-2a115c66d5e6"
+          ],
+          "fact_ids": [
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.storage_queue_gw",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "body",
-          "text": "Electric-power construction growth accelerated materially to 14.0%. At the same time, the active interconnection queue totals 2,061 GW, including 552.7 GW of storage, and only 24.2% of queued capacity has reached executed-agreement or construction stages. Current infrastructure work is expanding quickly, but most proposed generation and storage capacity remains at earlier stages of development."
+          "text": "The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages. Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda. Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity."
         }
       ],
       "domain": "grid_storage",
-      "evidence_snapshot_id": "3c41402b7245b81e57719d59",
-      "generated_at": "2026-11-02T22:27:20.900540+00:00",
+      "evidence_snapshot_id": "c79383b8e7764cb2422b6a5a",
+      "generated_at": "2026-11-17T21:48:29.487099+00:00",
       "generator": "openai",
-      "headline": "Power construction accelerates, but most queued capacity remains at earlier stages",
+      "headline": "Most of the 2,061 GW interconnection queue remains at earlier stages",
       "label": "Grid & Storage",
       "references": [
         {
@@ -2497,86 +2521,87 @@
         {
           "source_label": "Census Construction Spending",
           "source_url": "https://www.census.gov/constructionspending"
+        },
+        {
+          "source_label": "Utility Dive",
+          "source_url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNclFpTEhzLUU5YjU4c0xrSjBzRzJ6c2x3SU5BaHc5a3c4WHpMWVpHYzhZUFJ1QktGZXB6bWNrb210aWxKZm5hVEV0OE84UzgyMzFYalN1Vm8xT0lrdzVFMnlwamVGWHlxd002VXpVaTVRY2FNWVY1U3owRUItME9zZVJzb0NTekFCZm9ud2xBSG03WlNQcHc?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Market support for AI-linked activity has weakened. The share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 10.0%. The AI Equity Index and average sector trading pressure also edged lower. Most covered companies remain positive over one year, but the retreat across all four measures marks a reversal of the previous broadening in performance. The physical expansion remains substantial. Available records show 1,556 data-center sites in development, roughly half the 3,068 operating sites, with 894 sites in the tracked active pipeline. The finance measures do not yet show a current cash-flow shortfall: operating cash flow equals 1.23 times CapEx. Reserves, however, cover only 0.85 years of spending, and borrower strain of 30.2 remains above lender strain of 19.6. Reuters also reported that Nvidia\u2019s AI-financing activity may continue with less risk appetite, adding a concrete sign that some financing could become more selective. Business deployment remains partial. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a gap of four percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, though that measure is not directly comparable with organization-level adoption. A recent survey also reported that businesses are moving to build AI-agent workforces while traditional management practices lag. Large physical commitments are therefore meeting cooler market signals before business use and supporting organizational practices have become broad.",
+      "analysis": "Equity performance has broadened even as the aggregate market signal has softened. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return reached 10.8%. Yet the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave\u2019s revenue beat and higher guidance eased reported slowdown concerns, but the wider data show improved breadth rather than a uniformly stronger AI trade. Physical expansion remains large, but converting plans into usable capacity is uncertain. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites. Commercial electricity demand is growing 3.5%, faster than the 1.8% increase in total retail demand. Against that demand, the active interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, but the queue remains a measure of proposals and progress rather than delivered supply. Aggregate economic results remain positive but do not identify an AI payoff. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs increased 2.4%. Current AI use is reported by 24.6% of businesses, so deployment remains partial. These measures cannot isolate AI\u2019s contribution, and compensation growth remains well below the measured gains in productivity and output.",
       "analysis_paragraphs": [
-        "Market support for AI-linked activity has weakened. The share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 10.0%. The AI Equity Index and average sector trading pressure also edged lower. Most covered companies remain positive over one year, but the retreat across all four measures marks a reversal of the previous broadening in performance.",
-        "The physical expansion remains substantial. Available records show 1,556 data-center sites in development, roughly half the 3,068 operating sites, with 894 sites in the tracked active pipeline. The finance measures do not yet show a current cash-flow shortfall: operating cash flow equals 1.23 times CapEx. Reserves, however, cover only 0.85 years of spending, and borrower strain of 30.2 remains above lender strain of 19.6. Reuters also reported that Nvidia\u2019s AI-financing activity may continue with less risk appetite, adding a concrete sign that some financing could become more selective.",
-        "Business deployment remains partial. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a gap of four percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, though that measure is not directly comparable with organization-level adoption. A recent survey also reported that businesses are moving to build AI-agent workforces while traditional management practices lag. Large physical commitments are therefore meeting cooler market signals before business use and supporting organizational practices have become broad."
+        "Equity performance has broadened even as the aggregate market signal has softened. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return reached 10.8%. Yet the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave\u2019s revenue beat and higher guidance eased reported slowdown concerns, but the wider data show improved breadth rather than a uniformly stronger AI trade.",
+        "Physical expansion remains large, but converting plans into usable capacity is uncertain. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites. Commercial electricity demand is growing 3.5%, faster than the 1.8% increase in total retail demand. Against that demand, the active interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, but the queue remains a measure of proposals and progress rather than delivered supply.",
+        "Aggregate economic results remain positive but do not identify an AI payoff. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs increased 2.4%. Current AI use is reported by 24.6% of businesses, so deployment remains partial. These measures cannot isolate AI\u2019s contribution, and compensation growth remains well below the measured gains in productivity and output."
       ],
       "analysis_sentences": [
-        "Market support for AI-linked activity has weakened.",
-        "The share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 10.0%.",
-        "The AI Equity Index and average sector trading pressure also edged lower.",
-        "Most covered companies remain positive over one year, but the retreat across all four measures marks a reversal of the previous broadening in performance.",
-        "The physical expansion remains substantial.",
-        "Available records show 1,556 data-center sites in development, roughly half the 3,068 operating sites, with 894 sites in the tracked active pipeline.",
-        "The finance measures do not yet show a current cash-flow shortfall: operating cash flow equals 1.23 times CapEx.",
-        "Reserves, however, cover only 0.85 years of spending, and borrower strain of 30.2 remains above lender strain of 19.6.",
-        "Reuters also reported that Nvidia\u2019s AI-financing activity may continue with less risk appetite, adding a concrete sign that some financing could become more selective.",
-        "Business deployment remains partial.",
-        "Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a gap of four percentage points.",
-        "Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, though that measure is not directly comparable with organization-level adoption.",
-        "A recent survey also reported that businesses are moving to build AI-agent workforces while traditional management practices lag.",
-        "Large physical commitments are therefore meeting cooler market signals before business use and supporting organizational practices have become broad."
+        "Equity performance has broadened even as the aggregate market signal has softened.",
+        "The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return reached 10.8%.",
+        "Yet the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9.",
+        "CoreWeave\u2019s revenue beat and higher guidance eased reported slowdown concerns, but the wider data show improved breadth rather than a uniformly stronger AI trade.",
+        "Physical expansion remains large, but converting plans into usable capacity is uncertain.",
+        "Available records show 1,556 data-center sites in development, about half the 3,068 operating sites.",
+        "Commercial electricity demand is growing 3.5%, faster than the 1.8% increase in total retail demand.",
+        "Against that demand, the active interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation.",
+        "Grid operators have filed large-load interconnection reforms at FERC, but the queue remains a measure of proposals and progress rather than delivered supply.",
+        "Aggregate economic results remain positive but do not identify an AI payoff.",
+        "Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs increased 2.4%.",
+        "Current AI use is reported by 24.6% of businesses, so deployment remains partial.",
+        "These measures cannot isolate AI\u2019s contribution, and compensation growth remains well below the measured gains in productivity and output."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "market.positive_breadth",
-            "market.median_return",
-            "data_center.development_sites",
-            "data_center.operating_sites",
-            "adoption.current_business_use_pct"
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "headline",
-          "text": "The AI buildout remains large as market support cools and business use stays partial"
+          "text": "Equity breadth improves while the power pipeline remains difficult to convert"
+        },
+        {
+          "event_ids": [
+            "auto-2026-11-10-947550367ae3"
+          ],
+          "fact_ids": [
+            "market.aei",
+            "market.pressure",
+            "market.positive_breadth",
+            "market.median_return"
+          ],
+          "field": "paragraphs[0]",
+          "text": "Equity performance has broadened even as the aggregate market signal has softened. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return reached 10.8%. Yet the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave\u2019s revenue beat and higher guidance eased reported slowdown concerns, but the wider data show improved breadth rather than a uniformly stronger AI trade."
+        },
+        {
+          "event_ids": [
+            "auto-2026-11-17-2a115c66d5e6"
+          ],
+          "fact_ids": [
+            "data_center.operating_sites",
+            "data_center.development_sites",
+            "power.demand_growth",
+            "power.commercial_growth",
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct"
+          ],
+          "field": "paragraphs[1]",
+          "text": "Physical expansion remains large, but converting plans into usable capacity is uncertain. Available records show 1,556 data-center sites in development, about half the 3,068 operating sites. Commercial electricity demand is growing 3.5%, faster than the 1.8% increase in total retail demand. Against that demand, the active interconnection queue totals 2,061 GW, yet only 24.2% is in executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, but the queue remains a measure of proposals and progress rather than delivered supply."
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "market.positive_breadth",
-            "market.median_return",
-            "market.aei",
-            "market.pressure"
-          ],
-          "field": "paragraphs[0]",
-          "text": "Market support for AI-linked activity has weakened. The share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 10.0%. The AI Equity Index and average sector trading pressure also edged lower. Most covered companies remain positive over one year, but the retreat across all four measures marks a reversal of the previous broadening in performance."
-        },
-        {
-          "event_ids": [
-            "auto-2026-11-16-6281f100bb86"
-          ],
-          "fact_ids": [
-            "data_center.development_sites",
-            "data_center.operating_sites",
-            "data_center.development_to_operating",
-            "data_center.tracked_pipeline_sites",
-            "finance.internal_funding_coverage",
-            "finance.cash_reserve_coverage_years",
-            "finance.borrower_strain",
-            "finance.lender_strain"
-          ],
-          "field": "paragraphs[1]",
-          "text": "The physical expansion remains substantial. Available records show 1,556 data-center sites in development, roughly half the 3,068 operating sites, with 894 sites in the tracked active pipeline. The finance measures do not yet show a current cash-flow shortfall: operating cash flow equals 1.23 times CapEx. Reserves, however, cover only 0.85 years of spending, and borrower strain of 30.2 remains above lender strain of 19.6. Reuters also reported that Nvidia\u2019s AI-financing activity may continue with less risk appetite, adding a concrete sign that some financing could become more selective."
-        },
-        {
-          "event_ids": [
-            "auto-2026-11-12-78d86233ac37"
-          ],
-          "fact_ids": [
-            "adoption.current_business_use_pct",
-            "adoption.expected_business_use_pct",
-            "adoption.expected_adoption_gap_ppts",
-            "adoption.consumer_overall_pct"
+            "economic_impact.productivity_growth",
+            "economic_impact.real_output_growth",
+            "economic_impact.real_compensation_growth",
+            "economic_impact.unit_labor_cost_growth",
+            "adoption.current_business_use_pct"
           ],
           "field": "paragraphs[2]",
-          "text": "Business deployment remains partial. Current AI use is reported by 24.6% of businesses, compared with 28.6% expecting use within six months, a gap of four percentage points. Separately, 60.8% of adults ages 18\u201364 report some generative-AI use, though that measure is not directly comparable with organization-level adoption. A recent survey also reported that businesses are moving to build AI-agent workforces while traditional management practices lag. Large physical commitments are therefore meeting cooler market signals before business use and supporting organizational practices have become broad."
+          "text": "Aggregate economic results remain positive but do not identify an AI payoff. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6% and unit labor costs increased 2.4%. Current AI use is reported by 24.6% of businesses, so deployment remains partial. These measures cannot isolate AI\u2019s contribution, and compensation growth remains well below the measured gains in productivity and output."
         }
       ],
       "domain": "macro",
@@ -2585,25 +2610,25 @@
           "context": "",
           "fact_id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": "60.8%"
+          "value": "63.2%"
         },
         {
           "context": "",
-          "fact_id": "market.median_return",
-          "label": "Median one-year return",
-          "value": "10.0%"
+          "fact_id": "grid_storage.advanced_share",
+          "label": "Queue share in executed-agreement or construction stages",
+          "value": "24.2%"
         },
         {
           "context": "",
-          "fact_id": "data_center.development_sites",
-          "label": "Sites in development in available project records",
-          "value": "1,556"
+          "fact_id": "grid_storage.historical_operational_pct",
+          "label": "2000\u20132020 queue cohort that reached operation",
+          "value": "13%"
         }
       ],
-      "evidence_snapshot_id": "99762e220847cce80c8f0f86",
-      "generated_at": "2026-11-16T23:00:56.355110+00:00",
+      "evidence_snapshot_id": "c79383b8e7764cb2422b6a5a",
+      "generated_at": "2026-11-17T21:48:29.487099+00:00",
       "generator": "openai",
-      "headline": "The AI buildout remains large as market support cools and business use stays partial",
+      "headline": "Equity breadth improves while the power pipeline remains difficult to convert",
       "label": "AI Macro",
       "references": [
         {
@@ -2615,65 +2640,70 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "FRED",
-          "source_url": "https://fred.stlouisfed.org/"
+          "source_label": "Pew / Data Center Map",
+          "source_url": "https://www.pewresearch.org/short-reads/2026/04/13/most-new-data-centers-in-the-us-are-coming-to-rural-areas/"
         },
         {
-          "source_label": "Chicago Fed NFCI",
-          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
+          "source_label": "FracTracker Alliance",
+          "source_url": "https://fractracker.org/2026/04/open-u-s-data-centers-tracker/"
         },
         {
-          "source_label": "New York Fed CMDI",
-          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
+          "source_label": "Deduplicated campus records",
+          "source_url": ""
         },
         {
-          "source_label": "Microsoft FY2026 Q3 AI disclosure",
-          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
+          "source_label": "Gigawatt Map",
+          "source_url": "https://gigawattmap.com/"
         }
       ],
       "selected_domains": [
         "market",
-        "finance",
         "data_center",
-        "adoption"
+        "power",
+        "grid_storage",
+        "adoption",
+        "economic_impact"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The equity signal has softened across the covered universe. Companies with positive one-year returns fell materially to 60.8%, and the median return declined materially to 10.0%. The AI Equity Index slipped to 36.6 and average sector trading pressure to 43.2. Most covered companies remain positive over one year, but the simultaneous decline in breadth and typical performance indicates that the previous improvement has partly unwound.",
+      "analysis": "The market signal improved in breadth but weakened in intensity. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return edged up to 10.8%. At the same time, the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave reported revenue above expectations and raised guidance, easing reported concerns about an AI slowdown. The broader readings nevertheless point to wider participation rather than uniformly stronger market conditions.",
       "analysis_sentences": [
-        "The equity signal has softened across the covered universe.",
-        "Companies with positive one-year returns fell materially to 60.8%, and the median return declined materially to 10.0%.",
-        "The AI Equity Index slipped to 36.6 and average sector trading pressure to 43.2.",
-        "Most covered companies remain positive over one year, but the simultaneous decline in breadth and typical performance indicates that the previous improvement has partly unwound."
+        "The market signal improved in breadth but weakened in intensity.",
+        "The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return edged up to 10.8%.",
+        "At the same time, the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9.",
+        "CoreWeave reported revenue above expectations and raised guidance, easing reported concerns about an AI slowdown.",
+        "The broader readings nevertheless point to wider participation rather than uniformly stronger market conditions."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
             "market.positive_breadth",
-            "market.median_return"
-          ],
-          "field": "headline",
-          "text": "Equity breadth and typical returns retreat"
-        },
-        {
-          "event_ids": [],
-          "fact_ids": [
-            "market.positive_breadth",
-            "market.median_return",
-            "market.aei",
             "market.pressure"
           ],
+          "field": "headline",
+          "text": "Equity breadth improves as trading pressure falls"
+        },
+        {
+          "event_ids": [
+            "auto-2026-11-10-947550367ae3"
+          ],
+          "fact_ids": [
+            "market.aei",
+            "market.pressure",
+            "market.positive_breadth",
+            "market.median_return"
+          ],
           "field": "body",
-          "text": "The equity signal has softened across the covered universe. Companies with positive one-year returns fell materially to 60.8%, and the median return declined materially to 10.0%. The AI Equity Index slipped to 36.6 and average sector trading pressure to 43.2. Most covered companies remain positive over one year, but the simultaneous decline in breadth and typical performance indicates that the previous improvement has partly unwound."
+          "text": "The market signal improved in breadth but weakened in intensity. The share of covered companies with positive one-year returns rose materially to 63.2%, and the median return edged up to 10.8%. At the same time, the AI Equity Index slipped to 35.8 and average sector trading pressure fell materially to 40.9. CoreWeave reported revenue above expectations and raised guidance, easing reported concerns about an AI slowdown. The broader readings nevertheless point to wider participation rather than uniformly stronger market conditions."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "99762e220847cce80c8f0f86",
-      "generated_at": "2026-11-16T23:00:56.355110+00:00",
+      "evidence_snapshot_id": "c79383b8e7764cb2422b6a5a",
+      "generated_at": "2026-11-17T21:48:29.487099+00:00",
       "generator": "openai",
-      "headline": "Equity breadth and typical returns retreat",
+      "headline": "Equity breadth improves as trading pressure falls",
       "label": "Market",
       "references": [
         {
@@ -2683,6 +2713,10 @@
         {
           "source_label": "SEC EDGAR",
           "source_url": "https://www.sec.gov/edgar/search/"
+        },
+        {
+          "source_label": "CNBC",
+          "source_url": "https://www.cnbc.com/2026/11/10/coreweave-crwv-q3-earnings-report-2026.html"
         }
       ],
       "version": "6.1.0"
@@ -2871,7 +2905,7 @@
   },
   "status": "validated",
   "validation": {
-    "checked_passages": 8,
+    "checked_passages": 10,
     "diagnostics": [],
     "hard_errors": [],
     "hard_failures": [],
