@@ -840,8 +840,6 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 3989,City of Colorado Springs - (CO),492.0,South Plant (CO),CO,El Paso,WACM,Electric Utility,A4,40.9,25.0,25.0,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,6.0,2023.0, , ,(OP) Operating,,38.824444,-104.8333
 3989,City of Colorado Springs - (CO),492.0,South Plant (CO),CO,El Paso,WACM,Electric Utility,A5,40.9,25.0,25.0,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,6.0,2023.0, , ,(OP) Operating,,38.824444,-104.8333
 3989,City of Colorado Springs - (CO),492.0,South Plant (CO),CO,El Paso,WACM,Electric Utility,A6,40.6,25.0,25.0,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,6.0,2023.0, , ,(OP) Operating,,38.824444,-104.8333
-3989,City of Colorado Springs - (CO),494.0,Manitou Springs,CO,El Paso,WACM,Electric Utility,1,2.5,2.5,2.5,Conventional Hydroelectric,Hydro,WAT,HY,5.0,1939.0, , ,(OP) Operating,,38.855556,-104.9331
-3989,City of Colorado Springs - (CO),494.0,Manitou Springs,CO,El Paso,WACM,Electric Utility,2,2.5,2.5,2.5,Conventional Hydroelectric,Hydro,WAT,HY,5.0,1927.0, , ,(OP) Operating,,38.855556,-104.9331
 3989,City of Colorado Springs - (CO),494.0,Manitou Springs,CO,El Paso,WACM,Electric Utility,3,0.6,0.5,0.5,Conventional Hydroelectric,Hydro,WAT,HY,3.0,2006.0, , ,(OP) Operating,,38.855556,-104.9331
 3989,City of Colorado Springs - (CO),495.0,Ruxton Park,CO,El Paso,WACM,Electric Utility,1,1.0,1.0,1.0,Conventional Hydroelectric,Hydro,WAT,HY,5.0,1925.0, , ,(OP) Operating,,38.841354,-104.9738
 8751,Town of Holly - (CO),502.0,Holly,CO,Prowers,WACM,Electric Utility,5,0.4,0.3,0.3,Petroleum Liquids,Other thermal,DFO,IC,6.0,2000.0, , ,(SB) Standby/Backup: available for service but not normally used,,38.032717,-102.0737
@@ -1187,6 +1185,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 7140,Georgia Power Co,707.0,Goat Rock,AL,Lee,SOCO,Electric Utility,6,5.0,5.0,5.1,Conventional Hydroelectric,Hydro,WAT,HY,2.0,1956.0, , ,(OP) Operating,,32.6096,-85.0795
 7140,Georgia Power Co,707.0,Goat Rock,AL,Lee,SOCO,Electric Utility,7,9.3,9.3,9.5,Conventional Hydroelectric,Hydro,WAT,HY,6.0,2005.0, , ,(OP) Operating,,32.6096,-85.0795
 7140,Georgia Power Co,707.0,Goat Rock,AL,Lee,SOCO,Electric Utility,8,9.3,9.3,9.5,Conventional Hydroelectric,Hydro,WAT,HY,6.0,2005.0, , ,(OP) Operating,,32.6096,-85.0795
+7140,Georgia Power Co,708.0,Hammond,GA,Floyd,SOCO,Electric Utility,5,57.5,57.5,57.5,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,260.0,34.2528,-85.3456
 7140,Georgia Power Co,710.0,Jack McDonough,GA,Cobb,SOCO,Electric Utility,3A,41.8,32.0,40.0,Petroleum Liquids,Other thermal,DFO,GT,5.0,1971.0, , ,(OP) Operating,,33.8239,-84.4758
 7140,Georgia Power Co,710.0,Jack McDonough,GA,Cobb,SOCO,Electric Utility,3B,41.8,32.0,40.0,Petroleum Liquids,Other thermal,DFO,GT,5.0,1971.0, , ,(OP) Operating,,33.8239,-84.4758
 7140,Georgia Power Co,710.0,Jack McDonough,GA,Cobb,SOCO,Electric Utility,4,369.0,360.0,360.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,12.0,2011.0, , ,(OP) Operating,,33.8239,-84.4758
@@ -3139,8 +3138,8 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 17568,Cooperative Energy,2070.0,Moselle,MS,Jones,MISO,Electric Utility,GTG2,83.5,75.0,83.5,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,11.0,2012.0, , ,(OP) Operating,,31.528,-89.3004
 10000,Evergy Metro,2079.0,Hawthorn,MO,Jackson,SWPP,Electric Utility,5,569.0,561.1,561.1,Conventional Steam Coal,Coal,SUB,ST,5.0,1969.0, , ,(OP) Operating,,39.1306,-94.4778
 10000,Evergy Metro,2079.0,Hawthorn,MO,Jackson,SWPP,Electric Utility,6,170.0,131.6,131.6,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,6.0,1997.0, , ,(OP) Operating,,39.1306,-94.4778
-10000,Evergy Metro,2079.0,Hawthorn,MO,Jackson,SWPP,Electric Utility,7,82.2,78.3,90.9,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,5.0,2000.0, , ,(OP) Operating,,39.1306,-94.4778
-10000,Evergy Metro,2079.0,Hawthorn,MO,Jackson,SWPP,Electric Utility,8,82.2,79.1,91.3,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,7.0,2000.0, , ,(OP) Operating,,39.1306,-94.4778
+10000,Evergy Metro,2079.0,Hawthorn,MO,Jackson,SWPP,Electric Utility,7,82.2,89.3,90.9,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,5.0,2000.0, , ,(OP) Operating,,39.1306,-94.4778
+10000,Evergy Metro,2079.0,Hawthorn,MO,Jackson,SWPP,Electric Utility,8,82.2,90.1,91.3,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,7.0,2000.0, , ,(OP) Operating,,39.1306,-94.4778
 10000,Evergy Metro,2079.0,Hawthorn,MO,Jackson,SWPP,Electric Utility,9,142.8,110.2,110.2,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,7.0,2000.0, , ,(OP) Operating,,39.1306,-94.4778
 10000,Evergy Metro,2081.0,Northeast (MO),MO,Jackson,SWPP,Electric Utility,11,55.4,48.0,53.4,Petroleum Liquids,Other thermal,DFO,GT,5.0,1972.0, , ,(OP) Operating,,39.1228,-94.5606
 10000,Evergy Metro,2081.0,Northeast (MO),MO,Jackson,SWPP,Electric Utility,12,55.4,48.0,53.3,Petroleum Liquids,Other thermal,DFO,GT,5.0,1972.0, , ,(OP) Operating,,39.1228,-94.5606
@@ -4956,9 +4955,6 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 5701,El Paso Electric Co,3456.0,Newman,TX,El Paso,EPE,Electric Utility,CT2,85.0,67.0,71.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,8.0,1975.0,12,2031,(OP) Operating,,31.983587,-106.4318
 55937,Entergy Texas Inc.,3457.0,Lewis Creek,TX,Montgomery,MISO,Electric Utility,1,271.4,250.1,252.4,Natural Gas Steam Turbine,Natural gas,NG,ST,12.0,1970.0,6,2034,(OP) Operating,,30.4356,-95.5214
 55937,Entergy Texas Inc.,3457.0,Lewis Creek,TX,Montgomery,MISO,Electric Utility,2,271.4,249.2,251.3,Natural Gas Steam Turbine,Natural gas,NG,ST,5.0,1971.0,6,2034,(OP) Operating,,30.4356,-95.5214
-55937,Entergy Texas Inc.,3459.0,Sabine,TX,Orange,MISO,Electric Utility,1,239.4,202.5,203.3,Natural Gas Steam Turbine,Natural gas,NG,ST,1.0,1962.0,10,2026,(OP) Operating,,30.0242,-93.878
-55937,Entergy Texas Inc.,3459.0,Sabine,TX,Orange,MISO,Electric Utility,3,473.4,369.3,378.3,Natural Gas Steam Turbine,Natural gas,NG,ST,12.0,1966.0,10,2026,(OP) Operating,,30.0242,-93.878
-55937,Entergy Texas Inc.,3459.0,Sabine,TX,Orange,MISO,Electric Utility,4,591.6,490.1,492.7,Natural Gas Steam Turbine,Natural gas,NG,ST,8.0,1974.0,10,2026,(OP) Operating,,30.0242,-93.878
 55937,Entergy Texas Inc.,3459.0,Sabine,TX,Orange,MISO,Electric Utility,5,507.4,439.5,444.0,Natural Gas Steam Turbine,Natural gas,NG,ST,12.0,1979.0, , ,(OP) Operating,,30.0242,-93.878
 54888,NRG Texas Power LLC,3460.0,Cedar Bayou,TX,Chambers,ERCO,IPP Non-CHP,1,765.0,746.0,746.0,Natural Gas Steam Turbine,Natural gas,NG,ST,12.0,1970.0, , ,(OP) Operating,,29.75,-94.9256
 54888,NRG Texas Power LLC,3460.0,Cedar Bayou,TX,Chambers,ERCO,IPP Non-CHP,2,765.0,749.0,749.0,Natural Gas Steam Turbine,Natural gas,NG,ST,3.0,1972.0, , ,(OP) Operating,,29.75,-94.9256
@@ -10899,10 +10895,10 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE12,0.8,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,8.0,1998.0,6,2027,(OP) Operating,,42.9281,-76.8408
 17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE13,0.8,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,8.0,1998.0,6,2027,(OP) Operating,,42.9281,-76.8408
 17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE14,0.8,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,8.0,1998.0,6,2027,(OP) Operating,,42.9281,-76.8408
-17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE15,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0, , ,(OP) Operating,,42.9281,-76.8408
-17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE16,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0, , ,(OP) Operating,,42.9281,-76.8408
-17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE17,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0, , ,(OP) Operating,,42.9281,-76.8408
-17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE18,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0, , ,(OP) Operating,,42.9281,-76.8408
+17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE15,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0,6,2027,(OP) Operating,,42.9281,-76.8408
+17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE16,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0,6,2027,(OP) Operating,,42.9281,-76.8408
+17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE17,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0,6,2027,(OP) Operating,,42.9281,-76.8408
+17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GE18,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,1.0,2007.0,6,2027,(OP) Operating,,42.9281,-76.8408
 17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GEN1,0.8,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,3.0,1996.0, , ,(OP) Operating,,42.9281,-76.8408
 17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GEN2,0.8,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,3.0,1996.0, , ,(OP) Operating,,42.9281,-76.8408
 17283,Seneca Energy II,54782.0,Seneca Energy,NY,Seneca,NYIS,IPP Non-CHP,GEN3,0.8,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,3.0,1996.0, , ,(OP) Operating,,42.9281,-76.8408
@@ -11422,13 +11418,13 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 18518,Tenaska Gateway Partners Ltd,55132.0,Tenaska Gateway Generating Station,TX,Rusk,ERCO,IPP Non-CHP,GTG2,183.2,150.0,178.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,7.0,2001.0, , ,(OP) Operating,,32.017826,-94.61974
 18518,Tenaska Gateway Partners Ltd,55132.0,Tenaska Gateway Generating Station,TX,Rusk,ERCO,IPP Non-CHP,GTG3,183.2,138.0,162.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,7.0,2001.0, , ,(OP) Operating,,32.017826,-94.61974
 18518,Tenaska Gateway Partners Ltd,55132.0,Tenaska Gateway Generating Station,TX,Rusk,ERCO,IPP Non-CHP,STG1,390.0,381.0,402.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,7.0,2001.0, , ,(OP) Operating,,32.017826,-94.61974
-18981,Thomson Corp,55133.0,Thomson Reuters Campus Bldg A-D,MN,Dakota,MISO,Industrial Non-CHP,3086,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
-18981,Thomson Corp,55133.0,Thomson Reuters Campus Bldg A-D,MN,Dakota,MISO,Industrial Non-CHP,3087,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
-18981,Thomson Corp,55133.0,Thomson Reuters Campus Bldg A-D,MN,Dakota,MISO,Industrial Non-CHP,3088,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
-18981,Thomson Corp,55133.0,Thomson Reuters Campus Bldg A-D,MN,Dakota,MISO,Industrial Non-CHP,3089,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,6.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
-18981,Thomson Corp,55133.0,Thomson Reuters Campus Bldg A-D,MN,Dakota,MISO,Industrial Non-CHP,3090,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,6.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
-18981,Thomson Corp,55133.0,Thomson Reuters Campus Bldg A-D,MN,Dakota,MISO,Industrial Non-CHP,3091,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
-18981,Thomson Corp,55133.0,Thomson Reuters Campus Bldg A-D,MN,Dakota,MISO,Industrial Non-CHP,3093,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
+18981,Omni JV LLC (Westbridge Print),55133.0,"Omni JV LLC (Westbridge Print), Building G",MN,Dakota,MISO,Industrial Non-CHP,3086,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
+18981,Omni JV LLC (Westbridge Print),55133.0,"Omni JV LLC (Westbridge Print), Building G",MN,Dakota,MISO,Industrial Non-CHP,3087,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
+18981,Omni JV LLC (Westbridge Print),55133.0,"Omni JV LLC (Westbridge Print), Building G",MN,Dakota,MISO,Industrial Non-CHP,3088,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
+18981,Omni JV LLC (Westbridge Print),55133.0,"Omni JV LLC (Westbridge Print), Building G",MN,Dakota,MISO,Industrial Non-CHP,3089,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,6.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
+18981,Omni JV LLC (Westbridge Print),55133.0,"Omni JV LLC (Westbridge Print), Building G",MN,Dakota,MISO,Industrial Non-CHP,3090,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,6.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
+18981,Omni JV LLC (Westbridge Print),55133.0,"Omni JV LLC (Westbridge Print), Building G",MN,Dakota,MISO,Industrial Non-CHP,3091,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
+18981,Omni JV LLC (Westbridge Print),55133.0,"Omni JV LLC (Westbridge Print), Building G",MN,Dakota,MISO,Industrial Non-CHP,3093,2.0,1.6,1.3,Petroleum Liquids,Other thermal,DFO,IC,4.0,1999.0, , ,(SB) Standby/Backup: available for service but not normally used,,44.8196,-93.1156
 20856,Wisconsin Power & Light Co,55135.0,Alliant Energy Neenah,WI,Winnebago,MISO,Electric Utility,CT01,185.5,201.0,218.9,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,5.0,2000.0, , ,(OP) Operating,,44.1936,-88.5064
 20856,Wisconsin Power & Light Co,55135.0,Alliant Energy Neenah,WI,Winnebago,MISO,Electric Utility,CT02,185.5,200.1,218.4,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,5.0,2000.0, , ,(OP) Operating,,44.1936,-88.5064
 16604,City of San Antonio - (TX),55137.0,Rio Nogales Power Project,TX,Guadalupe,ERCO,Electric Utility,CTG1,223.5,165.5,199.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,5.0,2002.0, , ,(OP) Operating,,29.593056,-97.97322
@@ -11475,11 +11471,11 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 11269,Lower Colorado River Authority,55154.0,Lost Pines 1 Power Project,TX,Bastrop,ERCO,Electric Utility,CTA,202.5,169.0,178.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,5.0,2001.0, , ,(OP) Operating,,30.1478,-97.2714
 11269,Lower Colorado River Authority,55154.0,Lost Pines 1 Power Project,TX,Bastrop,ERCO,Electric Utility,CTB,202.5,169.0,178.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,5.0,2001.0, , ,(OP) Operating,,30.1478,-97.2714
 11269,Lower Colorado River Authority,55154.0,Lost Pines 1 Power Project,TX,Bastrop,ERCO,Electric Utility,ST,204.0,172.0,184.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,5.0,2001.0, , ,(OP) Operating,,30.1478,-97.2714
-57229,MM Albany Energy LLC,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT1,0.9,0.9,0.9,Landfill Gas,Other renewables,LFG,IC,3.0,1998.0, , ,(OP) Operating,,42.704391,-73.85087
-57229,MM Albany Energy LLC,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT2,0.9,0.9,0.9,Landfill Gas,Other renewables,LFG,IC,3.0,1998.0, , ,(OP) Operating,,42.704391,-73.85087
-57229,MM Albany Energy LLC,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT3,0.9,0.9,0.9,Landfill Gas,Other renewables,LFG,IC,11.0,2008.0, , ,(OP) Operating,,42.704391,-73.85087
-57229,MM Albany Energy LLC,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT4,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,5.0,2012.0, , ,(OP) Operating,,42.704391,-73.85087
-57229,MM Albany Energy LLC,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT5,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,5.0,2012.0, , ,(OP) Operating,,42.704391,-73.85087
+67296,Northeastern Power Systems,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT1,0.9,0.9,0.9,Landfill Gas,Other renewables,LFG,IC,3.0,1998.0, , ,(OP) Operating,,42.704391,-73.85087
+67296,Northeastern Power Systems,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT2,0.9,0.9,0.9,Landfill Gas,Other renewables,LFG,IC,3.0,1998.0, , ,(OP) Operating,,42.704391,-73.85087
+67296,Northeastern Power Systems,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT3,0.9,0.9,0.9,Landfill Gas,Other renewables,LFG,IC,11.0,2008.0, , ,(OP) Operating,,42.704391,-73.85087
+67296,Northeastern Power Systems,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT4,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,5.0,2012.0, , ,(OP) Operating,,42.704391,-73.85087
+67296,Northeastern Power Systems,55155.0,MM Albany Energy,NY,Albany,NYIS,IPP Non-CHP,UNT5,1.6,1.6,1.6,Landfill Gas,Other renewables,LFG,IC,5.0,2012.0, , ,(OP) Operating,,42.704391,-73.85087
 57231,MM Tulare Energy LLC,55160.0,MM Tulare Energy,CA,Tulare,CISO,IPP Non-CHP,UNT1,0.9,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,5.0,1998.0, , ,(SB) Standby/Backup: available for service but not normally used,,36.388,-119.394
 57231,MM Tulare Energy LLC,55160.0,MM Tulare Energy,CA,Tulare,CISO,IPP Non-CHP,UNT2,0.9,0.8,0.8,Landfill Gas,Other renewables,LFG,IC,5.0,1998.0, , ,(SB) Standby/Backup: available for service but not normally used,,36.388,-119.394
 57232,MM Lopez Energy LLC,55161.0,MM Lopez Energy,CA,Los Angeles,CISO,IPP Non-CHP,UNT1,3.0,2.7,2.7,Landfill Gas,Other renewables,LFG,IC,12.0,1998.0, , ,(OP) Operating,,34.2925,-118.3894
@@ -12380,7 +12376,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 18642,Tennessee Valley Authority,55694.0,Quantum Choctaw Power LLC,MS,Choctaw,TVA,Electric Utility,ST1,310.5,270.0,285.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,7.0,2006.0, , ,(OP) Operating,,33.3792,-89.2089
 7724,MRP San Joaquin Energy LLC.,55698.0,Hanford Energy Park Peaker,CA,Kings,CISO,IPP Non-CHP,HEP1,46.1,45.9,48.7,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,9.0,2001.0, , ,(OP) Operating,,36.270072,-119.6481
 7724,MRP San Joaquin Energy LLC.,55698.0,Hanford Energy Park Peaker,CA,Kings,CISO,IPP Non-CHP,HEP2,46.1,45.9,48.7,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,9.0,2001.0, , ,(OP) Operating,,36.270072,-119.6481
-1268,Bayswater Peaking Facility LLC,55699.0,Bayswater Peaking Facility LLC,NY,Queens,NYIS,IPP Non-CHP,1,60.5,75.7,78.7,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,6.0,2002.0, , ,(OP) Operating,,40.610654,-73.76222
+1268,Bayswater Peaking Facility LLC,55699.0,Bayswater Peaking Facility LLC,NY,Queens,NYIS,IPP Non-CHP,1,60.5,75.7,78.7,,Other,,GT,6.0,2002.0, , ,(OP) Operating,,40.610654,-73.76222
 15500,Puget Sound Energy Inc,55700.0,Mint Farm Generating Station,WA,Cowlitz,PSEI,Electric Utility,1STG,133.0,120.0,129.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,1.0,2008.0, , ,(OP) Operating,,46.138824,-122.9855
 15500,Puget Sound Energy Inc,55700.0,Mint Farm Generating Station,WA,Cowlitz,PSEI,Electric Utility,CTG1,186.0,150.0,207.0,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,1.0,2008.0, , ,(OP) Operating,,46.138824,-122.9855
 40577,"American Mun Power-Ohio, Inc",55701.0,Fremont Energy Center,OH,Sandusky,PJM,Electric Utility,CA01,358.7,345.1,345.1,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,1.0,2012.0, , ,(OP) Operating,,41.377116,-83.16139
@@ -14809,7 +14805,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 62077,Sherbino II Wind Farm LLC,57415.0,Sherbino II,TX,Pecos,ERCO,IPP Non-CHP,1,132.0,132.0,132.0,Onshore Wind Turbine,Wind,WND,WT,11.0,2011.0, , ,(OP) Operating,,30.772575,-102.5058
 60025,Greenbacker Renewable Energy Corporation,57417.0,Elk Wind Farm,IA,Delaware,MISO,IPP Non-CHP,NORD,40.8,40.8,40.8,Onshore Wind Turbine,Wind,WND,WT,12.0,2011.0, , ,(OP) Operating,,42.583889,-91.37083
 5109,DTE Electric Company,57421.0,Gratiot Wind Park,MI,Gratiot,MISO,Electric Utility,1,102.0,102.0,102.0,Onshore Wind Turbine,Wind,WND,WT,11.0,2011.0, , ,(OP) Operating,,43.433889,-84.4975
-56751,Yolo County of - (CA),57422.0,Yolo County Solar Project,CA,Yolo,CISO,Commercial Non-CHP,1,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2010.0, , ,(OP) Operating,,38.659722,-121.7294
+68099,"Saint-Gobain Adfors America, Inc.",57422.0,Yolo County Solar Project,CA,Yolo,CISO,Commercial Non-CHP,1,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2010.0, , ,(OP) Operating,,38.659722,-121.7294
 15399,Avangrid Power LLC,57424.0,Buffalo Ridge II LLC,SD,Brookings,MISO,IPP Non-CHP,1,210.0,210.0,210.0,Onshore Wind Turbine,Wind,WND,WT,12.0,2010.0, , ,(OP) Operating,,44.5281,-96.6267
 64742,"Mountain Air Projects, LLC",57427.0,Ryegrass Windfarm,ID,Elmore,IPCO,IPP Non-CHP,1,23.0,23.0,23.0,Onshore Wind Turbine,Wind,WND,WT,12.0,2012.0, , ,(OP) Operating,,43.037147,-115.4397
 64742,"Mountain Air Projects, LLC",57428.0,Hammett Hill Windfarm,ID,Elmore,IPCO,IPP Non-CHP,1,23.0,23.0,23.0,Onshore Wind Turbine,Wind,WND,WT,12.0,2012.0, , ,(OP) Operating,,43.006133,-115.4633
@@ -18394,6 +18390,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 64778,"Strata Manager, LLC",60429.0,Tides Lane Farm,NC,Franklin,CPLE,IPP Non-CHP,PV1,3.7,3.7,3.7,Solar Photovoltaic,Solar,SUN,PV,10.0,2019.0, , ,(OP) Operating,,36.06936,-78.2988
 60231,"SEC LHNY Solar One, LLC",60431.0,Tompkins Cortland Community College,NY,Tompkins,NYIS,IPP Non-CHP,TC3,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2015.0, , ,(OP) Operating,,42.5025,-76.2865
 60453,Onward Energy,60432.0,Three Peaks Power,UT,Iron,PACE,IPP Non-CHP,TPP,80.0,80.0,80.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2016.0, , ,(OP) Operating,,37.827082,-113.1371
+5416,"Duke Energy Carolinas, LLC",60434.0,Baxter Creek Solar,NC,Davie,DUK,IPP Non-CHP,PV1,30.0,30.0,30.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,35.865502,-80.55309
 15470,"Duke Energy Indiana, LLC",60435.0,Crane Solar Facility,IN,Martin,MISO,Electric Utility,XXXXX,17.0,17.0,17.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2017.0, , ,(OP) Operating,,38.8164,-86.8842
 17650,Southern Power Co,60436.0,East Pecos Solar,TX,Pecos,ERCO,IPP Non-CHP,1,118.5,118.5,118.5,Solar Photovoltaic,Solar,SUN,PV,4.0,2017.0, , ,(OP) Operating,,31.000883,-102.2817
 56990,NJR Clean Energy Ventures Corporation,60437.0,Bernards Solar,NJ,Somerset,PJM,IPP Non-CHP,BERNS,2.9,2.9,2.9,Solar Photovoltaic,Solar,SUN,PV,9.0,2016.0, , ,(OP) Operating,,40.70266,-74.58158
@@ -20163,7 +20160,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 61521,"Pegasus Wind, LLC",61916.0,Pegasus Wind,MI,Tuscola,MISO,IPP Non-CHP,PWEC,48.0,48.0,48.0,Onshore Wind Turbine,Wind,WND,WT,12.0,2019.0, , ,(OP) Operating,,43.452003,-83.50721
 61521,"Pegasus Wind, LLC",61916.0,Pegasus Wind,MI,Tuscola,MISO,IPP Non-CHP,PWEC2,130.0,130.0,130.0,Onshore Wind Turbine,Wind,WND,WT,9.0,2020.0, , ,(OP) Operating,,43.452003,-83.50721
 61520,Kearsarge Oppenheim LLC,61917.0,Kearsarge Oppenheim CSG,NY,Fulton,NYIS,IPP Non-CHP,OPPEN,1.4,1.4,1.4,Solar Photovoltaic,Solar,SUN,PV,7.0,2018.0, , ,(OP) Operating,,43.060223,-74.73642
-5248,Dominion Energy Inc.,61918.0,"Blackville Solar Farm, LLC",SC,Barnwell,SCEG,IPP Non-CHP,1,7.2,7.2,7.2,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,33.342619,-81.25893
+59380,"Enel Green Power NA, Inc.",61918.0,"Blackville Solar Farm, LLC",SC,Barnwell,SCEG,IPP Non-CHP,1,7.2,7.2,7.2,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,33.342619,-81.25893
 61518,Frontenac Holdco LLC,61919.0,"Frontenac Holdco LLC, CSG",MN,Goodhue,MISO,IPP Non-CHP,FRONT,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2019.0, , ,(OP) Operating,,44.501673,-92.35871
 61523,225DD 8me LLC,61920.0,Galloway 1 Solar Farm,TX,Concho,ERCO,IPP Non-CHP,GSM01,250.0,250.0,250.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2021.0, , ,(OP) Operating,,31.435932,-99.79661
 61527,"Tahoka Wind, LLC",61921.0,Tahoka Wind,TX,Lynn,ERCO,IPP Non-CHP,TAH,300.0,300.0,300.0,Onshore Wind Turbine,Wind,WND,WT,12.0,2018.0, , ,(OP) Operating,,33.150904,-101.6792
@@ -20481,7 +20478,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 58970,"Ecoplexus, Inc",62210.0,Felton CSG PV1-5,MN,Dakota,MISO,IPP Non-CHP,FELT3,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2019.0, , ,(OP) Operating,,44.541704,-92.97358
 58970,"Ecoplexus, Inc",62210.0,Felton CSG PV1-5,MN,Dakota,MISO,IPP Non-CHP,FELT4,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2019.0, , ,(OP) Operating,,44.541704,-92.97358
 58970,"Ecoplexus, Inc",62210.0,Felton CSG PV1-5,MN,Dakota,MISO,IPP Non-CHP,FELT5,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2019.0, , ,(OP) Operating,,44.541704,-92.97358
-58468,Dominion Renewable Energy,62211.0,Denmark Solar,SC,Bamberg,SCEG,IPP Non-CHP,35,6.0,6.0,6.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,33.347128,-81.14284
+59380,"Enel Green Power NA, Inc.",62211.0,Denmark Solar,SC,Bamberg,SCEG,IPP Non-CHP,35,6.0,6.0,6.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,33.347128,-81.14284
 61736,Gaines Solar,62216.0,Gaines Solar,SC,Lee,CPLE,IPP Non-CHP,41,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,34.192353,-80.21853
 11806,Massachusetts Mun Wholes Electric Co,62219.0,Ashburnham Energy Storage Project,MA,Worcester,ISNE,Electric Utility,AMLPB,3.0,3.0,3.0,Batteries,Battery storage,MWH,BA,3.0,2019.0, , ,(OP) Operating,3.0,42.671444,-71.9267
 56201,Engie North America,62220.0,"East Fork Wind Project, LLC",KS,Thomas,SWPP,IPP Non-CHP,WTGS,195.8,195.8,195.8,Onshore Wind Turbine,Wind,WND,WT,3.0,2020.0, , ,(OP) Operating,,39.306,-101.0744
@@ -20589,10 +20586,10 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 61838,"Aulander Holloman Solar, LLC",62340.0,"Aulander Holloman Solar, LLC",NC,Hertford,PJM,IPP Non-CHP,HOLLO,99.0,99.9,99.9,Solar Photovoltaic,Solar,SUN,PV,12.0,2018.0, , ,(OP) Operating,,36.29116,-77.06656
 67082,"Headwater Energy, LLC",62342.0,Washington Solar (SC),SC,Marion,CPLE,IPP Non-CHP,87,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2023.0, , ,(OP) Operating,,34.238081,-79.25195
 61864,Washington Solar II (SC),62344.0,Washington Solar II (SC),SC,Marion,CPLE,IPP Non-CHP,88,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,7.0,2025.0, , ,(OP) Operating,,34.238081,-79.25195
-58468,Dominion Renewable Energy,62346.0,Trask East Solar,SC,Beaufort,SCEG,IPP Non-CHP,83,12.0,12.0,12.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,32.470606,-80.74819
+59380,"Enel Green Power NA, Inc.",62346.0,Trask East Solar,SC,Beaufort,SCEG,IPP Non-CHP,83,12.0,12.0,12.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,32.470606,-80.74819
 61866,Weaver Solar,62347.0,Weaver Solar,SC,Lee,CPLE,IPP Non-CHP,90,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2021.0, , ,(OP) Operating,,34.069422,-80.07847
 67082,"Headwater Energy, LLC",62352.0,Thomas Solar,SC,Lee,CPLE,IPP Non-CHP,81,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2024.0, , ,(OP) Operating,,34.087886,-80.11548
-58468,Dominion Renewable Energy,62353.0,Yemassee Solar,SC,Beaufort,SCEG,IPP Non-CHP,93,10.0,10.0,10.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,32.705139,-80.90328
+59380,"Enel Green Power NA, Inc.",62353.0,Yemassee Solar,SC,Beaufort,SCEG,IPP Non-CHP,93,10.0,10.0,10.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,32.705139,-80.90328
 57389,IKEA Property Inc,62355.0,IKEA Norfolk Rooftop PV System,VA,Norfolk City,PJM,Commercial Non-CHP,569PV,0.9,0.9,0.9,Solar Photovoltaic,Solar,SUN,PV,3.0,2019.0, , ,(OP) Operating,,36.875877,-76.20094
 61886,"Lockett Windfarm, LLC",62356.0,Lockett Windfarm,TX,Wilbarger,ERCO,IPP Non-CHP,LOC,183.8,183.8,183.8,Onshore Wind Turbine,Wind,WND,WT,9.0,2019.0, , ,(OP) Operating,,34.072251,-99.26468
 61888,Gloversville Community Solar LLC,62357.0,Gloversville Landfill Solar,NY,Fulton,NYIS,IPP Non-CHP,08158,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2021.0, , ,(OP) Operating,,43.052981,-74.30836
@@ -20805,7 +20802,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 6455,"Duke Energy Florida, LLC",62541.0,Lake Placid Solar Power Plant,FL,Highlands,FPC,Electric Utility,PV1,45.0,45.0,45.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,27.331136,-81.36402
 6455,"Duke Energy Florida, LLC",62542.0,Debary Solar Power Plant,FL,Volusia,FPC,Electric Utility,PV1,74.5,74.5,74.5,Solar Photovoltaic,Solar,SUN,PV,5.0,2020.0, , ,(OP) Operating,,28.899548,-81.33086
 6455,"Duke Energy Florida, LLC",62543.0,Trenton Solar Power Plant,FL,Gilchrist,FPC,Electric Utility,PV1,74.9,74.9,74.9,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,29.635051,-82.84309
-58468,Dominion Renewable Energy,62544.0,Wilkinson Solar LLC,NC,Beaufort,PJM,IPP Non-CHP,GEN1,80.6,80.6,80.6,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,35.596814,-76.76385
+59380,"Enel Green Power NA, Inc.",62544.0,Wilkinson Solar LLC,NC,Beaufort,PJM,IPP Non-CHP,GEN1,80.6,80.6,80.6,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,35.596814,-76.76385
 60025,Greenbacker Renewable Energy Corporation,62545.0,Renew Solar ABC Sacramento LLC,CA,Sacramento,BANC,IPP Non-CHP,SACRA,1.7,1.7,1.7,Solar Photovoltaic,Solar,SUN,PV,11.0,2020.0, , ,(OP) Operating,,38.39945,-121.2932
 62048,Westlands Almond LLC,62546.0,Almond,CA,Kings,CISO,IPP Non-CHP,ALMND,19.9,19.9,19.9,Solar Photovoltaic,Solar,SUN,PV,9.0,2023.0, , ,(OP) Operating,,36.21222,-119.91
 67268,Aqua,62547.0,Aquamarine,CA,Kings,CISO,IPP Non-CHP,AQUAM,250.0,250.0,250.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2021.0, , ,(OP) Operating,,36.189722,-119.9042
@@ -22054,6 +22051,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 63393,VS Dedeaux LLC,63674.0,Dedeaux,CA,Los Angeles,LDWP,IPP Non-CHP,DEDEA,0.9,0.9,0.9,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,34.013113,-118.2419
 63394,"MSAP 13, LLC",63675.0,MSAP 13,NY,Rensselaer,NYIS,IPP Non-CHP,TROYL,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,42.698335,-73.67174
 65043,Madison Energy Investments LLC,63676.0,Spencer Solar CSG,MA,Worcester,ISNE,IPP Non-CHP,SPENC,2.3,2.3,2.3,Solar Photovoltaic,Solar,SUN,PV,6.0,2025.0, , ,(OP) Operating,,42.260723,-72.0156
+65043,Madison Energy Investments LLC,63677.0,Sturbridge Road Solar (CSG),MA,Worcester,ISNE,IPP Non-CHP,STURB,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,42.174611,-72.01786
 65164,CleanCapital Holdings,63678.0,Paulson Community (CSG),MN,Le Sueur,MISO,IPP Non-CHP,PAUL,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2020.0, , ,(OP) Operating,,44.335686,-93.91702
 65164,CleanCapital Holdings,63679.0,Laurel Village (CSG),MN,Wright,MISO,IPP Non-CHP,LAUR,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2020.0, , ,(OP) Operating,,45.083808,-94.17968
 65164,CleanCapital Holdings,63680.0,Hertzberg Community (CSG),MN,Stearns,MISO,IPP Non-CHP,HERTZ,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2020.0, , ,(OP) Operating,,45.410876,-94.70206
@@ -22149,8 +22147,8 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 65173,United States Solar Corporation,63742.0,USS Viceroy Solar LLC CSG,MN,Pope,MISO,IPP Non-CHP,USVIC,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2021.0, , ,(OP) Operating,,45.49776,-95.16451
 60531,Standard Solar,63743.0,USS Solar Way LLC CSG,MN,Freeborn,MISO,IPP Non-CHP,SOLWY,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2020.0, , ,(OP) Operating,,43.82563,-93.43378
 65173,United States Solar Corporation,63744.0,USS Hubers Solar LLC CSG,MN,Rice,MISO,IPP Non-CHP,HUBER,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2021.0, , ,(OP) Operating,,44.45692,-93.12447
-5248,Dominion Energy Inc.,63745.0,"Greensville County Solar Project, LLC",VA,Greensville,PJM,IPP Non-CHP,GVSO,80.0,80.0,80.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,36.64,-77.57
-5248,Dominion Energy Inc.,63746.0,"TWE Myrtle Solar Farm, LLC",VA,Suffolk City,PJM,IPP Non-CHP,MYSO,15.0,15.0,15.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2020.0, , ,(OP) Operating,,36.79,-76.67
+59380,"Enel Green Power NA, Inc.",63745.0,"Greensville County Solar Project, LLC",VA,Greensville,PJM,IPP Non-CHP,GVSO,80.0,80.0,80.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,36.64,-77.57
+59380,"Enel Green Power NA, Inc.",63746.0,"TWE Myrtle Solar Farm, LLC",VA,Suffolk City,PJM,IPP Non-CHP,MYSO,15.0,15.0,15.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2020.0, , ,(OP) Operating,,36.79,-76.67
 63441,Fogarty Solar LLC,63747.0,Fogarty CSG,NY,Orange,NYIS,IPP Non-CHP,GRA,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2021.0, , ,(OP) Operating,,41.508729,-74.35
 63442,Mount Hope Solar 2 LLC,63748.0,Mount Hope West,NY,Orange,NYIS,IPP Non-CHP,MHW,1.9,1.9,1.9,Solar Photovoltaic,Solar,SUN,PV,4.0,2020.0, , ,(OP) Operating,,41.466974,-74.50942
 63443,Mount Hope Solar 1 LLC,63749.0,Mount Hope East,NY,Orange,NYIS,IPP Non-CHP,MHE,1.9,1.9,1.9,Solar Photovoltaic,Solar,SUN,PV,10.0,2019.0, , ,(OP) Operating,,41.467654,-74.50965
@@ -22207,6 +22205,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 66039,"SC Oregon 2 Lessor Parent, LLC",63795.0,"Alkali Solar, LLC",OR,Lake,BPAT,IPP Non-CHP,2,10.0,10.0,10.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2020.0, , ,(OP) Operating,,43.31942,-121.0035
 66039,"SC Oregon 2 Lessor Parent, LLC",63796.0,"West Hines Solar I, LLC",OR,Harney,BPAT,IPP Non-CHP,1,10.0,10.0,10.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2020.0, , ,(OP) Operating,,43.50259,-119.1471
 61222,174 Power Global Corp.,63797.0,Ellis Solar LLC,TX,Ellis,ERCO,IPP Non-CHP,GER01,80.0,80.0,80.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2023.0, , ,(OP) Operating,,32.467194,-97.05433
+61222,174 Power Global Corp.,63798.0,Atlas,AZ,La Paz,AZPS,IPP Non-CHP,ATL01,300.0,300.0,300.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,33.94345,-113.7917
 61227,Nautilus Solar Solutions,63800.0,NY - CSG - Ellsworth II,NY,Saratoga,NYIS,IPP Non-CHP,23,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2019.0, , ,(OP) Operating,,42.899691,-73.70747
 9324,Indiana Michigan Power Co,63801.0,St. Joseph Solar,IN,St Joseph,PJM,Electric Utility,1,20.0,20.0,20.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2021.0, , ,(OP) Operating,,41.7311,-86.1083
 63487,"Bronco Plains Wind, LLC",63803.0,"Bronco Plains Wind, LLC",CO,Kit Carson,PSCO,IPP Non-CHP,WBOPL,300.0,299.0,299.0,Onshore Wind Turbine,Wind,WND,WT,9.0,2020.0, , ,(OP) Operating,,39.088845,-103.0251
@@ -22563,6 +22562,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 63784,"Azure Sky Wind Project, LLC",64164.0,"Azure Sky Wind Project, LLC Hybrid",TX,Throckmorton,ERCO,IPP Non-CHP,ASWBE,120.0,120.0,120.0,Batteries,Battery storage,MWH,BA,12.0,2023.0, , ,(OP) Operating,190.0,33.169139,-99.26601
 63784,"Azure Sky Wind Project, LLC",64164.0,"Azure Sky Wind Project, LLC Hybrid",TX,Throckmorton,ERCO,IPP Non-CHP,ASWWT,350.2,350.2,350.2,Onshore Wind Turbine,Wind,WND,WT,8.0,2024.0, , ,(OP) Operating,,33.169139,-99.26601
 56201,Engie North America,64165.0,Priddy Wind Project,TX,Mills,ERCO,IPP Non-CHP,WTG1,302.4,302.4,302.4,Onshore Wind Turbine,Wind,WND,WT,1.0,2022.0, , ,(OP) Operating,,31.5481,-98.49491
+63792,Hornet Solar LLC,64167.0,Hornet Solar,NC,Gaston,DUK,IPP Non-CHP,GEN,73.0,73.0,73.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,35.387,-81.029
 63794,"Albemarle Beach Solar, LLC",64169.0,Albemarle Beach Solar,NC,Washington,PJM,IPP Non-CHP,BEACH,130.2,140.0,140.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2020.0, , ,(OP) Operating,,35.928188,-76.62045
 61012,AES Distributed Energy,64170.0,"BWC Muddy Brook, LLC Hybrid",MA,Worcester,ISNE,IPP Non-CHP,MBES,0.9,0.9,0.9,Batteries,Battery storage,MWH,BA,9.0,2021.0, , ,(OP) Operating,1.8,42.0966,-71.5054
 61012,AES Distributed Energy,64170.0,"BWC Muddy Brook, LLC Hybrid",MA,Worcester,ISNE,IPP Non-CHP,MBPV,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2021.0, , ,(OP) Operating,,42.0966,-71.5054
@@ -23133,7 +23133,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 61012,AES Distributed Energy,64720.0,Knapp West(CSG),NY,Genesee,ISNE,IPP Non-CHP,KNPPW,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2021.0, , ,(OP) Operating,,43.0148,-78.4609
 61012,AES Distributed Energy,64721.0,Rowe (CSG),NY,Cattaraugus,ISNE,IPP Non-CHP,RWEAV,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2021.0, , ,(OP) Operating,,42.0687,-78.3752
 61012,AES Distributed Energy,64722.0,Redman South Community Solar,NY,Monroe,ISNE,IPP Non-CHP,RDMNS,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,2.0,2022.0, , ,(OP) Operating,,43.2743,-77.965
-64292,Revity Energy LLC,64723.0,Alton Road Solar,RI,Washington,ISNE,IPP Non-CHP,50835,13.9,13.9,11.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,41.407547,-71.74833
+64292,"Revity Management, LLC",64723.0,Alton Road Solar,RI,Washington,ISNE,IPP Non-CHP,50835,13.9,13.9,11.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,41.407547,-71.74833
 61012,AES Distributed Energy,64724.0,Townline Community Solar,NY,Genesee,ISNE,IPP Non-CHP,TWNLN,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,2.0,2022.0, , ,(OP) Operating,,43.0421,-78.1337
 61012,AES Distributed Energy,64725.0,Williams Rd,NY,Niagara,ISNE,IPP Non-CHP,WLMRD,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2021.0, , ,(OP) Operating,,43.204,-78.943
 61012,AES Distributed Energy,64726.0,West Haydenville PJ Community Solar,MA,Hampshire,ISNE,IPP Non-CHP,BESS,3.6,3.6,3.6,Batteries,Battery storage,MWH,BA,9.0,2022.0, , ,(OP) Operating,8.0,42.3831,-72.7111
@@ -23633,10 +23633,11 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 6452,Florida Power & Light Co,65041.0,Elder Branch,FL,Manatee,FPL,Electric Utility,1,74.5,74.5,74.5,Solar Photovoltaic,Solar,SUN,PV,1.0,2022.0, , ,(OP) Operating,,27.5966,-82.25272
 6452,Florida Power & Light Co,65042.0,Grove,FL,Indian River,FPL,Electric Utility,1,74.5,74.5,74.5,Solar Photovoltaic,Solar,SUN,PV,1.0,2022.0, , ,(OP) Operating,,27.580883,-80.65271
 5248,Dominion Energy Inc.,65044.0,Dry Bridge Storage,VA,Chesterfield,PJM,Electric Utility,DBES,20.0,20.0,20.0,Batteries,Battery storage,MWH,BA,11.0,2023.0, , ,(OP) Operating,80.0,37.5,-77.7
+64457,"VCP Realty, LLC",65045.0,Emery Shute Solar One,ME,Waldo,ISNE,IPP Non-CHP,VCP14,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,44.535591,-68.86433
 64457,"VCP Realty, LLC",65046.0,FedEx Middletown,CT,Middlesex,ISNE,IPP Non-CHP,VCP15,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,41.597231,-72.71934
 64458,"Enfield Solar One, LLC",65047.0,Enfield Solar One,CT,Hartford,ISNE,IPP Non-CHP,VCP07,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2024.0, , ,(OP) Operating,,41.994902,-72.52527
 64468,Hubbard Wind LLC,65048.0,Hubbard Wind,TX,Limestone,ERCO,IPP Non-CHP,HW001,300.0,300.0,300.0,Onshore Wind Turbine,Wind,WND,WT,11.0,2021.0, , ,(OP) Operating,,31.77471,-96.8282
-67786,Naturgy Solar Operation USA LLC,65050.0,Mark Center Solar Project,OH,Defiance,PJM,IPP Non-CHP,MRC1,94.0,94.0,94.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,41.288044,-84.61132
+67786,Naturgy Solar Operation USA LLC,65050.0,Mark Center Solar,OH,Defiance,PJM,IPP Non-CHP,MRC1,94.0,94.0,94.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,41.288044,-84.61132
 68048,"IPX Power USA, LLC",65053.0,Blythe Mesa Solar II,CA,Riverside,CISO,IPP Non-CHP,BMSES,112.0,112.0,112.0,Batteries,Battery storage,MWH,BA,12.0,2022.0, , ,(OP) Operating,448.0,33.640813,-114.6803
 68048,"IPX Power USA, LLC",65053.0,Blythe Mesa Solar II,CA,Riverside,CISO,IPP Non-CHP,IPBMS,223.6,223.6,223.6,Solar Photovoltaic,Solar,SUN,PV,12.0,2022.0, , ,(OP) Operating,,33.640813,-114.6803
 64470,"71CFR WHAM8 Solar, LLC",65054.0,71 Charlotte Furnace Rd Hybrid(CSG),MA,Plymouth,ISNE,IPP Non-CHP,71CBA,1.0,1.0,1.0,Batteries,Battery storage,MWH,BA,12.0,2021.0, , ,(OP) Operating,5.4,41.797106,-70.7416
@@ -23905,6 +23906,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 61012,AES Distributed Energy,65334.0,Platteview Solar LLC,NE,Saunders,SWPP,IPP Non-CHP,PLTVW,81.0,81.0,81.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2024.0, , ,(OP) Operating,,41.190999,-96.37942
 64655,"Appaloosa Run Wind, LLC",65335.0,Appaloosa Run Wind,TX,Upton,ERCO,IPP Non-CHP,WAPPA,171.8,171.8,171.8,Onshore Wind Turbine,Wind,WND,WT,12.0,2022.0, , ,(OP) Operating,,31.157269,-101.8316
 56990,NJR Clean Energy Ventures Corporation,65337.0,"Maybrook Solar, LLC (CSG)",NY,Orange,NYIS,IPP Non-CHP,MAYBK,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,2.0,2023.0, , ,(OP) Operating,,41.463056,-74.24778
+67192,"RWE Americas, LLC",65338.0,Union Ridge Solar,OH,Montgomery,PJM,IPP Non-CHP,UNIS1,108.0,108.0,108.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,39.984126,-82.6413
 64872,"Distributed Solar Development, LLC",65339.0,MD - CS - Potomac Edison Co - GA25 TPE (,MD,Garrett,PJM,IPP Non-CHP,19002,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2022.0, , ,(OP) Operating,,39.608072,-79.32824
 64872,"Distributed Solar Development, LLC",65340.0,MD - CS - BGE - PR24 TPE,MD,Prince Georges,PJM,IPP Non-CHP,19003,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2022.0, , ,(OP) Operating,,38.927431,-76.69916
 65164,CleanCapital Holdings,65342.0,Gorham Solar 1 (CSG),ME,Cumberland,ISNE,IPP Non-CHP,GS1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2023.0, , ,(OP) Operating,,43.660252,-70.4105
@@ -24072,6 +24074,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 64331,DTE Sustainable Generation,65497.0,Garden 1 Solar Park,MI,Delta,MISO,IPP Non-CHP,GRDS1,0.9,0.9,0.9,Solar Photovoltaic,Solar,SUN,PV,9.0,2016.0, , ,(OP) Operating,,45.796239,-86.53461
 64331,DTE Sustainable Generation,65498.0,Garden 2 Solar Park,MI,Delta,MISO,IPP Non-CHP,GRDS2,1.4,1.4,1.4,Solar Photovoltaic,Solar,SUN,PV,6.0,2022.0, , ,(OP) Operating,,45.797967,-86.53443
 64809,Doc Brown LLC,65499.0,Danville BESS 1,VA,Danville City,PJM,IPP Non-CHP,90909,10.5,10.5,10.5,Batteries,Battery storage,MWH,BA,11.0,2022.0, , ,(OP) Operating,24.6,36.578864,-79.38409
+66027,Orsted Wind Power North America LLC,65500.0,Revolution Wind,RI,Washington,ISNE,IPP Non-CHP,REVWD,715.0,715.0,715.0,Offshore Wind Turbine,Wind,WND,WS,10.0,2026.0, , ,(OP) Operating,,41.15217,-71.07783
 6455,"Duke Energy Florida, LLC",65501.0,Mule Creek Renewable Energy Center,FL,Bay,FPC,Electric Utility,PV1,74.9,74.9,74.9,Solar Photovoltaic,Solar,SUN,PV,3.0,2024.0, , ,(OP) Operating,,30.110543,-85.39761
 64778,"Strata Manager, LLC",65502.0,Beaker,NC,Pitt,CPLE,IPP Non-CHP,BEAKR,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2019.0, , ,(OP) Operating,,35.597904,-77.60944
 64778,"Strata Manager, LLC",65503.0,Belafonte,NC,Duplin,CPLE,IPP Non-CHP,BELAF,3.4,3.4,3.4,Solar Photovoltaic,Solar,SUN,PV,12.0,2018.0, , ,(OP) Operating,,35.161492,-78.09015
@@ -25490,6 +25493,9 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 65646,"AFTW Storage, LLC",66619.0,Lakeview Battery Storage Facility,CA,Kern,CISO,IPP Non-CHP,AFTW,1.2,1.2,1.2,Batteries,Battery storage,MWH,BA,12.0,2024.0, , ,(OP) Operating,4.6,35.095124,-119.0659
 65647,Resurgence Solar II,66620.0,Resurgence Solar II,CA,San Bernardino,CISO,IPP Non-CHP,GEN1,48.0,48.0,48.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2023.0, , ,(OP) Operating,,35.00656,-117.5448
 65647,Resurgence Solar II,66620.0,Resurgence Solar II,CA,San Bernardino,CISO,IPP Non-CHP,GEN2,40.0,40.0,40.0,Batteries,Battery storage,MWH,BA,8.0,2023.0, , ,(OP) Operating,300.0,35.00656,-117.5448
+55937,Entergy Texas Inc.,66621.0,Orange County Advanced Power Station,TX,Orange,MISO,Electric Utility,1A,453.0,396.6,428.3,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,10.0,2026.0, , ,(OP) Operating,,30.025251,-93.87134
+55937,Entergy Texas Inc.,66621.0,Orange County Advanced Power Station,TX,Orange,MISO,Electric Utility,1B,453.0,396.6,428.3,Natural Gas Fired Combined Cycle,Natural gas,NG,CT,10.0,2026.0, , ,(OP) Operating,,30.025251,-93.87134
+55937,Entergy Texas Inc.,66621.0,Orange County Advanced Power Station,TX,Orange,MISO,Electric Utility,1C,400.0,365.0,360.6,Natural Gas Fired Combined Cycle,Natural gas,NG,CA,10.0,2026.0, , ,(OP) Operating,,30.025251,-93.87134
 61980,Valta Energy,66622.0,9150 Hermosa Solar GM,CA,San Bernardino,CISO,IPP Non-CHP,VSPRC,1.3,1.3,1.3,Solar Photovoltaic,Solar,SUN,PV,12.0,2022.0, , ,(OP) Operating,,34.0878,-117.5872
 65650,"Harvest Gold Solar Power, LLC",66623.0,Harvest Gold Solar,MS,Sunflower,MISO,IPP Non-CHP,HGS,99.0,99.0,99.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2024.0, , ,(OP) Operating,,33.505,-90.636
 65651,"Double Back Diamond Solar Power, LLC",66624.0,Double Back Diamond,IL,Sangamon,MISO,IPP Non-CHP,DBD,592.8,592.8,592.8,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,39.53729,-89.80978
@@ -25628,6 +25634,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 50123,"Leeward Asset Management, LLC",66775.0,Morrow Lake Solar,TX,Frio,ERCO,IPP Non-CHP,MLPV,200.0,200.0,200.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,28.947973,-99.06719
 65760,"Solar DG NJ Brookdale, LLC",66776.0,Brookdale CC BTM at Lincroft,NJ,Monmouth,PJM,IPP Non-CHP,PV1,3.7,3.7,3.7,Solar Photovoltaic,Solar,SUN,PV,12.0,2022.0, , ,(OP) Operating,,40.326056,-74.13094
 65758,Helios Energy New York 15 LLC,66777.0,Geneseo Solar,NY,Livingston,NYIS,IPP Non-CHP,GEN1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2021.0, , ,(OP) Operating,,42.821,-77.72
+65741,"Hart Solar Partners, LLC",66778.0,Hart Solar Project,MI,Oceana,MISO,IPP Non-CHP,HS1,120.0,120.0,120.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,43.692866,-86.32097
 65751,RE Papago LLC,66779.0,Papago Energy Storage,AZ,Maricopa,AZPS,IPP Non-CHP,PPABA,300.0,300.0,300.0,Batteries,Battery storage,MWH,BA,5.0,2025.0, , ,(OP) Operating,1200.0,33.48355,-113.0378
 17633,Southern Indiana Gas & Elec Co,66780.0,Posey Solar,IN,Posey,MISO,Electric Utility,1,190.8,190.8,190.8,Solar Photovoltaic,Solar,SUN,PV,5.0,2025.0, , ,(OP) Operating,,37.926667,-87.72889
 65076,"HEN Infrastructure, L.L.C.",66782.0,Hamilton BESS,TX,Val Verde,ERCO,IPP Non-CHP,HAMIL,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,2.0,2024.0, , ,(OP) Operating,9.9,29.376438,-100.8485
@@ -25695,7 +25702,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 65777,Urban Grid Solar,66844.0,Spring Grove Solar 2,VA,Surry,PJM,IPP Non-CHP,SPRG2,150.0,150.0,150.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,37.16738,-76.92423
 56990,NJR Clean Energy Ventures Corporation,66845.0,Old Bridge Global Landfill CSG,NJ,Middlesex,PJM,IPP Non-CHP,OBGLD,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2023.0, , ,(OP) Operating,,40.446,-74.284
 63991,"DG New York CS, LLC",66846.0,Jogee Road Solar,NY,Orange,NYIS,IPP Non-CHP,JOGEE,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,7.0,2022.0, , ,(OP) Operating,,41.399969,-74.50221
-65791,"Robin Hollow Solar, LLC",66855.0,Robin Hollow Solar,RI,Kent,ISNE,IPP Non-CHP,RSH40,40.7,40.6,40.6,Solar Photovoltaic,Solar,SUN,PV,12.0,2023.0, , ,(OP) Operating,,41.640197,-71.6295
+64292,"Revity Management, LLC",66855.0,Robin Hollow Solar,RI,Kent,ISNE,IPP Non-CHP,RSH40,40.7,40.6,40.6,Solar Photovoltaic,Solar,SUN,PV,12.0,2023.0, , ,(OP) Operating,,41.640197,-71.6295
 65793,"DG Empire Lumen 2023, LLC",66856.0,NY Sorrell Hill II CSG,NY,Onondaga,NYIS,IPP Non-CHP,NGSH2,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2024.0, , ,(OP) Operating,,43.14672,-76.35467
 65788,Ben Milam Solar 1 LLC,66859.0,Orion I Solar Project,TX,Milam,ERCO,IPP Non-CHP,ORN1,200.0,200.0,200.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2024.0, , ,(OP) Operating,,30.996511,-97.00151
 65789,"Marion County Solar Project, LLC",66860.0,Marion County Solar Project,OH,Marion,PJM,IPP Non-CHP,USMNC,100.0,100.0,100.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,40.624518,-83.13615
@@ -25951,6 +25958,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 66009,"SR Panola III, LLC",67131.0,"SR Panola III, LLC",MS,Panola,TVA,IPP Non-CHP,PANO3,3.5,3.5,3.5,Solar Photovoltaic,Solar,SUN,PV,9.0,2024.0, , ,(OP) Operating,,34.302365,-89.98784
 66010,"SR Panola I, LLC",67132.0,"SR Panola I, LLC",MS,Panola,TVA,IPP Non-CHP,PANO1,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,7.0,2024.0, , ,(OP) Operating,,34.304153,-89.98632
 66011,"SR Monroe, LLC",67133.0,"SR Monroe, LLC",TN,Overton,TVA,IPP Non-CHP,MONRO,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,36.44055,-85.25356
+66012,"SR Marshall, LLC",67134.0,"SR Marshall, LLC",MS,Marshall,TVA,IPP Non-CHP,MARSH,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,34.959526,-89.58856
 66013,"SR West Marshall, LLC",67135.0,"SR West Marshall, LLC",MS,Marshall,TVA,IPP Non-CHP,WMARS,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,34.958436,-89.70122
 65985,"EF NY CDG 010, LLC",67136.0,NY Attica 264 Maplewood Rd,NY,Wyoming,NYIS,IPP Non-CHP,20496,3.6,3.6,3.6,Solar Photovoltaic,Solar,SUN,PV,7.0,2025.0, , ,(OP) Operating,,42.866,-78.257
 64904,AES Clean Energy,67137.0,Great Cove Solar II,PA,Franklin,PJM,IPP Non-CHP,GC2,150.0,150.0,150.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2023.0, , ,(OP) Operating,,39.9016,-77.8682
@@ -26511,6 +26519,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 58649,"SunStrong Management, LLC",67646.0,Walldog,IL,Livingston,PJM,IPP Non-CHP,WALLD,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,40.913454,-88.64291
 66305,"Rio Vista Executive Boat & RV Storage, LLC",67648.0,Rio Vista Solar,CA,Solano,CISO,Commercial Non-CHP,30200,2.7,2.7,2.7,Solar Photovoltaic,Solar,SUN,PV,4.0,2025.0, , ,(OP) Operating,,38.16492,-121.6847
 61060,Cypress Creek Renewables,67654.0,Destiny Storage,TX,Harris,ERCO,IPP Non-CHP,DESTS,200.0,200.0,200.0,Batteries,Battery storage,MWH,BA,7.0,2026.0, , ,(OP) Operating,400.0,29.887194,-95.02366
+61060,Cypress Creek Renewables,67666.0,Sundance (CO),CO,Elbert,PSCO,IPP Non-CHP,SUNDN,74.9,74.9,74.9,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,39.414779,-104.4481
 66303,PFMD LL Jessup LLC,67670.0,MD JESSUP 7950 OCEANO AVE,MD,Howard,PJM,IPP Non-CHP,22337,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,9.0,2024.0, , ,(OP) Operating,,39.157496,-76.78725
 66304,PFMD LL Baltimore LLC,67671.0,MD BALTIMORE 4851 HOLABIRD AVE,MD,Baltimore,PJM,IPP Non-CHP,21376,1.8,1.8,1.8,Solar Photovoltaic,Solar,SUN,PV,7.0,2025.0, , ,(OP) Operating,,39.269522,-76.55351
 6452,Florida Power & Light Co,67672.0,Cedar Trail,FL,Baker,FPL,Electric Utility,1,74.5,74.5,74.5,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,30.339139,-82.19286
@@ -26562,6 +26571,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 66267,"Solar DG IL 4, LLC",67720.0,Whiskey Acres,IL,DeKalb,PJM,IPP Non-CHP,PV1,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2024.0, , ,(OP) Operating,,41.877,-88.733
 66338,Al Pastor BESS LLC,67721.0,Al Pastor Battery Storage Plant,TX,Dawson,ERCO,IPP Non-CHP,ALPTR,100.3,100.3,100.3,Batteries,Battery storage,MWH,BA,11.0,2024.0, , ,(OP) Operating,145.0,32.7171,-101.9378
 66336,"Wild Plains Wind Project, LLC",67722.0,WPWP,KS,Sumner,SWPP,IPP Non-CHP,WPWP,307.2,307.2,307.2,Onshore Wind Turbine,Wind,WND,WT,2.0,2025.0, , ,(OP) Operating,,37.283916,-97.21513
+66344,Kingstree West 115 LLC,67723.0,Kingstree West 115,SC,Williamsburg,CPLE,IPP Non-CHP,SOLAR,74.9,74.9,74.9,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,33.693976,-79.95404
 20860,Wisconsin Public Service Corp,67724.0,Antigo-Forrest Street Solar Project,WI,Langlade,MISO,Electric Utility,20243,6.0,6.0,6.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,45.123935,-89.17536
 20847,Wisconsin Electric Power Co,67725.0,"Auburn Solar WI, LLC",WI,Fond Du Lac,MISO,Electric Utility,20245,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2024.0, , ,(OP) Operating,,43.599344,-88.23868
 20847,Wisconsin Electric Power Co,67726.0,"Bonduel Solar WI, LLC",WI,Shawano,MISO,Electric Utility,20233,7.5,7.5,7.5,Solar Photovoltaic,Solar,SUN,PV,12.0,2023.0, , ,(OP) Operating,,44.731025,-88.37428
@@ -26860,6 +26870,8 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 66601,"Ticon Solar, LLC",68115.0,Ticon Solar,NY,Essex,NYIS,IPP Non-CHP,TICON,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,43.868,-73.44
 58135,Ecos Energy LLC,68116.0,Benz Solar 1,CT,New Haven,ISNE,IPP Non-CHP,BENZ1,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2025.0, , ,(OP) Operating,,41.342637,-73.0615
 58135,Ecos Energy LLC,68117.0,Benz Solar 2,CT,New Haven,ISNE,IPP Non-CHP,BENZ2,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2025.0, , ,(OP) Operating,,41.34357,-73.06077
+65869,Prologis Logistics Services Incorporated,68118.0,Addison 11-SLCHI404,IL,DuPage,PJM,IPP Non-CHP,CH404,1.6,1.6,1.6,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.930327,-88.04848
+65869,Prologis Logistics Services Incorporated,68130.0,Des Plaines 11-SLCHI211,IL,Cook,PJM,IPP Non-CHP,CH211,1.6,1.6,1.6,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,42.015,-87.915
 65869,Prologis Logistics Services Incorporated,68131.0,Des Plaines 7-SLCHI819,IL,Cook,PJM,IPP Non-CHP,CH819,1.4,1.4,1.4,Solar Photovoltaic,Solar,SUN,PV,6.0,2025.0, , ,(OP) Operating,,42.018195,-87.9296
 65869,Prologis Logistics Services Incorporated,68136.0,Franklin Park 3-SLCHI803,IL,Cook,PJM,IPP Non-CHP,CH803,1.2,1.2,1.2,Solar Photovoltaic,Solar,SUN,PV,2.0,2025.0, , ,(OP) Operating,,41.947302,-87.86092
 65869,Prologis Logistics Services Incorporated,68142.0,Northlake 3-SLCHI303,IL,Cook,PJM,IPP Non-CHP,CH303,1.6,1.6,1.6,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,41.918532,-87.9093
@@ -26869,6 +26881,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 5504,Vistra Corp,68147.0,Coffeen Solar BESS,IL,Montgomery,MISO,IPP Non-CHP,2,2.0,2.0,2.0,Batteries,Battery storage,MWH,BA,12.0,2024.0, , ,(OP) Operating,8.0,39.068994,-89.39336
 5504,Vistra Corp,68148.0,Baldwin Solar BESS,IL,Randolph,MISO,IPP Non-CHP,1,68.4,68.4,68.4,Solar Photovoltaic,Solar,SUN,PV,12.0,2024.0, , ,(OP) Operating,,38.203536,-89.85394
 5504,Vistra Corp,68148.0,Baldwin Solar BESS,IL,Randolph,MISO,IPP Non-CHP,2,2.0,2.0,2.0,Batteries,Battery storage,MWH,BA,12.0,2024.0, , ,(OP) Operating,8.0,38.203536,-89.85394
+65803,"Raven Storage, LLC",68149.0,Raven Storage,TX,Wharton,ERCO,IPP Non-CHP,RAVEB,100.0,100.0,100.0,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,290.9,29.575617,-96.08872
 64698,"Renewable Solar, Inc",68150.0,Allied Potato,CA,Kern,CISO,Industrial Non-CHP,19073,1.2,1.2,1.2,Solar Photovoltaic,Solar,SUN,PV,5.0,2025.0, , ,(OP) Operating,,35.259196,-118.8819
 65869,Prologis Logistics Services Incorporated,68151.0,Mountain View Ind Park 1-sline001,CA,San Bernardino,CISO,IPP Non-CHP,IE001,1.1,1.1,1.1,Solar Photovoltaic,Solar,SUN,PV,9.0,2023.0, , ,(OP) Operating,,34.050209,-117.4604
 66614,"Rush Solar Farm 1, LLC",68152.0,Rush Solar,NY,Monroe,NYIS,IPP Non-CHP,RUSH1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,42.947,-77.698
@@ -26901,12 +26914,15 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 15474,Public Service Co of Oklahoma,68222.0,Flat Ridge 4,KS,Harper,SWPP,Electric Utility,OP,134.0,134.0,134.0,Onshore Wind Turbine,Wind,WND,WT,6.0,2025.0, , ,(OP) Operating,,37.341118,-98.01313
 5416,"Duke Energy Carolinas, LLC",68223.0,Beaverdam Renewable Energy Center,SC,Laurens,DUK,Electric Utility,67693,40.8,42.0,42.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,34.64611,-82.03086
 66653,"SR Adamsville, LLC",68224.0,SR Adamsville,TN,McNairy,TVA,IPP Non-CHP,ADAMV,25.0,25.0,25.0,Solar Photovoltaic,Solar,SUN,PV,7.0,2026.0, , ,(OP) Operating,,35.256025,-88.36971
+66658,"SR Des Arc, LLC",68230.0,SR Des Arc,AR,Prairie,MISO,IPP Non-CHP,DESAR,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,34.977439,-91.52516
 65539,Pivot Energy,68232.0,St. Clair Solar 3,IL,St Clair,MISO,IPP Non-CHP,STCL3,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2024.0, , ,(OP) Operating,,38.62303,-90.08714
 65539,Pivot Energy,68233.0,Kankakee Solar 3,IL,Kankakee,MISO,IPP Non-CHP,KANK3,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,41.220911,-87.8814
 65581,Grand Valley Power LLC,68234.0,Vinelands Power Plant,CO,Mesa,PSCO,IPP Non-CHP,GEN1,4.5,3.5,4.5,Conventional Hydroelectric,Hydro,WAT,HY,11.0,2022.0, , ,(OP) Operating,,39.101686,-108.3457
 65869,Prologis Logistics Services Incorporated,68235.0,Romeoville 34 - SLCHI234 - BSCHI234,IL,Will,PJM,IPP Non-CHP,C234B,1.1,1.1,1.1,Solar Photovoltaic,Solar,SUN,PV,11.0,2025.0, , ,(OP) Operating,,41.597,-88.11
 65869,Prologis Logistics Services Incorporated,68237.0,South Bay Dis Ctr 20-SLLAX512,CA,Los Angeles,CISO,IPP Non-CHP,LA512,1.3,1.3,1.3,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,33.84038,-118.2287
 65869,Prologis Logistics Services Incorporated,68238.0,Commerce Distribution Center 4-SLLAX113,CA,Los Angeles,CISO,IPP Non-CHP,LA113,1.2,1.2,1.2,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,33.98049,-118.1582
+66669,"Solar Star 3, LLC",68240.0,Solar Star 3,CA,Kern,CISO,IPP Non-CHP,SS3PV,24.0,24.0,24.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,34.84166,-118.4551
+66670,"Solar Star 4, LLC",68241.0,Solar Star 4,CA,Kern,CISO,IPP Non-CHP,SS4PV,24.0,24.0,24.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,34.84166,-118.4551
 66675,DG Green Arrow LLC,68242.0,DG Green Arrow,MN,Pipestone,MISO,IPP Non-CHP,GRARW,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2025.0, , ,(OP) Operating,,43.994,-96.3327
 68049,"Nofar USA Energy Investments and Management, LLC",68244.0,"Gransolar Texas One, LLC",TX,Milam,ERCO,IPP Non-CHP,GRTX1,50.0,50.0,50.0,Solar Photovoltaic,Solar,SUN,PV,2.0,2025.0, , ,(OP) Operating,,30.599817,-97.15475
 68049,"Nofar USA Energy Investments and Management, LLC",68246.0,BT Jungmann,TX,Milam,ERCO,IPP Non-CHP,JUNGM,40.0,40.0,40.0,Solar Photovoltaic,Solar,SUN,PV,2.0,2025.0, , ,(OP) Operating,,30.903764,-97.05778
@@ -26928,6 +26944,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 66693,"Catalyze Oxnard 2600 Sakioka Drive Microgrid, LLC",68272.0,CA OXNARD 2600 Sakioka Dr,CA,Ventura,CISO,IPP Non-CHP,21387,1.6,1.6,1.6,Solar Photovoltaic,Solar,SUN,PV,7.0,2025.0, , ,(OP) Operating,,34.2134,-119.1396
 66690,"Morris Ridge Solar Energy Center, LLC",68274.0,Morris Ridge Solar,NY,Livingston,NYIS,IPP Non-CHP,MOR01,177.0,177.0,177.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2024.0, , ,(OP) Operating,,42.663093,-77.89084
 6452,Florida Power & Light Co,68276.0,Swamp Cabbage,FL,Hendry,FPL,Electric Utility,1,74.5,74.5,74.5,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,26.762014,-81.25302
+20421,Western Minnesota Mun Pwr Agny,68277.0,Brookings Solar,SD,Brookings,SWPP,Electric Utility,1,4.9,4.9,4.9,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,44.340596,-96.72945
 63630,New Columbia Solar,68279.0,NCS FCPA LLC,DC,District of Columbia,PJM,IPP Non-CHP,10022,1.1,1.1,1.1,Solar Photovoltaic,Solar,SUN,PV,5.0,2020.0, , ,(OP) Operating,,38.89146,-76.9403
 63630,New Columbia Solar,68280.0,NCS Paradise LLC,DC,District of Columbia,PJM,IPP Non-CHP,10021,1.3,1.3,1.3,Solar Photovoltaic,Solar,SUN,PV,5.0,2021.0, , ,(OP) Operating,,38.90639,-76.9514
 66700,"BOCA bn, LLC",68281.0,Box Canyon (AZ),AZ,Pinal,AZPS,IPP Non-CHP,BOCA1,300.0,300.0,300.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2025.0, , ,(OP) Operating,,33.160564,-111.3692
@@ -26935,6 +26952,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 66703,"Green River Solar, LLC",68297.0,Green River Solar,KY,Meade,MISO,IPP Non-CHP,4598,200.0,200.0,200.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2025.0, , ,(OP) Operating,,37.909944,-86.26013
 64904,AES Clean Energy,68301.0,Cabin Creek MD,MD,Dorchester,PJM,IPP Non-CHP,CABCR,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2025.0, , ,(OP) Operating,,38.615,-75.8959
 13781,Northern States Power Co - Minnesota,68318.0,Dakota Range Wind,SD,Grant,MISO,Electric Utility,DKR01,304.0,304.0,304.0,Onshore Wind Turbine,Wind,WND,WT,1.0,2022.0, , ,(OP) Operating,,45.223652,-97.02314
+66726,Nimbus Wind Farm LLC,68319.0,Nimbus Wind Farm,AR,Carroll,MISO,IPP Non-CHP,NIM,183.0,183.0,183.0,Onshore Wind Turbine,Wind,WND,WT,10.0,2026.0, , ,(OP) Operating,,36.27118,-93.40682
 66727,Blackwell Creek Solar LLC,68320.0,Blackwell Creek Solar,OR,Jackson,PACW,IPP Non-CHP,BC24,1.4,1.4,1.4,Solar Photovoltaic,Solar,SUN,PV,12.0,2024.0, , ,(OP) Operating,,42.404138,-123.0083
 66717,Atlas VII LLC,68322.0,Atlas VII,AZ,La Paz,CISO,IPP Non-CHP,ALT7A,180.0,180.0,180.0,Batteries,Battery storage,MWH,BA,10.0,2025.0, , ,(OP) Operating,720.0,33.582903,-113.5769
 66717,Atlas VII LLC,68322.0,Atlas VII,AZ,La Paz,CISO,IPP Non-CHP,ALT7B,120.0,120.0,120.0,Batteries,Battery storage,MWH,BA,10.0,2025.0, , ,(OP) Operating,480.0,33.582903,-113.5769
@@ -26992,6 +27010,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 64904,AES Clean Energy,68389.0,AES Glengarry Farms Solar CSG,NY,Franklin,NYIS,IPP Non-CHP,GLENG,5.0,4.9,1.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,44.9183,-74.1477
 65043,Madison Energy Investments LLC,68390.0,118 Echo,MA,Barnstable,ISNE,IPP Non-CHP,ECOPV,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,7.0,2023.0, , ,(OP) Operating,,41.655,-70.50306
 65043,Madison Energy Investments LLC,68391.0,3100 Valleyview Drive,OH,Franklin,PJM,IPP Non-CHP,VVDPV,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2023.0, , ,(OP) Operating,,39.956944,-83.02917
+65043,Madison Energy Investments LLC,68392.0,IL2 - W109,IL,Will,PJM,IPP Non-CHP,IL2PV,4.9,4.9,4.9,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.470454,-88.02366
 65043,Madison Energy Investments LLC,68393.0,North Stafford HS,VA,Stafford,PJM,IPP Non-CHP,NOSPV,1.3,1.3,1.3,Solar Photovoltaic,Solar,SUN,PV,9.0,2023.0, , ,(OP) Operating,,38.467778,-77.45528
 65043,Madison Energy Investments LLC,68394.0,Waterboro,ME,York,ISNE,IPP Non-CHP,WBMPV,4.9,4.9,4.9,Solar Photovoltaic,Solar,SUN,PV,7.0,2023.0, , ,(OP) Operating,,43.591111,-70.71861
 65043,Madison Energy Investments LLC,68395.0,Wheeler Ridge 2,CA,Kern,CISO,IPP Non-CHP,WR2PV,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2023.0, , ,(OP) Operating,,34.9846,-118.9085
@@ -27331,6 +27350,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67052,USS Cattail Solar LLC,68755.0,USS Cattail Solar,IL,Whiteside,MISO,IPP Non-CHP,USCAT,2.3,2.3,2.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2025.0, , ,(OP) Operating,,41.854,-90.1171
 67053,USS Ducks Solar LLC,68756.0,USS Ducks Solar CSG,IL,Ogle,MISO,IPP Non-CHP,USDUC,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2025.0, , ,(OP) Operating,,42.0142,-89.351
 67054,USS Beard Solar LLC,68757.0,USS Beard Solar,IL,Cass,MISO,IPP Non-CHP,USBRD,3.5,3.5,3.5,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,39.9895,-90.3538
+68048,"IPX Power USA, LLC",68758.0,Easley Solar,CA,Riverside,CISO,IPP Non-CHP,IPEA1,290.0,290.0,290.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,33.722655,-115.326
 68048,"IPX Power USA, LLC",68758.0,Easley Solar,CA,Riverside,CISO,IPP Non-CHP,IPEA2,350.0,350.0,350.0,Batteries,Battery storage,MWH,BA,6.0,2026.0, , ,(OP) Operating,1400.0,33.722655,-115.326
 67059,Rak 2 Solar LLC,68764.0,Rak 2,NY,Chautauqua,NYIS,IPP Non-CHP,170,3.5,3.5,3.5,Solar Photovoltaic,Solar,SUN,PV,12.0,2023.0, , ,(OP) Operating,,42.4367,-79.29715
 19436,Union Electric Co - (MO),68770.0,Boomtown Renewable Energy Center,IL,White,MISO,Electric Utility,BTREC,150.0,150.0,150.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2024.0, , ,(OP) Operating,,38.1699,-88.1869
@@ -27388,10 +27408,14 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 64366,Terra-Gen Operating Co-Hybrid,68846.0,Edwards Sanborn 1C,CA,Kern,CISO,IPP Non-CHP,S6,102.0,102.0,102.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2025.0, , ,(OP) Operating,,35.026182,-118.1529
 67083,"1000 Mile Solar, LLC",68847.0,1000 Mile Solar,TX,Yoakum,SWPP,IPP Non-CHP,PV1,300.0,300.0,300.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,33.02248,-102.7089
 66117,"Autoliv ASP, Inc.",68849.0,SF Auto O1,UT,Weber,WACM,Industrial Non-CHP,SFAO1,3.4,3.4,3.4,Solar Photovoltaic,Solar,SUN,PV,12.0,2023.0, , ,(OP) Operating,,41.207,-112.004
+5109,DTE Electric Company,68850.0,Gratiot Solar Park,MI,Gratiot,MISO,Electric Utility,GRTSP,50.0,50.0,50.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,43.436999,-84.49845
+67095,"Bell 1 Solar, LLC",68851.0,Hermes Solar PV,TX,Bell,ERCO,IPP Non-CHP,HSPV1,100.4,100.0,100.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,30.989842,-97.14982
+67096,"Bell 1 Storage, LLC",68852.0,Hermes Storage BESS,TX,Bell,ERCO,IPP Non-CHP,HSBE1,100.4,100.0,100.0,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,200.0,30.981595,-97.1429
 67111,Angiola East LLC,68854.0,Angela Solar Project,CA,Tulare,CISO,IPP Non-CHP,ABESS,40.0,20.0,20.0,Batteries,Battery storage,MWH,BA,5.0,2026.0, , ,(OP) Operating,80.0,35.865642,-119.4559
 67111,Angiola East LLC,68854.0,Angela Solar Project,CA,Tulare,CISO,IPP Non-CHP,ANG1,40.0,40.0,40.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2026.0, , ,(OP) Operating,,35.865642,-119.4559
 67109,"Tyson Nick Solar Project, LLC",68856.0,Tyson Nick,TX,Lamar,ERCO,IPP Non-CHP,1,90.5,90.0,90.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,33.644897,-95.62704
 67108,"DG Richmond, LLC",68857.0,Richmond Solar,IL,McHenry,PJM,IPP Non-CHP,HM701,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,7.0,2025.0, , ,(OP) Operating,,42.441266,-88.30367
+67114,Santa Teresa Solar,68866.0,Santa Teresa Solar,NM,Dona Ana,EPE,IPP Non-CHP,SAN,150.0,150.0,150.0,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,600.0,31.805525,-106.6989
 67114,Santa Teresa Solar,68866.0,Santa Teresa Solar,NM,Dona Ana,EPE,IPP Non-CHP,STS,150.0,150.0,150.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,31.805525,-106.6989
 67115,"Shallow Basket Energy, LLC",68868.0,Shallow Basket,NM,Rio Arriba,PNM,IPP Non-CHP,SBBS1,50.0,50.0,50.0,Batteries,Battery storage,MWH,BA,8.0,2025.0, , ,(OP) Operating,200.0,36.252111,-107.3107
 67115,"Shallow Basket Energy, LLC",68868.0,Shallow Basket,NM,Rio Arriba,PNM,IPP Non-CHP,SBPV1,140.0,140.0,140.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2025.0, , ,(OP) Operating,,36.252111,-107.3107
@@ -27433,6 +27457,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67153,Tesoro RV & Boat Storage,68908.0,Tesoro RV & Boat Storage,CA,San Joaquin,CISO,Commercial Non-CHP,45067,2.5,2.5,2.5,Solar Photovoltaic,Solar,SUN,PV,5.0,2026.0, , ,(OP) Operating,,37.776626,-121.1869
 67158,Padua 1,68912.0,Padua 1,TX,Bexar,ERCO,IPP Non-CHP,12341,50.0,50.0,50.0,Batteries,Battery storage,MWH,BA,7.0,2025.0, , ,(OP) Operating,200.0,29.325064,-98.32562
 67159,Padua 2,68913.0,Padua 2,TX,Bexar,ERCO,IPP Non-CHP,12342,150.0,150.0,150.0,Batteries,Battery storage,MWH,BA,6.0,2026.0, , ,(OP) Operating,600.0,29.325064,-98.32562
+67160,Padua 3,68914.0,Padua 3,TX,Bexar,ERCO,IPP Non-CHP,12343,200.0,200.0,200.0,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,800.0,29.325064,-98.32562
 67162,"Ferdinand Grid, LLC",68915.0,Ferdinand Energy Center,TX,Bexar,ERCO,IPP Non-CHP,1,200.0,200.0,200.0,Batteries,Battery storage,MWH,BA,6.0,2026.0, , ,(OP) Operating,800.0,29.34836,-98.57653
 65010,"SolAmerica Energy, LLC",68918.0,SAE Paris IL S1,IL,Edgar,MISO,Industrial Non-CHP,S1,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2025.0, , ,(OP) Operating,,39.605645,-87.71992
 65010,"SolAmerica Energy, LLC",68919.0,Macon County IL S1,IL,Macon,MISO,IPP Non-CHP,S1,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,39.91707,-88.89615
@@ -27441,6 +27466,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67164,"Anthony Vineyards, Inc.",68922.0,AVI Bakersfield,CA,Kern,CISO,Industrial Non-CHP,BAK,2.2,2.2,1.4,Solar Photovoltaic,Solar,SUN,PV,6.0,2022.0, , ,(OP) Operating,,35.076494,-118.9306
 65654,Birch Creek Development,68927.0,"Adelite Solar, LLC",MO,Caldwell,MISO,IPP Non-CHP,ADELI,25.0,25.0,25.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,39.75533,-94.01234
 66331,"Birch Creek Power, LLC",68928.0,"Richland Township Solar II, LLC",IL,Marshall,MISO,IPP Non-CHP,RICH2,10.8,10.8,10.8,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,40.94425,-89.26966
+65654,Birch Creek Development,68929.0,"Ruby Solar, LLC",IL,Clinton,MISO,IPP Non-CHP,RUBY,50.0,50.0,50.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,38.595759,-89.16983
 24211,Tucson Electric Power Co,68937.0,Roadrunner Reserve Phase 2,AZ,Pima,TEPC,Electric Utility,RDR2,200.0,200.0,200.0,Batteries,Battery storage,MWH,BA,6.0,2026.0, , ,(OP) Operating,800.0,32.073,-110.821
 65539,Pivot Energy,68941.0,BH CSG 3,CO,Otero,WACM,IPP Non-CHP,BHC3,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,5.0,2023.0, , ,(OP) Operating,,37.983521,-103.5762
 65539,Pivot Energy,68942.0,Chaberton Solar Catherine,MD,Howard,PJM,IPP Non-CHP,CHAB,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2024.0, , ,(OP) Operating,,39.316996,-77.00585
@@ -27524,6 +27550,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 60584,Onyx Asset Services Group,69037.0,Riley III - Site 6 Community Solar,KS,Riley,SWPP,IPP Non-CHP,10651,2.1,2.1,2.1,Solar Photovoltaic,Solar,SUN,PV,3.0,2025.0, , ,(OP) Operating,,39.082862,-96.8228
 60584,Onyx Asset Services Group,69038.0,Riley III - Site 12 Community Solar,KS,Riley,SWPP,IPP Non-CHP,10638,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2025.0, , ,(OP) Operating,,39.086479,-96.79936
 67006,"REC SHW, LLC",69039.0,Sutter Home Winery Westside,CA,San Joaquin,CISO,IPP Non-CHP,SHWST,2.3,2.3,2.3,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,38.152145,-121.4022
+15466,Public Service Co of Colorado,69040.0,Arroyo Solar,CO,Pueblo,PSCO,Electric Utility,ARY1,335.0,335.0,335.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,38.161657,-104.5488
 67231,"Iron Springs BESS, LLC",69041.0,Iron Springs BESS,UT,Iron,PACE,IPP Non-CHP,ISBA,80.0,80.0,80.0,Batteries,Battery storage,MWH,BA,4.0,2026.0, , ,(OP) Operating,80.0,37.728942,-113.1498
 67232,"Solar DG NM Amalia, LLC",69042.0,Kit Carson Co-Op,NM,Taos,PNM,IPP Non-CHP,AM-PV,10.8,10.8,10.8,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,36.969882,-105.4369
 67232,"Solar DG NM Amalia, LLC",69042.0,Kit Carson Co-Op,NM,Taos,PNM,IPP Non-CHP,AMBES,12.9,12.9,12.9,Batteries,Battery storage,MWH,BA,12.0,2025.0, , ,(OP) Operating,25.9,36.969882,-105.4369
@@ -27538,6 +27565,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 65539,Pivot Energy,69051.0,Chaberton Solar Blackburn,DE,Kent,PJM,IPP Non-CHP,CHBL,3.0,3.0,3.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,39.066233,-75.47778
 65539,Pivot Energy,69052.0,MDD109-NCBP BLDG 11-Manekin,MD,Prince Georges,PJM,IPP Non-CHP,MD11,2.4,2.4,2.4,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,38.8739,-76.7342
 65539,Pivot Energy,69053.0,ILL060-Sangamon-Atchison,IL,Sangamon,MISO,IPP Non-CHP,IL60,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,39.849909,-89.29994
+67218,"ATLAS SOLAR IV, LLC",69055.0,ATLAS SOLAR IV,AZ,La Paz,CISO,IPP Non-CHP,ALTS4,300.0,300.0,300.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,33.582903,-113.5769
 58509,"Affordable Solar Silver City, LLC",69061.0,ASG-4 Community Solar,NM,Valencia,PNM,IPP Non-CHP,ASG-4,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,34.609944,-106.8156
 58509,"Affordable Solar Silver City, LLC",69062.0,ASG-8,NM,Valencia,PNM,IPP Non-CHP,ASG-8,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,34.656861,-106.8152
 67237,"Appleseed Solar, LLC",69063.0,Appleseed Solar,IN,Cass,MISO,IPP Non-CHP,APLS,200.0,200.0,200.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2025.0, , ,(OP) Operating,,40.70551,-86.249
@@ -27584,7 +27612,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 17650,Southern Power Co,69101.0,Millers Branch Solar,TX,Haskell,ERCO,IPP Non-CHP,MLB02,180.0,180.0,180.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,33.22132,-99.58652
 58509,"Affordable Solar Silver City, LLC",69103.0,ASG-2 Community Solar,NM,Sandoval,PNM,Commercial Non-CHP,ASG-2,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,35.24175,-106.8145
 58509,"Affordable Solar Silver City, LLC",69104.0,SLO-1 Community Solar,NM,Valencia,PNM,IPP Non-CHP,SLO-1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,34.784861,-106.654
-58509,"Affordable Solar Silver City, LLC",69105.0,SLO-2,NM,Sandoval,PNM,IPP Non-CHP,SLO-2,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,35.363052,-106.631
+58509,"Affordable Solar Silver City, LLC",69105.0,SLO-2 Community Solar,NM,Sandoval,PNM,IPP Non-CHP,SLO-2,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,35.363052,-106.631
 58509,"Affordable Solar Silver City, LLC",69106.0,SLO-3 Community Solar,NM,Dona Ana,EPE,IPP Non-CHP,SLO-3,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,32.433,-106.6862
 58509,"Affordable Solar Silver City, LLC",69107.0,XCEL-1 Community Solar,NM,Chaves,SWPP,IPP Non-CHP,XCL-1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,33.326556,-104.536
 61419,"Luminace Solar MC, LLC",69109.0,CCBC Essex,MD,Baltimore,PJM,IPP Non-CHP,ESSEX,1.4,1.4,1.4,Solar Photovoltaic,Solar,SUN,PV,10.0,2015.0, , ,(OP) Operating,,39.351597,-76.48306
@@ -27647,6 +27675,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 65849,ClearGen LLC,69191.0,"GreenStruxure REP009, LLC",CA,Los Angeles,CISO,IPP Non-CHP,GEN,1.4,1.4,1.4,Natural Gas Internal Combustion Engine,Natural gas,NG,IC,6.0,2023.0, , ,(OP) Operating,,33.861063,-118.2333
 66264,AETS OpCo Holdings LLC,69192.0,AETS Old Michigan Solar LLC,TX,Culberson,ERCO,IPP Non-CHP,OLDMI,10.0,10.0,10.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,31.826508,-104.2103
 65677,Dimension Energy LLC,69193.0,KaneSolar03 LLC,IL,Kane,PJM,IPP Non-CHP,KANE3,2.5,2.5,2.5,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,41.893158,-88.55198
+64904,AES Clean Energy,69197.0,Halifax County Solar,NC,Halifax,PJM,IPP Non-CHP,HALIF,80.0,80.0,80.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,36.2537,-77.6884
 67337,"ESTX-PLD-HOUSTON2, LLC",69200.0,SAHARA BESS (SOHO BESS),TX,Brazoria,ERCO,IPP Non-CHP,SOHO1,204.4,204.4,204.4,Batteries,Battery storage,MWH,BA,7.0,2026.0, , ,(OP) Operating,408.8,29.452067,-95.30828
 67337,"ESTX-PLD-HOUSTON2, LLC",69200.0,SAHARA BESS (SOHO BESS),TX,Brazoria,ERCO,IPP Non-CHP,SOHO2,204.3,204.3,204.3,Batteries,Battery storage,MWH,BA,7.0,2026.0, , ,(OP) Operating,408.6,29.452067,-95.30828
 61194,Generate Capital,69201.0,KA361,IL,Kankakee,PJM,IPP Non-CHP,11220,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,41.267199,-87.77736
@@ -27766,6 +27795,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67403,Regis Hidden Valley LLC,69335.0,Regis Hidden Valley,TX,Harris,ERCO,IPP Non-CHP,HIDD,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,2.0,2026.0, , ,(OP) Operating,9.9,29.909626,-95.42364
 67399,Regis Gears Harris LLC,69336.0,Regis Gears Harris,TX,Harris,ERCO,IPP Non-CHP,GEARS,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,2.0,2026.0, , ,(OP) Operating,9.9,29.962405,-95.44201
 67404,Regis Laureles LLC,69337.0,Regis Laureles,TX,Cameron,ERCO,IPP Non-CHP,LAURE,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,2.0,2026.0, , ,(OP) Operating,9.9,26.122395,-97.54792
+67405,Regis Leakey LLC,69338.0,Regis Leakey,TX,Real,ERCO,IPP Non-CHP,LEAKY,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,9.9,29.681012,-99.76172
 67406,Regis Lyssy LLC,69339.0,Regis Lyssy,TX,Karnes,ERCO,IPP Non-CHP,LYSSY,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,2.0,2026.0, , ,(OP) Operating,9.9,28.894339,-98.12413
 67408,Regis Medina Lake LLC,69341.0,Regis Medina Lake,TX,Bandera,ERCO,IPP Non-CHP,MEDLA,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,4.0,2026.0, , ,(OP) Operating,9.9,29.612674,-98.93509
 67409,Regis Milton LLC,69342.0,Regis Milton,TX,Karnes,ERCO,IPP Non-CHP,MILT,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,3.0,2026.0, , ,(OP) Operating,9.9,29.057397,-97.78802
@@ -27801,7 +27831,9 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67456,SMT Dallas III LLC,69367.0,SMT Dallas III BESS,TX,Dallas,ERCO,Commercial Non-CHP,SMTD3,10.0,10.0,10.0,Batteries,Battery storage,MWH,BA,1.0,2026.0, , ,(OP) Operating,10.0,32.825042,-96.86294
 67457,Tinta Wita Energy LLC,69368.0,Tinta Wita 5 MW Solar PV System,MN,Goodhue,MISO,IPP Non-CHP,PI01A,4.5,4.5,3.1,Solar Photovoltaic,Solar,SUN,PV,5.0,2024.0, , ,(OP) Operating,,44.632,-92.643
 67418,RP Minnesota Solar LLC,69370.0,RP Minnesota Solar,CA,Ventura,CISO,IPP Non-CHP,CONEJ,1.8,1.8,1.8,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,34.20017,-118.9281
+67419,Middle Road Solar Partners LLC,69371.0,Middle Road Solar Partners,PA,Dauphin,PJM,IPP Non-CHP,HALIF,2.5,2.5,2.5,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,40.516,-76.937
 67422,Liverpool Solar Partners,69374.0,Liverpool Solar Partners,PA,Perry,PJM,IPP Non-CHP,LIVER,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,4.0,2025.0, , ,(OP) Operating,,40.582768,-76.98408
+67423,Lysander III PV LLC,69375.0,Lysander III PV,NY,Onondaga,NYIS,IPP Non-CHP,LYSAN,2.4,2.4,2.4,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,43.219759,-76.38847
 67424,Machias PV LLC,69376.0,Machias PV,NY,Cattaraugus,NYIS,IPP Non-CHP,MACHI,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2026.0, , ,(OP) Operating,,42.40904,-78.49085
 67426,RP SCG Texas Solar LLC,69378.0,RP SCG Texas Solar,TX,Travis,ERCO,IPP Non-CHP,RIATA,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,1.0,2025.0, , ,(OP) Operating,,30.427708,-97.74735
 67429,NSF Chateaugay Site 1 LLC,69379.0,NSF Chateaugay Site 1,NY,Franklin,NYIS,IPP Non-CHP,CHAT1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2025.0, , ,(OP) Operating,,44.93,-74.032
@@ -27881,6 +27913,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67494,On Energy Storage,69460.0,Winmil Clean Energy Center (BESS),TX,Brazoria,ERCO,IPP Non-CHP,WIBA1,12.0,12.0,12.0,Batteries,Battery storage,MWH,BA,3.0,2025.0, , ,(OP) Operating,20.9,29.225635,-95.42969
 65715,Strata Clean Energy,69469.0,Justice Energy Storage,AZ,Maricopa,AZPS,IPP Non-CHP,JES1,150.0,150.0,150.0,Batteries,Battery storage,MWH,BA,5.0,2026.0, , ,(OP) Operating,600.0,33.407967,-112.4956
 5109,DTE Electric Company,69471.0,Cold Creek Solar Park,MI,Branch,MISO,Electric Utility,CLCSP,100.0,100.0,100.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,41.938,-85.003
+67491,"NYSolar06, LLC",69472.0,NYSolar06,NY,Erie,NYIS,IPP Non-CHP,18198,3.5,3.5,3.5,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,43.021667,-78.98806
 19436,Union Electric Co - (MO),69475.0,Split Rail Solar Energy LLC,MO,Warren,MISO,IPP Non-CHP,SPTRL,300.0,300.0,300.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,38.901147,-91.20864
 61029,Upper Michigan Energy Resources Company,69476.0,Renegade Solar Energy LLC,MI,Delta,MISO,Electric Utility,RNGDE,100.0,100.0,100.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,45.99731,-87.22625
 15474,Public Service Co of Oklahoma,69478.0,Lazbuddie Wind Energy LLC,TX,Parmer,SWPP,IPP Non-CHP,LZBDE,265.0,265.0,265.0,Onshore Wind Turbine,Wind,WND,WT,8.0,2026.0, , ,(OP) Operating,,34.5589,-102.6826
@@ -27929,6 +27962,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 60531,Standard Solar,69532.0,Pluma - SLT Las Cruces,NM,Dona Ana,EPE,IPP Non-CHP,SLTLC,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,32.427319,-106.7088
 67512,"Solarity Aggregator, LLC",69536.0,"DMAT Denso - SEAT Solar Holdings, LLC",TN,McMinn,TVA,IPP Non-CHP,DMAT,5.3,5.3,5.3,Solar Photovoltaic,Solar,SUN,PV,11.0,2025.0, , ,(OP) Operating,,35.481807,-84.64314
 50123,"Leeward Asset Management, LLC",69538.0,Twelvemile Solar 2,OK,Mayes,SWPP,IPP Non-CHP,TS2,52.2,52.2,52.2,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,36.331569,-95.22931
+67515,Rock Creek Solar LLC,69540.0,Rock Creek Solar,IA,Clinton,MISO,IPP Non-CHP,RCS01,150.0,150.0,150.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.771603,-90.35751
 65043,Madison Energy Investments LLC,69542.0,Fairfax Landfill,VA,Fairfax,PJM,IPP Non-CHP,SP438,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,38.69017,-77.24049
 65043,Madison Energy Investments LLC,69543.0,Great Valley Gernatt,NY,Cattaraugus,NYIS,IPP Non-CHP,P401,3.3,3.3,3.3,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,42.204,-78.642
 65043,Madison Energy Investments LLC,69544.0,0 Middle,MA,Barnstable,ISNE,IPP Non-CHP,BA108,1.5,1.5,1.5,Batteries,Battery storage,MWH,BA,9.0,2022.0, , ,(OP) Operating,1.5,41.690131,-70.00878
@@ -27941,7 +27975,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 60531,Standard Solar,69555.0,Citrine NJ - West Pkwy,NJ,Morris,PJM,IPP Non-CHP,WESTP,2.3,2.3,2.3,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,40.980949,-74.30712
 60531,Standard Solar,69556.0,Pluma - Clovis Concrete North CSG,NM,Curry,SWPP,IPP Non-CHP,CLOCN,3.4,3.4,3.4,Solar Photovoltaic,Solar,SUN,PV,4.0,2026.0, , ,(OP) Operating,,34.363937,-103.1968
 60531,Standard Solar,69557.0,Pluma - Reynolds (CSG),NM,Otero,PNM,IPP Non-CHP,REYNO,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,33.051876,-106.008
-60531,Standard Solar,69558.0,Pluma - SLT Grant,NM,Grant,PNM,IPP Non-CHP,GRANT,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,32.762349,-108.1793
+60531,Standard Solar,69558.0,Pluma - SLT Grant (CSG),NM,Grant,PNM,IPP Non-CHP,GRANT,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,32.762349,-108.1793
 60531,Standard Solar,69559.0,Pluma - SLT Hidalgo CSG,NM,Hidalgo,PNM,IPP Non-CHP,DALGO,3.8,3.8,3.8,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,32.370399,-108.7079
 60531,Standard Solar,69561.0,Sunrise Solar Lincoln DE (CSG),DE,Sussex,PJM,IPP Non-CHP,LINCO,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,38.853476,-75.40124
 67525,Chabot Las Positas Community College District,69563.0,Las Positas College,CA,Alameda,CISO,Commercial Non-CHP,LPC1,2.3,2.3,2.3,Solar Photovoltaic,Solar,SUN,PV,8.0,2018.0, , ,(OP) Operating,,37.71076,-121.8001
@@ -27959,6 +27993,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67035,Prologis Logistics Services Incorporated BESS,69575.0,BESS TX Panda - BSHOU004,TX,Harris,ERCO,IPP Non-CHP,BSOU4,10.0,10.0,10.0,Batteries,Battery storage,MWH,BA,11.0,2025.0, , ,(OP) Operating,10.0,29.838018,-95.35272
 67035,Prologis Logistics Services Incorporated BESS,69576.0,Non-PLD US-El Paso - BSSAT004,TX,Ector,ERCO,IPP Non-CHP,BS004,9.9,9.9,9.9,Batteries,Battery storage,MWH,BA,5.0,2025.0, , ,(OP) Operating,13.7,31.840393,-102.7264
 67192,"RWE Americas, LLC",69578.0,"Casey Fork Solar, LLC",IL,Jefferson,MISO,IPP Non-CHP,CFSPV,150.0,150.0,150.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,38.452,-88.876
+67192,"RWE Americas, LLC",69579.0,"Honey Mesquite Wind, LLC",TX,Sterling,ERCO,IPP Non-CHP,HMWT,180.5,180.5,180.5,Onshore Wind Turbine,Wind,WND,WT,10.0,2026.0, , ,(OP) Operating,,32.030383,-101.1672
 67530,"Heritage Energy Holdings, LLC",69580.0,Lone Wolfe Phase One,TX,Mitchell,ERCO,IPP Non-CHP,LW1,1.1,1.1,1.1,Solar Photovoltaic,Solar,SUN,PV,2.0,2026.0, , ,(OP) Operating,,32.390278,-100.7243
 67531,MEVS LLC,69581.0,MEVS Waterhouse,ME,Cumberland,ISNE,IPP Non-CHP,75503,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2024.0, , ,(OP) Operating,,43.585492,-70.39778
 67533,Marvin Composites,69583.0,Marvin Composites,ND,Cass,MISO,Industrial Non-CHP,DSL,1.0,1.0,1.0,Petroleum Liquids,Other thermal,DFO,IC,1.0,1996.0, , ,(SB) Standby/Backup: available for service but not normally used,,46.89934,-96.85955
@@ -27967,6 +28002,10 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67533,Marvin Composites,69583.0,Marvin Composites,ND,Cass,MISO,Industrial Non-CHP,NGSE,0.5,0.5,0.5,Natural Gas Internal Combustion Engine,Natural gas,NG,IC,8.0,2024.0, , ,(SB) Standby/Backup: available for service but not normally used,,46.89934,-96.85955
 67535,"Kaufman Solar, LLC",69585.0,Kaufman Solar,TX,Kaufman,ERCO,IPP Non-CHP,5568,200.0,200.0,200.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,32.536696,-96.22112
 67528,"Pekin Community High School, LLC",69587.0,Pekin Community High School,IL,Tazewell,PJM,Commercial Non-CHP,SOLAR,1.4,0.5,0.3,Solar Photovoltaic,Solar,SUN,PV,6.0,2025.0, , ,(OP) Operating,,40.4615,-89.62079
+59122,The Medical Center Company,69593.0,MCCo BESS Generating Facility,OH,Cuyahoga,PJM,IPP Non-CHP,1,3.9,3.9,3.9,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,7.7,41.3026,-81.3604
+59122,The Medical Center Company,69593.0,MCCo BESS Generating Facility,OH,Cuyahoga,PJM,IPP Non-CHP,2,3.9,3.9,3.9,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,7.7,41.3026,-81.3604
+59122,The Medical Center Company,69593.0,MCCo BESS Generating Facility,OH,Cuyahoga,PJM,IPP Non-CHP,3,3.9,3.9,3.9,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,7.7,41.3026,-81.3604
+59122,The Medical Center Company,69593.0,MCCo BESS Generating Facility,OH,Cuyahoga,PJM,IPP Non-CHP,4,3.9,3.9,3.9,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,7.7,41.3026,-81.3604
 59122,The Medical Center Company,69593.0,MCCo BESS Generating Facility,OH,Cuyahoga,PJM,IPP Non-CHP,B020,1.8,1.8,1.8,Petroleum Liquids,Other thermal,DFO,IC,10.0,2012.0, , ,(SB) Standby/Backup: available for service but not normally used,,41.3026,-81.3604
 59122,The Medical Center Company,69593.0,MCCo BESS Generating Facility,OH,Cuyahoga,PJM,IPP Non-CHP,B021,1.8,1.8,1.8,Petroleum Liquids,Other thermal,DFO,IC,10.0,2012.0, , ,(SB) Standby/Backup: available for service but not normally used,,41.3026,-81.3604
 61194,Generate Capital,69596.0,Owens 1,NY,Orange,NYIS,IPP Non-CHP,11152,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,41.417025,-74.36646
@@ -27983,6 +28022,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 65173,United States Solar Corporation,69613.0,USS Hampden Solar LLC,CO,Arapahoe,PSCO,IPP Non-CHP,USHAM,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,39.665453,-104.7164
 65173,United States Solar Corporation,69614.0,USS High Plains Solar LLC,CO,Arapahoe,PSCO,IPP Non-CHP,USHPL,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2026.0, , ,(OP) Operating,,39.653269,-104.7254
 65173,United States Solar Corporation,69615.0,USS Raptor Solar LLC,CO,Arapahoe,PSCO,IPP Non-CHP,USRAP,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,39.657753,-104.7163
+65173,United States Solar Corporation,69616.0,USS Lyndon Solar LLC,IL,Whiteside,PJM,IPP Non-CHP,USLYN,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.659472,-89.92079
 60571,"Onsite Partners, LLC",69617.0,Rice Lake II,WI,Barron,MISO,IPP Non-CHP,RLII,2.8,2.8,2.8,Solar Photovoltaic,Solar,SUN,PV,9.0,2024.0, , ,(OP) Operating,,45.525787,-91.75617
 67555,"Winema Solar Partners, LLC",69618.0,Winema Solar Partners,NY,Madison,NYIS,IPP Non-CHP,WISP1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2024.0, , ,(OP) Operating,,43.086667,-75.59158
 65869,Prologis Logistics Services Incorporated,69619.0,Prologis Edison 0503 - SLCNJ005 - Community Solar,NJ,Middlesex,PJM,IPP Non-CHP,CN005,1.4,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2026.0, , ,(OP) Operating,,40.52988,-74.39846
@@ -27992,6 +28032,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67549,38DN Asset Management LLC ,69624.0,Rose Hill Road Solar 1 - Spafford 1,NY,Onondaga,NYIS,IPP Non-CHP,SPAF1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,5.0,2025.0, , ,(OP) Operating,,42.87,-76.34
 67549,38DN Asset Management LLC ,69625.0,Moore Rd,NY,Rensselaer,NYIS,IPP Non-CHP,MRPV,4.8,4.8,4.8,Solar Photovoltaic,Solar,SUN,PV,2.0,2026.0, , ,(OP) Operating,,42.6125,-73.6536
 6455,"Duke Energy Florida, LLC",69627.0,Jumper Creek Solar Plant,FL,Sumter,FPC,Electric Utility,JCSP1,74.9,74.9,74.9,Solar Photovoltaic,Solar,SUN,PV,4.0,2026.0, , ,(OP) Operating,,28.954544,-82.17652
+67560,"Big Muddy Solar Project, LLC",69629.0,Big Muddy Solar,IL,Jackson,MISO,IPP Non-CHP,BIGM1,95.0,95.0,95.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,37.86,-89.3
 65173,United States Solar Corporation,69630.0,USS Man Solar LLC,IL,Livingston,PJM,IPP Non-CHP,USMAN,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,41.063431,-88.75117
 67561,"Energen Renewables, LLC",69632.0,Alverno Hydro Plant,MI,Cheboygan,MISO,IPP Non-CHP,G1,0.5,0.5,0.5,Conventional Hydroelectric,Hydro,WAT,HY,1.0,1960.0, , ,(OP) Operating,,45.551817,-84.39501
 67561,"Energen Renewables, LLC",69632.0,Alverno Hydro Plant,MI,Cheboygan,MISO,IPP Non-CHP,G2,0.5,0.5,0.5,Conventional Hydroelectric,Hydro,WAT,HY,1.0,1960.0, , ,(OP) Operating,,45.551817,-84.39501
@@ -28121,6 +28162,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67755,Blackwater Rd Solar LLC,69824.0,Blackwater Rd Solar,NH,Strafford,ISNE,IPP Non-CHP,26056,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,43.24719,-70.8808
 65677,Dimension Energy LLC,69826.0,Ohara CSG 1 LLC,PA,Allegheny,PJM,IPP Non-CHP,OHAR1,3.0,3.0,3.0,Solar Photovoltaic,Solar,SUN,PV,4.0,2026.0, , ,(OP) Operating,,40.48693,-79.87085
 65677,Dimension Energy LLC,69827.0,Mount Laurel Solar 2 LLC CSG,NJ,Burlington,PJM,IPP Non-CHP,MTLA2,1.9,1.9,1.9,Solar Photovoltaic,Solar,SUN,PV,4.0,2026.0, , ,(OP) Operating,,39.96351,-74.90736
+65677,Dimension Energy LLC,69828.0,"Mexico PV, LLC (CSG)",NY,Oswego,NYIS,IPP Non-CHP,MEXIC,4.5,4.5,4.5,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,43.429675,-76.16547
 65677,Dimension Energy LLC,69829.0,Kanesolar01 LLC,IL,Kane,PJM,IPP Non-CHP,KANE1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,41.89689,-88.54354
 65677,Dimension Energy LLC,69830.0,Hampden CSG 1 LLC,PA,Cumberland,PJM,IPP Non-CHP,HMPD1,1.8,1.8,1.8,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,40.231468,-77.00201
 65677,Dimension Energy LLC,69831.0,Chaberton Solar Blue Hen LLC,DE,Sussex,PJM,IPP Non-CHP,BLUHN,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,38.471439,-75.17959
@@ -28135,6 +28177,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 65677,Dimension Energy LLC,69841.0,"Bluestar Solar Project, LLC",IL,Montgomery,MISO,IPP Non-CHP,BLUST,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,39.150212,-89.45092
 65677,Dimension Energy LLC,69842.0,Carneys Point Solar 1 LLC,NJ,Salem,PJM,IPP Non-CHP,CARN1,3.0,3.0,3.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,39.685579,-75.41956
 65677,Dimension Energy LLC,69843.0,Wild Cat Solar 22 LLC,IL,Union,MISO,IPP Non-CHP,WILD2,2.3,2.3,2.3,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,37.4729,-89.224
+65677,Dimension Energy LLC,69844.0,"Horseshoe Solar Project, LLC (CSG)",IL,Montgomery,MISO,IPP Non-CHP,HORSE,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,39.14706,-89.4426
 65677,Dimension Energy LLC,69845.0,CVE US IL TAMAROA 316 LLC,IL,Perry,MISO,IPP Non-CHP,TAMAR,3.6,3.6,3.6,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,38.140412,-89.18613
 65677,Dimension Energy LLC,69846.0,"Gerstenschlager Family Solar 1, LLC (CSG)",IL,Jackson,MISO,IPP Non-CHP,GRST1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,37.74351,-89.29814
 65677,Dimension Energy LLC,69847.0,Spillertown CSG 2 LLC,IL,Williamson,MISO,IPP Non-CHP,SPIL2,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,37.771487,-88.91635
@@ -28149,9 +28192,11 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 62836,Navisun LLC,69863.0,Galva Landfill,IL,Henry,PJM,IPP Non-CHP,GALF,3.7,3.7,3.7,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,41.177203,-90.0335
 62759,Geronimo Power,69875.0,"Sycamore Creek Solar, LLC",OH,Crawford,PJM,IPP Non-CHP,SYCSL,117.0,117.0,117.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,40.953,-82.859
 61194,Generate Capital,69876.0,New Road,NY,Erie,NYIS,IPP Non-CHP,11205,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2026.0, , ,(OP) Operating,,43.059116,-78.72938
+64260,Nextera Energy Resources,69879.0,Ninnescah Flats Solar,KS,Pratt,SWPP,IPP Non-CHP,N3884,201.6,201.6,201.6,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,37.628817,-98.59311
 67762,University of Montana,69880.0,University of Montana CHP,MT,Missoula,NWMT,IPP CHP,GTG1,1.8,1.8,1.8,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,12.0,2025.0, , ,(OP) Operating,,46.862567,-113.9827
 67762,University of Montana,69880.0,University of Montana CHP,MT,Missoula,NWMT,IPP CHP,GTG2,1.8,1.8,1.8,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,12.0,2025.0, , ,(OP) Operating,,46.862567,-113.9827
 67762,University of Montana,69880.0,University of Montana CHP,MT,Missoula,NWMT,IPP CHP,STG,2.5,2.0,2.0,Natural Gas Steam Turbine,Natural gas,NG,ST,12.0,2025.0, , ,(OP) Operating,,46.862567,-113.9827
+65869,Prologis Logistics Services Incorporated,69891.0,Torrance Dis Ctr 2 - SLLAX100,CA,Los Angeles,CISO,IPP Non-CHP,LA100,1.4,1.4,1.4,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,33.84516,-118.3164
 67773,"Dusty Rose Wind, LLC",69893.0,Dusty Rose Wind,CO,Kit Carson,PSCO,IPP Non-CHP,5937,502.0,502.0,502.0,Onshore Wind Turbine,Wind,WND,WT,6.0,2026.0, , ,(OP) Operating,,39.128299,-102.5418
 67754,"Coast Energy Holdings, LLC",69896.0,7999 Gateway Solar,CA,Alameda,CISO,IPP Non-CHP,7999G,4.6,4.6,4.6,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,37.5215,-122.0397
 65869,Prologis Logistics Services Incorporated,69897.0,Midline Commerce Center - SLCNJ006,NJ,Burlington,PJM,IPP Non-CHP,CN006,1.2,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,40.121533,-74.71693
@@ -28190,12 +28235,14 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67785,DS Containers LLC,69953.0,DS Containers,IL,Dupage,PJM,Industrial Non-CHP,DSC,1.8,1.8,1.8,Solar Photovoltaic,Solar,SUN,PV,7.0,2025.0, , ,(OP) Operating,,41.868181,-88.25994
 67800,Kearsarge Southampton LLC,69954.0,Kearsarge Southampton,NY,Suffolk,ISNE,IPP Non-CHP,SOUTH,4.5,4.5,4.5,Solar Photovoltaic,Solar,SUN,PV,2.0,2025.0, , ,(OP) Operating,,40.93042,-72.39827
 67801,Kearsarge St Johnsville LLC,69955.0,Kearsarge St Johnsville,NY,Montgomery,ISNE,IPP Non-CHP,SJOHN,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,42.999235,-74.6961
+64366,Terra-Gen Operating Co-Hybrid,69956.0,Sanborn Hybrid 3,CA,Kern,CISO,IPP Non-CHP,S8,55.0,55.0,55.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,34.996,-118.114
 60520,SoCore Energy LLC,69957.0,Illinois PV Adams 1A,IL,Adams,MISO,IPP Non-CHP,PV,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,39.963878,-91.34137
 60520,SoCore Energy LLC,69958.0,Illinois PV Adams 1B,IL,Adams,MISO,IPP Non-CHP,PV,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,39.963878,-91.34137
 60520,SoCore Energy LLC,69959.0,Illinois PV Adams 2A,IL,Adams,MISO,IPP Non-CHP,PV,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,39.98374,-91.36961
 60520,SoCore Energy LLC,69960.0,Illinois PV Adams 2B,IL,Adams,MISO,IPP Non-CHP,PV,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,39.98374,-91.36961
 60520,SoCore Energy LLC,69961.0,Illinois PV Peoria 2A,IL,Peoria,MISO,IPP Non-CHP,PV,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,40.685052,-89.74365
 60520,SoCore Energy LLC,69962.0,Illinois PV Peoria 2B,IL,Peoria,MISO,IPP Non-CHP,PV,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,40.685052,-89.74365
+67811,"Rumble Solar, LLC",69968.0,Rumble Solar,OK,Grady,SWPP,IPP Non-CHP,RUS,250.0,250.0,250.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,35.338721,-97.98901
 61514,"Agilitas Energy, Inc.",69975.0,Telview ESS,TX,Harris,ERCO,IPP Non-CHP,TELV1,10.0,10.0,10.0,Batteries,Battery storage,MWH,BA,1.0,2025.0, , ,(OP) Operating,19.9,29.57954,-95.48749
 61514,"Agilitas Energy, Inc.",69976.0,I-Eye ESS,TX,Wharton,ERCO,IPP Non-CHP,IEYE1,10.0,10.0,10.0,Batteries,Battery storage,MWH,BA,12.0,2025.0, , ,(OP) Operating,19.9,29.3133,-96.10837
 67818,"MPH Elwood, LLC",69979.0,MPH Elwood,IL,Will,PJM,IPP Non-CHP,GT8,192.0,150.0,175.6,Natural Gas Fired Combustion Turbine,Natural gas,NG,GT,8.0,2001.0, , ,(OS) Out of service and NOT expected to return to service in next calendar year,,41.437032,-88.12234
@@ -28305,12 +28352,14 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 60281,"Altus Power America Management, LLC",70179.0,"FL Solar D1, LLC",FL,Gadsden,FMPP,IPP Non-CHP,1,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,11.0,2023.0, , ,(OP) Operating,,30.654933,-84.42836
 60281,"Altus Power America Management, LLC",70180.0,"FL Solar D2, LLC",FL,Wakulla,FPL,IPP Non-CHP,1,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2023.0, , ,(OP) Operating,,30.279908,-84.35885
 65869,Prologis Logistics Services Incorporated,70181.0,Prologis - SLCNJ001 - Community Solar,NJ,Middlesex,PJM,IPP Non-CHP,CN001,3.2,3.2,3.2,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,40.56877,-74.49457
+67915,Steger Road Solar 1 LLC,70182.0,Steger,IL,Cook,PJM,IPP Non-CHP,PV1,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.4701,-87.5793
 67922,"WSD Coventry, LLC",70184.0,WSD Coventry,RI,Kent,ISNE,IPP Non-CHP,COVEN,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,41.665055,-71.54776
 67913,"11601 Copenhagen Ct, LLC",70185.0,Copenhagen Ct,IL,Cook,PJM,IPP Non-CHP,PV1,3.5,3.5,3.5,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,41.939381,-87.91775
 67881,"SREOG Partnership 2, LLC",70189.0,"Maxcy's Mill Solar, LLC",ME,Kennebec,ISNE,IPP Non-CHP,MAXCY,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2022.0, , ,(OP) Operating,,44.292086,-69.57025
 67881,"SREOG Partnership 2, LLC",70190.0,"Union Street Solar, LLC",ME,Penobscot,ISNE,IPP Non-CHP,UNION,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2024.0, , ,(OP) Operating,,44.830762,-68.83824
 67881,"SREOG Partnership 2, LLC",70191.0,"Waldoboro Solar, LLC",ME,Knox,ISNE,IPP Non-CHP,WALDO,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,3.0,2023.0, , ,(OP) Operating,,44.227504,-69.38811
 67882,"SREOG Partnership 3, LLC",70192.0,"Crowley Solar, LLC",ME,Androscoggin,ISNE,IPP Non-CHP,CRWLY,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2024.0, , ,(OP) Operating,,44.075459,-70.11101
+65539,Pivot Energy,70201.0,Pivot Solar 50 LLC,CO,Weld,PSCO,IPP Non-CHP,PS50,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,40.3657,-104.6336
 67300,"Onsite Partners Projectco, LLC",70208.0,PCC Solar Array,OH,Wood,PJM,IPP Non-CHP,PENCC,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2020.0, , ,(OP) Operating,,41.579674,-83.57152
 67300,"Onsite Partners Projectco, LLC",70209.0,Vertiv Solar,OH,Delaware,PJM,IPP Non-CHP,VERTI,1.1,1.1,1.1,Solar Photovoltaic,Solar,SUN,PV,6.0,2024.0, , ,(OP) Operating,,40.282018,-83.10211
 61944,MN8 Energy LLC,70211.0,Bluegrass Solar 2,MD,Queen Annes,PJM,IPP Non-CHP,BGS2,40.0,40.0,38.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2022.0, , ,(OP) Operating,,39.169877,-75.95877
@@ -28368,6 +28417,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67956,"SRC Partnership 12, LLC",70291.0,SV CSG Gardner 2 LLC,IL,Grundy,PJM,IPP Non-CHP,LUTZ2,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2024.0, , ,(OP) Operating,,41.195973,-88.3073
 67965,"1150th Sun, LLC",70292.0,1150th Sun,IL,McDonough,MISO,IPP Non-CHP,14591,2.0,2.0,1.8,Solar Photovoltaic,Solar,SUN,PV,6.0,2026.0, , ,(OP) Operating,,40.444961,-90.63404
 67967,Swanton MD Coopers Ln CSEGS Solar LLC,70293.0,Swanton Coopers ANEM,MD,Garrett,PJM,IPP Non-CHP,COOP1,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,7.0,2026.0, , ,(OP) Operating,,39.427984,-79.16901
+67975,"Milltown Onsite Generation, LLC",70296.0,Milltown Onsite BESS,NJ,Middlesex,PJM,IPP Non-CHP,MTBAT,13.2,13.2,13.2,Batteries,Battery storage,MWH,BA,10.0,2026.0, , ,(OP) Operating,30.1,40.453346,-74.43502
 67972,Four Seasons LI CSG LLC,70298.0,Four Seasons LI CSG,NY,Suffolk,NYIS,IPP Non-CHP,PV1,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,12.0,2021.0, , ,(OP) Operating,,40.78,-73.07
 65849,ClearGen LLC,70307.0,"Milk Street Solar, LLC",MA,Worcester,ISNE,IPP Non-CHP,BATT,1.2,1.2,1.2,Batteries,Battery storage,MWH,BA,12.0,2025.0, , ,(OP) Operating,3.0,42.038,-71.557
 65849,ClearGen LLC,70307.0,"Milk Street Solar, LLC",MA,Worcester,ISNE,IPP Non-CHP,SOLAR,2.5,2.5,2.5,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,42.038,-71.557
@@ -28404,6 +28454,7 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 68008,"Belvidere Landfill Solar 2 East, LLC",70390.0,IL - Ameresco - Belvidere East,IL,Boone,PJM,IPP Non-CHP,BELVE,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,42.295704,-88.84915
 68009,"Belvidere Landfill Solar 2 West, LLC",70391.0,IL - Ameresco - Belvidere West,IL,Boone,PJM,IPP Non-CHP,BELVW,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,42.296053,-88.85298
 68007,Lower Mine Road LLC,70392.0,NY - Ameresco - Southeast,NY,Putnam,NYIS,IPP Non-CHP,SEAST,2.3,2.3,2.3,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,41.372161,-73.64334
+68004,"SolAmerica Energy / Stephenson County IL S1, LLC",70393.0,Stephenson County IL S1 (CSG),IL,Stephenson,PJM,IPP Non-CHP,S1,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,42.304234,-89.58015
 65849,ClearGen LLC,70394.0,San Luis Valley Regional Medical Center,CO,Alamosa,PSCO,IPP Non-CHP,SOLAR,1.3,1.3,1.3,Solar Photovoltaic,Solar,SUN,PV,11.0,2009.0, , ,(OP) Operating,,37.46832,-105.9089
 67207,TotalEnergies Renewables USA LLC,70396.0,Lincoln Public Schools,MA,Middlesex,ISNE,Commercial Non-CHP,LPSBA,0.5,0.5,0.4,Batteries,Battery storage,MWH,BA,12.0,2024.0, , ,(OP) Operating,2.2,42.424594,-71.31401
 67207,TotalEnergies Renewables USA LLC,70396.0,Lincoln Public Schools,MA,Middlesex,ISNE,Commercial Non-CHP,LPSPV,1.0,1.0,1.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2024.0, , ,(OP) Operating,,42.424594,-71.31401
@@ -28429,17 +28480,22 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 67082,"Headwater Energy, LLC",70434.0,"OWC Energy Holdings, LLC",CA,Fresno,CISO,IPP Non-CHP,29,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,12.0,2021.0, , ,(OP) Operating,,36.851,-120.6334
 68005,Peppertown Road Solar LLC,70438.0,VA - Ameresco - Mechanicsville,VA,Hanover,PJM,IPP Non-CHP,MECH1,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,6.0,2025.0, , ,(OP) Operating,,37.633568,-77.24501
 61194,Generate Capital,70444.0,Cottonwood - IL,IL,Woodford,MISO,IPP Non-CHP,11131,4.9,4.9,4.9,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,40.684739,-89.00338
+68043,"555 W 167th St Solar, LLC",70445.0,W 167th St,IL,Cook,PJM,IPP Non-CHP,PV1,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.59009,-87.63044
 68040,Dragon's Breath Solar LLC PV,70446.0,Dragon's Breath Solar LLC PV,IL,Tazewell,MISO,IPP Non-CHP,33699,5.0,5.0,4.8,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,40.428093,-89.37261
 68041,Ember Sun LLC PV,70447.0,Ember Sun LLC PV,IL,McDonough,MISO,IPP Non-CHP,45629,3.0,3.0,2.8,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,40.489341,-90.69128
+68042,"Keithsburg North Solar, LLC PV",70448.0,Keithsburg North Solar LLC PV,IL,Mercer,MISO,IPP Non-CHP,22258,2.0,2.0,1.9,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.120819,-90.94078
 2507,City of Burbank Water and Power - (CA),70449.0,RITC Solar and Battery Rooftop System,CA,Los Angeles,LDWP,Electric Utility,RPV1,1.9,1.9,1.9,Solar Photovoltaic,Solar,SUN,PV,4.0,2026.0, , ,(OP) Operating,,34.193109,-118.35
 2507,City of Burbank Water and Power - (CA),70449.0,RITC Solar and Battery Rooftop System,CA,Los Angeles,LDWP,Electric Utility,TSBT1,2.6,2.6,2.6,Batteries,Battery storage,MWH,BA,4.0,2026.0, , ,(OP) Operating,7.8,34.193109,-118.35
+68047,"9100 W Belmont Ave, LLC",70456.0,W Belmont Ave,IL,Cook,PJM,IPP Non-CHP,PV1,1.4,1.4,1.4,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,41.9378,-87.85318
 65043,Madison Energy Investments LLC,70459.0,Green Acres PA,PA,Clearfield,PJM,IPP Non-CHP,SP435,20.0,20.0,20.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,40.818868,-78.41396
+19436,Union Electric Co - (MO),70465.0,New Florence Renewable Energy Center,MO,Montgomery,MISO,Commercial Non-CHP,NFREC,7.0,7.0,7.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,38.8908,-91.4186
 65043,Madison Energy Investments LLC,70479.0,IL2 WI339,IL,Will,MISO,IPP Non-CHP,SP420,3.0,3.0,3.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,41.329659,-87.88253
 65043,Madison Energy Investments LLC,70480.0,IL2- WI114 Harper,IL,Will,MISO,IPP Non-CHP,SP422,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,41.47514,-88.02832
 65043,Madison Energy Investments LLC,70481.0,IL2-WI384 Rodman,IL,Will,MISO,IPP Non-CHP,SP419,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2025.0, , ,(OP) Operating,,41.46803,-87.55688
 65043,Madison Energy Investments LLC,70482.0,Spring Run,VA,Hanover,PJM,IPP Non-CHP,SP403,3.0,3.0,3.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,37.657555,-77.23109
-65043,Madison Energy Investments LLC,70483.0,Mountain Point- Sharptown,MD,Wicomico,PJM,IPP Non-CHP,SP241,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,38.471182,-75.75062
+65043,Madison Energy Investments LLC,70483.0,Mountain Point- Sharptown Community Solar,MD,Wicomico,PJM,IPP Non-CHP,SP241,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,38.471182,-75.75062
 65043,Madison Energy Investments LLC,70484.0,St. Josephs Paterson,NJ,Passaic,PJM,IPP Non-CHP,SP417,2.5,2.5,2.5,Solar Photovoltaic,Solar,SUN,PV,12.0,2025.0, , ,(OP) Operating,,40.904145,-74.16469
+68074,Welcome Solar III LLC,70496.0,Welcome Solar III,PA,Crawford,PJM,IPP Non-CHP,WEL03,21.0,21.0,21.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2026.0, , ,(OP) Operating,,41.530575,-80.39229
 68078,"ZNC Turkey Creek, LLC",70511.0,"ZNC Turkey Creek, LLC",NC,Sampson,DUK,IPP CHP,MT-1,1.0,0.9,1.0,Other Waste Biomass,Other renewables,OBG,GT,12.0,2025.0, , ,(OP) Operating,,34.991,-78.194
 68078,"ZNC Turkey Creek, LLC",70511.0,"ZNC Turkey Creek, LLC",NC,Sampson,DUK,IPP CHP,MT-2,1.0,0.9,1.0,Other Waste Biomass,Other renewables,OBG,GT,12.0,2025.0, , ,(OP) Operating,,34.991,-78.194
 68078,"ZNC Turkey Creek, LLC",70511.0,"ZNC Turkey Creek, LLC",NC,Sampson,DUK,IPP CHP,MT-3,1.0,0.9,1.0,Other Waste Biomass,Other renewables,OBG,GT,12.0,2025.0, , ,(OP) Operating,,34.991,-78.194
@@ -28482,3 +28538,15 @@ Entity ID,Entity Name,Plant ID,Plant Name,Plant State,County,Balancing Authority
 61227,Nautilus Solar Solutions,70576.0,Goose Haven,MD,Wicomico,PJM,IPP Non-CHP,3154,1.7,1.7,1.7,Solar Photovoltaic,Solar,SUN,PV,8.0,2025.0, , ,(OP) Operating,,38.45599,-75.65278
 61227,Nautilus Solar Solutions,70577.0,Hanover 2,MD,Baltimore,PJM,IPP Non-CHP,3154,1.7,1.7,1.7,Solar Photovoltaic,Solar,SUN,PV,8.0,2025.0, , ,(OP) Operating,,39.525722,-76.83519
 61227,Nautilus Solar Solutions,70578.0,Carroll County MD Solar LLC,MD,Carroll,PJM,IPP Non-CHP,19132,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,9.0,2025.0, , ,(OP) Operating,,39.583576,-76.8493
+65043,Madison Energy Investments LLC,70591.0,DG CS NY Lake Road,NY,Livingston,NYIS,IPP Non-CHP,SP604,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,42.887254,-77.72424
+65043,Madison Energy Investments LLC,70592.0,Rock Run,IL,Stephenson,MISO,IPP Non-CHP,SP449,2.0,2.0,2.0,Solar Photovoltaic,Solar,SUN,PV,10.0,2026.0, , ,(OP) Operating,,42.402672,-89.28041
+65043,Madison Energy Investments LLC,70593.0,Crisfield (PV),MD,Somerset,PJM,IPP Non-CHP,SP452,1.5,1.5,1.5,Solar Photovoltaic,Solar,SUN,PV,8.0,2026.0, , ,(OP) Operating,,37.972302,-75.85083
+14401,City of Palo Alto - (CA),70598.0,Lytton Pump Station,CA,Santa Clara,CISO,Commercial Non-CHP,CAT2,1.0,1.0,1.0,Petroleum Liquids,Other thermal,DFO,IC,9.0,2014.0, , ,(SB) Standby/Backup: available for service but not normally used,,37.444694,-122.167
+14401,City of Palo Alto - (CA),70599.0,Matadero Creek Pump Station,CA,Santa Clara,CISO,Commercial Non-CHP,1,1.0,1.0,1.0,Petroleum Liquids,Other thermal,DFO,IC,8.0,2018.0, , ,(SB) Standby/Backup: available for service but not normally used,,37.439083,-122.1116
+14401,City of Palo Alto - (CA),70600.0,Mayfield-Lucy Nixon School,CA,Santa Clara,CISO,Commercial Non-CHP,GEN1,1.0,1.0,1.0,Petroleum Liquids,Other thermal,DFO,IC,2.0,2013.0, , ,(SB) Standby/Backup: available for service but not normally used,,37.414467,-122.1562
+14401,City of Palo Alto - (CA),70601.0,Public Safety Building,CA,Santa Clara,CISO,Commercial Non-CHP,KOD1,1.0,1.0,1.0,Petroleum Liquids,Other thermal,DFO,IC,9.0,2025.0, , ,(SB) Standby/Backup: available for service but not normally used,,37.42749,-122.1428
+14401,City of Palo Alto - (CA),70602.0,Regional Water Quality Control Plant,CA,Santa Clara,CISO,Commercial Non-CHP,CAT1,1.0,1.0,1.0,Petroleum Liquids,Other thermal,DFO,IC,4.0,2014.0, , ,(SB) Standby/Backup: available for service but not normally used,,37.451613,-122.112
+14401,City of Palo Alto - (CA),70603.0,San Francisiquito Pump Station,CA,Santa Clara,CISO,Commercial Non-CHP,ONA1,1.0,1.0,1.0,Petroleum Liquids,Other thermal,DFO,IC,4.0,2009.0, , ,(SB) Standby/Backup: available for service but not normally used,,37.46075,-122.1244
+61227,Nautilus Solar Solutions,70609.0,Barnes West,NY,Chautauqua,NYIS,IPP Non-CHP,5948,5.0,5.0,5.0,Solar Photovoltaic,Solar,SUN,PV,2.0,2026.0, , ,(OP) Operating,,42.310697,-79.37334
+61227,Nautilus Solar Solutions,70610.0,St. Jacob,IL,Madison,MISO,IPP Non-CHP,14240,4.0,4.0,4.0,Solar Photovoltaic,Solar,SUN,PV,1.0,2026.0, , ,(OP) Operating,,38.724859,-89.73387
+65043,Madison Energy Investments LLC,70910.0,Willard ZPB 414,MA,Worcester,ISNE,IPP Non-CHP,SP642,4.9,4.9,4.9,Batteries,Battery storage,MWH,BA,12.0,2025.0, , ,(OP) Operating,,42.489617,-71.74971

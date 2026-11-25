@@ -1,65 +1,95 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261124T230507676020Z_b2e72632_3a77186d",
+  "attempt_id": "20261125T223311473486Z_60d4b8f2_21df8b9e",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
-    "adoption"
+    "finance",
+    "compute",
+    "power",
+    "grid_storage",
+    "water",
+    "economic_impact"
   ],
   "editorial_context_event_ids": [
-    "auto-2026-11-18-05baad78ab7a",
+    "auto-2026-11-24-fc7f270ea514",
     "auto-2026-11-19-9d6aa7468808",
     "auto-2026-11-23-402e4e5c7d61",
     "auto-2026-11-19-f3192832a6a2",
     "auto-2026-11-20-e842c4ff8c0d",
-    "auto-2026-11-19-dd22a56b18fe",
+    "auto-2026-11-25-7156ae627968",
+    "auto-2026-11-24-6d40bf9a68f9",
     "auto-2026-11-17-2a115c66d5e6",
+    "auto-2026-11-25-da830b31c552",
     "auto-2026-11-19-3c726dbf3118",
     "auto-2026-11-16-6281f100bb86",
+    "auto-2026-11-25-d1c56439fbbf",
     "auto-2026-11-19-dd9196148de6",
-    "auto-2026-11-18-816b223dc751",
-    "auto-2026-11-18-e1599f949f80",
-    "auto-2026-11-18-81de5be2da93",
-    "auto-2026-11-16-5160a69dc49a",
-    "auto-2026-11-20-8e496bfaddbb"
+    "auto-2026-11-23-cad309ce6845",
+    "auto-2026-11-23-92a22ec99975"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
-      "adoption"
+      "finance",
+      "compute",
+      "power",
+      "grid_storage",
+      "water",
+      "economic_impact"
     ],
     "current_event_ids": [
-      "auto-2026-11-18-05baad78ab7a",
+      "auto-2026-11-24-fc7f270ea514",
       "auto-2026-11-19-9d6aa7468808",
       "auto-2026-11-23-402e4e5c7d61",
       "auto-2026-11-19-f3192832a6a2",
       "auto-2026-11-20-e842c4ff8c0d",
-      "auto-2026-11-19-dd22a56b18fe",
+      "auto-2026-11-25-7156ae627968",
+      "auto-2026-11-24-6d40bf9a68f9",
       "auto-2026-11-17-2a115c66d5e6",
+      "auto-2026-11-25-da830b31c552",
       "auto-2026-11-19-3c726dbf3118",
       "auto-2026-11-16-6281f100bb86",
+      "auto-2026-11-25-d1c56439fbbf",
       "auto-2026-11-19-dd9196148de6",
-      "auto-2026-11-18-816b223dc751",
-      "auto-2026-11-18-e1599f949f80",
-      "auto-2026-11-18-81de5be2da93",
-      "auto-2026-11-16-5160a69dc49a",
-      "auto-2026-11-20-8e496bfaddbb"
+      "auto-2026-11-23-cad309ce6845",
+      "auto-2026-11-23-92a22ec99975"
     ],
     "material_domains": [
-      "market"
+      "market",
+      "finance",
+      "compute",
+      "water",
+      "economic_impact"
     ],
     "new_event_domains": [
-      "adoption"
+      "market",
+      "finance",
+      "power",
+      "grid_storage",
+      "water",
+      "economic_impact"
     ],
     "new_event_ids": [
-      "auto-2026-11-20-8e496bfaddbb"
+      "auto-2026-11-24-fc7f270ea514",
+      "auto-2026-11-25-7156ae627968",
+      "auto-2026-11-24-6d40bf9a68f9",
+      "auto-2026-11-25-da830b31c552",
+      "auto-2026-11-25-d1c56439fbbf",
+      "auto-2026-11-23-cad309ce6845",
+      "auto-2026-11-23-92a22ec99975"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
   },
   "editorial_update_domains": [
     "market",
-    "adoption"
+    "finance",
+    "compute",
+    "power",
+    "grid_storage",
+    "water",
+    "economic_impact"
   ],
   "evidence_packets": {
     "adoption": {
@@ -313,31 +343,31 @@
       "facts": [
         {
           "context": "",
-          "display": "12.0%",
+          "display": "22.9%",
           "id": "compute.computer_output_growth",
           "label": "Computer and peripheral equipment output growth",
-          "value": 0.12012909500343438
+          "value": 0.22913936571835491
         },
         {
           "context": "",
-          "display": "15.3%",
+          "display": "13.5%",
           "id": "compute.semiconductor_output_growth",
           "label": "Semiconductor and electronic component output growth",
-          "value": 0.1531496372614587
+          "value": 0.13495661992660501
         },
         {
           "context": "",
-          "display": "84.5%",
+          "display": "80.6%",
           "id": "compute.computer_utilization",
           "label": "Computer and peripheral equipment capacity utilization",
-          "value": 84.4571
+          "value": 80.5602
         },
         {
           "context": "",
-          "display": "74.4%",
+          "display": "80.3%",
           "id": "compute.semiconductor_utilization",
           "label": "Semiconductor capacity utilization",
-          "value": 74.3816
+          "value": 80.3482
         },
         {
           "context": "",
@@ -664,10 +694,10 @@
         },
         {
           "context": "",
-          "display": "20.6%",
+          "display": "22.7%",
           "id": "economic_impact.information_investment_growth",
           "label": "Information-processing investment growth",
-          "value": 20.567957496910093
+          "value": 22.65581830358625
         },
         {
           "context": "",
@@ -791,10 +821,10 @@
         },
         {
           "context": "",
-          "display": "20.9",
+          "display": "21.0",
           "id": "finance.lender_strain",
           "label": "Lender strain",
-          "value": 20.88849815265309
+          "value": 21.03847820446157
         },
         {
           "context": "",
@@ -826,24 +856,24 @@
         },
         {
           "context": "",
-          "display": "-0.48",
+          "display": "-0.44",
           "id": "finance.nfci",
           "label": "Chicago Fed NFCI",
-          "value": -0.478
+          "value": -0.444
         },
         {
           "context": "",
-          "display": "0.07",
+          "display": "0.10",
           "id": "finance.nfci_change",
           "label": "Three-month change in NFCI",
-          "value": 0.06600000000000006
+          "value": 0.09800000000000003
         },
         {
           "context": "",
-          "display": "0.25",
+          "display": "0.24",
           "id": "finance.bond_distress",
           "label": "Corporate bond market distress",
-          "value": 0.25
+          "value": 0.24
         },
         {
           "context": "",
@@ -1143,14 +1173,14 @@
           "display": "2.8 hours",
           "id": "grid_storage.operating_storage_weighted_duration_hours",
           "label": "Weighted average duration of operating storage",
-          "value": 2.7501450006304373
+          "value": 2.758040795105727
         },
         {
           "context": "",
-          "display": "45.5%",
+          "display": "45.7%",
           "id": "grid_storage.operating_storage_four_hour_plus_share_pct",
           "label": "Operating storage capacity with at least four hours duration",
-          "value": 45.546589332997094
+          "value": 45.747779700731435
         },
         {
           "context": "",
@@ -1191,52 +1221,52 @@
       "facts": [
         {
           "context": "",
-          "display": "32.5",
+          "display": "33.4",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 32.45229407357315
+          "value": 33.37221238013969
         },
         {
           "context": "",
-          "display": "40.7",
+          "display": "40.0",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 40.6584105717764
+          "value": 39.968697428768245
         },
         {
           "context": "",
-          "display": "60.8%",
+          "display": "59.3%",
           "id": "market.positive_breadth",
           "label": "Covered companies with positive one-year returns",
-          "value": 0.6078431372549019
+          "value": 0.5931372549019608
         },
         {
           "context": "",
-          "display": "8.7%",
+          "display": "7.3%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.08734713961602025
+          "value": 0.07287614440885903
         },
         {
           "context": "",
-          "display": "9.3%",
+          "display": "8.1%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.09299055696720689
+          "value": 0.08128689051492852
         },
         {
           "context": "",
-          "display": "65.5%",
+          "display": "65.2%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6554461336967343
+          "value": 0.6522460994147861
         },
         {
           "context": "",
-          "display": "17.8",
+          "display": "17.9",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 17.81449204775453
+          "value": 17.948740739459875
         },
         {
           "context": "",
@@ -1247,13 +1277,13 @@
         },
         {
           "context": "",
-          "display": "1",
+          "display": "0",
           "id": "market.crowded_sector_count",
           "label": "Sectors above the high-pressure threshold",
-          "value": 1.0
+          "value": 0.0
         }
       ],
-      "importance": 20.544613369673428,
+      "importance": 20.224609941478604,
       "label": "Market",
       "references": [
         {
@@ -1290,10 +1320,10 @@
         },
         {
           "context": "",
-          "display": "227.6 GW",
+          "display": "227.1 GW",
           "id": "power.planned_net_gw",
           "label": "Net planned generation additions through the pipeline horizon",
-          "value": 227.64059999999998
+          "value": 227.12069999999997
         },
         {
           "context": "",
@@ -1362,31 +1392,31 @@
         },
         {
           "context": "",
-          "display": "264",
+          "display": "231",
           "id": "water.campuses_in_counties_with_d2_area",
           "label": "Campuses in counties with some D2-or-worse drought area",
-          "value": 264.0
+          "value": 231.0
         },
         {
           "context": "",
-          "display": "17.7%",
+          "display": "15.5%",
           "id": "water.campuses_in_counties_with_d2_share_pct",
           "label": "Share of campuses with county drought data in counties with some D2-or-worse drought area",
-          "value": 0.17718120805369128
+          "value": 0.15503355704697985
         },
         {
           "context": "",
-          "display": "201",
+          "display": "127",
           "id": "water.campuses_in_counties_with_25pct_d2_area",
           "label": "Campuses in counties with at least 25% D2-or-worse drought area",
-          "value": 201.0
+          "value": 127.0
         },
         {
           "context": "",
-          "display": "13.5%",
+          "display": "8.5%",
           "id": "water.campuses_in_counties_with_25pct_d2_share_pct",
           "label": "Share of campuses with county drought data in counties with at least 25% D2-or-worse drought area",
-          "value": 0.1348993288590604
+          "value": 0.08523489932885905
         },
         {
           "context": "",
@@ -1495,17 +1525,17 @@
         },
         {
           "context": "",
-          "display": "58.6 GW",
+          "display": "53.9 GW",
           "id": "water.published_capacity_in_counties_with_d2_gw",
           "label": "Published data-center campus capacity in counties with D2-or-worse drought",
-          "value": 58.58574
+          "value": 53.87266
         },
         {
           "context": "",
-          "display": "48.2 GW",
+          "display": "36.3 GW",
           "id": "water.published_capacity_in_counties_with_25pct_d2_gw",
           "label": "Published data-center campus capacity in counties with at least 25% D2-or-worse drought",
-          "value": 48.219570000000004
+          "value": 36.32211
         },
         {
           "context": "",
@@ -1543,7 +1573,7 @@
           "value": 2.559680884931507
         }
       ],
-      "importance": 52.15870176446522,
+      "importance": 50.0882319658075,
       "label": "Water",
       "references": [
         {
@@ -1673,19 +1703,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "b2e72632058c83a6acdc5331",
-  "generated_at": "2026-11-24T23:05:48.285042+00:00",
+  "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+  "generated_at": "2026-11-25T22:34:19.972427+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 40.60360625199996,
-      "input_tokens": 3836,
+      "elapsed_sec": 68.49171398399994,
+      "input_tokens": 4513,
       "model": "gpt-5.6-sol",
-      "output_tokens": 4585,
-      "poll_attempts": 18,
+      "output_tokens": 8686,
+      "poll_attempts": 31,
       "poll_errors": [],
-      "response_id": "resp_0667dc2c279c375e006b061824697487d09c577d7cbcfa9ab1",
+      "response_id": "resp_0c3bb57f2988af5b006b0762282a4487d08de431e690e4fbab",
       "terminal_status": "completed",
-      "total_tokens": 8421
+      "total_tokens": 13199
     }
   },
   "max_output_tokens": null,
@@ -1696,11 +1726,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "b2e72632058c83a6acdc5331",
-    "expires_at": "2026-11-25T23:05:48.288123+00:00",
+    "current_evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+    "expires_at": "2026-11-26T22:34:19.975419+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-11-24T23:05:48.288123+00:00",
+    "published_at": "2026-11-25T22:34:19.975419+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1708,24 +1738,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 18,
+        "poll_attempts": 31,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0667dc2c279c375e006b061824697487d09c577d7cbcfa9ab1",
+        "response_id": "resp_0c3bb57f2988af5b006b0762282a4487d08de431e690e4fbab",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose slightly to 32.5, while average sector trading pressure eased to 40.7. Beneath those top-line readings, the share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 8.7%. The aggregate signal improved modestly, but participation in gains and typical performance both weakened.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The aggregate AI market signal edges higher even as gains become less broad\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Current AI use is reported by 24.6% of businesses, while 28.6% expect to use it within six months. The four-percentage-point gap shows that stated near-term plans still exceed deployment. Among adults ages 18\u201364, 60.8% report some generative-AI use, although that consumer measure covers a different population and technology category. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. The transaction shows a supplier adding enterprise exposure; it does not establish that business adoption has accelerated.\",\"event_ids\":[\"auto-2026-11-20-8e496bfaddbb\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use remains below near-term intent as Palo Alto expands into enterprise AI\",\"event_ids\":[\"auto-2026-11-20-8e496bfaddbb\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The physical pipeline remains large, while business use and market gains are less broad\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"grid_storage.queue_gw\",\"adoption.current_business_use_pct\",\"market.positive_breadth\",\"market.median_return\"]},\"paragraphs\":[{\"text\":\"The physical buildout remains substantial. Output grew 15.3% for semiconductors and electronic components and 12.0% for computers and peripherals. Available project records show 1,556 data-center sites in development, equal to about half the operating count. The electricity system illustrates why a large pipeline is not the same as delivered capacity: 2,061 GW is in active interconnection queues, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Deployment is less extensive among businesses. Current AI use stands at 24.6%, compared with 28.6% expecting use within six months. Adults ages 18\u201364 report some generative-AI use at a much higher rate of 60.8%, although the consumer and business measures are not directly comparable. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. That move reflects supplier competition for enterprise demand, not proof that adoption is accelerating.\",\"event_ids\":[\"auto-2026-11-20-8e496bfaddbb\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},{\"text\":\"The market now presents a mixed signal. The AI Equity Index edged up to 32.5 and sector trading pressure eased, but the share of covered companies with positive one-year returns fell materially to 60.8%, while the median return declined to 8.7%. Economy-wide productivity and real output grew 2.1% and 2.3%, respectively, while real hourly compensation rose 0.6%. These measures remain positive in aggregate, but they do not isolate a distinct AI contribution.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation.\",\"event_ids\":[\"auto-2026-11-24-fc7f270ea514\",\"auto-2026-11-25-7156ae627968\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The aggregate AI equity signal improves while company-level gains narrow\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite.\",\"event_ids\":[\"auto-2026-11-25-d1c56439fbbf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]},\"headline\":{\"text\":\"Financial conditions tighten at the margin while bond distress eases\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply.\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"The production lead shifts to computer equipment as utilization converges\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.1 GW through the pipeline horizon, but planned supply is not delivered capacity. Utility Dive reported that TVA touted a $1.7 billion data-center deal under a new large-load tariff. The agreement is a concrete sign of utility contracting for a major load, but one deal does not resolve the timing of the broader generation pipeline.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as TVA reports a tariff-backed data-center deal\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction.\",\"event_ids\":[\"auto-2026-11-23-cad309ce6845\"],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"headline\":{\"text\":\"Operating storage gets slightly longer while most queued capacity remains early-stage\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 231, or 15.5%, are in counties containing some D2-or-worse drought area. The stricter screen\u2014counties with at least one-quarter of their area at D2 or worse\u2014now includes 127 campuses, or 8.5%. Both readings fell materially. This reduces the current geographic exposure count, though county drought conditions do not measure campus water use or site-specific supply.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"County drought exposure falls materially for tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Information-processing investment growth accelerated materially to 22.7%. Across the nonfarm business sector, productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%. Spending on information-processing assets is expanding rapidly, but the broader results remain more modest and do not establish how much, if any, came from AI.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates as productivity continues to outpace real pay\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Information-processing investment and computer output accelerate before the broader payoff is clear\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\",\"market.median_return\"]},\"paragraphs\":[{\"text\":\"Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},{\"text\":\"The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},{\"text\":\"Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1795561546.0,
+      "completed_at": 1795646058.0,
       "conversation": null,
-      "created_at": 1795561508.0,
+      "created_at": 1795645992.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0667dc2c279c375e006b061824697487d09c577d7cbcfa9ab1",
+      "id": "resp_0c3bb57f2988af5b006b0762282a4487d08de431e690e4fbab",
       "image": {
         "context_compression": "disabled"
       },
@@ -1742,7 +1772,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0667dc2c279c375e006b061826141487d0a78b867fbbf0aa12",
+          "id": "rs_0c3bb57f2988af5b006b07622a877087d08abaa9dbd3bc4833",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1750,7 +1780,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0667dc2c279c375e006b06182a498c87d0af6d2a18f4f0e42c",
+          "id": "rs_0c3bb57f2988af5b006b07622ebb2087d0a22e1acef6c11a3c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1758,7 +1788,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0667dc2c279c375e006b06182ea8a487d0b334d647a6792938",
+          "id": "rs_0c3bb57f2988af5b006b07623353f487d09b5aa35619e16997",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1766,7 +1796,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0667dc2c279c375e006b0618333a4887d0bd8d1c9dcab67889",
+          "id": "rs_0c3bb57f2988af5b006b076237bb9c87d0acc9c13a0b93a066",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1774,7 +1804,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0667dc2c279c375e006b061838148887d09c2bfdf806a5b8e4",
+          "id": "rs_0c3bb57f2988af5b006b07623c521487d0b407fab080e4fbee",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1782,7 +1812,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0667dc2c279c375e006b06183cb22087d0acb802a2cb3f9cfb",
+          "id": "rs_0c3bb57f2988af5b006b0762406b8487d0a94f51c5c861eb3c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1790,7 +1820,55 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0667dc2c279c375e006b061840b17887d0baeb5f32f067ba87",
+          "id": "rs_0c3bb57f2988af5b006b07624485ac87d0aae98112d3bf4182",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0c3bb57f2988af5b006b076248b67087d09bdaab9d18b84522",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0c3bb57f2988af5b006b07624ca14087d08dd4bc3068aa01de",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0c3bb57f2988af5b006b076251499487d0baf8e04f2063dc0a",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0c3bb57f2988af5b006b07625562a487d08757574ff6889936",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0c3bb57f2988af5b006b076259990487d0a496ab4a6fea2f83",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_0c3bb57f2988af5b006b07625d937887d0b0aadb0798f90650",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1800,11 +1878,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index rose slightly to 32.5, while average sector trading pressure eased to 40.7. Beneath those top-line readings, the share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 8.7%. The aggregate signal improved modestly, but participation in gains and typical performance both weakened.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The aggregate AI market signal edges higher even as gains become less broad\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"adoption\",\"body\":{\"text\":\"Current AI use is reported by 24.6% of businesses, while 28.6% expect to use it within six months. The four-percentage-point gap shows that stated near-term plans still exceed deployment. Among adults ages 18\u201364, 60.8% report some generative-AI use, although that consumer measure covers a different population and technology category. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. The transaction shows a supplier adding enterprise exposure; it does not establish that business adoption has accelerated.\",\"event_ids\":[\"auto-2026-11-20-8e496bfaddbb\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},\"headline\":{\"text\":\"Business AI use remains below near-term intent as Palo Alto expands into enterprise AI\",\"event_ids\":[\"auto-2026-11-20-8e496bfaddbb\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"The physical pipeline remains large, while business use and market gains are less broad\",\"event_ids\":[],\"fact_ids\":[\"data_center.development_sites\",\"grid_storage.queue_gw\",\"adoption.current_business_use_pct\",\"market.positive_breadth\",\"market.median_return\"]},\"paragraphs\":[{\"text\":\"The physical buildout remains substantial. Output grew 15.3% for semiconductors and electronic components and 12.0% for computers and peripherals. Available project records show 1,556 data-center sites in development, equal to about half the operating count. The electricity system illustrates why a large pipeline is not the same as delivered capacity: 2,061 GW is in active interconnection queues, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation.\",\"event_ids\":[],\"fact_ids\":[\"compute.semiconductor_output_growth\",\"compute.computer_output_growth\",\"data_center.development_sites\",\"data_center.development_to_operating\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},{\"text\":\"Deployment is less extensive among businesses. Current AI use stands at 24.6%, compared with 28.6% expecting use within six months. Adults ages 18\u201364 report some generative-AI use at a much higher rate of 60.8%, although the consumer and business measures are not directly comparable. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. That move reflects supplier competition for enterprise demand, not proof that adoption is accelerating.\",\"event_ids\":[\"auto-2026-11-20-8e496bfaddbb\"],\"fact_ids\":[\"adoption.current_business_use_pct\",\"adoption.expected_business_use_pct\",\"adoption.expected_adoption_gap_ppts\",\"adoption.consumer_overall_pct\"]},{\"text\":\"The market now presents a mixed signal. The AI Equity Index edged up to 32.5 and sector trading pressure eased, but the share of covered companies with positive one-year returns fell materially to 60.8%, while the median return declined to 8.7%. Economy-wide productivity and real output grew 2.1% and 2.3%, respectively, while real hourly compensation rose 0.6%. These measures remain positive in aggregate, but they do not isolate a distinct AI contribution.\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation.\",\"event_ids\":[\"auto-2026-11-24-fc7f270ea514\",\"auto-2026-11-25-7156ae627968\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The aggregate AI equity signal improves while company-level gains narrow\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite.\",\"event_ids\":[\"auto-2026-11-25-d1c56439fbbf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]},\"headline\":{\"text\":\"Financial conditions tighten at the margin while bond distress eases\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply.\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"The production lead shifts to computer equipment as utilization converges\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.1 GW through the pipeline horizon, but planned supply is not delivered capacity. Utility Dive reported that TVA touted a $1.7 billion data-center deal under a new large-load tariff. The agreement is a concrete sign of utility contracting for a major load, but one deal does not resolve the timing of the broader generation pipeline.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as TVA reports a tariff-backed data-center deal\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction.\",\"event_ids\":[\"auto-2026-11-23-cad309ce6845\"],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"headline\":{\"text\":\"Operating storage gets slightly longer while most queued capacity remains early-stage\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 231, or 15.5%, are in counties containing some D2-or-worse drought area. The stricter screen\u2014counties with at least one-quarter of their area at D2 or worse\u2014now includes 127 campuses, or 8.5%. Both readings fell materially. This reduces the current geographic exposure count, though county drought conditions do not measure campus water use or site-specific supply.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"County drought exposure falls materially for tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Information-processing investment growth accelerated materially to 22.7%. Across the nonfarm business sector, productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%. Spending on information-processing assets is expanding rapidly, but the broader results remain more modest and do not establish how much, if any, came from AI.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates as productivity continues to outpace real pay\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Information-processing investment and computer output accelerate before the broader payoff is clear\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\",\"market.median_return\"]},\"paragraphs\":[{\"text\":\"Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},{\"text\":\"The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},{\"text\":\"Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0667dc2c279c375e006b061845933c87d09b830315692878e7",
+          "id": "msg_0c3bb57f2988af5b006b076260f28487d09e2035abaad0ed39",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -1977,20 +2055,20 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 3836,
+        "input_tokens": 4513,
         "input_tokens_details": {
-          "cache_write_tokens": 3833,
+          "cache_write_tokens": 4510,
           "cache_write_tokens_details": {
             "ttl_12h_tokens": 0,
-            "ttl_30m_tokens": 3833
+            "ttl_30m_tokens": 4510
           },
           "cached_tokens": 0
         },
-        "output_tokens": 4585,
+        "output_tokens": 8686,
         "output_tokens_details": {
-          "reasoning_tokens": 3624
+          "reasoning_tokens": 6633
         },
-        "total_tokens": 8421
+        "total_tokens": 13199
       },
       "user": null
     }
@@ -2062,14 +2140,11 @@
       "version": "6.1.0"
     },
     "compute": {
-      "analysis": "Computer and peripheral-equipment output growth rose materially to 12.0%, and capacity utilization reached 84.5%. Semiconductor and electronic-component output still grew faster, at 15.3%, but that rate fell materially and utilization declined to 74.4%. The production-growth gap has narrowed even as computer equipment operates at substantially higher utilization. Reuters reported, citing sources, that TSMC tightened China AI-chip curbs as new U.S. rules closed a manufacturing loophole. Access to particular advanced chips can therefore tighten even while aggregate semiconductor utilization eases.",
+      "analysis": "Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply.",
       "analysis_sentences": [
-        "Computer and peripheral-equipment output growth rose materially to 12.0%, and capacity utilization reached 84.5%.",
-        "Semiconductor and electronic-component output still grew faster, at 15.3%, but that rate fell materially and utilization declined to 74.4%.",
-        "The production-growth gap has narrowed even as computer equipment operates at substantially higher utilization.",
-        "Reuters reported, citing sources, that TSMC tightened China AI-chip curbs as new U.S.",
-        "rules closed a manufacturing loophole.",
-        "Access to particular advanced chips can therefore tighten even while aggregate semiconductor utilization eases."
+        "Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%.",
+        "Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%.",
+        "The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply."
       ],
       "claim_support": [
         {
@@ -2077,30 +2152,29 @@
           "fact_ids": [
             "compute.computer_output_growth",
             "compute.semiconductor_output_growth",
+            "compute.computer_utilization",
             "compute.semiconductor_utilization"
           ],
           "field": "headline",
-          "text": "Computer equipment accelerates as semiconductor growth and utilization cool"
+          "text": "The production lead shifts to computer equipment as utilization converges"
         },
         {
-          "event_ids": [
-            "auto-2026-11-19-3c726dbf3118"
-          ],
+          "event_ids": [],
           "fact_ids": [
             "compute.computer_output_growth",
-            "compute.computer_utilization",
             "compute.semiconductor_output_growth",
+            "compute.computer_utilization",
             "compute.semiconductor_utilization"
           ],
           "field": "body",
-          "text": "Computer and peripheral-equipment output growth rose materially to 12.0%, and capacity utilization reached 84.5%. Semiconductor and electronic-component output still grew faster, at 15.3%, but that rate fell materially and utilization declined to 74.4%. The production-growth gap has narrowed even as computer equipment operates at substantially higher utilization. Reuters reported, citing sources, that TSMC tightened China AI-chip curbs as new U.S. rules closed a manufacturing loophole. Access to particular advanced chips can therefore tighten even while aggregate semiconductor utilization eases."
+          "text": "Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply."
         }
       ],
       "domain": "compute",
-      "evidence_snapshot_id": "5054c2ad2932a8746f51ce55",
-      "generated_at": "2026-11-24T00:54:38.262995+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "Computer equipment accelerates as semiconductor growth and utilization cool",
+      "headline": "The production lead shifts to computer equipment as utilization converges",
       "label": "Compute",
       "references": [
         {
@@ -2126,10 +2200,6 @@
         {
           "source_label": "Alphabet AI serving economics",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
-        },
-        {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxNc1pDUGRULVJNeGdkT21ERVNzMEl6RHJKTEtLRWFFQjFpYjdxWU5NMmM3Zl8zUzlHQUd3UzJlNE1UV2tlZnZFTEZrNnRKSWU1Y1lkSU1ISmF6U1JGNWNEeUJETVpHNDI5QTEwMWJTTmRraUgyaDR2RUJ1UlRadVJZMW9MUTZCeXdpZHRZRWl1X1VIZ0xBbllSWEUxMGxmdmllVFgxbmxuTmljOFFBTUkyUGR2NDRfTmM0Rm5xcXFxaHk?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2267,44 +2337,40 @@
       "version": "6.1.0"
     },
     "economic_impact": {
-      "analysis": "Nonfarm-business productivity grew 2.1% and real output 2.3%, compared with 0.6% growth in real hourly compensation; unit labor costs rose 2.4%. These aggregates show continued gains in output per hour without a comparable increase in real pay, but they do not identify the source. Reuters reported that Federal Reserve official Jefferson said AI was boosting inflation and that its productivity effect may come in the future. His comment reinforces the need not to treat current aggregate productivity growth as evidence of a distinct AI contribution.",
+      "analysis": "Information-processing investment growth accelerated materially to 22.7%. Across the nonfarm business sector, productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%. Spending on information-processing assets is expanding rapidly, but the broader results remain more modest and do not establish how much, if any, came from AI.",
       "analysis_sentences": [
-        "Nonfarm-business productivity grew 2.1% and real output 2.3%, compared with 0.6% growth in real hourly compensation; unit labor costs rose 2.4%.",
-        "These aggregates show continued gains in output per hour without a comparable increase in real pay, but they do not identify the source.",
-        "Reuters reported that Federal Reserve official Jefferson said AI was boosting inflation and that its productivity effect may come in the future.",
-        "His comment reinforces the need not to treat current aggregate productivity growth as evidence of a distinct AI contribution."
+        "Information-processing investment growth accelerated materially to 22.7%.",
+        "Across the nonfarm business sector, productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%.",
+        "Spending on information-processing assets is expanding rapidly, but the broader results remain more modest and do not establish how much, if any, came from AI."
       ],
       "claim_support": [
         {
-          "event_ids": [
-            "auto-2026-11-19-9d6aa7468808"
-          ],
+          "event_ids": [],
           "fact_ids": [
+            "economic_impact.information_investment_growth",
             "economic_impact.productivity_growth",
             "economic_impact.real_compensation_growth"
           ],
           "field": "headline",
-          "text": "Productivity outpaces real pay, while AI attribution remains unresolved"
+          "text": "Information-processing investment accelerates as productivity continues to outpace real pay"
         },
         {
-          "event_ids": [
-            "auto-2026-11-19-9d6aa7468808"
-          ],
+          "event_ids": [],
           "fact_ids": [
+            "economic_impact.information_investment_growth",
             "economic_impact.productivity_growth",
             "economic_impact.real_output_growth",
-            "economic_impact.real_compensation_growth",
-            "economic_impact.unit_labor_cost_growth"
+            "economic_impact.real_compensation_growth"
           ],
           "field": "body",
-          "text": "Nonfarm-business productivity grew 2.1% and real output 2.3%, compared with 0.6% growth in real hourly compensation; unit labor costs rose 2.4%. These aggregates show continued gains in output per hour without a comparable increase in real pay, but they do not identify the source. Reuters reported that Federal Reserve official Jefferson said AI was boosting inflation and that its productivity effect may come in the future. His comment reinforces the need not to treat current aggregate productivity growth as evidence of a distinct AI contribution."
+          "text": "Information-processing investment growth accelerated materially to 22.7%. Across the nonfarm business sector, productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%. Spending on information-processing assets is expanding rapidly, but the broader results remain more modest and do not establish how much, if any, came from AI."
         }
       ],
       "domain": "economic_impact",
-      "evidence_snapshot_id": "5054c2ad2932a8746f51ce55",
-      "generated_at": "2026-11-24T00:54:38.262995+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "Productivity outpaces real pay, while AI attribution remains unresolved",
+      "headline": "Information-processing investment accelerates as productivity continues to outpace real pay",
       "label": "Economic Outcomes",
       "references": [
         {
@@ -2334,49 +2400,49 @@
         {
           "source_label": "Alphabet Q2 2026 AI and Cloud disclosure",
           "source_url": "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx"
-        },
-        {
-          "source_label": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOcXEzRFlWTEdhd3lGQThDc1NRMGhfYWdMUDBlUVFzMlo1Vzl4b1Q5RG5iaXE0bzFaMTF4TGV6MjViSzBmYzl1UVVwLXU4QnZSa25WbkU1eEE2MkdsYjRYY01vQ2JCc1ZGUzNhd2lueFR3bGdGRExZbXRhcXp5Zlo4Y3Q3bnJURWlIYk9IRFdncDl2TW56ZHN1c0t0aXZucG5aMEFScGV3OEJ2RXdYZEZnQTNTMDR5c1VHMnRKYlkxMk9sejA?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "Borrower strain fell materially to 25.8, while lender strain rose slightly to 20.9. Borrowers still register more strain, but the gap between the two sides has narrowed. The Chicago Fed NFCI also decreased slightly to -0.48, while its three-month change declined materially to 0.07. The measures point to easing borrower pressure rather than uniform improvement across financing channels.",
+      "analysis": "The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite.",
       "analysis_sentences": [
-        "Borrower strain fell materially to 25.8, while lender strain rose slightly to 20.9.",
-        "Borrowers still register more strain, but the gap between the two sides has narrowed.",
-        "The Chicago Fed NFCI also decreased slightly to -0.48, while its three-month change declined materially to 0.07.",
-        "The measures point to easing borrower pressure rather than uniform improvement across financing channels."
+        "The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10.",
+        "Lender strain also edged up to 21.0.",
+        "Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure.",
+        "Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff.",
+        "That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "finance.borrower_strain",
-            "finance.lender_strain"
+            "finance.nfci",
+            "finance.nfci_change",
+            "finance.bond_distress"
           ],
           "field": "headline",
-          "text": "Borrower strain falls, but lenders do not share the improvement"
+          "text": "Financial conditions tighten at the margin while bond distress eases"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-25-d1c56439fbbf"
+          ],
           "fact_ids": [
-            "finance.borrower_strain",
             "finance.lender_strain",
             "finance.nfci",
-            "finance.nfci_change"
+            "finance.nfci_change",
+            "finance.bond_distress"
           ],
           "field": "body",
-          "text": "Borrower strain fell materially to 25.8, while lender strain rose slightly to 20.9. Borrowers still register more strain, but the gap between the two sides has narrowed. The Chicago Fed NFCI also decreased slightly to -0.48, while its three-month change declined materially to 0.07. The measures point to easing borrower pressure rather than uniform improvement across financing channels."
+          "text": "The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "5054c2ad2932a8746f51ce55",
-      "generated_at": "2026-11-24T00:54:38.262995+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "Borrower strain falls, but lenders do not share the improvement",
+      "headline": "Financial conditions tighten at the margin while bond distress eases",
       "label": "Finance",
       "references": [
         {
@@ -2426,48 +2492,53 @@
         {
           "source_label": "GF Data / ACG Middle-Market M&A",
           "source_url": "https://www.acg.org/news-trends/news/gf-data-reports-show-steady-middle-market-deal-flow-amid-more-selective"
+        },
+        {
+          "source_label": "Bloomberg",
+          "source_url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNUZ2M01uTHpPbDc5NzZUUTRrZFltZnlxZTUxYjNWZmttM08xRmZNSDJTTTdqcndRcTBvZi1Jd2tVTDV0SmZxWHk3YVlRcThmQ1ZubUdzcmwwS0U4bUE5WHRqT0Rpc2VrMEh2eW8tTHpYWXFxd1l4dzNob0tibE5BX3FaOVRDYXR0ano3NnQ5UndqeHBpSTd2U3ByNTFKYnc0M1loTUhOU19tY2kzT1RGWlhNaXk?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "grid_storage": {
-      "analysis": "The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages. Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda. Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity.",
+      "analysis": "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction.",
       "analysis_sentences": [
-        "The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages.",
-        "Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation.",
-        "Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda.",
-        "Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity."
+        "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly.",
+        "The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages.",
+        "Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process.",
+        "The change addresses processing, but it does not by itself move the large early-stage queue into construction."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "grid_storage.operating_storage_weighted_duration_hours",
+            "grid_storage.operating_storage_four_hour_plus_share_pct",
             "grid_storage.queue_gw",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
+            "grid_storage.advanced_share"
           ],
           "field": "headline",
-          "text": "Most of the 2,061 GW interconnection queue remains at earlier stages"
+          "text": "Operating storage gets slightly longer while most queued capacity remains early-stage"
         },
         {
           "event_ids": [
-            "auto-2026-11-17-2a115c66d5e6"
+            "auto-2026-11-23-cad309ce6845"
           ],
           "fact_ids": [
+            "grid_storage.operating_storage_weighted_duration_hours",
+            "grid_storage.operating_storage_four_hour_plus_share_pct",
             "grid_storage.queue_gw",
-            "grid_storage.advanced_share",
-            "grid_storage.storage_queue_gw",
-            "grid_storage.historical_operational_pct"
+            "grid_storage.advanced_share"
           ],
           "field": "body",
-          "text": "The active interconnection queue totals 2,061 GW, including 552.7 GW of storage, but only 24.2% has reached executed-agreement or construction stages. Historical conversion provides a harder benchmark: just 13% of the 2000\u20132020 queue cohort reached operation. Grid operators have filed large-load interconnection reforms at FERC, placing process changes on the regulatory agenda. Those filings address how major new users connect, but they do not alter the current gap between queued and operating capacity."
+          "text": "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction."
         }
       ],
       "domain": "grid_storage",
-      "evidence_snapshot_id": "c79383b8e7764cb2422b6a5a",
-      "generated_at": "2026-11-17T21:48:29.487099+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "Most of the 2,061 GW interconnection queue remains at earlier stages",
+      "headline": "Operating storage gets slightly longer while most queued capacity remains early-stage",
       "label": "Grid & Storage",
       "references": [
         {
@@ -2488,113 +2559,112 @@
         },
         {
           "source_label": "Utility Dive",
-          "source_url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNclFpTEhzLUU5YjU4c0xrSjBzRzJ6c2x3SU5BaHc5a3c4WHpMWVpHYzhZUFJ1QktGZXB6bWNrb210aWxKZm5hVEV0OE84UzgyMzFYalN1Vm8xT0lrdzVFMnlwamVGWHlxd002VXpVaTVRY2FNWVY1U3owRUItME9zZVJzb0NTekFCZm9ud2xBSG03WlNQcHc?oc=5"
+          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPY3ZuU1RTaHY3WVJNSjFqN1pybVRsSldqV2ZwTU1OLUw1SE1PbnJqNzR0Z0cxa0dwVlFPamV0cDR4a1RockJWVkRhZG9LRDYtV2pBNS1TZ1ExYWFfbFVnYzZ3d2pnQktOV25NWjZrUlpWUUJ0R2cxRU9DbGZzM0hmVkhfVFY?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "The physical buildout remains substantial. Output grew 15.3% for semiconductors and electronic components and 12.0% for computers and peripherals. Available project records show 1,556 data-center sites in development, equal to about half the operating count. The electricity system illustrates why a large pipeline is not the same as delivered capacity: 2,061 GW is in active interconnection queues, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Deployment is less extensive among businesses. Current AI use stands at 24.6%, compared with 28.6% expecting use within six months. Adults ages 18\u201364 report some generative-AI use at a much higher rate of 60.8%, although the consumer and business measures are not directly comparable. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. That move reflects supplier competition for enterprise demand, not proof that adoption is accelerating. The market now presents a mixed signal. The AI Equity Index edged up to 32.5 and sector trading pressure eased, but the share of covered companies with positive one-year returns fell materially to 60.8%, while the median return declined to 8.7%. Economy-wide productivity and real output grew 2.1% and 2.3%, respectively, while real hourly compensation rose 0.6%. These measures remain positive in aggregate, but they do not isolate a distinct AI contribution.",
+      "analysis": "Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization. The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity. Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff.",
       "analysis_paragraphs": [
-        "The physical buildout remains substantial. Output grew 15.3% for semiconductors and electronic components and 12.0% for computers and peripherals. Available project records show 1,556 data-center sites in development, equal to about half the operating count. The electricity system illustrates why a large pipeline is not the same as delivered capacity: 2,061 GW is in active interconnection queues, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation.",
-        "Deployment is less extensive among businesses. Current AI use stands at 24.6%, compared with 28.6% expecting use within six months. Adults ages 18\u201364 report some generative-AI use at a much higher rate of 60.8%, although the consumer and business measures are not directly comparable. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. That move reflects supplier competition for enterprise demand, not proof that adoption is accelerating.",
-        "The market now presents a mixed signal. The AI Equity Index edged up to 32.5 and sector trading pressure eased, but the share of covered companies with positive one-year returns fell materially to 60.8%, while the median return declined to 8.7%. Economy-wide productivity and real output grew 2.1% and 2.3%, respectively, while real hourly compensation rose 0.6%. These measures remain positive in aggregate, but they do not isolate a distinct AI contribution."
+        "Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization.",
+        "The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.",
+        "Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
       ],
       "analysis_sentences": [
-        "The physical buildout remains substantial.",
-        "Output grew 15.3% for semiconductors and electronic components and 12.0% for computers and peripherals.",
-        "Available project records show 1,556 data-center sites in development, equal to about half the operating count.",
-        "The electricity system illustrates why a large pipeline is not the same as delivered capacity: 2,061 GW is in active interconnection queues, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation.",
-        "Deployment is less extensive among businesses.",
-        "Current AI use stands at 24.6%, compared with 28.6% expecting use within six months.",
-        "Adults ages 18\u201364 report some generative-AI use at a much higher rate of 60.8%, although the consumer and business measures are not directly comparable.",
-        "EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal.",
-        "That move reflects supplier competition for enterprise demand, not proof that adoption is accelerating.",
-        "The market now presents a mixed signal.",
-        "The AI Equity Index edged up to 32.5 and sector trading pressure eased, but the share of covered companies with positive one-year returns fell materially to 60.8%, while the median return declined to 8.7%.",
-        "Economy-wide productivity and real output grew 2.1% and 2.3%, respectively, while real hourly compensation rose 0.6%.",
-        "These measures remain positive in aggregate, but they do not isolate a distinct AI contribution."
+        "Capital spending and equipment production have accelerated.",
+        "Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components.",
+        "Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%.",
+        "Strong output growth is therefore not accompanied by uniformly rising utilization.",
+        "The electricity system continues to separate announced scale from delivered capacity.",
+        "Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%.",
+        "Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages.",
+        "Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff.",
+        "The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.",
+        "Broader outcomes remain mixed.",
+        "Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution.",
+        "The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%.",
+        "The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "data_center.development_sites",
-            "grid_storage.queue_gw",
-            "adoption.current_business_use_pct",
-            "market.positive_breadth",
+            "economic_impact.information_investment_growth",
+            "compute.computer_output_growth",
+            "economic_impact.productivity_growth",
+            "economic_impact.real_compensation_growth",
             "market.median_return"
           ],
           "field": "headline",
-          "text": "The physical pipeline remains large, while business use and market gains are less broad"
+          "text": "Information-processing investment and computer output accelerate before the broader payoff is clear"
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "compute.semiconductor_output_growth",
+            "economic_impact.information_investment_growth",
             "compute.computer_output_growth",
-            "data_center.development_sites",
-            "data_center.development_to_operating",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share",
-            "grid_storage.historical_operational_pct"
+            "compute.semiconductor_output_growth",
+            "compute.computer_utilization",
+            "compute.semiconductor_utilization"
           ],
           "field": "paragraphs[0]",
-          "text": "The physical buildout remains substantial. Output grew 15.3% for semiconductors and electronic components and 12.0% for computers and peripherals. Available project records show 1,556 data-center sites in development, equal to about half the operating count. The electricity system illustrates why a large pipeline is not the same as delivered capacity: 2,061 GW is in active interconnection queues, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation."
+          "text": "Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization."
         },
         {
           "event_ids": [
-            "auto-2026-11-20-8e496bfaddbb"
+            "auto-2026-11-24-6d40bf9a68f9"
           ],
           "fact_ids": [
-            "adoption.current_business_use_pct",
-            "adoption.expected_business_use_pct",
-            "adoption.expected_adoption_gap_ppts",
-            "adoption.consumer_overall_pct"
+            "power.planned_net_gw",
+            "power.demand_growth",
+            "power.commercial_growth",
+            "power.retail_price_growth",
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share"
           ],
           "field": "paragraphs[1]",
-          "text": "Deployment is less extensive among businesses. Current AI use stands at 24.6%, compared with 28.6% expecting use within six months. Adults ages 18\u201364 report some generative-AI use at a much higher rate of 60.8%, although the consumer and business measures are not directly comparable. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. That move reflects supplier competition for enterprise demand, not proof that adoption is accelerating."
+          "text": "The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity."
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "market.aei",
-            "market.pressure",
-            "market.positive_breadth",
-            "market.median_return",
             "economic_impact.productivity_growth",
             "economic_impact.real_output_growth",
-            "economic_impact.real_compensation_growth"
+            "economic_impact.real_compensation_growth",
+            "market.aei",
+            "market.positive_breadth",
+            "market.median_return"
           ],
           "field": "paragraphs[2]",
-          "text": "The market now presents a mixed signal. The AI Equity Index edged up to 32.5 and sector trading pressure eased, but the share of covered companies with positive one-year returns fell materially to 60.8%, while the median return declined to 8.7%. Economy-wide productivity and real output grew 2.1% and 2.3%, respectively, while real hourly compensation rose 0.6%. These measures remain positive in aggregate, but they do not isolate a distinct AI contribution."
+          "text": "Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "data_center.development_sites",
-          "label": "Sites in development in available project records",
-          "value": "1,556"
+          "fact_id": "economic_impact.information_investment_growth",
+          "label": "Information-processing investment growth",
+          "value": "22.7%"
         },
         {
           "context": "",
-          "fact_id": "grid_storage.queue_gw",
-          "label": "Active interconnection queue",
-          "value": "2061 GW"
+          "fact_id": "compute.computer_output_growth",
+          "label": "Computer and peripheral equipment output growth",
+          "value": "22.9%"
         },
         {
           "context": "",
-          "fact_id": "adoption.current_business_use_pct",
-          "label": "Businesses reporting current AI use",
-          "value": "24.6%"
+          "fact_id": "economic_impact.productivity_growth",
+          "label": "Nonfarm-business productivity growth",
+          "value": "2.1%"
         }
       ],
-      "evidence_snapshot_id": "b2e72632058c83a6acdc5331",
-      "generated_at": "2026-11-24T23:05:48.284638+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "The physical pipeline remains large, while business use and market gains are less broad",
+      "headline": "Information-processing investment and computer output accelerate before the broader payoff is clear",
       "label": "AI Macro",
       "references": [
         {
@@ -2625,19 +2695,19 @@
       "selected_domains": [
         "market",
         "compute",
-        "data_center",
+        "power",
         "grid_storage",
-        "adoption",
         "economic_impact"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index rose slightly to 32.5, while average sector trading pressure eased to 40.7. Beneath those top-line readings, the share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 8.7%. The aggregate signal improved modestly, but participation in gains and typical performance both weakened.",
+      "analysis": "The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation.",
       "analysis_sentences": [
-        "The AI Equity Index rose slightly to 32.5, while average sector trading pressure eased to 40.7.",
-        "Beneath those top-line readings, the share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 8.7%.",
-        "The aggregate signal improved modestly, but participation in gains and typical performance both weakened."
+        "The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0.",
+        "Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%.",
+        "Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk.",
+        "Those reports show firm demand in selected businesses, while the equity measures show less broad participation."
       ],
       "claim_support": [
         {
@@ -2648,10 +2718,13 @@
             "market.median_return"
           ],
           "field": "headline",
-          "text": "The aggregate AI market signal edges higher even as gains become less broad"
+          "text": "The aggregate AI equity signal improves while company-level gains narrow"
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-24-fc7f270ea514",
+            "auto-2026-11-25-7156ae627968"
+          ],
           "fact_ids": [
             "market.aei",
             "market.pressure",
@@ -2659,14 +2732,14 @@
             "market.median_return"
           ],
           "field": "body",
-          "text": "The AI Equity Index rose slightly to 32.5, while average sector trading pressure eased to 40.7. Beneath those top-line readings, the share of covered companies with positive one-year returns fell materially to 60.8%, and the median return declined to 8.7%. The aggregate signal improved modestly, but participation in gains and typical performance both weakened."
+          "text": "The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "b2e72632058c83a6acdc5331",
-      "generated_at": "2026-11-24T23:05:48.284638+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "The aggregate AI market signal edges higher even as gains become less broad",
+      "headline": "The aggregate AI equity signal improves while company-level gains narrow",
       "label": "Market",
       "references": [
         {
@@ -2676,49 +2749,57 @@
         {
           "source_label": "SEC EDGAR",
           "source_url": "https://www.sec.gov/edgar/search/"
+        },
+        {
+          "source_label": "Bloomberg",
+          "source_url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQaGdaTHY2SHBsUUFYSnRQb1BMbnM2OTJxZFR5czFjWVBNRnM3Q09UNU9NS2hnR0hsNDdwZ1I2OVFLaXEybXVZNWZXUFBfaWItQlhQNFVobW1CVmlGaUw0MlRZTTNNYlpVQTJmd2NkMVlZSWVrQWlEd0FGVHBzeDlsNlFCc2hrRno3QXItS2RMMFNnZE54VVozcVJhcmNlVjBWdVQ0LW5IM2J2YVVCS0U0?oc=5"
+        },
+        {
+          "source_label": "Morningstar",
+          "source_url": "https://www.morningstar.com/stocks/dell-earnings-record-quarter-lifts-estimates-we-cut-fair-value-ai-cycle-risk"
         }
       ],
       "version": "6.1.0"
     },
     "power": {
-      "analysis": "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail prices are up 5.1%. Net planned generation additions through the pipeline horizon total 227.6 GW, but planned supply is not delivered capacity. Utility Dive reported that PJM was urged to delay its base-capacity auction until data centers were cut from the forecast. The request does not establish that PJM\u2019s forecast is overstated; it shows that data-center assumptions are consequential and disputed in capacity-market planning.",
+      "analysis": "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.1 GW through the pipeline horizon, but planned supply is not delivered capacity. Utility Dive reported that TVA touted a $1.7 billion data-center deal under a new large-load tariff. The agreement is a concrete sign of utility contracting for a major load, but one deal does not resolve the timing of the broader generation pipeline.",
       "analysis_sentences": [
-        "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail prices are up 5.1%.",
-        "Net planned generation additions through the pipeline horizon total 227.6 GW, but planned supply is not delivered capacity.",
-        "Utility Dive reported that PJM was urged to delay its base-capacity auction until data centers were cut from the forecast.",
-        "The request does not establish that PJM\u2019s forecast is overstated; it shows that data-center assumptions are consequential and disputed in capacity-market planning."
+        "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%.",
+        "Net planned generation additions total 227.1 GW through the pipeline horizon, but planned supply is not delivered capacity.",
+        "Utility Dive reported that TVA touted a $1.7 billion data-center deal under a new large-load tariff.",
+        "The agreement is a concrete sign of utility contracting for a major load, but one deal does not resolve the timing of the broader generation pipeline."
       ],
       "claim_support": [
         {
           "event_ids": [
-            "auto-2026-11-19-dd9196148de6"
+            "auto-2026-11-24-6d40bf9a68f9"
           ],
           "fact_ids": [
-            "power.commercial_growth",
-            "power.demand_growth"
+            "power.demand_growth",
+            "power.commercial_growth"
           ],
           "field": "headline",
-          "text": "Commercial demand outpaces total demand as data-center forecasts come under dispute"
+          "text": "Commercial power demand outpaces the total as TVA reports a tariff-backed data-center deal"
         },
         {
           "event_ids": [
-            "auto-2026-11-19-dd9196148de6"
+            "auto-2026-11-24-6d40bf9a68f9"
           ],
           "fact_ids": [
-            "power.commercial_growth",
+            "power.planned_net_gw",
             "power.demand_growth",
-            "power.retail_price_growth",
-            "power.planned_net_gw"
+            "power.commercial_growth",
+            "power.retail_price_growth"
           ],
           "field": "body",
-          "text": "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail prices are up 5.1%. Net planned generation additions through the pipeline horizon total 227.6 GW, but planned supply is not delivered capacity. Utility Dive reported that PJM was urged to delay its base-capacity auction until data centers were cut from the forecast. The request does not establish that PJM\u2019s forecast is overstated; it shows that data-center assumptions are consequential and disputed in capacity-market planning."
+          "text": "Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.1 GW through the pipeline horizon, but planned supply is not delivered capacity. Utility Dive reported that TVA touted a $1.7 billion data-center deal under a new large-load tariff. The agreement is a concrete sign of utility contracting for a major load, but one deal does not resolve the timing of the broader generation pipeline."
         }
       ],
       "domain": "power",
-      "evidence_snapshot_id": "5054c2ad2932a8746f51ce55",
-      "generated_at": "2026-11-24T00:54:38.262995+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "Commercial demand outpaces total demand as data-center forecasts come under dispute",
+      "headline": "Commercial power demand outpaces the total as TVA reports a tariff-backed data-center deal",
       "label": "Power",
       "references": [
         {
@@ -2735,28 +2816,30 @@
         },
         {
           "source_label": "Utility Dive",
-          "source_url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNbXctTXFMMDVCNTJFYzVBOGF6Zk1aNUNmZUZqQUtLVTNzSHVSZk5tUGFLQzY1QWtta1BMUkNQdF9JWV83U1lsaEVNbGliSG13RlhMay1JYVJEeVN3ak5TRDA0amZER2tYTUtLSmpoNzdzUUdhTV9ISTB3dDVxOWxZNjhDN1J6RXJhVnJnZWV0TzMzR0l0NlE2ZnU5cUE?oc=5"
+          "source_url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQTUM3RDE4UEV5YXFERTZrXzBTX2x3Nkx5SDB4Z3pOalVNem00d0U1RzhlallxVFN5bG9odUo3S2ZqSnZvbnBvQmdLX1JhX3Q1LXUtZkVsUjJXYW81VGR3THZjZHhmYUQ4VUNhN2VhbmhJTkt4SEZIYlgzcEV0Vm56SkdXS25GWll6aUFiWHlFQ05JR2dQMzJmaGxDNHhWNmJQ?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "water": {
-      "analysis": "County-level drought exposure increased slightly under both measures. Among campuses with county data, 264, or 17.7%, are in counties containing some D2-or-worse drought area. The more concentrated screen now includes 201 campuses, or 13.5%, in counties where at least one-quarter of the area is D2 or worse. Both screens now point in the same direction, although they describe surrounding drought conditions rather than campus water demand or site-specific availability.",
+      "analysis": "Among campuses with county drought data, 231, or 15.5%, are in counties containing some D2-or-worse drought area. The stricter screen\u2014counties with at least one-quarter of their area at D2 or worse\u2014now includes 127 campuses, or 8.5%. Both readings fell materially. This reduces the current geographic exposure count, though county drought conditions do not measure campus water use or site-specific supply.",
       "analysis_sentences": [
-        "County-level drought exposure increased slightly under both measures.",
-        "Among campuses with county data, 264, or 17.7%, are in counties containing some D2-or-worse drought area.",
-        "The more concentrated screen now includes 201 campuses, or 13.5%, in counties where at least one-quarter of the area is D2 or worse.",
-        "Both screens now point in the same direction, although they describe surrounding drought conditions rather than campus water demand or site-specific availability."
+        "Among campuses with county drought data, 231, or 15.5%, are in counties containing some D2-or-worse drought area.",
+        "The stricter screen\u2014counties with at least one-quarter of their area at D2 or worse\u2014now includes 127 campuses, or 8.5%.",
+        "Both readings fell materially.",
+        "This reduces the current geographic exposure count, though county drought conditions do not measure campus water use or site-specific supply."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
+            "water.campuses_in_counties_with_d2_area",
             "water.campuses_in_counties_with_d2_share_pct",
+            "water.campuses_in_counties_with_25pct_d2_area",
             "water.campuses_in_counties_with_25pct_d2_share_pct"
           ],
           "field": "headline",
-          "text": "Both county drought screens move higher for data-center campuses"
+          "text": "County drought exposure falls materially for tracked campuses"
         },
         {
           "event_ids": [],
@@ -2767,14 +2850,14 @@
             "water.campuses_in_counties_with_25pct_d2_share_pct"
           ],
           "field": "body",
-          "text": "County-level drought exposure increased slightly under both measures. Among campuses with county data, 264, or 17.7%, are in counties containing some D2-or-worse drought area. The more concentrated screen now includes 201 campuses, or 13.5%, in counties where at least one-quarter of the area is D2 or worse. Both screens now point in the same direction, although they describe surrounding drought conditions rather than campus water demand or site-specific availability."
+          "text": "Among campuses with county drought data, 231, or 15.5%, are in counties containing some D2-or-worse drought area. The stricter screen\u2014counties with at least one-quarter of their area at D2 or worse\u2014now includes 127 campuses, or 8.5%. Both readings fell materially. This reduces the current geographic exposure count, though county drought conditions do not measure campus water use or site-specific supply."
         }
       ],
       "domain": "water",
-      "evidence_snapshot_id": "5054c2ad2932a8746f51ce55",
-      "generated_at": "2026-11-24T00:54:38.262995+00:00",
+      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
+      "generated_at": "2026-11-25T22:34:19.972051+00:00",
       "generator": "openai",
-      "headline": "Both county drought screens move higher for data-center campuses",
+      "headline": "County drought exposure falls materially for tracked campuses",
       "label": "Water",
       "references": [
         {
@@ -2866,13 +2949,25 @@
   },
   "status": "published_with_warnings",
   "validation": {
-    "checked_passages": 8,
+    "checked_passages": 18,
     "diagnostics": [
       {
         "message": "Semicolon present; review for clause stacking.",
         "reason": "semicolon",
-        "scope": "adoption.body",
-        "text": "Current AI use is reported by 24.6% of businesses, while 28.6% expect to use it within six months. The four-percentage-point gap shows that stated near-term plans still exceed deployment. Among adults ages 18\u201364, 60.8% report some generative-AI use, although that consumer measure covers a different population and technology category. EE Times reported that Palo Alto Networks expanded into enterprise AI through a $4.5 billion deal. The transaction shows a supplier adding enterprise exposure; it does not establish that business adoption has accelerated."
+        "scope": "grid_storage.body",
+        "text": "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction."
+      },
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[1]",
+        "text": "The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity."
+      },
+      {
+        "message": "Semicolon present; review for clause stacking.",
+        "reason": "semicolon",
+        "scope": "macro.paragraphs[2]",
+        "text": "Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
       }
     ],
     "hard_errors": [],
