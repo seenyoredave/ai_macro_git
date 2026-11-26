@@ -1,83 +1,72 @@
 {
   "artifact_version": "4.0.0",
-  "attempt_id": "20261125T223311473486Z_60d4b8f2_21df8b9e",
+  "attempt_id": "20261126T222032626462Z_a820452e_a3d24c26",
   "editorial_briefing_version": "1.1.0",
   "editorial_candidate_domains": [
     "market",
     "finance",
     "compute",
-    "power",
-    "grid_storage",
-    "water",
-    "economic_impact"
+    "data_center",
+    "grid_storage"
   ],
   "editorial_context_event_ids": [
+    "auto-2026-11-18-05baad78ab7a",
     "auto-2026-11-24-fc7f270ea514",
-    "auto-2026-11-19-9d6aa7468808",
     "auto-2026-11-23-402e4e5c7d61",
-    "auto-2026-11-19-f3192832a6a2",
-    "auto-2026-11-20-e842c4ff8c0d",
+    "auto-2026-11-19-9d6aa7468808",
+    "auto-2026-11-26-151c911e31dc",
     "auto-2026-11-25-7156ae627968",
     "auto-2026-11-24-6d40bf9a68f9",
     "auto-2026-11-17-2a115c66d5e6",
     "auto-2026-11-25-da830b31c552",
-    "auto-2026-11-19-3c726dbf3118",
-    "auto-2026-11-16-6281f100bb86",
     "auto-2026-11-25-d1c56439fbbf",
-    "auto-2026-11-19-dd9196148de6",
+    "auto-2026-11-26-34005d7c42c6",
     "auto-2026-11-23-cad309ce6845",
-    "auto-2026-11-23-92a22ec99975"
+    "auto-2026-11-26-f9be3d88f48d",
+    "auto-2026-11-25-25930e7068af",
+    "auto-2026-11-25-47bbae3063a4"
   ],
   "editorial_refresh_plan": {
     "candidate_domains": [
       "market",
       "finance",
       "compute",
-      "power",
-      "grid_storage",
-      "water",
-      "economic_impact"
+      "data_center",
+      "grid_storage"
     ],
     "current_event_ids": [
+      "auto-2026-11-18-05baad78ab7a",
       "auto-2026-11-24-fc7f270ea514",
-      "auto-2026-11-19-9d6aa7468808",
       "auto-2026-11-23-402e4e5c7d61",
-      "auto-2026-11-19-f3192832a6a2",
-      "auto-2026-11-20-e842c4ff8c0d",
+      "auto-2026-11-19-9d6aa7468808",
+      "auto-2026-11-26-151c911e31dc",
       "auto-2026-11-25-7156ae627968",
       "auto-2026-11-24-6d40bf9a68f9",
       "auto-2026-11-17-2a115c66d5e6",
       "auto-2026-11-25-da830b31c552",
-      "auto-2026-11-19-3c726dbf3118",
-      "auto-2026-11-16-6281f100bb86",
       "auto-2026-11-25-d1c56439fbbf",
-      "auto-2026-11-19-dd9196148de6",
+      "auto-2026-11-26-34005d7c42c6",
       "auto-2026-11-23-cad309ce6845",
-      "auto-2026-11-23-92a22ec99975"
+      "auto-2026-11-26-f9be3d88f48d",
+      "auto-2026-11-25-25930e7068af",
+      "auto-2026-11-25-47bbae3063a4"
     ],
     "material_domains": [
-      "market",
-      "finance",
-      "compute",
-      "water",
-      "economic_impact"
+      "compute"
     ],
     "new_event_domains": [
       "market",
       "finance",
-      "power",
-      "grid_storage",
-      "water",
-      "economic_impact"
+      "data_center",
+      "grid_storage"
     ],
     "new_event_ids": [
-      "auto-2026-11-24-fc7f270ea514",
-      "auto-2026-11-25-7156ae627968",
-      "auto-2026-11-24-6d40bf9a68f9",
-      "auto-2026-11-25-da830b31c552",
-      "auto-2026-11-25-d1c56439fbbf",
-      "auto-2026-11-23-cad309ce6845",
-      "auto-2026-11-23-92a22ec99975"
+      "auto-2026-11-18-05baad78ab7a",
+      "auto-2026-11-26-151c911e31dc",
+      "auto-2026-11-26-34005d7c42c6",
+      "auto-2026-11-26-f9be3d88f48d",
+      "auto-2026-11-25-25930e7068af",
+      "auto-2026-11-25-47bbae3063a4"
     ],
     "reason": "material_findings+new_developments",
     "refresh_needed": true
@@ -86,10 +75,7 @@
     "market",
     "finance",
     "compute",
-    "power",
-    "grid_storage",
-    "water",
-    "economic_impact"
+    "grid_storage"
   ],
   "evidence_packets": {
     "adoption": {
@@ -371,10 +357,10 @@
         },
         {
           "context": "",
-          "display": "20.6%",
+          "display": "22.7%",
           "id": "compute.information_processing_investment_growth",
           "label": "Information-processing investment growth",
-          "value": 0.20567957496910094
+          "value": 0.2265581830358625
         },
         {
           "context": "",
@@ -1224,14 +1210,14 @@
           "display": "33.4",
           "id": "market.aei",
           "label": "AI Equity Index",
-          "value": 33.37221238013969
+          "value": 33.370392993679836
         },
         {
           "context": "",
           "display": "40.0",
           "id": "market.pressure",
           "label": "Average sector trading pressure",
-          "value": 39.968697428768245
+          "value": 39.974148573341864
         },
         {
           "context": "",
@@ -1245,28 +1231,28 @@
           "display": "7.3%",
           "id": "market.median_return",
           "label": "Median one-year return",
-          "value": 0.07287614440885903
+          "value": 0.07287609542669038
         },
         {
           "context": "",
           "display": "8.1%",
           "id": "market.equal_weight_return",
           "label": "Equal-weight one-year return",
-          "value": 0.08128689051492852
+          "value": 0.08127057500222461
         },
         {
           "context": "",
           "display": "65.2%",
           "id": "market.top_10_share",
           "label": "Top-ten share of covered market value",
-          "value": 0.6522460994147861
+          "value": 0.6522845075868692
         },
         {
           "context": "",
           "display": "17.9",
           "id": "market.effective_firms",
           "label": "Effective firm count",
-          "value": 17.948740739459875
+          "value": 17.949046184725475
         },
         {
           "context": "",
@@ -1283,7 +1269,7 @@
           "value": 0.0
         }
       ],
-      "importance": 20.224609941478604,
+      "importance": 20.228450758686918,
       "label": "Market",
       "references": [
         {
@@ -1703,19 +1689,19 @@
       "version": "1.3.0"
     }
   },
-  "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
-  "generated_at": "2026-11-25T22:34:19.972427+00:00",
+  "evidence_snapshot_id": "a820452e363fd6a3ea3eb1af",
+  "generated_at": "2026-11-26T22:22:01.424961+00:00",
   "generation": {
     "editorial_synthesis": {
-      "elapsed_sec": 68.49171398399994,
-      "input_tokens": 4513,
+      "elapsed_sec": 88.79376370199998,
+      "input_tokens": 4181,
       "model": "gpt-5.6-sol",
-      "output_tokens": 8686,
-      "poll_attempts": 31,
+      "output_tokens": 9230,
+      "poll_attempts": 41,
       "poll_errors": [],
-      "response_id": "resp_0c3bb57f2988af5b006b0762282a4487d08de431e690e4fbab",
+      "response_id": "resp_09ad24bc4828051a006b08b0b1764887d09b3973d78e0cf2d2",
       "terminal_status": "completed",
-      "total_tokens": 13199
+      "total_tokens": 13411
     }
   },
   "max_output_tokens": null,
@@ -1726,11 +1712,11 @@
     "generator": "7.1.0"
   },
   "publication": {
-    "current_evidence_snapshot_id": "60d4b8f2580b718c03939e51",
-    "expires_at": "2026-11-26T22:34:19.975419+00:00",
+    "current_evidence_snapshot_id": "a820452e363fd6a3ea3eb1af",
+    "expires_at": "2026-11-27T22:22:01.427222+00:00",
     "lease_hours": 24,
     "materiality": {},
-    "published_at": "2026-11-25T22:34:19.975419+00:00",
+    "published_at": "2026-11-26T22:22:01.427222+00:00",
     "renewal_count": 0,
     "source": "generation"
   },
@@ -1738,24 +1724,24 @@
     "editorial_synthesis": {
       "_ai_macro_background": {
         "deadline_seconds": 1200.0,
-        "poll_attempts": 31,
+        "poll_attempts": 41,
         "poll_errors": [],
         "request_timeout_seconds": 60.0,
-        "response_id": "resp_0c3bb57f2988af5b006b0762282a4487d08de431e690e4fbab",
+        "response_id": "resp_09ad24bc4828051a006b08b0b1764887d09b3973d78e0cf2d2",
         "terminal_status": "completed"
       },
-      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation.\",\"event_ids\":[\"auto-2026-11-24-fc7f270ea514\",\"auto-2026-11-25-7156ae627968\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The aggregate AI equity signal improves while company-level gains narrow\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite.\",\"event_ids\":[\"auto-2026-11-25-d1c56439fbbf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]},\"headline\":{\"text\":\"Financial conditions tighten at the margin while bond distress eases\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply.\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"The production lead shifts to computer equipment as utilization converges\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.1 GW through the pipeline horizon, but planned supply is not delivered capacity. Utility Dive reported that TVA touted a $1.7 billion data-center deal under a new large-load tariff. The agreement is a concrete sign of utility contracting for a major load, but one deal does not resolve the timing of the broader generation pipeline.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as TVA reports a tariff-backed data-center deal\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction.\",\"event_ids\":[\"auto-2026-11-23-cad309ce6845\"],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"headline\":{\"text\":\"Operating storage gets slightly longer while most queued capacity remains early-stage\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 231, or 15.5%, are in counties containing some D2-or-worse drought area. The stricter screen\u2014counties with at least one-quarter of their area at D2 or worse\u2014now includes 127 campuses, or 8.5%. Both readings fell materially. This reduces the current geographic exposure count, though county drought conditions do not measure campus water use or site-specific supply.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"County drought exposure falls materially for tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Information-processing investment growth accelerated materially to 22.7%. Across the nonfarm business sector, productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%. Spending on information-processing assets is expanding rapidly, but the broader results remain more modest and do not establish how much, if any, came from AI.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates as productivity continues to outpace real pay\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Information-processing investment and computer output accelerate before the broader payoff is clear\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\",\"market.median_return\"]},\"paragraphs\":[{\"text\":\"Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},{\"text\":\"The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},{\"text\":\"Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}]}}",
+      "_ai_macro_output_text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index slipped to 33.4, while average sector trading pressure rose slightly to 40.0. Median and equal-weight one-year returns also edged down, to 7.3% and 8.1%. CNBC reported that Palo Alto Networks shares surged after an earnings beat, higher guidance and a $4.5 billion AI deal. That response shows that concrete company news can still produce sharp gains even as broader measures soften.\",\"event_ids\":[\"auto-2026-11-18-05baad78ab7a\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.median_return\",\"market.equal_weight_return\"]},\"headline\":{\"text\":\"Broad AI equity measures soften despite a sharp company-specific gain\",\"event_ids\":[\"auto-2026-11-18-05baad78ab7a\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of spending at the current pace. Borrower strain, at 25.8, is above lender strain at 21.0. Bloomberg reported that BBVA is considering a risk-transfer transaction to hedge about $500 million of data-center loans. The report concerns one lender and does not establish system-wide credit stress, but it shows explicit risk management around data-center exposure.\",\"event_ids\":[\"auto-2026-11-26-151c911e31dc\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Current cash flow covers capital spending, but reserves provide less than a year of coverage\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Semiconductor and electronic-component output grew 13.5%, a slower rate, while computer-equipment capacity utilization stood at 80.6%. The expansion is therefore visible in both capital formation and equipment production.\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\"]},\"headline\":{\"text\":\"Information-processing investment and computer output are expanding at nearly the same pace\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue contains 2,061 GW, including 552.7 GW of storage, but only 24.2% is in executed-agreement or construction stages. The historical benchmark is more restrictive: 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The application shows project-specific grid planning around large loads, while the queue measures caution against treating requested capacity as future supply.\",\"event_ids\":[\"auto-2026-11-26-f9be3d88f48d\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"Storage is large in the queue, but conversion remains the central issue\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment momentum is strong, while funding depth and grid delivery remain the execution tests\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Capital formation is running alongside a large physical development pipeline. Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 sites already operating. The expansion is visible in measured investment, equipment output and site-development records.\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\",\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Internal cash generation supports the current spending rate, but the reserve margin is limited. Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of CapEx at the current pace. Bloomberg reported that BBVA is weighing a risk-transfer transaction for about $500 million of data-center loans. That is not evidence of broad credit deterioration, but it shows how at least one lender is considering explicit protection against data-center exposure.\",\"event_ids\":[\"auto-2026-11-26-151c911e31dc\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"Grid delivery remains the harder part of execution. The active interconnection queue totals 2,061 GW, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The filing illustrates project-specific planning around large loads, but an application remains short of a working grid connection. The scale of investment is clearer than the timing of usable capacity.\",\"event_ids\":[\"auto-2026-11-26-f9be3d88f48d\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}]}}",
       "access_programs": null,
       "background": true,
       "billing": {
         "payer": "developer"
       },
-      "completed_at": 1795646058.0,
+      "completed_at": 1795731719.0,
       "conversation": null,
-      "created_at": 1795645992.0,
+      "created_at": 1795731633.0,
       "error": null,
       "frequency_penalty": 0.0,
-      "id": "resp_0c3bb57f2988af5b006b0762282a4487d08de431e690e4fbab",
+      "id": "resp_09ad24bc4828051a006b08b0b1764887d09b3973d78e0cf2d2",
       "image": {
         "context_compression": "disabled"
       },
@@ -1772,7 +1758,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07622a877087d08abaa9dbd3bc4833",
+          "id": "rs_09ad24bc4828051a006b08b0b3eed487d09fd251eb5c57037c",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1780,7 +1766,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07622ebb2087d0a22e1acef6c11a3c",
+          "id": "rs_09ad24bc4828051a006b08b0b88cc887d0959717bd1df00912",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1788,7 +1774,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07623353f487d09b5aa35619e16997",
+          "id": "rs_09ad24bc4828051a006b08b0bd0a4487d095a8aa16c7478eee",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1796,7 +1782,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b076237bb9c87d0acc9c13a0b93a066",
+          "id": "rs_09ad24bc4828051a006b08b0c1c3f087d09862bd2b9de02ac7",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1804,7 +1790,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07623c521487d0b407fab080e4fbee",
+          "id": "rs_09ad24bc4828051a006b08b0c68cd487d097fa409b49c9d2a3",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1812,7 +1798,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b0762406b8487d0a94f51c5c861eb3c",
+          "id": "rs_09ad24bc4828051a006b08b0cba09c87d083d8cf857a78ba7d",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1820,7 +1806,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07624485ac87d0aae98112d3bf4182",
+          "id": "rs_09ad24bc4828051a006b08b0ce691887d08e7129031e816fc4",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1828,7 +1814,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b076248b67087d09bdaab9d18b84522",
+          "id": "rs_09ad24bc4828051a006b08b0d2b10487d0aa4d5c448a379185",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1836,7 +1822,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07624ca14087d08dd4bc3068aa01de",
+          "id": "rs_09ad24bc4828051a006b08b0d6cda487d085c68e7de8bb0859",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1844,7 +1830,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b076251499487d0baf8e04f2063dc0a",
+          "id": "rs_09ad24bc4828051a006b08b0ddb76887d0bb6478b84276dda9",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1852,7 +1838,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07625562a487d08757574ff6889936",
+          "id": "rs_09ad24bc4828051a006b08b0df816087d083b59f28d5bcbd78",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1860,7 +1846,7 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b076259990487d0a496ab4a6fea2f83",
+          "id": "rs_09ad24bc4828051a006b08b0e532c887d083f2de2a43cd0799",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1868,7 +1854,31 @@
         {
           "content": [],
           "encrypted_content": null,
-          "id": "rs_0c3bb57f2988af5b006b07625d937887d0b0aadb0798f90650",
+          "id": "rs_09ad24bc4828051a006b08b0eb0cf487d0a0f7f99204ff5cf2",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_09ad24bc4828051a006b08b0ec8c9887d0b2d1486030804508",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_09ad24bc4828051a006b08b0f1634087d0b6e184f08af9d9ba",
+          "status": null,
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "content": [],
+          "encrypted_content": null,
+          "id": "rs_09ad24bc4828051a006b08b0f415c087d0b81bd0b59e6e1bd1",
           "status": null,
           "summary": [],
           "type": "reasoning"
@@ -1878,11 +1888,11 @@
             {
               "annotations": [],
               "logprobs": [],
-              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation.\",\"event_ids\":[\"auto-2026-11-24-fc7f270ea514\",\"auto-2026-11-25-7156ae627968\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.positive_breadth\",\"market.median_return\"]},\"headline\":{\"text\":\"The aggregate AI equity signal improves while company-level gains narrow\",\"event_ids\":[],\"fact_ids\":[\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite.\",\"event_ids\":[\"auto-2026-11-25-d1c56439fbbf\"],\"fact_ids\":[\"finance.lender_strain\",\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]},\"headline\":{\"text\":\"Financial conditions tighten at the margin while bond distress eases\",\"event_ids\":[],\"fact_ids\":[\"finance.nfci\",\"finance.nfci_change\",\"finance.bond_distress\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply.\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},\"headline\":{\"text\":\"The production lead shifts to computer equipment as utilization converges\",\"event_ids\":[],\"fact_ids\":[\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]}},{\"domain\":\"power\",\"body\":{\"text\":\"Commercial electricity demand is growing 3.5%, nearly twice the 1.8% increase in total retail demand, while retail electricity prices are up 5.1%. Net planned generation additions total 227.1 GW through the pipeline horizon, but planned supply is not delivered capacity. Utility Dive reported that TVA touted a $1.7 billion data-center deal under a new large-load tariff. The agreement is a concrete sign of utility contracting for a major load, but one deal does not resolve the timing of the broader generation pipeline.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\"]},\"headline\":{\"text\":\"Commercial power demand outpaces the total as TVA reports a tariff-backed data-center deal\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.demand_growth\",\"power.commercial_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction.\",\"event_ids\":[\"auto-2026-11-23-cad309ce6845\"],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},\"headline\":{\"text\":\"Operating storage gets slightly longer while most queued capacity remains early-stage\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.operating_storage_weighted_duration_hours\",\"grid_storage.operating_storage_four_hour_plus_share_pct\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]}},{\"domain\":\"water\",\"body\":{\"text\":\"Among campuses with county drought data, 231, or 15.5%, are in counties containing some D2-or-worse drought area. The stricter screen\u2014counties with at least one-quarter of their area at D2 or worse\u2014now includes 127 campuses, or 8.5%. Both readings fell materially. This reduces the current geographic exposure count, though county drought conditions do not measure campus water use or site-specific supply.\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]},\"headline\":{\"text\":\"County drought exposure falls materially for tracked campuses\",\"event_ids\":[],\"fact_ids\":[\"water.campuses_in_counties_with_d2_area\",\"water.campuses_in_counties_with_d2_share_pct\",\"water.campuses_in_counties_with_25pct_d2_area\",\"water.campuses_in_counties_with_25pct_d2_share_pct\"]}},{\"domain\":\"economic_impact\",\"body\":{\"text\":\"Information-processing investment growth accelerated materially to 22.7%. Across the nonfarm business sector, productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%. Spending on information-processing assets is expanding rapidly, but the broader results remain more modest and do not establish how much, if any, came from AI.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\"]},\"headline\":{\"text\":\"Information-processing investment accelerates as productivity continues to outpace real pay\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Information-processing investment and computer output accelerate before the broader payoff is clear\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"economic_impact.productivity_growth\",\"economic_impact.real_compensation_growth\",\"market.median_return\"]},\"paragraphs\":[{\"text\":\"Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.information_investment_growth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\",\"compute.semiconductor_utilization\"]},{\"text\":\"The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.\",\"event_ids\":[\"auto-2026-11-24-6d40bf9a68f9\"],\"fact_ids\":[\"power.planned_net_gw\",\"power.demand_growth\",\"power.commercial_growth\",\"power.retail_price_growth\",\"grid_storage.queue_gw\",\"grid_storage.advanced_share\"]},{\"text\":\"Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff.\",\"event_ids\":[],\"fact_ids\":[\"economic_impact.productivity_growth\",\"economic_impact.real_output_growth\",\"economic_impact.real_compensation_growth\",\"market.aei\",\"market.positive_breadth\",\"market.median_return\"]}]}}",
+              "text": "{\"domain_reads\":[{\"domain\":\"market\",\"body\":{\"text\":\"The AI Equity Index slipped to 33.4, while average sector trading pressure rose slightly to 40.0. Median and equal-weight one-year returns also edged down, to 7.3% and 8.1%. CNBC reported that Palo Alto Networks shares surged after an earnings beat, higher guidance and a $4.5 billion AI deal. That response shows that concrete company news can still produce sharp gains even as broader measures soften.\",\"event_ids\":[\"auto-2026-11-18-05baad78ab7a\"],\"fact_ids\":[\"market.aei\",\"market.pressure\",\"market.median_return\",\"market.equal_weight_return\"]},\"headline\":{\"text\":\"Broad AI equity measures soften despite a sharp company-specific gain\",\"event_ids\":[\"auto-2026-11-18-05baad78ab7a\"],\"fact_ids\":[\"market.aei\",\"market.median_return\",\"market.equal_weight_return\"]}},{\"domain\":\"finance\",\"body\":{\"text\":\"Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of spending at the current pace. Borrower strain, at 25.8, is above lender strain at 21.0. Bloomberg reported that BBVA is considering a risk-transfer transaction to hedge about $500 million of data-center loans. The report concerns one lender and does not establish system-wide credit stress, but it shows explicit risk management around data-center exposure.\",\"event_ids\":[\"auto-2026-11-26-151c911e31dc\"],\"fact_ids\":[\"finance.borrower_strain\",\"finance.lender_strain\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},\"headline\":{\"text\":\"Current cash flow covers capital spending, but reserves provide less than a year of coverage\",\"event_ids\":[],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]}},{\"domain\":\"compute\",\"body\":{\"text\":\"Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Semiconductor and electronic-component output grew 13.5%, a slower rate, while computer-equipment capacity utilization stood at 80.6%. The expansion is therefore visible in both capital formation and equipment production.\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\",\"compute.semiconductor_output_growth\",\"compute.computer_utilization\"]},\"headline\":{\"text\":\"Information-processing investment and computer output are expanding at nearly the same pace\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\"]}},{\"domain\":\"grid_storage\",\"body\":{\"text\":\"The active interconnection queue contains 2,061 GW, including 552.7 GW of storage, but only 24.2% is in executed-agreement or construction stages. The historical benchmark is more restrictive: 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The application shows project-specific grid planning around large loads, while the queue measures caution against treating requested capacity as future supply.\",\"event_ids\":[\"auto-2026-11-26-f9be3d88f48d\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]},\"headline\":{\"text\":\"Storage is large in the queue, but conversion remains the central issue\",\"event_ids\":[],\"fact_ids\":[\"grid_storage.advanced_share\",\"grid_storage.storage_queue_gw\",\"grid_storage.historical_operational_pct\"]}}],\"macro_read\":{\"headline\":{\"text\":\"Investment momentum is strong, while funding depth and grid delivery remain the execution tests\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\",\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]},\"paragraphs\":[{\"text\":\"Capital formation is running alongside a large physical development pipeline. Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 sites already operating. The expansion is visible in measured investment, equipment output and site-development records.\",\"event_ids\":[],\"fact_ids\":[\"compute.information_processing_investment_growth\",\"compute.computer_output_growth\",\"data_center.operating_sites\",\"data_center.development_sites\",\"data_center.development_to_operating\"]},{\"text\":\"Internal cash generation supports the current spending rate, but the reserve margin is limited. Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of CapEx at the current pace. Bloomberg reported that BBVA is weighing a risk-transfer transaction for about $500 million of data-center loans. That is not evidence of broad credit deterioration, but it shows how at least one lender is considering explicit protection against data-center exposure.\",\"event_ids\":[\"auto-2026-11-26-151c911e31dc\"],\"fact_ids\":[\"finance.internal_funding_coverage\",\"finance.cash_reserve_coverage_years\"]},{\"text\":\"Grid delivery remains the harder part of execution. The active interconnection queue totals 2,061 GW, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The filing illustrates project-specific planning around large loads, but an application remains short of a working grid connection. The scale of investment is clearer than the timing of usable capacity.\",\"event_ids\":[\"auto-2026-11-26-f9be3d88f48d\"],\"fact_ids\":[\"grid_storage.queue_gw\",\"grid_storage.advanced_share\",\"grid_storage.historical_operational_pct\"]}]}}",
               "type": "output_text"
             }
           ],
-          "id": "msg_0c3bb57f2988af5b006b076260f28487d09e2035abaad0ed39",
+          "id": "msg_09ad24bc4828051a006b08b0f9abec87d0a8f9ded0e19a9954",
           "phase": "final_answer",
           "role": "assistant",
           "status": "completed",
@@ -2055,20 +2065,20 @@
       "top_p": 0.98,
       "truncation": "disabled",
       "usage": {
-        "input_tokens": 4513,
+        "input_tokens": 4181,
         "input_tokens_details": {
-          "cache_write_tokens": 4510,
+          "cache_write_tokens": 4178,
           "cache_write_tokens_details": {
             "ttl_12h_tokens": 0,
-            "ttl_30m_tokens": 4510
+            "ttl_30m_tokens": 4178
           },
           "cached_tokens": 0
         },
-        "output_tokens": 8686,
+        "output_tokens": 9230,
         "output_tokens_details": {
-          "reasoning_tokens": 6633
+          "reasoning_tokens": 7943
         },
-        "total_tokens": 13199
+        "total_tokens": 13411
       },
       "user": null
     }
@@ -2140,41 +2150,39 @@
       "version": "6.1.0"
     },
     "compute": {
-      "analysis": "Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply.",
+      "analysis": "Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Semiconductor and electronic-component output grew 13.5%, a slower rate, while computer-equipment capacity utilization stood at 80.6%. The expansion is therefore visible in both capital formation and equipment production.",
       "analysis_sentences": [
-        "Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%.",
-        "Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%.",
-        "The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply."
+        "Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output.",
+        "Semiconductor and electronic-component output grew 13.5%, a slower rate, while computer-equipment capacity utilization stood at 80.6%.",
+        "The expansion is therefore visible in both capital formation and equipment production."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "compute.computer_output_growth",
-            "compute.semiconductor_output_growth",
-            "compute.computer_utilization",
-            "compute.semiconductor_utilization"
+            "compute.information_processing_investment_growth",
+            "compute.computer_output_growth"
           ],
           "field": "headline",
-          "text": "The production lead shifts to computer equipment as utilization converges"
+          "text": "Information-processing investment and computer output are expanding at nearly the same pace"
         },
         {
           "event_ids": [],
           "fact_ids": [
+            "compute.information_processing_investment_growth",
             "compute.computer_output_growth",
             "compute.semiconductor_output_growth",
-            "compute.computer_utilization",
-            "compute.semiconductor_utilization"
+            "compute.computer_utilization"
           ],
           "field": "body",
-          "text": "Computer and peripheral-equipment output growth rose materially to 22.9%, overtaking semiconductor and electronic-component growth, which fell materially to 13.5%. Capacity utilization moved in opposite directions: computer utilization fell to 80.6%, while semiconductor utilization rose to 80.3%. The two industries now operate at nearly the same utilization rate even though their output growth has diverged sharply."
+          "text": "Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Semiconductor and electronic-component output grew 13.5%, a slower rate, while computer-equipment capacity utilization stood at 80.6%. The expansion is therefore visible in both capital formation and equipment production."
         }
       ],
       "domain": "compute",
-      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
-      "generated_at": "2026-11-25T22:34:19.972051+00:00",
+      "evidence_snapshot_id": "a820452e363fd6a3ea3eb1af",
+      "generated_at": "2026-11-26T22:22:01.424701+00:00",
       "generator": "openai",
-      "headline": "The production lead shifts to computer equipment as utilization converges",
+      "headline": "Information-processing investment and computer output are expanding at nearly the same pace",
       "label": "Compute",
       "references": [
         {
@@ -2405,44 +2413,42 @@
       "version": "6.1.0"
     },
     "finance": {
-      "analysis": "The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite.",
+      "analysis": "Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of spending at the current pace. Borrower strain, at 25.8, is above lender strain at 21.0. Bloomberg reported that BBVA is considering a risk-transfer transaction to hedge about $500 million of data-center loans. The report concerns one lender and does not establish system-wide credit stress, but it shows explicit risk management around data-center exposure.",
       "analysis_sentences": [
-        "The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10.",
-        "Lender strain also edged up to 21.0.",
-        "Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure.",
-        "Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff.",
-        "That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite."
+        "Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of spending at the current pace.",
+        "Borrower strain, at 25.8, is above lender strain at 21.0.",
+        "Bloomberg reported that BBVA is considering a risk-transfer transaction to hedge about $500 million of data-center loans.",
+        "The report concerns one lender and does not establish system-wide credit stress, but it shows explicit risk management around data-center exposure."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "finance.nfci",
-            "finance.nfci_change",
-            "finance.bond_distress"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years"
           ],
           "field": "headline",
-          "text": "Financial conditions tighten at the margin while bond distress eases"
+          "text": "Current cash flow covers capital spending, but reserves provide less than a year of coverage"
         },
         {
           "event_ids": [
-            "auto-2026-11-25-d1c56439fbbf"
+            "auto-2026-11-26-151c911e31dc"
           ],
           "fact_ids": [
+            "finance.borrower_strain",
             "finance.lender_strain",
-            "finance.nfci",
-            "finance.nfci_change",
-            "finance.bond_distress"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years"
           ],
           "field": "body",
-          "text": "The Chicago Fed NFCI moved up slightly to -0.44, while its three-month change increased materially to 0.10. Lender strain also edged up to 21.0. Yet corporate bond-market distress declined slightly to 0.24, leaving a mixed picture: financial conditions tightened at the margin without a parallel increase in the bond-distress measure. Bloomberg reported that DoubleLine\u2019s Cohen became more favorable toward AI debt after a selloff. That reflects one investor\u2019s changing risk assessment, not a broad reopening of credit appetite."
+          "text": "Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of spending at the current pace. Borrower strain, at 25.8, is above lender strain at 21.0. Bloomberg reported that BBVA is considering a risk-transfer transaction to hedge about $500 million of data-center loans. The report concerns one lender and does not establish system-wide credit stress, but it shows explicit risk management around data-center exposure."
         }
       ],
       "domain": "finance",
-      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
-      "generated_at": "2026-11-25T22:34:19.972051+00:00",
+      "evidence_snapshot_id": "a820452e363fd6a3ea3eb1af",
+      "generated_at": "2026-11-26T22:22:01.424701+00:00",
       "generator": "openai",
-      "headline": "Financial conditions tighten at the margin while bond distress eases",
+      "headline": "Current cash flow covers capital spending, but reserves provide less than a year of coverage",
       "label": "Finance",
       "references": [
         {
@@ -2495,50 +2501,49 @@
         },
         {
           "source_label": "Bloomberg",
-          "source_url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNUZ2M01uTHpPbDc5NzZUUTRrZFltZnlxZTUxYjNWZmttM08xRmZNSDJTTTdqcndRcTBvZi1Jd2tVTDV0SmZxWHk3YVlRcThmQ1ZubUdzcmwwS0U4bUE5WHRqT0Rpc2VrMEh2eW8tTHpYWXFxd1l4dzNob0tibE5BX3FaOVRDYXR0ano3NnQ5UndqeHBpSTd2U3ByNTFKYnc0M1loTUhOU19tY2kzT1RGWlhNaXk?oc=5"
+          "source_url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOenRUdXZfdWoxbWpzMTQ4dk9xWWxtMlR0ZWxva1Z3bUZDN0NZVmM3d0RwYjM2RG1kZHhSQjlWTXdUV2tPZnAtY3BtWk5JSU0yZ3BVSHhGUWpSZVhkT1lKWkJsRWtPVThRcFRDY1lyT2FybEFBNGcxQlIwaUgxRzZCOHVGSXMwNExmdkRFRVlyYmtYSDFyRUpPQUFva202Zlc2ZlkwblNpaS1OUm8zckd6MWhSWkc?oc=5"
         }
       ],
       "version": "6.1.0"
     },
     "grid_storage": {
-      "analysis": "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction.",
+      "analysis": "The active interconnection queue contains 2,061 GW, including 552.7 GW of storage, but only 24.2% is in executed-agreement or construction stages. The historical benchmark is more restrictive: 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The application shows project-specific grid planning around large loads, while the queue measures caution against treating requested capacity as future supply.",
       "analysis_sentences": [
-        "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly.",
-        "The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages.",
-        "Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process.",
-        "The change addresses processing, but it does not by itself move the large early-stage queue into construction."
+        "The active interconnection queue contains 2,061 GW, including 552.7 GW of storage, but only 24.2% is in executed-agreement or construction stages.",
+        "The historical benchmark is more restrictive: 13% of the 2000\u20132020 queue cohort reached operation.",
+        "Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming.",
+        "The application shows project-specific grid planning around large loads, while the queue measures caution against treating requested capacity as future supply."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "grid_storage.operating_storage_weighted_duration_hours",
-            "grid_storage.operating_storage_four_hour_plus_share_pct",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share"
+            "grid_storage.advanced_share",
+            "grid_storage.storage_queue_gw",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "headline",
-          "text": "Operating storage gets slightly longer while most queued capacity remains early-stage"
+          "text": "Storage is large in the queue, but conversion remains the central issue"
         },
         {
           "event_ids": [
-            "auto-2026-11-23-cad309ce6845"
+            "auto-2026-11-26-f9be3d88f48d"
           ],
           "fact_ids": [
-            "grid_storage.operating_storage_weighted_duration_hours",
-            "grid_storage.operating_storage_four_hour_plus_share_pct",
             "grid_storage.queue_gw",
-            "grid_storage.advanced_share"
+            "grid_storage.advanced_share",
+            "grid_storage.storage_queue_gw",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "body",
-          "text": "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction."
+          "text": "The active interconnection queue contains 2,061 GW, including 552.7 GW of storage, but only 24.2% is in executed-agreement or construction stages. The historical benchmark is more restrictive: 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The application shows project-specific grid planning around large loads, while the queue measures caution against treating requested capacity as future supply."
         }
       ],
       "domain": "grid_storage",
-      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
-      "generated_at": "2026-11-25T22:34:19.972051+00:00",
+      "evidence_snapshot_id": "a820452e363fd6a3ea3eb1af",
+      "generated_at": "2026-11-26T22:22:01.424701+00:00",
       "generator": "openai",
-      "headline": "Operating storage gets slightly longer while most queued capacity remains early-stage",
+      "headline": "Storage is large in the queue, but conversion remains the central issue",
       "label": "Grid & Storage",
       "references": [
         {
@@ -2558,93 +2563,89 @@
           "source_url": "https://www.census.gov/constructionspending"
         },
         {
-          "source_label": "Utility Dive",
-          "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPY3ZuU1RTaHY3WVJNSjFqN1pybVRsSldqV2ZwTU1OLUw1SE1PbnJqNzR0Z0cxa0dwVlFPamV0cDR4a1RockJWVkRhZG9LRDYtV2pBNS1TZ1ExYWFfbFVnYzZ3d2pnQktOV25NWjZrUlpWUUJ0R2cxRU9DbGZzM0hmVkhfVFY?oc=5"
+          "source_label": "Data Center Dynamics",
+          "source_url": "https://www.datacenterdynamics.com/en/news/cheyenne-light-applies-to-build-transmission-infrastructure-for-three-microsoft-data-centers-in-wyoming/"
         }
       ],
       "version": "6.1.0"
     },
     "macro": {
-      "analysis": "Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization. The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity. Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff.",
+      "analysis": "Capital formation is running alongside a large physical development pipeline. Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 sites already operating. The expansion is visible in measured investment, equipment output and site-development records. Internal cash generation supports the current spending rate, but the reserve margin is limited. Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of CapEx at the current pace. Bloomberg reported that BBVA is weighing a risk-transfer transaction for about $500 million of data-center loans. That is not evidence of broad credit deterioration, but it shows how at least one lender is considering explicit protection against data-center exposure. Grid delivery remains the harder part of execution. The active interconnection queue totals 2,061 GW, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The filing illustrates project-specific planning around large loads, but an application remains short of a working grid connection. The scale of investment is clearer than the timing of usable capacity.",
       "analysis_paragraphs": [
-        "Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization.",
-        "The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.",
-        "Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
+        "Capital formation is running alongside a large physical development pipeline. Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 sites already operating. The expansion is visible in measured investment, equipment output and site-development records.",
+        "Internal cash generation supports the current spending rate, but the reserve margin is limited. Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of CapEx at the current pace. Bloomberg reported that BBVA is weighing a risk-transfer transaction for about $500 million of data-center loans. That is not evidence of broad credit deterioration, but it shows how at least one lender is considering explicit protection against data-center exposure.",
+        "Grid delivery remains the harder part of execution. The active interconnection queue totals 2,061 GW, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The filing illustrates project-specific planning around large loads, but an application remains short of a working grid connection. The scale of investment is clearer than the timing of usable capacity."
       ],
       "analysis_sentences": [
-        "Capital spending and equipment production have accelerated.",
-        "Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components.",
-        "Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%.",
-        "Strong output growth is therefore not accompanied by uniformly rising utilization.",
-        "The electricity system continues to separate announced scale from delivered capacity.",
-        "Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%.",
-        "Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages.",
-        "Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff.",
-        "The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity.",
-        "Broader outcomes remain mixed.",
-        "Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution.",
-        "The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%.",
-        "The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
+        "Capital formation is running alongside a large physical development pipeline.",
+        "Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output.",
+        "Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 sites already operating.",
+        "The expansion is visible in measured investment, equipment output and site-development records.",
+        "Internal cash generation supports the current spending rate, but the reserve margin is limited.",
+        "Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of CapEx at the current pace.",
+        "Bloomberg reported that BBVA is weighing a risk-transfer transaction for about $500 million of data-center loans.",
+        "That is not evidence of broad credit deterioration, but it shows how at least one lender is considering explicit protection against data-center exposure.",
+        "Grid delivery remains the harder part of execution.",
+        "The active interconnection queue totals 2,061 GW, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation.",
+        "Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming.",
+        "The filing illustrates project-specific planning around large loads, but an application remains short of a working grid connection.",
+        "The scale of investment is clearer than the timing of usable capacity."
       ],
       "claim_support": [
         {
           "event_ids": [],
           "fact_ids": [
-            "economic_impact.information_investment_growth",
+            "compute.information_processing_investment_growth",
             "compute.computer_output_growth",
-            "economic_impact.productivity_growth",
-            "economic_impact.real_compensation_growth",
-            "market.median_return"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "headline",
-          "text": "Information-processing investment and computer output accelerate before the broader payoff is clear"
+          "text": "Investment momentum is strong, while funding depth and grid delivery remain the execution tests"
         },
         {
           "event_ids": [],
           "fact_ids": [
-            "economic_impact.information_investment_growth",
+            "compute.information_processing_investment_growth",
             "compute.computer_output_growth",
-            "compute.semiconductor_output_growth",
-            "compute.computer_utilization",
-            "compute.semiconductor_utilization"
+            "data_center.operating_sites",
+            "data_center.development_sites",
+            "data_center.development_to_operating"
           ],
           "field": "paragraphs[0]",
-          "text": "Capital spending and equipment production have accelerated. Information-processing investment growth reached 22.7%, while computer and peripheral-equipment output growth rose materially to 22.9%, above the 13.5% rate for semiconductors and electronic components. Utilization moved toward the same level from opposite directions: computers fell to 80.6%, while semiconductors rose to 80.3%. Strong output growth is therefore not accompanied by uniformly rising utilization."
+          "text": "Capital formation is running alongside a large physical development pipeline. Information-processing investment growth rose materially to 22.7%, almost matching 22.9% growth in computer and peripheral-equipment output. Available records list 1,556 data-center sites in development, equal to 0.51 times the 3,068 sites already operating. The expansion is visible in measured investment, equipment output and site-development records."
         },
         {
           "event_ids": [
-            "auto-2026-11-24-6d40bf9a68f9"
+            "auto-2026-11-26-151c911e31dc"
           ],
           "fact_ids": [
-            "power.planned_net_gw",
-            "power.demand_growth",
-            "power.commercial_growth",
-            "power.retail_price_growth",
-            "grid_storage.queue_gw",
-            "grid_storage.advanced_share"
+            "finance.internal_funding_coverage",
+            "finance.cash_reserve_coverage_years"
           ],
           "field": "paragraphs[1]",
-          "text": "The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity."
+          "text": "Internal cash generation supports the current spending rate, but the reserve margin is limited. Operating cash flow is 1.23 times current CapEx, while cash reserves equal 0.85 years of CapEx at the current pace. Bloomberg reported that BBVA is weighing a risk-transfer transaction for about $500 million of data-center loans. That is not evidence of broad credit deterioration, but it shows how at least one lender is considering explicit protection against data-center exposure."
         },
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-26-f9be3d88f48d"
+          ],
           "fact_ids": [
-            "economic_impact.productivity_growth",
-            "economic_impact.real_output_growth",
-            "economic_impact.real_compensation_growth",
-            "market.aei",
-            "market.positive_breadth",
-            "market.median_return"
+            "grid_storage.queue_gw",
+            "grid_storage.advanced_share",
+            "grid_storage.historical_operational_pct"
           ],
           "field": "paragraphs[2]",
-          "text": "Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
+          "text": "Grid delivery remains the harder part of execution. The active interconnection queue totals 2,061 GW, but only 24.2% has reached executed-agreement or construction stages, and just 13% of the 2000\u20132020 queue cohort reached operation. Data Center Dynamics reported that Cheyenne Light applied to build transmission infrastructure for three Microsoft data centers in Wyoming. The filing illustrates project-specific planning around large loads, but an application remains short of a working grid connection. The scale of investment is clearer than the timing of usable capacity."
         }
       ],
       "domain": "macro",
       "evidence": [
         {
           "context": "",
-          "fact_id": "economic_impact.information_investment_growth",
+          "fact_id": "compute.information_processing_investment_growth",
           "label": "Information-processing investment growth",
           "value": "22.7%"
         },
@@ -2656,90 +2657,90 @@
         },
         {
           "context": "",
-          "fact_id": "economic_impact.productivity_growth",
-          "label": "Nonfarm-business productivity growth",
-          "value": "2.1%"
+          "fact_id": "finance.internal_funding_coverage",
+          "label": "Operating cash flow coverage of current CapEx",
+          "value": "1.23x"
         }
       ],
-      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
-      "generated_at": "2026-11-25T22:34:19.972051+00:00",
+      "evidence_snapshot_id": "a820452e363fd6a3ea3eb1af",
+      "generated_at": "2026-11-26T22:22:01.424701+00:00",
       "generator": "openai",
-      "headline": "Information-processing investment and computer output accelerate before the broader payoff is clear",
+      "headline": "Investment momentum is strong, while funding depth and grid delivery remain the execution tests",
       "label": "AI Macro",
       "references": [
         {
-          "source_label": "YFinance",
-          "source_url": "https://finance.yahoo.com/"
+          "source_label": "FRED",
+          "source_url": "https://fred.stlouisfed.org/"
+        },
+        {
+          "source_label": "Chicago Fed NFCI",
+          "source_url": "https://www.chicagofed.org/research/data/nfci/current-data"
+        },
+        {
+          "source_label": "New York Fed CMDI",
+          "source_url": "https://www.newyorkfed.org/research/policy/cmdi"
         },
         {
           "source_label": "SEC EDGAR",
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "Federal Reserve G.17",
-          "source_url": "https://www.federalreserve.gov/releases/g17/current/"
+          "source_label": "Microsoft FY2026 Q3 AI disclosure",
+          "source_url": "https://www.microsoft.com/en-us/investor/earnings/FY-2026-Q3/press-release-webcast"
         },
         {
-          "source_label": "BEA Fixed Assets",
-          "source_url": "https://www.bea.gov/data/investment-fixed-assets"
-        },
-        {
-          "source_label": "Census Construction Spending",
-          "source_url": "https://www.census.gov/constructionspending"
-        },
-        {
-          "source_label": "Primary project disclosures",
-          "source_url": ""
+          "source_label": "OpenAI business scale disclosure",
+          "source_url": "https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/"
         }
       ],
       "selected_domains": [
-        "market",
+        "finance",
         "compute",
-        "power",
-        "grid_storage",
-        "economic_impact"
+        "data_center",
+        "grid_storage"
       ],
       "version": "6.1.0"
     },
     "market": {
-      "analysis": "The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation.",
+      "analysis": "The AI Equity Index slipped to 33.4, while average sector trading pressure rose slightly to 40.0. Median and equal-weight one-year returns also edged down, to 7.3% and 8.1%. CNBC reported that Palo Alto Networks shares surged after an earnings beat, higher guidance and a $4.5 billion AI deal. That response shows that concrete company news can still produce sharp gains even as broader measures soften.",
       "analysis_sentences": [
-        "The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0.",
-        "Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%.",
-        "Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk.",
-        "Those reports show firm demand in selected businesses, while the equity measures show less broad participation."
+        "The AI Equity Index slipped to 33.4, while average sector trading pressure rose slightly to 40.0.",
+        "Median and equal-weight one-year returns also edged down, to 7.3% and 8.1%.",
+        "CNBC reported that Palo Alto Networks shares surged after an earnings beat, higher guidance and a $4.5 billion AI deal.",
+        "That response shows that concrete company news can still produce sharp gains even as broader measures soften."
       ],
       "claim_support": [
         {
-          "event_ids": [],
+          "event_ids": [
+            "auto-2026-11-18-05baad78ab7a"
+          ],
           "fact_ids": [
             "market.aei",
-            "market.positive_breadth",
-            "market.median_return"
+            "market.median_return",
+            "market.equal_weight_return"
           ],
           "field": "headline",
-          "text": "The aggregate AI equity signal improves while company-level gains narrow"
+          "text": "Broad AI equity measures soften despite a sharp company-specific gain"
         },
         {
           "event_ids": [
-            "auto-2026-11-24-fc7f270ea514",
-            "auto-2026-11-25-7156ae627968"
+            "auto-2026-11-18-05baad78ab7a"
           ],
           "fact_ids": [
             "market.aei",
             "market.pressure",
-            "market.positive_breadth",
-            "market.median_return"
+            "market.median_return",
+            "market.equal_weight_return"
           ],
           "field": "body",
-          "text": "The AI Equity Index edged up to 33.4, and average sector trading pressure eased to 40.0. Beneath that improvement, the share of covered companies with positive one-year returns slipped to 59.3%, and the median return fell materially to 7.3%. Recent reports offer a similarly mixed picture: Bloomberg reported that Best Buy raised guidance on demand for computing and AI glasses, while Morningstar said Dell\u2019s record quarter lifted estimates but lowered its fair-value view because of AI-cycle risk. Those reports show firm demand in selected businesses, while the equity measures show less broad participation."
+          "text": "The AI Equity Index slipped to 33.4, while average sector trading pressure rose slightly to 40.0. Median and equal-weight one-year returns also edged down, to 7.3% and 8.1%. CNBC reported that Palo Alto Networks shares surged after an earnings beat, higher guidance and a $4.5 billion AI deal. That response shows that concrete company news can still produce sharp gains even as broader measures soften."
         }
       ],
       "domain": "market",
-      "evidence_snapshot_id": "60d4b8f2580b718c03939e51",
-      "generated_at": "2026-11-25T22:34:19.972051+00:00",
+      "evidence_snapshot_id": "a820452e363fd6a3ea3eb1af",
+      "generated_at": "2026-11-26T22:22:01.424701+00:00",
       "generator": "openai",
-      "headline": "The aggregate AI equity signal improves while company-level gains narrow",
+      "headline": "Broad AI equity measures soften despite a sharp company-specific gain",
       "label": "Market",
       "references": [
         {
@@ -2751,12 +2752,8 @@
           "source_url": "https://www.sec.gov/edgar/search/"
         },
         {
-          "source_label": "Bloomberg",
-          "source_url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQaGdaTHY2SHBsUUFYSnRQb1BMbnM2OTJxZFR5czFjWVBNRnM3Q09UNU9NS2hnR0hsNDdwZ1I2OVFLaXEybXVZNWZXUFBfaWItQlhQNFVobW1CVmlGaUw0MlRZTTNNYlpVQTJmd2NkMVlZSWVrQWlEd0FGVHBzeDlsNlFCc2hrRno3QXItS2RMMFNnZE54VVozcVJhcmNlVjBWdVQ0LW5IM2J2YVVCS0U0?oc=5"
-        },
-        {
-          "source_label": "Morningstar",
-          "source_url": "https://www.morningstar.com/stocks/dell-earnings-record-quarter-lifts-estimates-we-cut-fair-value-ai-cycle-risk"
+          "source_label": "CNBC",
+          "source_url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPdFN4RmJHNkwxdDFZRnVCYjdieHYyMmwySDYwRHBsaGFEQlBla05Sa3E5Qmh1YWcwUnp5c3hkZTdpN2VhNDFmcXJKVXkwWHQ1dHRaX3NkdVcyZGdmZHdRVnFCRUlWcmQ2YzhEVGtFZTdDcmRudk1qd3RpVzlvV0VXYkNDZjZ5SEJrRUVTaVpTZkl4MGJLdWk5RnZiSXdWY1c4bk5senJCb0lJZkYtaXJkdW4waTFscnZfYTlDczczRGlBRzJZNkxfRU5qS3pQblJTVGMtSQ?oc=5"
         }
       ],
       "version": "6.1.0"
@@ -2947,29 +2944,10 @@
   "stage_prompt_versions": {
     "editorial_synthesis": "editorial-synthesis-reset-1.1"
   },
-  "status": "published_with_warnings",
+  "status": "validated",
   "validation": {
-    "checked_passages": 18,
-    "diagnostics": [
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "grid_storage.body",
-        "text": "Operating storage now has a weighted average duration of 2.8 hours, and 45.7% of capacity has at least four hours of duration; both measures improved slightly. The active interconnection queue remains 2,061 GW, but only 24.2% is in executed-agreement or construction stages. Utility Dive reported that FERC approved a MISO plan to speed its legacy interconnection study process. The change addresses processing, but it does not by itself move the large early-stage queue into construction."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "macro.paragraphs[1]",
-        "text": "The electricity system continues to separate announced scale from delivered capacity. Commercial demand is growing 3.5%, compared with 1.8% for total retail demand, and retail prices are up 5.1%. Net planned generation additions total 227.1 GW, while the active interconnection queue stands at 2,061 GW; only 24.2% of queued capacity has reached executed-agreement or construction stages. Utility Dive reported TVA\u2019s $1.7 billion data-center deal under a new large-load tariff. The deal makes large-load contracting more concrete, but it does not convert the wider generation and interconnection pipelines into operating capacity."
-      },
-      {
-        "message": "Semicolon present; review for clause stacking.",
-        "reason": "semicolon",
-        "scope": "macro.paragraphs[2]",
-        "text": "Broader outcomes remain mixed. Nonfarm-business productivity grew 2.1% and real output 2.3%, while real hourly compensation rose 0.6%; those aggregates are positive but do not isolate an AI contribution. The market signal is also split: the AI Equity Index edged up to 33.4, but the share of covered companies with positive one-year returns slipped to 59.3% and the median return fell materially to 7.3%. The current evidence is clearer on investment and physical expansion than on a broad economic or market payoff."
-      }
-    ],
+    "checked_passages": 12,
+    "diagnostics": [],
     "hard_errors": [],
     "hard_failures": [],
     "passed": true,
