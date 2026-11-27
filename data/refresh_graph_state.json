@@ -1,86 +1,86 @@
 {
   "graph_version": "1.0.0",
-  "last_canonical_snapshot_id": "51c167bf732940be8be6899d",
-  "last_observation_date": "2026-11-26",
-  "last_run_id": "20261126T221452Z_5c852ac5",
+  "last_canonical_snapshot_id": "5dd2e3738dd2860c17e4c7e3",
+  "last_observation_date": "2026-11-27",
+  "last_run_id": "20261127T215454Z_d7dabcd5",
   "nodes": {
     "adoption": {
-      "consecutive_failures": 15,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 16,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "ValueError: BTOS national workbook missing question 24 Yes response",
-      "last_output_signature": "64f0a0828c0b324f8331a465",
+      "last_output_signature": "cb872c9cb07c1f9aff8be24c",
       "last_status": "partial",
       "last_success_at_utc": "2026-11-04T20:23:16.177074+00:00",
       "last_success_trigger": ""
     },
     "commercialization": {
-      "consecutive_failures": 54,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 55,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "Parsed 2 of 3 required metrics; missing: Paying business users",
-      "last_output_signature": "330cf18769344b7f74f7ae42",
+      "last_output_signature": "08a74e004578ef0d35babada",
       "last_status": "partial"
     },
     "compute": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-25T22:24:50.575903+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "",
-      "last_output_signature": "2151cef9198ea5e21f34b07a",
+      "last_output_signature": "4fe206906ffea5ca216a1ff4",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-25T22:24:50.575903+00:00",
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_success_trigger": ""
     },
     "connectivity": {
-      "consecutive_failures": 55,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 56,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "ValueError: TeleGeography catalog refresh returned only 0 candidate systems",
-      "last_output_signature": "3f0cd7c4d4dd8dca920782f8",
+      "last_output_signature": "bd667516261d58c252c210de",
       "last_status": "partial"
     },
     "construction": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-25T22:24:50.575903+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-11-02T22:16:36.712982+00:00",
       "last_error": "",
       "last_output_signature": "55836132a6744829f84c68d4",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-25T22:24:50.575903+00:00",
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_success_trigger": ""
     },
     "current_context": {
-      "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_error": "",
-      "last_output_signature": "d51dad7b849ed53a692265e6",
-      "last_status": "success",
+      "consecutive_failures": 1,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_error": "HTTPError: HTTP Error 403: Forbidden",
+      "last_output_signature": "e5209e33ad05b3911a4c2049",
+      "last_status": "partial",
       "last_success_at_utc": "2026-11-26T22:14:53.669830+00:00",
       "last_success_trigger": "2026-11-26"
     },
     "data_centers": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-25T22:24:50.575903+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "",
-      "last_output_signature": "eceb00f38fa97ec593018a58",
+      "last_output_signature": "6ca96c1865a16f94b5fcb596",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-25T22:24:50.575903+00:00",
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_success_trigger": ""
     },
     "economic_outcomes": {
-      "consecutive_failures": 54,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 55,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-11-25T22:24:50.575903+00:00",
       "last_error": "FRED API HTTP 400 for PRS30006093; FRED API HTTP 400 for PRS30006103; FRED API HTTP 400 for PRS30006113; FRED API HTTP 400 for PRS85006043; FRED API HTTP 400 for PRS85006093; FRED API HTTP 400 for PRS85006103; FRED API HTTP 400 for PRS85006113; FRED API HTTP 400 for PRS85006153",
       "last_output_signature": "e16679483365cbc2164ea029",
       "last_status": "partial"
     },
     "edgar": {
-      "consecutive_failures": 31,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 32,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-11-24T22:59:04.867145+00:00",
       "last_error": "ValueError: No unambiguous consolidated cost fact for 2026-09-30; ValueError: No unambiguous consolidated nonaccrual fact for 2026-09-30",
       "last_output_signature": "eda31420c4376ee57db08482",
@@ -90,22 +90,22 @@
     },
     "fred": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "",
-      "last_output_signature": "cacbc5769ed8dac32334bde9",
+      "last_output_signature": "4890fc70065c5fafcc476b48",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_success_trigger": "2026-11-26"
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_success_trigger": "2026-11-27"
     },
     "grid_storage": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-25T22:24:50.575903+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-09-16T07:05:42.687453+00:00",
       "last_error": "",
       "last_output_signature": "ed632d5f9066983c12e97833",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-25T22:24:50.575903+00:00",
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_success_trigger": ""
     },
     "nyfed": {
@@ -119,38 +119,38 @@
       "last_success_trigger": "2026-11-25"
     },
     "pe_industry": {
-      "consecutive_failures": 14,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 15,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-10-19T16:37:23.954778+00:00",
       "last_error": "9 revised source period(s) held for review",
       "last_output_signature": "877e98e2d8eb692340c067cc",
-      "last_retrieval_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_retrieval_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_status": "partial",
       "last_success_at_utc": "2026-11-02T22:16:36.712982+00:00",
       "last_success_trigger": ""
     },
     "pe_us_liquidity": {
-      "consecutive_failures": 29,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 30,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-10-19T16:37:23.954778+00:00",
       "last_error": "ReturnSourceRejected: Wrong Figure 1 end date",
       "last_output_signature": "78897351354c93f7d15d78c0",
-      "last_retrieval_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_retrieval_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_status": "partial"
     },
     "power_supply": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-20T21:00:30.180570+00:00",
-      "last_changed_at_utc": "2026-11-25T22:24:50.575903+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "",
-      "last_output_signature": "16fde1c989c1d46daa85896c",
+      "last_output_signature": "76aea7225f74ed262058e047",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-20T21:00:30.180570+00:00",
-      "last_success_trigger": "2026-11-20"
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_success_trigger": "2026-11-27"
     },
     "private_capital": {
-      "consecutive_failures": 3,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 4,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-10-19T16:37:23.954778+00:00",
       "last_error": "WSIB: ValueError: Unrecognized WSIB fund row: TowerBrook Investors VII, L.P.; CalPERS: URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1035)>",
       "last_output_signature": "02c0b42b1f6bd93035125e49",
@@ -160,17 +160,17 @@
     },
     "water": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "",
-      "last_output_signature": "d835e181a2e69fcedcfcbc4a",
+      "last_output_signature": "7bf0ec58b70c4e577d3ddf67",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_success_trigger": ""
     },
     "workforce": {
-      "consecutive_failures": 54,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "consecutive_failures": 55,
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_changed_at_utc": "2026-11-10T20:25:51.334424+00:00",
       "last_error": "FRED API HTTP 400 for CES2023713001; FRED API HTTP 400 for CES2023713003; FRED API HTTP 400 for CES3133440003; FRED API HTTP 400 for CES5051800003; FRED API HTTP 400 for CES6054150003; RuntimeError: FRED API HTTP 400 for JTS230000000000000JOL; FRED API HTTP 400 for JTS300000000000000JOL; FRED API HTTP 400 for JTS510000000000000JOL; FRED API HTTP 400 for JTS540099000000000JOL; RuntimeError: FRED API HTTP 400 for JTS230000000000000HIR; FRED API HTTP 400 for JTS230000000000000JOR; FRED API HTTP 400 for JTS230000000000000LDR; FRED API HTTP 400 for JTS230000000000000QUR; FRED API HTTP 400 for JTS300000000000000HIR; FRED API HTTP 400 for JTS300000000000000JOR; FRED API HTTP 400 for JTS300000000000000LDR; FRED API HTTP 400 for JTS300000000000000QUR; FRED API HTTP 400 for JTS510000000000000HIR; FRED API HTTP 400 for JTS510000000000000JOR; FRED API HTTP 400 for JTS510000000000000LDR; FRED API HTTP 400 for JTS510000000000000QUR; FRED API HTTP 400 for JTS540099000000000HIR; FRED API HTTP 400 for JTS540099000000000JOR; FRED API HTTP 400 for JTS540099000000000LDR; FRED API HTTP 400 for JTS540099000000000QUR",
       "last_output_signature": "fc30d0e9b1a8046ecfd1bcb5",
@@ -178,14 +178,14 @@
     },
     "yfinance": {
       "consecutive_failures": 0,
-      "last_attempt_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_changed_at_utc": "2026-11-26T22:14:53.669830+00:00",
+      "last_attempt_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_changed_at_utc": "2026-11-27T21:54:55.151984+00:00",
       "last_error": "",
-      "last_output_signature": "77a1496a0ccdef7aa5dbb279",
+      "last_output_signature": "946695bc7354c86505dae285",
       "last_status": "success",
-      "last_success_at_utc": "2026-11-26T22:14:53.669830+00:00",
-      "last_success_trigger": "2026-11-26"
+      "last_success_at_utc": "2026-11-27T21:54:55.151984+00:00",
+      "last_success_trigger": "2026-11-27"
     }
   },
-  "updated_at_utc": "2026-11-26T22:14:53.669830+00:00"
+  "updated_at_utc": "2026-11-27T21:54:55.151984+00:00"
 }
